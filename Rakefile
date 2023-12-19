@@ -56,18 +56,6 @@ def java_version
   end
 end
 
-def dotnet_version
-  File.foreach('dotnet/selenium-dotnet-version.bzl') do |line|
-    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
-  end
-end
-
-def python_version
-  File.foreach('py/BUILD.bazel') do |line|
-    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
-  end
-end
-
 # The build system used by webdriver is layered on top of rake, and we call it
 # "crazy fun" for no readily apparent reason.
 
@@ -336,45 +324,22 @@ task ios_driver: [
   '//javascript/webdriver/atoms/fragments:get_location_in_view:ios'
 ]
 
-task 'dotnet-release-zip': [
-  '//dotnet:all'
-] do
-  [
-      "build/dist/selenium-dotnet-#{dotnet_version}.zip",
-      "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip",
-  ].each do |f|
-    rm_f(f) if File.exists?(f)
-  end
-    mkdir_p 'build/dist'
-    File.delete
-
-    cp "bazel-bin/dotnet/release.zip", "build/dist/selenium-dotnet-#{dotnet_version}.zip", preserve: false
-    chmod 0666, "build/dist/selenium-dotnet-#{dotnet_version}.zip"
-    cp "bazel-bin/dotnet/strongnamed.zip", "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip", preserve: false
-    chmod 0666, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip"
-end
-
-task 'java-release-zip': [
-  '//java/src/org/openqa/selenium:client-zip',
-  '//java/src/org/openqa/selenium/grid:server-zip',
-  '//java/src/org/openqa/selenium/grid:executable-grid',
-] do
-  [
-    "build/dist/selenium-server-#{java_version}.zip",
-    "build/dist/selenium-java-#{java_version}.zip",
-    "build/dist/selenium-server-#{java_version}.jar"
-  ].each do |f|
-    rm_f(f) if File.exists?(f)
-  end
-
+task :'java-release-zip' do
+  Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium:client-zip')
+  Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium/grid:server-zip')
+  Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium/grid:executable-grid')
   mkdir_p 'build/dist'
-  File.delete
-  cp "bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip", "build/dist/selenium-server-#{java_version}.zip", preserve: false
-  chmod 0666, "build/dist/selenium-server-#{java_version}.zip"
-  cp "bazel-bin/java/src/org/openqa/selenium/client-zip.zip", "build/dist/selenium-java-#{java_version}.zip", preserve: false
-  chmod 0666, "build/dist/selenium-java-#{java_version}.zip"
-  cp "bazel-bin/java/src/org/openqa/selenium/grid/selenium", "build/dist/selenium-server-#{java_version}.jar", preserve: false
-  chmod 0777, "build/dist/selenium-server-#{java_version}.jar"
+  FileUtils.rm_f('build/dist/**/*.{server,java}*', force: true)
+
+    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip',
+      "build/dist/selenium-server-#{java_version}.zip")
+    FileUtils.chmod(666, "build/dist/selenium-server-#{java_version}.zip")
+    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/client-zip.zip',
+      "build/dist/selenium-java-#{java_version}.zip")
+    FileUtils.chmod(666, "build/dist/selenium-java-#{java_version}.zip")
+    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/selenium',
+      "build/dist/selenium-server-#{java_version}.jar")
+    FileUtils.chmod(777, "build/dist/selenium-server-#{java_version}.jar")
 end
 
 task 'release-java': %i[java-release-zip publish-maven]
@@ -406,46 +371,27 @@ def read_m2_user_pass
   return [user, pass]
 end
 
-task :prepare_release do
-    RELEASE_TARGETS = [
-        '//java/src/org/openqa/selenium:client-zip',
-        '//java/src/org/openqa/selenium/grid:server-zip',
-        '//java/src/org/openqa/selenium/grid:executable-grid',
-        '//dotnet/src/webdriver:webdriver-pack',
-        '//dotnet/src/webdriver:webdriver-strongnamed-pack',
-        '//dotnet/src/support:support-pack',
-        '//dotnet/src/support:support-strongnamed-pack',
-        '//javascript/node/selenium-webdriver:selenium-webdriver',
-        '//py:selenium-wheel',
-        '//py:selenium-sdist',
-    ]
+task :prepare_release, [:args] do |_task, arguments|
+  args = arguments[:args] ? [arguments[:args]] : %w[--config release]
 
-    RELEASE_TARGETS.each do |target|
-        Bazel::execute('build', ['--config', 'release'], target)
-    end
-    Bazel::execute('build', ['--stamp'], '//rb:selenium-webdriver')
-end
+  RELEASE_TARGETS = [
+    '//java/src/org/openqa/selenium:client-zip',
+    '//java/src/org/openqa/selenium/grid:server-zip',
+    '//java/src/org/openqa/selenium/grid:executable-grid',
+    '//dotnet/src/webdriver:webdriver-pack',
+    '//dotnet/src/webdriver:webdriver-strongnamed-pack',
+    '//dotnet/src/support:support-pack',
+    '//dotnet/src/support:support-strongnamed-pack',
+    '//javascript/node/selenium-webdriver:selenium-webdriver',
+    '//py:selenium-wheel',
+    '//py:selenium-sdist'
+  ]
 
-PYPI_ASSETS = [
-    "bazel-bin/py/selenium-#{python_version}-py3-none-any.whl",
-    "bazel-bin/py/selenium-#{python_version}.tar.gz"
-]
-
-task 'publish-pypi' do
-    PYPI_ASSETS.each do |asset|
-        sh "python3 -m twine upload #{asset}"
-    end
-end
-
-NUGET_RELEASE_ASSETS = [
-  "./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
-  "./bazel-bin/dotnet/src/support/Selenium.Support.#{dotnet_version}.nupkg"
-]
-
-task 'publish-nuget': '//dotnet:all' do
-  NUGET_RELEASE_ASSETS.each do |asset|
-    sh "dotnet nuget push #{asset} --api-key #{ENV['NUGET_API_KEY']} --source https://api.nuget.org/v3/index.json"
+  RELEASE_TARGETS.each do |target|
+    Bazel.execute('build', args, target)
   end
+  # Ruby cannot be executed with config remote or release
+  Bazel.execute('build', ['--stamp'], '//rb:selenium-webdriver')
 end
 
 task 'publish-maven': JAVA_RELEASE_TARGETS do
@@ -558,46 +504,180 @@ namespace :node do
     end
   end
 
-  task :build do
-    sh 'bazel build //javascript/node/selenium-webdriver'
+  desc 'Build Node npm package'
+  task :build, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : []
+    Bazel.execute('build', args, '//javascript/node/selenium-webdriver')
   end
 
-  task 'dry-run': [
-    'node:build'
-  ] do
-    sh 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.pack'
+  task :'dry-run' do
+    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.pack')
   end
 
-  task deploy: [
-    'node:build'
-  ] do
-    sh 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.publish'
+  desc 'Release Node npm package'
+  task :release do
+    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.publish')
   end
 
-  task :docs do
-    sh 'node javascript/node/gendocs.js'
-  end
+  desc 'Release Node npm package'
+  task deploy: :release
 end
 
+def py_version
+  File.foreach('py/BUILD.bazel') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+  end
+end
 namespace :py do
+  desc 'Build Python wheel and sdist with optional arguments'
+  task :build, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : []
+    Bazel.execute('build', args, '//py:selenium-wheel')
+    Bazel.execute('build', args, '//py:selenium-sdist')
+  end
+
+  desc 'Release Python wheel and sdist to pypi'
+  task :release, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
+    Rake::Task['py:build'].invoke(args)
+    sh "python3 -m twine upload `bazel-bin/py/selenium`-#{py_version}-py3-none-any.whl"
+    sh "python3 -m twine upload bazel-bin/py/selenium-#{py_version}.tar.gz"
+  end
+
+  desc 'Update generated Python files for local development'
   task :update do
     Bazel.execute('build', [], '//py:selenium')
 
-    FileUtils.rm_r("py/selenium/webdriver/common/devtools/", force: true)
+    FileUtils.rm_r('py/selenium/webdriver/common/devtools/', force: true)
     FileUtils.cp_r('bazel-bin/py/selenium/webdriver/.', 'py/selenium/webdriver', remove_destination: true)
   end
 
-  bazel :unit do
-    Bazel.execute('test', [], '//py:unit')
-  end
-
+  desc 'Generate Python documentation'
   task docs: :update do
     sh 'tox -c py/tox.ini -e docs', verbose: true
   end
 
+  desc 'Install Python wheel locally'
   task :install do
     Bazel.execute('build', [], '//py:selenium-wheel')
-    sh 'pip install bazel-bin/py/selenium-*.whl'
+    begin
+      sh 'pip install bazel-bin/py/selenium-*.whl'
+    rescue
+      puts 'Ensure that Python and pip are installed on your system'
+      raise
+    end
+  end
+end
+
+namespace :rb do
+  desc 'Generate ruby gems'
+  task :build, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : []
+    Bazel.execute('build', args, '//rb:selenium-webdriver')
+    Bazel.execute('build', args, '//rb:selenium-devtools')
+  end
+
+  desc 'Update generated Ruby files for local development'
+  task :update do
+    Bazel.execute('build', [], '@bundle//:bundle')
+    Rake::Task['rb:build'].invoke
+    Rake::Task['grid'].invoke
+  end
+
+  desc 'Push ruby gems to rubygems'
+  task :release, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
+    Bazel.execute('run', args, '//rb:selenium-webdriver')
+    Bazel.execute('run', args, '//rb:selenium-devtools')
+  end
+end
+
+namespace :dotnet do
+  def version
+    File.foreach('dotnet/selenium-dotnet-version.bzl') do |line|
+      return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+    end
+  end
+
+def dotnet_version
+  File.foreach('dotnet/selenium-dotnet-version.bzl') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+  end
+end
+namespace :dotnet do
+  desc 'Build nupkg files'
+  task :build, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : []
+    Bazel.execute('build', args, '//dotnet:all')
+  end
+
+  desc 'Create zipped assets for .NET for uploading to GitHub'
+  task :zip_assets, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
+    Rake::Task['dotnet:build'].invoke(args)
+    mkdir_p 'build/dist'
+    FileUtils.rm_f('build/dist/*dotnet*', force: true)
+
+    FileUtils.copy('bazel-bin/dotnet/release.zip', "build/dist/selenium-dotnet-#{dotnet_version}.zip")
+    FileUtils.chmod(666, "build/dist/selenium-dotnet-#{dotnet_version}.zip")
+    FileUtils.copy('bazel-bin/dotnet/strongnamed.zip', "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
+    FileUtils.chmod(666, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
+  end
+
+  desc 'Upload nupkg files to Nuget'
+  task :release, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
+    Rake::Task['dotnet:build'].invoke(args)
+    Rake::Task['dotnet:zip_assets'].invoke(args)
+
+    ["./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
+     "./bazel-bin/dotnet/src/support/Selenium.Support.#{dotnet_version}.nupkg"].each do |asset|
+      sh "dotnet nuget push #{asset} --api-key #{ENV.fetch('NUGET_API_KEY', nil)} --source https://api.nuget.org/v3/index.json"
+    end
+  end
+end
+
+namespace :java do
+  desc 'Build Java Client Jars'
+  task :build, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : []
+    Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-combined')
+  end
+
+  desc 'Build Grid Jar'
+  task :grid, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : []
+    Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:grid')
+  end
+
+  desc 'Package Java bindings and grid into releasable packages'
+  task :package, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : []
+    Rake::Task['java:build'].invoke(args)
+    Rake::Task['java-release-zip'].invoke
+  end
+
+  desc 'Deploy all jars to Maven'
+  task :release, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
+    Rake::Task['java:package'].invoke(args)
+    Rake::Task['publish-maven'].invoke
+  end
+
+  desc 'Install jars to local m2 directory'
+  task install: :'maven-install'
+end
+
+namespace :rust do
+  desc 'Build Selenium Manager'
+  task :build, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : []
+    Bazel.execute('build', args, '//rust:selenium-manager')
+  end
+
+  desc 'Update the rust lock files'
+  task :update do
+    sh 'CARGO_BAZEL_REPIN=true bazel sync --only=crates'
   end
 end
 
