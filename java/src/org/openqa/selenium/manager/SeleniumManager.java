@@ -258,8 +258,8 @@ public class SeleniumManager {
     List<String> arguments = new ArrayList<>();
     arguments.add("--browser");
     arguments.add(options.getBrowserName());
-    //    arguments.add("--language-binding");
-    //    arguments.add("java");
+    arguments.add("--language-binding");
+    arguments.add("java");
     arguments.add("--output");
     arguments.add("json");
 
