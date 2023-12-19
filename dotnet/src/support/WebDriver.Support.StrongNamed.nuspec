@@ -31,9 +31,9 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="lib/netstandard2.0/WebDriver.Support.dll" target="lib/netstandard2.0/WebDriver.Support.dll" />
-    <file src="lib/netstandard2.0/WebDriver.Support.pdb" target="lib/netstandard2.0/WebDriver.Support.pdb" />
-    <file src="lib/netstandard2.0/WebDriver.Support.xml" target="lib/netstandard2.0/WebDriver.Support.xml" />
+    <file src="lib/netstandard2.0/WebDriver.Support.StrongNamed.dll" target="lib/netstandard2.0/WebDriver.Support.StrongNamed.dll" />
+    <file src="lib/netstandard2.0/WebDriver.Support.StrongNamed.pdb" target="lib/netstandard2.0/WebDriver.Support.StrongNamed.pdb" />
+    <file src="lib/netstandard2.0/WebDriver.Support.StrongNamed.xml" target="lib/netstandard2.0/WebDriver.Support.StrongNamed.xml" />
 
     <file src="icon.png" />
   </files>
