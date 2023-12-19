@@ -481,6 +481,7 @@ task :authors do
 end
 
 namespace :copyright do
+  desc 'Update Copyright notices on all files in repo'
   task :update do
     Copyright.new.update(
       FileList['javascript/**/*.js'].exclude(
@@ -497,11 +498,18 @@ namespace :copyright do
       )
     )
     Copyright.new.update(FileList['javascript/**/*.tsx'])
-    Copyright.new(comment_characters: '#').update(FileList['py/**/*.py'])
+    Copyright.new(comment_characters: '#').update(FileList['py/**/*.py'].exclude(
+            'py/selenium/webdriver/common/bidi/cdp.py',
+            'py/generate.py',
+            'py/selenium/webdriver/common/devtools/**/*',
+            'py/venv/**/*')
+            )
     Copyright.new(comment_characters: '#', prefix: ["# frozen_string_literal: true\n", "\n"])
-      .update(FileList['rb/**/*.rb'])
+             .update(FileList['rb/**/*.rb'])
     Copyright.new.update(FileList['java/**/*.java'])
     Copyright.new.update(FileList['rust/**/*.rs'])
+
+    sh './scripts/format.sh'
   end
 end
 
