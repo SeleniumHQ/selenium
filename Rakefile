@@ -1,5 +1,6 @@
 # -*- mode: ruby -*-
 
+require 'English'
 $LOAD_PATH.unshift File.expand_path('.')
 
 require 'rake'
@@ -257,25 +258,21 @@ ie_generator.generate_type_mapping(
   out: 'cpp/iedriver/IEReturnTypes.h'
 )
 
+desc 'Generate Javadocs'
 task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
-  rm_rf 'build/javadoc'
-  mkdir_p 'build/javadoc'
+  rm_rf 'build/docs/api/java'
+  mkdir_p 'build/docs/api/java'
 
-  # Temporary hack, bazel is not outputting where things are so we need to do it manually.
-  # This will only work on Posix based OSes
-  Rake::Task['//java/src/org/openqa/selenium/grid:all-javadocs']
   out = 'bazel-bin/java/src/org/openqa/selenium/grid/all-javadocs.jar'
 
-  cmd = %{cd build/javadoc && jar xf "../../#{out}" 2>&1}
-  if SeleniumRake::Checks.windows?
-    cmd = cmd.gsub(/\//, '\\').gsub(/:/, ';')
-  end
+  cmd = %(cd build/docs/api/java && jar xf "../../../../#{out}" 2>&1)
+  cmd = cmd.tr('/', '\\').tr(':', ';') if SeleniumRake::Checks.windows?
 
   ok = system(cmd)
-  ok or raise "could not unpack javadocs"
+  ok or raise 'could not unpack javadocs'
 
-  File.open('build/javadoc/stylesheet.css', 'a') { |file|
-    file.write(<<~EOF
+  File.open('build/docs/api/java/stylesheet.css', 'a') do |file|
+    file.write(<<~STYLE
       /* Custom selenium-specific styling */
       .blink {
         animation: 2s cubic-bezier(0.5, 0, 0.85, 0.85) infinite blink;
@@ -287,9 +284,9 @@ task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
         }
       }
 
-    EOF
-    )
-  }
+    STYLE
+              )
+  end
 end
 
 file 'cpp/iedriver/sizzle.h' => ['//third_party/js/sizzle:sizzle:header'] do
@@ -553,8 +550,15 @@ namespace :py do
   end
 
   desc 'Generate Python documentation'
-  task docs: :update do
-    sh 'tox -c py/tox.ini -e docs', verbose: true
+  task :docs do
+    FileUtils.rm_r('build/docs/api/py/', force: true)
+    FileUtils.rm_r('build/docs/doctrees/', force: true)
+    begin
+      sh 'tox -c py/tox.ini -e docs', verbose: true
+    rescue StandardError
+      puts 'Ensure that tox is installed on your system'
+      raise
+    end
   end
 
   desc 'Install Python wheel locally'
@@ -562,7 +566,7 @@ namespace :py do
     Bazel.execute('build', [], '//py:selenium-wheel')
     begin
       sh 'pip install bazel-bin/py/selenium-*.whl'
-    rescue
+    rescue StandardError
       puts 'Ensure that Python and pip are installed on your system'
       raise
     end
@@ -589,6 +593,13 @@ namespace :rb do
     args = arguments[:args] ? [arguments[:args]] : ['--stamp']
     Bazel.execute('run', args, '//rb:selenium-webdriver')
     Bazel.execute('run', args, '//rb:selenium-devtools')
+  end
+
+  desc 'Generate Ruby documentation'
+  task :docs do
+    FileUtils.rm_r('build/docs/api/rb/', force: true)
+    Bazel.execute('run', [], '//rb:docs')
+    FileUtils.cp_r('bazel-bin/rb/docs.rb.sh.runfiles/selenium/docs/api/rb/.', 'build/docs/api/rb')
   end
 end
 
@@ -635,6 +646,29 @@ namespace :dotnet do
       sh "dotnet nuget push #{asset} --api-key #{ENV.fetch('NUGET_API_KEY', nil)} --source https://api.nuget.org/v3/index.json"
     end
   end
+
+  desc 'Generate .NET documentation'
+  task :docs do
+    begin
+      sh 'dotnet tool update -g docfx'
+    rescue StandardError
+      puts 'Please ensure that .NET SDK is installed.'
+      raise
+    end
+
+    begin
+      sh 'docfx dotnet/docs/docfx.json'
+    rescue StandardError
+      case $CHILD_STATUS.exitstatus
+      when 127
+        raise 'Ensure the dotnet/tools directory is added to your PATH environment variable (e.g., `~/.dotnet/tools`)'
+      when 255
+        puts 'Build failed, likely because of DevTools namespacing. This is ok; continuing'
+      else
+        raise
+      end
+    end
+  end
 end
 
 namespace :java do
@@ -666,6 +700,9 @@ namespace :java do
 
   desc 'Install jars to local m2 directory'
   task install: :'maven-install'
+
+  desc 'Generate Java documentation'
+  task docs: :javadocs
 end
 
 namespace :rust do
@@ -678,6 +715,16 @@ namespace :rust do
   desc 'Update the rust lock files'
   task :update do
     sh 'CARGO_BAZEL_REPIN=true bazel sync --only=crates'
+  end
+end
+
+namespace :all do
+  desc 'Update all API Documentation'
+  task :docs do
+    Rake::Task['java:docs'].invoke
+    Rake::Task['py:docs'].invoke
+    Rake::Task['rb:docs'].invoke
+    Rake::Task['dotnet:docs'].invoke
   end
 end
 
