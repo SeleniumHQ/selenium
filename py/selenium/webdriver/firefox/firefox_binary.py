@@ -19,7 +19,8 @@
 import os
 import time
 from platform import system
-from subprocess import STDOUT, DEVNULL
+from subprocess import DEVNULL
+from subprocess import STDOUT
 from subprocess import Popen
 
 from selenium.common.exceptions import WebDriverException
