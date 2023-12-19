@@ -36,7 +36,7 @@ test.suite(
     beforeEach(async function () {
       driver = await env
         .builder()
-        .setChromeOptions(new chrome.Options().headless())
+        .setChromeOptions(new chrome.Options().addArguments('-headless'))
         .build()
     })
     afterEach(async () => await driver.quit())

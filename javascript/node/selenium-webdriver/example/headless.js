@@ -41,10 +41,10 @@ const height = 480
 let driver = new Builder()
   .forBrowser('chrome')
   .setChromeOptions(
-    new chrome.Options().headless().windowSize({ width, height })
+    new chrome.Options().addArguments('-headless').windowSize({ width, height })
   )
   .setFirefoxOptions(
-    new firefox.Options().headless().windowSize({ width, height })
+    new firefox.Options().addArguments('-headless').windowSize({ width, height })
   )
   .build()
 

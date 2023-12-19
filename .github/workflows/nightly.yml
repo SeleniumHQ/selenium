@@ -57,5 +57,5 @@ jobs:
       cache-key: grid-nightly
       run: |
         echo build --stamp >>.bazelrc.local
-        ./go prep-release-zip
+        ./go java-release-zip
       nightly-release-files: build/dist/*.*
