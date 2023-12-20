@@ -2,7 +2,9 @@
 
 require 'English'
 require 'open3'
-require 'Rake'
+require 'rake'
+require 'io/wait'
+require_relative 'selenium_rake/checks'
 
 module Bazel
   def self.execute(kind, args, target, &block)
