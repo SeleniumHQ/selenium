@@ -15,26 +15,10 @@ generously donated thousands of hours in code development and upkeep.
 
 Selenium's source code is made available under the [Apache 2.0 license](https://github.com/SeleniumHQ/selenium/blob/trunk/LICENSE).
 
-
-## Documenting
-
-Please read our [User Manual](https://selenium.dev/documentation/) for detailed examples and descriptions, and if you
+This README is for developers interested in contributing to the project.
+For people looking to get started using Selenium, please check out
+our [User Manual](https://selenium.dev/documentation/) for detailed examples and descriptions, and if you
 get stuck, there are several ways to [Get Help](https://www.selenium.dev/support/).
-
-API documentation can be found here:
-
-* [C#](https://seleniumhq.github.io/selenium/docs/api/dotnet/)
-* [JavaScript](https://seleniumhq.github.io/selenium/docs/api/javascript/)
-* [Java](https://seleniumhq.github.io/selenium/docs/api/java/index.html)
-* [Python](https://seleniumhq.github.io/selenium/docs/api/py/)
-* [Ruby](https://seleniumhq.github.io/selenium/docs/api/rb/)
-
-To update API documentation for a specific language: `./generate_api_docs.sh <language>`
-
-To update all documentation: `./generate_api_docs.sh all`
-
-Note that JavaScript generation is [currently broken](https://github.com/SeleniumHQ/selenium/issues/10185).
-
 
 ## Contributing
 
@@ -44,15 +28,14 @@ before submitting your pull requests.
 
 ## Installing
 
-This will walk you through creating your own local dev environment to help contribute to Selenium project.
-If you are looking at getting started using selenium check out our [Getting Started Guide](https://www.selenium.dev/documentation/webdriver/getting_started/).
+These are the requirements to cereate your own local dev environment to contribute to Selenium.
 
 ### All Platforms
 * [Bazelisk](https://github.com/bazelbuild/bazelisk), a Bazel wrapper that automatically downloads
   the version of Bazel specified in `.bazelversion` file and transparently passes through all
   command-line arguments to the real Bazel binary.
 * Java JDK version 17 or greater (e.g., [Java 17 Temurin](https://adoptium.net/temurin/releases/?version=17))
-  * Set `JAVA_HOME` environment variable to location of javac.exe
+  * Set `JAVA_HOME` environment variable to location of Java executable (the JDK not the JRE)
   * To test this, try running the command `javac`. This command won't exist if you only have the JRE
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
 
@@ -62,7 +45,7 @@ If you are looking at getting started using selenium check out our [Getting Star
   to make sure this isn't required in the long run.
 
 ### Windows
-Several years ago Jim Evans published a great article on
+Several years ago [Jim Evans](https://www.linkedin.com/in/jimevansmusic/) published a great article on
 [Setting Up a Windows Development Environment for the Selenium .NET Language Bindings](https://jimevansmusic.blogspot.com/2020/04/setting-up-windows-development.html);
 This article is out of date, but it includes more detailed descriptions and screenshots that some people might find useful.
 
@@ -107,7 +90,7 @@ This script will ensure a complete ready to execute developer environment.
 
 </details>
 
-### Alternate Dev Environments
+### Alternative Dev Environments
 
 If you want to contribute to the project, but do not want to set up your own local dev environment,
 there are two alternatives available.
@@ -152,15 +135,15 @@ for various shortcuts and all the ways to build multiple targets, which Selenium
 
 To build everything for a given language:
 ```shell
-bazel build <language>/...
+bazel build //<language>/...
 ```
 
-To build just the grid (the log will show where the output jar is located):
+To build just the grid there is an alias name to use (the log will show where the output jar is located):
 ```sh
 bazel build grid
 ```
 
-To make things more simple, building each of the bindings is now wrapped with `./go`
+To make things more simple, building each of the bindings is available with this `./go` command
 ```shell
 ./go <language>:build
 ```
@@ -225,7 +208,6 @@ To keep `Carbo.Bazel.lock` synchronized with `Cargo.lock`, run:
 ```shell
 CARGO_BAZEL_REPIN=true bazel sync --only=crates
 ```
-
 
 ### Tour of Repo
 
@@ -363,6 +345,11 @@ bazel test //javascript/node/selenium-webdriver:tests
 ```
 
 You can use `--test_env` to pass in the browser name as `SELENIUM_BROWSER`.
+
+```sh
+bazel test //javascript/node/selenium-webdriver:tests --test_env=SELENIUM_BROWSER=firefox
+```
+
 </details>
 
 ### Python
@@ -504,6 +491,24 @@ functionality:
 bazel test --run_under="xvfb-run -a" //java/...
 ```
 </details>
+
+
+## Documenting
+
+API documentation can be found here:
+
+* [C#](https://seleniumhq.github.io/selenium/docs/api/dotnet/)
+* [JavaScript](https://seleniumhq.github.io/selenium/docs/api/javascript/)
+* [Java](https://seleniumhq.github.io/selenium/docs/api/java/index.html)
+* [Python](https://seleniumhq.github.io/selenium/docs/api/py/)
+* [Ruby](https://seleniumhq.github.io/selenium/docs/api/rb/)
+
+To update API documentation for a specific language: `./generate_api_docs.sh <language>`
+
+To update all documentation: `./generate_api_docs.sh all`
+
+Note that JavaScript generation is [currently broken](https://github.com/SeleniumHQ/selenium/issues/10185).
+
 
 ## Releasing
 
