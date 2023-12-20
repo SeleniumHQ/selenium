@@ -1,4 +1,4 @@
-# -*- mode: ruby -*-
+# frozen_string_literal: true
 
 require 'English'
 $LOAD_PATH.unshift File.expand_path('.')
@@ -46,7 +46,7 @@ require 'rake_tasks/bazel'
 require 'rake_tasks/copyright'
 require 'rake_tasks/python'
 
-$DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT ? true : false
+$DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT
 $DEBUG = true if ENV['debug'] == 'true'
 
 verbose($DEBUG)
@@ -83,7 +83,7 @@ CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
 # crazy_fun.create_tasks(Dir['**/build.desc'])
 
 # If it looks like a bazel target, build it with bazel
-rule /\/\/.*/ do |task|
+rule(%r{//.*}) do |task|
   task.out = Bazel.execute('build', %w[], task.name)
 end
 
@@ -118,14 +118,14 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/support:support.publish
   //java/src/org/openqa/selenium:client-combined.publish
   //java/src/org/openqa/selenium:core.publish
-]
+].freeze
 
 # Notice that because we're using rake, anything you can do in a normal rake
 # build can also be done here. For example, here we set the default task
 task default: [:grid]
 
 task all: [
-  :"selenium-java",
+  :'selenium-java',
   '//java/test/org/openqa/selenium/environment:webserver'
 ]
 
@@ -203,15 +203,19 @@ task test_support: [
   '//java/test/org/openqa/selenium/support:large-tests:run'
 ]
 
-task test_java_webdriver: %i[
-  test_htmlunit
-  test_firefox
-  test_remote_server
-]
-
-task test_java_webdriver: [:test_ie] if SeleniumRake::Checks.windows?
-task test_java_webdriver: [:test_chrome] if SeleniumRake::Checks.chrome?
-task test_java_webdriver: [:test_edge] if SeleniumRake::Checks.edge?
+task test_java_webdriver do
+  if SeleniumRake::Checks.windows?
+    Rake::Task['test_ie'].invoke
+  elsif SeleniumRake::Checks.chrome?
+    Rake::Task['test_chrome'].invoke
+  elsif SeleniumRake::Checks.edge?
+    Rake::Task['test_edge'].invoke
+  else
+    Rake::Task['test_htmlunit'].invoke
+    Rake::Task['test_firefox'].invoke
+    Rake::Task['test_remote_server'].invoke
+  end
+end
 
 task test_java: [
   '//java/test/org/openqa/selenium/atoms:test:run',
@@ -234,9 +238,16 @@ task test_java_small_tests: [
   '//java/test/org/openqa/selenium/remote/server/log:test:run'
 ]
 
+task :test do
+  if SeleniumRake::Checks.python?
+    Rake::Task['test_py'].invoke
+  else
+    Rake::Task['test_javascript'].invoke
+    Rake::Task['test_java'].invoke
+  end
+end
+
 task test_py: [:py_prep_for_install_release, 'py:marionette_test']
-task test: %i[test_javascript test_java]
-task test: [:test_py] if SeleniumRake::Checks.python?
 task build: %i[all firefox remote selenium tests]
 
 desc 'Clean build artifacts.'
@@ -321,6 +332,7 @@ task ios_driver: [
   '//javascript/webdriver/atoms/fragments:get_location_in_view:ios'
 ]
 
+desc 'Create zipped assets for Java for uploading to GitHub'
 task :'java-release-zip' do
   Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium:client-zip')
   Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium/grid:server-zip')
@@ -328,15 +340,15 @@ task :'java-release-zip' do
   mkdir_p 'build/dist'
   FileUtils.rm_f('build/dist/**/*.{server,java}*', force: true)
 
-    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip',
-      "build/dist/selenium-server-#{java_version}.zip")
-    FileUtils.chmod(666, "build/dist/selenium-server-#{java_version}.zip")
-    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/client-zip.zip',
-      "build/dist/selenium-java-#{java_version}.zip")
-    FileUtils.chmod(666, "build/dist/selenium-java-#{java_version}.zip")
-    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/selenium',
-      "build/dist/selenium-server-#{java_version}.jar")
-    FileUtils.chmod(777, "build/dist/selenium-server-#{java_version}.jar")
+  FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip',
+                 "build/dist/selenium-server-#{java_version}.zip")
+  FileUtils.chmod(666, "build/dist/selenium-server-#{java_version}.zip")
+  FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/client-zip.zip',
+                 "build/dist/selenium-java-#{java_version}.zip")
+  FileUtils.chmod(666, "build/dist/selenium-java-#{java_version}.zip")
+  FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/selenium',
+                 "build/dist/selenium-server-#{java_version}.jar")
+  FileUtils.chmod(777, "build/dist/selenium-server-#{java_version}.jar")
 end
 
 task 'release-java': %i[java-release-zip publish-maven]
@@ -351,52 +363,79 @@ def read_m2_user_pass
     pass = ENV['SEL_M2_PASS']
     return [user, pass]
   end
-  settings = File.read(ENV['HOME'] + '/.m2/settings.xml')
+  settings = File.read("#{Dir.home}/.m2/settings.xml")
   found_section = false
   settings.each_line do |line|
     if !found_section
       found_section = line.include? '<id>sonatype-nexus-staging</id>'
-    else
-      if (user.nil?) && line.include?('<username>')
-        user = line.split('<username>')[1].split('</')[0]
-      elsif (pass.nil?) && line.include?('<password>')
-        pass = line.split('<password>')[1].split('</')[0]
-        end
+    elsif user.nil? && line.include?('<username>')
+      user = line.split('<username>')[1].split('</')[0]
+    elsif pass.nil? && line.include?('<password>')
+      pass = line.split('<password>')[1].split('</')[0]
     end
   end
 
-  return [user, pass]
+  [user, pass]
 end
 
+desc 'Publish all Java jars to Maven as stable release'
 task 'publish-maven': JAVA_RELEASE_TARGETS do
   creds = read_m2_user_pass
   JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
+    Bazel.execute('run',
+                  ['--stamp',
+                   '--define',
+                   'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2',
+                   '--define',
+                   "maven_user=#{creds[0]}",
+                   '--define',
+                   "maven_password=#{creds[1]}",
+                   '--define',
+                   'gpg_sign=true'],
+                  p)
   end
 end
 
+desc 'Publish all Java jars to Maven as nightly release'
 task 'publish-maven-snapshot': JAVA_RELEASE_TARGETS do
   creds = read_m2_user_pass
   if java_version.end_with?('-SNAPSHOT')
     JAVA_RELEASE_TARGETS.each do |p|
-      Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/content/repositories/snapshots', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=false'], p)
+      Bazel.execute('run',
+                    ['--stamp',
+                     '--define',
+                     'maven_repo=https://oss.sonatype.org/content/repositories/snapshots',
+                     '--define',
+                     "maven_user=#{creds[0]}",
+                     '--define',
+                     "maven_password=#{creds[1]}",
+                     '--define',
+                     'gpg_sign=false'],
+                    p)
     end
   else
     puts 'No SNAPSHOT version configured. Targets will not be pushed to the snapshot repo in SonaType.'
   end
 end
 
+desc 'Install jars to local m2 directory'
 task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository", '--define', 'gpg_sign=false'], p)
+    Bazel.execute('run',
+                  ['--stamp',
+                   '--define',
+                   "maven_repo=file://#{Dir.home}/.m2/repository",
+                   '--define',
+                   'gpg_sign=false'],
+                  p)
   end
 end
 
 desc 'Build the selenium client jars'
 task 'selenium-java' => '//java/src/org/openqa/selenium:client-combined'
 
+desc 'Update AUTHORS file'
 task :authors do
-  puts 'Generating AUTHORS file'
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
 end
 
@@ -419,11 +458,11 @@ namespace :copyright do
     )
     Copyright.new.update(FileList['javascript/**/*.tsx'])
     Copyright.new(comment_characters: '#').update(FileList['py/**/*.py'].exclude(
-            'py/selenium/webdriver/common/bidi/cdp.py',
-            'py/generate.py',
-            'py/selenium/webdriver/common/devtools/**/*',
-            'py/venv/**/*')
-            )
+                                                    'py/selenium/webdriver/common/bidi/cdp.py',
+                                                    'py/generate.py',
+                                                    'py/selenium/webdriver/common/devtools/**/*',
+                                                    'py/venv/**/*'
+                                                  ))
     Copyright.new(comment_characters: '#', prefix: ["# frozen_string_literal: true\n", "\n"])
              .update(FileList['rb/**/*.rb'])
     Copyright.new.update(FileList['java/**/*.java'])
@@ -447,7 +486,7 @@ namespace :side do
     File.open(File.join(baseDir, name), 'w') do |f|
       f << "// GENERATED CODE - DO NOT EDIT\n"
       f << 'module.exports = '
-      f << IO.read(atom).strip
+      f << File.read(atom).strip
       f << ";\n"
     end
   end
@@ -465,14 +504,14 @@ namespace :node do
     mkdir_p base_dir
 
     ['bazel-bin/javascript/atoms/fragments/is-displayed.js',
-      'bazel-bin/javascript/webdriver/atoms/get-attribute.js',
-      'bazel-bin/javascript/atoms/fragments/find-elements.js'].each do |atom|
+     'bazel-bin/javascript/webdriver/atoms/get-attribute.js',
+     'bazel-bin/javascript/atoms/fragments/find-elements.js'].each do |atom|
       name = File.basename(atom)
       puts "Generating #{atom} as #{name}"
       File.open(File.join(base_dir, name), 'w') do |f|
         f << "// GENERATED CODE - DO NOT EDIT\n"
         f << 'module.exports = '
-        f << IO.read(atom).strip
+        f << File.read(atom).strip
         f << ";\n"
       end
     end
@@ -579,13 +618,6 @@ namespace :rb do
     FileUtils.cp_r('bazel-bin/rb/docs.rb.sh.runfiles/selenium/docs/api/rb/.', 'build/docs/api/rb')
   end
 end
-
-namespace :dotnet do
-  def version
-    File.foreach('dotnet/selenium-dotnet-version.bzl') do |line|
-      return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
-    end
-  end
 
 def dotnet_version
   File.foreach('dotnet/selenium-dotnet-version.bzl') do |line|
@@ -727,7 +759,5 @@ namespace :all do
 end
 
 at_exit do
-  if File.exist?('.git') && !SeleniumRake::Checks.windows?
-    system 'sh', '.git-fixfiles'
-  end
+  system 'sh', '.git-fixfiles' if File.exist?('.git') && !SeleniumRake::Checks.windows?
 end
