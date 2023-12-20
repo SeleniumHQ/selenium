@@ -31,6 +31,10 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="**" target="." exclude="obj\**;*.csproj;*.config"/>
+    <file src="lib/netstandard2.0/WebDriver.Support.StrongNamed.dll" target="lib/netstandard2.0/WebDriver.Support.StrongNamed.dll" />
+    <file src="lib/netstandard2.0/WebDriver.Support.StrongNamed.pdb" target="lib/netstandard2.0/WebDriver.Support.StrongNamed.pdb" />
+    <file src="lib/netstandard2.0/WebDriver.Support.StrongNamed.xml" target="lib/netstandard2.0/WebDriver.Support.StrongNamed.xml" />
+
+    <file src="icon.png" />
   </files>
 </package>
