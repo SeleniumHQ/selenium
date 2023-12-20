@@ -153,6 +153,7 @@ To make things more simple, building each of the bindings is available with this
 
 ### Java
 
+#### IntelliJ
 Most of the team uses Intellij for their day-to-day editing. If you're
 working in IntelliJ, then we highly recommend installing the [Bazel IJ
 plugin](https://plugins.jetbrains.com/plugin/8609-bazel) which is documented on
@@ -161,13 +162,45 @@ plugin](https://plugins.jetbrains.com/plugin/8609-bazel) which is documented on
 To use Selenium with the IntelliJ Bazel plugin, import the repository as a Bazel project, and select the project
 view file from the [scripts](scripts) directory. `ij.bazelproject` for Mac/Linux and `ij-win.bazelproject` for Windows.
 
+#### Linting
 We also use Google Java Format for linting, so using the Google Java Formatter Plugin is useful;
-there are a few steps to get it working, so read their [configuration documentation](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config)
+there are a few steps to get it working, so read their [configuration documentation](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config). 
+There is also an auto-formatting script that can be run: `./scripts/format.sh`
 
-To install Selenium locally based on a specific commit, you can use:
+#### Local Installation
+
+While Selenium is not built with Maven, you can build and install the Selenium pieces
+for Maven to use locally by deploying to your local maven repository (`~/.m2/repository`), using:
 ```shell
 ./go java:install
 ```
+
+#### Updating Dependencies
+
+The coordinates (_groupId_:_artifactId_:_version_) of the Java dependencies
+are defined in the file [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
+The process to modify these dependencies is the following:
+
+1. (Optional) If we want to detect the dependencies which are not updated,
+   we can use the following command for automatic discovery:
+
+    ```sh
+    bazel run @maven//:outdated
+    ```
+
+2. Modify [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
+   For instance, we can bump the version of a given artifact detected in the step before.
+
+3. Repin dependencies. This process is required to update the file [maven_install.json](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_install.json),
+   which is used to manage the Maven dependencies tree (see [rules_jvm_external](https://github.com/bazelbuild/rules_jvm_external) for further details). The command to carry out this step is the following:
+
+    ```sh
+    RULES_JVM_EXTERNAL_REPIN=1 bazel run @unpinned_maven//:pin
+    ```
+
+4. (Optional) If we use IntelliJ with the Bazel plugin, we need to synchronize
+   our project. To that aim, we click on _Bazel_ &rarr; _Sync_ &rarr; _Sync Project
+   with BUILD Files_.
 
 ### Python
 
@@ -208,72 +241,6 @@ To keep `Carbo.Bazel.lock` synchronized with `Cargo.lock`, run:
 ```shell
 CARGO_BAZEL_REPIN=true bazel sync --only=crates
 ```
-
-### Tour of Repo
-
-The codebase is generally segmented around the languages used to
-write the component. Selenium makes extensive use of JavaScript, so
-let's start there. First of all, start the development server:
-
-```sh
-bazel run debug-server
-```
-
-Now, navigate to
-[http://localhost:2310/javascript](http://localhost:2310/javascript).
-You'll find the contents of the `javascript/` directory being shown.
-We use the [Closure Library](https://developers.google.com/closure/library/)
-for developing much of the JavaScript, so now navigate to
-[http://localhost:2310/javascript/atoms/test](http://localhost:2310/javascript/atoms/test).
-
-The tests in this directory are normal HTML files with names ending
-with `_test.html`.  Click on one to load the page and run the test.
-
-### Maven _per se_
-
-Selenium is not built with Maven. It is built with `bazel`,
-though that is invoked with `go` as outlined above,
-so you do not have to learn too much about that.
-
-That said, it is possible to relatively quickly build Selenium pieces
-for Maven to use. You are only really going to want to do this when
-you are testing the cutting-edge of Selenium development (which we
-welcome) against your application. Here is the quickest way to build
-and deploy into your local maven repository (`~/.m2/repository`), while
-skipping Selenium's own tests.
-
-```sh
-./go maven-install
-```
-
-The maven jars should now be in your local `~/.m2/repository`.
-
-### Updating Java dependencies
-
-The coordinates (_groupId_:_artifactId_:_version_) of the Java dependencies
-are defined in the file [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
-The process to modify these dependencies is the following:
-
-1. (Optional) If we want to detect the dependencies which are not updated,
-   we can use the following command for automatic discovery:
-
-    ```sh
-    bazel run @maven//:outdated
-    ```
-
-2. Modify [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
-   For instance, we can bump the version of a given artifact detected in the step before.
-
-3. Repin dependencies. This process is required to update the file [maven_install.json](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_install.json),
-   which is used to manage the Maven dependencies tree (see [rules_jvm_external](https://github.com/bazelbuild/rules_jvm_external) for further details). The command to carry out this step is the following:
-
-    ```sh
-    RULES_JVM_EXTERNAL_REPIN=1 bazel run @unpinned_maven//:pin
-    ```
-
-4. (Optional) If we use IntelliJ with the Bazel plugin, we need to synchronize
-   our project. To that aim, we click on _Bazel_ &rarr; _Sync_ &rarr; _Sync Project
-   with BUILD Files_.
 
 
 ## Testing
