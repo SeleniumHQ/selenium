@@ -90,7 +90,7 @@ public abstract class TemplateGridCommand implements CliCommand {
               .filter(ParameterDescription::isAssigned)
               .map(ParameterDescription::getLongestName)
               .collect(Collectors.toSet());
-      if (cliArgs.size() > 0) {
+      if (!cliArgs.isEmpty()) {
         allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags, cliArgs, true)));
       }
 
