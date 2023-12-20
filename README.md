@@ -15,13 +15,13 @@ generously donated thousands of hours in code development and upkeep.
 
 Selenium's source code is made available under the [Apache 2.0 license](https://github.com/SeleniumHQ/selenium/blob/trunk/LICENSE).
 
-## Documentation
 
-Narrative documentation:
+## Documenting
 
-* [User Manual](https://selenium.dev/documentation/)
+Please read our [User Manual](https://selenium.dev/documentation/) for detailed examples and descriptions, and if you
+get stuck, there are several ways to [Get Help](https://www.selenium.dev/support/).
 
-API documentation:
+API documentation can be found here:
 
 * [C#](https://seleniumhq.github.io/selenium/docs/api/dotnet/)
 * [JavaScript](https://seleniumhq.github.io/selenium/docs/api/javascript/)
@@ -29,245 +29,180 @@ API documentation:
 * [Python](https://seleniumhq.github.io/selenium/docs/api/py/)
 * [Ruby](https://seleniumhq.github.io/selenium/docs/api/rb/)
 
-## Pull Requests
+To update API documentation for a specific language: `./generate_api_docs.sh <language>`
+
+To update all documentation: `./generate_api_docs.sh all`
+
+Note that JavaScript generation is [currently broken](https://github.com/SeleniumHQ/selenium/issues/10185).
+
+
+## Contributing
 
 Please read [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/trunk/CONTRIBUTING.md)
 before submitting your pull requests.
 
-## Requirements
 
+## Installing
+
+This will walk you through creating your own local dev environment to help contribute to Selenium project.
+If you are looking at getting started using selenium check out our [Getting Started Guide](https://www.selenium.dev/documentation/webdriver/getting_started/).
+
+### All Platforms
 * [Bazelisk](https://github.com/bazelbuild/bazelisk), a Bazel wrapper that automatically downloads
   the version of Bazel specified in `.bazelversion` file and transparently passes through all
   command-line arguments to the real Bazel binary.
-* Java JDK version 11 or greater (e.g., [Java 11 OpenJDK](https://openjdk.java.net/))
-* `java` and `jar` on the `$PATH` (make sure you use `java` executable from JDK but not JRE).
+* Java JDK version 17 or greater (e.g., [Java 17 Temurin](https://adoptium.net/temurin/releases/?version=17))
+  * Set `JAVA_HOME` environment variable to location of javac.exe
   * To test this, try running the command `javac`. This command won't exist if you only have the JRE
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
-* macOS users:
-  * Install the latest version of Xcode including the command-line tools. This command should work `xcode-select --install`
-  * Apple Silicon Macs should add `build --host_platform=//:rosetta` to their `.bazelrc.local` file. We are working
+
+### MacOS
+  * Xcode including the command-line tools. Install the latest version using: `xcode-select --install`
+  * Rosetta for Apple Silicon Macs. Add `build --host_platform=//:rosetta` to the `.bazelrc.local` file. We are working
   to make sure this isn't required in the long run.
-* Windows users:
-  *  Latest version of [Visual Studio](https://www.visualstudio.com/) with command line tools and build tools installed
-  * A setup guide with detailed explanations can be seen on Jim Evan's [post](http://jimevansmusic.blogspot.com/2020/04/setting-up-windows-development.html)
-  * An up-to-date list of instructions for Windows 11, including avoiding issues with the latest versions of Visual Studio, can be seen in this [gist](https://gist.github.com/titusfortner/aec103e9b02709f771497fdb8b21154c)
 
-### Internet Explorer Driver
+### Windows
+Several years ago Jim Evans published a great article on
+[Setting Up a Windows Development Environment for the Selenium .NET Language Bindings](https://jimevansmusic.blogspot.com/2020/04/setting-up-windows-development.html);
+This article is out of date, but it includes more detailed descriptions and screenshots that some people might find useful.
 
-If you plan to compile the
-[IE driver](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver),
-you also need:
+<details>
+<summary>Click to see Current Windows Setup Requirements</summary>
 
-* [Visual Studio 2022](https://www.visualstudio.com/)
-* 32 and 64-bit cross compilers
+#### Option 1: Automatic Installation from Scratch
+This script will ensure a complete ready to execute developer environment. 
+(nothing is installed or set that is already present unless otherwise prompted) 
 
-The build will work on any platform, but the tests for IE will be
-skipped silently if you are not building on Windows.
+1. Open Powershell as an Administrator
+2. Execute: `Set-ExecutionPolicy Bypass -Scope Process -Force` to allow running the script in the process
+3. Navigate to the directory you want to clone Selenium in, or the parent directory of an already cloned Selenium repo 
+4. Download and execute this script in the powershell terminal: [scripts/dev-environment-setup.ps1]`
 
-## Building
+#### Option 2: Manual Installation
+1. Allow running scripts in Selenium in general:
+    ```
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+    ```
+2. Enable Developer Mode:
+    ```
+    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
+    ```
+3. Install [MSYS2](https://www.msys2.org/), which is an alternative shell environment that provides Unix-like commands
+    * Add bin directory to `PATH` environment variable (e.g., `"C:\tools\msys64\usr\bin"`)
+    * Add `bash.exe` location as the `BAZEL_SH` environment variable (e.g., `"C:\tools\msys64\usr\bin\bash.exe"`)
+4. Install the latest version of [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/)
+    * Use the visual studio installer to modify and add the "Desktop development with C++" Workload
+    * Add Visual C++ build tools installation directory location to `BAZEL_VC` environment variable (e.g. `"C:\Program Files\Microsoft Visual Studio\2022\Community\VC"`)
+    * Add Visual C++ Build tools version to `BAZEL_VC_FULL_VERSION` environment variable (this can be discovered from the directory name in `"$BAZEL_VC\Tools\MSVC\<BAZEL_VC_FULL_VERSION>"`)
+5. Add support for long file names (bazel has a lot of nested directories that can exceed default limits in Windows)
+    * Enable Long Paths support with these 2 registry commands:
+    ```shell
+    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Command Processor" /t REG_DWORD /f /v "DisableUNCCheck" /d "1"
+    reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem" /t REG_DWORD /f /v "LongPathsEnabled" /d "1"
+    ```
+    * Allow Bazel to create short name versions of long file paths: `fsutil 8dot3name set 0`
+    * Set bazel output to `C:/tmp` instead of nested inside project directory:
+        * Create a file `selenium/.bazelrc.windows.local`
+        * Add "startup --output_user_root=C:/tmp" to the file
 
-### Contribute with GitPod
+</details>
 
-GitPod provides a ready to use environment to develop.
+### Alternate Dev Environments
+
+If you want to contribute to the project, but do not want to set up your own local dev environment,
+there are two alternatives available.
+
+#### Using GitPod
+
+Rather than creating your own local dev environment, GitPod provides a ready to use environment for you.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/SeleniumHQ/selenium)
 
-To configure and use your local machine, keep reading.
+#### Using Docker Image
 
-### Bazel
+You can also build a Docker image suitable
+for building and testing Selenium using the Dockerfile in the
+[dev image](scripts/dev-image/Dockerfile) directory.
 
-[Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency
-downloads, generates the Selenium binaries, executes tests, and does it all rather quickly.
 
-More detailed instructions for getting Bazel running are below, but if you can successfully get
-the java and javascript folders to build without errors, you should be confident that you have the
-correct binaries on your system.
+## Building
 
-### Before Building
+Selenium is built using a common build tool called [Bazel](https://bazel.build/), to 
+allow us to easily manage dependency downloads, generate required binaries, build and release packages, and execute tests;
+all in a fast, efficient manner. For a more detailed discussion, read Simon Stewart's article on [Building Selenium](https://www.selenium.dev/blog/2023/building-selenium/)
 
-Ensure that you have Firefox installed and the latest
-[`geckodriver`](https://github.com/mozilla/geckodriver/releases/) on your `$PATH`.
-You may have to update this from time to time.
+Often we wrap Bazel commands with our custom [Rake](http://rake.rubyforge.org/) wrapper. These are run with the `./go` command.
 
-### Common Build Targets
+The common Bazel commands are:
+* `bazel build` — evaluates dependencies, compiles source files and generates output files for the specified target.
+It's used to create executable binaries, libraries, or other artifacts.
+* `bazel run` — builds the target and then executes it. 
+It's typically used for targets that produce executable binaries.
+* `bazel test` — builds and runs the target in a context with additional testing functionality
+* `bazel query` — identifies available targets for the provided path.
 
-#### Java
+Each module that can be built is defined in a `BUILD.bazel` file. To execute the module you refer to it starting with a 
+`//`, then include the relative path to the file that defines it, then `:`, then the name of the target.
+For example, the target to build the Grid is named `executable-grid` and it is
+defined in the `'selenium/java/src/org/openqa/selenium/grid/BAZEL.build'` file.
+So to build the grid you would run: `bazel build //java/src/org/openqa/selenium/grid:executable-grid`.
 
-<details>
-<summary>Click to see Java Build Steps</summary>
+The Bazel documentation has a [handy guide](https://bazel.build/run/build#specifying-build-targets)
+for various shortcuts and all the ways to build multiple targets, which Selenium makes frequent use of.
 
-To build the most commonly-used modules of Selenium from source, execute this command from the root
-project folder:
-
-```sh
-bazel build java/...
+To build everything for a given language:
+```shell
+bazel build <language>/...
 ```
 
-If you want to test you can run then you can do so by running the following command
-
-```sh
-bazel test //java/... --test_size_filters=small,medium,large --test_tag_filters=<browser>
-```
-
-The `test_size_filters` argument takes small, medium, large. Small are akin to unit tests,
-medium is akin to integration tests, and large is akin to end-to-end tests.
-
-The `test_tag_filters` allow us to pass in browser names and a few different tags that we can
-find in the code base.
-
-To build the Grid deployment jar, run this command:
-
+To build just the grid (the log will show where the output jar is located):
 ```sh
 bazel build grid
 ```
 
-The log will show where the output jar is located.
-
-</details>
-
-#### JavaScript
-<details>
-<summary>Click to see JavaScript Build Steps</summary>
-
-If you want to build all the JavaScript code you can run:
-
-```sh
-bazel build javascript/...
+To make things more simple, building each of the bindings is now wrapped with `./go`
+```shell
+./go <language>:build
 ```
 
-To build the NodeJS bindings you will need to run:
 
-```sh
-bazel build //javascript/node/selenium-webdriver
+## Developing
+
+### Java
+
+Most of the team uses Intellij for their day-to-day editing. If you're
+working in IntelliJ, then we highly recommend installing the [Bazel IJ
+plugin](https://plugins.jetbrains.com/plugin/8609-bazel) which is documented on
+[its own site](https://plugins.jetbrains.com/plugin/8609-bazel).
+
+To use Selenium with the IntelliJ Bazel plugin, import the repository as a Bazel project, and select the project
+view file from the [scripts](scripts) directory. `ij.bazelproject` for Mac/Linux and `ij-win.bazelproject` for Windows.
+
+We also use Google Java Format for linting, so using the Google Java Formatter Plugin is useful;
+there are a few steps to get it working, so read their [configuration documentation](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config)
+
+To install Selenium locally based on a specific commit, you can use:
+```shell
+./go java:install
 ```
 
-To run the tests run:
+### Python
 
-```sh
-bazel test //javascript/node/selenium-webdriver:tests
+You can run Python code locally by updating generated files in the python directory using:
+```shell
+./go py:update
 ```
 
-You can pass in the environment variable `SELENIUM_BROWSER` with the name of the browser.
-
-To publish to NPM run:
-
-```sh
-bazel run //javascript/node/selenium-webdriver:selenium-webdriver.publish
-```
-</details>
-
-#### Python
-<details>
-<summary>Click to see Python Build Steps</summary>
-
-If you want to build the python bindings run:
-
-```sh
-bazel build //py:selenium
+To install Selenium locally based on a specific commit, you can use:
+```shell
+./go py:install
 ```
 
-To run the tests run:
+### Ruby
 
-```sh
-bazel test //py:test-<browsername>
-```
+Instead of using `irb`, you can create an interactive REPL with all gems loaded using: `bazel run //rb:console`
 
-If you add `--//common:pin_browsers` it will download the browsers and drivers for you to use.
-
-To install locally run:
-
-```sh
-bazel build //py:selenium-wheel
-pip install bazel-bin/py/selenium-*.whl
-```
-
-To publish run:
-
-```sh
-bazel build //py:selenium-wheel //py:selenium-sdist
-twine upload bazel-bin/py/selenium-*.whl bazel-bin/py/selenium-*.tar.gz
-```
-</details>
-
-#### Ruby
-<details>
-<summary>Click to see Ruby Build Steps</summary>
-
-Build targets:
-
-| Command                                     | Description                                       |
-|---------------------------------------------|---------------------------------------------------|
-| `bazel build //rb:selenium-devtools`        | Build selenium-devtools Ruby gem                  |
-| `bazel build //rb:selenium-webdriver`       | Build selenium-webdriver Ruby gem                 |
-| `bazel run //rb:selenium-devtools-release`  | Build and push selenium-devtools gem to RubyGems  |
-| `bazel run //rb:selenium-webdriver-release` | Build and push selenium-webdriver gem to RubyGems |
-| `bazel run //rb:console`                    | Start REPL with all gems loaded                   |
-| `bazel run //rb:docs`                       | Generate YARD docs                                |
-
-Test targets:
-
-| Command                                                                              | Description                                    |
-|--------------------------------------------------------------------------------------|------------------------------------------------|
-| `bazel test //rb/...`                                                                | Run unit, integration tests (Chrome) and lint  |
-| `bazel test //rb:lint`                                                               | Run RuboCop linter                             |
-| `bazel test //rb/spec/...`                                                           | Run unit and integration tests (Chrome)        |
-| `bazel test --test_size_filters large //rb/...`                                      | Run integration tests using (Chrome)           |
-| `bazel test //rb/spec/integration/...`                                               | Run integration tests using (Chrome)           |
-| `bazel test //rb/spec/integration/... --define browser=firefox`                      | Run integration tests using (Firefox)          |
-| `bazel test //rb/spec/integration/... --define remote=true`                          | Run integration tests using (Chrome and Grid)  |
-| `bazel test //rb/spec/integration/... --define browser=firefox --define remote=true` | Run integration tests using (Firefox and Grid) |
-| `bazel test --test_size_filters small //rb/...`                                      | Run unit tests                                 |
-| `bazel test //rb/spec/unit/...`                                                      | Run unit tests                                 |
-
-Suffix `...` tells Bazel to run all the test targets. They are conveniently named by test file name with `_spec.rb` removed so you can run them individually:
-
-| Test file                                                      | Test target                                              |
-|----------------------------------------------------------------|----------------------------------------------------------|
-| `rb/spec/integration/selenium/webdriver/chrome/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver/chrome:driver` |
-| `rb/spec/unit/selenium/webdriver/proxy_spec.rb`                | `//rb/spec/unit/selenium/webdriver:proxy`                |
-
-Supported browsers:
-
-* `chrome`
-* `edge`
-* `firefox`
-* `ie`
-* `safari` (cannot be run in parallel - use `--local_test_jobs 1`)
-* `safari-preview` (cannot be run in parallel - use `--local_test_jobs 1`)
-
-Useful command line options:
-
-* `--flaky_test_attempts 3` - re-run failed tests up to 3 times
-* `--local_test_jobs 1` - control parallelism of tests
-* `--no-cache_test_results`, `-t-` - disable caching of test results and re-runs all of them
-* `--test_arg "-tfocus"` - test only [focused specs](https://relishapp.com/rspec/rspec-core/v/3-12/docs/filtering/inclusion-filters)
-* `--test_arg "-eTimeouts"` - test only specs which name include "Timeouts"
-* `--test_arg "<any other RSpec argument>"` - pass any extra RSpec arguments (see `bazel run @bundle//:bin/rspec -- --help`)
-* `--test_env FOO=bar` - pass extra environment variable to test process (see below for supported variables)
-* `--test_output all` - print all output from the tests, not just errors
-* `--test_output streamed` - run all tests one by one and print its output immediately
-
-Supported environment variables:
-
-- `WD_SPEC_DRIVER` - the driver to test; either the browser name or 'remote' (gets set by Bazel)
-- `WD_REMOTE_BROWSER` - when `WD_SPEC_DRIVER` is `remote`; the name of the browser to test (gets set by Bazel)
-- `WD_REMOTE_URL` - URL of an already running server to use for remote tests
-- `DOWNLOAD_SERVER` - when `WD_REMOTE_URL` not set; whether to download and use most recently released server version for remote tests
-- `DEBUG` - turns on verbose debugging
-- `HEADLESS` - for chrome, edge and firefox; runs tests in headless mode
-- `DISABLE_BUILD_CHECK` - for chrome and edge; whether to ignore driver and browser version mismatches (allows testing Canary builds)
-- `CHROME_BINARY` - path to test specific Chrome browser
-- `EDGE_BINARY` - path to test specific Edge browser
-- `FIREFOX_BINARY` - path to test specific Firefox browser
-
-To run with a specific version of Ruby you can change the version in `rb/.ruby-version` or from command line:
-
-```sh
-echo '<X.Y.Z>' > rb/.ruby-version
-```
-
-If you want to debug code in tests, you can do it via [`debug`](https://github.com/ruby/debug) gem:
-
+If you want to debug code, you can do it via [`debug`](https://github.com/ruby/debug) gem:
 1. Add `binding.break` to the code where you want the debugger to start.
 2. Run tests with  `ruby_debug` configuration: `bazel test --config ruby_debug <test>`.
 3. When debugger starts, run the following in a separate terminal to connect to debugger:
@@ -276,109 +211,23 @@ If you want to debug code in tests, you can do it via [`debug`](https://github.c
 bazel-selenium/external/bundle/bin/rdbg -A
 ```
 
-If you want to use RubyMine for development, a bit of extra configuration is necessary to let the IDE know about Bazel toolchain and artifacts:
+If you want to use [RubyMine](https://www.jetbrains.com/ruby/) for development, 
+you can configure it use Bazel artifacts:
 
-1. Run `bundle exec rake update` as necessary to update generated artifacts.
-2. Open `rb/` as a main project directory.
+1. Open `rb/` as a main project directory.
+2. Run `bundle exec rake update` as necessary to create up-to-date artifacts. If this does not work, run `./go rb:update` from the `selenium` (parent) directory.
 3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby_dist/dist/bin/ruby`.
-4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables above.
+4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables secified in [Ruby Testing](#ruby-2) section below.
 
-</details>
+### Rust
 
-#### .NET
-<details>
-<summary>Click to see .NET Build Steps</summary>
-
-Bazel can not build .NET, yet, but it can set up tests with:
-
-```sh
-bazel build //dotnet/test/common:chrome
+To keep `Carbo.Bazel.lock` synchronized with `Cargo.lock`, run:
+```shell
+CARGO_BAZEL_REPIN=true bazel sync --only=crates
 ```
 
-Tests can then be run with:
-```sh
-cd dotnet
-dotnet test
-```
 
-More information about running Selenium's .NET tests can be found in this [README.md](dotnet/test/README.md)
-
-</details>
-
-#### Rust
-<details>
-<summary>Click to see Rust Build Steps</summary>
-
-Targets:
-
-| Command                                           | Description                               |
-|---------------------------------------------------|-------------------------------------------|
-| `bazel build //rust:selenium-manager`             | Build selenium-manager binary             |
-| `bazel test //rust/...`                           | Run both unit and integration tests       |
-| `CARGO_BAZEL_REPIN=true bazel sync --only=crates` | Sync `Cargo.Bazel.lock` with `Cargo.lock` |
-
-</details>
-
-### Build Details
-
-Bazel files are called BUILD.bazel, and the order the modules are built is determined
-by the build system. If you want to build an individual module (assuming all dependent
-modules have previously been built), try the following:
-
-```sh
-bazel test javascript/atoms:test
-```
-
-In this case, `javascript/atoms` is the module directory,
-`test` is a target in that directory's `BUILD.bazel` file.
-
-As you see *build targets* scroll past in the log,
-you may want to run them individually.
-
-### Build Output
-
-`bazel` makes a top-level group of directories with the  `bazel-` prefix on each directory.
-
-
-### Common Tasks (Bazel)
-
-To build the bulk of the Selenium binaries from source, run the
-following command from the root folder:
-
-```sh
-bazel build java/... javascript/...
-```
-
-To run tests within a particular area of the project, use the "test" command, followed
-by the folder or target. Tests are tagged with "small", "medium", or "large", and can be filtered
-with the `--test_size_filters` option:
-
-```sh
-bazel test --test_size_filters=small,medium java/...
-```
-
-Bazel's "test" command will run *all* tests in the package, including integration tests. Expect
-the ```test java/...``` to launch browsers and consume a considerable amount of time and resources.
-
-To bump the versions of the pinned browsers to their latest stable versions:
-
-```sh
-bazel run scripts:pinned_browsers > temp.bzl && mv temp.bzl common/repositories.bzl
-```
-
-### Editing Code
-
-Most of the team use either Intellij IDEA or VS.Code for their day-to-day editing. If you're
-working in IntelliJ, then we highly recommend installing the [Bazel IJ
-plugin](https://plugins.jetbrains.com/plugin/8609-bazel) which is documented on
-[its own site](https://plugins.jetbrains.com/plugin/8609-bazel).
-
-If you do use IntelliJ and the Bazel plugin, there is a project view checked into the tree
-in [scripts/ij.bazelproject](scripts/ij.bazelproject) which will make it easier to get up
-running, and editing code :)
-
-
-## Tour
+### Tour of Repo
 
 The codebase is generally segmented around the languages used to
 write the component. Selenium makes extensive use of JavaScript, so
@@ -398,20 +247,7 @@ for developing much of the JavaScript, so now navigate to
 The tests in this directory are normal HTML files with names ending
 with `_test.html`.  Click on one to load the page and run the test.
 
-## Help with `go`
-
-More general, but basic, help for `go`…
-
-```sh
-./go --help
-```
-
-`go` is a wrapper around
-[Rake](http://rake.rubyforge.org/), so you can use the standard
-commands such as `rake -T` to get more information about available
-targets.
-
-## Maven _per se_
+### Maven _per se_
 
 Selenium is not built with Maven. It is built with `bazel`,
 though that is invoked with `go` as outlined above,
@@ -430,7 +266,7 @@ skipping Selenium's own tests.
 
 The maven jars should now be in your local `~/.m2/repository`.
 
-## Updating Java dependencies
+### Updating Java dependencies
 
 The coordinates (_groupId_:_artifactId_:_version_) of the Java dependencies
 are defined in the file [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
@@ -439,9 +275,9 @@ The process to modify these dependencies is the following:
 1. (Optional) If we want to detect the dependencies which are not updated,
    we can use the following command for automatic discovery:
 
-```sh
-bazel run @maven//:outdated
-```
+    ```sh
+    bazel run @maven//:outdated
+    ```
 
 2. Modify [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
    For instance, we can bump the version of a given artifact detected in the step before.
@@ -449,22 +285,208 @@ bazel run @maven//:outdated
 3. Repin dependencies. This process is required to update the file [maven_install.json](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_install.json),
    which is used to manage the Maven dependencies tree (see [rules_jvm_external](https://github.com/bazelbuild/rules_jvm_external) for further details). The command to carry out this step is the following:
 
-```sh
-RULES_JVM_EXTERNAL_REPIN=1 bazel run @unpinned_maven//:pin
-```
+    ```sh
+    RULES_JVM_EXTERNAL_REPIN=1 bazel run @unpinned_maven//:pin
+    ```
 
 4. (Optional) If we use IntelliJ with the Bazel plugin, we need to synchronize
    our project. To that aim, we click on _Bazel_ &rarr; _Sync_ &rarr; _Sync Project
    with BUILD Files_.
 
 
-## Running browser tests on Linux
+## Testing
 
-In order to run Browser tests, you first need to install the browser-specific drivers,
-such as [`geckodriver`](https://github.com/mozilla/geckodriver/releases),
-[`chromedriver`](https://chromedriver.chromium.org/), or
-[`edgedriver`](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/).
-These need to be on your `PATH`.
+There are a number of bazel configurations specific for testing.
+
+### Common Options Examples
+
+Here are examples of arguments we make use of in testing the Selenium code:
+* `--pin_browsers=true` - run specific browser versions defined in the build (versions are updated regularly)
+* `--flaky_test_attempts 3` - re-run failed tests up to 3 times
+* `--local_test_jobs 1` - control parallelism of tests
+* `--no-cache_test_results`, `-t-` - disable caching of test results and re-runs all of them
+* `--test_output all` - print all output from the tests, not just errors
+* `--test_output streamed` - run all tests one by one and print its output immediately
+* `--test_env FOO=bar` - pass extra environment variable to test process
+* `--run_under="xvfb-run -a"` - prefix to insert before the execution
+
+### Filtering
+
+Selenium tests can be filtered by size:
+* small — typically unit tests where no browser is opened
+* large — typically tests that actually drive a browser
+* medium — tests that are more involved than simple unit tests, but not fully driving a browser
+
+These can be filtered using the `test_size_filters` argument like this:
+```sh
+bazel test //<language>/... --test_size_filters=small
+```
+
+Tests can also be filtered by tag like:
+```sh
+bazel test //<language>/... --test_tag_filters=this,-not-this
+```
+
+### Java
+
+<details>
+<summary>Click to see Java Test Commands</summary>
+
+To run unit tests:
+```shell
+bazel test //java/... --test_size_filters=small
+```
+To run integration tests:
+```shell
+bazel test //java/... --test_size_filters=medium
+```
+To run browser tests:
+```shell
+bazel test //java/... --test_size_filters=large --test_tag_filters=<browser>
+```
+
+To run a specific test:
+```shell
+bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
+```
+
+</details>
+
+### JavaScript
+<details>
+<summary>Click to see JavaScript Test Commands</summary>
+
+To run the tests run:
+
+```sh
+bazel test //javascript/node/selenium-webdriver:tests
+```
+
+You can use `--test_env` to pass in the browser name as `SELENIUM_BROWSER`.
+</details>
+
+### Python
+<details>
+<summary>Click to see Python Test Commands</summary>
+
+Run unit tests with:
+```shell
+bazel test //py:unit
+```
+
+To run tests with a specific browser:
+
+```sh
+bazel test //py:test-<browsername>
+```
+
+To run all Python tests:
+```shell
+bazel test //py:all
+```
+
+</details>
+
+### Ruby
+<details>
+<summary>Click to see Ruby Test Commands</summary>
+
+Test targets:
+
+| Command                                                                              | Description                                    |
+|--------------------------------------------------------------------------------------|------------------------------------------------|
+| `bazel test //rb/...`                                                                | Run unit, integration tests (Chrome) and lint  |
+| `bazel test //rb:lint`                                                               | Run RuboCop linter                             |
+| `bazel test //rb/spec/...`                                                           | Run unit and integration tests (Chrome)        |
+| `bazel test --test_size_filters large //rb/...`                                      | Run integration tests using (Chrome)           |
+| `bazel test //rb/spec/integration/...`                                               | Run integration tests using (Chrome)           |
+| `bazel test //rb/spec/integration/... --define browser=firefox`                      | Run integration tests using (Firefox)          |
+| `bazel test //rb/spec/integration/... --define remote=true`                          | Run integration tests using (Chrome and Grid)  |
+| `bazel test //rb/spec/integration/... --define browser=firefox --define remote=true` | Run integration tests using (Firefox and Grid) |
+| `bazel test --test_size_filters small //rb/...`                                      | Run unit tests                                 |
+| `bazel test //rb/spec/unit/...`                                                      | Run unit tests                                 |
+
+Ruby test modules have the same name as the spec file with `_spec.rb` removed, so you can run them individually:
+
+| Test file                                                      | Test target                                              |
+|----------------------------------------------------------------|----------------------------------------------------------|
+| `rb/spec/integration/selenium/webdriver/chrome/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver/chrome:driver` |
+| `rb/spec/unit/selenium/webdriver/proxy_spec.rb`                | `//rb/spec/unit/selenium/webdriver:proxy`                |
+
+Supported browsers:
+
+* `chrome`
+* `edge`
+* `firefox`
+* `ie`
+* `safari` (cannot be run in parallel - use `--local_test_jobs 1`)
+* `safari-preview` (cannot be run in parallel - use `--local_test_jobs 1`)
+
+Useful command line options:
+
+In addition to the [Common Options Examples](#common-options-examples), here are some additional Ruby specific ones:
+* `--test_arg "-tfocus"` - test only [focused specs](https://relishapp.com/rspec/rspec-core/v/3-12/docs/filtering/inclusion-filters)
+* `--test_arg "-eTimeouts"` - test only specs which name include "Timeouts"
+* `--test_arg "<any other RSpec argument>"` - pass any extra RSpec arguments (see `bazel run @bundle//:bin/rspec -- --help`)
+
+Supported environment variables for use with `--test_env`:
+
+- `WD_SPEC_DRIVER` - the driver to test; either the browser name or 'remote' (gets set by Bazel)
+- `WD_REMOTE_BROWSER` - when `WD_SPEC_DRIVER` is `remote`; the name of the browser to test (gets set by Bazel)
+- `WD_REMOTE_URL` - URL of an already running server to use for remote tests
+- `DOWNLOAD_SERVER` - when `WD_REMOTE_URL` not set; whether to download and use most recently released server version for remote tests
+- `DEBUG` - turns on verbose debugging
+- `HEADLESS` - for chrome, edge and firefox; runs tests in headless mode
+- `DISABLE_BUILD_CHECK` - for chrome and edge; whether to ignore driver and browser version mismatches (allows testing Canary builds)
+- `CHROME_BINARY` - path to test specific Chrome browser
+- `EDGE_BINARY` - path to test specific Edge browser
+- `FIREFOX_BINARY` - path to test specific Firefox browser
+
+To run with a specific version of Ruby you can change the version in `rb/.ruby-version` or from command line:
+
+```sh
+echo '<X.Y.Z>' > rb/.ruby-version
+```
+</details>
+
+### .NET
+<details>
+<summary>Click to see .NET Test Commands</summary>
+
+.NET tests currently only work with pinned browsers, so make sure to include that.
+
+Run all tests with:
+```sh
+bazel test //dotnet/test/common:AllTests --pin_browsers=true
+```
+
+You can run specific tests by specifying the class name:
+```shell
+bazel test //dotnet/test/common/ElementFindingTest --pin_browsers=true
+```
+
+If the module supports multiple browsers:
+```shell
+bazel test //dotnet/test/common/ElementFindingTest-edge --pin_browsers=true
+```
+
+</details>
+
+### Rust
+<details>
+<summary>Click to see Rust Test Commands</summary>
+
+Rust tests are run with:
+
+```shell
+bazel test //rust/...
+```
+</details>
+
+### Linux
+
+<details>
+<summary>Click to see Linux Testing Requirements</summary>
 
 By default, Bazel runs these tests in your current X-server UI. If you prefer, you can
 alternatively run them in a virtual or nested X-server.
@@ -479,50 +501,30 @@ bazel test --test_env=DISPLAY=:99 //java/... --test_tag_filters=chrome
 An easy way to run tests in a virtual X-server is to use Bazel's `--run_under`
 functionality:
 ```
-bazel test --run_under="xvfb-run -a" //java/... --test_tag_filters=chrome
+bazel test --run_under="xvfb-run -a" //java/...
+```
+</details>
+
+## Releasing
+
+The full process for doing a release can be found in [the wiki](https://github.com/SeleniumHQ/selenium/wiki/Releasing-Selenium)
+
+Releasing is a combination of building and publishing, which often requires coordination of multiple executions
+and additional processing. 
+As discussed in the [Building](#building) section, we use Rake tasks with the `./go` command for these things.
+These `./go` commands include the `--stamp` argument to provide necessary information about the constructed asset.
+
+You can build and release everything with:
+```shell
+./go all:release
 ```
 
-## Bazel Installation/Troubleshooting
-
-### Selenium Build Docker Image
-
-If you're finding it hard to set up a development environment using bazel
-and you have access to Docker, then you can build a Docker image suitable
-for building and testing Selenium in from the Dockerfile in the
-[dev image](scripts/dev-image/Dockerfile) directory.
-
-### MacOS
-
-#### bazelisk
-
-Bazelisk is a Mac-friendly launcher for Bazel. To install, follow these steps:
-
-```sh
-brew tap bazelbuild/tap && \
-brew uninstall bazel; \
-brew install bazelbuild/tap/bazelisk
+To build and release a specific language:
+```shell
+./go <language>:release
 ```
 
-#### Xcode
-
-If you're getting errors that mention Xcode, you'll need to install the command-line tools.
-
-Bazel for Mac requires some additional steps to configure properly. First things first: use
-the Bazelisk project (courtesy of philwo), a pure golang implementation of Bazel. In order to
-install Bazelisk, first verify that your Xcode will cooperate: execute the following command:
-
-`xcode-select -p`
-
-If the value is `/Applications/Xcode.app/Contents/Developer/`, you can proceed with bazelisk
-installation. If, however, the return value is `/Library/Developer/CommandLineTools/`, you'll
-need to redirect the Xcode system to the correct value.
-
+If you have access to the Selenium EngFlow repository, you can have the assets built remotely and downloaded locally using:
+```shell
+./go all:release['--config', 'release']
 ```
-sudo xcode-select -s /Applications/Xcode.app/Contents/Developer/
-sudo xcodebuild -license
-```
-
-The first command will prompt you for a password. The second step requires you to read a new Xcode
-license, and then accept it by typing "agree".
-
-(Thanks to [this thread](https://github.com/bazelbuild/bazel/issues/4314) for these steps)
