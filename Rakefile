@@ -128,7 +128,7 @@ task all: [
   :"selenium-java",
   '//java/test/org/openqa/selenium/environment:webserver'
 ]
-task all_zip: [:'java-release-zip', :'dotnet-release-zip']
+
 task tests: [
   '//java/test/org/openqa/selenium/htmlunit:htmlunit',
   '//java/test/org/openqa/selenium/firefox:test-synthesized',
@@ -366,29 +366,6 @@ def read_m2_user_pass
   end
 
   return [user, pass]
-end
-
-task :prepare_release, [:args] do |_task, arguments|
-  args = arguments[:args] ? [arguments[:args]] : %w[--config release]
-
-  RELEASE_TARGETS = [
-    '//java/src/org/openqa/selenium:client-zip',
-    '//java/src/org/openqa/selenium/grid:server-zip',
-    '//java/src/org/openqa/selenium/grid:executable-grid',
-    '//dotnet/src/webdriver:webdriver-pack',
-    '//dotnet/src/webdriver:webdriver-strongnamed-pack',
-    '//dotnet/src/support:support-pack',
-    '//dotnet/src/support:support-strongnamed-pack',
-    '//javascript/node/selenium-webdriver:selenium-webdriver',
-    '//py:selenium-wheel',
-    '//py:selenium-sdist'
-  ]
-
-  RELEASE_TARGETS.each do |target|
-    Bazel.execute('build', args, target)
-  end
-  # Ruby cannot be executed with config remote or release
-  Bazel.execute('build', ['--stamp'], '//rb:selenium-webdriver')
 end
 
 task 'publish-maven': JAVA_RELEASE_TARGETS do
@@ -725,6 +702,27 @@ namespace :all do
     Rake::Task['py:docs'].invoke
     Rake::Task['rb:docs'].invoke
     Rake::Task['dotnet:docs'].invoke
+  end
+
+  desc 'Build all artifacts for all language bindings'
+  task :build, [:args] do |_task, arguments|
+    args = arguments[:args] ? [arguments[:args]] : []
+    Rake::Task['java:build'].invoke(args)
+    Rake::Task['py:build'].invoke(args)
+    Rake::Task['rb:build'].invoke(args)
+    Rake::Task['dotnet:build'].invoke(args)
+    Rake::Task['node:build'].invoke(args)
+  end
+
+  desc 'Release all artifacts for all language bindings'
+  task :release, [:args] do |_task, arguments|
+    Rake::Task['clean'].invoke
+    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
+    Rake::Task['java:release'].invoke(args)
+    Rake::Task['py:release'].invoke(args)
+    Rake::Task['rb:release'].invoke(args)
+    Rake::Task['dotnet:release'].invoke(args)
+    Rake::Task['node:release'].invoke(args)
   end
 end
 
