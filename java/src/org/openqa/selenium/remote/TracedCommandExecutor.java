@@ -42,7 +42,7 @@ public class TracedCommandExecutor implements CommandExecutor {
       }
       commandSpan.setAttribute("command", command.getName());
       Map<String, ?> parameters = command.getParameters();
-      if (parameters != null && parameters.size() > 0) {
+      if (parameters != null && !parameters.isEmpty()) {
         for (Map.Entry<String, ?> parameter : parameters.entrySet()) {
           commandSpan.setAttribute(
               "parameter." + parameter.getKey(), Objects.toString(parameter.getValue(), "null"));
