@@ -150,9 +150,7 @@ task remote_client: ['//java/src/org/openqa/selenium/remote']
 task remote_server: ['//java/src/org/openqa/selenium/remote/server']
 task safari: ['//java/src/org/openqa/selenium/safari']
 task selenium: ['//java/src/org/openqa/selenium:core']
-task support: [
-  '//java/src/org/openqa/selenium/support'
-]
+task support: ['//java/src/org/openqa/selenium/support']
 
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/src/org/openqa/selenium/grid:executable-grid'
@@ -203,7 +201,7 @@ task test_support: [
   '//java/test/org/openqa/selenium/support:large-tests:run'
 ]
 
-task test_java_webdriver do
+task :test_java_webdriver do
   if SeleniumRake::Checks.windows?
     Rake::Task['test_ie'].invoke
   elsif SeleniumRake::Checks.chrome?
@@ -756,6 +754,15 @@ namespace :all do
     Rake::Task['dotnet:release'].invoke(args)
     Rake::Task['node:release'].invoke(args)
   end
+
+  desc 'File updates for versions and metadata'
+    task :update, [:channel] do |_task, arguments|
+      args = arguments[:channel] ? ['--', "--chrome_channel=#{arguments[:channel].capitalize}"] : []
+      Bazel.execute('run', args, '//scripts:pinned_browsers')
+      Bazel.execute('run', args, '//scripts:update_cdp')
+      Rake::Task['authors'].invoke
+      Rake::Task['copyright:update'].invoke
+    end
 end
 
 at_exit do
