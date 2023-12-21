@@ -37,7 +37,8 @@ class ApplicationCache:
          - driver: The WebDriver instance which performs user actions.
         """
         warnings.warn(
-            "Application Cache is being removed from all major browsers. This feature will be removed in future versions",
+            "Application Cache is being removed from all major browsers. This feature will be removed in future "
+            "versions",
             DeprecationWarning,
             stacklevel=2,
         )

@@ -176,7 +176,7 @@ class FirefoxProfile:
                         self.default_preferences[matches.group(1)] = json.loads(matches.group(2))
                     except Exception:
                         warnings.warn(
-                            f"(skipping) failed to json.loads existing preference: {matches.group(1) + matches.group(2)}"
+                        f"(skipping) failed to json.loads existing preference: {matches.group(1) + matches.group(2)}"
                         )
         except Exception:
             # The profile given hasn't had any changes made, i.e no users.js

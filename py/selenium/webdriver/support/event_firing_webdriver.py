@@ -48,7 +48,7 @@ class EventFiringWebDriver:
 
         Example:
 
-        ::
+
 
             from selenium.webdriver import Firefox
             from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener

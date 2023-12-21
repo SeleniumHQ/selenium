@@ -219,15 +219,15 @@ class RemoteConnection:
 
     def _identify_http_proxy_auth(self):
         url = self._proxy_url
-        url = url[url.find(":") + 3 :]
+        url = url[url.find(":") + 3:]
         return "@" in url and len(url[: url.find("@")]) > 0
 
     def _separate_http_proxy_auth(self):
         url = self._proxy_url
         protocol = url[: url.find(":") + 3]
-        no_protocol = url[len(protocol) :]
+        no_protocol = url[len(protocol):]
         auth = no_protocol[: no_protocol.find("@")]
-        proxy_without_auth = protocol + no_protocol[len(auth) + 1 :]
+        proxy_without_auth = protocol + no_protocol[len(auth) + 1:]
         return proxy_without_auth, auth
 
     def _get_connection_manager(self):

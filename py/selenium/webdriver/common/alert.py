@@ -71,10 +71,10 @@ class Alert:
         """
         self.driver.execute(Command.W3C_ACCEPT_ALERT)
 
-    def send_keys(self, keysToSend: str) -> None:
+    def send_keys(self, keys_to_send: str) -> None:
         """Send Keys to the Alert.
 
         :Args:
-         - keysToSend: The text to be sent to Alert.
+         - keys_to_send: The text to be sent to Alert.
         """
-        self.driver.execute(Command.W3C_SET_ALERT_VALUE, {"value": keys_to_typing(keysToSend), "text": keysToSend})
+        self.driver.execute(Command.W3C_SET_ALERT_VALUE, {"value": keys_to_typing(keys_to_send), "text": keys_to_send})

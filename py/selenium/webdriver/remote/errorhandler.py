@@ -225,5 +225,6 @@ class ErrorHandler:
                 alert_text = value["data"].get("text")
             elif "alert" in value:
                 alert_text = value["alert"].get("text")
-            raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not smart enough here
+            raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not
+            # smart enough here
         raise exception_class(message, screen, stacktrace)

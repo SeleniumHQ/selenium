@@ -849,7 +849,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.SCREENSHOT)["value"]
 
-    def set_window_size(self, width, height, windowHandle: str = "current") -> None:
+    def set_window_size(self, width, height, window_handle: str = "current") -> None:
         """Sets the width and height of the current window. (window.resizeTo)
 
         :Args:
@@ -861,10 +861,10 @@ class WebDriver(BaseWebDriver):
 
                 driver.set_window_size(800,600)
         """
-        self._check_if_window_handle_is_current(windowHandle)
+        self._check_if_window_handle_is_current(window_handle)
         self.set_window_rect(width=int(width), height=int(height))
 
-    def get_window_size(self, windowHandle: str = "current") -> dict:
+    def get_window_size(self, window_handle: str = "current") -> dict:
         """Gets the width and height of the current window.
 
         :Usage:
@@ -873,7 +873,7 @@ class WebDriver(BaseWebDriver):
                 driver.get_window_size()
         """
 
-        self._check_if_window_handle_is_current(windowHandle)
+        self._check_if_window_handle_is_current(window_handle)
         size = self.get_window_rect()
 
         if size.get("value", None):
@@ -881,7 +881,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: size[k] for k in ("width", "height")}
 
-    def set_window_position(self, x, y, windowHandle: str = "current") -> dict:
+    def set_window_position(self, x, y, window_handle: str = "current") -> dict:
         """Sets the x,y position of the current window. (window.moveTo)
 
         :Args:
@@ -893,10 +893,10 @@ class WebDriver(BaseWebDriver):
 
                 driver.set_window_position(0,0)
         """
-        self._check_if_window_handle_is_current(windowHandle)
+        self._check_if_window_handle_is_current(window_handle)
         return self.set_window_rect(x=int(x), y=int(y))
 
-    def get_window_position(self, windowHandle="current") -> dict:
+    def get_window_position(self, window_handle="current") -> dict:
         """Gets the x,y position of the current window.
 
         :Usage:
@@ -905,14 +905,14 @@ class WebDriver(BaseWebDriver):
                 driver.get_window_position()
         """
 
-        self._check_if_window_handle_is_current(windowHandle)
+        self._check_if_window_handle_is_current(window_handle)
         position = self.get_window_rect()
 
         return {k: position[k] for k in ("x", "y")}
 
-    def _check_if_window_handle_is_current(self, windowHandle: str) -> None:
+    def _check_if_window_handle_is_current(self, window_handle: str) -> None:
         """Warns if the window handle is not equal to `current`."""
-        if windowHandle != "current":
+        if window_handle != "current":
             warnings.warn("Only 'current' window is supported for W3C compatible browsers.", stacklevel=2)
 
     def get_window_rect(self) -> dict:
