@@ -767,6 +767,22 @@ namespace :java do
   desc 'Generate Java documentation'
   task docs: :javadocs
 
+  desc 'Update Maven dependencies'
+  task :dependencies do
+    file_path = 'java/maven_deps.bzl'
+    content = File.read(file_path)
+
+    Bazel.execute('run', [], '@maven//:outdated') do |output|
+      versions = output.scan(/(\S+) \[\S+ -> (\S+)\]/).to_h
+      versions.each do |artifact, version|
+        next if artifact.match?('graphql')
+        content.gsub!(/#{artifact}:\d+\.\d+[^\\"]+/, "#{artifact}:#{version}")
+      end
+    end
+
+    File.write(file_path, content)
+  end
+
   desc 'Update Java version'
   task :version, [:version] do |_task, arguments|
     old_version = java_version
@@ -847,6 +863,7 @@ namespace :all do
       args = arguments[:channel] ? ['--', "--chrome_channel=#{arguments[:channel].capitalize}"] : []
       Bazel.execute('run', args, '//scripts:pinned_browsers')
       Bazel.execute('run', args, '//scripts:update_cdp')
+      Rake::Task['java:dependencies'].invoke
       Rake::Task['authors'].invoke
       Rake::Task['copyright:update'].invoke
     end
