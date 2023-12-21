@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.service;
 
 import java.io.File;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
@@ -37,8 +38,8 @@ public class DriverFinder {
     if (result.getDriverPath() == null) {
       try {
         result = SeleniumManager.getInstance().getDriverPath(options, offline);
-      } catch (Exception e) {
-        throw new NoSuchDriverException(
+      } catch (RuntimeException e) {
+        throw new WebDriverException(
             String.format("Unable to obtain: %s, error %s", options, e.getMessage()), e);
       }
     }
