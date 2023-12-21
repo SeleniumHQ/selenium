@@ -68,6 +68,8 @@ module Selenium
             extend(WebDriver::Edge::Features)
           when 'Safari', 'Safari Technology Preview'
             extend(WebDriver::Safari::Features)
+          when 'internet explorer'
+            extend(WebDriver::IE::Features)
           end
         end
 
@@ -605,8 +607,12 @@ module Selenium
           @escaper ||= defined?(URI::Parser) ? URI::DEFAULT_PARSER : URI
         end
 
+        def command_list
+          COMMANDS
+        end
+
         def commands(command)
-          COMMANDS[command]
+          command_list[command]
         end
 
         def unwrap_script_result(arg)
