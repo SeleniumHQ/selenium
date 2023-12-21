@@ -65,7 +65,7 @@ class ExtensionConnection(RemoteConnection):
 
     @classmethod
     def connect_and_quit(cls):
-        """Connects to an running browser and quit immediately."""
+        """Connects to a running browser and quit immediately."""
         cls._request(f"{_URL}/extensions/firefox/quit")
 
     @classmethod

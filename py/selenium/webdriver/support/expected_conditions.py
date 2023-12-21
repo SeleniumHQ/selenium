@@ -87,8 +87,7 @@ def presence_of_element_located(locator: Tuple[str, str]) -> Callable[[WebDriver
 
 
 def url_contains(url: str) -> Callable[[WebDriver], bool]:
-    """An expectation for checking that the current url contains a case-
-    sensitive substring.
+    """An expectation for checking that the current url contains a case-sensitive substring.
 
     url is the fragment of url expected, returns True when the url
     matches, False otherwise
@@ -514,7 +513,7 @@ def any_of(*expected_conditions: Callable[[D], T]) -> Callable[[D], Union[Litera
 def all_of(
     *expected_conditions: Callable[[D], Union[T, Literal[False]]]
 ) -> Callable[[D], Union[List[T], Literal[False]]]:
-    """An expectation that all of multiple expected conditions is true.
+    """An expectation that all multiple expected conditions is true.
 
     Equivalent to a logical 'AND'.
     Returns: When any ExpectedCondition is not met: False.

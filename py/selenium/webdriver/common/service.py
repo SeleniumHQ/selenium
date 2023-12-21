@@ -183,7 +183,7 @@ class Service(ABC):
         # `subprocess.Popen` doesn't send signal on `__del__`;
         # so we attempt to close the launched process when `__del__`
         # is triggered.
-        # do not use globals here; interpreter shutdown may have already cleaned them up
+        # do not use globals here; interpreter shutdown may have already cleaned them up,
         # and they would be `None`. This goes for anything this method is referencing internally.
         try:
             self.stop()

@@ -163,7 +163,7 @@ class FirefoxBinary:
             # use hardcoded path if nothing else was found by which()
             if not start_cmd:
                 start_cmd = "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
-            # fallback to homebrew installation for mac users
+            # fallback to homebrew installation for Mac users
             if not os.path.exists(start_cmd):
                 start_cmd = os.path.expanduser("~") + start_cmd
         elif self.platform == "windows":  # same

@@ -390,7 +390,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
         """Close the underlying WebSocket connection.
 
         This will cause the reader task to gracefully exit when it tries
-        to read the next message from the WebSocket. All of the public
+        to read the next message from the WebSocket. All the public
         APIs (``execute()``, ``listen()``, etc.) will raise
         ``CdpConnectionClosed`` after the CDP connection is closed. It
         is safe to call this multiple times.
@@ -428,7 +428,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
                 message = await self.ws.get_message()
             except WsConnectionClosed:
                 # If the WebSocket is closed, we don't want to throw an
-                # exception from the reader task. Instead we will throw
+                # exception from the reader task. Instead, we will throw
                 # exceptions from the public API methods, and we can quietly
                 # exit the reader task here.
                 break
@@ -493,7 +493,7 @@ async def connect_cdp(nursery, url) -> CdpConnection:
     done with it. If ``set_context`` is True, then the returned
     connection will be installed as the default connection for the
     current task. This argument is for unusual use cases, such as
-    running inside of a notebook.
+    running inside a notebook.
     """
     ws = await connect_websocket_url(nursery, url, max_message_size=MAX_WS_MESSAGE_SIZE)
     cdp_conn = CdpConnection(ws)

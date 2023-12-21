@@ -89,7 +89,7 @@ class FirefoxProfile:
     def update_preferences(self):
         for key, value in FirefoxProfile.DEFAULT_PREFERENCES["frozen"].items():
             # Do not update key that is being set by the user using
-            # set_preference as users are unaware of the freeze properties
+            # set_preference as users are unaware of the freeze properties,
             # and it leads to an inconsistent behavior
             if key not in self.default_preferences:
                 self.default_preferences[key] = value

@@ -225,7 +225,7 @@ class WebDriver(BaseWebDriver):
     @contextmanager
     def file_detector_context(self, file_detector_class, *args, **kwargs):
         """Overrides the current file detector (if necessary) in limited
-        context. Ensures the original file detector is set afterwards.
+        context. Ensures the original file detector is set afterward.
 
         Example::
 

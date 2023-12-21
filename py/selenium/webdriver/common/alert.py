@@ -34,11 +34,11 @@ class Alert:
     Inputting a value into an alert prompt::
 
         name_prompt = Alert(driver)
-        name_prompt.send_keys("Willian Shakesphere")
+        name_prompt.send_keys("William Shakespeare")
         name_prompt.accept()
 
 
-    Reading a the text of a prompt for verification::
+    Reading the text of a prompt for verification::
 
         alert_text = Alert(driver).text
         self.assertEqual("Do you wish to quit?", alert_text)
@@ -67,7 +67,7 @@ class Alert:
         :Usage:
             ::
 
-                Alert(driver).accept() # Confirm a alert dialog.
+                Alert(driver).accept() # Confirm an alert dialog.
         """
         self.driver.execute(Command.W3C_ACCEPT_ALERT)
 

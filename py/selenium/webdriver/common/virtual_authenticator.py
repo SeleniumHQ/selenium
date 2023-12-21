@@ -92,7 +92,7 @@ class Credential:
         :Args:
             - credential_id (bytes): Unique base64 encoded string.
             is_resident_credential (bool): Whether the credential is client-side discoverable.
-            rp_id (str): Relying party identifier.
+            rp_id (str): Relying on party identifier.
             user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string. Can be None.
             private_key (bytes): Base64 encoded PKCS#8 private key.
             sign_count (int): intital value for a signature counter.
@@ -136,7 +136,7 @@ class Credential:
 
         :Args:
           - id (bytes): Unique base64 encoded string.
-          - rp_id (str): Relying party identifier.
+          - rp_id (str): Relying on party identifier.
           - private_key (bytes): Base64 encoded PKCS
           - sign_count (int): intital value for a signature counter.
 
@@ -153,7 +153,7 @@ class Credential:
 
         :Args:
           - id (bytes): Unique base64 encoded string.
-          - rp_id (str): Relying party identifier.
+          - rp_id (str): Relying on party identifier.
           - user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string.
           - private_key (bytes): Base64 encoded PKCS
           - sign_count (int): intital value for a signature counter.
