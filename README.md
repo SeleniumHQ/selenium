@@ -253,7 +253,7 @@ Here are examples of arguments we make use of in testing the Selenium code:
 * `--pin_browsers=true` - run specific browser versions defined in the build (versions are updated regularly)
 * `--flaky_test_attempts 3` - re-run failed tests up to 3 times
 * `--local_test_jobs 1` - control parallelism of tests
-* `--no-cache_test_results`, `-t-` - disable caching of test results and re-runs all of them
+* `--cache_test_results=no`, `-t-` - disable caching of test results and re-runs all of them
 * `--test_output all` - print all output from the tests, not just errors
 * `--test_output streamed` - run all tests one by one and print its output immediately
 * `--test_env FOO=bar` - pass extra environment variable to test process
