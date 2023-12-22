@@ -336,7 +336,7 @@ task :'java-release-zip' do
   Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium/grid:server-zip')
   Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium/grid:executable-grid')
   mkdir_p 'build/dist'
-  FileUtils.rm_f('build/dist/**/*.{server,java}*', force: true)
+  FileUtils.rm_f('build/dist/*.{server,java}*')
 
   FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip',
                  "build/dist/selenium-server-#{java_version}.zip")
@@ -559,14 +559,14 @@ namespace :py do
   task :update do
     Bazel.execute('build', [], '//py:selenium')
 
-    FileUtils.rm_r('py/selenium/webdriver/common/devtools/', force: true)
+    FileUtils.rm_rf('py/selenium/webdriver/common/devtools/')
     FileUtils.cp_r('bazel-bin/py/selenium/webdriver/.', 'py/selenium/webdriver', remove_destination: true)
   end
 
   desc 'Generate Python documentation'
   task :docs do
-    FileUtils.rm_r('build/docs/api/py/', force: true)
-    FileUtils.rm_r('build/docs/doctrees/', force: true)
+    FileUtils.rm_rf('build/docs/api/py/')
+    FileUtils.rm_rf('build/docs/doctrees/')
     begin
       sh 'tox -c py/tox.ini -e docs', verbose: true
     rescue StandardError
@@ -611,7 +611,7 @@ namespace :rb do
 
   desc 'Generate Ruby documentation'
   task :docs do
-    FileUtils.rm_r('build/docs/api/rb/', force: true)
+    FileUtils.rm_rf('build/docs/api/rb/')
     Bazel.execute('run', [], '//rb:docs')
     FileUtils.cp_r('bazel-bin/rb/docs.rb.sh.runfiles/selenium/docs/api/rb/.', 'build/docs/api/rb')
   end
@@ -634,7 +634,7 @@ namespace :dotnet do
     args = arguments[:args] ? [arguments[:args]] : ['--stamp']
     Rake::Task['dotnet:build'].invoke(args)
     mkdir_p 'build/dist'
-    FileUtils.rm_f('build/dist/*dotnet*', force: true)
+    FileUtils.rm_f('build/dist/*dotnet*')
 
     FileUtils.copy('bazel-bin/dotnet/release.zip', "build/dist/selenium-dotnet-#{dotnet_version}.zip")
     FileUtils.chmod(666, "build/dist/selenium-dotnet-#{dotnet_version}.zip")
