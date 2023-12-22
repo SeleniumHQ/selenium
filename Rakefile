@@ -768,7 +768,7 @@ namespace :java do
   task docs: :javadocs
 
   desc 'Update Maven dependencies'
-  task :dependencies do
+  task :update do
     file_path = 'java/maven_deps.bzl'
     content = File.read(file_path)
     # For some reason ./go wrapper is not outputting from Open3, so cannot use Bazel class directly

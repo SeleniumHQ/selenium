@@ -28,7 +28,7 @@ before submitting your pull requests.
 
 ## Installing
 
-These are the requirements to cereate your own local dev environment to contribute to Selenium.
+These are the requirements to create your own local dev environment to contribute to Selenium.
 
 ### All Platforms
 * [Bazelisk](https://github.com/bazelbuild/bazelisk), a Bazel wrapper that automatically downloads
@@ -168,7 +168,6 @@ there are a few steps to get it working, so read their [configuration documentat
 There is also an auto-formatting script that can be run: `./scripts/format.sh`
 
 #### Local Installation
-
 While Selenium is not built with Maven, you can build and install the Selenium pieces
 for Maven to use locally by deploying to your local maven repository (`~/.m2/repository`), using:
 ```shell
@@ -177,30 +176,12 @@ for Maven to use locally by deploying to your local maven repository (`~/.m2/rep
 
 #### Updating Dependencies
 
-The coordinates (_groupId_:_artifactId_:_version_) of the Java dependencies
-are defined in the file [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
-The process to modify these dependencies is the following:
+Dependencies are defined in the file [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
+To automatically update and pin new dependencies, run:
 
-1. (Optional) If we want to detect the dependencies which are not updated,
-   we can use the following command for automatic discovery:
-
-    ```sh
-    bazel run @maven//:outdated
-    ```
-
-2. Modify [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
-   For instance, we can bump the version of a given artifact detected in the step before.
-
-3. Repin dependencies. This process is required to update the file [maven_install.json](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_install.json),
-   which is used to manage the Maven dependencies tree (see [rules_jvm_external](https://github.com/bazelbuild/rules_jvm_external) for further details). The command to carry out this step is the following:
-
-    ```sh
-    RULES_JVM_EXTERNAL_REPIN=1 bazel run @unpinned_maven//:pin
-    ```
-
-4. (Optional) If we use IntelliJ with the Bazel plugin, we need to synchronize
-   our project. To that aim, we click on _Bazel_ &rarr; _Sync_ &rarr; _Sync Project
-   with BUILD Files_.
+```shell
+./go java:update
+```
 
 ### Python
 
