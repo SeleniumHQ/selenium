@@ -45,7 +45,7 @@ public class FirefoxBinary {
     ESR("esr"),
     RELEASE("release"),
     BETA("beta"),
-    AURORA("aurora"),
+    DEV("dev"),
     NIGHTLY("nightly");
 
     private String name;

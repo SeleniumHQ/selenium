@@ -767,10 +767,10 @@ class Channel {
 /**
  * Firefox's developer channel.
  * @const
- * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#aurora>
+ * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#developer>
  */
-Channel.AURORA = new Channel(
-  '/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox-bin',
+Channel.DEV = new Channel(
+  '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
   'Firefox Developer Edition\\firefox.exe'
 )
 
