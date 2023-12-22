@@ -771,16 +771,27 @@ namespace :java do
   task :dependencies do
     file_path = 'java/maven_deps.bzl'
     content = File.read(file_path)
+    # For some reason ./go wrapper is not outputting from Open3, so cannot use Bazel class directly
+    output = `bazel run @maven//:outdated`
 
-    Bazel.execute('run', [], '@maven//:outdated') do |output|
-      versions = output.scan(/(\S+) \[\S+ -> (\S+)\]/).to_h
-      versions.each do |artifact, version|
-        next if artifact.match?('graphql')
-        content.gsub!(/#{artifact}:\d+\.\d+[^\\"]+/, "#{artifact}:#{version}")
-      end
+    output.scan(/\S+ \[\S+-alpha\]/).each do |match|
+      puts "WARNING — Cannot automatically update alpha version of: #{match}"
     end
 
+    versions = output.scan(/(\S+) \[\S+ -> (\S+)\]/).to_h
+    versions.each do |artifact, version|
+      if artifact.match?('graphql')
+        puts "WARNING — Cannot automatically update graphql"
+        next
+      end
+
+      replacement = artifact.include?('googlejavaformat') ? "#{artifact}:jar:#{version}" : "#{artifact}:#{version}"
+      content.gsub!(/#{artifact}:(jar:)?\d+\.\d+[^\\"]+/, replacement)
+    end
     File.write(file_path, content)
+
+    args = ['--action_env=RULES_JVM_EXTERNAL_REPIN=1']
+    Bazel.execute('run', args, '@unpinned_maven//:pin')
   end
 
   desc 'Update Java version'
