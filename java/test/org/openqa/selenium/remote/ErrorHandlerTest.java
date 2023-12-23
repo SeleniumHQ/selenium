@@ -202,36 +202,6 @@ class ErrorHandlerTest {
   }
 
   @Test
-  void testShouldIncludeScreenshotIfProvided() {
-    RuntimeException serverError = new RuntimeException("foo bar baz!");
-    Map<String, Object> data = toMap(serverError);
-    data.put("screen", "screenGrabText");
-
-    assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
-        .withMessage(
-            new WebDriverException(
-                    serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds",
-                    new WebDriverException())
-                .getMessage())
-        .withCauseInstanceOf(ScreenshotException.class)
-        .satisfies(
-            expected -> {
-              Throwable cause = expected.getCause();
-              assertThat(((ScreenshotException) cause).getBase64EncodedScreenshot())
-                  .isEqualTo("screenGrabText");
-              Throwable realCause = cause.getCause();
-              assertThat(realCause).isNotNull();
-              assertThat(realCause.getClass()).isEqualTo(serverError.getClass());
-              assertThat(realCause.getMessage()).isEqualTo(serverError.getMessage());
-              assertStackTracesEqual(serverError.getStackTrace(), realCause.getStackTrace());
-            });
-  }
-
-  @Test
   void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
@@ -457,29 +427,6 @@ class ErrorHandlerTest {
         .withNoCause()
         .withMessageContaining(serverError.getMessage())
         .withMessageContaining(new WebDriverException().getMessage());
-  }
-
-  @Test
-  void testShouldStillIncludeScreenshotEvenIfServerSideExceptionsAreDisabled() {
-    RuntimeException serverError = new RuntimeException("foo bar baz!");
-    Map<String, Object> data = toMap(serverError);
-    data.put("screen", "screenGrabText");
-
-    handler.setIncludeServerErrors(false);
-
-    assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
-        .withMessageStartingWith("foo bar baz!")
-        .withCauseInstanceOf(ScreenshotException.class)
-        .satisfies(
-            expected -> {
-              ScreenshotException screenshot = (ScreenshotException) expected.getCause();
-              assertThat(screenshot.getBase64EncodedScreenshot()).isEqualTo("screenGrabText");
-              assertThat(screenshot).hasNoCause();
-            });
   }
 
   @Test
