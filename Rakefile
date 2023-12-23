@@ -545,6 +545,12 @@ namespace :node do
     puts "WARNING — Cannot currently update API Docs for JavaScript bindings"
   end
 
+  desc 'Update JavaScript changelog'
+  task :changelog do
+    header = "## #{node_version}"
+    update_changelog(node_version, 'javascript', 'javascript/node/selenium-webdriver/', 'javascript/node/selenium-webdriver/CHANGES.md', header)
+  end
+
   desc 'Update Node version'
   task :version, [:version] do |_task, arguments|
     old_version = node_version
@@ -553,6 +559,8 @@ namespace :node do
     file = 'javascript/node/selenium-webdriver/package.json'
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, "w") { |f| f.puts text }
+
+    Rake::Task['node:changelog'].invoke
   end
 end
 
@@ -613,6 +621,12 @@ namespace :py do
     end
   end
 
+  desc 'Update Python changelog'
+  task :changelog do
+    header = "Selenium #{python_version}"
+    update_changelog(python_version, 'py', 'py/', 'py/CHANGES', header)
+  end
+
   desc 'Update Python version'
   task :version, [:version] do |_task, arguments|
     old_version = python_version
@@ -626,6 +640,8 @@ namespace :py do
         text = File.read(file).gsub(old_version, new_version)
         File.open(file, "w") { |f| f.puts text }
     end
+
+    Rake::Task['py:changelog'].invoke
   end
 end
 
@@ -668,6 +684,12 @@ namespace :rb do
     end
   end
 
+  desc 'Update Ruby changelog'
+  task :changelog do
+    header = "#{ruby_version} (#{Time.now.strftime("%Y-%m-%d")})\n========================="
+    update_changelog(ruby_version, 'rb', 'rb/', 'rb/CHANGES', header)
+  end
+
   desc 'Update Ruby version'
   task :version, [:version] do |_task, arguments|
     old_version = ruby_version
@@ -677,6 +699,8 @@ namespace :rb do
     file = 'rb/lib/selenium/webdriver/version.rb'
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, "w") { |f| f.puts text }
+
+    Rake::Task['rb:changelog'].invoke unless old_version.include?('nightly')
   end
 end
 
@@ -746,6 +770,12 @@ namespace :dotnet do
     end
   end
 
+  desc 'Update .NET changelog'
+  task :changelog do
+    header = "v#{dotnet_version}\n======"
+    update_changelog(dotnet_version, 'dotnet', 'dotnet/', 'dotnet/CHANGELOG', header)
+  end
+
   desc 'Update .NET version'
   task :version, [:version] do |_task, arguments|
     old_version = dotnet_version
@@ -754,6 +784,8 @@ namespace :dotnet do
     file = 'dotnet/selenium-dotnet-version.bzl'
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, "w") { |f| f.puts text }
+
+    Rake::Task['dotnet:changelog'].invoke
   end
 end
 
@@ -824,6 +856,12 @@ namespace :java do
     Bazel.execute('run', args, '@unpinned_maven//:pin')
   end
 
+  desc 'Update Java changelog'
+  task :changelog do
+    header = "v#{java_version}\n======"
+    update_changelog(java_version, 'java', 'java/', 'java/CHANGELOG', header)
+  end
+
   desc 'Update Java version'
   task :version, [:version] do |_task, arguments|
     old_version = java_version
@@ -833,6 +871,7 @@ namespace :java do
     file = 'java/version.bzl'
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, "w") { |f| f.puts text }
+    Rake::Task['java:changelog'].invoke unless old_version.include?('SNAPSHOT')
   end
 end
 
@@ -853,9 +892,16 @@ namespace :rust do
     sh 'CARGO_BAZEL_REPIN=true bazel sync --only=crates'
   end
 
+  desc 'Update Rust changelog'
+  task :changelog do
+    header = "#{rust_version}\n======"
+    version = rust_version.split('.').tap(&:shift).join('.')
+    update_changelog(version, 'rust', 'rust/', 'rust/CHANGELOG.md', header)
+  end
+
   desc 'Update Rust version'
   task :version, [:version] do |_task, arguments|
-    old_version = arguments[:version] ? arguments[:version] : rust_version.split('.').tap(&:shift).join('.')
+    old_version = arguments[:version] ? arguments[:version] : rust_version.split('.').tap(&:shift).append('0').join('.')
     new_version = updated_version(old_version, arguments[:version])
     new_version = new_version.split('.').tap(&:pop).join('.')
 
@@ -863,6 +909,8 @@ namespace :rust do
       text = File.read(file).gsub(old_version, new_version)
       File.open(file, "w") { |f| f.puts text }
     end
+
+    Rake::Task['rust:changelog'].invoke
   end
 end
 
@@ -1018,4 +1066,48 @@ def restore_git(origin_reference)
   puts "Checking out originating branch/tag — #{origin_reference}"
   @git.checkout(origin_reference)
   false
+end
+
+def previous_version(version)
+  current = version.split(/\.|-/)
+  if current.size > 3
+    current.pop while current.size > 3
+  else
+    current[1] = (current[1].to_i - 1).to_s
+    current[2] = '0'
+  end
+end
+
+def previous_tag(current_version, language)
+    version = current_version.split(/\.|-/)
+    if version.size > 3
+     puts "Changelogs not updated when set to prerelease"
+   elsif version[2].to_i > 1
+     patch_version = (version[2].to_i - 1).to_s
+     "selenium-#{[[version[0]], version[1], patch_version].join('.')}-#{language}"
+   elsif version[2] == "1"
+     "selenium-#{[[version[0]], version[1], "0"].join('.')}"
+   else
+     minor_version = (version[1].to_i - 1)
+     tags = @git.tags.map(&:name)
+     tags.select { |tag| tag.match?(/selenium-4\.#{minor_version}.*-#{language}/) }.last ||
+       "selenium-#{[[version[0]], minor_version, "0"].join('.')}"
+   end
+end
+
+def update_changelog(version, language, path, changelog, header)
+  tag = previous_tag(version, language)
+  log = `git --no-pager log #{tag}...HEAD --pretty=format:">>> %B" --reverse #{path}`
+  commits = log.split(">>>").map { |entry|
+    lines = entry.split("\n")
+    lines.reject! { |line| line.match?(/^(----|Co-authored|Signed-off)/) || line.empty? }
+    lines.join("\n")
+  }.join("\n>>>")
+
+  File.open(changelog, 'r+') do |file|
+    new_content = "#{header}\n#{commits}\n\n#{file.read}"
+    file.rewind
+    file.write(new_content)
+    file.truncate(file.pos)
+  end
 end
