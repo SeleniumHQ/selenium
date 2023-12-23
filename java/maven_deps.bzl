@@ -1,5 +1,4 @@
 load("@rules_jvm_external//:defs.bzl", "maven_install")
-load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
     maven_install(
