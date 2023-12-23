@@ -6,6 +6,7 @@ version = "9.4.5.0"
 gems = {
   "inifile" => "3.0.0",
   "net-telnet" => "0.2.0",
+  "git" => "1.18.0",
 }
 
 jar_name = ARGV.first
@@ -29,10 +30,10 @@ puts "Bumping VERSION..."
 jruby_version = `java -jar #{jar_name} -version`.split("\n").first
 File.write("VERSION", "#{jruby_version}\n")
 
-destination = File.realpath("third_party/jruby/")
-FileUtils.rm_f("#{destination}jruby-complete.jar") if File.exist?("#{destination}jruby-complete.jar")
-FileUtils.cp(jar_name, "#{destination}jruby-complete.jar")
-FileUtils.cp("VERSION", "#{destination}VERSION")
+destination = File.realpath("third_party/jruby")
+FileUtils.rm_f("#{destination}/jruby-complete.jar") if File.exist?("#{destination}/jruby-complete.jar")
+FileUtils.cp(jar_name, "#{destination}/jruby-complete.jar")
+FileUtils.cp("VERSION", "#{destination}/VERSION")
 
 puts `ls -l third_party/jruby/`
 
