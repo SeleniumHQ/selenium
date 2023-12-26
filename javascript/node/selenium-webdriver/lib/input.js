@@ -1007,6 +1007,18 @@ class Actions {
       new Command(Name.ACTIONS).setParameter('actions', _actions)
     )
   }
+
+  getSequences() {
+    const _actions = []
+    this.sequences_.forEach((actions, device) => {
+      if (!isIdle(actions)) {
+        actions = actions.concat()
+        _actions.push(Object.assign({ actions }, device.toJSON()))
+      }
+    })
+
+    return _actions
+  }
 }
 
 /**
