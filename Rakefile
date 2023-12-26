@@ -872,8 +872,9 @@ namespace :all do
   desc 'File updates for versions and metadata'
     task :update, [:channel] do |_task, arguments|
       args = arguments[:channel] ? ['--', "--chrome_channel=#{arguments[:channel].capitalize}"] : []
-      Bazel.execute('run', args, '//scripts:pinned_browsers')
       Bazel.execute('run', args, '//scripts:update_cdp')
+      Bazel.execute('run', args, '//scripts:pinned_browsers')
+      Bazel.execute('run', args, '//scripts:selenium_manager')
       Rake::Task['java:dependencies'].invoke
       Rake::Task['authors'].invoke
       Rake::Task['copyright:update'].invoke
