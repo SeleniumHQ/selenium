@@ -45,7 +45,7 @@ jobs:
             os: windows
           - ruby-version: 3.0.6
             os: macos
-          - ruby-version: 3.2.2
+          - ruby-version: 3.3.0
             os: ubuntu
           - ruby-version: jruby-9.4.5.0
             os: ubuntu
