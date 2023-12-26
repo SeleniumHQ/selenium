@@ -64,7 +64,7 @@ module Selenium
             extend(WebDriver::Chrome::Features)
           when 'firefox'
             extend(WebDriver::Firefox::Features)
-          when 'msedge'
+          when 'msedge', 'MicrosoftEdge'
             extend(WebDriver::Edge::Features)
           when 'Safari', 'Safari Technology Preview'
             extend(WebDriver::Safari::Features)
@@ -579,6 +579,10 @@ module Selenium
           execute :set_user_verified, {authenticatorId: authenticator_id}, {isUserVerified: verified}
         end
 
+        def command_list
+          COMMANDS
+        end
+
         private
 
         #
@@ -605,10 +609,6 @@ module Selenium
 
         def escaper
           @escaper ||= defined?(URI::Parser) ? URI::DEFAULT_PARSER : URI
-        end
-
-        def command_list
-          COMMANDS
         end
 
         def commands(command)
