@@ -321,6 +321,10 @@ oci_pull(
     repository = "selenium/standalone-chrome",
 )
 
+load("//common:selenium_manager.bzl", "selenium_manager")
+
+selenium_manager()
+
 load("//common:repositories.bzl", "pin_browsers")
 
 pin_browsers()
