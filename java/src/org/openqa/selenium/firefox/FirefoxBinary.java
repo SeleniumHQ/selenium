@@ -38,6 +38,12 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.ExecutableFinder;
 
+/**
+ * A wrapper around Firefox's binary. This allows us to locate the binary in a portable way.
+ *
+ * @deprecated Use {@link FirefoxOptions#setBinary(Path)} or {@link
+ *     FirefoxOptions#setBinary(String)} instead.
+ */
 public class FirefoxBinary {
 
   /** Enumerates Firefox channels, according to https://wiki.mozilla.org/RapidRelease */
@@ -45,7 +51,7 @@ public class FirefoxBinary {
     ESR("esr"),
     RELEASE("release"),
     BETA("beta"),
-    AURORA("aurora"),
+    DEV("dev"),
     NIGHTLY("nightly");
 
     private String name;
@@ -178,7 +184,7 @@ public class FirefoxBinary {
       if (!binaryName.endsWith(".app")) {
         binaryName += ".app";
       }
-      binaryName += "/Contents/MacOS/firefox-bin";
+      binaryName += "/Contents/MacOS/firefox";
     }
 
     binary = new File(binaryName);
@@ -210,7 +216,7 @@ public class FirefoxBinary {
 
     } else if (current.is(MAC)) {
       // system
-      File binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox-bin");
+      File binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox");
       if (binary.exists()) {
         executables.add(new Executable(binary));
       }
@@ -222,7 +228,7 @@ public class FirefoxBinary {
       }
 
     } else if (current.is(UNIX)) {
-      String systemFirefoxBin = new ExecutableFinder().find("firefox-bin");
+      String systemFirefoxBin = new ExecutableFinder().find("firefox");
       if (systemFirefoxBin != null) {
         executables.add(new Executable(new File(systemFirefoxBin)));
       }

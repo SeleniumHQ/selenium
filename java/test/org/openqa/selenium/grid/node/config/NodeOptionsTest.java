@@ -368,7 +368,7 @@ class NodeOptionsTest {
   void driversCanBeConfigured() {
     String chromeLocation =
         "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta";
-    String firefoxLocation = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin";
+    String firefoxLocation = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox";
     ChromeOptions chromeOptions = new ChromeOptions();
     chromeOptions.setBinary(chromeLocation);
     FirefoxOptions firefoxOptions = new FirefoxOptions();
@@ -436,7 +436,7 @@ class NodeOptionsTest {
   @Test
   void driversCanBeConfiguredWithASpecificWebDriverBinary() {
     String chLocation = "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta";
-    String ffLocation = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin";
+    String ffLocation = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox";
     String chromeDriverLocation = "/path/to/chromedriver_beta/chromedriver";
     String geckoDriverLocation = "/path/to/geckodriver_nightly/geckodriver";
     ChromeOptions chromeOptions = new ChromeOptions();

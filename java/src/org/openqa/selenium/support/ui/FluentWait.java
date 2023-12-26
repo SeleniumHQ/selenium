@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.support.ui;
 
-import com.google.common.base.Throwables;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -244,7 +243,12 @@ public class FluentWait<T> implements Wait<T> {
         return e;
       }
     }
-    Throwables.throwIfUnchecked(e);
+    if (e instanceof Error) {
+      throw (Error) e;
+    }
+    if (e instanceof RuntimeException) {
+      throw (RuntimeException) e;
+    }
     throw new RuntimeException(e);
   }
 

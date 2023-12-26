@@ -24,6 +24,7 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT_FROM_SHADOW_
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -68,5 +69,22 @@ class ShadowRoot implements SearchContext, WrapsDriver {
 
   private Map<String, Object> toJson() {
     return singletonMap(W3C.getShadowRootElementKey(), id);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ShadowRoot that = (ShadowRoot) o;
+    return Objects.equals(parent, that.parent) && Objects.equals(id, that.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(parent, id);
   }
 }
