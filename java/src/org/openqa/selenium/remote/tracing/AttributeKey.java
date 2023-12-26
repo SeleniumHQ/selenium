@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
+import io.opentelemetry.semconv.SemanticAttributes;
 
 public enum AttributeKey {
   EXCEPTION_EVENT(SemanticAttributes.EXCEPTION_EVENT_NAME),
