@@ -952,6 +952,18 @@ namespace :all do
     Rake::Task['dotnet:release'].invoke(args)
     Rake::Task['node:release'].invoke(args)
     Rake::Task['create_release_notes'].invoke(args)
+    Rake::Task['all:docs'].invoke
+    Rake::Task['all:version'].invoke(['nightly'])
+
+    puts "Staging nightly version updates"
+    @git.add(['java/version.bzl', 'rb/lib/selenium/webdriver/version.rb'], all: true)
+    puts "Committing nightly version updates"
+    @git.commit('updating versions to nightly')
+    puts "Pushing changes to upstream repository"
+
+    print 'Do you want to commit the changes? (Y/n): '
+    response = STDIN.gets.chomp.downcase
+    @git.push if response == 'y' || response == 'yes'
   end
 
   desc 'File updates for versions and metadata'
