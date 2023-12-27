@@ -624,7 +624,7 @@ namespace :py do
   desc 'Update Python changelog'
   task :changelog do
     header = "Selenium #{python_version}"
-    update_changelog(python_version, 'py', 'py/', 'py/CHANGES', header)
+    update_changelog(python_version, 'py', 'py/selenium/webdriver', 'py/CHANGES', header)
   end
 
   desc 'Update Python version'
@@ -687,7 +687,7 @@ namespace :rb do
   desc 'Update Ruby changelog'
   task :changelog do
     header = "#{ruby_version} (#{Time.now.strftime("%Y-%m-%d")})\n========================="
-    update_changelog(ruby_version, 'rb', 'rb/', 'rb/CHANGES', header)
+    update_changelog(ruby_version, 'rb', 'rb/lib/', 'rb/CHANGES', header)
   end
 
   desc 'Update Ruby version'
@@ -773,7 +773,7 @@ namespace :dotnet do
   desc 'Update .NET changelog'
   task :changelog do
     header = "v#{dotnet_version}\n======"
-    update_changelog(dotnet_version, 'dotnet', 'dotnet/', 'dotnet/CHANGELOG', header)
+    update_changelog(dotnet_version, 'dotnet', 'dotnet/src/', 'dotnet/CHANGELOG', header)
   end
 
   desc 'Update .NET version'
@@ -859,7 +859,7 @@ namespace :java do
   desc 'Update Java changelog'
   task :changelog do
     header = "v#{java_version}\n======"
-    update_changelog(java_version, 'java', 'java/', 'java/CHANGELOG', header)
+    update_changelog(java_version, 'java', 'java/src/org/', 'java/CHANGELOG', header)
   end
 
   desc 'Update Java version'
@@ -896,7 +896,7 @@ namespace :rust do
   task :changelog do
     header = "#{rust_version}\n======"
     version = rust_version.split('.').tap(&:shift).join('.')
-    update_changelog(version, 'rust', 'rust/', 'rust/CHANGELOG.md', header)
+    update_changelog(version, 'rust', 'rust/src', 'rust/CHANGELOG.md', header)
   end
 
   desc 'Update Rust version'
