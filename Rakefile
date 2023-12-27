@@ -825,9 +825,6 @@ namespace :rust do
 
   desc 'Update Rust version'
   task :version, [:version] do |_task, arguments|
-    puts rust_version
-    puts rust_version.split('.')
-    puts rust_version.split('.').tap(&:shift).join('.')
     old_version = arguments[:version] ? arguments[:version] : rust_version.split('.').tap(&:shift).join('.')
     new_version = updated_version(old_version, arguments[:version])
     new_version = new_version.split('.').tap(&:pop).join('.')
