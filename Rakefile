@@ -942,6 +942,9 @@ namespace :all do
   desc 'Release all artifacts for all language bindings'
   task :release, [:args] do |_task, arguments|
     Rake::Task['clean'].invoke
+    tag = @git.add_tag("selenium-#{java_version}")
+    @git.push('origin', tag.name)
+
     args = arguments[:args] ? [arguments[:args]] : ['--stamp']
     Rake::Task['java:release'].invoke(args)
     Rake::Task['py:release'].invoke(args)
