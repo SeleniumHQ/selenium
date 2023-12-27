@@ -33,8 +33,6 @@ module Selenium
       # correctly when using asynchronous.
       #
       # @param [Selenium::WebDriver::Remote::Bridge] bridge the bridge for the current driver instance.
-      # @param [Boolean] deprecated_async Whether to perform the actions asynchronously per device.
-      #   Defaults to false for backwards compatibility.
       # @param [Array<Selenium::WebDriver::Interactions::InputDevices>] devices list of valid sources of input.
       # @param [Boolean] async Whether to perform the actions asynchronously per device.
       # @return [ActionBuilder] A self reference.
