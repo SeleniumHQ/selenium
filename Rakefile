@@ -1141,7 +1141,7 @@ def previous_tag(current_version, language=nil)
   else
     minor_version = (version[1].to_i - 1)
     tags = @git.tags.map(&:name)
-    tag = tags.select { |tag| tag.match?(/selenium-4\.#{minor_version}.*-#{language}/) }.last if language
+    tag = language ? tags.select { |tag| tag.match?(/selenium-4\.#{minor_version}.*-#{language}/) }.last : nil
     tag || "selenium-#{[[version[0]], minor_version, "0"].join('.')}"
   end
 end
