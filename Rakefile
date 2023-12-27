@@ -948,6 +948,7 @@ namespace :all do
     Rake::Task['rb:release'].invoke(args)
     Rake::Task['dotnet:release'].invoke(args)
     Rake::Task['node:release'].invoke(args)
+    Rake::Task['create_release_notes'].invoke(args)
   end
 
   desc 'File updates for versions and metadata'
@@ -980,6 +981,39 @@ end
 
 at_exit do
   system 'sh', '.git-fixfiles' if File.exist?('.git') && !SeleniumRake::Checks.windows?
+end
+
+desc 'Create Release Notes for Minor Release'
+task :create_release_notes do
+  range = "#{previous_tag(java_version)}...HEAD"
+  format = "* [\\`%h\\`](http://github.com/seleniumhq/selenium/commit/%H) - %s :: %an"
+  git_log_command = %Q(git --no-pager log "#{range}" --pretty=format:"#{format}"--reverse)
+  git_log_output = `#{git_log_command}`
+
+  release_notes = <<~RELEASE_NOTES
+  ### Changelog
+
+  For each component's detailed changelog, please check:
+  * [Ruby](https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES)
+  * [Python](https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES)
+  * [JavaScript](https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/CHANGES.md)
+  * [Java](https://github.com/SeleniumHQ/selenium/blob/trunk/java/CHANGELOG)
+  * [DotNet](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG)
+  * [IEDriverServer](https://github.com/SeleniumHQ/selenium/blob/trunk/cpp/iedriverserver/CHANGELOG)
+
+  ### Commits in this release
+  <details>
+  <summary>Click to see all the commits included in this release</summary>
+
+  #{git_log_output}
+
+  </details>
+  RELEASE_NOTES
+
+  FileUtils.mkdir_p('build/dist')
+  release_notes_file = "build/dist/release_notes_#{java_version}.md"
+  File.write(release_notes_file, release_notes)
+  puts "Release notes have been generated at: #{release_notes_file}"
 end
 
 def updated_version(current, desired = nil)
@@ -1078,21 +1112,23 @@ def previous_version(version)
   end
 end
 
-def previous_tag(current_version, language)
-    version = current_version.split(/\.|-/)
-    if version.size > 3
-     puts "Changelogs not updated when set to prerelease"
-   elsif version[2].to_i > 1
-     patch_version = (version[2].to_i - 1).to_s
-     "selenium-#{[[version[0]], version[1], patch_version].join('.')}-#{language}"
-   elsif version[2] == "1"
-     "selenium-#{[[version[0]], version[1], "0"].join('.')}"
-   else
-     minor_version = (version[1].to_i - 1)
-     tags = @git.tags.map(&:name)
-     tags.select { |tag| tag.match?(/selenium-4\.#{minor_version}.*-#{language}/) }.last ||
-       "selenium-#{[[version[0]], minor_version, "0"].join('.')}"
-   end
+def previous_tag(current_version, language=nil)
+  version = current_version.split(/\.|-/)
+  if version.size > 3
+    puts "WARNING - Changelogs not updated when set to prerelease"
+  elsif version[2].to_i > 1
+    # specified as patch release
+    patch_version = (version[2].to_i - 1).to_s
+    "selenium-#{[[version[0]], version[1], patch_version].join('.')}-#{language}"
+  elsif version[2] == "1"
+    # specified as patch release; special case
+    "selenium-#{[[version[0]], version[1], "0"].join('.')}"
+  else
+    minor_version = (version[1].to_i - 1)
+    tags = @git.tags.map(&:name)
+    tag = tags.select { |tag| tag.match?(/selenium-4\.#{minor_version}.*-#{language}/) }.last if language
+    tag || "selenium-#{[[version[0]], minor_version, "0"].join('.')}"
+  end
 end
 
 def update_changelog(version, language, path, changelog, header)
