@@ -338,17 +338,17 @@ task :'java-release-zip' do
   Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium/grid:server-zip')
   Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium/grid:executable-grid')
   mkdir_p 'build/dist'
-  FileUtils.rm_f('build/dist/*.{server,java}*')
+  Dir.glob('build/dist/*{java,server}*').each { |file| FileUtils.rm_f(file) }
 
   FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip',
                  "build/dist/selenium-server-#{java_version}.zip")
-  FileUtils.chmod(666, "build/dist/selenium-server-#{java_version}.zip")
+  FileUtils.chmod(0666, "build/dist/selenium-server-#{java_version}.zip")
   FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/client-zip.zip',
                  "build/dist/selenium-java-#{java_version}.zip")
-  FileUtils.chmod(666, "build/dist/selenium-java-#{java_version}.zip")
+  FileUtils.chmod(0666, "build/dist/selenium-java-#{java_version}.zip")
   FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/selenium',
                  "build/dist/selenium-server-#{java_version}.jar")
-  FileUtils.chmod(777, "build/dist/selenium-server-#{java_version}.jar")
+  FileUtils.chmod(0777, "build/dist/selenium-server-#{java_version}.jar")
 end
 
 task 'release-java': %i[java-release-zip publish-maven]
