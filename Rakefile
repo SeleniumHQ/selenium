@@ -700,7 +700,7 @@ namespace :rb do
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, "w") { |f| f.puts text }
 
-    Rake::Task['rb:changelog'].invoke unless old_version.include?('nightly')
+    Rake::Task['rb:changelog'].invoke unless new_version.include?('nightly')
   end
 end
 
@@ -901,16 +901,22 @@ namespace :rust do
 
   desc 'Update Rust version'
   task :version, [:version] do |_task, arguments|
-    old_version = arguments[:version] ? arguments[:version] : rust_version.split('.').tap(&:shift).append('0').join('.')
-    new_version = updated_version(old_version, arguments[:version])
-    new_version = new_version.split('.').tap(&:pop).join('.')
+    old_version = rust_version.dup
+    equivalent_version = if old_version.include?('nightly')
+                           old_version.split('.')[0...-1].tap(&:shift).append('0').append('nightly').join('.')
+                         else
+                           old_version.split('.').tap(&:shift).append('0').join('.')
+                         end
+    converted_version = updated_version(equivalent_version, arguments[:version])
+    new_version = converted_version.split('.').unshift("0").tap(&:pop).join('.')
+    new_version += '.nightly' unless old_version.include?('nightly')
 
     ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
       File.open(file, "w") { |f| f.puts text }
     end
 
-    Rake::Task['rust:changelog'].invoke
+    Rake::Task['rust:changelog'].invoke unless new_version.include?('nightly')
   end
 end
 
@@ -983,6 +989,7 @@ namespace :all do
     if version == 'nightly'
       Rake::Task['java:version'].invoke
       Rake::Task['rb:version'].invoke
+      Rake::Task['rust:version'].invoke
     else
       Rake::Task['java:version'].invoke(version)
       Rake::Task['rb:version'].invoke(version)
@@ -1034,8 +1041,10 @@ end
 def updated_version(current, desired = nil)
   version = desired ? desired.split('.') : current.split(/\.|-/)
   if desired
+    # Allows user to pass in only major/minor versions
     version << "0" while version.size < 3
   elsif version.size > 3
+    # Assumes a pre-release version which means removing the pre-release portion
     version.pop while version.size > 3
   else
     version[1] = (version[1].to_i + 1).to_s
