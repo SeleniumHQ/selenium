@@ -903,13 +903,13 @@ namespace :rust do
   task :version, [:version] do |_task, arguments|
     old_version = rust_version.dup
     equivalent_version = if old_version.include?('nightly')
-                           old_version.split('.')[0...-1].tap(&:shift).append('0').append('nightly').join('.')
+                           "#{old_version.split(/\.|-/)[0...-1].tap(&:shift).join('.')}.0-nightly"
                          else
                            old_version.split('.').tap(&:shift).append('0').join('.')
                          end
     converted_version = updated_version(equivalent_version, arguments[:version])
     new_version = converted_version.split('.').unshift("0").tap(&:pop).join('.')
-    new_version += '.nightly' unless old_version.include?('nightly')
+    new_version += '-nightly' unless old_version.include?('nightly')
 
     ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
@@ -917,6 +917,7 @@ namespace :rust do
     end
 
     Rake::Task['rust:changelog'].invoke unless new_version.include?('nightly')
+    Rake::Task['rust:update'].invoke
   end
 end
 
