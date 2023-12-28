@@ -2,6 +2,9 @@ name: CI - Rust
 
 on:
   workflow_call:
+    secrets:
+      SELENIUM_CI_TOKEN:
+        required: true
   workflow_dispatch:
 
 jobs:

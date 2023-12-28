@@ -101,6 +101,8 @@ jobs:
     name: Rust
     needs: check
     uses: ./.github/workflows/ci-rust.yml
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
