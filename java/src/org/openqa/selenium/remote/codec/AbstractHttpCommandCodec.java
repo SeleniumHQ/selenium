@@ -31,7 +31,6 @@ import static org.openqa.selenium.remote.DriverCommand.DELETE_ALL_COOKIES;
 import static org.openqa.selenium.remote.DriverCommand.DELETE_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.DELETE_DOWNLOADABLE_FILES;
 import static org.openqa.selenium.remote.DriverCommand.DOWNLOAD_FILE;
-import static org.openqa.selenium.remote.DriverCommand.ELEMENT_EQUALS;
 import static org.openqa.selenium.remote.DriverCommand.ELEMENT_SCREENSHOT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
@@ -41,8 +40,6 @@ import static org.openqa.selenium.remote.DriverCommand.FULLSCREEN_CURRENT_WINDOW
 import static org.openqa.selenium.remote.DriverCommand.GET;
 import static org.openqa.selenium.remote.DriverCommand.GET_ACCOUNTS;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_COOKIES;
-import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
-import static org.openqa.selenium.remote.DriverCommand.GET_APP_CACHE_STATUS;
 import static org.openqa.selenium.remote.DriverCommand.GET_AVAILABLE_LOG_TYPES;
 import static org.openqa.selenium.remote.DriverCommand.GET_CAPABILITIES;
 import static org.openqa.selenium.remote.DriverCommand.GET_CONTEXT_HANDLES;
@@ -64,13 +61,11 @@ import static org.openqa.selenium.remote.DriverCommand.GET_LOG;
 import static org.openqa.selenium.remote.DriverCommand.GET_NETWORK_CONNECTION;
 import static org.openqa.selenium.remote.DriverCommand.GET_SCREEN_ORIENTATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_SCREEN_ROTATION;
-import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_LOGS;
 import static org.openqa.selenium.remote.DriverCommand.GET_TIMEOUTS;
 import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
 import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
 import static org.openqa.selenium.remote.DriverCommand.GO_FORWARD;
 import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
-import static org.openqa.selenium.remote.DriverCommand.IS_BROWSER_ONLINE;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
 import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
@@ -83,8 +78,6 @@ import static org.openqa.selenium.remote.DriverCommand.RESET_COOLDOWN;
 import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import static org.openqa.selenium.remote.DriverCommand.SELECT_ACCOUNT;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_CREDENTIALS;
-import static org.openqa.selenium.remote.DriverCommand.SET_BROWSER_ONLINE;
 import static org.openqa.selenium.remote.DriverCommand.SET_DELAY_ENABLED;
 import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.SET_NETWORK_CONNECTION;
@@ -137,14 +130,12 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
     String sessionId = "/session/:sessionId";
 
-    defineCommand(GET_ALL_SESSIONS, get("/sessions"));
     defineCommand(NEW_SESSION, post("/session"));
     defineCommand(GET_CAPABILITIES, get(sessionId));
     defineCommand(QUIT, delete(sessionId));
 
-    defineCommand(GET_SESSION_LOGS, post("/logs"));
-    defineCommand(GET_LOG, post(sessionId + "/log"));
-    defineCommand(GET_AVAILABLE_LOG_TYPES, get(sessionId + "/log/types"));
+    defineCommand(GET_LOG, post(sessionId + "/log"));  // Not w3c; overridden in W3CHttpCommandCodec
+    defineCommand(GET_AVAILABLE_LOG_TYPES, get(sessionId + "/log/types"));  // Not w3c; overridden in W3CHttpCommandCodec
 
     defineCommand(SWITCH_TO_FRAME, post(sessionId + "/frame"));
     defineCommand(SWITCH_TO_PARENT_FRAME, post(sessionId + "/frame/parent"));
@@ -161,8 +152,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(GO_FORWARD, post(sessionId + "/forward"));
     defineCommand(REFRESH, post(sessionId + "/refresh"));
 
-    defineCommand(SET_ALERT_CREDENTIALS, post(sessionId + "/alert/credentials"));
-
     defineCommand(SCREENSHOT, get(sessionId + "/screenshot"));
     defineCommand(ELEMENT_SCREENSHOT, get(sessionId + "/element/:id/screenshot"));
     defineCommand(GET_TITLE, get(sessionId + "/title"));
@@ -177,12 +166,11 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(FIND_CHILD_ELEMENT, post(elementId + "/element"));
     defineCommand(FIND_CHILD_ELEMENTS, post(elementId + "/elements"));
     defineCommand(IS_ELEMENT_ENABLED, get(elementId + "/enabled"));
-    defineCommand(ELEMENT_EQUALS, get(elementId + "/equals/:other"));
     defineCommand(GET_ELEMENT_RECT, get(elementId + "/rect"));
-    defineCommand(GET_ELEMENT_LOCATION, get(elementId + "/location"));
+    defineCommand(GET_ELEMENT_LOCATION, get(elementId + "/location")); // Not w3c; Overridden in W3CHttpCommandCodec with rect
     defineCommand(GET_ELEMENT_TAG_NAME, get(elementId + "/name"));
     defineCommand(IS_ELEMENT_SELECTED, get(elementId + "/selected"));
-    defineCommand(GET_ELEMENT_SIZE, get(elementId + "/size"));
+    defineCommand(GET_ELEMENT_SIZE, get(elementId + "/size")); // Not w3c; Overridden in W3CHttpCommandCodec with rect
     defineCommand(GET_ELEMENT_TEXT, get(elementId + "/text"));
     defineCommand(SEND_KEYS_TO_ELEMENT, post(elementId + "/value"));
 
@@ -199,23 +187,29 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(SET_SCRIPT_TIMEOUT, post(timeouts + "/async_script"));
     defineCommand(IMPLICITLY_WAIT, post(timeouts + "/implicit_wait"));
 
-    defineCommand(GET_APP_CACHE_STATUS, get(sessionId + "/application_cache/status"));
-    defineCommand(IS_BROWSER_ONLINE, get(sessionId + "/browser_connection"));
-    defineCommand(SET_BROWSER_ONLINE, post(sessionId + "/browser_connection"));
-    defineCommand(GET_LOCATION, get(sessionId + "/location"));
-    defineCommand(SET_LOCATION, post(sessionId + "/location"));
+    defineCommand(
+        GET_LOCATION, get(sessionId + "/location")); // Not w3c; used in RemoteLocationContext
+    defineCommand(
+        SET_LOCATION, post(sessionId + "/location")); // Not w3c; used in RemoteLocationContext
 
-    defineCommand(GET_SCREEN_ORIENTATION, get(sessionId + "/orientation"));
-    defineCommand(SET_SCREEN_ORIENTATION, post(sessionId + "/orientation"));
-    defineCommand(GET_SCREEN_ROTATION, get(sessionId + "/rotation"));
-    defineCommand(SET_SCREEN_ROTATION, post(sessionId + "/rotation"));
+    defineCommand(
+        GET_SCREEN_ORIENTATION, get(sessionId + "/orientation")); // Not w3c; used in Appium
+    defineCommand(
+        SET_SCREEN_ORIENTATION, post(sessionId + "/orientation")); // Not w3c; used in Appium
+    defineCommand(GET_SCREEN_ROTATION, get(sessionId + "/rotation")); // Not w3c; used in Appium
+    defineCommand(SET_SCREEN_ROTATION, post(sessionId + "/rotation")); // Not w3c; used in Appium
 
     // Mobile Spec
-    defineCommand(GET_NETWORK_CONNECTION, get(sessionId + "/network_connection"));
-    defineCommand(SET_NETWORK_CONNECTION, post(sessionId + "/network_connection"));
-    defineCommand(SWITCH_TO_CONTEXT, post(sessionId + "/context"));
-    defineCommand(GET_CURRENT_CONTEXT_HANDLE, get(sessionId + "/context"));
-    defineCommand(GET_CONTEXT_HANDLES, get(sessionId + "/contexts"));
+    defineCommand(
+        GET_NETWORK_CONNECTION,
+        get(sessionId + "/network_connection")); // Not w3c; used in RemoteNetworkConnection
+    defineCommand(
+        SET_NETWORK_CONNECTION,
+        post(sessionId + "/network_connection")); // Not w3c; used in RemoteNetworkConnection
+    defineCommand(SWITCH_TO_CONTEXT, post(sessionId + "/context")); // Not w3c; used in Appium
+    defineCommand(
+        GET_CURRENT_CONTEXT_HANDLE, get(sessionId + "/context")); // Not w3c; used in Appium
+    defineCommand(GET_CONTEXT_HANDLES, get(sessionId + "/contexts")); // Not w3c; used in Appium
 
     // Virtual Authenticator API
     String webauthn = sessionId + "/webauthn/authenticator";
