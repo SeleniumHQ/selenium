@@ -832,6 +832,10 @@ namespace :java do
 
   desc 'Update Maven dependencies'
   task :update do
+    # Make sure things are in a good state to start with
+    args = ['--action_env=RULES_JVM_EXTERNAL_REPIN=1']
+    Bazel.execute('run', args, '@unpinned_maven//:pin')
+
     file_path = 'java/maven_deps.bzl'
     content = File.read(file_path)
     # For some reason ./go wrapper is not outputting from Open3, so cannot use Bazel class directly
