@@ -302,11 +302,13 @@ public class ChromiumDriver extends RemoteWebDriver
   }
 
   @Override
+  @Deprecated
   public Location location() {
     return locationContext.location();
   }
 
   @Override
+  @Deprecated
   public void setLocation(Location location) {
     Require.nonNull("Location", location);
     locationContext.setLocation(location);
