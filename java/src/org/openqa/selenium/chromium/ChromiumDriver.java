@@ -315,11 +315,13 @@ public class ChromiumDriver extends RemoteWebDriver
   }
 
   @Override
+  @Deprecated
   public ConnectionType getNetworkConnection() {
     return networkConnection.getNetworkConnection();
   }
 
   @Override
+  @Deprecated
   public ConnectionType setNetworkConnection(ConnectionType type) {
     Require.nonNull("Network Connection Type", type);
     return networkConnection.setNetworkConnection(type);

@@ -22,6 +22,10 @@ import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 
+/**
+ * @deprecated This functionality is no longer supported
+ */
+@Deprecated
 public class RemoteNetworkConnection implements NetworkConnection {
 
   private final ExecuteMethod executeMethod;
@@ -31,12 +35,14 @@ public class RemoteNetworkConnection implements NetworkConnection {
   }
 
   @Override
+  @Deprecated
   public ConnectionType getNetworkConnection() {
     return new ConnectionType(
         ((Number) executeMethod.execute(DriverCommand.GET_NETWORK_CONNECTION, null)).intValue());
   }
 
   @Override
+  @Deprecated
   public ConnectionType setNetworkConnection(ConnectionType type) {
     Map<String, ConnectionType> mode = Map.of("type", type);
     return new ConnectionType(
