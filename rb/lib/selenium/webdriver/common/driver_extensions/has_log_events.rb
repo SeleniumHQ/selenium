@@ -64,7 +64,7 @@ module Selenium
           return if enabled
 
           devtools.runtime.enable
-          __send__("log_#{kind}_events")
+          __send__(:"log_#{kind}_events")
         end
 
         private

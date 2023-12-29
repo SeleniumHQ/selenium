@@ -20,7 +20,6 @@ package org.openqa.selenium.remote;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -382,6 +381,6 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
   }
 
   public Map<String, Object> toJson() {
-    return ImmutableMap.of(Dialect.W3C.getEncodedElementKey(), getId());
+    return Map.of(Dialect.W3C.getEncodedElementKey(), getId());
   }
 }

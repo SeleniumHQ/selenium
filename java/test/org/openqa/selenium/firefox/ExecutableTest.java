@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,8 @@ import org.openqa.selenium.WebDriverException;
 @Tag("UnitTests")
 class ExecutableTest {
 
+  private static final Logger LOG = Logger.getLogger(ExecutableTest.class.getName());
+
   private String binaryPath;
 
   @BeforeEach
@@ -36,7 +39,7 @@ class ExecutableTest {
     try {
       binaryPath = new FirefoxBinary().getPath();
     } catch (WebDriverException ex) {
-      ex.printStackTrace();
+      LOG.severe("Error during execution: " + ex.getMessage());
       assumeTrue(false);
     }
   }

@@ -507,7 +507,7 @@ public class NodeOptions {
               sessionFactories.putAll(capabilities, entry.getValue());
             });
 
-    if (sessionFactories.build().size() == 0) {
+    if (sessionFactories.build().isEmpty()) {
       String logMessage = "No drivers have been configured or have been found on PATH";
       LOG.warning(logMessage);
       throw new ConfigException(logMessage);

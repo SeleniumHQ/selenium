@@ -43,6 +43,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -81,6 +82,7 @@ import org.openqa.selenium.support.ui.Wait;
 
 class LocalDistributorTest {
 
+  private static final Logger LOG = Logger.getLogger(LocalDistributorTest.class.getName());
   private final Secret registrationSecret = new Secret("bavarian smoked");
   private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
   private Tracer tracer;
@@ -421,7 +423,7 @@ class LocalDistributorTest {
                       try {
                         Thread.sleep(delay);
                       } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        LOG.severe("Error during execution: " + e.getMessage());
                       }
                       return new Handler(c);
                     }))

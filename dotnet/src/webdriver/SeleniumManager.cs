@@ -81,6 +81,7 @@ namespace OpenQA.Selenium
         {
             StringBuilder argsBuilder = new StringBuilder();
             argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", options.BrowserName);
+            argsBuilder.Append(" --language-binding csharp");
             argsBuilder.Append(" --output json");
 
             if (!string.IsNullOrEmpty(options.BrowserVersion))

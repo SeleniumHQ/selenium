@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singleton;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -48,6 +46,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpHeader;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -108,8 +107,8 @@ public class ProtocolHandshake {
     // Setting the CONTENT_LENGTH will allow a http client implementation not to read the data in
     // memory. Usually the payload is small and buffering it to memory is okay, except for a new
     // session e.g. with profiles.
-    request.setHeader(CONTENT_LENGTH, String.valueOf(size));
-    request.setHeader(CONTENT_TYPE, JSON_UTF_8);
+    request.setHeader(HttpHeader.ContentLength.getName(), String.valueOf(size));
+    request.setHeader(HttpHeader.ContentType.getName(), JSON_UTF_8);
     request.setContent(contentSupplier);
 
     response = client.execute(request);

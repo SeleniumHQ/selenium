@@ -18,7 +18,7 @@ alias(
     name = "selenium-manager-windows",
     actual = select({
         "//common:windows": ":selenium-manager",
-        "//conditions:default": "//common/manager:windows/selenium-manager.exe",
+        "//conditions:default": "@download_sm_windows//file",
     }),
     tags = [
         "manual",
@@ -32,7 +32,7 @@ alias(
     name = "selenium-manager-macos",
     actual = select({
         "//common:macos": ":selenium-manager",
-        "//conditions:default": "//common/manager:macos/selenium-manager",
+        "//conditions:default": "@download_sm_macos//file",
     }),
     tags = [
         "manual",
@@ -46,7 +46,7 @@ alias(
     name = "selenium-manager-linux",
     actual = select({
         "//common:linux": ":selenium-manager",
-        "//conditions:default": "//common/manager:linux/selenium-manager",
+        "//conditions:default": "@download_sm_linux//file",
     }),
     tags = [
         "manual",
@@ -77,7 +77,7 @@ rust_binary(
     name = "selenium-manager",
     srcs = ["src/main.rs"],
     edition = "2021",
-    version = "0.4.17",
+    version = "0.4.17-nightly",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",

@@ -72,15 +72,14 @@ import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -281,21 +280,26 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         }
 
         String text = source.collect(Collectors.joining());
-        return ImmutableMap.<String, Object>builder()
-            .putAll(
-                parameters.entrySet().stream()
-                    .filter(e -> !"text".equals(e.getKey()))
-                    .filter(e -> !"value".equals(e.getKey()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
-            .put("text", text)
-            .put("value", stringToUtf8Array(text))
-            .build();
+        {
+          Map<String, Object> merged = new LinkedHashMap<>();
 
+          parameters.forEach(
+              (key, val) -> {
+                if ("text".equals(key) || "value".equals(key)) {
+                  return;
+                }
+                merged.put(key, val);
+              });
+
+          merged.put("text", text);
+          merged.put("value", stringToUtf8Array(text));
+
+          return Map.copyOf(merged);
+        }
       case SET_ALERT_VALUE:
-        return ImmutableMap.<String, Object>builder()
-            .put("text", parameters.get("text"))
-            .put("value", stringToUtf8Array((String) parameters.get("text")))
-            .build();
+        return Map.of(
+            "text", parameters.get("text"),
+            "value", stringToUtf8Array((String) parameters.get("text")));
 
       case SET_TIMEOUT:
         String timeoutType = (String) parameters.get("type");
@@ -306,14 +310,20 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
           return parameters;
         }
 
-        return ImmutableMap.<String, Object>builder()
-            .putAll(
-                parameters.entrySet().stream()
-                    .filter(e -> !timeoutType.equals(e.getKey()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
-            .put(timeoutType, duration)
-            .build();
+        {
+          Map<String, Object> merged = new LinkedHashMap<>();
 
+          parameters.forEach(
+              (key, val) -> {
+                if (timeoutType.equals(key)) {
+                  return;
+                }
+                merged.put(key, val);
+              });
+          merged.put(timeoutType, duration);
+
+          return Map.copyOf(merged);
+        }
       case SUBMIT_ELEMENT:
         return toScript(
             "/* submitForm */var form = arguments[0];\n"
@@ -350,10 +360,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
               atomFileName,
               (fileName) -> {
                 String scriptName = "/org/openqa/selenium/remote/" + atomFileName;
-                URL url = getClass().getResource(scriptName);
                 String rawFunction;
-                try {
-                  rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
+                try (InputStream stream = getClass().getResourceAsStream(scriptName)) {
+                  rawFunction = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
                 } catch (IOException e) {
                   throw new UncheckedIOException(e);
                 }
@@ -373,18 +382,18 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     List<Object> convertedArgs =
         Stream.of(args).map(new WebElementToJsonConverter()).collect(Collectors.toList());
 
-    return ImmutableMap.of(
+    return Map.of(
         "script", script,
         "args", convertedArgs);
   }
 
   private Map<String, String> asElement(Object id) {
-    return ImmutableMap.of("element-6066-11e4-a52e-4f735466cecf", (String) id);
+    return Map.of("element-6066-11e4-a52e-4f735466cecf", (String) id);
   }
 
   private String cssEscape(String using) {
     using = CSS_ESCAPE.matcher(using).replaceAll("\\\\$1");
-    if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
+    if (!using.isEmpty() && Character.isDigit(using.charAt(0))) {
       using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
     }
     return using;

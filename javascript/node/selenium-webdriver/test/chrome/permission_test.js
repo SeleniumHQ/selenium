@@ -55,7 +55,7 @@ test.suite(
         async function () {
           const driver = await env
             .builder()
-            .setChromeOptions(new chrome.Options().headless())
+            .setChromeOptions(new chrome.Options().addArguments('-headless'))
             .build()
 
           await driver.get(test.Pages.clicksPage)

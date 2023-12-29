@@ -55,6 +55,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
+      SE_AVOID_STATS: true
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4

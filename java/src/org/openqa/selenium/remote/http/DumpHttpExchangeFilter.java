@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.io.InputStream;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -58,7 +57,7 @@ public class DumpHttpExchangeFilter implements Filter {
     builder.append(Contents.string(message));
   }
 
-  @VisibleForTesting
+  /** visible for testing only */
   String requestLogMessage(HttpRequest req) {
     // There's no requirement that requests or responses can be read more than once. Protect
     // ourselves.
@@ -71,7 +70,7 @@ public class DumpHttpExchangeFilter implements Filter {
     return reqInfo.toString();
   }
 
-  @VisibleForTesting
+  /** visible for testing only */
   String responseLogMessage(HttpResponse res) {
     Supplier<InputStream> resContents = Contents.memoize(res.getContent());
     res.setContent(resContents);

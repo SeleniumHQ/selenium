@@ -151,7 +151,7 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
     List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available
-    if (castSinks.size() > 0) {
+    if (!castSinks.isEmpty()) {
       String deviceName = castSinks.get(0).get("name");
 
       caster.startTabMirroring(deviceName);
