@@ -240,14 +240,9 @@ public class FirefoxBinary {
       if (Files.isSymbolicLink(firefoxPath)) {
         try {
           Path realPath = firefoxPath.toRealPath();
-          File attempt1 = realPath.getParent().resolve("firefox").toFile();
-          if (attempt1.exists()) {
-            executables.add(new Executable(attempt1));
-          } else {
-            File attempt2 = realPath.getParent().resolve("firefox-bin").toFile();
-            if (attempt2.exists()) {
-              executables.add(new Executable(attempt2));
-            }
+          File file = realPath.getParent().resolve("firefox").toFile();
+          if (file.exists()) {
+            executables.add(new Executable(file));
           }
         } catch (IOException e) {
           // ignore this path
