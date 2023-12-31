@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    module Firefox
+      self.@path: untyped
+
+      DEFAULT_PORT: Integer
+
+      DEFAULT_SECURE_SSL: bool
+
+      DEFAULT_ASSUME_UNTRUSTED_ISSUER: bool
+
+      DEFAULT_LOAD_NO_FOCUS_LIB: bool
+
+      DEVTOOLS_VERSION: Integer
+
+      def self.path=: (untyped path) -> untyped
+
+      def self.path: () -> untyped
+    end
+  end
+end

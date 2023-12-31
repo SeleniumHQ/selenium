@@ -19,12 +19,12 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.15.2"
+SE_VERSION = "4.16.0"
 
 BROWSER_VERSIONS = [
     "v85",
     "v119",
-    "v117",
+    "v120",
     "v118",
 ]
 
@@ -314,7 +314,7 @@ py_library(
 
 [
     py_test_suite(
-        name = "auto-%s" % browser,
+        name = "common-%s" % browser,
         size = "large",
         srcs = glob(
             [
@@ -346,19 +346,17 @@ py_test_suite(
     srcs = glob(
         [
             "test/selenium/webdriver/chrome/**/*.py",
-            "test/selenium/webdriver/common/**/*.py",
-            "test/selenium/webdriver/support/**/*.py",
         ],
         exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"],
     ),
     args = [
         "--instafail",
-        "--driver=chrome",
-    ],
+    ] + BROWSERS["chrome"]["args"],
+    data = BROWSERS["chrome"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
-        "skip-remote",
-    ],
+    ] + BROWSERS["chrome"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -372,19 +370,18 @@ py_test_suite(
     srcs = glob(
         [
             "test/selenium/webdriver/chrome/**/*.py",
-            "test/selenium/webdriver/common/**/*.py",
-            "test/selenium/webdriver/support/**/*.py",
         ],
     ),
     args = [
         "--instafail",
-        "--driver=chrome",
         "--headless=true",
-    ],
+    ] + BROWSERS["chrome"]["args"],
+    data = BROWSERS["chrome"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
         "skip-remote",
-    ],
+    ] + BROWSERS["chrome"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -397,17 +394,15 @@ py_test_suite(
     size = "large",
     srcs = glob([
         "test/selenium/webdriver/edge/**/*.py",
-        "test/selenium/webdriver/common/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
     ]),
     args = [
         "--instafail",
-        "--driver=edge",
-    ],
+    ] + BROWSERS["edge"]["args"],
+    data = BROWSERS["edge"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
-        "skip-remote",
-    ],
+    ] + BROWSERS["edge"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -419,19 +414,18 @@ py_test_suite(
     name = "test-firefox",
     size = "large",
     srcs = glob([
-        "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/marionette/**/*.py",
         "test/selenium/webdriver/firefox/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
     ]),
     args = [
         "--instafail",
-        "--driver=firefox",
-    ],
+    ] + BROWSERS["firefox"]["args"],
+    data = BROWSERS["firefox"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
         "skip-remote",
-    ],
+    ] + BROWSERS["firefox"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",

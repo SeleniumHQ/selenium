@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static org.openqa.selenium.remote.http.Contents.asJson;
@@ -28,13 +27,14 @@ import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.openqa.selenium.internal.Require;
@@ -58,9 +58,9 @@ public abstract class Route implements HttpHandler, Routable {
           .setStatus(HTTP_NOT_FOUND)
           .setContent(
               asJson(
-                  ImmutableMap.of(
+                  Map.of(
                       "value",
-                      ImmutableMap.of(
+                      Map.of(
                           "error", "unknown command",
                           "message", "Unable to find handler for " + req,
                           "stacktrace", ""))));
@@ -78,9 +78,9 @@ public abstract class Route implements HttpHandler, Routable {
         .addHeader("Selenium-Route", "NULL_RES")
         .setContent(
             asJson(
-                ImmutableMap.of(
+                Map.of(
                     "value",
-                    ImmutableMap.of(
+                    Map.of(
                         "error", "unsupported operation",
                         "message",
                             String.format("Found handler for %s, but nothing was returned", req),
@@ -181,8 +181,7 @@ public abstract class Route implements HttpHandler, Routable {
     @Override
     protected HttpResponse handle(HttpRequest req) {
       UrlTemplate.Match match = template.match(req.getUri());
-      HttpHandler handler =
-          handlerFunction.apply(match == null ? ImmutableMap.of() : match.getParameters());
+      HttpHandler handler = handlerFunction.apply(match == null ? Map.of() : match.getParameters());
 
       if (handler == null) {
         return new HttpResponse()
@@ -298,7 +297,7 @@ public abstract class Route implements HttpHandler, Routable {
       List<String> prefixes =
           Stream.concat(((List<?>) rawPrefixes).stream(), Stream.of(prefix))
               .map(String::valueOf)
-              .collect(toImmutableList());
+              .collect(Collectors.toUnmodifiableList());
       toForward.setAttribute(ROUTE_PREFIX_KEY, prefixes);
 
       request
@@ -322,7 +321,9 @@ public abstract class Route implements HttpHandler, Routable {
     private CombinedRoute(Stream<Routable> routes) {
       // We want later routes to have a greater chance of being called so that we can override
       // routes as necessary.
-      allRoutes = routes.collect(toImmutableList()).reverse();
+      List<Routable> routables = routes.collect(Collectors.toList());
+      Collections.reverse(routables);
+      allRoutes = List.copyOf(routables);
       Require.stateCondition(!allRoutes.isEmpty(), "At least one route must be specified.");
     }
 

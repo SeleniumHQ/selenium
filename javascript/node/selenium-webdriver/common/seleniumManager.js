@@ -35,7 +35,7 @@ let debugMessagePrinted = false
  * Determines the path of the correct Selenium Manager binary
  * @returns {string}
  */
-function getBinary() {
+function getBinary () {
   const directory = {
     darwin: 'macos',
     win32: 'windows',
@@ -48,7 +48,8 @@ function getBinary() {
 
   let seleniumManagerBasePath = path.join(__dirname, '..', '/bin')
 
-  const filePath = process.env.SE_MANAGER_PATH || path.join(seleniumManagerBasePath, directory, file)
+  const filePath = process.env.SE_MANAGER_PATH || path.join(
+    seleniumManagerBasePath, directory, file)
 
   if (!fs.existsSync(filePath)) {
     throw new Error(`Unable to obtain Selenium Manager at ${filePath}`)
@@ -69,8 +70,9 @@ function getBinary() {
  * browser location
  */
 
-function driverLocation(options) {
-  let args = ['--browser', options.getBrowserName(), '--output', 'json']
+function driverLocation (options) {
+  let args = ['--browser', options.getBrowserName(), '--language-binding',
+    'javascript', '--output', 'json']
 
   if (options.getBrowserVersion() && options.getBrowserVersion() !== '') {
     args.push('--browser-version', options.getBrowserVersion())
@@ -139,7 +141,7 @@ function driverLocation(options) {
   }
 }
 
-function logOutput(output) {
+function logOutput (output) {
   for (const key in output.logs) {
     if (output.logs[key].level === 'WARN') {
       log_.warning(`${output.logs[key].message}`)

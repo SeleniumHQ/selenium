@@ -471,13 +471,14 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Retrieves the downloadable files as a map of file names and their corresponding URLs.
+        /// Retrieves the downloadable files.
         /// </summary>
-        /// <returns>A list containing file names as keys and URLs as values.</returns>
-        public List<string> GetDownloadableFiles()
+        /// <returns>A read-only list of file names available for download.</returns>
+        public IReadOnlyList<string> GetDownloadableFiles()
         {
             var enableDownloads = this.Capabilities.GetCapability(CapabilityType.EnableDownloads);
-            if (enableDownloads == null || !(bool) enableDownloads) {
+            if (enableDownloads == null || !(bool)enableDownloads)
+            {
                 throw new WebDriverException("You must enable downloads in order to work with downloadable files.");
             }
 
@@ -494,7 +495,8 @@ namespace OpenQA.Selenium.Remote
         public void DownloadFile(string fileName, string targetDirectory)
         {
             var enableDownloads = this.Capabilities.GetCapability(CapabilityType.EnableDownloads);
-            if (enableDownloads == null || !(bool) enableDownloads) {
+            if (enableDownloads == null || !(bool)enableDownloads)
+            {
                 throw new WebDriverException("You must enable downloads in order to work with downloadable files.");
             }
 
@@ -508,20 +510,19 @@ namespace OpenQA.Selenium.Remote
             byte[] fileData = Convert.FromBase64String(contents);
 
             Directory.CreateDirectory(targetDirectory);
-            string tempFile = Path.Combine(targetDirectory, "temp.zip");
-            File.WriteAllBytes(tempFile, fileData);
 
-            using (ZipArchive archive = ZipFile.OpenRead(tempFile))
+            using (var memoryReader = new MemoryStream(fileData))
             {
-                foreach (ZipArchiveEntry entry in archive.Entries)
+                using (var zipArchive = new ZipArchive(memoryReader, ZipArchiveMode.Read))
                 {
-                    string destinationPath = Path.Combine(targetDirectory, entry.FullName);
+                    foreach (ZipArchiveEntry entry in zipArchive.Entries)
+                    {
+                        string destinationPath = Path.Combine(targetDirectory, entry.FullName);
 
-                    entry.ExtractToFile(destinationPath);
+                        entry.ExtractToFile(destinationPath);
+                    }
                 }
             }
-
-            File.Delete(tempFile);
         }
 
         /// <summary>
@@ -530,7 +531,8 @@ namespace OpenQA.Selenium.Remote
         public void DeleteDownloadableFiles()
         {
             var enableDownloads = this.Capabilities.GetCapability(CapabilityType.EnableDownloads);
-            if (enableDownloads == null || !(bool) enableDownloads) {
+            if (enableDownloads == null || !(bool)enableDownloads)
+            {
                 throw new WebDriverException("You must enable downloads in order to work with downloadable files.");
             }
 

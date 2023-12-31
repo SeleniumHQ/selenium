@@ -1,3 +1,43 @@
+v4.16.1
+======
+
+* Re-release due to broken packages
+
+v4.16.0
+======
+
+* Allow stereotype to always allow browser version of "stable"
+* [bidi] Listen to channel message
+* [bidi] Add realm related events
+* Move the module-info.class to the correct place
+* Allow external uri to be configurable for components that support server functionality - #12491 (#12508)
+* Close the streams after I/O failure #13096
+* Fix events without parameters #13109
+* Chrome-based browsers can do CDP-based script pinning (#13125)
+* Ensure the complete output is read #13091
+* Fixed reading array parameters in the CDP client
+* Keep HttpClient alive until unused #12558  (#12978)
+* Implement Safe Casting in getPermissions Method (#13143)
+* Fix null request in case of chunked request (#13113)
+* Set a name for thread started to forward output of external processes (#13142)
+* Allow resuing devtools instance with JDK 11 client (#12882, #13165)
+* Ensure all print options are sent as map instead of object
+* Allow setting print options page ranges using list
+* Fix bug replacing setDownloadThroughput for setUploadThroughput (#13187)
+* Add macOS 14.0 to Platform enum
+* Do not return linux Selenium Manager by default
+* [bidi] Add traverse history command
+* Make the json parsing exception text more helpful
+* Add javadoc to support event classes (#13199)
+* Packages should be opened to modules #13217
+* Add more tests for java support event class (#13198)
+* Add a `/quitquitquit` endpoint to the test server to make killing it easy
+* Grid vnc session is not using the --sub-path argument (#12791, #13219)
+* Remove retrying on timeout exception (#13224, #12975)
+* Must not request further invocations for a broken websocket
+* Moved org.openqa.selenium.remote.http.jdk to selenium-http (#13243)
+* Add Chrome 120 and remove 117 for CDP
+
 v4.15.0
 ======
 

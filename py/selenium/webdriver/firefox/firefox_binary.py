@@ -19,6 +19,7 @@
 import os
 import time
 from platform import system
+from subprocess import DEVNULL
 from subprocess import STDOUT
 from subprocess import Popen
 
@@ -41,7 +42,7 @@ class FirefoxBinary:
         self._start_cmd = firefox_path
         # We used to default to subprocess.PIPE instead of /dev/null, but after
         # a while the pipe would fill up and Firefox would freeze.
-        self._log_file = log_file or open(os.devnull, "wb")
+        self._log_file = log_file or DEVNULL
         self.command_line = None
         self.platform = system().lower()
         if not self._start_cmd:

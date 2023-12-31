@@ -7,7 +7,7 @@ java_export(
     srcs = glob(["*.java"]),
     maven_coordinates = "org.seleniumhq.selenium:selenium-manager:%s" % SE_VERSION,
     opens_to = [
-        "org.openqa.selenium.json",
+        "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
     resources = [

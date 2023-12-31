@@ -86,6 +86,10 @@ module Selenium
         os == :linux
       end
 
+      def unix?
+        os == :unix
+      end
+
       def wsl?
         return false unless linux?
 

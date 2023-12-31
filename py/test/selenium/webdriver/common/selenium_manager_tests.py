@@ -1,19 +1,19 @@
-#  Licensed to the Software Freedom Conservancy (SFC) under one
-#  or more contributor license agreements.  See the NOTICE file
-#  distributed with this work for additional information
-#  regarding copyright ownership.  The SFC licenses this file
-#  to you under the Apache License, Version 2.0 (the
-#  "License"); you may not use this file except in compliance
-#  with the License.  You may obtain a copy of the License at
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-#    http://www.apache.org/licenses/LICENSE-2.0
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#  Unless required by applicable law or agreed to in writing,
-#  software distributed under the License is distributed on an
-#  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-#  KIND, either express or implied.  See the License for the
-#  specific language governing permissions and limitations
-#  under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 from unittest.mock import Mock
 
@@ -21,8 +21,6 @@ import pytest
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.selenium_manager import SeleniumManager
 
@@ -101,13 +99,3 @@ def test_stderr_is_propagated_to_exception_messages():
         manager = SeleniumManager()
         binary = manager.get_binary()
         _ = manager.run([str(binary), "--browser", "foo"])
-
-
-def test_driver_finder_error(mocker):
-    mocker.patch("selenium.webdriver.common.selenium_manager.SeleniumManager.driver_location", return_value=None)
-
-    service = Service()
-    options = Options()
-    msg = r"Unable to locate or obtain driver for chrome.*errors\/driver_location"
-    with pytest.raises(WebDriverException, match=msg):
-        DriverFinder.get_path(service, options)

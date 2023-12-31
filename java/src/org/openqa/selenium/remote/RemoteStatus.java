@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 import java.util.Map;
 import org.openqa.selenium.internal.Require;
 
+@Deprecated(forRemoval = true)
 public class RemoteStatus {
 
   private final Map<String, Object> buildInfo;

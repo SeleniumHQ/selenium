@@ -125,7 +125,8 @@ module Selenium
       end
 
       it 'can minimize the window', except: [{browser: %i[chrome edge], headless: true},
-                                             {browser: :safari, ci: :github}] do
+                                             {browser: :safari, ci: :github}],
+                                    flaky: {browser: :chrome, platform: %i[macosx linux], ci: :github} do
         window.minimize
         expect {
           wait.until { driver.execute_script('return document.hidden;') }

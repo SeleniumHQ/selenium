@@ -32,6 +32,7 @@ const until = require('../../lib/until')
 // Imports for Script Module
 const ScriptManager = require('../../bidi/scriptManager')
 const {
+  ChannelValue,
   LocalValue,
   ReferenceValue,
   RemoteReferenceType,
@@ -2130,6 +2131,55 @@ suite(
         )
 
         assert.equal(result_in_sandbox.result.type, 'undefined')
+      })
+
+      it('can listen to channel message', async function () {
+        const manager = await ScriptManager(undefined, driver)
+
+        let message = null
+
+        await manager.onMessage((m) => {
+          message = m
+        })
+
+        let argumentValues = []
+        let value = new ArgumentValue(
+          LocalValue.createChannelValue(new ChannelValue('channel_name'))
+        )
+        argumentValues.push(value)
+
+        const result = await manager.callFunctionInBrowsingContext(
+          await driver.getWindowHandle(),
+          '(channel) => channel("foo")',
+          false,
+          argumentValues
+        )
+        assert.equal(result.resultType, EvaluateResultType.SUCCESS)
+        assert.notEqual(message, null)
+        assert.equal(message.channel, 'channel_name')
+        assert.equal(message.data.type, 'string')
+        assert.equal(message.data.value, 'foo')
+      })
+
+      it('can listen to realm created message', async function () {
+        const manager = await ScriptManager(undefined, driver)
+
+        let realmInfo = null
+
+        await manager.onRealmCreated((result) => {
+          realmInfo = result
+        })
+
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await browsingContext.navigate(Pages.blankPage, 'complete')
+
+        assert.notEqual(realmInfo, null)
+        assert.notEqual(realmInfo.realmId, null)
+        assert.equal(realmInfo.realmType, RealmType.WINDOW)
       })
     })
 

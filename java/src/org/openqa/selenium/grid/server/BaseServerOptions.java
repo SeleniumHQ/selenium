@@ -84,28 +84,48 @@ public class BaseServerOptions {
 
   @ManagedAttribute(name = "Uri")
   public URI getExternalUri() {
-    // Assume the host given is addressable if it's been set
-    String host =
-        getHostname()
-            .orElseGet(
-                () -> {
-                  try {
-                    return new NetworkUtils().getNonLoopbackAddressOfThisMachine();
-                  } catch (WebDriverException e) {
-                    String name = HostIdentifier.getHostName();
-                    LOG.info("No network connection, guessing name: " + name);
-                    return name;
-                  }
-                });
+    return config
+        .get(SERVER_SECTION, "external-url")
+        .map(
+            url -> {
+              try {
+                return new URI(url);
+              } catch (URISyntaxException e) {
+                throw new RuntimeException(
+                    "Supplied external URI is invalid: " + e.getMessage(), e);
+              }
+            })
+        .orElseGet(
+            () -> {
+              // Assume the host given is addressable if it's been set
+              String host =
+                  getHostname()
+                      .orElseGet(
+                          () -> {
+                            try {
+                              return new NetworkUtils().getNonLoopbackAddressOfThisMachine();
+                            } catch (WebDriverException e) {
+                              String name = HostIdentifier.getHostName();
+                              LOG.info("No network connection, guessing name: " + name);
+                              return name;
+                            }
+                          });
 
-    int port = getPort();
+              int port = getPort();
 
-    try {
-      return new URI(
-          (isSecure() || isSelfSigned()) ? "https" : "http", null, host, port, null, null, null);
-    } catch (URISyntaxException e) {
-      throw new ConfigException("Cannot determine external URI: " + e.getMessage());
-    }
+              try {
+                return new URI(
+                    (isSecure() || isSelfSigned()) ? "https" : "http",
+                    null,
+                    host,
+                    port,
+                    null,
+                    null,
+                    null);
+              } catch (URISyntaxException e) {
+                throw new ConfigException("Cannot determine external URI: " + e.getMessage());
+              }
+            });
   }
 
   public boolean getAllowCORS() {

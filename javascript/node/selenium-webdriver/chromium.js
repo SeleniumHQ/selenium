@@ -36,17 +36,12 @@
  *     a unique browser session with a clean user profile (unless otherwise
  *     configured through the {@link Options} class).
  *
- * __Headless Chromium__ <a id="headless"></a>
- *
- * To start the browser in headless mode, simply call
- * {@linkplain Options#headless Options.headless()}.
- *
  *     let chrome = require('selenium-webdriver/chrome');
  *     let {Builder} = require('selenium-webdriver');
  *
  *     let driver = new Builder()
  *         .forBrowser('chrome')
- *         .setChromeOptions(new chrome.Options().headless())
+ *         .setChromeOptions(new chrome.Options())
  *         .build();
  *
  * __Customizing the Chromium WebDriver Server__ <a id="custom-server"></a>
@@ -308,34 +303,6 @@ class Options extends Capabilities {
   debuggerAddress(address) {
     this.options_.debuggerAddress = address
     return this
-  }
-
-  /**
-   * @deprecated Use {@link Options#addArguments} instead.
-   * @example
-   * options.addArguments('--headless=chrome'); (or)
-   * options.addArguments('--headless');
-   * @example
-   *
-   * Recommended to use '--headless=chrome' as argument for browsers v94-108.
-   * Recommended to use '--headless=new' as argument for browsers v109+.
-   *
-   * Configures the driver to start the browser in headless mode.
-   *
-   * > __NOTE:__ Resizing the browser window in headless mode is only supported
-   * > in Chromium 60+. Users are encouraged to set an initial window size with
-   * > the {@link #windowSize windowSize({width, height})} option.
-   *
-   * > __NOTE__: For security, Chromium disables downloads by default when
-   * > in headless mode (to prevent sites from silently downloading files to
-   * > your machine). After creating a session, you may call
-   * > {@link ./chrome.Driver#setDownloadPath setDownloadPath} to re-enable
-   * > downloads, saving files in the specified directory.
-   *
-   * @return {!Options} A self reference.
-   */
-  headless() {
-    return this.addArguments('headless')
   }
 
   /**

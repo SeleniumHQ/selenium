@@ -113,15 +113,15 @@ module Selenium
         end
 
         def dispatch(name, *args)
-          @listener.__send__("before_#{name}", *args)
+          @listener.__send__(:"before_#{name}", *args)
           returned = yield
-          @listener.__send__("after_#{name}", *args)
+          @listener.__send__(:"after_#{name}", *args)
 
           returned
         end
 
-        def method_missing(meth, *args, &blk) # rubocop:disable Style/MissingRespondToMissing
-          @delegate.__send__(meth, *args, &blk)
+        def method_missing(meth, ...) # rubocop:disable Style/MissingRespondToMissing
+          @delegate.__send__(meth, ...)
         end
       end # EventFiringBridge
     end # Support

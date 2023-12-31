@@ -187,12 +187,7 @@ public class RelaySessionFactory implements SessionFactory {
                 upstream,
                 stereotype,
                 mergedCapabilities,
-                Instant.now()) {
-              @Override
-              public void stop() {
-                // no-op
-              }
-            });
+                Instant.now()) {});
       } catch (Exception e) {
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);

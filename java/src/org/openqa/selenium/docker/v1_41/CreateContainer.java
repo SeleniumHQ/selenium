@@ -71,7 +71,7 @@ class CreateContainer {
 
       if (rawContainer.get("Warnings") instanceof Collection) {
         Collection<?> warnings = (Collection<?>) rawContainer.get("Warnings");
-        if (warnings.size() > 0) {
+        if (!warnings.isEmpty()) {
           String allWarnings =
               warnings.stream().map(String::valueOf).collect(Collectors.joining("\n", " * ", ""));
 

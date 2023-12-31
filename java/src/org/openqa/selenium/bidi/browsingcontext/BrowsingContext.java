@@ -325,6 +325,19 @@ public class BrowsingContext {
             }));
   }
 
+  public void traverseHistory(long delta) {
+    this.bidi.send(
+        new Command<>("browsingContext.traverseHistory", Map.of(CONTEXT, id, "delta", delta)));
+  }
+
+  public void back() {
+    this.traverseHistory(-1);
+  }
+
+  public void forward() {
+    this.traverseHistory(1);
+  }
+
   public void close() {
     // This might need more clean up actions once the behavior is defined.
     // Specially when last tab or window is closed.

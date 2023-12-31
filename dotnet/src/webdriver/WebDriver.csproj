@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>WebDriver</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -42,6 +43,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="WebDriver.Common.Tests" />
+    
     <Compile Remove="cdp\**" />
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="cdp\**" />
@@ -61,7 +64,6 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

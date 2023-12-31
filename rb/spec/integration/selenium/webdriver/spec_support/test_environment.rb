@@ -57,8 +57,8 @@ module Selenium
           end
         end
 
-        def driver_instance(**opts, &block)
-          @driver_instance || create_driver!(**opts, &block)
+        def driver_instance(...)
+          @driver_instance || create_driver!(...)
         end
 
         def reset_driver!(time: 0, **opts, &block)
@@ -142,7 +142,7 @@ module Selenium
         def create_driver!(listener: nil, **opts, &block)
           check_for_previous_error
 
-          method = "#{driver}_driver".to_sym
+          method = :"#{driver}_driver"
           instance = if private_methods.include?(method)
                        send(method, listener: listener, options: build_options(**opts))
                      else
@@ -167,7 +167,7 @@ module Selenium
         private
 
         def build_options(**opts)
-          options_method = "#{browser}_options".to_sym
+          options_method = :"#{browser}_options"
           if private_methods.include?(options_method)
             send(options_method, **opts)
           else

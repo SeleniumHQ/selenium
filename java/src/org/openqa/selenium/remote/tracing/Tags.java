@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import com.google.common.net.HttpHeaders;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.AbstractMap.SimpleEntry;
@@ -25,6 +24,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.openqa.selenium.remote.http.HttpHeader;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -80,22 +80,22 @@ public class Tags {
         map.put(AttributeKey.HTTP_METHOD.getKey(), req.getMethod().toString());
         map.put(AttributeKey.HTTP_TARGET.getKey(), req.getUri());
 
-        String userAgent = req.getHeader(HttpHeaders.USER_AGENT);
+        String userAgent = req.getHeader(HttpHeader.UserAgent.getName());
         if (userAgent != null) {
           map.put(AttributeKey.HTTP_USER_AGENT.getKey(), userAgent);
         }
 
-        String host = req.getHeader(HttpHeaders.HOST);
+        String host = req.getHeader(HttpHeader.Host.getName());
         if (host != null) {
           map.put(AttributeKey.HTTP_HOST.getKey(), host);
         }
 
-        String contentLength = req.getHeader(HttpHeaders.CONTENT_LENGTH);
+        String contentLength = req.getHeader(HttpHeader.ContentLength.getName());
         if (contentLength != null) {
           map.put(AttributeKey.HTTP_REQUEST_CONTENT_LENGTH.getKey(), contentLength);
         }
 
-        String clientIpAddress = req.getHeader(HttpHeaders.X_FORWARDED_FOR);
+        String clientIpAddress = req.getHeader(HttpHeader.XForwardedFor.getName());
         if (clientIpAddress != null) {
           map.put(AttributeKey.HTTP_CLIENT_IP.getKey(), clientIpAddress);
         }
