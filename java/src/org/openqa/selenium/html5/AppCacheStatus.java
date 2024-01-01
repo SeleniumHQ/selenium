@@ -18,6 +18,7 @@
 package org.openqa.selenium.html5;
 
 /** Represents the application cache status. */
+@Deprecated
 public enum AppCacheStatus {
   UNCACHED(0),
   IDLE(1),
