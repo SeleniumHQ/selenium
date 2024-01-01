@@ -41,10 +41,8 @@ import static org.openqa.selenium.remote.DriverCommand.GET;
 import static org.openqa.selenium.remote.DriverCommand.GET_ACCOUNTS;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_COOKIES;
 import static org.openqa.selenium.remote.DriverCommand.GET_CAPABILITIES;
-import static org.openqa.selenium.remote.DriverCommand.GET_CONTEXT_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CREDENTIALS;
-import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_CONTEXT_HANDLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
 import static org.openqa.selenium.remote.DriverCommand.GET_DOWNLOADABLE_FILES;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
@@ -55,8 +53,6 @@ import static org.openqa.selenium.remote.DriverCommand.GET_FEDCM_DIALOG_TYPE;
 import static org.openqa.selenium.remote.DriverCommand.GET_FEDCM_TITLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_NETWORK_CONNECTION;
-import static org.openqa.selenium.remote.DriverCommand.GET_SCREEN_ORIENTATION;
-import static org.openqa.selenium.remote.DriverCommand.GET_SCREEN_ROTATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_TIMEOUTS;
 import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
 import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
@@ -77,13 +73,10 @@ import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_DELAY_ENABLED;
 import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.SET_NETWORK_CONNECTION;
-import static org.openqa.selenium.remote.DriverCommand.SET_SCREEN_ORIENTATION;
-import static org.openqa.selenium.remote.DriverCommand.SET_SCREEN_ROTATION;
 import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SET_USER_VERIFIED;
 import static org.openqa.selenium.remote.DriverCommand.STATUS;
-import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_CONTEXT;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_NEW_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_PARENT_FRAME;
@@ -183,13 +176,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(
         SET_LOCATION, post(sessionId + "/location")); // Not w3c; used in RemoteLocationContext
 
-    defineCommand(
-        GET_SCREEN_ORIENTATION, get(sessionId + "/orientation")); // Not w3c; used in Appium
-    defineCommand(
-        SET_SCREEN_ORIENTATION, post(sessionId + "/orientation")); // Not w3c; used in Appium
-    defineCommand(GET_SCREEN_ROTATION, get(sessionId + "/rotation")); // Not w3c; used in Appium
-    defineCommand(SET_SCREEN_ROTATION, post(sessionId + "/rotation")); // Not w3c; used in Appium
-
     // Mobile Spec
     defineCommand(
         GET_NETWORK_CONNECTION,
@@ -197,10 +183,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(
         SET_NETWORK_CONNECTION,
         post(sessionId + "/network_connection")); // Not w3c; used in RemoteNetworkConnection
-    defineCommand(SWITCH_TO_CONTEXT, post(sessionId + "/context")); // Not w3c; used in Appium
-    defineCommand(
-        GET_CURRENT_CONTEXT_HANDLE, get(sessionId + "/context")); // Not w3c; used in Appium
-    defineCommand(GET_CONTEXT_HANDLES, get(sessionId + "/contexts")); // Not w3c; used in Appium
 
     // Virtual Authenticator API
     String webauthn = sessionId + "/webauthn/authenticator";

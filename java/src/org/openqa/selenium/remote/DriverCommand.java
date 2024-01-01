@@ -69,11 +69,8 @@ public interface DriverCommand {
   String UPLOAD_FILE = "uploadFile";
   String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
   String GET_WINDOW_HANDLES = "getWindowHandles";
-  String GET_CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle";
-  String GET_CONTEXT_HANDLES = "getContextHandles";
   String SWITCH_TO_WINDOW = "switchToWindow";
   String SWITCH_TO_NEW_WINDOW = "newWindow";
-  String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
   String SWITCH_TO_PARENT_FRAME = "switchToParentFrame";
   String GET_ACTIVE_ELEMENT = "getActiveElement";
@@ -124,10 +121,6 @@ public interface DriverCommand {
   String REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem";
   String CLEAR_SESSION_STORAGE = "clearSessionStorage";
   String GET_SESSION_STORAGE_SIZE = "getSessionStorageSize";
-  String SET_SCREEN_ORIENTATION = "setScreenOrientation";
-  String GET_SCREEN_ORIENTATION = "getScreenOrientation";
-  String SET_SCREEN_ROTATION = "setScreenRotation";
-  String GET_SCREEN_ROTATION = "getScreenRotation";
   // W3C Actions APIs
   String ACTIONS = "actions";
   String CLEAR_ACTIONS_STATE = "clearActionState";
