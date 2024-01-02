@@ -1733,7 +1733,7 @@ class WebDriver {
         throw new error.WebDriverError('Downloads must be enabled in options')
       }
 
-      return this.execute(new command.Command(command.Name.GET_DOWNLOADABLE_FILES)).names
+      return (await this.execute(new command.Command(command.Name.GET_DOWNLOADABLE_FILES))).names
   }
 
   async downloadFile(fileName, targetDirectory) {
@@ -1742,7 +1742,7 @@ class WebDriver {
       throw new error.WebDriverError('Downloads must be enabled in options')
     }
 
-    response = this.execute(
+    let response = await this.execute(
       new command.Command(command.Name.DOWNLOAD_FILE).setParameter('file_name', fileName)
     )
 
@@ -1772,7 +1772,7 @@ class WebDriver {
       throw new error.WebDriverError('Downloads must be enabled in options')
     }
 
-    return this.execute(
+    return await this.execute(
       new command.Command(command.Name.DELETE_DOWNLOADABLE_FILES)
     )
   }
