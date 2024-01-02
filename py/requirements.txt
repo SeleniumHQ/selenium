@@ -5,6 +5,7 @@ cffi==1.16.0
 cryptography==41.0.3
 dataclasses==0.6
 debugpy==1.8.0
+deprecated==1.2.14
 h11==0.14.0
 idna==3.4
 importlib-metadata==6.8.0

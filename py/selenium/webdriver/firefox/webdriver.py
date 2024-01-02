@@ -56,7 +56,11 @@ class WebDriver(RemoteWebDriver):
         self.service = service if service else Service()
         options = options if options else Options()
 
-        self.service.path = DriverFinder.get_path(self.service, options)
+        results = DriverFinder.get_results(self.service, options)
+        options.binary_location = results["browser_path"]
+        options.browser_version = None  # if we have the binary location we no longer need the version
+
+        self.service.path = results["driver_path"]
         self.service.start()
 
         executor = FirefoxRemoteConnection(

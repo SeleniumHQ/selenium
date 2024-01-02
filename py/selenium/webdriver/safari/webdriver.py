@@ -45,7 +45,7 @@ class WebDriver(RemoteWebDriver):
         self.service = service if service else Service()
         options = options if options else Options()
 
-        self.service.path = DriverFinder.get_path(self.service, options)
+        self.service.path = DriverFinder.get_results(self.service, options)["driver_path"]
 
         if not self.service.reuse_service:
             self.service.start()

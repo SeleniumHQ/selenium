@@ -20,6 +20,7 @@ import os
 import platform
 import subprocess
 import sys
+from deprecated import deprecated
 from pathlib import Path
 from typing import List
 
@@ -76,6 +77,33 @@ class SeleniumManager:
 
         return path
 
+    def results(self, args: List) -> dict:
+        """Determines the locations of the requested assets
+
+        :Args:
+         - args: the commands to send to the selenium manager binary.
+        :Returns: dictionary of assets and their path
+        """
+
+        args = [str(self.get_binary())] + args
+        if logger.getEffectiveLevel() == logging.DEBUG:
+            args.append("--debug")
+        args.append("--language-binding")
+        args.append("python")
+        args.append("--output")
+        args.append("json")
+
+        output = self.run(args)
+
+        driver_path = output["driver_path"]
+        if driver_path is None:
+            raise ValueError("No driver path was returned.")
+        elif not Path(driver_path).is_file():
+            raise FileNotFoundError(f"Driver path returned but is invalid: {driver_path}")
+
+        return output
+
+    @deprecated(reason="Use results() function with argument list instead.")
     def driver_location(self, options: BaseOptions) -> str:
         """Determines the path of the correct driver.
 
@@ -103,7 +131,7 @@ class SeleniumManager:
             value = proxy.ssl_proxy if proxy.ssl_proxy else proxy.http_proxy
             args.append(value)
 
-        output = self.run(args)
+        output = self.results(args)
 
         browser_path = output["browser_path"]
         driver_path = output["driver_path"]
@@ -123,13 +151,6 @@ class SeleniumManager:
          - args: the components of the command being executed.
         :Returns: The log string containing the driver location.
         """
-        if logger.getEffectiveLevel() == logging.DEBUG:
-            args.append("--debug")
-        args.append("--language-binding")
-        args.append("python")
-        args.append("--output")
-        args.append("json")
-
         command = " ".join(args)
         logger.debug("Executing process: %s", command)
         try:

@@ -17,6 +17,7 @@
 import logging
 from pathlib import Path
 
+from deprecated import deprecated
 from selenium.common.exceptions import NoSuchDriverException
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.selenium_manager import SeleniumManager
@@ -32,6 +33,7 @@ class DriverFinder:
     """
 
     @staticmethod
+    @deprecated(reason="Use get_results() function instead.")
     def get_path(service: Service, options: BaseOptions) -> str:
         path = service.path
         try:
@@ -44,3 +46,41 @@ class DriverFinder:
             raise NoSuchDriverException(f"Unable to locate or obtain driver for {options.capabilities['browserName']}")
 
         return path
+
+    @staticmethod
+    def get_results(service: Service, options: BaseOptions) -> dict:
+        path = service.path
+
+        if path is None:
+            try:
+                return SeleniumManager().results(DriverFinder._to_args(options))
+            except Exception as err:
+                msg = f"Unable to obtain driver for {options.capabilities['browserName']} using Selenium Manager."
+                raise NoSuchDriverException(msg) from err
+        elif not Path(path).is_file():
+            raise NoSuchDriverException(f"Provided path for {options.capabilities['browserName']} is invalid")
+        else:
+            return {"driver_path": path}
+
+    @staticmethod
+    def _to_args(options: BaseOptions) -> list:
+        browser = options.capabilities["browserName"]
+
+        args = ["--browser", browser]
+
+        if options.browser_version:
+            args.append("--browser-version")
+            args.append(str(options.browser_version))
+
+        binary_location = getattr(options, "binary_location", None)
+        if binary_location:
+            args.append("--browser-path")
+            args.append(str(binary_location))
+
+        proxy = options.proxy
+        if proxy and (proxy.http_proxy or proxy.ssl_proxy):
+            args.append("--proxy")
+            value = proxy.ssl_proxy if proxy.ssl_proxy else proxy.http_proxy
+            args.append(value)
+
+        return args
