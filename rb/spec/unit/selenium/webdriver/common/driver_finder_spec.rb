@@ -22,209 +22,69 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe DriverFinder do
-      context 'when Chrome' do
-        let(:options) { Options.chrome }
-        let(:service) { Chrome::Service }
-        let(:driver) { 'chromedriver' }
+      it 'class path accepts a String without calling Selenium Manager' do
+        allow(Chrome::Service).to receive(:driver_path).and_return('path')
+        allow(SeleniumManager).to receive(:binary_paths)
+        allow(Platform).to receive(:assert_executable).with('path').and_return(true)
 
-        after { Chrome::Service.driver_path = nil }
+        described_class.new(Options.chrome, Service.chrome).driver_path
 
-        it 'accepts path set on class as String' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
-          service.driver_path = 'path'
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path').exactly(2).times
-        end
-
-        it 'accepts path set on class as proc' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
-          service.driver_path = proc { 'path' }
-
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path')
-        end
-
-        it 'gives original error if not found by Selenium Manager' do
-          allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
-
-          expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::NoSuchDriverError, %r{errors/driver_location})
-        end
+        expect(SeleniumManager).not_to have_received(:binary_paths)
+        expect(Platform).to have_received(:assert_executable).with('path')
       end
 
-      context 'when Edge' do
-        let(:options) { Options.edge }
-        let(:service) { Edge::Service }
-        let(:driver) { 'msedgedriver' }
+      it 'class path accepts a proc without calling Selenium Manager' do
+        allow(Chrome::Service).to receive(:driver_path).and_return(proc { 'path' })
+        allow(SeleniumManager).to receive(:binary_paths)
+        allow(Platform).to receive(:assert_executable).with('path').and_return(true)
 
-        after { service.driver_path = nil }
+        described_class.new(Options.chrome, Service.chrome).driver_path
 
-        it 'accepts path set on class as String' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
-          service.driver_path = 'path'
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path').exactly(2).times
-        end
-
-        it 'accepts path set on class as proc' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
-          service.driver_path = proc { 'path' }
-
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path')
-        end
-
-        it 'gives original error if not found by Selenium Manager' do
-          allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
-
-          expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::NoSuchDriverError, %r{errors/driver_location})
-        end
+        expect(SeleniumManager).not_to have_received(:binary_paths)
+        expect(Platform).to have_received(:assert_executable).with('path')
       end
 
-      context 'when Firefox' do
-        let(:options) { Options.firefox }
-        let(:service) { Firefox::Service }
-        let(:driver) { 'geckodriver' }
+      it 'validates all returned files' do
+        allow(SeleniumManager).to receive(:binary_paths).and_return({'browser_path' => '/path/to/browser',
+                                                                     'driver_path' => '/path/to/driver'})
+        allow(Platform).to receive(:assert_executable).with('/path/to/browser').and_return(true)
+        allow(Platform).to receive(:assert_executable).with('/path/to/driver').and_return(true)
 
-        after { service.driver_path = nil }
+        described_class.new(Options.chrome, Service.chrome).driver_path
 
-        it 'accepts path set on class as String' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
-          service.driver_path = 'path'
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path').exactly(2).times
-        end
-
-        it 'accepts path set on class as proc' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
-          service.driver_path = proc { 'path' }
-
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path')
-        end
-
-        it 'gives original error if not found by Selenium Manager' do
-          allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
-
-          expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::NoSuchDriverError, %r{errors/driver_location})
-        end
+        expect(Platform).to have_received(:assert_executable).with('/path/to/browser')
+        expect(Platform).to have_received(:assert_executable).with('/path/to/driver')
       end
 
-      context 'when IE' do
-        let(:options) { Options.ie }
-        let(:service) { IE::Service }
-        let(:driver) { 'IEDriverServer' }
+      it 'wraps error with NoSuchDriverError' do
+        allow(SeleniumManager).to receive(:binary_paths).and_raise(Error::WebDriverError, 'this error')
 
-        after { service.driver_path = nil }
-
-        it 'accepts path set on class as String' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
-          service.driver_path = 'path'
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path').exactly(2).times
-        end
-
-        it 'accepts path set on class as proc' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
-          service.driver_path = proc { 'path' }
-
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path')
-        end
-
-        it 'gives original error if not found by Selenium Manager' do
-          allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
-
+        expect {
           expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::NoSuchDriverError, %r{errors/driver_location})
-        end
+            described_class.new(Options.chrome, Service.chrome).driver_path
+          }.to output(/Exception occurred: this error/).to_stderr_from_any_process
+        }.to raise_error(WebDriver::Error::NoSuchDriverError,
+                         /Unable to obtain chromedriver; For documentation on this error/)
       end
 
-      context 'when Safari' do
-        let(:options) { Options.safari }
-        let(:service) { Safari::Service }
-        let(:driver) { 'safaridriver' }
+      it 'creates arguments' do
+        allow(SeleniumManager).to receive(:binary_paths).and_return({'browser_path' => '/path/to/browser',
+                                                                     'driver_path' => '/path/to/driver'})
+        proxy = instance_double(Proxy, ssl: 'proxy')
+        options = Options.chrome(browser_version: 'stable', proxy: proxy, binary: 'path/to/browser')
+        allow(Platform).to receive(:assert_executable).with('/path/to/browser').and_return(true)
+        allow(Platform).to receive(:assert_executable).with('/path/to/driver').and_return(true)
 
-        after { service.driver_path = nil }
+        described_class.new(options, Service.chrome).driver_path
 
-        it 'accepts path set on class as String' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
-          service.driver_path = 'path'
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path').exactly(2).times
-        end
-
-        it 'accepts path set on class as proc' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
-          service.driver_path = proc { 'path' }
-
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path')
-        end
-
-        it 'gives original error if not found by Selenium Manager' do
-          allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
-
-          expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::NoSuchDriverError, %r{errors/driver_location})
-        end
+        expect(SeleniumManager).to have_received(:binary_paths).with('--browser',
+                                                                     options.browser_name,
+                                                                     '--browser-version',
+                                                                     options.browser_version,
+                                                                     '--browser-path',
+                                                                     options.binary,
+                                                                     '--proxy',
+                                                                     options.proxy.ssl)
       end
     end
   end
