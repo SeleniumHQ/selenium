@@ -1729,7 +1729,7 @@ class WebDriver {
 
   async getDownloadableFiles() {
       const caps = await this.getCapabilities()
-      if (!caps[Capabilities.ENABLE_DOWNLOADS]) {
+      if (!caps['map_'].get('se:downloadsEnabled')) {
         throw new error.WebDriverError('Downloads must be enabled in options')
       }
 
@@ -1738,7 +1738,7 @@ class WebDriver {
 
   async downloadFile(fileName, targetDirectory) {
     const caps = await this.getCapabilities()
-    if (!caps[Capabilities.ENABLE_DOWNLOADS]) {
+    if (!caps['map_'].get('se:downloadsEnabled')) {
       throw new error.WebDriverError('Downloads must be enabled in options')
     }
 
@@ -1768,7 +1768,7 @@ class WebDriver {
 
   async deleteDownloadableFiles() {
     const caps = await this.getCapabilities()
-    if (!caps[Capabilities.ENABLE_DOWNLOADS]) {
+    if (!caps['map_'].get('se:downloadsEnabled')) {
       throw new error.WebDriverError('Downloads must be enabled in options')
     }
 
