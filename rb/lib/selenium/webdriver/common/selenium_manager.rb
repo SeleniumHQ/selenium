@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'bundler'
 require 'open3'
 
 module Selenium
@@ -28,12 +29,6 @@ module Selenium
     #
     class SeleniumManager
       class << self
-        attr_writer :bin_path
-
-        def bin_path
-          @bin_path ||= '../../../../../bin'
-        end
-
         # @param [Options] options browser options.
         # @return [String] the path to the correct driver.
         def driver_path(options)
@@ -76,17 +71,16 @@ module Selenium
         def binary
           @binary ||= begin
             location = ENV.fetch('SE_MANAGER_PATH', begin
-              directory = File.expand_path(bin_path, __FILE__)
               if Platform.windows?
-                "#{directory}/windows/selenium-manager.exe"
+                "#{Bundler.root}/bin/windows/selenium-manager.exe"
               elsif Platform.mac?
-                "#{directory}/macos/selenium-manager"
+                "#{Bundler.root}/bin/macos/selenium-manager"
               elsif Platform.linux?
-                "#{directory}/linux/selenium-manager"
+                "#{Bundler.root}/bin/linux/selenium-manager"
               elsif Platform.unix?
                 WebDriver.logger.warn('Selenium Manager binary may not be compatible with Unix; verify settings',
                                       id: %i[selenium_manager unix_binary])
-                "#{directory}/linux/selenium-manager"
+                "#{Bundler.root}/bin/linux/selenium-manager"
               end
             rescue Error::WebDriverError => e
               raise Error::WebDriverError, "Unable to obtain Selenium Manager binary for #{e.message}"

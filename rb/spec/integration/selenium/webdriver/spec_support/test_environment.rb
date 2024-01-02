@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'bundler'
+
 module Selenium
   module WebDriver
     module SpecSupport
@@ -27,10 +29,17 @@ module Selenium
           @create_driver_error = nil
           @create_driver_error_count = 0
 
-          $LOAD_PATH.insert(0, root.join('bazel-bin/rb/lib').to_s) if File.exist?(root.join('bazel-bin/rb/lib'))
-          WebDriver.logger.ignore(%i[logger_info])
-          SeleniumManager.bin_path = root.join('bazel-bin/rb/bin').to_s if File.exist?(root.join('bazel-bin/rb/bin'))
+          bazel_path = Bundler.root.join('bazel-bin/rb/').to_s
+          $LOAD_PATH.insert(0, "#{bazel_path}/lib").to_s
+          ENV['SE_MANAGER_PATH'] = if Platform.windows?
+                                     "#{bazel_path}/bin/windows/selenium-manager.exe"
+                                   elsif Platform.mac?
+                                     "#{bazel_path}/bin/macos/selenium-manager"
+                                   elsif Platform.linux?
+                                     "#{bazel_path}/bin/linux/selenium-manager"
+                                   end
 
+          WebDriver.logger.ignore(:logger_info)
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
           @driver_instance = nil
           @remote_server = nil
@@ -77,7 +86,7 @@ module Selenium
 
         def app_server
           @app_server ||= begin
-            app_server = RackServer.new(root.join('common/src/web').to_s, random_port)
+            app_server = RackServer.new(Bundler.root.join('common/src/web').to_s, random_port)
             app_server.start
 
             app_server
@@ -108,7 +117,7 @@ module Selenium
         def remote_server_jar
           jar = 'java/src/org/openqa/selenium/grid/selenium_server_deploy.jar'
           test_jar = Pathname.new(Dir.pwd).join(jar)
-          built_jar = root.join("bazel-bin/#{jar}")
+          built_jar = Bundler.root.join("bazel-bin/#{jar}")
           jar = if File.exist?(test_jar) && ENV['DOWNLOAD_SERVER'].nil?
                   test_jar
                 elsif File.exist?(built_jar) && ENV['DOWNLOAD_SERVER'].nil?
@@ -131,12 +140,6 @@ module Selenium
 
         def url_for(filename)
           app_server.where_is filename
-        end
-
-        def root
-          # prefer #realpath over #expand_path to avoid problems with UNC
-          # see https://bugs.ruby-lang.org/issues/13515
-          @root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
         end
 
         def create_driver!(listener: nil, **opts, &block)
