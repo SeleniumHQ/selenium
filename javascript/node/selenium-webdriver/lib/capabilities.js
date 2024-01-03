@@ -209,6 +209,9 @@ const Capability = {
    * Used to upload a file when strict file interactability is on
    */
   STRICT_FILE_INTERACTABILITY: 'strictFileInteractability',
+
+
+  ENABLE_DOWNLOADS: "se:downloadsEnabled",
 }
 
 /**
@@ -518,6 +521,10 @@ class Capabilities {
       Capability.STRICT_FILE_INTERACTABILITY,
       strictFileInteractability
     )
+  }
+
+  enableDownloads() {
+    return this.set(Capability.ENABLE_DOWNLOADS, true)
   }
 }
 
