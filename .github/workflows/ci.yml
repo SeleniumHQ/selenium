@@ -12,8 +12,9 @@ on:
 concurrency:
   group: >-
     ${{
-      github.workflow + '-' + github.ref +
-      (github.event_name == 'pull_request' || github.event_name == 'push' ? '' : '-all')
+      github.event_name == 'pull_request' || github.event_name == 'push'
+          ? github.workflow + '-' + github.ref
+          : github.workflow + '-' + github.ref + '-all'
     }}
   cancel-in-progress: true
 
