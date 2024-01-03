@@ -41,7 +41,6 @@ import org.openqa.selenium.print.PrintOptions;
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public interface DriverCommand {
-  String GET_ALL_SESSIONS = "getAllSessions";
   String GET_CAPABILITIES = "getCapabilities";
   String NEW_SESSION = "newSession";
   String STATUS = "status";
@@ -70,11 +69,8 @@ public interface DriverCommand {
   String UPLOAD_FILE = "uploadFile";
   String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
   String GET_WINDOW_HANDLES = "getWindowHandles";
-  String GET_CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle";
-  String GET_CONTEXT_HANDLES = "getContextHandles";
   String SWITCH_TO_WINDOW = "switchToWindow";
   String SWITCH_TO_NEW_WINDOW = "newWindow";
-  String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
   String SWITCH_TO_PARENT_FRAME = "switchToParentFrame";
   String GET_ACTIVE_ELEMENT = "getActiveElement";
@@ -98,14 +94,12 @@ public interface DriverCommand {
   String GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty";
   String GET_ELEMENT_ARIA_ROLE = "getElementAriaRole";
   String GET_ELEMENT_ACCESSIBLE_NAME = "getElementAccessibleName";
-  String ELEMENT_EQUALS = "elementEquals";
   String SCREENSHOT = "screenshot";
   String ELEMENT_SCREENSHOT = "elementScreenshot";
   String ACCEPT_ALERT = "acceptAlert";
   String DISMISS_ALERT = "dismissAlert";
   String GET_ALERT_TEXT = "getAlertText";
   String SET_ALERT_VALUE = "setAlertValue";
-  String SET_ALERT_CREDENTIALS = "setAlertCredentials";
   String GET_TIMEOUTS = "getTimeouts";
   String SET_TIMEOUT = "setTimeout";
   String PRINT_PAGE = "printPage";
@@ -114,10 +108,7 @@ public interface DriverCommand {
   String GET_LOCATION = "getLocation";
   String SET_LOCATION = "setLocation";
   String GET_APP_CACHE = "getAppCache";
-  String GET_APP_CACHE_STATUS = "getStatus";
   String CLEAR_APP_CACHE = "clearAppCache";
-  String IS_BROWSER_ONLINE = "isBrowserOnline";
-  String SET_BROWSER_ONLINE = "setBrowserOnline";
   String GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem";
   String GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys";
   String SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem";
@@ -130,10 +121,6 @@ public interface DriverCommand {
   String REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem";
   String CLEAR_SESSION_STORAGE = "clearSessionStorage";
   String GET_SESSION_STORAGE_SIZE = "getSessionStorageSize";
-  String SET_SCREEN_ORIENTATION = "setScreenOrientation";
-  String GET_SCREEN_ORIENTATION = "getScreenOrientation";
-  String SET_SCREEN_ROTATION = "setScreenRotation";
-  String GET_SCREEN_ROTATION = "getScreenRotation";
   // W3C Actions APIs
   String ACTIONS = "actions";
   String CLEAR_ACTIONS_STATE = "clearActionState";
@@ -149,7 +136,6 @@ public interface DriverCommand {
   // Logging API
   String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";
   String GET_LOG = "getLog";
-  String GET_SESSION_LOGS = "getSessionLogs";
   // Mobile API
   String GET_NETWORK_CONNECTION = "getNetworkConnection";
   String SET_NETWORK_CONNECTION = "setNetworkConnection";

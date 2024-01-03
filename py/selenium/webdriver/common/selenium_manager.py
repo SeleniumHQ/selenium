@@ -17,6 +17,7 @@
 import json
 import logging
 import os
+import platform
 import subprocess
 import sys
 from pathlib import Path
@@ -47,17 +48,19 @@ class SeleniumManager:
             return Path(path)
 
         dirs = {
-            "darwin": "macos",
-            "win32": "windows",
-            "cygwin": "windows",
-            "linux": "linux",
-            "freebsd": "linux",
-            "openbsd": "linux",
+            ("darwin", "any"): "macos",
+            ("win32", "any"): "windows",
+            ("cygwin", "any"): "windows",
+            ("linux", "x86_64"): "linux",
+            ("freebsd", "x86_64"): "linux",
+            ("openbsd", "x86_64"): "linux",
         }
 
-        directory = dirs.get(sys.platform)
+        arch = platform.machine() if sys.platform in ("linux", "freebsd", "openbsd") else "any"
+
+        directory = dirs.get((sys.platform, arch))
         if directory is None:
-            raise WebDriverException(f"Unsupported platform: {sys.platform}")
+            raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
 
         if sys.platform in ["freebsd", "openbsd"]:
             logger.warning("Selenium Manager binary may not be compatible with %s; verify settings", sys.platform)
