@@ -264,7 +264,7 @@ public class ExternalProcess {
     boolean exited = process.waitFor(duration.toMillis(), TimeUnit.MILLISECONDS);
 
     if (exited) {
-      worker.join();
+      worker.join(30000);
     }
 
     return exited;
