@@ -42,6 +42,7 @@ const webElement = require('./webelement')
 const { isObject } = require('./util')
 const BIDI = require('../bidi')
 const { PinnedScript } = require('./pinnedScript')
+const JSZip = require('jszip');
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1737,14 +1738,14 @@ class WebDriver {
   }
 
   async downloadFile(fileName, targetDirectory) {
-    const caps = await this.getCapabilities()
+    const caps = await this.getCapabilities();
     if (!caps['map_'].get('se:downloadsEnabled')) {
-      throw new error.WebDriverError('Downloads must be enabled in options')
+      throw new Error('Downloads must be enabled in options');
     }
 
-    let response = await this.execute(
-      new command.Command(command.Name.DOWNLOAD_FILE).setParameter('file_name', fileName)
-    )
+    const response = await this.execute(
+      new command.Command(command.Name.DOWNLOAD_FILE).setParameter('name', fileName)
+    );
 
     const base64Content = response.contents;
 
@@ -1756,14 +1757,19 @@ class WebDriver {
     const zipFilePath = path.join(targetDirectory, `${fileName}.zip`);
     fs.writeFileSync(zipFilePath, Buffer.from(base64Content, 'base64'));
 
-    try {
-      await pipeline(
-          fs.createReadStream(zipFilePath),
-          unzipper.Extract({ path: targetDirectory })
-      );
-    } finally {
-      fs.unlinkSync(zipFilePath);
-    }
+    const zipData = fs.readFileSync(zipFilePath);
+    await JSZip.loadAsync(zipData)
+      .then(zip => {
+        // Iterate through each file in the zip archive
+        Object.keys(zip.files).forEach(async (fileName) => {
+          const fileData = await zip.files[fileName].async('nodebuffer');
+          fs.writeFileSync(`${targetDirectory}/${fileName}`, fileData);
+          console.log(`File extracted: ${fileName}`);
+        });
+      })
+      .catch(error => {
+        console.error("Error unzipping file:", error);
+      });
   }
 
   async deleteDownloadableFiles() {
