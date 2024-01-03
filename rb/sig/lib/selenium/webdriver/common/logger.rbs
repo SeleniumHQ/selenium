@@ -17,9 +17,9 @@ module Selenium
 
       def io: () -> IO
 
-      def ignore: (*Symbol ids) -> Array[Symbol]
+      def ignore: (*Symbol | Array[Symbol] ids) -> Array[Symbol]
 
-      def allow: (*Symbol ids) -> Array[Symbol]
+      def allow: (*Symbol | Array[Symbol] ids) -> Array[Symbol]
 
       def debug: (String message, ?id: Symbol | Array[Symbol] id) ?{ () -> void  } -> void
 
