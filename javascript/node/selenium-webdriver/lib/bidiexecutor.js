@@ -25,6 +25,15 @@ class BiDiExecutor extends Executor {
   #driver
   #currentContext
 
+  // Mapping the page load strategy values used in Classic To BiDi
+  // Refer: https://w3c.github.io/webdriver-bidi/#type-browsingContext-ReadinessState
+  // Refer: https://www.w3.org/TR/webdriver2/#navigation
+  #readinessStateMappings  = [
+    ["none", "none"],
+    ["eager","interactive"],
+    ["normal", "complete"]]
+  #readinessStateMap = new Map(this.#readinessStateMappings)
+
   constructor(driver) {
     super()
     this.#driver = driver
@@ -42,10 +51,9 @@ class BiDiExecutor extends Executor {
 
     this.#commandHandlers.set('get', async (driver, command) => {
       let url = command.getParameter('url')
-     // TODO: Map pageLoadStrategy to the correct value
-      let pageLoadStrategy = command.getParameter('pageLoadStrategy')
-      // TODO: Remove hardcoded value here
-      let response = await this.#currentContext.navigate(url, "complete")
+      let caps = await this.#driver.getCapabilities()
+      let pageLoadStrategy = caps['map_'].get('pageLoadStrategy')
+      let response = await this.#currentContext.navigate(url, this.#readinessStateMap.get(pageLoadStrategy))
 
       await driver.switchTo().window(this.#currentContext.id)
       return response
