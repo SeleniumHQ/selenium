@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.html5;
 
+/**
+ * @deprecated This functionality is no longer supported
+ */
+@Deprecated
 public interface LocationContext {
 
   /**
