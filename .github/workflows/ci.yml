@@ -13,6 +13,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}${{ github.event_name == 'workflow_dispatch' && '-all' || '' }}${{ github.event_name == 'schedule' && '-all' || '' }}
   cancel-in-progress: true
 
+
 jobs:
   check:
     name: Check
