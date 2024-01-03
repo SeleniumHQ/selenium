@@ -10,12 +10,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: >-
-    ${{
-      github.event_name == 'pull_request' || github.event_name == 'push'
-          ? github.workflow + '-' + github.ref
-          : github.workflow + '-' + github.ref + '-all'
-    }}
+  group: ${{ github.workflow }}-${{ github.ref }}${{(github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && '' || '-all' }}
   cancel-in-progress: true
 
 jobs:
