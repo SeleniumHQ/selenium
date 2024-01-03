@@ -28,9 +28,9 @@ class BiDiExecutor extends Executor {
   // Mapping the page load strategy values used in Classic To BiDi
   // Refer: https://w3c.github.io/webdriver-bidi/#type-browsingContext-ReadinessState
   // Refer: https://www.w3.org/TR/webdriver2/#navigation
-  #readinessStateMappings  = [
+  #readinessStateMappings = [
     ["none", "none"],
-    ["eager","interactive"],
+    ["eager", "interactive"],
     ["normal", "complete"]]
   #readinessStateMap = new Map(this.#readinessStateMappings)
 
@@ -55,8 +55,23 @@ class BiDiExecutor extends Executor {
       let pageLoadStrategy = caps['map_'].get('pageLoadStrategy')
       let response = await this.#currentContext.navigate(url, this.#readinessStateMap.get(pageLoadStrategy))
 
+      // Required because W3C Classic sets the current browsing context to current top-level
+      // context on navigation
+      // This is crucial for tests that:
+      // Switch to frame -> find element -> navigate url -> find element (in BiDi it will try to
+      // find an element in the frame)
+      // But in WebDriver Classic it will try to find the element on the page navigated to
+      // So to avoid breaking changes, we need to add this step
+      // Refer: Pt 9 of https://www.w3.org/TR/webdriver2/#navigate-to
+      // Refer: https://w3c.github.io/webdriver-bidi/#command-browsingContext-navigate
+
       await driver.switchTo().window(this.#currentContext.id)
       return response
+    })
+
+    this.#commandHandlers.set('printPage', async (driver, command) => {
+      let response = await this.#currentContext.printPage(command.getParameter('options'))
+      return response._data
     })
   }
 

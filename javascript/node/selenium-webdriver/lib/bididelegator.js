@@ -19,6 +19,7 @@ const {Executor} = require("./command");
 
 const biDiCommands = new Set()
 biDiCommands.add('get')
+biDiCommands.add('printPage')
 
 class BiDiDelegator extends Executor {
   #bidiExecutor

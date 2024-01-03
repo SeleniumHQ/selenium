@@ -137,7 +137,6 @@ function createDriver(ctor, ...args) {
       constructor(session, executor, ...rest) {
         super(session, ...rest)
 
-
         let driver
         const pd = this.getSession().then((session) => {
           driver = new ctor(session, executor, ...rest)
