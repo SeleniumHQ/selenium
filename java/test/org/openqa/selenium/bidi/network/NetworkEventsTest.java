@@ -20,6 +20,7 @@ package org.openqa.selenium.bidi.network;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -140,6 +141,31 @@ class NetworkEventsTest extends JupiterTestBase {
       assertThat(requestSent.getRequest().getCookies().get(0).getName()).isEqualTo("foo");
       assertThat(requestSent.getRequest().getCookies().get(0).getValue().getValue())
           .isEqualTo("bar");
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX) // Implemented in Firefox Nightly version 123
+  void canListenToOnAuthRequiredEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (Network network = new Network(driver)) {
+      CompletableFuture<ResponseDetails> future = new CompletableFuture<>();
+      network.onAuthRequired(future::complete);
+      page = server.whereIs("basicAuth");
+      driver.get(page);
+
+      ResponseDetails response = future.get(5, TimeUnit.SECONDS);
+      String windowHandle = driver.getWindowHandle();
+      assertThat(response.getBrowsingContextId()).isEqualTo(windowHandle);
+      assertThat(response.getRequest().getRequestId()).isNotNull();
+      assertThat(response.getRequest().getMethod()).isEqualToIgnoringCase("get");
+      assertThat(response.getRequest().getUrl()).isNotNull();
+      assertThat(response.getResponseData().getHeaders().size()).isGreaterThanOrEqualTo(1);
+      assertThat(response.getResponseData().getUrl()).contains("basicAuth");
+      assertThat(response.getResponseData().getStatus()).isEqualTo(401L);
     }
   }
 
