@@ -265,6 +265,9 @@ public class ExternalProcess {
 
     if (exited) {
       worker.join(30000);
+      if (worker.isAlive()) {
+        worker.interrupt();
+      }
     }
 
     return exited;
@@ -295,6 +298,9 @@ public class ExternalProcess {
       try {
         if (process.waitFor(timeout.toMillis(), MILLISECONDS)) {
           worker.join(30000);
+          if (worker.isAlive()) {
+            worker.interrupt();
+          }
           return;
         }
       } catch (InterruptedException ex) {
