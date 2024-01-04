@@ -294,7 +294,7 @@ public class ExternalProcess {
 
       try {
         if (process.waitFor(timeout.toMillis(), MILLISECONDS)) {
-          worker.join();
+          worker.join(30000);
           return;
         }
       } catch (InterruptedException ex) {
