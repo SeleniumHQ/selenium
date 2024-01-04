@@ -98,8 +98,8 @@ driver_instance = None
 def driver(request):
     kwargs = {}
 
-    # browser can be changed with `--driver=firefox` as an argument or in pytest.ini
-    driver_class = request.param.capitalize() if request.param else "Chrome"
+    # browser can be changed with `--driver=firefox` as an argument or to addopts in pytest.ini
+    driver_class = getattr(request, 'param', 'Chrome').capitalize()
 
     # skip tests if not available on the platform
     _platform = platform.system()
