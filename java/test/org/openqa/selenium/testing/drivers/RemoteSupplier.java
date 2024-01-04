@@ -57,9 +57,17 @@ class RemoteSupplier implements Supplier<WebDriver> {
       serverUrl = server.getWebDriverUrl();
     }
 
-    RemoteWebDriver driver = new RemoteWebDriver(serverUrl, desiredCapabilities);
-    driver.setFileDetector(new LocalFileDetector());
-    return new Augmenter().augment(driver);
+    try {
+      RemoteWebDriver driver = new RemoteWebDriver(serverUrl, desiredCapabilities);
+      driver.setFileDetector(new LocalFileDetector());
+      return new Augmenter().augment(driver);
+    } catch (Exception ex) {
+      if (started) {
+        started = false;
+        server.stop();
+      }
+      throw ex;
+    }
   }
 
   private synchronized void startServer() {
