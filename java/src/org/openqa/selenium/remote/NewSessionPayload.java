@@ -221,10 +221,6 @@ public class NewSessionPayload implements Closeable {
         String name = input.nextName();
         switch (name) {
           case "capabilities":
-            // These fields were used by the (now defunct) JSON Wire Protocol, but we
-            // keep them here since we might see them from ancient clients.
-          case "desiredCapabilities":
-          case "requiredCapabilities":
             input.skipValue();
             break;
 
@@ -256,7 +252,7 @@ public class NewSessionPayload implements Closeable {
 
   public Map<String, Object> getMetadata() {
     Set<String> ignoredMetadataKeys =
-        Set.of("capabilities", "desiredCapabilities", "requiredCapabilities");
+        Set.of("capabilities", "requiredCapabilities");
 
     try (Reader reader =
             new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
