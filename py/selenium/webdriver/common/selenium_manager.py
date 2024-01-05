@@ -49,27 +49,24 @@ class SeleniumManager:
             logger.debug("Selenium Manager set by env SE_MANAGER_PATH to: %s", path)
             path = Path(path)
         else:
-            dirs = {
-                ("darwin", "any"): "macos",
-                ("win32", "any"): "windows",
-                ("cygwin", "any"): "windows",
-                ("linux", "x86_64"): "linux",
-                ("freebsd", "x86_64"): "linux",
-                ("openbsd", "x86_64"): "linux",
+            allowed = {
+                ("darwin", "any"): "macos/selenium-manager",
+                ("win32", "any"): "windows/selenium-manager.exe",
+                ("cygwin", "any"): "windows/selenium-manager.exe",
+                ("linux", "x86_64"): "linux/selenium-manager",
+                ("freebsd", "x86_64"): "linux/selenium-manager",
+                ("openbsd", "x86_64"): "linux/selenium-manager",
             }
 
             arch = platform.machine() if sys.platform in ("linux", "freebsd", "openbsd") else "any"
-
-            directory = dirs.get((sys.platform, arch))
-            if directory is None:
-                raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
-
             if sys.platform in ["freebsd", "openbsd"]:
                 logger.warning("Selenium Manager binary may not be compatible with %s; verify settings", sys.platform)
 
-            file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
+            location = allowed.get((sys.platform, arch))
+            if location is None:
+                raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
 
-            path = Path(__file__).parent.joinpath(directory, file)
+            path = Path(__file__).parent.joinpath(location)
 
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")

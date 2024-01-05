@@ -49,24 +49,23 @@ class DriverFinder:
 
     @staticmethod
     def get_results(service: Service, options: BaseOptions) -> dict:
-        path = service.path
+        browser = options.capabilities['browserName']
         try:
+            path = service.path
             if path:
-                logger.debug("Skipping Selenium Manager and using provided driver path: %s", path)
-                results = {"driver_path": service.path}
+                logger.debug("Skipping Selenium Manager for %s and using provided driver path: %s", browser, path)
+                results = {"driver_path": path}
             else:
                 results = SeleniumManager().results(DriverFinder._to_args(options))
             DriverFinder._validate_results(results)
             return results
         except Exception as err:
-            msg = f"Unable to obtain driver for {options.capabilities['browserName']}."
+            msg = f"Unable to obtain driver for {browser}."
             raise NoSuchDriverException(msg) from err
 
     @staticmethod
     def _to_args(options: BaseOptions) -> list:
-        browser = options.capabilities["browserName"]
-
-        args = ["--browser", browser]
+        args = ["--browser", options.capabilities["browserName"]]
 
         if options.browser_version:
             args.append("--browser-version")
