@@ -251,8 +251,7 @@ public class NewSessionPayload implements Closeable {
   }
 
   public Map<String, Object> getMetadata() {
-    Set<String> ignoredMetadataKeys =
-        Set.of("capabilities", "requiredCapabilities");
+    Set<String> ignoredMetadataKeys = Set.of("capabilities");
 
     try (Reader reader =
             new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
