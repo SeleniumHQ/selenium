@@ -134,12 +134,12 @@ function createDriver(ctor, ...args) {
        * @param {!IThenable<!Session>} session
        * @param {...?} rest
        */
-      constructor(session, executor, ...rest) {
+      constructor(session, ...rest) {
         super(session, ...rest)
 
         let driver
         const pd = this.getSession().then((session) => {
-          driver = new ctor(session, executor, ...rest)
+          driver = new ctor(session, ...rest)
           return this.getCapabilities()
         }).then(caps => {
           if (caps.get('webSocketUrl')) {
@@ -149,7 +149,7 @@ function createDriver(ctor, ...args) {
           }
           }).then(obj => {
             if (obj instanceof BiDiExecutor) {
-              executor.setBidiExecutor(obj)
+              driver.getExecutor().setBidiExecutor(obj)
             }
             return driver
         })
