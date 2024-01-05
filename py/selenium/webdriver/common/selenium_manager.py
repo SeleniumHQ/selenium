@@ -46,29 +46,30 @@ class SeleniumManager:
         """
 
         if (path := os.getenv("SE_MANAGER_PATH")) is not None:
-            return Path(path)
+            logger.debug("Selenium Manager set by env SE_MANAGER_PATH to: %s", path)
+            path = Path(path)
+        else:
+            dirs = {
+                ("darwin", "any"): "macos",
+                ("win32", "any"): "windows",
+                ("cygwin", "any"): "windows",
+                ("linux", "x86_64"): "linux",
+                ("freebsd", "x86_64"): "linux",
+                ("openbsd", "x86_64"): "linux",
+            }
 
-        dirs = {
-            ("darwin", "any"): "macos",
-            ("win32", "any"): "windows",
-            ("cygwin", "any"): "windows",
-            ("linux", "x86_64"): "linux",
-            ("freebsd", "x86_64"): "linux",
-            ("openbsd", "x86_64"): "linux",
-        }
+            arch = platform.machine() if sys.platform in ("linux", "freebsd", "openbsd") else "any"
 
-        arch = platform.machine() if sys.platform in ("linux", "freebsd", "openbsd") else "any"
+            directory = dirs.get((sys.platform, arch))
+            if directory is None:
+                raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
 
-        directory = dirs.get((sys.platform, arch))
-        if directory is None:
-            raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
+            if sys.platform in ["freebsd", "openbsd"]:
+                logger.warning("Selenium Manager binary may not be compatible with %s; verify settings", sys.platform)
 
-        if sys.platform in ["freebsd", "openbsd"]:
-            logger.warning("Selenium Manager binary may not be compatible with %s; verify settings", sys.platform)
+            file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
 
-        file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
-
-        path = Path(__file__).parent.joinpath(directory, file)
+            path = Path(__file__).parent.joinpath(directory, file)
 
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
@@ -93,15 +94,7 @@ class SeleniumManager:
         args.append("--output")
         args.append("json")
 
-        output = self.run(args)
-
-        driver_path = output["driver_path"]
-        if driver_path is None:
-            raise ValueError("No driver path was returned.")
-        elif not Path(driver_path).is_file():
-            raise FileNotFoundError(f"Driver path returned but is invalid: {driver_path}")
-
-        return output
+        return self.run(args)
 
     @deprecated(reason="Use results() function with argument list instead.")
     def driver_location(self, options: BaseOptions) -> str:
@@ -165,12 +158,15 @@ class SeleniumManager:
         except Exception as err:
             raise WebDriverException(f"Unsuccessful command executed: {command}") from err
 
-        for item in output["logs"]:
-            if item["level"] == "WARN":
-                logger.warning(item["message"])
-            if item["level"] == "DEBUG" or item["level"] == "INFO":
-                logger.debug(item["message"])
-
+        SeleniumManager.process_logs(output["logs"])
         if completed_proc.returncode:
             raise WebDriverException(f"Unsuccessful command executed: {command}.\n{result}{stderr}")
         return result
+
+    @staticmethod
+    def process_logs(log_items: List[dict]):
+        for item in log_items:
+            if item["level"] == "WARN":
+                logger.warning(item["message"])
+            elif item["level"] in ["DEBUG", "INFO"]:
+                logger.debug(item["message"])

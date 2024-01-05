@@ -50,17 +50,17 @@ class DriverFinder:
     @staticmethod
     def get_results(service: Service, options: BaseOptions) -> dict:
         path = service.path
-
-        if path is None:
-            try:
-                return SeleniumManager().results(DriverFinder._to_args(options))
-            except Exception as err:
-                msg = f"Unable to obtain driver for {options.capabilities['browserName']} using Selenium Manager."
-                raise NoSuchDriverException(msg) from err
-        elif not Path(path).is_file():
-            raise NoSuchDriverException(f"Provided path for {options.capabilities['browserName']} is invalid")
-        else:
-            return {"driver_path": path}
+        try:
+            if path:
+                logger.debug("Skipping Selenium Manager and using provided driver path: %s", path)
+                results = {"driver_path": service.path}
+            else:
+                results = SeleniumManager().results(DriverFinder._to_args(options))
+            DriverFinder._validate_results(results)
+            return results
+        except Exception as err:
+            msg = f"Unable to obtain driver for {options.capabilities['browserName']}."
+            raise NoSuchDriverException(msg) from err
 
     @staticmethod
     def _to_args(options: BaseOptions) -> list:
@@ -84,3 +84,10 @@ class DriverFinder:
             args.append(value)
 
         return args
+
+    @staticmethod
+    def _validate_results(results):
+        for key, file_path in results.items():
+            if not Path(file_path).is_file():
+                raise ValueError(f"The path for '{key}' is not a valid file: {file_path}")
+        return True
