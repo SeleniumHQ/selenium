@@ -46,7 +46,7 @@ class WebDriver(RemoteWebDriver):
         self.service = service if service else Service()
         options = options if options else Options()
 
-        self.service.path = DriverFinder.get_results(self.service, options)["driver_path"]
+        self.service.path = DriverFinder.get_result(self.service, options)["driver_path"]
         self.service.start()
 
         executor = RemoteConnection(

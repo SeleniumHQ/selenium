@@ -75,7 +75,7 @@ class SeleniumManager:
 
         return path
 
-    def results(self, args: List) -> dict:
+    def result(self, args: List) -> dict:
         """Determines the locations of the requested assets
 
         :Args:
@@ -150,14 +150,14 @@ class SeleniumManager:
                 completed_proc = subprocess.run(args, capture_output=True)
             stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
             stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
-            output = json.loads(stdout)
-            result = output["result"]
+            output = json.loads(stdout) if stdout is not "" else {"logs": [], "result": {}}
         except Exception as err:
             raise WebDriverException(f"Unsuccessful command executed: {command}") from err
 
         SeleniumManager.process_logs(output["logs"])
+        result = output["result"]
         if completed_proc.returncode:
-            raise WebDriverException(f"Unsuccessful command executed: {command}.\n{result}{stderr}")
+            raise WebDriverException(f"Unsuccessful command executed: {command}; code: {completed_proc.returncode}\n{result}\n{stderr}")
         return result
 
     @staticmethod

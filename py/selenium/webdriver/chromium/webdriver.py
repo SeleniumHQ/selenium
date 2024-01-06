@@ -46,11 +46,12 @@ class ChromiumDriver(RemoteWebDriver):
         """
         self.service = service
 
-        results = DriverFinder.get_results(self.service, options)
-        options.binary_location = results["browser_path"]
-        options.browser_version = None  # if we have the binary location we no longer need the version
+        result = DriverFinder.get_result(self.service, options)
+        if "browser_path" in result:
+            options.binary_location = result["browser_path"]
+            options.browser_version = None
 
-        self.service.path = results["driver_path"]
+        self.service.path = result["driver_path"]
         self.service.start()
 
         executor = ChromiumRemoteConnection(

@@ -32,7 +32,7 @@ def test_gets_results(monkeypatch):
 
     with mock.patch(lib_path + ".get_binary", return_value="/path/to/sm") as mock_get_binary, \
          mock.patch(lib_path + ".run", return_value=expected_output) as mock_run:
-        SeleniumManager().results([])
+        SeleniumManager().result([])
 
         mock_get_binary.assert_called_once()
         expected_run_args = ["/path/to/sm", "--language-binding", "python", "--output", "json"]

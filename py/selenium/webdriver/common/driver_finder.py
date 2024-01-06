@@ -48,19 +48,29 @@ class DriverFinder:
         return path
 
     @staticmethod
-    def get_results(service: Service, options: BaseOptions) -> dict:
+    def get_result(service: Service, options: BaseOptions) -> dict:
         browser = options.capabilities['browserName']
         try:
             path = service.path
             if path:
-                logger.debug("Skipping Selenium Manager for %s and using provided driver path: %s", browser, path)
-                results = {"driver_path": path}
+                logger.debug("Skipping Selenium Manager; path to %s driver specified in Service class: %s", browser, path)
+                if not Path(path).is_file():
+                    raise ValueError(f"The path is not a valid file: %s", path)
+                return {"driver_path": path}
             else:
-                results = SeleniumManager().results(DriverFinder._to_args(options))
-            DriverFinder._validate_results(results)
-            return results
+                output = SeleniumManager().result(DriverFinder._to_args(options))
+                results = {}
+                if Path(output["driver_path"]).is_file():
+                    results["driver_path"] = output["driver_path"]
+                else:
+                    raise ValueError(f"The driver path is not a valid file: %s", output["driver_path"])
+                if Path(output["browser_path"]).is_file():
+                    results["browser_path"] = output["browser_path"]
+                else:
+                    raise ValueError(f"The browser path is not a valid file: %s", output["driver_path"])
+                return results
         except Exception as err:
-            msg = f"Unable to obtain driver for {browser}."
+            msg = f"Unable to obtain driver for {browser}"
             raise NoSuchDriverException(msg) from err
 
     @staticmethod
@@ -83,10 +93,3 @@ class DriverFinder:
             args.append(value)
 
         return args
-
-    @staticmethod
-    def _validate_results(results):
-        for key, file_path in results.items():
-            if not Path(file_path).is_file():
-                raise ValueError(f"The path for '{key}' is not a valid file: {file_path}")
-        return True
