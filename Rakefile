@@ -643,6 +643,11 @@ namespace :py do
 
     Rake::Task['py:changelog'].invoke
   end
+
+  desc 'Update Python Syntax'
+  task :lint do
+    `tox -c py/tox.ini -e linting`
+  end
 end
 
 def ruby_version
@@ -702,6 +707,11 @@ namespace :rb do
 
     Rake::Task['rb:changelog'].invoke unless new_version.include?('nightly')
     sh 'cd rb && bundle update'
+  end
+
+  desc 'Update Ruby Syntax'
+  task :lint do
+    `cd rb && bundle exec rubocop -a`
   end
 end
 
