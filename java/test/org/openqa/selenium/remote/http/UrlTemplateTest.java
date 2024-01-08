@@ -68,6 +68,15 @@ class UrlTemplateTest {
   }
 
   @Test
+  void shouldMatchAgainstUrlTemplateExcludePrefix() {
+    UrlTemplate.Match match =
+        new UrlTemplate("/session/{id}/se/vnc").match("/prefix/session/1234/se/vnc", "/prefix");
+
+    assertThat(match.getUrl()).isEqualTo("/session/1234/se/vnc");
+    assertThat(match.getParameters()).isEqualTo(ImmutableMap.of("id", "1234"));
+  }
+
+  @Test
   void aNullMatchDoesNotCauseANullPointerExceptionToBeThrown() {
     assertThat(new UrlTemplate("/").match(null)).isNull();
   }

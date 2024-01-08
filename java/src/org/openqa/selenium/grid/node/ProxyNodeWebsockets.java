@@ -56,18 +56,20 @@ public class ProxyNodeWebsockets
       ImmutableSet.of("goog:chromeOptions", "moz:debuggerAddress", "ms:edgeOptions");
   private final HttpClient.Factory clientFactory;
   private final Node node;
+  private final String gridSubPath;
 
-  public ProxyNodeWebsockets(HttpClient.Factory clientFactory, Node node) {
+  public ProxyNodeWebsockets(HttpClient.Factory clientFactory, Node node, String gridSubPath) {
     this.clientFactory = Objects.requireNonNull(clientFactory);
     this.node = Objects.requireNonNull(node);
+    this.gridSubPath = gridSubPath;
   }
 
   @Override
   public Optional<Consumer<Message>> apply(String uri, Consumer<Message> downstream) {
-    UrlTemplate.Match fwdMatch = FWD_TEMPLATE.match(uri);
-    UrlTemplate.Match cdpMatch = CDP_TEMPLATE.match(uri);
-    UrlTemplate.Match bidiMatch = BIDI_TEMPLATE.match(uri);
-    UrlTemplate.Match vncMatch = VNC_TEMPLATE.match(uri);
+    UrlTemplate.Match fwdMatch = FWD_TEMPLATE.match(uri, gridSubPath);
+    UrlTemplate.Match cdpMatch = CDP_TEMPLATE.match(uri, gridSubPath);
+    UrlTemplate.Match bidiMatch = BIDI_TEMPLATE.match(uri, gridSubPath);
+    UrlTemplate.Match vncMatch = VNC_TEMPLATE.match(uri, gridSubPath);
 
     if (bidiMatch == null && cdpMatch == null && vncMatch == null && fwdMatch == null) {
       return Optional.empty();
