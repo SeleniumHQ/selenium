@@ -717,6 +717,39 @@ suite(
         )
         assert.equal(devicePixelRatio, 5)
       })
+      xit('can navigate back in the browser history', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.formPage)
+
+        await driver.wait(until.elementLocated(By.id('imageButton')), 10000).submit()
+        await driver.wait(until.titleIs('We Arrive Here'), 5000)
+
+        await browsingContext.back()
+
+        await driver.wait(until.titleIs('We Leave From Here'), 5000)
+      })
+
+      xit('can navigate forward in the browser history', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.formPage)
+
+        await driver.wait(until.elementLocated(By.id('imageButton')), 10000).submit()
+        await driver.wait(until.titleIs('We Arrive Here'), 5000)
+
+        await browsingContext.back()
+        await driver.wait(until.titleIs('We Leave From Here'), 5000)
+
+        await browsingContext.forward()
+        await driver.wait(until.titleIs('We Arrive Here'), 5000)
+      })
     })
 
     describe('Browsing Context Inspector', function () {

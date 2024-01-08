@@ -312,6 +312,25 @@ class BrowsingContext {
       throw Error(result['error'])
     }
   }
+
+  async traverseHistory(delta) {
+    const params = {
+      method: 'browsingContext.traverseHistory',
+      params: {
+        context: this._id,
+        delta: delta,
+      },
+    }
+    await this.bidi.send(params)
+  }
+
+  async forward() {
+    await this.traverseHistory(1)
+  }
+
+  async back() {
+    await this.traverseHistory(-1)
+  }
 }
 
 class NavigateResult {

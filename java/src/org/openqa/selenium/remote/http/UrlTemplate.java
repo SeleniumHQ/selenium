@@ -147,8 +147,10 @@ public class UrlTemplate {
     if (matchAgainst == null || prefix == null) {
       return null;
     }
-    matchAgainst = matchAgainst.replaceFirst(prefix, "");
-    return compiled.apply(matchAgainst);
+    if (!prefix.isEmpty() && !prefix.equals("/")) {
+      matchAgainst = matchAgainst.replaceFirst(prefix, "");
+    }
+    return match(matchAgainst);
   }
 
   @SuppressWarnings("InnerClassMayBeStatic")
