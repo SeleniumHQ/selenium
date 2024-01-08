@@ -1,24 +1,33 @@
 {
   "geckodriver-releases": [
     {
+      "geckodriver-version": "0.34.0",
+      "min-firefox-version": 115
+    },
+    {
       "geckodriver-version": "0.33.0",
-      "min-firefox-version": 102
+      "min-firefox-version": 102,
+      "max-firefox-version": 120
     },
     {
       "geckodriver-version": "0.32.2",
-      "min-firefox-version": 102
+      "min-firefox-version": 102,
+      "max-firefox-version": 120
     },
     {
       "geckodriver-version": "0.32.1",
-      "min-firefox-version": 102
+      "min-firefox-version": 102,
+      "max-firefox-version": 120
     },
     {
       "geckodriver-version": "0.32.0",
-      "min-firefox-version": 102
+      "min-firefox-version": 102,
+      "max-firefox-version": 120
     },
     {
       "geckodriver-version": "0.31.0",
-      "min-firefox-version": 91
+      "min-firefox-version": 91,
+      "max-firefox-version": 120
     },
     {
       "geckodriver-version": "0.30.0",
