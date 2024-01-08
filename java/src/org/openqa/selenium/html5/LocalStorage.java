@@ -21,4 +21,5 @@ package org.openqa.selenium.html5;
  * Represents the local storage for the site currently opened in the browser. Each site has its own
  * separate storage area.
  */
+@Deprecated
 public interface LocalStorage extends Storage {}

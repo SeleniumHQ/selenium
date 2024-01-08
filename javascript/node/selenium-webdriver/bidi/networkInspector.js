@@ -39,6 +39,10 @@ class NetworkInspector {
     await this.subscribeAndHandleEvent('network.responseCompleted', callback)
   }
 
+  async authRequired(callback) {
+    await this.subscribeAndHandleEvent('network.authRequired', callback)
+  }
+
   async subscribeAndHandleEvent(eventType, callback) {
     if (this._browsingContextIds != null) {
       await this.bidi.subscribe(eventType, this._browsingContextIds)

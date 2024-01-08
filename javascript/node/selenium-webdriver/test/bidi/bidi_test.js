@@ -2359,6 +2359,30 @@ suite(
         )
         assert(onResponseCompleted[0].response.mimeType.includes('text/plain'))
       })
+      // Implemented in Firefox Nightly 123
+      xit('can subscribe to auth required', async function () {
+        let onAuthRequired = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.authRequired(function (event) {
+          onAuthRequired.push(event)
+        })
+
+        await driver.get(Pages.basicAuth)
+
+        assert.equal(onAuthRequired[0].request.method, 'GET')
+        assert.equal(
+          onAuthRequired[0].request.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(
+          onAuthRequired[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(onAuthRequired[0].response.fromCache, false)
+        assert(onAuthRequired[0].response.mimeType.includes('text/plain'))
+        assert.equal(onAuthRequired[0].response.status, 401)
+        assert.equal(onAuthRequired[0].response.statusText, 'unauthorized')
+      })
     })
 
     describe('Integration Tests', function () {

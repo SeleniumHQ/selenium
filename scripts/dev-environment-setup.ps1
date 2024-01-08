@@ -150,7 +150,11 @@ if ($longPathSupport -eq 'Y' -or $longPathSupport -eq 'y')
   fsutil 8dot3name set 0
 
   Write-Host "Set bazel output to C:/tmp instead of nested inside project directory"
-  Set-Content -Path ".bazelrc.windows.local" -Value "startup --output_user_root=C:/tmp" -Encoding UTF8
+  $currentDirectory = Get-Location
+  $filePath = [System.IO.Path]::Combine($currentDirectory, "selenium/.bazelrc.windows.local")
+  $text = "startup --output_user_root=C:/tmp"
+  $encoding = New-Object System.Text.UTF8Encoding($false)
+  [System.IO.File]::WriteAllText($filePath, $text, $encoding)
 }
 
 $intelliJChoice = Read-Host "Do you want to install and setup IntelliJ (Y/N)"
