@@ -25,7 +25,13 @@ import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 
-/** Executes the commands to access HTML5 sessionStorage on the remote webdriver server. */
+/**
+ * Executes the commands to access HTML5 sessionStorage on the remote webdriver server.
+ *
+ * @deprecated LocalStorage can be managed by executing JavaScript. @see #executeScript(String,
+ *     Object...)
+ */
+@Deprecated
 public class RemoteSessionStorage implements SessionStorage {
   private final ExecuteMethod executeMethod;
 

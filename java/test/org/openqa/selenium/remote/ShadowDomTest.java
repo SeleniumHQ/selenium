@@ -225,6 +225,6 @@ class ShadowDomTest {
     ShadowRoot shadowContext = (ShadowRoot) element.getShadowRoot();
     ShadowRoot executeContext =
         (ShadowRoot) ((JavascriptExecutor) driver).executeScript("return Arguments[0].shadowRoot");
-    assertThat(shadowContext.getId()).isEqualTo(executeContext.getId());
+    assertThat(shadowContext).isEqualTo(executeContext);
   }
 }

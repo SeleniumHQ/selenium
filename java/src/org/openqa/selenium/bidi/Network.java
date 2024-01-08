@@ -41,6 +41,9 @@ public class Network implements AutoCloseable {
   private final Event<ResponseDetails> responseCompleted =
       new Event<>("network.responseStarted", ResponseDetails::fromJsonMap);
 
+  private final Event<ResponseDetails> authRequired =
+      new Event<>("network.authRequired", ResponseDetails::fromJsonMap);
+
   public Network(WebDriver driver) {
     this(new HashSet<>(), driver);
   }
@@ -85,10 +88,19 @@ public class Network implements AutoCloseable {
     }
   }
 
+  public void onAuthRequired(Consumer<ResponseDetails> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(authRequired, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, authRequired, consumer);
+    }
+  }
+
   @Override
   public void close() {
     this.bidi.clearListener(beforeRequestSentEvent);
     this.bidi.clearListener(responseStarted);
     this.bidi.clearListener(responseCompleted);
+    this.bidi.clearListener(authRequired);
   }
 }

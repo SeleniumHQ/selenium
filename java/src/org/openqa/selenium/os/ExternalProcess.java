@@ -217,6 +217,7 @@ public class ExternalProcess {
                 "External Process Output Forwarder - "
                     + (builder.command().isEmpty() ? "N/A" : builder.command().get(0)));
 
+        worker.setDaemon(true);
         worker.start();
 
         return new ExternalProcess(process, circular, worker);

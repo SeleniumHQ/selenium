@@ -135,7 +135,6 @@ public class GeckoDriverService extends FirefoxDriverService {
   public static class Builder
       extends FirefoxDriverService.Builder<GeckoDriverService, GeckoDriverService.Builder> {
 
-    private FirefoxBinary firefoxBinary;
     private String allowHosts;
     private FirefoxDriverLogLevel logLevel;
     private Boolean logTruncate;

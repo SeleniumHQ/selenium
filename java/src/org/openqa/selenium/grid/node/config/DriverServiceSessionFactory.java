@@ -132,10 +132,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
       DriverService service = builder.build();
       if (service.getExecutable() == null) {
-        Result result = DriverFinder.getPath(service, capabilities);
-        service.setExecutable(result.getDriverPath());
-        if (result.getBrowserPath() != null && !result.getBrowserPath().isEmpty()) {
-          capabilities = setBrowserBinary(capabilities, result.getBrowserPath());
+        Result driverResult = DriverFinder.getPath(service, capabilities);
+        service.setExecutable(driverResult.getDriverPath());
+        if (driverResult.getBrowserPath() != null && !driverResult.getBrowserPath().isEmpty()) {
+          capabilities = setBrowserBinary(capabilities, driverResult.getBrowserPath());
         }
       }
 

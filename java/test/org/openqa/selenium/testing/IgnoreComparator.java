@@ -20,6 +20,7 @@ package org.openqa.selenium.testing;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -29,6 +30,8 @@ import org.openqa.selenium.testing.drivers.Browser;
 
 class IgnoreComparator {
   private final Set<Browser> ignored = new HashSet<>();
+
+  private static final Logger LOG = Logger.getLogger(IgnoreComparator.class.getName());
 
   // TODO(simon): reduce visibility
   public void addDriver(Browser driverToIgnore) {
@@ -80,7 +83,7 @@ class IgnoreComparator {
       Issue issue = service.getIssue(owner, repo, issueId);
       return "open".equals(issue.getState());
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.severe("Error during execution: " + e.getMessage());
     }
     return true;
   }

@@ -717,6 +717,39 @@ suite(
         )
         assert.equal(devicePixelRatio, 5)
       })
+      xit('can navigate back in the browser history', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.formPage)
+
+        await driver.wait(until.elementLocated(By.id('imageButton')), 10000).submit()
+        await driver.wait(until.titleIs('We Arrive Here'), 5000)
+
+        await browsingContext.back()
+
+        await driver.wait(until.titleIs('We Leave From Here'), 5000)
+      })
+
+      xit('can navigate forward in the browser history', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.formPage)
+
+        await driver.wait(until.elementLocated(By.id('imageButton')), 10000).submit()
+        await driver.wait(until.titleIs('We Arrive Here'), 5000)
+
+        await browsingContext.back()
+        await driver.wait(until.titleIs('We Leave From Here'), 5000)
+
+        await browsingContext.forward()
+        await driver.wait(until.titleIs('We Arrive Here'), 5000)
+      })
     })
 
     describe('Browsing Context Inspector', function () {
@@ -2358,6 +2391,30 @@ suite(
           await driver.getCurrentUrl()
         )
         assert(onResponseCompleted[0].response.mimeType.includes('text/plain'))
+      })
+      // Implemented in Firefox Nightly 123
+      xit('can subscribe to auth required', async function () {
+        let onAuthRequired = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.authRequired(function (event) {
+          onAuthRequired.push(event)
+        })
+
+        await driver.get(Pages.basicAuth)
+
+        assert.equal(onAuthRequired[0].request.method, 'GET')
+        assert.equal(
+          onAuthRequired[0].request.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(
+          onAuthRequired[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(onAuthRequired[0].response.fromCache, false)
+        assert(onAuthRequired[0].response.mimeType.includes('text/plain'))
+        assert.equal(onAuthRequired[0].response.status, 401)
+        assert.equal(onAuthRequired[0].response.statusText, 'unauthorized')
       })
     })
 

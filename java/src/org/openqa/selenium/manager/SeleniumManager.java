@@ -97,6 +97,8 @@ public class SeleniumManager {
                       }
                     }
                   }));
+    } else {
+      LOG.fine(String.format("Selenium Manager set by env 'SE_MANAGER_PATH': %s", managerPath));
     }
   }
 

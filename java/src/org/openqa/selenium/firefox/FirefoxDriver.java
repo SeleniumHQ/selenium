@@ -138,12 +138,10 @@ public class FirefoxDriver extends RemoteWebDriver
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
     Require.nonNull("Driver clientConfig", clientConfig);
-    if (service.getExecutable() == null) {
-      Result result = DriverFinder.getPath(service, options);
-      service.setExecutable(result.getDriverPath());
-      if (result.getBrowserPath() != null && !result.getBrowserPath().isEmpty()) {
-        options.setBinary(result.getBrowserPath());
-      }
+    Result result = DriverFinder.getPath(service, options);
+    service.setExecutable(result.getDriverPath());
+    if (result.getBrowserPath() != null && !result.getBrowserPath().isEmpty()) {
+      options.setBinary(result.getBrowserPath());
     }
     return new FirefoxDriverCommandExecutor(service, clientConfig);
   }
@@ -254,11 +252,13 @@ public class FirefoxDriver extends RemoteWebDriver
   }
 
   @Override
+  @Deprecated
   public LocalStorage getLocalStorage() {
     return webStorage.getLocalStorage();
   }
 
   @Override
+  @Deprecated
   public SessionStorage getSessionStorage() {
     return webStorage.getSessionStorage();
   }
