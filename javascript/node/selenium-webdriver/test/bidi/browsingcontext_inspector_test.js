@@ -32,7 +32,6 @@ suite(
     beforeEach(async function () {
       driver = await env
         .builder()
-        .builder()
         .setFirefoxOptions(new firefox.Options().enableBidi())
         .build()
     })
