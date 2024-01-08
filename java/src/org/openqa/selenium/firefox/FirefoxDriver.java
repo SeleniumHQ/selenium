@@ -142,6 +142,7 @@ public class FirefoxDriver extends RemoteWebDriver
     service.setExecutable(result.getDriverPath());
     if (result.getBrowserPath() != null && !result.getBrowserPath().isEmpty()) {
       options.setBinary(result.getBrowserPath());
+      options.setCapability("browserVersion", (Object) null);
     }
     return new FirefoxDriverCommandExecutor(service, clientConfig);
   }
