@@ -251,7 +251,7 @@ public class SeleniumManager {
    * @param options Browser Options instance.
    * @return the location of the driver.
    */
-  public Result getDriverPath(Capabilities options, boolean offline) {
+  public Result getResult(Capabilities options, boolean offline) {
     Path binaryFile = getBinary();
     if (binaryFile == null) {
       return null;

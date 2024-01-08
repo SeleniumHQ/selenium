@@ -125,7 +125,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     if (service == null) {
       service = InternetExplorerDriverService.createDefaultService();
     }
-    Result result = DriverFinder.getPath(service, options);
+    Result result = DriverFinder.getResult(service, options);
     service.setExecutable(result.getDriverPath());
     if (clientConfig == null) {
       clientConfig = ClientConfig.defaultConfig();

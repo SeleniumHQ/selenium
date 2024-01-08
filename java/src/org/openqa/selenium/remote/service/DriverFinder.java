@@ -29,11 +29,11 @@ public class DriverFinder {
 
   private static final Logger LOG = Logger.getLogger(DriverFinder.class.getName());
 
-  public static Result getPath(DriverService service, Capabilities options) {
-    return getPath(service, options, false);
+  public static Result getResult(DriverService service, Capabilities options) {
+    return getResult(service, options, false);
   }
 
-  public static Result getPath(DriverService service, Capabilities options, boolean offline) {
+  public static Result getResult(DriverService service, Capabilities options, boolean offline) {
     Require.nonNull("Browser options", options);
     String driverName = service.getDriverName();
 
@@ -42,7 +42,7 @@ public class DriverFinder {
       result = new Result(System.getProperty(service.getDriverProperty()));
       if (result.getDriverPath() == null) {
         try {
-          result = SeleniumManager.getInstance().getDriverPath(options, offline);
+          result = SeleniumManager.getInstance().getResult(options, offline);
         } catch (RuntimeException e) {
           throw new NoSuchDriverException(
               String.format("Unable to obtain: %s, error %s", options, e.getMessage()), e);

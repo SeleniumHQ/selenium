@@ -69,7 +69,7 @@ public class GeckoDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      DriverFinder.getPath(GeckoDriverService.createDefaultService(), getCanonicalCapabilities());
+      DriverFinder.getResult(GeckoDriverService.createDefaultService(), getCanonicalCapabilities());
       return true;
     } catch (NoSuchDriverException e) {
       return false;
@@ -82,7 +82,7 @@ public class GeckoDriverInfo implements WebDriverInfo {
   @Override
   public boolean isPresent() {
     try {
-      DriverFinder.getPath(
+      DriverFinder.getResult(
           GeckoDriverService.createDefaultService(), getCanonicalCapabilities(), true);
       return true;
     } catch (NoSuchDriverException e) {

@@ -72,7 +72,7 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
   public boolean isAvailable() {
     try {
       if (Platform.getCurrent().is(Platform.MAC)) {
-        DriverFinder.getPath(
+        DriverFinder.getResult(
             SafariTechPreviewDriverService.createDefaultService(), getCanonicalCapabilities());
         return true;
       }
@@ -89,7 +89,7 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
   public boolean isPresent() {
     try {
       if (Platform.getCurrent().is(Platform.MAC)) {
-        DriverFinder.getPath(
+        DriverFinder.getResult(
             SafariTechPreviewDriverService.createDefaultService(),
             getCanonicalCapabilities(),
             true);

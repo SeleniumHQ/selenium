@@ -67,7 +67,7 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
   public boolean isAvailable() {
     try {
       if (Platform.getCurrent().is(Platform.WINDOWS)) {
-        DriverFinder.getPath(
+        DriverFinder.getResult(
             InternetExplorerDriverService.createDefaultService(), getCanonicalCapabilities());
         return true;
       }
@@ -84,7 +84,7 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
   public boolean isPresent() {
     try {
       if (Platform.getCurrent().is(Platform.WINDOWS)) {
-        DriverFinder.getPath(
+        DriverFinder.getResult(
             InternetExplorerDriverService.createDefaultService(), getCanonicalCapabilities(), true);
         return true;
       }
