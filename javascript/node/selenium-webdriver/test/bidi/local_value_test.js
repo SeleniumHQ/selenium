@@ -20,7 +20,7 @@
 const assert = require('assert')
 const firefox = require('../../firefox')
 const {Browser} = require('../../')
-const suite = require('../../lib/test')
+const {suite} = require('../../lib/test')
 
 const ScriptManager = require('../../bidi/scriptManager')
 const {
