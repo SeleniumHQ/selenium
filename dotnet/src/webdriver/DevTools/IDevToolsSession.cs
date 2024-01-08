@@ -41,13 +41,6 @@ namespace OpenQA.Selenium.DevTools
         event EventHandler<DevToolsEventReceivedEventArgs> DevToolsEventReceived;
 
         /// <summary>
-        /// Enables waiting for the debugger when opening a new target (tab for instance).
-        /// The target will be halted until the Runtime.runIfWaitingForDebugger command is invoked.
-        /// </summary>
-        /// <returns></returns>
-        Task EnableWaitForDebuggerOnStart();
-
-        /// <summary>
         /// Gets the domains that are valid for the specfied version of Developer Tools connection.
         /// </summary>
         /// <typeparam name="T">

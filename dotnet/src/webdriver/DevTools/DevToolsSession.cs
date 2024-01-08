@@ -54,18 +54,32 @@ namespace OpenQA.Selenium.DevTools
         private long currentCommandId = 0;
 
         private DevToolsDomains domains;
+        private readonly DevToolsOptions options;
 
         /// <summary>
         /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
         /// </summary>
         /// <param name="endpointAddress"></param>
-        public DevToolsSession(string endpointAddress)
+        public DevToolsSession(string endpointAddress) : this(endpointAddress, new DevToolsOptions()) { }
+
+        /// <summary>
+        /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint and specified DevTools options.
+        /// </summary>
+        /// <param name="endpointAddress"></param>
+        /// <param name="options"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public DevToolsSession(string endpointAddress, DevToolsOptions options)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
             if (string.IsNullOrWhiteSpace(endpointAddress))
             {
                 throw new ArgumentNullException(nameof(endpointAddress));
             }
 
+            this.options = options;
             this.CommandTimeout = TimeSpan.FromSeconds(30);
             this.debuggerEndpoint = endpointAddress;
             if (endpointAddress.StartsWith("ws", StringComparison.InvariantCultureIgnoreCase))
@@ -448,22 +462,17 @@ namespace OpenQA.Selenium.DevTools
             await this.domains.Target.SetAutoAttach().ConfigureAwait(false);
             LogTrace("AutoAttach is set.", this.attachedTargetId);
 
-            this.domains.Target.TargetDetached += this.OnTargetDetached;
-        }
-
-        /// <summary>
-        /// Enables waiting for the debugger when opening a new target (tab for instance).
-        /// The target will be halted until the Runtime.runIfWaitingForDebugger command is invoked.
-        /// </summary>
-        /// <returns></returns>
-        public async Task EnableWaitForDebuggerOnStart()
-        {
             // The Target domain needs to send Sessionless commands! Else the waitForDebugger setting in setAutoAttach wont work!
-            var setAutoAttachCommand = domains.Target.CreateSetAutoAttachCommand(true);
-            var setDiscoverTargetsCommand = domains.Target.CreateDiscoverTargetsCommand();
+            if (options.WaitForDebuggerOnStart)
+            {
+                var setAutoAttachCommand = domains.Target.CreateSetAutoAttachCommand(true);
+                var setDiscoverTargetsCommand = domains.Target.CreateDiscoverTargetsCommand();
 
-            await SendCommand(setAutoAttachCommand, string.Empty, default(CancellationToken), null, true).ConfigureAwait(false);
-            await SendCommand(setDiscoverTargetsCommand, string.Empty, default(CancellationToken), null, true).ConfigureAwait(false);
+                await SendCommand(setAutoAttachCommand, string.Empty, default(CancellationToken), null, true).ConfigureAwait(false);
+                await SendCommand(setDiscoverTargetsCommand, string.Empty, default(CancellationToken), null, true).ConfigureAwait(false);
+            }
+
+            this.domains.Target.TargetDetached += this.OnTargetDetached;
         }
 
         private void OnTargetDetached(object sender, TargetDetachedEventArgs e)

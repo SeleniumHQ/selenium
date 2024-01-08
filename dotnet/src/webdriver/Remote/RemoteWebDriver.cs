@@ -428,11 +428,31 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Creates a session to communicate with a browser using a Developer Tools debugging protocol.
+        /// </summary>
+        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
+        public DevToolsSession GetDevToolsSession(DevToolsOptions options)
+        {
+            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion, options);
+        }
+
+        /// <summary>
         /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
         /// </summary>
         /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
         /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession(int protocolVersion)
+        {
+            return GetDevToolsSession(protocolVersion, new DevToolsOptions());
+        }
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
+        /// <param name="options">The options for the DevToolsSession to use.</param>
+        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
+        public DevToolsSession GetDevToolsSession(int protocolVersion, DevToolsOptions options)
         {
             if (this.devToolsSession == null)
             {
@@ -457,7 +477,7 @@ namespace OpenQA.Selenium.Remote
 
                 try
                 {
-                    DevToolsSession session = new DevToolsSession(debuggerAddress);
+                    DevToolsSession session = new DevToolsSession(debuggerAddress, options);
                     Task.Run(async () => await session.StartSession(devToolsProtocolVersion)).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }

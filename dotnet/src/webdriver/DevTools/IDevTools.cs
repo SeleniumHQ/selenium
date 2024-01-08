@@ -37,9 +37,24 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
         /// </summary>
+        /// <param name="options">The options for the DevToolsSession to use.</param>
+        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
+        DevToolsSession GetDevToolsSession(DevToolsOptions options);
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
+        /// </summary>
         /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
         /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
         DevToolsSession GetDevToolsSession(int protocolVersion);
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
+        /// <param name="options">The options for the DevToolsSession to use.</param>
+        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
+        DevToolsSession GetDevToolsSession(int protocolVersion, DevToolsOptions options);
 
         /// <summary>
         /// Closes a DevTools session

@@ -279,9 +279,29 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
         /// </summary>
+        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+        public DevToolsSession GetDevToolsSession(DevToolsOptions options)
+        {
+            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion, options);
+        }
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+        /// </summary>
         /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
+        {
+            return GetDevToolsSession(devToolsProtocolVersion, new DevToolsOptions());
+        }
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
+        /// <param name="devToolsOptions">The options for the DevTools session.</param>
+        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion, DevToolsOptions devToolsOptions)
         {
             if (this.devToolsSession == null)
             {
@@ -304,7 +324,7 @@ namespace OpenQA.Selenium.Chromium
                 string debuggerAddress = options["debuggerAddress"].ToString();
                 try
                 {
-                    DevToolsSession session = new DevToolsSession(debuggerAddress);
+                    DevToolsSession session = new DevToolsSession(debuggerAddress, devToolsOptions);
                     Task.Run(async () => await session.StartSession(devToolsProtocolVersion)).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
