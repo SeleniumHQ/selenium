@@ -8,7 +8,7 @@ package(default_visibility = ["//rb:__subpackages__"])
         size = "small",
         srcs = [file],
         args = ["rb/spec/"],
-        main = "@bundle//:bin/rspec",
+        main = "@bundle//bin:rspec",
         tags = ["no-sandbox"],
         deps = [
             "//rb/lib/selenium/webdriver:bidi",

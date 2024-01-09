@@ -6,7 +6,27 @@ rb_library(
     name = "spec_helper",
     testonly = True,
     srcs = ["spec_helper.rb"],
-    deps = ["@bundle"],
+    deps = [
+        "//rb/lib:selenium-webdriver",
+        "//rb/lib/selenium:webdriver",
+        "//rb/lib/selenium/webdriver:atoms",
+        "//rb/spec:rspec_matchers",
+        "@bundle",
+    ],
+)
+
+rb_test(
+    name = "search_context",
+    size = "small",
+    srcs = ["search_context_spec.rb"],
+    args = ["rb/spec/"],
+    main = "@bundle//bin:rspec",
+    tags = ["no-sandbox"],
+    deps = [
+        ":spec_helper",
+        "//rb/lib/selenium/webdriver:common",
+        "//rb/lib/selenium/webdriver:remote",
+    ],
 )
 
 [
@@ -15,12 +35,15 @@ rb_library(
         size = "small",
         srcs = [file],
         args = ["rb/spec/"],
-        main = "@bundle//:bin/rspec",
+        main = "@bundle//bin:rspec",
         tags = ["no-sandbox"],
         deps = [
             ":spec_helper",
             "//rb/lib/selenium/webdriver:common",
         ],
     )
-    for file in glob(["*_spec.rb"])
+    for file in glob(
+        ["*_spec.rb"],
+        exclude = ["search_context_spec.rb"],
+    )
 ]

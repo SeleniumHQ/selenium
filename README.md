@@ -362,7 +362,7 @@ Useful command line options:
 In addition to the [Common Options Examples](#common-options-examples), here are some additional Ruby specific ones:
 * `--test_arg "-tfocus"` - test only [focused specs](https://relishapp.com/rspec/rspec-core/v/3-12/docs/filtering/inclusion-filters)
 * `--test_arg "-eTimeouts"` - test only specs which name include "Timeouts"
-* `--test_arg "<any other RSpec argument>"` - pass any extra RSpec arguments (see `bazel run @bundle//:bin/rspec -- --help`)
+* `--test_arg "<any other RSpec argument>"` - pass any extra RSpec arguments (see `bazel run @bundle//bin:rspec -- --help`)
 
 Supported environment variables for use with `--test_env`:
 
