@@ -9,5 +9,6 @@ exports_files(
     visibility = [
         "//java/test/org/openqa/selenium/firefox:__pkg__",
         "//py:__pkg__",
+        "//rb/spec/unit/selenium/webdriver/firefox:__pkg__",
     ],
 )
