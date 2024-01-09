@@ -40,7 +40,7 @@ public class ByAll extends By implements Serializable {
 
   private static final long serialVersionUID = 4573668832699497306L;
 
-  private By[] bys;
+  private final By[] bys;
 
   public ByAll(By... bys) {
     this.bys = bys;

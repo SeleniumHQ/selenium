@@ -40,7 +40,7 @@ public class JsonInput implements Closeable {
 
   private final Reader source;
   // FIXME: This flag is never set
-  private volatile boolean readPerformed = false;
+  private final boolean readPerformed = false;
   private JsonTypeCoercer coercer;
   private PropertySetting setter;
   private final Input input;

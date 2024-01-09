@@ -157,7 +157,7 @@ public class Contents {
 
     private volatile boolean initialized;
     private volatile FileBackedOutputStream fos;
-    private Supplier<InputStream> delegate;
+    private final Supplier<InputStream> delegate;
 
     private MemoizedSupplier(Supplier<InputStream> delegate) {
       this.delegate = delegate;
