@@ -34,7 +34,8 @@ import org.openqa.selenium.remote.http.Message;
 
 class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
 
-  private static final AttributeKey<Consumer<Message>> KEY = AttributeKey.newInstance("se-ws-handler");
+  private static final AttributeKey<Consumer<Message>> KEY =
+      AttributeKey.newInstance("se-ws-handler");
   private final HttpHandler seleniumHandler;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler;
   private final SslContext sslCtx;
