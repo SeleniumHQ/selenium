@@ -23,6 +23,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Internal.Logging;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
@@ -41,6 +42,7 @@ namespace OpenQA.Selenium
         private bool isDisposed;
         private Process driverServiceProcess;
         private TimeSpan initializationTimeout = TimeSpan.FromSeconds(20);
+        private readonly static ILogger logger = Log.GetLogger<DriverService>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverService"/> class.
@@ -216,6 +218,7 @@ namespace OpenQA.Selenium
             get
             {
                 bool isInitialized = false;
+
                 try
                 {
                     using (var httpClient = new HttpClient())
@@ -236,7 +239,7 @@ namespace OpenQA.Selenium
                 }
                 catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
                 {
-                    Console.WriteLine(ex.Message);
+                    logger.Trace(ex.ToString());
                 }
 
                 return isInitialized;

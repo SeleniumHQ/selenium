@@ -23,6 +23,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Safari
 {
@@ -34,6 +35,8 @@ namespace OpenQA.Selenium.Safari
         private const string DefaultSafariDriverServiceExecutableName = "safaridriver";
 
         private bool useLegacyProtocol;
+
+        private readonly static ILogger logger = Log.GetLogger<SafariDriverService>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriverService"/> class.
@@ -150,7 +153,7 @@ namespace OpenQA.Selenium.Safari
                         // check.
                         catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
                         {
-                            Console.WriteLine(ex);
+                            logger.Trace(ex.ToString());
                         }
                     }
                 }

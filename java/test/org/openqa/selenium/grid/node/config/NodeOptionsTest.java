@@ -674,6 +674,28 @@ class NodeOptionsTest {
   }
 
   @Test
+  void settingSubPathForNodeServerExtractFromGridUrl() {
+    String[] rawConfig =
+        new String[] {
+          "[node]", "grid-url = \"http://localhost:4444/mySubPath\"",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    NodeOptions nodeOptions = new NodeOptions(config);
+    assertThat(nodeOptions.getGridSubPath()).isEqualTo("/mySubPath");
+  }
+
+  @Test
+  void settingSubPathForNodeServerExtractFromHub() {
+    String[] rawConfig =
+        new String[] {
+          "[node]", "hub = \"http://0.0.0.0:4444/mySubPath\"",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    NodeOptions nodeOptions = new NodeOptions(config);
+    assertThat(nodeOptions.getGridSubPath()).isEqualTo("/mySubPath");
+  }
+
+  @Test
   void notSettingSlotMatcherAvailable() {
     String[] rawConfig =
         new String[] {
