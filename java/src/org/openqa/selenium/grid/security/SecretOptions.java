@@ -27,7 +27,6 @@ import java.util.Optional;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
-import org.openqa.selenium.grid.server.BaseServerOptions;
 
 public class SecretOptions {
 
@@ -42,8 +41,7 @@ public class SecretOptions {
 
   public Secret getRegistrationSecret() {
     String secret = "";
-    BaseServerOptions serverOptions = new BaseServerOptions(config);
-    if ((serverOptions.isSecure() || serverOptions.isSelfSigned())
+    if ((isSecure() || isSelfSigned())
         && !config.get(SERVER_SECTION, "registration-secret").isPresent()) {
       try {
         secret =
@@ -70,6 +68,15 @@ public class SecretOptions {
     }
 
     return new UsernameAndPassword(username.get(), password.get());
+  }
+
+  private boolean isSecure() {
+    return config.get(SERVER_SECTION, "https-private-key").isPresent()
+        && config.get(SERVER_SECTION, "https-certificate").isPresent();
+  }
+
+  private boolean isSelfSigned() {
+    return config.getBool(SERVER_SECTION, "https-self-signed").orElse(false);
   }
 
   private File getCertificate() {

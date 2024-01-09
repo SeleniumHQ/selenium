@@ -32,7 +32,6 @@ public class DistributorOptions {
 
   public static final int DEFAULT_HEALTHCHECK_INTERVAL = 120;
   public static final String DISTRIBUTOR_SECTION = "distributor";
-  private static final String SERVER_SECTION = "server";
   static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
       "org.openqa.selenium.grid.distributor.local.LocalDistributor";
   static final String DEFAULT_SLOT_MATCHER = "org.openqa.selenium.grid.data.DefaultSlotMatcher";

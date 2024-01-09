@@ -13,6 +13,7 @@ java_library(
         "//java/src/org/openqa/selenium/grid/data",
         "//java/src/org/openqa/selenium/grid/distributor",
         "//java/src/org/openqa/selenium/grid/distributor/selector",
+        "//java/src/org/openqa/selenium/grid/server",
         artifact("com.beust:jcommander"),
     ],
 )

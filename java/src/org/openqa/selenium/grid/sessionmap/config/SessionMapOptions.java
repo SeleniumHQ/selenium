@@ -28,7 +28,6 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 public class SessionMapOptions {
 
   private static final String SESSIONS_SECTION = "sessions";
-  private static final String SERVER_SECTION = "server";
 
   private static final String DEFAULT_SESSION_MAP =
       "org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap";

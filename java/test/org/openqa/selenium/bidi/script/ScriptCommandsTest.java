@@ -38,6 +38,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.LogInspector;
@@ -112,6 +113,43 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat(successResult.getResult().getType()).isEqualTo("array");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
     assertThat(((List<Object>) successResult.getResult().getValue().get()).size()).isEqualTo(2);
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
+  void canCallFunctionToGetIFrameBrowsingContext() {
+    String url = appServer.whereIs("click_too_big_in_frame.html");
+    driver.get(url);
+
+    driver.findElement(By.id("iframe1"));
+
+    String id = driver.getWindowHandle();
+    Script script = new Script(id, driver);
+
+    List<LocalValue> arguments = new ArrayList<>();
+
+    EvaluateResult result =
+        script.callFunctionInBrowsingContext(
+            id,
+            "() => document.querySelector('iframe[id=\"iframe1\"]').contentWindow",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("window");
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat(
+            ((WindowProxyProperties) successResult.getResult().getValue().get())
+                .getBrowsingContext())
+        .isNotNull();
   }
 
   @Test

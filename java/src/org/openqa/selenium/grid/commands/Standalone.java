@@ -222,7 +222,7 @@ public class Standalone extends TemplateGridServerCommand {
     httpHandler = combine(httpHandler, Route.get("/readyz").to(() -> readinessCheck));
     Node node = createNode(config, bus, distributor, combinedHandler);
 
-    return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node));
+    return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node, subPath));
   }
 
   @Override

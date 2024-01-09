@@ -35,7 +35,6 @@ import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 public class NewSessionQueueOptions {
 
   static final String SESSION_QUEUE_SECTION = "sessionqueue";
-  private static final String SERVER_SECTION = "server";
   static final int DEFAULT_REQUEST_TIMEOUT = 300;
   static final int DEFAULT_REQUEST_TIMEOUT_PERIOD = 10;
   static final int DEFAULT_RETRY_INTERVAL = 15;
