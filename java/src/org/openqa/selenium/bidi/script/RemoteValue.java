@@ -193,13 +193,14 @@ public class RemoteValue {
   }
 
   private static Object deserializeValue(Object value, Type type) {
+    Object finalValue;
 
     switch (type) {
       case ARRAY:
       case SET:
         try (StringReader reader = new StringReader(JSON.toJson(value));
             JsonInput input = JSON.newInput(reader)) {
-          value = input.read(new TypeToken<List<RemoteValue>>() {}.getType());
+          finalValue = input.read(new TypeToken<List<RemoteValue>>() {}.getType());
         }
         break;
 
@@ -222,16 +223,27 @@ public class RemoteValue {
             map.put(key, value1);
           }
         }
-        value = map;
+        finalValue = map;
         break;
 
       case REGULAR_EXPRESSION:
         try (StringReader reader = new StringReader(JSON.toJson(value));
             JsonInput input = JSON.newInput(reader)) {
-          value = input.read(RegExpValue.class);
+          finalValue = input.read(RegExpValue.class);
         }
+        break;
+
+      case WINDOW:
+        try (StringReader reader = new StringReader(JSON.toJson(value));
+            JsonInput input = JSON.newInput(reader)) {
+          finalValue = input.read(WindowProxyProperties.class);
+        }
+        break;
+
+      default:
+        finalValue = value;
     }
 
-    return value;
+    return finalValue;
   }
 }
