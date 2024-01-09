@@ -284,8 +284,6 @@ namespace OpenQA.Selenium.Chromium
         {
             if (this.devToolsSession == null)
             {
-                var requestedProtocolVersion = options.ProtocolVersion ?? DevToolsSession.AutoDetectDevToolsProtocolVersion;
-
                 if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
                 {
                     throw new WebDriverException("Cannot find " + this.optionsCapabilityName + " capability for driver");
@@ -306,7 +304,7 @@ namespace OpenQA.Selenium.Chromium
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress, options);
-                    Task.Run(async () => await session.StartSession(requestedProtocolVersion)).GetAwaiter().GetResult();
+                    Task.Run(async () => await session.StartSession()).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)

@@ -327,10 +327,10 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Asynchronously starts the session.
         /// </summary>
-        /// <param name="requestedProtocolVersion">The requested version of the protocol to use in communicating with the browswer.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        internal async Task StartSession(int requestedProtocolVersion)
+        internal async Task StartSession()
         {
+            var requestedProtocolVersion = options.ProtocolVersion.HasValue ? options.ProtocolVersion.Value : AutoDetectDevToolsProtocolVersion;
             int protocolVersion = await InitializeProtocol(requestedProtocolVersion).ConfigureAwait(false);
             this.domains = DevToolsDomains.InitializeDomains(protocolVersion, this);
             await this.InitializeSocketConnection().ConfigureAwait(false);

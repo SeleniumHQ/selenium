@@ -398,8 +398,6 @@ namespace OpenQA.Selenium.Firefox
         {
             if (this.devToolsSession == null)
             {
-                var requestedProtocolVersion = options.ProtocolVersion ?? DevToolsSession.AutoDetectDevToolsProtocolVersion;
-
                 if (!this.Capabilities.HasCapability(FirefoxDevToolsCapabilityName))
                 {
                     throw new WebDriverException("Cannot find " + FirefoxDevToolsCapabilityName + " capability for driver");
@@ -409,7 +407,7 @@ namespace OpenQA.Selenium.Firefox
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress, options);
-                    Task.Run(async () => await session.StartSession(requestedProtocolVersion)).GetAwaiter().GetResult();
+                    Task.Run(async () => await session.StartSession()).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)

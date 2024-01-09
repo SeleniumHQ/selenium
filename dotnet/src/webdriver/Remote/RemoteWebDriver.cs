@@ -435,8 +435,6 @@ namespace OpenQA.Selenium.Remote
         {
             if (this.devToolsSession == null)
             {
-                var requestedProtocolVersion = options.ProtocolVersion ?? DevToolsSession.AutoDetectDevToolsProtocolVersion;
-
                 if (!this.Capabilities.HasCapability(RemoteDevToolsEndPointCapabilityName))
                 {
                     throw new WebDriverException("Cannot find " + RemoteDevToolsEndPointCapabilityName + " capability for driver");
@@ -459,7 +457,7 @@ namespace OpenQA.Selenium.Remote
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress, options);
-                    Task.Run(async () => await session.StartSession(requestedProtocolVersion)).GetAwaiter().GetResult();
+                    Task.Run(async () => await session.StartSession()).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
