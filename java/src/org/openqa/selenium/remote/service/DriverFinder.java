@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
@@ -33,22 +35,75 @@ import org.openqa.selenium.remote.NoSuchDriverException;
 public class DriverFinder {
 
   private static final Logger LOG = Logger.getLogger(DriverFinder.class.getName());
+  private final DriverService service;
+  private final Capabilities options;
+  private final SeleniumManager seleniumManager;
+  private boolean offline;
+  private Result result;
 
-  public static Result getResult(DriverService service, Capabilities options) {
-    return getResult(service, options, false);
+  public DriverFinder(DriverService service, Capabilities options) {
+    this(service, options, SeleniumManager.getInstance());
   }
 
-  public static Result getResult(DriverService service, Capabilities options, boolean offline) {
-    Require.nonNull("Driver service", service);
-    Require.nonNull("Browser options", options);
+  DriverFinder(DriverService service, Capabilities options, SeleniumManager seleniumManager) {
+    this.service = service;
+    this.options = options;
+    this.seleniumManager = seleniumManager;
+  }
+
+  public String getDriverPath() {
+    setResult();
+    return result.getDriverPath();
+  }
+
+  public String getBrowserPath() {
+    setResult();
+    return result.getBrowserPath();
+  }
+
+  public boolean isAvailable() {
+    try {
+      offline = false;
+      setResult();
+      return false;
+    } catch (NoSuchDriverException e) {
+      return false;
+    } catch (IllegalStateException | WebDriverException e) {
+      LOG.log(Level.WARNING, "failed to discover driver path", e);
+      return false;
+    }
+  }
+
+  public boolean isPresent() {
+    try {
+      offline = true;
+      setResult();
+      return false;
+    } catch (NoSuchDriverException e) {
+      return false;
+    } catch (IllegalStateException | WebDriverException e) {
+      LOG.log(Level.WARNING, "failed to discover driver path", e);
+      return false;
+    }
+  }
+
+  public boolean hasBrowserPath() {
+    String browserPath = result.getBrowserPath();
+    return browserPath != null && !browserPath.isEmpty();
+  }
+
+  private void setResult() {
+    if (result != null) {
+      return;
+    }
     try {
       String driverName = service.getDriverName();
-      Result result = new Result(service.getExecutable());
+      result = new Result(service.getExecutable());
       if (result.getDriverPath() == null) {
         result = new Result(System.getProperty(service.getDriverProperty()));
         if (result.getDriverPath() == null) {
-          List<String> arguments = toArguments(options, offline);
-          result = SeleniumManager.getInstance().getResult(arguments);
+          List<String> arguments = toArguments();
+          result = seleniumManager.getResult(arguments);
           Require.state(options.getBrowserName(), new File(result.getBrowserPath())).isExecutable();
         } else {
           LOG.fine(
@@ -64,7 +119,6 @@ public class DriverFinder {
       }
 
       Require.state(driverName, new File(result.getDriverPath())).isExecutable();
-      return result;
     } catch (RuntimeException e) {
       throw new NoSuchDriverException(
           String.format("Unable to obtain: %s, error %s", service.getDriverName(), e.getMessage()),
@@ -72,7 +126,7 @@ public class DriverFinder {
     }
   }
 
-  private static List<String> toArguments(Capabilities options, boolean offline) {
+  private List<String> toArguments() {
     List<String> arguments = new ArrayList<>();
     arguments.add("--browser");
     arguments.add(options.getBrowserName());

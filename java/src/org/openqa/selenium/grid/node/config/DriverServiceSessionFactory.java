@@ -50,7 +50,6 @@ import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
@@ -131,10 +130,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), this.getClass().getName());
 
       DriverService service = builder.build();
-      Result driverResult = DriverFinder.getResult(service, capabilities);
-      service.setExecutable(driverResult.getDriverPath());
-      if (driverResult.getBrowserPath() != null && !driverResult.getBrowserPath().isEmpty()) {
-        capabilities = setBrowserBinary(capabilities, driverResult.getBrowserPath());
+      DriverFinder finder = new DriverFinder(service, capabilities);
+      service.setExecutable(finder.getDriverPath());
+      if (finder.hasBrowserPath()) {
+        capabilities = setBrowserBinary(capabilities, finder.getBrowserPath());
       }
 
       Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
@@ -352,7 +351,8 @@ public class DriverServiceSessionFactory implements SessionFactory {
               (Map<String, Object>) options.getCapability(vendorOptionsCapability);
           vendorOptions.put("binary", browserPath);
           return new PersistentCapabilities(options)
-              .setCapability(vendorOptionsCapability, vendorOptions);
+              .setCapability(vendorOptionsCapability, vendorOptions)
+              .setCapability("browserVersion", null);
         } catch (Exception e) {
           LOG.warning(
               String.format(
