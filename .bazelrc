@@ -62,6 +62,12 @@ test --test_env=PYTHON_VERSION
 
 test --test_env=RUBYOPT="-Irb/lib -w"
 
+# Speed up JRuby startup.
+# https://github.com/jruby/jruby/wiki/Improving-startup-time
+
+build --action_env=JRUBY_OPTS="--dev"
+test --test_env=JRUBY_OPTS="--dev"
+
 # JRuby/TruffleRuby: https://github.com/jruby/jruby/issues/5661
 
 build --action_env=HOME

@@ -8,10 +8,12 @@ package(default_visibility = ["//rb:__subpackages__"])
         size = "small",
         srcs = [file],
         args = ["rb/spec/"],
-        main = "@bundle//:bin/rspec",
+        main = "@bundle//bin:rspec",
         tags = ["no-sandbox"],
         deps = [
             "//rb/lib/selenium/webdriver:chrome",
+            "//rb/lib/selenium/webdriver:firefox",
+            "//rb/lib/selenium/webdriver:remote",
             "//rb/spec/unit/selenium/webdriver:spec_helper",
         ],
     )

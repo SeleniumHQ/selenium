@@ -331,20 +331,20 @@ pin_browsers()
 
 http_archive(
     name = "rules_ruby",
-    sha256 = "e3495d0129222572654cc5dd5c72c6c997513d65fb8649f43a860ab15334a1c2",
-    strip_prefix = "rules_ruby-0.4.1",
-    url = "https://github.com/bazel-contrib/rules_ruby/releases/download/v0.4.1/rules_ruby-v0.4.1.tar.gz",
+    sha256 = "cc430d7ba64162d0a958b90899c31293083f51c7b28a54a66b066a5e4f549a66",
+    strip_prefix = "rules_ruby-79d5bc65b4cb5489fbb4c12452ccc9e91a44ca34",
+    url = "https://github.com/bazel-contrib/rules_ruby/archive/79d5bc65b4cb5489fbb4c12452ccc9e91a44ca34.zip",
 )
 
 load(
     "@rules_ruby//ruby:deps.bzl",
-    "rb_bundle",
+    "rb_bundle_fetch",
     "rb_register_toolchains",
 )
 
 rb_register_toolchains(version_file = "//:rb/.ruby-version")
 
-rb_bundle(
+rb_bundle_fetch(
     name = "bundle",
     srcs = [
         "//:rb/lib/selenium/devtools/version.rb",
@@ -353,6 +353,7 @@ rb_bundle(
         "//:rb/selenium-webdriver.gemspec",
     ],
     gemfile = "//:rb/Gemfile",
+    gemfile_lock = "//:rb/Gemfile.lock",
 )
 
 http_archive(

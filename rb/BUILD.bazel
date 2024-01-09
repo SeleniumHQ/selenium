@@ -74,7 +74,6 @@ rb_gem_build(
         "//rb/lib:selenium-webdriver",
         "//rb/lib/selenium:server",
         "//rb/lib/selenium:webdriver",
-        "//rb/lib/selenium/webdriver:atoms",
         "//rb/lib/selenium/webdriver:bidi",
         "//rb/lib/selenium/webdriver:chrome",
         "//rb/lib/selenium/webdriver:common",
@@ -163,7 +162,7 @@ rb_binary(
         "--readme=rb/README.md",
         "rb/",
     ],
-    main = "@bundle//:bin/yard",
+    main = "@bundle//bin:yard",
     deps = [
         ":selenium-devtools",
         ":selenium-webdriver",
@@ -180,7 +179,7 @@ rb_test(
         "rb/",
     ],
     data = [".rubocop.yml"],
-    main = "@bundle//:bin/rubocop",
+    main = "@bundle//bin:rubocop",
     tags = ["no-sandbox"],
     deps = [
         ":selenium-devtools",
@@ -199,7 +198,7 @@ rb_binary(
         "-rselenium/devtools",
         "-Irb/lib",
     ],
-    main = "@bundle//:bin/irb",
+    main = "@bundle//bin:irb",
     deps = [
         ":selenium-devtools",
         ":selenium-webdriver",
