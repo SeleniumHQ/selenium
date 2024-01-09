@@ -1,4 +1,4 @@
-// <copyright file="DevToolsSession.cs" company="WebDriver Committers">
+// <copyright file="DevToolsOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -24,8 +24,8 @@ namespace OpenQA.Selenium.DevTools
     public class DevToolsOptions
     {
         /// <summary>
-        /// Enables or disables waiting for the debugger when creating a new target.
-        /// If enabled, all targets will be halted until the runtime.runIfWaitingForDebugger is invoked.
+        /// Enables or disables waiting for the debugger when creating a new target. By default WaitForDebuggerOnStart is disabled.
+        /// If enabled, all targets will be halted until the runtime.runIfWaitingForDebugger is invoked. 
         /// </summary>
         public bool WaitForDebuggerOnStart { get; set; }
         /// <summary>
