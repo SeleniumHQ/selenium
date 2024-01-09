@@ -67,6 +67,23 @@ suite(
         assert.equal(result.result.value, 3)
       })
 
+      it('can call function to get iframe browsing context', async function () {
+        await driver.get(Pages.iframePage)
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        const result = await manager.callFunctionInBrowsingContext(
+          id,
+          '() => document.querySelector(\'iframe[id="iframe1"]\').contentWindow',
+          false
+        )
+        assert.equal(result.resultType, EvaluateResultType.SUCCESS)
+        assert.notEqual(result.realmId, null)
+        assert.equal(result.result.type, 'window')
+        assert.notEqual(result.result.value, null)
+        assert.notEqual(result.result.value.context, null)
+      })
+
       it('can call function with arguments', async function () {
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
