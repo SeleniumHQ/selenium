@@ -424,7 +424,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession()
         {
-            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
+            return GetDevToolsSession(new DevToolsOptions() { ProtocolVersion = DevToolsSession.AutoDetectDevToolsProtocolVersion });
         }
 
         /// <summary>
@@ -433,29 +433,10 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession(DevToolsOptions options)
         {
-            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion, options);
-        }
-
-        /// <summary>
-        /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
-        /// </summary>
-        /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
-        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
-        public DevToolsSession GetDevToolsSession(int protocolVersion)
-        {
-            return GetDevToolsSession(protocolVersion, new DevToolsOptions());
-        }
-
-        /// <summary>
-        /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
-        /// </summary>
-        /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
-        /// <param name="options">The options for the DevToolsSession to use.</param>
-        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
-        public DevToolsSession GetDevToolsSession(int protocolVersion, DevToolsOptions options)
-        {
             if (this.devToolsSession == null)
             {
+                var requestedProtocolVersion = options.ProtocolVersion ?? DevToolsSession.AutoDetectDevToolsProtocolVersion;
+
                 if (!this.Capabilities.HasCapability(RemoteDevToolsEndPointCapabilityName))
                 {
                     throw new WebDriverException("Cannot find " + RemoteDevToolsEndPointCapabilityName + " capability for driver");
@@ -478,7 +459,7 @@ namespace OpenQA.Selenium.Remote
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress, options);
-                    Task.Run(async () => await session.StartSession(devToolsProtocolVersion)).GetAwaiter().GetResult();
+                    Task.Run(async () => await session.StartSession(requestedProtocolVersion)).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
@@ -488,6 +469,17 @@ namespace OpenQA.Selenium.Remote
             }
 
             return this.devToolsSession;
+        }
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
+        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
+        [Obsolete("Use GetDevToolsSession(DevToolsOptions options)")]
+        public DevToolsSession GetDevToolsSession(int protocolVersion)
+        {
+            return GetDevToolsSession(new DevToolsOptions() { ProtocolVersion = protocolVersion });
         }
 
         /// <summary>

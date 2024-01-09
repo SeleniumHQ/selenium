@@ -16,8 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.DevTools
 {
     /// <summary>
@@ -30,5 +28,10 @@ namespace OpenQA.Selenium.DevTools
         /// If enabled, all targets will be halted until the runtime.runIfWaitingForDebugger is invoked.
         /// </summary>
         public bool WaitForDebuggerOnStart { get; set; }
+        /// <summary>
+        /// The specific version of the Developer Tools debugging protocol to use.
+        /// If left NULL the protocol version will be determined automatically based on the browser version.
+        /// </summary>
+        public int? ProtocolVersion { get; set; }
     }
 }

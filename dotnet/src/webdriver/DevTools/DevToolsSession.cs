@@ -60,6 +60,7 @@ namespace OpenQA.Selenium.DevTools
         /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
         /// </summary>
         /// <param name="endpointAddress"></param>
+        [Obsolete("Use DevToolsSession(string endpointAddress, DevToolsOptions options)")]
         public DevToolsSession(string endpointAddress) : this(endpointAddress, new DevToolsOptions()) { }
 
         /// <summary>
@@ -70,16 +71,12 @@ namespace OpenQA.Selenium.DevTools
         /// <exception cref="ArgumentNullException"></exception>
         public DevToolsSession(string endpointAddress, DevToolsOptions options)
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
             if (string.IsNullOrWhiteSpace(endpointAddress))
             {
                 throw new ArgumentNullException(nameof(endpointAddress));
             }
 
-            this.options = options;
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.CommandTimeout = TimeSpan.FromSeconds(30);
             this.debuggerEndpoint = endpointAddress;
             if (endpointAddress.StartsWith("ws", StringComparison.InvariantCultureIgnoreCase))

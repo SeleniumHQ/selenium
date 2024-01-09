@@ -16,6 +16,8 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+
 namespace OpenQA.Selenium.DevTools
 {
     /// <summary>
@@ -46,15 +48,8 @@ namespace OpenQA.Selenium.DevTools
         /// </summary>
         /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
         /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
+        [Obsolete("Use GetDevToolsSession(DevToolsOptions options)")]
         DevToolsSession GetDevToolsSession(int protocolVersion);
-
-        /// <summary>
-        /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
-        /// </summary>
-        /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
-        /// <param name="options">The options for the DevToolsSession to use.</param>
-        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
-        DevToolsSession GetDevToolsSession(int protocolVersion, DevToolsOptions options);
 
         /// <summary>
         /// Closes a DevTools session
