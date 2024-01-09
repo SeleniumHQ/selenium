@@ -41,7 +41,8 @@ public class SecretOptions {
 
   public Secret getRegistrationSecret() {
     String secret = "";
-    if ((isSecure()) && !config.get(SERVER_SECTION, "registration-secret").isPresent()) {
+    if ((isSecure() || isSelfSigned())
+        && !config.get(SERVER_SECTION, "registration-secret").isPresent()) {
       try {
         secret =
             getEncoder()
