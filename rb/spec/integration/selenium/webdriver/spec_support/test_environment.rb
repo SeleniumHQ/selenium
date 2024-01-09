@@ -28,7 +28,7 @@ module Selenium
           @create_driver_error_count = 0
 
           $LOAD_PATH.insert(0, root.join('bazel-bin/rb/lib').to_s) if File.exist?(root.join('bazel-bin/rb/lib'))
-          WebDriver.logger.ignore(%i[logger_info])
+          WebDriver.logger.ignore(:logger_info)
           SeleniumManager.bin_path = root.join('bazel-bin/rb/bin').to_s if File.exist?(root.join('bazel-bin/rb/bin'))
 
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
@@ -142,7 +142,7 @@ module Selenium
         def create_driver!(listener: nil, **opts, &block)
           check_for_previous_error
 
-          method = "#{driver}_driver".to_sym
+          method = :"#{driver}_driver"
           instance = if private_methods.include?(method)
                        send(method, listener: listener, options: build_options(**opts))
                      else
@@ -167,7 +167,7 @@ module Selenium
         private
 
         def build_options(**opts)
-          options_method = "#{browser}_options".to_sym
+          options_method = :"#{browser}_options"
           if private_methods.include?(options_method)
             send(options_method, **opts)
           else

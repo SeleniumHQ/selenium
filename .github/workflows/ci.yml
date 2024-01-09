@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ${{ github.workflow }}-${{ github.ref }}${{ github.event_name == 'workflow_dispatch' && '-all' || '' }}${{ github.event_name == 'schedule' && '-all' || '' }}
+  cancel-in-progress: true
 
 jobs:
   check:
@@ -101,6 +101,8 @@ jobs:
     name: Rust
     needs: check
     uses: ./.github/workflows/ci-rust.yml
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||

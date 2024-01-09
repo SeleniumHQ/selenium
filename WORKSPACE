@@ -232,7 +232,7 @@ build_bazel_rules_nodejs_dependencies()
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
 
 node_repositories(
-    node_version = "18.12.0",
+    node_version = "18.17.0",
 )
 
 npm_install(
@@ -320,6 +320,10 @@ oci_pull(
     registry = "index.docker.io",
     repository = "selenium/standalone-chrome",
 )
+
+load("//common:selenium_manager.bzl", "selenium_manager")
+
+selenium_manager()
 
 load("//common:repositories.bzl", "pin_browsers")
 

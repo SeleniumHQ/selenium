@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -58,6 +59,8 @@ public abstract class HttpClientTestBase {
 
   static HttpHandler delegate;
   static AppServer server;
+
+  private static final Logger LOG = Logger.getLogger(HttpClientTestBase.class.getName());
 
   @BeforeAll
   public static void setUp() {
@@ -192,7 +195,7 @@ public abstract class HttpClientTestBase {
                       try {
                         Thread.sleep(1000);
                       } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        LOG.severe("Error during execution: " + e.getMessage());
                       }
                       return new HttpResponse()
                           .setContent(Contents.utf8String(req.getHeader("user-agent")));

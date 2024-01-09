@@ -23,6 +23,10 @@ import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 
+/**
+ * @deprecated This functionality is no longer supported
+ */
+@Deprecated
 public class RemoteLocationContext implements LocationContext {
   private final ExecuteMethod executeMethod;
 

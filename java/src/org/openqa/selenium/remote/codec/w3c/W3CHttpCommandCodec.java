@@ -393,7 +393,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private String cssEscape(String using) {
     using = CSS_ESCAPE.matcher(using).replaceAll("\\\\$1");
-    if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
+    if (!using.isEmpty() && Character.isDigit(using.charAt(0))) {
       using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
     }
     return using;

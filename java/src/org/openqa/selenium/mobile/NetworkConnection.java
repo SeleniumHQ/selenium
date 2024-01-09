@@ -30,6 +30,7 @@ package org.openqa.selenium.mobile;
  * }
  * </pre>
  */
+@Deprecated
 public interface NetworkConnection {
 
   /**

@@ -77,11 +77,11 @@ public class AnnotatedConfig implements Config {
       Parameter cliAnnotation = field.getAnnotation(Parameter.class);
       boolean containsCliArg =
           cliAnnotation != null && Arrays.stream(cliAnnotation.names()).anyMatch(cliArgs::contains);
-      if (cliArgs.size() > 0 && !containsCliArg && includeCliArgs) {
+      if (!cliArgs.isEmpty() && !containsCliArg && includeCliArgs) {
         // Only getting config values for args entered by the user.
         continue;
       }
-      if (cliArgs.size() > 0 && containsCliArg && !includeCliArgs) {
+      if (!cliArgs.isEmpty() && containsCliArg && !includeCliArgs) {
         // Excluding config values for args entered by the user.
         continue;
       }

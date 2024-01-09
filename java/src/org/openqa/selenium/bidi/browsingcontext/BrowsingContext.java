@@ -227,7 +227,7 @@ public class BrowsingContext {
                 id,
                 "clip",
                 Map.of(
-                    "type", "viewport",
+                    "type", "box",
                     "x", x,
                     "y", y,
                     "width", width,

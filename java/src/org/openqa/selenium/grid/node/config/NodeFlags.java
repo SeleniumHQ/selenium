@@ -153,7 +153,7 @@ public class NodeFlags implements HasRoles {
               + "webdriver-path=\"/usr/local/bin/geckodriver\" "
               + "stereotype='{\"browserName\": \"firefox\", \"browserVersion\": \"86\", "
               + "\"moz:firefoxOptions\": "
-              + "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}'",
+              + "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox\"}}'",
       arity = 4,
       variableArity = true,
       splitter = NonSplittingSplitter.class)
@@ -168,7 +168,7 @@ public class NodeFlags implements HasRoles {
               + "max-sessions = 2\n"
               + "stereotype = \"{\\\"browserName\\\": \\\"firefox\\\", \\\"browserVersion\\\":"
               + " \\\"86\\\", \\\"moz:firefoxOptions\\\": {\\\"binary\\\":\\\"/Applications/Firefox"
-              + " Nightly.app/Contents/MacOS/firefox-bin\\\"}}\"")
+              + " Nightly.app/Contents/MacOS/firefox\\\"}}\"")
   public List<String> driverConfiguration;
 
   @Parameter(

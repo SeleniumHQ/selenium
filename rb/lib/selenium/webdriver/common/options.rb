@@ -59,7 +59,7 @@ module Selenium
               @options[key]
             end
 
-            define_method "#{key}=" do |value|
+            define_method :"#{key}=" do |value|
               @options[key] = value
             end
           end

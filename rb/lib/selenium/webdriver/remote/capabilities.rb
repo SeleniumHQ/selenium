@@ -48,7 +48,7 @@ module Selenium
             @capabilities[key]
           end
 
-          define_method "#{key}=" do |value|
+          define_method :"#{key}=" do |value|
             @capabilities[key] = value
           end
         end

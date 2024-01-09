@@ -594,8 +594,8 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Starts a session with the driver
         /// </summary>
-        /// <param name="desiredCapabilities">Capabilities of the browser</param>
-        protected void StartSession(ICapabilities desiredCapabilities)
+        /// <param name="capabilities">Capabilities of the browser</param>
+        protected void StartSession(ICapabilities capabilities)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
@@ -604,10 +604,10 @@ namespace OpenQA.Selenium
             // and end nodes are compliant with the W3C WebDriver Specification,
             // and therefore will already contain all of the appropriate values
             // for establishing a session.
-            RemoteSessionSettings remoteSettings = desiredCapabilities as RemoteSessionSettings;
+            RemoteSessionSettings remoteSettings = capabilities as RemoteSessionSettings;
             if (remoteSettings == null)
             {
-                Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
+                Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(capabilities);
 
                 List<object> firstMatchCapabilitiesList = new List<object>();
                 firstMatchCapabilitiesList.Add(matchCapabilities);

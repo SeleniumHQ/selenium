@@ -42,7 +42,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 18
       - name: NPM install
         run: cd javascript/grid-ui && npm install
       - name: Run unit tests

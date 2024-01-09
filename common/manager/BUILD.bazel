@@ -10,33 +10,15 @@ package(
 
 alias(
     name = "selenium-manager-linux",
-    actual = select({
-        "//common:stamp": "linux/selenium-manager",
-        "//conditions:default": "//rust:selenium-manager-linux",
-    }),
+    actual = "@download_sm_linux//file",
 )
 
 alias(
     name = "selenium-manager-macos",
-    actual = select({
-        "//common:stamp": "macos/selenium-manager",
-        "//conditions:default": "//rust:selenium-manager-macos",
-    }),
+    actual = "@download_sm_macos//file",
 )
 
-# Rust does not compile properly on windows so just use what is in repo for now
 alias(
     name = "selenium-manager-windows",
-    actual = "windows/selenium-manager.exe",
-)
-
-exports_files(
-    [
-        "linux/selenium-manager",
-        "macos/selenium-manager",
-        "windows/selenium-manager.exe",
-    ],
-    visibility = [
-        "//rust:__pkg__",
-    ],
+    actual = "@download_sm_windows//file",
 )

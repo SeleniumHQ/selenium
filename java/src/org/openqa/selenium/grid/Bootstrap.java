@@ -76,7 +76,7 @@ public class Bootstrap {
       Method main = clazz.getMethod("main", String[].class);
       main.invoke(null, new Object[] {args});
     } catch (ReflectiveOperationException e) {
-      e.printStackTrace();
+      LOG.severe("Error during execution: " + e.getMessage());
       System.exit(1);
     }
   }
