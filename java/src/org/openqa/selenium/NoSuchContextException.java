@@ -17,9 +17,7 @@
 
 package org.openqa.selenium;
 
-/**
- * Thrown by {@link org.openqa.selenium.ContextAware#context(String)}.
- */
+/** Thrown by {@link org.openqa.selenium.ContextAware#context(String)}. */
 @Deprecated
 public class NoSuchContextException extends NotFoundException {
 
