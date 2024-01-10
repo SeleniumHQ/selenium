@@ -35,8 +35,6 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -262,6 +260,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
   void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
 

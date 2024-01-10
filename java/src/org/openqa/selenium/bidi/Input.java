@@ -80,4 +80,8 @@ public class Input {
                 "context", browsingContext,
                 "actions", encodedActions)));
   }
+
+  public void release(String browsingContext) {
+    bidi.send(new Command<>("input.releaseActions", Map.of("context", browsingContext)));
+  }
 }
