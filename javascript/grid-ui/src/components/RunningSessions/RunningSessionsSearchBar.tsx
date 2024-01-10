@@ -16,7 +16,7 @@
 // under the License.
 
 import React from 'react'
-import InfoIcon from '@mui/icons-material/Info'
+import { Info as InfoIcon } from '@mui/icons-material'
 import Typography from '@mui/material/Typography'
 import Table from '@mui/material/Table'
 import TableCell from '@mui/material/TableCell'
@@ -34,7 +34,7 @@ import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { alpha, styled } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
-import SearchIcon from '@mui/icons-material/Search'
+import { Search as SearchIcon } from '@mui/icons-material'
 
 interface RunningSessionsSearchBarProps {
   searchFilter: string

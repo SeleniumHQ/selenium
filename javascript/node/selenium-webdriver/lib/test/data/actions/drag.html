@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <style>
   body {
     margin: 0;
@@ -40,51 +40,51 @@
   }
 </style>
 <body>
-<div id="container">
-  <div id="slide"></div>
-  <div id="TR"></div>
-  <div id="BR"></div>
-  <div id="BL"></div>
-</div>
-<script>
-  let offset
-  let mouseDown = false
-  let slide = document.getElementById('slide')
-  slide.addEventListener('mousedown', function(e) {
-    mouseDown = true
+  <div id="container">
+    <div id="slide"></div>
+    <div id="TR"></div>
+    <div id="BR"></div>
+    <div id="BL"></div>
+  </div>
+  <script>
+    let offset
+    let mouseDown = false
+    let slide = document.getElementById('slide')
+    slide.addEventListener('mousedown', function (e) {
+      mouseDown = true
 
-    let bbox = slide.getBoundingClientRect()
-    offset = {
-      x: e.clientX - bbox.left,
-      y: e.clientY - bbox.top
-    }
-  })
+      let bbox = slide.getBoundingClientRect()
+      offset = {
+        x: e.clientX - bbox.left,
+        y: e.clientY - bbox.top,
+      }
+    })
 
-  let container = document.getElementById('container')
+    let container = document.getElementById('container')
 
-  let slideBox = slide.getBoundingClientRect()
-  let containerBox = container.getBoundingClientRect()
-  let maxLeft = containerBox.width - slideBox.width - 2
-  let maxTop = containerBox.height - slideBox.height - 2
+    let slideBox = slide.getBoundingClientRect()
+    let containerBox = container.getBoundingClientRect()
+    let maxLeft = containerBox.width - slideBox.width - 2
+    let maxTop = containerBox.height - slideBox.height - 2
 
-  container.addEventListener('mousemove', function(e) {
-    if (!mouseDown) return
+    container.addEventListener('mousemove', function (e) {
+      if (!mouseDown) return
 
-    let bbox = slide.getBoundingClientRect()
-    let newLeft = e.clientX - offset.x
-    newLeft = Math.max(newLeft, 0)
-    newLeft = Math.min(newLeft, maxLeft)
+      let bbox = slide.getBoundingClientRect()
+      let newLeft = e.clientX - offset.x
+      newLeft = Math.max(newLeft, 0)
+      newLeft = Math.min(newLeft, maxLeft)
 
-    let newTop = e.clientY - offset.y
-    newTop = Math.max(newTop, 0)
-    newTop = Math.min(newTop, maxTop)
+      let newTop = e.clientY - offset.y
+      newTop = Math.max(newTop, 0)
+      newTop = Math.min(newTop, maxTop)
 
-    slide.style.top = `${newTop}px`
-    slide.style.left = `${newLeft}px`
-  })
+      slide.style.top = `${newTop}px`
+      slide.style.left = `${newLeft}px`
+    })
 
-  document.body.addEventListener('mouseup', function() {
-    mouseDown = false
-  })
-</script>
+    document.body.addEventListener('mouseup', function () {
+      mouseDown = false
+    })
+  </script>
 </body>
