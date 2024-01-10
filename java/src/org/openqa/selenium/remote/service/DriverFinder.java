@@ -52,20 +52,20 @@ public class DriverFinder {
   }
 
   public String getDriverPath() {
-    setResult();
+    getBinaryPaths();
     return result.getDriverPath();
   }
 
   public String getBrowserPath() {
-    setResult();
+    getBinaryPaths();
     return result.getBrowserPath();
   }
 
   public boolean isAvailable() {
     try {
       offline = false;
-      setResult();
-      return false;
+      getBinaryPaths();
+      return true;
     } catch (NoSuchDriverException e) {
       return false;
     } catch (IllegalStateException | WebDriverException e) {
@@ -77,7 +77,7 @@ public class DriverFinder {
   public boolean isPresent() {
     try {
       offline = true;
-      setResult();
+      getBinaryPaths();
       return false;
     } catch (NoSuchDriverException e) {
       return false;
@@ -92,7 +92,7 @@ public class DriverFinder {
     return browserPath != null && !browserPath.isEmpty();
   }
 
-  private void setResult() {
+  private void getBinaryPaths() {
     if (result != null) {
       return;
     }
