@@ -240,6 +240,13 @@ public class RemoteValue {
         }
         break;
 
+      case NODE:
+        try (StringReader reader = new StringReader(JSON.toJson(value));
+            JsonInput input = JSON.newInput(reader)) {
+          finalValue = input.read(NodeProperties.class);
+        }
+        break;
+
       default:
         finalValue = value;
     }
