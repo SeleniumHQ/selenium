@@ -18,7 +18,9 @@ bazel test --config=remote-ci --build_tests_only \
   --keep_going --flaky_test_attempts=2 \
   //dotnet/...  \
   //java/... \
-  //javascript/atoms/... //javascript/webdriver/... \
+  //javascript/atoms/... \
+  //javascript/node/selenium-webdriver/... \
+  //javascript/webdriver/... \
   //py/... \
   //rb/spec/... -- $(cat .skipped-tests | tr '\n' ' ')
 

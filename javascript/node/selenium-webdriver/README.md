@@ -18,7 +18,7 @@ following path – /usr/bin/safaridriver. To enable automation on safari,
 you need to run command `safaridriver --enable`.
 
 | Browser           | Component                        |
-|:------------------|:---------------------------------|
+| :---------------- | :------------------------------- |
 | Chrome            | [chromedriver(.exe)][chrome]     |
 | Internet Explorer | [IEDriverServer.exe][release]    |
 | Edge              | [MicrosoftWebDriver.msi][edge]   |
@@ -32,18 +32,18 @@ The sample below and others are included in the `example` directory. You may
 also find the tests for selenium-webdriver informative.
 
 ```javascript
-const {Builder, Browser, By, Key, until} = require('selenium-webdriver');
+const { Builder, Browser, By, Key, until } = require('selenium-webdriver')
 
-(async function example() {
-  let driver = await new Builder().forBrowser(Browser.FIREFOX).build();
+;(async function example() {
+  let driver = await new Builder().forBrowser(Browser.FIREFOX).build()
   try {
-    await driver.get('https://www.google.com/ncr');
-    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
-    await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+    await driver.get('https://www.google.com/ncr')
+    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN)
+    await driver.wait(until.titleIs('webdriver - Google Search'), 1000)
   } finally {
-    await driver.quit();
+    await driver.quit()
   }
-})();
+})()
 ```
 
 ### Using the Builder API
@@ -54,15 +54,15 @@ the builder lets you set all options in one flow. When you call
 `Builder#build()`, all options irrelevant to the selected browser are dropped:
 
 ```javascript
-const webdriver = require('selenium-webdriver');
-const chrome = require('selenium-webdriver/chrome');
-const firefox = require('selenium-webdriver/firefox');
+const webdriver = require('selenium-webdriver')
+const chrome = require('selenium-webdriver/chrome')
+const firefox = require('selenium-webdriver/firefox')
 
 let driver = new webdriver.Builder()
-    .forBrowser(webdriver.Browser.FIREFOX)
-    .setChromeOptions(/* ... */)
-    .setFirefoxOptions(/* ... */)
-    .build();
+  .forBrowser(webdriver.Browser.FIREFOX)
+  .setChromeOptions(/* ... */)
+  .setFirefoxOptions(/* ... */)
+  .build()
 ```
 
 Why would you want to configure options irrelevant to the target browser? The
@@ -98,9 +98,9 @@ API:
 
 ```javascript
 let driver = new webdriver.Builder()
-    .forBrowser(webdriver.Browser.FIREFOX)
-    .usingServer('http://localhost:4444/wd/hub')
-    .build();
+  .forBrowser(webdriver.Browser.FIREFOX)
+  .usingServer('http://localhost:4444/wd/hub')
+  .build()
 ```
 
 Or change the Builder's configuration at runtime with the `SELENIUM_REMOTE_URL`
@@ -140,7 +140,7 @@ v18.8.0,
 respectively. Then a Selenium release would have the following support levels:
 
 |  Version  |    Support    |
-|:---------:|:-------------:|
+| :-------: | :-----------: |
 | <= 14.19  | _unsupported_ |
 |  14.20.0  |   supported   |
 |  18.0-7   |  best effort  |
@@ -167,7 +167,7 @@ If Node releases a new [LTS] each October and a new major version every 6
 months, the support window for selenium-webdriver will be roughly:
 
 | Release |     Status      | END-OF-LIFE |
-|:-------:|:---------------:|:-----------:|
+| :-----: | :-------------: | :---------: |
 |  v14.x  | Maintenance LTS | 2023-04-30  |
 |  v16.x  |   Active LTS    | 2023-09-11  |
 |  v18.x  |     Current     | 2025-04-30  |
@@ -179,20 +179,20 @@ months, the support window for selenium-webdriver will be roughly:
 Please report any issues using the [Selenium issue tracker][issues]. When using
 the issue tracker
 
-- __Do__ include a detailed description of the problem.
-- __Do__ include a link to a [gist](http://gist.github.com/) with any
+- **Do** include a detailed description of the problem.
+- **Do** include a link to a [gist](http://gist.github.com/) with any
   interesting stack traces/logs (you may also attach these directly to the bug
   report).
-- __Do__ include a [reduced test case][reduction]. Reporting "unable to find
+- **Do** include a [reduced test case][reduction]. Reporting "unable to find
   element on the page" is _not_ a valid report - there's nothing for us to
   look into. Expect your bug report to be closed if you do not provide enough
   information for us to investigate.
-- __Do not__ use the issue tracker to submit basic help requests. All help
+- **Do not** use the issue tracker to submit basic help requests. All help
   inquiries should be directed to the [user forum][users] or #selenium IRC
   channel.
-- __Do not__ post empty "I see this too" or "Any updates?" comments. These
+- **Do not** post empty "I see this too" or "Any updates?" comments. These
   provide no additional information and clutter the log.
-- __Do not__ report regressions on closed bugs as they are not actively
+- **Do not** report regressions on closed bugs as they are not actively
   monitored for updates (especially bugs that are >6 months old). Please open a
   new issue and reference the original bug in your report.
 
@@ -216,27 +216,15 @@ specific language governing permissions and limitations
 under the License.
 
 [LTS]: https://github.com/nodejs/LTS
-
 [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
-
 [api]: http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/
-
 [chrome]: http://chromedriver.storage.googleapis.com/index.html
-
 [gh]: https://github.com/SeleniumHQ/selenium/
-
 [issues]: https://github.com/SeleniumHQ/selenium/issues
-
 [edge]: http://go.microsoft.com/fwlink/?LinkId=619687
-
 [geckodriver]: https://github.com/mozilla/geckodriver/releases/
-
 [reduction]: http://www.webkit.org/quality/reduction.html
-
 [release]: https://www.selenium.dev/downloads/
-
 [users]: https://groups.google.com/forum/#!forum/selenium-users
-
 [safaridriver]: https://developer.apple.com/library/prerelease/content/releasenotes/General/WhatsNewInSafari/Articles/Safari_10_0.html#//apple_ref/doc/uid/TP40014305-CH11-DontLinkElementID_28
-
 [operadriver]: https://github.com/operasoftware/operachromiumdriver/releases

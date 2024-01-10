@@ -25,13 +25,24 @@ build --javacopt="--release 11"
 build --experimental_strict_java_deps=strict
 build --explicit_java_test_deps
 
+# Allow spaces in runfile paths
+build --nobuild_runfile_links
+
+# More JS magic
+build --experimental_allow_unresolved_symlinks
+
+# Required for faster TS builds
+build --@aspect_rules_ts//ts:skipLibCheck=always
+fetch --@aspect_rules_ts//ts:skipLibCheck=always
+query --@aspect_rules_ts//ts:skipLibCheck=always
+
+build --@aspect_rules_ts//ts:default_to_tsc_transpiler
+fetch --@aspect_rules_ts//ts:default_to_tsc_transpiler
+query --@aspect_rules_ts//ts:default_to_tsc_transpiler
+
 # Ensure builds are unpolluted by the user env
 
 build --incompatible_strict_action_env
-
-# Except for the PATH environment variable
-
-build --action_env=PATH
 
 # For build stamping
 
@@ -53,7 +64,6 @@ test --test_env=DISPLAY
 test --test_env=FIREFOX_NIGHTLY_BINARY
 test --test_env=GITHUB_ACTIONS
 test --test_env=MOZ_HEADLESS
-test --test_env=PATH  # Remove once browser pinning works
 test --test_env=SELENIUM_BROWSER
 test --test_env=TRAVIS
 test --test_env=PYTHON_VERSION
@@ -70,8 +80,8 @@ test --test_env=JRUBY_OPTS="--dev"
 
 # JRuby/TruffleRuby: https://github.com/jruby/jruby/issues/5661
 
-build --action_env=HOME
-test --test_env=HOME
+#build --action_env=HOME
+#test --test_env=HOME
 
 # Expose necessary variables for Selenium-Manager.
 
