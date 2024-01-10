@@ -41,6 +41,20 @@ closure_js_library(
     ],
 )
 
+closure_js_library(
+    name = "attribute-only",
+    srcs = ["attribute.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_NULLABLE_RETURN_WITH_NAME",
+    ],
+    visibility = ["//visibility:private"],
+    deps = [
+        "//javascript/atoms:domcore",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
 closure_fragment(
     name = "clear-local-storage",
     function = "webdriver.atoms.storage.local.clear",
@@ -83,7 +97,7 @@ closure_fragment(
 closure_fragment(
     name = "get-attribute",
     function = "webdriver.atoms.element.attribute.get",
-    module = "webdriver.atoms.element",
+    module = "webdriver.atoms.element.attribute",
     visibility = [
         "//dotnet/src/webdriver:__pkg__",
         "//java/src/org/openqa/selenium/remote:__pkg__",
@@ -94,7 +108,7 @@ closure_fragment(
         "//rb/lib/selenium/webdriver/atoms:__pkg__",
     ],
     deps = [
-        ":atoms-lib",
+        ":attribute-only",
     ],
 )
 
