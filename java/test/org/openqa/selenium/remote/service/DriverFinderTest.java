@@ -113,7 +113,7 @@ class DriverFinderTest {
     arguments.add("--proxy");
     arguments.add("https://localhost:1234");
     Result result = new Result(0, "", driverFile.toString(), browserFile.toString());
-    doReturn(result).when(seleniumManager).getResult(arguments);
+    doReturn(result).when(seleniumManager).getBinaryPaths(arguments);
 
     assertThat(finder.getDriverPath()).isEqualTo(driverFile.toString());
     assertThat(finder.getBrowserPath()).isEqualTo(browserFile.toString());
@@ -121,7 +121,7 @@ class DriverFinderTest {
     verify(service, times(1)).getDriverName();
     verify(service, times(1)).getDriverProperty();
     verifyNoMoreInteractions(service);
-    verify(seleniumManager, times(1)).getResult(arguments);
+    verify(seleniumManager, times(1)).getBinaryPaths(arguments);
     verifyNoMoreInteractions(seleniumManager);
   }
 

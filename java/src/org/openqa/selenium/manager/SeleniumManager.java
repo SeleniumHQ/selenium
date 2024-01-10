@@ -215,7 +215,7 @@ public class SeleniumManager {
    * @param arguments List of command line arguments to send to Selenium Manager binary
    * @return the locations of the assets from Selenium Manager execution
    */
-  public Result getResult(List<String> arguments) {
+  public Result getBinaryPaths(List<String> arguments) {
     arguments.add("--language-binding");
     arguments.add("java");
     arguments.add("--output");

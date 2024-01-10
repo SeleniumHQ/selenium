@@ -103,7 +103,7 @@ public class DriverFinder {
         result = new Result(System.getProperty(service.getDriverProperty()));
         if (result.getDriverPath() == null) {
           List<String> arguments = toArguments();
-          result = seleniumManager.getResult(arguments);
+          result = seleniumManager.getBinaryPaths(arguments);
           Require.state(options.getBrowserName(), new File(result.getBrowserPath())).isExecutable();
         } else {
           LOG.fine(
