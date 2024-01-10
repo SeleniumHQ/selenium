@@ -28,7 +28,7 @@ def test_get_results_with_valid_path():
     options = webdriver.ChromeOptions()
     service = webdriver.ChromeService(executable_path="/valid/path/to/driver")
 
-    with mock.patch.object(Path, 'is_file', return_value=True):
+    with mock.patch.object(Path, "is_file", return_value=True):
         result = DriverFinder.get_result(service, options)
     assert result == {"driver_path": "/valid/path/to/driver"}
 
@@ -37,7 +37,7 @@ def test_errors_with_invalid_path():
     options = webdriver.ChromeOptions()
     service = webdriver.ChromeService(executable_path="/invalid/path/to/driver")
 
-    with mock.patch.object(Path, 'is_file', return_value=False):
+    with mock.patch.object(Path, "is_file", return_value=False):
         with pytest.raises(NoSuchDriverException) as excinfo:
             DriverFinder.get_result(service, options)
         assert "Unable to obtain driver for chrome; For documentation on this error" in str(excinfo.value)
@@ -48,7 +48,7 @@ def test_wraps_error_from_se_manager():
     service = webdriver.ChromeService(executable_path="/valid/path/to/driver")
 
     lib_path = "selenium.webdriver.common.selenium_manager.SeleniumManager"
-    with mock.patch(lib_path + '.result', side_effect=Exception("Error")):
+    with mock.patch(lib_path + ".result", side_effect=Exception("Error")):
         with pytest.raises(NoSuchDriverException):
             DriverFinder.get_result(service, options)
 
@@ -60,6 +60,6 @@ def test_get_results_from_se_manager(monkeypatch):
     monkeypatch.setattr(Path, "is_file", lambda _: True)
 
     lib_path = "selenium.webdriver.common.selenium_manager.SeleniumManager"
-    with mock.patch(lib_path + '.result', return_value=expected_output):
+    with mock.patch(lib_path + ".result", return_value=expected_output):
         result = DriverFinder.get_result(service, options)
     assert result == expected_output

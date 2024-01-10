@@ -30,9 +30,10 @@ def test_gets_results(monkeypatch):
     expected_output = {"driver_path": "/path/to/driver"}
     lib_path = "selenium.webdriver.common.selenium_manager.SeleniumManager"
 
-    with mock.patch(lib_path + ".get_binary", return_value="/path/to/sm") as mock_get_binary, \
-         mock.patch(lib_path + ".run", return_value=expected_output) as mock_run:
-        SeleniumManager().result([])
+    with mock.patch(lib_path + ".get_binary", return_value="/path/to/sm") as mock_get_binary, mock.patch(
+        lib_path + ".run", return_value=expected_output
+    ) as mock_run:
+        SeleniumManager().binary_paths([])
 
         mock_get_binary.assert_called_once()
         expected_run_args = ["/path/to/sm", "--language-binding", "python", "--output", "json"]
@@ -108,9 +109,8 @@ def test_warns_if_unix(monkeypatch, capsys):
 def test_run_successful():
     expected_result = {"driver_path": "/path/to/driver", "browser_path": "/path/to/browser"}
     run_output = {"result": expected_result, "logs": []}
-    with mock.patch("subprocess.run") as mock_run, \
-         mock.patch("json.loads", return_value=run_output):
-        mock_run.return_value = mock.Mock(stdout=json.dumps(run_output).encode('utf-8'), stderr=b"", returncode=0)
+    with mock.patch("subprocess.run") as mock_run, mock.patch("json.loads", return_value=run_output):
+        mock_run.return_value = mock.Mock(stdout=json.dumps(run_output).encode("utf-8"), stderr=b"", returncode=0)
         result = SeleniumManager.run(["arg1", "arg2"])
         assert result == expected_result
 
@@ -123,9 +123,8 @@ def test_run_exception():
 
 
 def test_run_non_zero_exit_code():
-    with mock.patch("subprocess.run") as mock_run, \
-         mock.patch("json.loads", return_value={"result": "", "logs": []}):
-        mock_run.return_value = mock.Mock(stdout=b'{}', stderr=b'Error Message', returncode=1)
+    with mock.patch("subprocess.run") as mock_run, mock.patch("json.loads", return_value={"result": "", "logs": []}):
+        mock_run.return_value = mock.Mock(stdout=b"{}", stderr=b"Error Message", returncode=1)
         with pytest.raises(WebDriverException) as excinfo:
             SeleniumManager.run(["/path/to/sm", "arg1"])
     assert "Message: Unsuccessful command executed: /path/to/sm arg1.\nError Message\n" in str(excinfo.value)

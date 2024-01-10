@@ -17,7 +17,6 @@
 import logging
 from pathlib import Path
 
-from deprecated import deprecated
 from selenium.common.exceptions import NoSuchDriverException
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.selenium_manager import SeleniumManager
@@ -27,66 +26,68 @@ logger = logging.getLogger(__name__)
 
 
 class DriverFinder:
+    """A Driver finding class responsible for obtaining the correct driver and
+    associated browser.
+
+    :param service: instance of the driver service class.
+    :param options: instance of the browser options class.
+    """
+
+    def __init__(self, service: Service, options: BaseOptions) -> None:
+        self._service = service
+        self._options = options
+
     """Utility to find if a given file is present and executable.
 
     This implementation is still in beta, and may change.
     """
 
-    @staticmethod
-    @deprecated(reason="Use get_results() function instead.")
-    def get_path(service: Service, options: BaseOptions) -> str:
-        path = service.path
+    def get_browser_path(self) -> str:
+        return self._paths()["browser_path"]
+
+    def get_driver_path(self) -> str:
+        return self._paths()["driver_path"]
+
+    def _paths(self) -> dict:
+        browser = self._options.capabilities["browserName"]
         try:
-            path = SeleniumManager().driver_location(options) if path is None else path
-        except Exception as err:
-            msg = f"Unable to obtain driver for {options.capabilities['browserName']} using Selenium Manager."
-            raise NoSuchDriverException(msg) from err
-
-        if path is None or not Path(path).is_file():
-            raise NoSuchDriverException(f"Unable to locate or obtain driver for {options.capabilities['browserName']}")
-
-        return path
-
-    @staticmethod
-    def get_result(service: Service, options: BaseOptions) -> dict:
-        browser = options.capabilities['browserName']
-        try:
-            path = service.path
+            path = self._service.path
             if path:
-                logger.debug("Skipping Selenium Manager; path to %s driver specified in Service class: %s", browser, path)
+                logger.debug(
+                    "Skipping Selenium Manager; path to %s driver specified in Service class: %s", browser, path
+                )
                 if not Path(path).is_file():
-                    raise ValueError(f"The path is not a valid file: %s", path)
+                    raise ValueError(f"The path is not a valid file: {path}")
                 return {"driver_path": path}
             else:
-                output = SeleniumManager().result(DriverFinder._to_args(options))
-                results = {}
+                output = SeleniumManager().binary_paths(self._to_args())
+                results = {"driver_path": "", "browser_path": ""}
                 if Path(output["driver_path"]).is_file():
                     results["driver_path"] = output["driver_path"]
                 else:
-                    raise ValueError(f"The driver path is not a valid file: %s", output["driver_path"])
+                    raise ValueError(f'The driver path is not a valid file: {output["driver_path"]}')
                 if Path(output["browser_path"]).is_file():
                     results["browser_path"] = output["browser_path"]
                 else:
-                    raise ValueError(f"The browser path is not a valid file: %s", output["driver_path"])
+                    raise ValueError(f'The browser path is not a valid file: {output["browser_path"]}')
                 return results
         except Exception as err:
             msg = f"Unable to obtain driver for {browser}"
             raise NoSuchDriverException(msg) from err
 
-    @staticmethod
-    def _to_args(options: BaseOptions) -> list:
-        args = ["--browser", options.capabilities["browserName"]]
+    def _to_args(self) -> list:
+        args = ["--browser", self._options.capabilities["browserName"]]
 
-        if options.browser_version:
+        if self._options.browser_version:
             args.append("--browser-version")
-            args.append(str(options.browser_version))
+            args.append(str(self._options.browser_version))
 
-        binary_location = getattr(options, "binary_location", None)
+        binary_location = getattr(self._options, "binary_location", None)
         if binary_location:
             args.append("--browser-path")
             args.append(str(binary_location))
 
-        proxy = options.proxy
+        proxy = self._options.proxy
         if proxy and (proxy.http_proxy or proxy.ssl_proxy):
             args.append("--proxy")
             value = proxy.ssl_proxy if proxy.ssl_proxy else proxy.http_proxy
