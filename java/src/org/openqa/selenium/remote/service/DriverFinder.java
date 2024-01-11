@@ -78,7 +78,7 @@ public class DriverFinder {
     try {
       offline = true;
       getBinaryPaths();
-      return false;
+      return true;
     } catch (NoSuchDriverException e) {
       return false;
     } catch (IllegalStateException | WebDriverException e) {
