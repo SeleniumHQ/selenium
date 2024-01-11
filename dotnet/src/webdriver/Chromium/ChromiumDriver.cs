@@ -273,15 +273,14 @@ namespace OpenQA.Selenium.Chromium
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession()
         {
-            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
+            return GetDevToolsSession(new DevToolsOptions() { ProtocolVersion = DevToolsSession.AutoDetectDevToolsProtocolVersion });
         }
 
         /// <summary>
         /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
         /// </summary>
-        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
+        public DevToolsSession GetDevToolsSession(DevToolsOptions options)
         {
             if (this.devToolsSession == null)
             {
@@ -290,22 +289,22 @@ namespace OpenQA.Selenium.Chromium
                     throw new WebDriverException("Cannot find " + this.optionsCapabilityName + " capability for driver");
                 }
 
-                Dictionary<string, object> options = this.Capabilities.GetCapability(this.optionsCapabilityName) as Dictionary<string, object>;
-                if (options == null)
+                Dictionary<string, object> optionsCapability = this.Capabilities.GetCapability(this.optionsCapabilityName) as Dictionary<string, object>;
+                if (optionsCapability == null)
                 {
                     throw new WebDriverException("Found " + this.optionsCapabilityName + " capability, but is not an object");
                 }
 
-                if (!options.ContainsKey("debuggerAddress"))
+                if (!optionsCapability.ContainsKey("debuggerAddress"))
                 {
                     throw new WebDriverException("Did not find debuggerAddress capability in " + this.optionsCapabilityName);
                 }
 
-                string debuggerAddress = options["debuggerAddress"].ToString();
+                string debuggerAddress = optionsCapability["debuggerAddress"].ToString();
                 try
                 {
-                    DevToolsSession session = new DevToolsSession(debuggerAddress);
-                    Task.Run(async () => await session.StartSession(devToolsProtocolVersion)).GetAwaiter().GetResult();
+                    DevToolsSession session = new DevToolsSession(debuggerAddress, options);
+                    Task.Run(async () => await session.StartSession()).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
@@ -315,6 +314,17 @@ namespace OpenQA.Selenium.Chromium
             }
 
             return this.devToolsSession;
+        }
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
+        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+        [Obsolete("Use GetDevToolsSession(DevToolsOptions options)")]
+        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
+        {
+            return GetDevToolsSession(new DevToolsOptions() { ProtocolVersion = devToolsProtocolVersion });
         }
 
         /// <summary>

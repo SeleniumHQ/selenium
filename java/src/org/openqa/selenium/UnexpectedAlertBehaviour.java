@@ -24,7 +24,7 @@ public enum UnexpectedAlertBehaviour {
   DISMISS_AND_NOTIFY("dismiss and notify"),
   IGNORE("ignore");
 
-  private String text;
+  private final String text;
 
   UnexpectedAlertBehaviour(String text) {
     this.text = text;

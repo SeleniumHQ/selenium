@@ -15,17 +15,37 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+'use strict'
 
-/** Thrown by {@link org.openqa.selenium.ContextAware#context(String)}. */
-@Deprecated
-public class NoSuchContextException extends NotFoundException {
+const assert = require('assert')
+const firefox = require('../../firefox')
+const {Browser} = require('../../')
+const {suite} = require('../../lib/test')
 
-  public NoSuchContextException(String reason) {
-    super(reason);
-  }
+suite(
+  function (env) {
+    let driver
 
-  public NoSuchContextException(String reason, Throwable cause) {
-    super(reason, cause);
-  }
-}
+    beforeEach(async function () {
+      driver = await env
+        .builder()
+        .setFirefoxOptions(new firefox.Options().enableBidi())
+        .build()
+    })
+
+    afterEach(async function () {
+      await driver.quit()
+    })
+
+    describe('Session', function () {
+      it('can create bidi session', async function () {
+        const bidi = await driver.getBidi()
+        const status = await bidi.status
+
+        assert('ready' in status['result'])
+        assert.notEqual(status['result']['message'], null)
+      })
+    })
+  },
+  {browsers: [Browser.FIREFOX]}
+)

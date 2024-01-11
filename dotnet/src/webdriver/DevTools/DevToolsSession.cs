@@ -54,18 +54,29 @@ namespace OpenQA.Selenium.DevTools
         private long currentCommandId = 0;
 
         private DevToolsDomains domains;
+        private readonly DevToolsOptions options;
 
         /// <summary>
         /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
         /// </summary>
         /// <param name="endpointAddress"></param>
-        public DevToolsSession(string endpointAddress)
+        [Obsolete("Use DevToolsSession(string endpointAddress, DevToolsOptions options)")]
+        public DevToolsSession(string endpointAddress) : this(endpointAddress, new DevToolsOptions()) { }
+
+        /// <summary>
+        /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint and specified DevTools options.
+        /// </summary>
+        /// <param name="endpointAddress"></param>
+        /// <param name="options"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public DevToolsSession(string endpointAddress, DevToolsOptions options)
         {
             if (string.IsNullOrWhiteSpace(endpointAddress))
             {
                 throw new ArgumentNullException(nameof(endpointAddress));
             }
 
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.CommandTimeout = TimeSpan.FromSeconds(30);
             this.debuggerEndpoint = endpointAddress;
             if (endpointAddress.StartsWith("ws", StringComparison.InvariantCultureIgnoreCase))
@@ -150,6 +161,39 @@ namespace OpenQA.Selenium.DevTools
 
             if (!this.domains.VersionSpecificDomains.ResponseTypeMap.TryGetCommandResponseType<TCommand>(out Type commandResponseType))
             {
+                throw new InvalidOperationException($"Type {command.GetType()} does not correspond to a known command response type.");
+            }
+
+            return result.ToObject(commandResponseType) as ICommandResponse<TCommand>;
+        }
+
+        /// <summary>
+        /// Sends the specified command and returns the associated command response.
+        /// </summary>
+        /// <typeparam name="TCommand">A command object implementing the <see cref="ICommand"/> interface.</typeparam>
+        /// <param name="command">The command to be sent.</param>
+        /// <param name="sessionId">The target session of the command</param>
+        /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
+        /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
+        /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
+        /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
+        public async Task<ICommandResponse<TCommand>> SendCommand<TCommand>(TCommand command, string sessionId, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
+            where TCommand : ICommand
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException(nameof(command));
+            }
+
+            var result = await SendCommand(command.CommandName, sessionId, JToken.FromObject(command), cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            if (!this.domains.VersionSpecificDomains.ResponseTypeMap.TryGetCommandResponseType(command, out Type commandResponseType))
+            {
                 throw new InvalidOperationException($"Type {typeof(TCommand)} does not correspond to a known command response type.");
             }
 
@@ -195,7 +239,23 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
         /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
         //[DebuggerStepThrough]
-        public async Task<JToken> SendCommand(string commandName, JToken commandParameters, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
+        public Task<JToken> SendCommand(string commandName, JToken commandParameters, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
+        {
+            return SendCommand(commandName, ActiveSessionId, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
+        }
+
+        /// <summary>
+        /// Returns a JToken based on a command created with the specified command name and params.
+        /// </summary>
+        /// <param name="commandName">The name of the command to send.</param>
+        /// <param name="sessionId">The sessionId of the command.</param>
+        /// <param name="commandParameters">The parameters of the command as a JToken object</param>
+        /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
+        /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
+        /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
+        /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
+        //[DebuggerStepThrough]
+        public async Task<JToken> SendCommand(string commandName, string sessionId, JToken commandParameters, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         {
             if (millisecondsTimeout.HasValue == false)
             {
@@ -208,7 +268,7 @@ namespace OpenQA.Selenium.DevTools
                 await this.InitializeSession().ConfigureAwait(false);
             }
 
-            var message = new DevToolsCommandData(Interlocked.Increment(ref this.currentCommandId), this.ActiveSessionId, commandName, commandParameters);
+            var message = new DevToolsCommandData(Interlocked.Increment(ref this.currentCommandId), sessionId, commandName, commandParameters);
 
             if (this.connection != null && this.connection.IsActive)
             {
@@ -267,10 +327,10 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Asynchronously starts the session.
         /// </summary>
-        /// <param name="requestedProtocolVersion">The requested version of the protocol to use in communicating with the browswer.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        internal async Task StartSession(int requestedProtocolVersion)
+        internal async Task StartSession()
         {
+            var requestedProtocolVersion = options.ProtocolVersion.HasValue ? options.ProtocolVersion.Value : AutoDetectDevToolsProtocolVersion;
             int protocolVersion = await InitializeProtocol(requestedProtocolVersion).ConfigureAwait(false);
             this.domains = DevToolsDomains.InitializeDomains(protocolVersion, this);
             await this.InitializeSocketConnection().ConfigureAwait(false);
@@ -398,6 +458,16 @@ namespace OpenQA.Selenium.DevTools
 
             await this.domains.Target.SetAutoAttach().ConfigureAwait(false);
             LogTrace("AutoAttach is set.", this.attachedTargetId);
+
+            // The Target domain needs to send Sessionless commands! Else the waitForDebugger setting in setAutoAttach wont work!
+            if (options.WaitForDebuggerOnStart)
+            {
+                var setAutoAttachCommand = domains.Target.CreateSetAutoAttachCommand(true);
+                var setDiscoverTargetsCommand = domains.Target.CreateDiscoverTargetsCommand();
+
+                await SendCommand(setAutoAttachCommand, string.Empty, default(CancellationToken), null, true).ConfigureAwait(false);
+                await SendCommand(setDiscoverTargetsCommand, string.Empty, default(CancellationToken), null, true).ConfigureAwait(false);
+            }
 
             this.domains.Target.TargetDetached += this.OnTargetDetached;
         }

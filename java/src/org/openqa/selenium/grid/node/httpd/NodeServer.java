@@ -171,7 +171,8 @@ public class NodeServer extends TemplateGridServerCommand {
 
     Route httpHandler = Route.combine(node, get("/readyz").to(() -> readinessCheck));
 
-    return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node));
+    return new Handlers(
+        httpHandler, new ProxyNodeWebsockets(clientFactory, node, nodeOptions.getGridSubPath()));
   }
 
   @Override

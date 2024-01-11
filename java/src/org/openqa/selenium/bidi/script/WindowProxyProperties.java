@@ -14,18 +14,40 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.bidi.script;
 
-package org.openqa.selenium;
+import org.openqa.selenium.json.JsonInput;
 
-/** Thrown by {@link org.openqa.selenium.ContextAware#context(String)}. */
-@Deprecated
-public class NoSuchContextException extends NotFoundException {
+public class WindowProxyProperties {
 
-  public NoSuchContextException(String reason) {
-    super(reason);
+  private final String browsingContext;
+
+  private WindowProxyProperties(String browsingContext) {
+    this.browsingContext = browsingContext;
   }
 
-  public NoSuchContextException(String reason, Throwable cause) {
-    super(reason, cause);
+  public static WindowProxyProperties fromJson(JsonInput input) {
+    String browsingContext = null;
+
+    input.beginObject();
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "context":
+          browsingContext = input.read(String.class);
+          break;
+
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+
+    input.endObject();
+
+    return new WindowProxyProperties(browsingContext);
+  }
+
+  public String getBrowsingContext() {
+    return browsingContext;
   }
 }

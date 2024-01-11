@@ -74,7 +74,7 @@ public class FluentWait<T> implements Wait<T> {
   private Duration interval = DEFAULT_WAIT_DURATION;
   private Supplier<String> messageSupplier = () -> null;
 
-  private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
+  private final List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
 
   /**
    * @param input The input value to pass to the evaluated conditions.
