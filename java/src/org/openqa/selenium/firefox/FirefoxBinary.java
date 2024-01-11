@@ -44,6 +44,7 @@ import org.openqa.selenium.os.ExecutableFinder;
  * @deprecated Use {@link FirefoxOptions#setBinary(Path)} or {@link
  *     FirefoxOptions#setBinary(String)} instead.
  */
+@Deprecated
 public class FirefoxBinary {
 
   /** Enumerates Firefox channels, according to https://wiki.mozilla.org/RapidRelease */
