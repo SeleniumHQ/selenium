@@ -772,12 +772,6 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.FIND_ELEMENTS, {"using": by, "value": value})["value"] or []
 
     @property
-    def desired_capabilities(self) -> dict:
-        """Returns the drivers current desired capabilities being used."""
-        warnings.warn("desired_capabilities is deprecated. Please call capabilities.", DeprecationWarning, stacklevel=2)
-        return self.caps
-
-    @property
     def capabilities(self) -> dict:
         """Returns the drivers current capabilities being used."""
         return self.caps
