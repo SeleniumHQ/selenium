@@ -30,7 +30,6 @@ from xml.dom import minidom
 
 from selenium.common.exceptions import WebDriverException
 
-WEBDRIVER_EXT = "webdriver.xpi"
 WEBDRIVER_PREFERENCES = "webdriver_prefs.json"
 EXTENSION_NAME = "fxdriver@googlecode.com"
 
@@ -83,7 +82,7 @@ class FirefoxProfile:
         """Sets the preference that we want in the profile."""
         self.default_preferences[key] = value
 
-    def add_extension(self, extension=WEBDRIVER_EXT):
+    def add_extension(self, extension):
         self._install_extension(extension)
 
     def update_preferences(self):
@@ -189,9 +188,6 @@ class FirefoxProfile:
         - path: url, absolute path to .xpi, or directory of addons
         - unpack: whether to unpack unless specified otherwise in the install.rdf
         """
-        if addon == WEBDRIVER_EXT:
-            addon = os.path.join(os.path.dirname(__file__), WEBDRIVER_EXT)
-
         tmpdir = None
         xpifile = None
         if addon.endswith(".xpi"):
