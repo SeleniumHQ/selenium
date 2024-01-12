@@ -594,7 +594,7 @@ namespace :py do
     FileUtils.cp_r('bazel-bin/py/selenium/webdriver/.', 'py/selenium/webdriver', remove_destination: true)
   end
 
-  desc 'Update generated Python files for local development'
+  desc 'Remove generated files from local development'
   task :clean do
     Bazel.execute('build', [], '//py:selenium')
     bazel_bin_path = 'bazel-bin/py/selenium/webdriver'
@@ -1071,23 +1071,23 @@ task :create_release_notes do
   git_log_output = `#{git_log_command}`
 
   release_notes = <<~RELEASE_NOTES
-    ### Changelog
+  ### Changelog
 
-    For each component's detailed changelog, please check:
-    * [Ruby](https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES)
-    * [Python](https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES)
-    * [JavaScript](https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/CHANGES.md)
-    * [Java](https://github.com/SeleniumHQ/selenium/blob/trunk/java/CHANGELOG)
-    * [DotNet](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG)
-    * [IEDriverServer](https://github.com/SeleniumHQ/selenium/blob/trunk/cpp/iedriverserver/CHANGELOG)
+  For each component's detailed changelog, please check:
+  * [Ruby](https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES)
+  * [Python](https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES)
+  * [JavaScript](https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/CHANGES.md)
+  * [Java](https://github.com/SeleniumHQ/selenium/blob/trunk/java/CHANGELOG)
+  * [DotNet](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG)
+  * [IEDriverServer](https://github.com/SeleniumHQ/selenium/blob/trunk/cpp/iedriverserver/CHANGELOG)
 
-    ### Commits in this release
-    <details>
-    <summary>Click to see all the commits included in this release</summary>
+  ### Commits in this release
+  <details>
+  <summary>Click to see all the commits included in this release</summary>
 
-    #{git_log_output}
+  #{git_log_output}
 
-    </details>
+  </details>
   RELEASE_NOTES
 
   FileUtils.mkdir_p('build/dist')
