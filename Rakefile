@@ -685,8 +685,8 @@ namespace :py do
       desc "Python #{browser} tests"
       task browser do
         Rake::Task['py:clean'].invoke
-        Bazel.execute('test', %w[--test_output streamed],"//py:common-#{browser}")
-        Bazel.execute('test', %w[--test_output streamed],"//py:test-#{browser}")
+        Bazel.execute('test', %w[--test_output all],"//py:common-#{browser}")
+        Bazel.execute('test', %w[--test_output all],"//py:test-#{browser}")
       end
     end
   end

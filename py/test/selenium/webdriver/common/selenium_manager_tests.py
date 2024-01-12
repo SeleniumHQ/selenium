@@ -30,8 +30,8 @@ def test_gets_results(monkeypatch):
     expected_output = {"driver_path": "/path/to/driver"}
     lib_path = "selenium.webdriver.common.selenium_manager.SeleniumManager"
 
-    with mock.patch(lib_path + ".get_binary", return_value="/path/to/sm") as mock_get_binary, mock.patch(
-        lib_path + ".run", return_value=expected_output
+    with mock.patch(lib_path + "._get_binary", return_value="/path/to/sm") as mock_get_binary, mock.patch(
+        lib_path + "._run", return_value=expected_output
     ) as mock_run:
         SeleniumManager().binary_paths([])
 
@@ -44,14 +44,14 @@ def test_uses_environment_variable(monkeypatch):
     monkeypatch.setenv("SE_MANAGER_PATH", "/path/to/manager")
     monkeypatch.setattr(Path, "is_file", lambda _: True)
 
-    binary = SeleniumManager().get_binary()
+    binary = SeleniumManager()._get_binary()
 
     assert str(binary) == "/path/to/manager"
 
 
 def test_uses_windows(monkeypatch):
     monkeypatch.setattr(sys, "platform", "win32")
-    binary = SeleniumManager().get_binary()
+    binary = SeleniumManager()._get_binary()
 
     project_root = Path(selenium.__file__).parent.parent
     assert binary == project_root.joinpath("selenium/webdriver/common/windows/selenium-manager.exe")
@@ -59,7 +59,7 @@ def test_uses_windows(monkeypatch):
 
 def test_uses_linux(monkeypatch):
     monkeypatch.setattr(sys, "platform", "linux")
-    binary = SeleniumManager().get_binary()
+    binary = SeleniumManager()._get_binary()
 
     project_root = Path(selenium.__file__).parent.parent
     assert binary == project_root.joinpath("selenium/webdriver/common/linux/selenium-manager")
@@ -67,7 +67,7 @@ def test_uses_linux(monkeypatch):
 
 def test_uses_mac(monkeypatch):
     monkeypatch.setattr(sys, "platform", "darwin")
-    binary = SeleniumManager().get_binary()
+    binary = SeleniumManager()._get_binary()
 
     project_root = Path(selenium.__file__).parent.parent
     assert binary == project_root.joinpath("selenium/webdriver/common/macos/selenium-manager")
@@ -77,7 +77,7 @@ def test_errors_if_not_file(monkeypatch):
     monkeypatch.setattr(Path, "is_file", lambda _: False)
 
     with pytest.raises(WebDriverException) as excinfo:
-        SeleniumManager().get_binary()
+        SeleniumManager()._get_binary()
     assert "Unable to obtain working Selenium Manager binary" in str(excinfo.value)
 
 
@@ -86,7 +86,7 @@ def test_errors_if_invalid_os(monkeypatch):
     monkeypatch.setattr("platform.machine", lambda: "invalid")
 
     with pytest.raises(WebDriverException) as excinfo:
-        SeleniumManager().get_binary()
+        SeleniumManager()._get_binary()
     assert "Unsupported platform/architecture combination" in str(excinfo.value)
 
 
@@ -94,16 +94,8 @@ def test_error_if_invalid_env_path(monkeypatch):
     monkeypatch.setenv("SE_MANAGER_PATH", "/path/to/manager")
 
     with pytest.raises(WebDriverException) as excinfo:
-        SeleniumManager().get_binary()
+        SeleniumManager()._get_binary()
     assert "Unable to obtain working Selenium Manager binary; /path/to/manager" in str(excinfo.value)
-
-
-def test_warns_if_unix(monkeypatch, capsys):
-    monkeypatch.setattr(sys, "platform", "freebsd")
-
-    SeleniumManager().get_binary()
-
-    assert "Selenium Manager binary may not be compatible with freebsd" in capsys.readouterr().err
 
 
 def test_run_successful():
@@ -111,14 +103,14 @@ def test_run_successful():
     run_output = {"result": expected_result, "logs": []}
     with mock.patch("subprocess.run") as mock_run, mock.patch("json.loads", return_value=run_output):
         mock_run.return_value = mock.Mock(stdout=json.dumps(run_output).encode("utf-8"), stderr=b"", returncode=0)
-        result = SeleniumManager.run(["arg1", "arg2"])
+        result = SeleniumManager._run(["arg1", "arg2"])
         assert result == expected_result
 
 
 def test_run_exception():
     with mock.patch("subprocess.run", side_effect=Exception("Test Error")):
         with pytest.raises(WebDriverException) as excinfo:
-            SeleniumManager.run(["/path/to/sm", "arg1", "arg2"])
+            SeleniumManager._run(["/path/to/sm", "arg1", "arg2"])
     assert "Unsuccessful command executed: /path/to/sm arg1 arg2" in str(excinfo.value)
 
 
@@ -126,5 +118,5 @@ def test_run_non_zero_exit_code():
     with mock.patch("subprocess.run") as mock_run, mock.patch("json.loads", return_value={"result": "", "logs": []}):
         mock_run.return_value = mock.Mock(stdout=b"{}", stderr=b"Error Message", returncode=1)
         with pytest.raises(WebDriverException) as excinfo:
-            SeleniumManager.run(["/path/to/sm", "arg1"])
-    assert "Message: Unsuccessful command executed: /path/to/sm arg1.\nError Message\n" in str(excinfo.value)
+            SeleniumManager._run(["/path/to/sm", "arg1"])
+    assert "Unsuccessful command executed: /path/to/sm arg1; code: 1\n\nError Message" in str(excinfo.value)

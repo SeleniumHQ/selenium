@@ -36,6 +36,7 @@ class DriverFinder:
     def __init__(self, service: Service, options: BaseOptions) -> None:
         self._service = service
         self._options = options
+        self._paths = {"driver_path": "", "browser_path": ""}
 
     """Utility to find if a given file is present and executable.
 
@@ -43,12 +44,15 @@ class DriverFinder:
     """
 
     def get_browser_path(self) -> str:
-        return self._paths()["browser_path"]
+        return self._binary_paths()["browser_path"]
 
     def get_driver_path(self) -> str:
-        return self._paths()["driver_path"]
+        return self._paths["driver_path"]
 
-    def _paths(self) -> dict:
+    def _binary_paths(self) -> dict:
+        if self._paths:
+            return self._paths
+
         browser = self._options.capabilities["browserName"]
         try:
             path = self._service.path
@@ -58,22 +62,21 @@ class DriverFinder:
                 )
                 if not Path(path).is_file():
                     raise ValueError(f"The path is not a valid file: {path}")
-                return {"driver_path": path}
+                self._paths["driver_path"] = path
             else:
                 output = SeleniumManager().binary_paths(self._to_args())
-                results = {"driver_path": "", "browser_path": ""}
                 if Path(output["driver_path"]).is_file():
-                    results["driver_path"] = output["driver_path"]
+                    self._paths["driver_path"] = output["driver_path"]
                 else:
                     raise ValueError(f'The driver path is not a valid file: {output["driver_path"]}')
                 if Path(output["browser_path"]).is_file():
-                    results["browser_path"] = output["browser_path"]
+                    self._paths["browser_path"] = output["browser_path"]
                 else:
                     raise ValueError(f'The browser path is not a valid file: {output["browser_path"]}')
-                return results
         except Exception as err:
             msg = f"Unable to obtain driver for {browser}"
             raise NoSuchDriverException(msg) from err
+        return self._paths
 
     def _to_args(self) -> list:
         args = ["--browser", self._options.capabilities["browserName"]]
