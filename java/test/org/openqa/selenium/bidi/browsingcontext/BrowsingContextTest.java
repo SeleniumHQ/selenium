@@ -232,7 +232,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(FIREFOX)
   void canReloadABrowsingContext() {
     BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
 
@@ -248,7 +247,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(FIREFOX)
   void canReloadWithReadinessState() {
     BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
 
