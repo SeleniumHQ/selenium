@@ -47,10 +47,10 @@ class DriverFinder:
         return self._binary_paths()["browser_path"]
 
     def get_driver_path(self) -> str:
-        return self._paths["driver_path"]
+        return self._binary_paths()["driver_path"]
 
     def _binary_paths(self) -> dict:
-        if self._paths:
+        if self._paths["driver_path"]:
             return self._paths
 
         browser = self._options.capabilities["browserName"]
