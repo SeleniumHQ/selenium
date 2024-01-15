@@ -44,6 +44,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
@@ -518,5 +519,39 @@ public class DriverService implements Closeable {
 
     protected abstract DS createDriverService(
         File exe, int port, Duration timeout, List<String> args, Map<String, String> environment);
+
+    protected void createCommonArgs(Boolean readableTimestamp, Boolean appendLog,
+                                    ChromiumDriverLogLevel logLevel, String allowedListIps,
+                                    Boolean disableBuildCheck, List<String> args) {
+
+      args.add(String.format("--port=%d", getPort()));
+
+      if (getLogFile() != null) {
+        args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+        if (Boolean.TRUE.equals(readableTimestamp)) {
+          args.add("--readable-timestamp");
+        }
+        if (Boolean.TRUE.equals(appendLog)) {
+          args.add("--append-log");
+        }
+        withLogOutput(
+          OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
+      }
+
+      if (logLevel != null) {
+        args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
+      }
+      if (allowedListIps != null) {
+        args.add(String.format("--allowed-ips=%s", allowedListIps));
+      }
+      if (Boolean.TRUE.equals(disableBuildCheck)) {
+        args.add("--disable-build-check");
+      }
+    }
+
+   }
   }
-}
+
+
+
+

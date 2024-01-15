@@ -282,32 +282,7 @@ public class ChromeDriverService extends DriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
-      args.add(String.format("--port=%d", getPort()));
-
-      // Readable timestamp and append logs only work if log path is specified in args
-      // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
-      if (getLogFile() != null) {
-        args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
-        if (Boolean.TRUE.equals(readableTimestamp)) {
-          args.add("--readable-timestamp");
-        }
-        if (Boolean.TRUE.equals(appendLog)) {
-          args.add("--append-log");
-        }
-        withLogOutput(
-            OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
-      }
-
-      if (logLevel != null) {
-        args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
-      }
-      if (allowedListIps != null) {
-        args.add(String.format("--allowed-ips=%s", allowedListIps));
-      }
-      if (Boolean.TRUE.equals(disableBuildCheck)) {
-        args.add("--disable-build-check");
-      }
-
+      super.createCommonArgs(readableTimestamp, appendLog, logLevel, allowedListIps, disableBuildCheck, args);
       return unmodifiableList(args);
     }
 
