@@ -358,6 +358,37 @@ public class BrowsingContext {
             }));
   }
 
+  public List<RemoteValue> locateNodes(Locator locator) {
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.locateNodes",
+            Map.of("context", id, "locator", locator.toMap()),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
+                  JsonInput input = JSON.newInput(reader)) {
+                return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
+              }
+            }));
+  }
+
+  public RemoteValue locateNode(Locator locator) {
+    List<RemoteValue> remoteValues =
+        this.bidi.send(
+            new Command<>(
+                "browsingContext.locateNodes",
+                Map.of("context", id, "locator", locator.toMap(), "maxNodeCount", 1),
+                jsonInput -> {
+                  Map<String, Object> result = jsonInput.read(Map.class);
+                  try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
+                      JsonInput input = JSON.newInput(reader)) {
+                    return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
+                  }
+                }));
+
+    return remoteValues.get(0);
+  }
+
   public void close() {
     // This might need more clean up actions once the behavior is defined.
     // Specially when last tab or window is closed.

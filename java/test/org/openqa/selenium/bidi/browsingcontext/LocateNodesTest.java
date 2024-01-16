@@ -77,6 +77,38 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(FIREFOX)
+  void canLocateNodesWithJustLocator() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+    assertThat(browsingContext.getId()).isNotEmpty();
+
+    driver.get(pages.xhtmlTestPage);
+
+    List<RemoteValue> elements = browsingContext.locateNodes(Locator.css("div"));
+    assertThat(elements.size()).isEqualTo(13);
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canLocateNode() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+    assertThat(browsingContext.getId()).isNotEmpty();
+
+    driver.get(pages.xhtmlTestPage);
+
+    RemoteValue element = browsingContext.locateNode(Locator.css("div"));
+    assertThat(element.getType()).isEqualTo("node");
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
   void canLocateNodesWithCSSLocator() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
