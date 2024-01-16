@@ -44,6 +44,7 @@ import org.openqa.selenium.os.ExecutableFinder;
  * @deprecated Use {@link FirefoxOptions#setBinary(Path)} or {@link
  *     FirefoxOptions#setBinary(String)} instead.
  */
+@Deprecated
 public class FirefoxBinary {
 
   /** Enumerates Firefox channels, according to https://wiki.mozilla.org/RapidRelease */
@@ -54,7 +55,7 @@ public class FirefoxBinary {
     DEV("dev"),
     NIGHTLY("nightly");
 
-    private String name;
+    private final String name;
 
     Channel(String name) {
       this.name = name;

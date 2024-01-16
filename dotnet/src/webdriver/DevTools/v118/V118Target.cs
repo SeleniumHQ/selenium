@@ -140,5 +140,23 @@ namespace OpenQA.Selenium.DevTools.V118
                 WaitingForDebugger = e.WaitingForDebugger
             });
         }
+
+        internal override ICommand CreateSetAutoAttachCommand(bool waitForDebuggerOnStart)
+        {
+            return new SetAutoAttachCommandSettings
+            {
+                AutoAttach = true,
+                Flatten = true,
+                WaitForDebuggerOnStart = waitForDebuggerOnStart
+            };
+        }
+
+        internal override ICommand CreateDiscoverTargetsCommand()
+        {
+            return new SetDiscoverTargetsCommandSettings
+            {
+                Discover = true
+            };
+        }
     }
 }

@@ -193,38 +193,64 @@ public class RemoteValue {
   }
 
   private static Object deserializeValue(Object value, Type type) {
+    Object finalValue;
 
-    if (Type.ARRAY.equals(type) || Type.SET.equals(type)) {
-      try (StringReader reader = new StringReader(JSON.toJson(value));
-          JsonInput input = JSON.newInput(reader)) {
-        value = input.read(new TypeToken<List<RemoteValue>>() {}.getType());
-      }
-    } else if (Type.MAP.equals(type) || Type.OBJECT.equals(type)) {
-      List<List<Object>> result = (List<List<Object>>) value;
-      Map<Object, RemoteValue> map = new HashMap<>();
+    switch (type) {
+      case ARRAY:
+      case SET:
+        try (StringReader reader = new StringReader(JSON.toJson(value));
+            JsonInput input = JSON.newInput(reader)) {
+          finalValue = input.read(new TypeToken<List<RemoteValue>>() {}.getType());
+        }
+        break;
 
-      for (List<Object> list : result) {
-        Object key = list.get(0);
-        if (!(key instanceof String)) {
-          try (StringReader reader = new StringReader(JSON.toJson(key));
-              JsonInput keyInput = JSON.newInput(reader)) {
-            key = keyInput.read(RemoteValue.class);
+      case MAP:
+      case OBJECT:
+        List<List<Object>> result = (List<List<Object>>) value;
+        Map<Object, RemoteValue> map = new HashMap<>();
+
+        for (List<Object> list : result) {
+          Object key = list.get(0);
+          if (!(key instanceof String)) {
+            try (StringReader reader = new StringReader(JSON.toJson(key));
+                JsonInput keyInput = JSON.newInput(reader)) {
+              key = keyInput.read(RemoteValue.class);
+            }
+          }
+          try (StringReader reader = new StringReader(JSON.toJson(list.get(1)));
+              JsonInput valueInput = JSON.newInput(reader)) {
+            RemoteValue value1 = valueInput.read(RemoteValue.class);
+            map.put(key, value1);
           }
         }
-        try (StringReader reader = new StringReader(JSON.toJson(list.get(1)));
-            JsonInput valueInput = JSON.newInput(reader)) {
-          RemoteValue value1 = valueInput.read(RemoteValue.class);
-          map.put(key, value1);
+        finalValue = map;
+        break;
+
+      case REGULAR_EXPRESSION:
+        try (StringReader reader = new StringReader(JSON.toJson(value));
+            JsonInput input = JSON.newInput(reader)) {
+          finalValue = input.read(RegExpValue.class);
         }
-      }
-      value = map;
-    } else if (Type.REGULAR_EXPRESSION.equals(type)) {
-      try (StringReader reader = new StringReader(JSON.toJson(value));
-          JsonInput input = JSON.newInput(reader)) {
-        value = input.read(RegExpValue.class);
-      }
+        break;
+
+      case WINDOW:
+        try (StringReader reader = new StringReader(JSON.toJson(value));
+            JsonInput input = JSON.newInput(reader)) {
+          finalValue = input.read(WindowProxyProperties.class);
+        }
+        break;
+
+      case NODE:
+        try (StringReader reader = new StringReader(JSON.toJson(value));
+            JsonInput input = JSON.newInput(reader)) {
+          finalValue = input.read(NodeProperties.class);
+        }
+        break;
+
+      default:
+        finalValue = value;
     }
 
-    return value;
+    return finalValue;
   }
 }

@@ -91,7 +91,7 @@ public class FirefoxDriver extends RemoteWebDriver
   private final Optional<URI> biDiUri;
   private Connection connection;
   private DevTools devTools;
-  private Optional<BiDi> biDi;
+  private final Optional<BiDi> biDi;
 
   /**
    * Creates a new FirefoxDriver using the {@link GeckoDriverService#createDefaultService)} server

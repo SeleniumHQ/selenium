@@ -45,7 +45,7 @@ public class ErrorHandler {
   private static final String UNKNOWN_METHOD = "<anonymous method>";
   private static final String UNKNOWN_FILE = null;
 
-  private ErrorCodes errorCodes;
+  private final ErrorCodes errorCodes;
 
   private boolean includeServerErrors;
 

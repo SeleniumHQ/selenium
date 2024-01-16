@@ -112,8 +112,8 @@ public class CdpClientGenerator {
   }
 
   private static class Model {
-    private List<Domain> domains = new ArrayList<>();
-    private String basePackage;
+    private final List<Domain> domains = new ArrayList<>();
+    private final String basePackage;
 
     public Model(String basePackage) {
       this.basePackage = basePackage;
@@ -149,7 +149,7 @@ public class CdpClientGenerator {
   }
 
   private static class Parser<T extends BaseSpec> {
-    private Map<String, BiConsumer<T, Object>> processors;
+    private final Map<String, BiConsumer<T, Object>> processors;
 
     public Parser(Map<String, BiConsumer<T, Object>> processors) {
       this.processors = processors;
@@ -247,11 +247,11 @@ public class CdpClientGenerator {
   }
 
   private static class Domain extends BaseSpec {
-    private Model model;
+    private final Model model;
 
-    private List<TypeSpec> types = new ArrayList<>();
-    private List<CommandSpec> commands = new ArrayList<>();
-    private List<EventSpec> events = new ArrayList<>();
+    private final List<TypeSpec> types = new ArrayList<>();
+    private final List<CommandSpec> commands = new ArrayList<>();
+    private final List<EventSpec> events = new ArrayList<>();
 
     public Domain(Model model) {
       this.model = model;
@@ -794,8 +794,8 @@ public class CdpClientGenerator {
   }
 
   private static class SimpleType implements IType {
-    private String name;
-    private String type;
+    private final String name;
+    private final String type;
 
     public SimpleType(String name, String type) {
       this.name = name;
@@ -1075,9 +1075,9 @@ public class CdpClientGenerator {
 
   private static class ObjectType implements IType {
 
-    private TypedSpec parent;
-    private String name;
-    private List<VariableSpec> properties;
+    private final TypedSpec parent;
+    private final String name;
+    private final List<VariableSpec> properties;
 
     public ObjectType(TypedSpec parent, String name, List<VariableSpec> properties) {
       this.parent = parent;
@@ -1225,7 +1225,7 @@ public class CdpClientGenerator {
 
   private static class ArrayType implements IType {
     private IType itemType;
-    private String name;
+    private final String name;
 
     public ArrayType(String name) {
       this.name = name;
@@ -1310,9 +1310,9 @@ public class CdpClientGenerator {
   }
 
   private static class RefType implements IType {
-    private String name;
-    private Domain domain;
-    private String type;
+    private final String name;
+    private final Domain domain;
+    private final String type;
 
     public RefType(String name, Domain domain, String type) {
       this.name = name;

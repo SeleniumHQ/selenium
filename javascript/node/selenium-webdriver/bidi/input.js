@@ -47,6 +47,16 @@ class Input {
 
     return response
   }
+
+  async release(browsingContextId) {
+    const command = {
+      method: 'input.releaseActions',
+      params: {
+        context: browsingContextId,
+      },
+    }
+    return await this.bidi.send(command)
+  }
 }
 
 async function updateActions(actions) {
