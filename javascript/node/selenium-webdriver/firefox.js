@@ -119,7 +119,7 @@ const zip = require('./io/zip')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
 const { getPath } = require('./common/driverFinder')
-const BiDiDelegator = require("./lib/bididelegator");
+const BiDiDelegator = require("./lib/bidiDelegator");
 const FIREFOX_CAPABILITY_KEY = 'moz:firefoxOptions'
 
 /**

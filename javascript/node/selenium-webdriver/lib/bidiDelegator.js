@@ -21,7 +21,7 @@ const biDiCommands = new Set()
 biDiCommands.add('get')
 biDiCommands.add('printPage')
 
-class BiDiDelegator extends Executor {
+class BidiDelegator extends Executor {
   #bidiExecutor
   #httpExecutor
 
@@ -43,4 +43,4 @@ class BiDiDelegator extends Executor {
   }
 }
 
-module.exports = BiDiDelegator
+module.exports = BidiDelegator

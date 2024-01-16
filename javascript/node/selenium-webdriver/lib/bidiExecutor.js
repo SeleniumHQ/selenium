@@ -18,7 +18,7 @@
 const Executor = require('./command.js').Executor
 const BrowsingContext = require('../bidi/browsingContext')
 
-class BiDiExecutor extends Executor {
+class BidiExecutor extends Executor {
 
   #browsingContextMap = new Map()
   #commandHandlers = new Map()
@@ -91,10 +91,10 @@ class BiDiExecutor extends Executor {
     this.#currentContext = browsingContext
 
     if (this.#commandHandlers.has(command.getName())) {
-      let f = this.#commandHandlers.get(command.getName())
-      let value = await f(this.#driver, command)
+      let handler = this.#commandHandlers.get(command.getName())
+      let value = await handler(this.#driver, command)
 
-      // Return value in the expected format
+      // TODO:  Return value in the expected format
       return value
     } else {
       throw Error(`Command ${command.getName()} not found`)
@@ -104,12 +104,12 @@ class BiDiExecutor extends Executor {
 
 async function getBiDiExecutorInstance(
   driver) {
-  let instance = new BiDiExecutor(driver)
+  let instance = new BidiExecutor(driver)
   await instance.init()
   return instance
 }
 
 module.exports = {
   getBiDiExecutorInstance,
-  BiDiExecutor,
+  BiDiExecutor: BidiExecutor,
 }

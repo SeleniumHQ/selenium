@@ -44,7 +44,7 @@ const BrowsingContext = require('./bidi/browsingContext')
 const BrowsingContextInspector = require('./bidi/browsingContextInspector')
 const ScriptManager = require('./bidi/scriptManager')
 const NetworkInspector = require('./bidi/networkInspector')
-const {BiDiExecutor, getBiDiExecutorInstance} = require("./lib/bidiexecutor");
+const {BiDiExecutor, getBiDiExecutorInstance} = require("./lib/bidiExecutor");
 
 const Browser = capabilities.Browser
 const Capabilities = capabilities.Capabilities
