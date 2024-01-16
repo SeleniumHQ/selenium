@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
+import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.HasBiDi;
+import org.openqa.selenium.bidi.script.RemoteValue;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -35,6 +37,8 @@ import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.print.PrintOptions;
 
 public class BrowsingContext {
+
+  private static final Json JSON = new Json();
 
   private final String id;
   private final BiDi bidi;
@@ -336,6 +340,22 @@ public class BrowsingContext {
 
   public void forward() {
     this.traverseHistory(1);
+  }
+
+  public List<RemoteValue> locateNodes(LocateNodeParameters parameters) {
+    Map<String, Object> params = new HashMap<>(parameters.toMap());
+    params.put("context", id);
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.locateNodes",
+            params,
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
+                  JsonInput input = JSON.newInput(reader)) {
+                return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
+              }
+            }));
   }
 
   public void close() {
