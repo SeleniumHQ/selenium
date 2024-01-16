@@ -24,7 +24,6 @@ from pathlib import Path
 from typing import List
 
 from selenium.common import WebDriverException
-from selenium.webdriver.common.options import BaseOptions
 
 logger = logging.getLogger(__name__)
 
@@ -35,8 +34,26 @@ class SeleniumManager:
     This implementation is still in beta, and may change.
     """
 
+    def binary_paths(self, args: List) -> dict:
+        """Determines the locations of the requested assets.
+
+        :Args:
+         - args: the commands to send to the selenium manager binary.
+        :Returns: dictionary of assets and their path
+        """
+
+        args = [str(self._get_binary())] + args
+        if logger.getEffectiveLevel() == logging.DEBUG:
+            args.append("--debug")
+        args.append("--language-binding")
+        args.append("python")
+        args.append("--output")
+        args.append("json")
+
+        return self._run(args)
+
     @staticmethod
-    def get_binary() -> Path:
+    def _get_binary() -> Path:
         """Determines the path of the correct Selenium Manager binary.
 
         :Returns: The Selenium Manager executable location
@@ -45,29 +62,27 @@ class SeleniumManager:
         """
 
         if (path := os.getenv("SE_MANAGER_PATH")) is not None:
-            return Path(path)
+            logger.debug("Selenium Manager set by env SE_MANAGER_PATH to: %s", path)
+            path = Path(path)
+        else:
+            allowed = {
+                ("darwin", "any"): "macos/selenium-manager",
+                ("win32", "any"): "windows/selenium-manager.exe",
+                ("cygwin", "any"): "windows/selenium-manager.exe",
+                ("linux", "x86_64"): "linux/selenium-manager",
+                ("freebsd", "x86_64"): "linux/selenium-manager",
+                ("openbsd", "x86_64"): "linux/selenium-manager",
+            }
 
-        dirs = {
-            ("darwin", "any"): "macos",
-            ("win32", "any"): "windows",
-            ("cygwin", "any"): "windows",
-            ("linux", "x86_64"): "linux",
-            ("freebsd", "x86_64"): "linux",
-            ("openbsd", "x86_64"): "linux",
-        }
+            arch = platform.machine() if sys.platform in ("linux", "freebsd", "openbsd") else "any"
+            if sys.platform in ["freebsd", "openbsd"]:
+                logger.warning("Selenium Manager binary may not be compatible with %s; verify settings", sys.platform)
 
-        arch = platform.machine() if sys.platform in ("linux", "freebsd", "openbsd") else "any"
+            location = allowed.get((sys.platform, arch))
+            if location is None:
+                raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
 
-        directory = dirs.get((sys.platform, arch))
-        if directory is None:
-            raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
-
-        if sys.platform in ["freebsd", "openbsd"]:
-            logger.warning("Selenium Manager binary may not be compatible with %s; verify settings", sys.platform)
-
-        file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
-
-        path = Path(__file__).parent.joinpath(directory, file)
+            path = Path(__file__).parent.joinpath(location)
 
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
@@ -76,60 +91,14 @@ class SeleniumManager:
 
         return path
 
-    def driver_location(self, options: BaseOptions) -> str:
-        """Determines the path of the correct driver.
-
-        :Args:
-         - browser: which browser to get the driver path for.
-        :Returns: The driver path to use
-        """
-
-        browser = options.capabilities["browserName"]
-
-        args = [str(self.get_binary()), "--browser", browser]
-
-        if options.browser_version:
-            args.append("--browser-version")
-            args.append(str(options.browser_version))
-
-        binary_location = getattr(options, "binary_location", None)
-        if binary_location:
-            args.append("--browser-path")
-            args.append(str(binary_location))
-
-        proxy = options.proxy
-        if proxy and (proxy.http_proxy or proxy.ssl_proxy):
-            args.append("--proxy")
-            value = proxy.ssl_proxy if proxy.ssl_proxy else proxy.http_proxy
-            args.append(value)
-
-        output = self.run(args)
-
-        browser_path = output["browser_path"]
-        driver_path = output["driver_path"]
-        logger.debug("Using driver at: %s", driver_path)
-
-        if hasattr(options.__class__, "binary_location") and browser_path:
-            options.binary_location = browser_path
-            options.browser_version = None  # if we have the binary location we no longer need the version
-
-        return driver_path
-
     @staticmethod
-    def run(args: List[str]) -> dict:
+    def _run(args: List[str]) -> dict:
         """Executes the Selenium Manager Binary.
 
         :Args:
          - args: the components of the command being executed.
         :Returns: The log string containing the driver location.
         """
-        if logger.getEffectiveLevel() == logging.DEBUG:
-            args.append("--debug")
-        args.append("--language-binding")
-        args.append("python")
-        args.append("--output")
-        args.append("json")
-
         command = " ".join(args)
         logger.debug("Executing process: %s", command)
         try:
@@ -139,17 +108,22 @@ class SeleniumManager:
                 completed_proc = subprocess.run(args, capture_output=True)
             stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
             stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
-            output = json.loads(stdout)
-            result = output["result"]
+            output = json.loads(stdout) if stdout != "" else {"logs": [], "result": {}}
         except Exception as err:
             raise WebDriverException(f"Unsuccessful command executed: {command}") from err
 
-        for item in output["logs"]:
+        SeleniumManager._process_logs(output["logs"])
+        result = output["result"]
+        if completed_proc.returncode:
+            raise WebDriverException(
+                f"Unsuccessful command executed: {command}; code: {completed_proc.returncode}\n{result}\n{stderr}"
+            )
+        return result
+
+    @staticmethod
+    def _process_logs(log_items: List[dict]):
+        for item in log_items:
             if item["level"] == "WARN":
                 logger.warning(item["message"])
-            if item["level"] == "DEBUG" or item["level"] == "INFO":
+            elif item["level"] in ["DEBUG", "INFO"]:
                 logger.debug(item["message"])
-
-        if completed_proc.returncode:
-            raise WebDriverException(f"Unsuccessful command executed: {command}.\n{result}{stderr}")
-        return result

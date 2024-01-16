@@ -14,88 +14,109 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-from unittest.mock import Mock
+import json
+import sys
+from pathlib import Path
+from unittest import mock
 
 import pytest
 
+import selenium
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.selenium_manager import SeleniumManager
 
 
-def test_browser_version_is_used_for_sm(mocker):
-    import subprocess
+def test_gets_results(monkeypatch):
+    expected_output = {"driver_path": "/path/to/driver"}
+    lib_path = "selenium.webdriver.common.selenium_manager.SeleniumManager"
 
-    mock_run = mocker.patch("subprocess.run")
-    mocked_result = Mock()
-    mocked_result.configure_mock(
-        **{
-            "stdout.decode.return_value": '{"result": {"driver_path": "driver", "browser_path": "browser"}, "logs": []}',
-            "returncode": 0,
-        }
-    )
-    mock_run.return_value = mocked_result
-    options = Options()
-    options.capabilities["browserName"] = "chrome"
-    options.browser_version = "110"
+    with mock.patch(lib_path + "._get_binary", return_value="/path/to/sm") as mock_get_binary, mock.patch(
+        lib_path + "._run", return_value=expected_output
+    ) as mock_run:
+        SeleniumManager().binary_paths([])
 
-    _ = SeleniumManager().driver_location(options)
-    args, kwargs = subprocess.run.call_args
-    assert "--browser-version" in args[0]
-    assert "110" in args[0]
+        mock_get_binary.assert_called_once()
+        expected_run_args = ["/path/to/sm", "--language-binding", "python", "--output", "json"]
+        mock_run.assert_called_once_with(expected_run_args)
 
 
-def test_browser_path_is_used_for_sm(mocker):
-    import subprocess
+def test_uses_environment_variable(monkeypatch):
+    monkeypatch.setenv("SE_MANAGER_PATH", "/path/to/manager")
+    monkeypatch.setattr(Path, "is_file", lambda _: True)
 
-    mock_run = mocker.patch("subprocess.run")
-    mocked_result = Mock()
-    mocked_result.configure_mock(
-        **{
-            "stdout.decode.return_value": '{"result": {"driver_path": "driver", "browser_path": "browser"}, "logs": []}',
-            "returncode": 0,
-        }
-    )
-    mock_run.return_value = mocked_result
-    options = Options()
-    options.capabilities["browserName"] = "chrome"
-    options.binary_location = "/opt/bin/browser-bin"
+    binary = SeleniumManager()._get_binary()
 
-    _ = SeleniumManager().driver_location(options)
-    args, kwargs = subprocess.run.call_args
-    assert "--browser-path" in args[0]
-    assert "/opt/bin/browser-bin" in args[0]
+    assert str(binary) == "/path/to/manager"
 
 
-def test_proxy_is_used_for_sm(mocker):
-    import subprocess
+def test_uses_windows(monkeypatch):
+    monkeypatch.setattr(sys, "platform", "win32")
+    binary = SeleniumManager()._get_binary()
 
-    mock_run = mocker.patch("subprocess.run")
-    mocked_result = Mock()
-    mocked_result.configure_mock(
-        **{
-            "stdout.decode.return_value": '{"result": {"driver_path": "driver", "browser_path": "browser"}, "logs": []}',
-            "returncode": 0,
-        }
-    )
-    mock_run.return_value = mocked_result
-    options = Options()
-    options.capabilities["browserName"] = "chrome"
-    proxy = Proxy()
-    proxy.http_proxy = "http-proxy"
-    options.proxy = proxy
-
-    _ = SeleniumManager().driver_location(options)
-    args, kwargs = subprocess.run.call_args
-    assert "--proxy" in args[0]
-    assert "http-proxy" in args[0]
+    project_root = Path(selenium.__file__).parent.parent
+    assert binary == project_root.joinpath("selenium/webdriver/common/windows/selenium-manager.exe")
 
 
-def test_stderr_is_propagated_to_exception_messages():
-    msg = r"Unsuccessful command executed:.*\n.* 'Invalid browser name: foo'.*"
-    with pytest.raises(WebDriverException, match=msg):
-        manager = SeleniumManager()
-        binary = manager.get_binary()
-        _ = manager.run([str(binary), "--browser", "foo"])
+def test_uses_linux(monkeypatch):
+    monkeypatch.setattr(sys, "platform", "linux")
+    binary = SeleniumManager()._get_binary()
+
+    project_root = Path(selenium.__file__).parent.parent
+    assert binary == project_root.joinpath("selenium/webdriver/common/linux/selenium-manager")
+
+
+def test_uses_mac(monkeypatch):
+    monkeypatch.setattr(sys, "platform", "darwin")
+    binary = SeleniumManager()._get_binary()
+
+    project_root = Path(selenium.__file__).parent.parent
+    assert binary == project_root.joinpath("selenium/webdriver/common/macos/selenium-manager")
+
+
+def test_errors_if_not_file(monkeypatch):
+    monkeypatch.setattr(Path, "is_file", lambda _: False)
+
+    with pytest.raises(WebDriverException) as excinfo:
+        SeleniumManager()._get_binary()
+    assert "Unable to obtain working Selenium Manager binary" in str(excinfo.value)
+
+
+def test_errors_if_invalid_os(monkeypatch):
+    monkeypatch.setattr(sys, "platform", "linux")
+    monkeypatch.setattr("platform.machine", lambda: "invalid")
+
+    with pytest.raises(WebDriverException) as excinfo:
+        SeleniumManager()._get_binary()
+    assert "Unsupported platform/architecture combination" in str(excinfo.value)
+
+
+def test_error_if_invalid_env_path(monkeypatch):
+    monkeypatch.setenv("SE_MANAGER_PATH", "/path/to/manager")
+
+    with pytest.raises(WebDriverException) as excinfo:
+        SeleniumManager()._get_binary()
+    assert "Unable to obtain working Selenium Manager binary; /path/to/manager" in str(excinfo.value)
+
+
+def test_run_successful():
+    expected_result = {"driver_path": "/path/to/driver", "browser_path": "/path/to/browser"}
+    run_output = {"result": expected_result, "logs": []}
+    with mock.patch("subprocess.run") as mock_run, mock.patch("json.loads", return_value=run_output):
+        mock_run.return_value = mock.Mock(stdout=json.dumps(run_output).encode("utf-8"), stderr=b"", returncode=0)
+        result = SeleniumManager._run(["arg1", "arg2"])
+        assert result == expected_result
+
+
+def test_run_exception():
+    with mock.patch("subprocess.run", side_effect=Exception("Test Error")):
+        with pytest.raises(WebDriverException) as excinfo:
+            SeleniumManager._run(["/path/to/sm", "arg1", "arg2"])
+    assert "Unsuccessful command executed: /path/to/sm arg1 arg2" in str(excinfo.value)
+
+
+def test_run_non_zero_exit_code():
+    with mock.patch("subprocess.run") as mock_run, mock.patch("json.loads", return_value={"result": "", "logs": []}):
+        mock_run.return_value = mock.Mock(stdout=b"{}", stderr=b"Error Message", returncode=1)
+        with pytest.raises(WebDriverException) as excinfo:
+            SeleniumManager._run(["/path/to/sm", "arg1"])
+    assert "Unsuccessful command executed: /path/to/sm arg1; code: 1\n\nError Message" in str(excinfo.value)
