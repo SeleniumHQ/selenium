@@ -172,18 +172,6 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Creates a default instance of the SafariDriverService.
-        /// </summary>
-        /// <param name="options">Browser options used to find the correct GeckoDriver binary.</param>
-        /// <returns>A SafariDriverService that implements default settings.</returns>
-        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
-        public static SafariDriverService CreateDefaultService(SafariOptions options)
-        {
-            string fullServicePath = DriverFinder.FullPath(options);
-            return CreateDefaultService(Path.GetDirectoryName(fullServicePath), Path.GetFileName(fullServicePath));
-        }
-
-        /// <summary>
         /// Creates a default instance of the SafariDriverService using a specified path to the SafariDriver executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the SafariDriver executable.</param>
