@@ -44,7 +44,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="WebDriver.Common.Tests" />
-    
+
     <Compile Remove="cdp\**" />
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="cdp\**" />
@@ -94,8 +94,8 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <BaseSeleniumManagerPath>..\..\..\common\manager</BaseSeleniumManagerPath>
-    <BaseImagePath>..\..\..\common\images</BaseImagePath>
+    <BaseSeleniumManagerPath>..\..\..\bazel-bin\dotnet\src\webdriver\manager</BaseSeleniumManagerPath>
+    <BaseImagePath>..\..\..\bazel-bin\dotnet\src\webdriver\images</BaseImagePath>
   </PropertyGroup>
 
   <ItemGroup>

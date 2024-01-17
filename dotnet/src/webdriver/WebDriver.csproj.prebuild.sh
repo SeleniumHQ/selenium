@@ -1,4 +1,9 @@
 #!/bin/bash
+echo "Building Selenium Manager binaries"
+bazel build //dotnet/src/webdriver:manager-linux
+bazel build //dotnet/src/webdriver:manager-windows
+bazel build //dotnet/src/webdriver:manager-macos
+
 if [[ ! -f "$1../../../bazel-bin/javascript/webdriver/atoms/get-attribute.js" ]]
 then
   echo "Building getAttribute atom"
