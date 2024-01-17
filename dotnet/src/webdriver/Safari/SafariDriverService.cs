@@ -34,8 +34,6 @@ namespace OpenQA.Selenium.Safari
     {
         private const string DefaultSafariDriverServiceExecutableName = "safaridriver";
 
-        private bool useLegacyProtocol;
-
         private readonly static ILogger logger = Log.GetLogger<SafariDriverService>();
 
         /// <summary>
@@ -56,22 +54,6 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to use the default open-source project
-        /// dialect of the protocol instead of the default dialect compliant with the
-        /// W3C WebDriver Specification.
-        /// </summary>
-        /// <remarks>
-        /// This is only valid for versions of the driver for Safari that target Safari 12
-        /// or later, and will result in an error if used with prior versions of the driver.
-        /// </remarks>
-        [Obsolete("Only w3c protocol is currently supported")]
-        public bool UseLegacyProtocol
-        {
-            get { return this.useLegacyProtocol; }
-            set { this.useLegacyProtocol = value; }
-        }
-
-        /// <summary>
         /// Gets the command-line arguments for the driver service.
         /// </summary>
         protected override string CommandLineArguments
@@ -79,11 +61,6 @@ namespace OpenQA.Selenium.Safari
             get
             {
                 StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
-                if (this.useLegacyProtocol)
-                {
-                    argsBuilder.Append(" --legacy");
-                }
-
                 return argsBuilder.ToString();
             }
         }
