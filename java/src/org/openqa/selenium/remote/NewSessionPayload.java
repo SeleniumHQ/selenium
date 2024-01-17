@@ -219,16 +219,12 @@ public class NewSessionPayload implements Closeable {
       input.beginObject();
       while (input.hasNext()) {
         String name = input.nextName();
-        switch (name) {
-          case "capabilities":
-            input.skipValue();
-            break;
-
-          default:
-            out.name(name);
-            out.write(input.read(Object.class));
-            break;
-        }
+          if (name.equals("capabilities")) {
+              input.skipValue();
+          } else {
+              out.name(name);
+              out.write(input.read(Object.class));
+          }
       }
     }
   }

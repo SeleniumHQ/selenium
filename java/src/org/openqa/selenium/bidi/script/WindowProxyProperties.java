@@ -31,15 +31,11 @@ public class WindowProxyProperties {
 
     input.beginObject();
     while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "context":
-          browsingContext = input.read(String.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
+        if (input.nextName().equals("context")) {
+            browsingContext = input.read(String.class);
+        } else {
+            input.skipValue();
+        }
     }
 
     input.endObject();

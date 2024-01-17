@@ -57,14 +57,11 @@ public class DistributorStatus {
 
     input.beginObject();
     while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "nodes":
-          nodes = input.read(NODE_STATUSES_TYPE);
-          break;
-
-        default:
-          input.skipValue();
-      }
+        if (input.nextName().equals("nodes")) {
+            nodes = input.read(NODE_STATUSES_TYPE);
+        } else {
+            input.skipValue();
+        }
     }
     input.endObject();
 

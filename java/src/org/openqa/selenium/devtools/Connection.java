@@ -314,16 +314,12 @@ public class Connection implements Closeable {
                     Object params = null;
                     input.beginObject();
                     while (input.hasNext()) {
-                      switch (input.nextName()) {
-                        case "params":
-                          hasParams = true;
-                          params = event.getKey().getMapper().apply(input);
-                          break;
-
-                        default:
-                          input.skipValue();
-                          break;
-                      }
+                        if (input.nextName().equals("params")) {
+                            hasParams = true;
+                            params = event.getKey().getMapper().apply(input);
+                        } else {
+                            input.skipValue();
+                        }
                     }
                     input.endObject();
 

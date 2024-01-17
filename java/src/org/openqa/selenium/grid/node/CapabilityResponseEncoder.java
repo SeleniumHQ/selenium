@@ -21,6 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.openqa.selenium.Capabilities;
@@ -41,13 +42,10 @@ public class CapabilityResponseEncoder {
   }
 
   public static ResponseEncoder<Session, Map<String, Object>, byte[]> getEncoder(Dialect dialect) {
-    switch (dialect) {
-      case W3C:
-        return W3C_ENCODER;
-
-      default:
-        throw new IllegalArgumentException("Unrecognised dialect: " + dialect);
-    }
+      if (Objects.requireNonNull(dialect) == Dialect.W3C) {
+          return W3C_ENCODER;
+      }
+      throw new IllegalArgumentException("Unrecognised dialect: " + dialect);
   }
 
   public interface ResponseEncoder<T, U, R> extends Function<T, R>, BiFunction<T, U, R> {
@@ -94,14 +92,11 @@ public class CapabilityResponseEncoder {
 
       Map<String, Object> toEncode;
 
-      switch (dialect) {
-        case W3C:
-          toEncode = encodeW3C(id, capabilities, metadata);
-          break;
-
-        default:
-          throw new IllegalArgumentException("Unknown dialect: " + dialect);
-      }
+        if (Objects.requireNonNull(dialect) == Dialect.W3C) {
+            toEncode = encodeW3C(id, capabilities, metadata);
+        } else {
+            throw new IllegalArgumentException("Unknown dialect: " + dialect);
+        }
 
       return JSON.toJson(toEncode).getBytes(UTF_8);
     }
