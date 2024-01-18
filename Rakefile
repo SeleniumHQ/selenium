@@ -9,6 +9,7 @@ require 'stringio'
 require 'fileutils'
 require 'open-uri'
 require 'git'
+require 'find'
 
 include Rake::DSL
 
@@ -593,6 +594,30 @@ namespace :py do
     FileUtils.cp_r('bazel-bin/py/selenium/webdriver/.', 'py/selenium/webdriver', remove_destination: true)
   end
 
+  desc 'Update generated Python files for local development'
+  task :clean do
+    Bazel.execute('build', [], '//py:selenium')
+    bazel_bin_path = 'bazel-bin/py/selenium/webdriver'
+    lib_path = 'py/selenium/webdriver'
+
+    dirs = %w[devtools linux mac windows]
+    dirs.each { |dir| FileUtils.rm_rf("#{lib_path}/common/#{dir}") }
+
+    Find.find(bazel_bin_path) do |path|
+      if File.directory?(path) && dirs.any? {|dir| path.include?("common/#{dir}")}
+        Find.prune
+        next
+      end
+      next if File.directory?(path)
+
+      target_file = File.join(lib_path, path.sub(/^#{bazel_bin_path}\//, ''))
+      if File.exist?(target_file)
+        puts "Removing target file: #{target_file}"
+        FileUtils.rm(target_file)
+      end
+    end
+  end
+
   desc 'Generate Python documentation'
   task :docs, [:skip_update] do |_task, arguments|
     FileUtils.rm_rf('build/docs/api/py/')
@@ -648,6 +673,23 @@ namespace :py do
   task :lint do
     `tox -c py/tox.ini -e linting`
   end
+
+    namespace :test do
+      desc 'Python unit tests'
+      task :unit do
+        Rake::Task['py:clean'].invoke
+        Bazel.execute('test', ['--test_size_filters=small'], '//py/...')
+      end
+
+      %i[chrome edge firefox safari].each do |browser|
+        desc "Python #{browser} tests"
+        task browser do
+          Rake::Task['py:clean'].invoke
+          Bazel.execute('test', [],"//py:common-#{browser}")
+          Bazel.execute('test', [],"//py:test-#{browser}")
+        end
+      end
+    end
 end
 
 def ruby_version
