@@ -36,22 +36,11 @@ jobs:
               pypi__pip: py/requirements_lock.txt
               rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-      - name: Get second parent of the merge commit
-        if: github.event_name == 'pull_request'
-        id: sha-parent
-        run: |
-          echo "PARENT_SHA=$(git rev-parse ${{ github.sha }}^2)" >> $GITHUB_ENV
-      - name: Set COMMIT_RANGE for pull request
-        if: github.event_name == 'pull_request'
-        run: |
-          echo "COMMIT_RANGE=${{ github.event.pull_request.base.sha }}..$PARENT_SHA" >> $GITHUB_ENV
-      - name: Set COMMIT_RANGE for non-pull request events
-        if: github.event_name != 'pull_request'
-        run: |
-          echo "COMMIT_RANGE=${{ github.event.before }}..${{ github.sha }}" >> $GITHUB_ENV
       - name: Check Bazel targets
         id: check-targets
         run: ./scripts/github-actions/check-bazel-targets.sh
+        env:
+          COMMIT_RANGE: ${{ github.event.pull_request.base.sha || github.event.before }}..${{ github.event.pull_request.head.sha || github.sha }}
 
   dotnet:
     name: .NET
