@@ -93,7 +93,7 @@ jobs:
               crates: rust/Cargo.Bazel.lock
               npm: package-lock.json
               pypi__pip: py/requirements_lock.txt
-              ruby: rb/.ruby_version
+              ruby: rb/.ruby-version
           repository-cache: true
       - name: Setup Fluxbox and Xvfb
         if: inputs.os == 'ubuntu' && inputs.browser != ''
