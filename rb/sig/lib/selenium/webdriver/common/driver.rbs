@@ -5,9 +5,11 @@ module Selenium
 
       include TakesScreenshot
 
+      @navigate: untyped
+
       def self.for: (Symbol browser, ?::Hash[Symbol, untyped] opts) -> Driver
 
-      def initialize: (?bridge: Remote::Bridge? bridge, ?listener: Support::AbstractEventListener? listener, **untyped opts) -> void
+      def initialize: (?bridge: Support::EventFiringBridge? bridge, ?listener: Support::AbstractEventListener? listener, **untyped opts) -> void
 
       def inspect: () -> String
 

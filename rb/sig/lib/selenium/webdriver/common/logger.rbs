@@ -21,7 +21,7 @@ module Selenium
 
       def allow: (*Symbol ids) -> Array[Symbol]
 
-      def debug: (String message, ?id: Symbol | Array[Symbol] id) ?{ () -> void  } -> void
+      def debug: (?String ?message, ?id: Symbol | Array[Symbol] id) ?{ () -> void  } -> void
 
       def info: (String message, ?id: Symbol | Array[Symbol] id) ?{ () -> void } -> void
 

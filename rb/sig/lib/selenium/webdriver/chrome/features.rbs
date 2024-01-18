@@ -6,6 +6,8 @@ module Selenium
 
         CHROME_COMMANDS: Hash[Symbol, Array[Symbol | String]]
 
+        def command_list: -> untyped
+
         def commands: (Symbol command) -> Array[Symbol | String]
       end
     end
