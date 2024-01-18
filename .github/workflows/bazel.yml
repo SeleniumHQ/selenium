@@ -82,7 +82,7 @@ jobs:
           java-version: ${{ inputs.java-version }}
           distribution: 'temurin'
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.3.2
+        uses: p0deje/setup-bazel@0.4.0
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
@@ -93,7 +93,7 @@ jobs:
               crates: rust/Cargo.Bazel.lock
               npm: package-lock.json
               pypi__pip: py/requirements_lock.txt
-              ruby: rb/.ruby-version
+              ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
           repository-cache: true
       - name: Setup Fluxbox and Xvfb
         if: inputs.os == 'ubuntu' && inputs.browser != ''
