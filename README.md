@@ -397,12 +397,12 @@ bazel test //dotnet/test/common:AllTests --pin_browsers=true
 
 You can run specific tests by specifying the class name:
 ```shell
-bazel test //dotnet/test/common/ElementFindingTest --pin_browsers=true
+bazel test //dotnet/test/common:ElementFindingTest --pin_browsers=true
 ```
 
 If the module supports multiple browsers:
 ```shell
-bazel test //dotnet/test/common/ElementFindingTest-edge --pin_browsers=true
+bazel test //dotnet/test/common:ElementFindingTest-edge --pin_browsers=true
 ```
 
 </details>
