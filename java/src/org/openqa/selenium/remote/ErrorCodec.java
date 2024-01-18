@@ -114,19 +114,20 @@ public class ErrorCodec {
     }
 
     if (throwable instanceof UnhandledAlertException) {
-      Map<String, String> data =
-          Map.of("text", ((UnhandledAlertException) throwable).getAlertText());
-      return Map.of(
-          "value",
-          Map.of(
-              "error",
-              err.w3cErrorString,
-              "message",
-              message,
-              "stacktrace",
-              stacktrace.toString(),
-              "data",
-              data));
+      String text = ((UnhandledAlertException) throwable).getAlertText();
+      if (text != null) {
+        return Map.of(
+            "value",
+            Map.of(
+                "error",
+                err.w3cErrorString,
+                "message",
+                message,
+                "stacktrace",
+                stacktrace.toString(),
+                "data",
+                Map.of("text", text)));
+      }
     }
 
     return Map.of(
