@@ -41,7 +41,7 @@ const webdriver = require('./lib/webdriver')
 const select = require('./lib/select')
 const LogInspector = require('./bidi/logInspector')
 const BrowsingContext = require('./bidi/browsingContext')
-const BrowsingConextInspector = require('./bidi/browsingContextInspector')
+const BrowsingContextInspector = require('./bidi/browsingContextInspector')
 const ScriptManager = require('./bidi/scriptManager')
 const NetworkInspector = require('./bidi/networkInspector')
 
@@ -720,7 +720,7 @@ class Builder {
 /**
  * In the 3.x releases, the various browser option classes
  * (e.g. firefox.Options) had to be manually set as an option using the
- * Capabilties class:
+ * Capabilities class:
  *
  *     let ffo = new firefox.Options();
  *     // Configure firefox options...
@@ -802,6 +802,6 @@ exports.until = until
 exports.Select = select.Select
 exports.LogInspector = LogInspector
 exports.BrowsingContext = BrowsingContext
-exports.BrowsingConextInspector = BrowsingConextInspector
+exports.BrowsingContextInspector = BrowsingContextInspector
 exports.ScriptManager = ScriptManager
 exports.NetworkInspector = NetworkInspector

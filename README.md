@@ -362,7 +362,7 @@ Useful command line options:
 In addition to the [Common Options Examples](#common-options-examples), here are some additional Ruby specific ones:
 * `--test_arg "-tfocus"` - test only [focused specs](https://relishapp.com/rspec/rspec-core/v/3-12/docs/filtering/inclusion-filters)
 * `--test_arg "-eTimeouts"` - test only specs which name include "Timeouts"
-* `--test_arg "<any other RSpec argument>"` - pass any extra RSpec arguments (see `bazel run @bundle//:bin/rspec -- --help`)
+* `--test_arg "<any other RSpec argument>"` - pass any extra RSpec arguments (see `bazel run @bundle//bin:rspec -- --help`)
 
 Supported environment variables for use with `--test_env`:
 
@@ -397,12 +397,12 @@ bazel test //dotnet/test/common:AllTests --pin_browsers=true
 
 You can run specific tests by specifying the class name:
 ```shell
-bazel test //dotnet/test/common/ElementFindingTest --pin_browsers=true
+bazel test //dotnet/test/common:ElementFindingTest --pin_browsers=true
 ```
 
 If the module supports multiple browsers:
 ```shell
-bazel test //dotnet/test/common/ElementFindingTest-edge --pin_browsers=true
+bazel test //dotnet/test/common:ElementFindingTest-edge --pin_browsers=true
 ```
 
 </details>

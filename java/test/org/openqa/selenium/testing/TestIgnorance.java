@@ -34,11 +34,11 @@ import org.openqa.selenium.testing.drivers.Browser;
 /** Class that decides whether a test class or method should be ignored. */
 class TestIgnorance {
 
-  private IgnoreComparator ignoreComparator = new IgnoreComparator();
-  private Set<String> methods = new HashSet<>();
-  private Set<String> only = new HashSet<>();
-  private Set<String> ignoreMethods = new HashSet<>();
-  private Set<String> ignoreClasses = new HashSet<>();
+  private final IgnoreComparator ignoreComparator = new IgnoreComparator();
+  private final Set<String> methods = new HashSet<>();
+  private final Set<String> only = new HashSet<>();
+  private final Set<String> ignoreMethods = new HashSet<>();
+  private final Set<String> ignoreClasses = new HashSet<>();
 
   public TestIgnorance(Browser driver) {
     ignoreComparator.addDriver(

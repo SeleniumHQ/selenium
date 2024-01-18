@@ -20,6 +20,7 @@ package org.openqa.selenium.html5;
 import java.util.Set;
 
 /** Represents common operations available for all web storage types (session or local). */
+@Deprecated
 public interface Storage {
 
   String getItem(String key);

@@ -7,10 +7,14 @@ rb_test(
     size = "small",
     srcs = ["devtools_spec.rb"],
     args = ["rb/spec/"],
-    main = "@bundle//:bin/rspec",
+    main = "@bundle//bin:rspec",
     tags = ["no-sandbox"],
     deps = [
+        "//rb/lib:selenium-webdriver",
         "//rb/lib/selenium:devtools",
+        "//rb/lib/selenium:webdriver",
+        "//rb/lib/selenium/webdriver:atoms",
+        "//rb/lib/selenium/webdriver:common",
         "@bundle",
     ],
 )
@@ -20,10 +24,15 @@ rb_test(
     size = "small",
     srcs = ["server_spec.rb"],
     args = ["rb/spec/"],
-    main = "@bundle//:bin/rspec",
+    main = "@bundle//bin:rspec",
     tags = ["no-sandbox"],
     deps = [
+        "//rb/lib:selenium-webdriver",
+        "//rb/lib/selenium:devtools",
         "//rb/lib/selenium:server",
+        "//rb/lib/selenium:webdriver",
+        "//rb/lib/selenium/webdriver:atoms",
+        "//rb/lib/selenium/webdriver:common",
         "@bundle",
     ],
 )

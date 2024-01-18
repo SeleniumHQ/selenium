@@ -44,6 +44,7 @@ import org.openqa.selenium.os.ExecutableFinder;
  * @deprecated Use {@link FirefoxOptions#setBinary(Path)} or {@link
  *     FirefoxOptions#setBinary(String)} instead.
  */
+@Deprecated
 public class FirefoxBinary {
 
   /** Enumerates Firefox channels, according to https://wiki.mozilla.org/RapidRelease */
@@ -54,7 +55,7 @@ public class FirefoxBinary {
     DEV("dev"),
     NIGHTLY("nightly");
 
-    private String name;
+    private final String name;
 
     Channel(String name) {
       this.name = name;
@@ -240,14 +241,9 @@ public class FirefoxBinary {
       if (Files.isSymbolicLink(firefoxPath)) {
         try {
           Path realPath = firefoxPath.toRealPath();
-          File attempt1 = realPath.getParent().resolve("firefox").toFile();
-          if (attempt1.exists()) {
-            executables.add(new Executable(attempt1));
-          } else {
-            File attempt2 = realPath.getParent().resolve("firefox-bin").toFile();
-            if (attempt2.exists()) {
-              executables.add(new Executable(attempt2));
-            }
+          File file = realPath.getParent().resolve("firefox").toFile();
+          if (file.exists()) {
+            executables.add(new Executable(file));
           }
         } catch (IOException e) {
           // ignore this path

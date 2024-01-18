@@ -52,18 +52,18 @@ module Selenium
 
             file_names = %w[file_1.txt file_2.jpg]
 
-            expect(driver.downloadable_files).to eq file_names
+            expect(driver.downloadable_files).to match_array(file_names)
           end
         end
 
         it 'downloads a file', exclude: {browser: :safari, reason: 'grid hangs'} do
-          target_directory = File.join(Dir.tmpdir, SecureRandom.uuid)
+          target_directory = File.join(Dir.tmpdir.to_s, SecureRandom.uuid)
           at_exit { FileUtils.rm_f(target_directory) }
 
           reset_driver!(enable_downloads: true) do |driver|
             browser_downloads(driver)
 
-            file_name = driver.downloadable_files.first
+            file_name = 'file_1.txt'
             driver.download_file(file_name, target_directory)
 
             file_content = File.read("#{target_directory}/#{file_name}").strip

@@ -23,6 +23,7 @@ import java.util.Set;
  * Some implementations of WebDriver, notably those that support native testing, need the ability to
  * switch between the native and web-based contexts. This can be achieved by using this interface.
  */
+@Deprecated
 public interface ContextAware {
 
   /**

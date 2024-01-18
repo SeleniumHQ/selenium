@@ -796,7 +796,7 @@ Channel.RELEASE = new Channel(
  * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#nightly>
  */
 Channel.NIGHTLY = new Channel(
-  '/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin',
+  '/Applications/Firefox Nightly.app/Contents/MacOS/firefox',
   'Nightly\\firefox.exe'
 )
 

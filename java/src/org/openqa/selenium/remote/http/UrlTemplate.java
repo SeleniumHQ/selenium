@@ -139,6 +139,20 @@ public class UrlTemplate {
     return compiled.apply(matchAgainst);
   }
 
+  /**
+   * @return A {@link Match} with all parameters filled if successful, null otherwise. Remove
+   *     subPath from matchAgainst before matching.
+   */
+  public UrlTemplate.Match match(String matchAgainst, String prefix) {
+    if (matchAgainst == null || prefix == null) {
+      return null;
+    }
+    if (!prefix.isEmpty() && !prefix.equals("/")) {
+      matchAgainst = matchAgainst.replaceFirst(prefix, "");
+    }
+    return match(matchAgainst);
+  }
+
   @SuppressWarnings("InnerClassMayBeStatic")
   public class Match {
     private final String url;
