@@ -121,7 +121,10 @@ namespace OpenQA.Selenium
 
             var driverPath = (string)output["driver_path"];
 
-            _logger.Trace($"Driver path: {driverPath}");
+            if (_logger.IsEnabledFor(LogEventLevel.Trace))
+            {
+                _logger.Trace($"Driver path: {driverPath}");
+            }
 
             return driverPath;
         }

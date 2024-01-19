@@ -239,7 +239,10 @@ namespace OpenQA.Selenium
                 }
                 catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
                 {
-                    logger.Trace(ex.ToString());
+                    if (logger.IsEnabledFor(LogEventLevel.Trace))
+                    {
+                        logger.Trace(ex.ToString());
+                    }
                 }
 
                 return isInitialized;

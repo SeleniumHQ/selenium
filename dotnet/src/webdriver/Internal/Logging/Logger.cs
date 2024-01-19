@@ -61,6 +61,11 @@ namespace OpenQA.Selenium.Internal.Logging
             LogMessage(LogEventLevel.Error, message);
         }
 
+        public bool IsEnabledFor(LogEventLevel level)
+        {
+            return Log.CurrentContext.IsEnabledFor(this, level);
+        }
+
         private void LogMessage(LogEventLevel level, string message)
         {
             Log.CurrentContext.EmitMessage(this, level, message);
