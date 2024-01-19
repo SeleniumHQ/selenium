@@ -121,7 +121,6 @@ namespace OpenQA.Selenium.Environment
                 bool isRunning = false;
 
                 // Poll until the webserver is correctly serving pages.
-
                 using var httpClient = new HttpClient();
 
                 while (!isRunning && DateTime.Now < endTime)
