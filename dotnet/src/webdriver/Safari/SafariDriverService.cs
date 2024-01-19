@@ -154,16 +154,22 @@ namespace OpenQA.Selenium.Safari
         /// <summary>
         /// Creates a default instance of the SafariDriverService using a specified path to the SafariDriver executable.
         /// </summary>
-        /// <param name="driverPath">The directory containing the SafariDriver executable.</param>
+        /// <param name="driverPath">The path to the executable or the directory containing the SafariDriver executable.</param>
         /// <returns>A SafariDriverService using a random port.</returns>
         public static SafariDriverService CreateDefaultService(string driverPath)
         {
+            string fileName;
             if (File.Exists(driverPath))
             {
+                fileName = Path.GetFileName(driverPath);
                 driverPath = Path.GetDirectoryName(driverPath);
             }
+            else
+            {
+                fileName = DefaultSafariDriverServiceExecutableName;
+            }
 
-            return CreateDefaultService(driverPath, DefaultSafariDriverServiceExecutableName);
+            return CreateDefaultService(driverPath, fileName);
         }
 
         /// <summary>

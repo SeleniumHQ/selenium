@@ -73,12 +73,18 @@ namespace OpenQA.Selenium.Edge
         /// <returns>An EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath)
         {
+            string fileName;
             if (File.Exists(driverPath))
             {
+                fileName = Path.GetFileName(driverPath);
                 driverPath = Path.GetDirectoryName(driverPath);
             }
+            else
+            {
+                fileName = ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName);
+            }
 
-            return CreateDefaultService(driverPath, ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName));
+            return CreateDefaultService(driverPath, fileName);
         }
 
         /// <summary>
