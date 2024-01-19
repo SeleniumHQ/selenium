@@ -50,6 +50,7 @@ namespace OpenQA.Selenium.Edge
         /// <summary>
         /// Gets or sets a value indicating whether the service should use verbose logging.
         /// </summary>
+        [Obsolete("Use EnableVerboseLogging")]
         public bool UseVerboseLogging
         {
             get { return this.EnableVerboseLogging; }
