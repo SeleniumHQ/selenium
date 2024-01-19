@@ -75,6 +75,7 @@ pub struct JsonOutput {
 pub struct MinimalJson {
     pub driver_path: String,
     pub browser_path: String,
+    pub message: String,
 }
 
 impl Logger {
@@ -211,13 +212,16 @@ impl Logger {
                 }
             }
             _ => {
-                if self.output == OutputType::Mixed && level == Level::Info {
+                if self.output == OutputType::Mixed && level == Level::Info || level <= Level::Error
+                {
                     if message.starts_with(DRIVER_PATH) {
                         self.minimal_json.borrow_mut().driver_path =
                             self.clean_driver_path(&message);
                     } else if message.starts_with(BROWSER_PATH) {
                         self.minimal_json.borrow_mut().browser_path =
                             self.clean_browser_path(&message);
+                    } else {
+                        self.minimal_json.borrow_mut().message = message.clone();
                     }
                 }
                 log::log!(level, "{}", message);
