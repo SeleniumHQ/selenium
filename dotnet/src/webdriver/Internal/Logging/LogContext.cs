@@ -98,7 +98,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public bool IsEnabled(ILogger logger, LogEventLevel level)
         {
-            return Handlers != null && level >= _level && level >= GetLogger(logger.Issuer).Level;
+            return Handlers != null && level >= _level && level >= logger.Level;
         }
 
         public void EmitMessage(ILogger logger, LogEventLevel level, string message)
