@@ -411,7 +411,6 @@ public class BrowsingContext {
                     return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
                   }
                 }));
-    // TODO: Figure out how to convert an element into WebElement instance
 
     List<WebElement> elements = nodeRemoteValueToWebElementConverter(remoteValues);
     return elements.get(0);
