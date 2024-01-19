@@ -164,7 +164,7 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException(nameof(commandToExecute), "commandToExecute cannot be null");
             }
 
-            if (_logger.IsEnabledFor(LogEventLevel.Debug))
+            if (_logger.IsEnabled(LogEventLevel.Debug))
             {
                 _logger.Debug($"Executing command: {commandToExecute}");
             }
@@ -199,7 +199,7 @@ namespace OpenQA.Selenium.Remote
 
             Response toReturn = this.CreateResponse(responseInfo);
 
-            if (_logger.IsEnabledFor(LogEventLevel.Debug))
+            if (_logger.IsEnabled(LogEventLevel.Debug))
             {
                 _logger.Debug($"Response: {toReturn}");
             }
@@ -283,14 +283,14 @@ namespace OpenQA.Selenium.Remote
                     requestMessage.Content.Headers.ContentType = contentTypeHeader;
                 }
 
-                if (_logger.IsEnabledFor(LogEventLevel.Trace))
+                if (_logger.IsEnabled(LogEventLevel.Trace))
                 {
                     _logger.Trace($">> {requestMessage}");
                 }
 
                 using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage).ConfigureAwait(false))
                 {
-                    if (_logger.IsEnabledFor(LogEventLevel.Trace))
+                    if (_logger.IsEnabled(LogEventLevel.Trace))
                     {
                         _logger.Trace($"<< {responseMessage}");
                     }

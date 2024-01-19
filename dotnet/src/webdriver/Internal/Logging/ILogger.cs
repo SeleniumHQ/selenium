@@ -70,6 +70,6 @@ namespace OpenQA.Selenium.Internal.Logging
         /// </summary>
         /// <param name="level">The specified log event level to be checked.</param>
         /// <returns><c>true</c> if log messages emmiting is enabled for the specified log event level, otherwise <c>false</c>.</returns>
-        bool IsEnabledFor(LogEventLevel level);
+        bool IsEnabled(LogEventLevel level);
     }
 }

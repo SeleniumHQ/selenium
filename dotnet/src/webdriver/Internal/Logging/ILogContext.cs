@@ -58,7 +58,7 @@ namespace OpenQA.Selenium.Internal.Logging
         /// <param name="logger">The specified logger instance to be checked.</param>
         /// <param name="level">The specified log event level to be checked.</param>
         /// <returns><c>true</c> if log messages emmiting is enabled for the specified logger and log event level, otherwise <c>false</c>.</returns>
-        internal bool IsEnabledFor(ILogger logger, LogEventLevel level);
+        internal bool IsEnabled(ILogger logger, LogEventLevel level);
 
         /// <summary>
         /// Emits a log message using the specified logger, log level, and message.

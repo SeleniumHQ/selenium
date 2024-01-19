@@ -102,7 +102,7 @@ namespace OpenQA.Selenium.Internal
 
             if (Directory.Exists(directoryToDelete))
             {
-                if (logger.IsEnabledFor(LogEventLevel.Trace))
+                if (logger.IsEnabled(LogEventLevel.Trace))
                 {
                     logger.Trace($"Unable to delete directory '{directoryToDelete}'");
                 }
