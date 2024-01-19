@@ -130,7 +130,10 @@ namespace OpenQA.Selenium.Safari
                         // check.
                         catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
                         {
-                            logger.Trace(ex.ToString());
+                            if (logger.IsEnabled(LogEventLevel.Trace))
+                            {
+                                logger.Trace(ex.ToString());
+                            }
                         }
                     }
                 }
