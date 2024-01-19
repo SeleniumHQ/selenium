@@ -1,0 +1,46 @@
+name: Pin Browsers
+on:
+  schedule:
+    - cron: 10 0 * * *
+  workflow_dispatch:
+
+jobs:
+  update:
+    name: Update Pinned Browsers
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Pin Browsers
+      cache-key: pin-browsers
+      run: bazel run //scripts:pinned_browsers
+
+  pull-request:
+    runs-on: ubuntu-latest
+    needs: update
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Download patch
+        uses: actions/download-artifact@v2
+        with:
+          name: patch-file
+      - name: Apply Patch
+        run: |
+          git apply changes.patch
+          rm changes.patch
+      - name: Check Changes
+        run: |
+          if [[ -n $(git status --porcelain common/repositories.bzl) ]]; then
+          echo "CHANGES_FOUND=true" >> $GITHUB_ENV
+          fi
+      - name: Create Pull Request
+        if: env.CHANGES_FOUND == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          add-paths: common/repositories.bzl
+          commit-message: Update pinned browser versions
+          committer: Selenium CI Bot <selenium-ci@users.noreply.github.com>
+          author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
+          title: "Automated Browser Version Update"
+          body: "This is an automated pull request to update pinned browsers and drivers"
+          branch: "pinned-browser-updates"
