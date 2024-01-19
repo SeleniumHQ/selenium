@@ -45,8 +45,7 @@ namespace OpenQA.Selenium.Chromium
         /// <param name="executablePath">The full path to the ChromeDriver executable.</param>
         /// <param name="executableFileName">The file name of the ChromeDriver executable.</param>
         /// <param name="port">The port on which the ChromeDriver executable should listen.</param>
-        /// <param name="downloadUrl">The URL from which the driver executable can be downloaded.</param>
-        protected ChromiumDriverService(string executablePath, string executableFileName, int port, Uri downloadUrl = null)
+        protected ChromiumDriverService(string executablePath, string executableFileName, int port)
             : base(executablePath, port, executableFileName)
         {
         }
