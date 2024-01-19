@@ -52,13 +52,11 @@ public class DriverFinder {
   }
 
   public String getDriverPath() {
-    getBinaryPaths();
-    return result.getDriverPath();
+    return getBinaryPaths().getDriverPath();
   }
 
   public String getBrowserPath() {
-    getBinaryPaths();
-    return result.getBrowserPath();
+    return getBinaryPaths().getBrowserPath();
   }
 
   public boolean isAvailable() {
@@ -92,38 +90,41 @@ public class DriverFinder {
     return browserPath != null && !browserPath.isEmpty();
   }
 
-  private void getBinaryPaths() {
-    if (result != null) {
-      return;
-    }
-    try {
-      String driverName = service.getDriverName();
-      result = new Result(service.getExecutable());
-      if (result.getDriverPath() == null) {
-        result = new Result(System.getProperty(service.getDriverProperty()));
+  private Result getBinaryPaths() {
+    if (result == null) {
+      try {
+        String driverName = service.getDriverName();
+        result = new Result(service.getExecutable());
         if (result.getDriverPath() == null) {
-          List<String> arguments = toArguments();
-          result = seleniumManager.getBinaryPaths(arguments);
-          Require.state(options.getBrowserName(), new File(result.getBrowserPath())).isExecutable();
+          result = new Result(System.getProperty(service.getDriverProperty()));
+          if (result.getDriverPath() == null) {
+            List<String> arguments = toArguments();
+            result = seleniumManager.getBinaryPaths(arguments);
+            Require.state(options.getBrowserName(), new File(result.getBrowserPath()))
+                .isExecutable();
+          } else {
+            LOG.fine(
+                String.format(
+                    "Skipping Selenium Manager, path to %s found in system property: %s",
+                    driverName, result.getDriverPath()));
+          }
         } else {
           LOG.fine(
               String.format(
-                  "Skipping Selenium Manager, path to %s found in system property: %s",
+                  "Skipping Selenium Manager, path to %s specified in Service class: %s",
                   driverName, result.getDriverPath()));
         }
-      } else {
-        LOG.fine(
-            String.format(
-                "Skipping Selenium Manager, path to %s specified in Service class: %s",
-                driverName, result.getDriverPath()));
-      }
 
-      Require.state(driverName, new File(result.getDriverPath())).isExecutable();
-    } catch (RuntimeException e) {
-      throw new NoSuchDriverException(
-          String.format("Unable to obtain: %s, error %s", service.getDriverName(), e.getMessage()),
-          e);
+        Require.state(driverName, new File(result.getDriverPath())).isExecutable();
+      } catch (RuntimeException e) {
+        throw new NoSuchDriverException(
+            String.format(
+                "Unable to obtain: %s, error %s", service.getDriverName(), e.getMessage()),
+            e);
+      }
     }
+
+    return result;
   }
 
   private List<String> toArguments() {
