@@ -64,5 +64,12 @@ namespace OpenQA.Selenium.Internal.Logging
         /// Gets the type of the logger issuer.
         /// </summary>
         Type Issuer { get; }
+
+        /// <summary>
+        /// Checks whether logs emitting is enabled for this logger and a log event level.
+        /// </summary>
+        /// <param name="level">The specified log event level to be checked.</param>
+        /// <returns><c>true</c> if log messages emmiting is enabled for the specified log event level, otherwise <c>false</c>.</returns>
+        bool IsEnabled(LogEventLevel level);
     }
 }

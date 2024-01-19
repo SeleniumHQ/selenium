@@ -66,18 +66,6 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Creates a default instance of the EdgeDriverService.
-        /// </summary>
-        /// <param name="options">Browser options used to find the correct MSEdgeDriver binary.</param>
-        /// <returns>A EdgeDriverService that implements default settings.</returns>
-        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
-        public static EdgeDriverService CreateDefaultService(EdgeOptions options)
-        {
-            string fullServicePath = DriverFinder.FullPath(options);
-            return CreateDefaultService(Path.GetDirectoryName(fullServicePath), Path.GetFileName(fullServicePath));
-        }
-
-        /// <summary>
         /// Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>

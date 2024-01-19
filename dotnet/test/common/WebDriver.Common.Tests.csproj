@@ -57,7 +57,7 @@
 
   <!-- It is automatically imported when Selenium.WebDriver consumed via nuget package -->
   <PropertyGroup>
-    <Selenium_Manager_BinariesRootPath>..\..\..\common\manager</Selenium_Manager_BinariesRootPath>
+    <Selenium_Manager_BinariesRootPath>..\..\..\bazel-bin\dotnet\src\webdriver\manager</Selenium_Manager_BinariesRootPath>
   </PropertyGroup>
   <Import Project="..\..\src\webdriver\assets\Selenium.WebDriver.targets" />
 
