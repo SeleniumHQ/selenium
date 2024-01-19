@@ -54,7 +54,6 @@ csharp_library(
         "//dotnet:__subpackages__",
     ],
     deps = [
-        framework("nuget", "NETStandard.Library"),
         framework("nuget", "Newtonsoft.Json"),
     ],
 )
