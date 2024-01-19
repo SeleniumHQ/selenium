@@ -119,19 +119,23 @@ namespace OpenQA.Selenium.Environment
                 TimeSpan timeout = TimeSpan.FromSeconds(30);
                 DateTime endTime = DateTime.Now.Add(TimeSpan.FromSeconds(30));
                 bool isRunning = false;
+
+                // Poll until the webserver is correctly serving pages.
+
+                using var httpClient = new HttpClient();
+
                 while (!isRunning && DateTime.Now < endTime)
                 {
-                    // Poll until the webserver is correctly serving pages.
-                    HttpWebRequest request = WebRequest.Create(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("simpleTest.html")) as HttpWebRequest;
                     try
                     {
-                        HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                        using var response = httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("simpleTest.html")).GetAwaiter().GetResult();
+
                         if (response.StatusCode == HttpStatusCode.OK)
                         {
                             isRunning = true;
                         }
                     }
-                    catch (WebException)
+                    catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
                     {
                     }
                 }
