@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net60</TargetFramework>
+    <TargetFramework>net70</TargetFramework>
     <RootNamespace>OpenQA.Selenium.DevToolsGenerator</RootNamespace>
   </PropertyGroup>
 
