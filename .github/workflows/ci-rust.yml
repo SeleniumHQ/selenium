@@ -212,7 +212,7 @@ jobs:
     name: "Release Binaries"
     runs-on: ubuntu-latest
     needs: [macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug]
-    if: github.event_name != 'schedule'
+    if: github.event_name != 'schedule' && github.repository_owner == 'seleniumhq'
     steps:
       - name: "Checkout selenium_manager_artifacts"
         uses: actions/checkout@v4
