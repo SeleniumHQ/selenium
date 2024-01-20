@@ -154,6 +154,7 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
+        requirement("typing_extensions"),
         requirement("trio"),
         requirement("trio_websocket"),
         requirement("urllib3"),

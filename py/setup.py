@@ -72,6 +72,7 @@ setup_args = {
                  'selenium.webdriver.support', ],
     'include_package_data': True,
     'install_requires': [
+        "typing_extension~= 4.9",
         "urllib3[socks]>=1.26,<3",
         "trio~=0.17",
         "trio-websocket~=0.9",
