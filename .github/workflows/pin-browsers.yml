@@ -14,6 +14,7 @@ jobs:
       run: bazel run //scripts:pinned_browsers
 
   pull-request:
+    if: github.repository_owner == 'seleniumhq'
     runs-on: ubuntu-latest
     needs: update
     steps:
