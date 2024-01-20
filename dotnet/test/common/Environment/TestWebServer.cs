@@ -157,16 +157,16 @@ namespace OpenQA.Selenium.Environment
 
         public void Stop()
         {
-            using (var httpClient = new HttpClient())
-            {
-                using (var quitResponse = httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")).GetAwaiter().GetResult())
-                {
-
-                }
-            }
-
             if (webserverProcess != null)
             {
+                using (var httpClient = new HttpClient())
+                {
+                    using (var quitResponse = httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")).GetAwaiter().GetResult())
+                    {
+
+                    }
+                }
+
                 try
                 {
                     webserverProcess.WaitForExit(10000);
