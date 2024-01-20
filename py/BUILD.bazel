@@ -154,7 +154,7 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
-        requirement("deprecated"),
+        requirement("typing_extensions"),
         requirement("trio"),
         requirement("trio_websocket"),
         requirement("urllib3"),
@@ -238,7 +238,6 @@ py_wheel(
     python_requires = ">=3.8",
     python_tag = "py3",
     requires = [
-        "deprecated==1.2.14",
         "urllib3[socks]>=1.26,<3",
         "trio~=0.17",
         "trio-websocket~=0.9",
