@@ -71,7 +71,31 @@ limitations under the License.
 
       let customEl = findElement({ tagName: 'open-shadow-element' });
       let text = getText(customEl);
-      assertEquals(text, 'full link text');
+      assertEquals('full link text', text);
+    }
+
+    function testTextForSlotValueInShadowDOM() {
+      setCustomElement('<slot><span>full</span></slot>');
+
+      let customEl = findElement({ id: 'custom-text' });
+      let text = getText(customEl);
+      assertEquals('custom', text);
+    }
+
+    function testTextForSlotAndExtraValueInShadowDOM() {
+      setCustomElement('<slot><span>full</span></slot> text');
+
+      let customEl = findElement({ id: 'custom-text' });
+      let text = getText(customEl);
+      assertEquals('custom text', text);
+    }
+
+    function testTextForDefaultSlotValueInShadowDOM() {
+      setCustomElement('<slot><span>full</span></slot> text');
+
+      let customEl = findElement({ tagName: 'open-shadow-element' });
+      let text = getText(customEl);
+      assertEquals('full text', text);
     }
 
     function testHiddenTextInShadowDOM() {
@@ -81,7 +105,7 @@ limitations under the License.
 
       let customEl = findElement({ tagName: 'open-shadow-element' });
       let text = getText(customEl);
-      assertEquals(text, 'full text');
+      assertEquals('full text', text);
     }
 
     function testTextForElementWithinClosedShadowDOM() {
@@ -89,13 +113,14 @@ limitations under the License.
       let customEl = findElement({ tagName: 'closed-shadow-element' });
       let innerEl = findElement({ css: 'a' }, customEl._shadowRoot);
       let text = getText(innerEl);
-      assertEquals(text, 'full link text');
+      assertEquals('full link text', text);
     }
   </script>
 </head>
 
 <body>
   <open-shadow-element></open-shadow-element>
+  <open-shadow-element id="custom-text">custom</open-shadow-element>
   <closed-shadow-element></closed-shadow-element>
 </body>
 
