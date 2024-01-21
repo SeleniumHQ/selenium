@@ -561,7 +561,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=WPEWebKit",
+        "--driver=wpewebkit",
         "--browser-binary=MiniBrowser",
         "--browser-args=--automation --headless",
     ],
