@@ -671,7 +671,7 @@ namespace :py do
 
   desc 'Update Python Syntax'
   task :lint do
-    `tox -c py/tox.ini -e linting`
+    sh 'tox -c py/tox.ini -e linting'
   end
 
     namespace :test do
