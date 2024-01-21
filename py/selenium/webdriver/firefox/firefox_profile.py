@@ -28,11 +28,14 @@ import zipfile
 from io import BytesIO
 from xml.dom import minidom
 
+from typing_extensions import deprecated
+
 from selenium.common.exceptions import WebDriverException
 
 WEBDRIVER_PREFERENCES = "webdriver_prefs.json"
 
 
+@deprecated("Addons must be added after starting the session")
 class AddonFormatError(Exception):
     """Exception for not well-formed add-on manifest files."""
 
@@ -75,6 +78,7 @@ class FirefoxProfile:
         """Sets the preference that we want in the profile."""
         self._desired_preferences[key] = value
 
+    @deprecated("Addons must be added after starting the session")
     def add_extension(self, extension=None):
         self._install_extension(extension)
 
@@ -96,11 +100,13 @@ class FirefoxProfile:
         return self._profile_dir
 
     @property
+    @deprecated("The port is stored in the Service class")
     def port(self):
         """Gets the port that WebDriver is working on."""
         return self._port
 
     @port.setter
+    @deprecated("The port is stored in the Service class")
     def port(self, port) -> None:
         """Sets the port that WebDriver will be running on."""
         if not isinstance(port, int):
@@ -115,20 +121,24 @@ class FirefoxProfile:
         self.set_preference("webdriver_firefox_port", self._port)
 
     @property
+    @deprecated("Allowing untrusted certs is toggled in the Options class")
     def accept_untrusted_certs(self):
         return self._desired_preferences["webdriver_accept_untrusted_certs"]
 
     @accept_untrusted_certs.setter
+    @deprecated("Allowing untrusted certs is toggled in the Options class")
     def accept_untrusted_certs(self, value) -> None:
         if not isinstance(value, bool):
             raise WebDriverException("Please pass in a Boolean to this call")
         self.set_preference("webdriver_accept_untrusted_certs", value)
 
     @property
+    @deprecated("Allowing untrusted certs is toggled in the Options class")
     def assume_untrusted_cert_issuer(self):
         return self._desired_preferences["webdriver_assume_untrusted_issuer"]
 
     @assume_untrusted_cert_issuer.setter
+    @deprecated("Allowing untrusted certs is toggled in the Options class")
     def assume_untrusted_cert_issuer(self, value) -> None:
         if not isinstance(value, bool):
             raise WebDriverException("Please pass in a Boolean to this call")
@@ -164,6 +174,7 @@ class FirefoxProfile:
                         f"(skipping) failed to json.loads existing preference: {matches.group(1) + matches.group(2)}"
                     )
 
+    @deprecated("Addons must be added after starting the session")
     def _install_extension(self, addon, unpack=True):
         """Installs addon from a filepath, url or directory of addons in the
         profile.
@@ -210,6 +221,7 @@ class FirefoxProfile:
         if tmpdir:
             shutil.rmtree(tmpdir)
 
+    @deprecated("Addons must be added after starting the session")
     def _addon_details(self, addon_path):
         """Returns a dictionary of details about the addon.
 
