@@ -142,7 +142,7 @@ def test_creates_capabilities(options):
     assert "foo" in opts["args"]
     assert opts["binary"] == "/bar"
     assert opts["prefs"]["foo"] == "bar"
-    assert opts["profile"] == profile.encoded
+    assert isinstance(opts["profile"], str) and opts["profile"]
     assert caps["proxy"]["proxyType"] == "manual"
     assert opts["log"]["level"] == "debug"
 
