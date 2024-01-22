@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   stale:
+    if: github.repository_owner == 'seleniumhq'
     permissions:
       issues: write  # for actions/stale to close stale issues
       pull-requests: write  # for actions/stale to close stale PRs

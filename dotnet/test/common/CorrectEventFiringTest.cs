@@ -333,9 +333,9 @@ namespace OpenQA.Selenium
                 {
                     System.Threading.Thread.Sleep(200);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    throw e;
+                    throw;
                 }
             }
             if (!focused)

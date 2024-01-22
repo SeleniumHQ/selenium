@@ -1,14 +1,21 @@
 load("@rules_ruby//ruby:defs.bzl", "rb_library")
 
+rb_library(
+    name = "rspec_matchers",
+    testonly = True,
+    srcs = ["rspec_matchers.rb"],
+    visibility = ["//rb/spec:__subpackages__"],
+)
+
 # List of dependencies can be gathered by running:
 # bazel query 'kind("rb_.* rule", //rb/spec/...) except //rb/spec:spec' | xargs -I{} echo '"{}",'
 
 rb_library(
     name = "spec",
     testonly = True,
-    srcs = ["rspec_matchers.rb"],
     visibility = ["//rb:__pkg__"],
     deps = [
+        ":rspec_matchers",
         "//rb/spec/integration/selenium/webdriver:action_builder",
         "//rb/spec/integration/selenium/webdriver:bidi",
         "//rb/spec/integration/selenium/webdriver:devtools",

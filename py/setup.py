@@ -49,7 +49,10 @@ setup_args = {
                     'Topic :: Software Development :: Libraries',
                     'Programming Language :: Python',
                     'Programming Language :: Python :: 3.8',
-                    'Programming Language :: Python :: 3.9'],
+                    'Programming Language :: Python :: 3.9',
+                    'Programming Language :: Python :: 3.10',
+                    'Programming Language :: Python :: 3.11',
+                    'Programming Language :: Python :: 3.12'],
     'package_dir': {
         'selenium': 'selenium',
         'selenium.common': 'selenium/common',
@@ -61,7 +64,6 @@ setup_args = {
                  'selenium.webdriver.chromium',
                  'selenium.webdriver.chrome',
                  'selenium.webdriver.common',
-                 'selenium.webdriver.common.html5',
                  'selenium.webdriver.support',
                  'selenium.webdriver.firefox',
                  'selenium.webdriver.ie',
@@ -70,6 +72,7 @@ setup_args = {
                  'selenium.webdriver.support', ],
     'include_package_data': True,
     'install_requires': [
+        "typing_extension~= 4.9",
         "urllib3[socks]>=1.26,<3",
         "trio~=0.17",
         "trio-websocket~=0.9",

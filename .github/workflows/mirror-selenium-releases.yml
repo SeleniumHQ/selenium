@@ -7,6 +7,7 @@ on:
 
 jobs:
   build:
+    if: github.repository_owner == 'seleniumhq'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -24,7 +25,7 @@ jobs:
         export CHANGES=$(git status -s)
         if [ -n "$CHANGES" ]; then
           git config --local user.email "selenium-ci@users.noreply.github.com"
-          git config --local user.name "Selenium CI Bot"        
+          git config --local user.name "Selenium CI Bot"
           git add common/mirror/selenium
           git commit -m "Update mirror info (`date`)" -a
           echo "::set-output name=commit::true"

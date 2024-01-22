@@ -4,6 +4,7 @@ PATH
     selenium-devtools (0.120.0)
       selenium-webdriver (~> 4.2)
     selenium-webdriver (4.17.0.nightly)
+      base64 (~> 0.2)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)

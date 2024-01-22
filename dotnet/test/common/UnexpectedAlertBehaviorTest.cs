@@ -91,11 +91,11 @@ namespace OpenQA.Selenium
                 {
                     return resultElement.Text == expectedAlertText;
                 }
-                catch (UnhandledAlertException e)
+                catch (UnhandledAlertException)
                 {
                     if (!silentlyHandlePrompt)
                     {
-                        throw e;
+                        throw;
                     }
                 }
                 catch (NoSuchElementException)

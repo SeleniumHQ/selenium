@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 50
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.3.2
+        uses: p0deje/setup-bazel@0.4.0
         with:
           bazelisk-cache: true
           external-cache: |
@@ -34,13 +34,13 @@ jobs:
               crates: rust/Cargo.Bazel.lock
               npm: package-lock.json
               pypi__pip: py/requirements_lock.txt
-              rules_ruby_dist: rb/ruby_version.bzl
+              ruby: rb/.ruby-version
           repository-cache: true
       - name: Check Bazel targets
         id: check-targets
         run: ./scripts/github-actions/check-bazel-targets.sh
         env:
-          COMMIT_RANGE: ${{ github.event.pull_request.base.sha || github.event.before }}..${{ github.sha }}
+          COMMIT_RANGE: ${{ github.event.pull_request.base.sha || github.event.before }}...${{ github.event.pull_request.head.sha || github.sha }}
 
   dotnet:
     name: .NET

@@ -93,12 +93,8 @@ class DesiredCapabilities:
 
     WEBKITGTK = {
         "browserName": "MiniBrowser",
-        "version": "",
-        "platform": "ANY",
     }
 
     WPEWEBKIT = {
         "browserName": "MiniBrowser",
-        "version": "",
-        "platform": "ANY",
     }
