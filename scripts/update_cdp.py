@@ -147,8 +147,7 @@ def update_dotnet(chrome_milestone):
 
     files = [
         root_dir / "dotnet/selenium-dotnet-version.bzl",
-        root_dir / "dotnet/src/webdriver/WebDriver.csproj.prebuild.cmd",
-        root_dir / "dotnet/src/webdriver/WebDriver.csproj.prebuild.sh",
+        root_dir / "dotnet/src/webdriver/WebDriver.csproj",
         root_dir / "dotnet/src/webdriver/DevTools/DevToolsDomains.cs",
     ]
     for file in files:
