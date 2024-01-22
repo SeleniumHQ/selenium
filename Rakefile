@@ -586,9 +586,10 @@ namespace :py do
     sh "python3 -m twine upload bazel-bin/py/selenium-#{python_version}.tar.gz"
   end
 
-  desc 'Update generated Python files for local development'
-  task :update do
+  desc 'generate and copy files required for local development'
+  task :local_dev do
     Bazel.execute('build', [], '//py:selenium')
+    Rake::Task['grid'].invoke
 
     FileUtils.rm_rf('py/selenium/webdriver/common/devtools/')
     FileUtils.cp_r('bazel-bin/py/selenium/webdriver/.', 'py/selenium/webdriver', remove_destination: true)
@@ -674,22 +675,28 @@ namespace :py do
     sh 'tox -c py/tox.ini -e linting'
   end
 
-    namespace :test do
-      desc 'Python unit tests'
-      task :unit do
-        Rake::Task['py:clean'].invoke
-        Bazel.execute('test', ['--test_size_filters=small'], '//py/...')
-      end
+  namespace :test do
+    desc 'Python unit tests'
+    task :unit do
+      Rake::Task['py:clean'].invoke
+      Bazel.execute('test', ['--test_size_filters=small'], '//py/...')
+    end
 
-      %i[chrome edge firefox safari].each do |browser|
-        desc "Python #{browser} tests"
-        task browser do
-          Rake::Task['py:clean'].invoke
-          Bazel.execute('test', [],"//py:common-#{browser}")
-          Bazel.execute('test', [],"//py:test-#{browser}")
-        end
+    %i[chrome edge firefox safari].each do |browser|
+      desc "Python #{browser} tests"
+      task browser do
+        Rake::Task['py:clean'].invoke
+        Bazel.execute('test', [],"//py:common-#{browser}")
+        Bazel.execute('test', [],"//py:test-#{browser}")
       end
     end
+
+    desc "Python Remote tests with Firefox"
+    task :remote do
+      Rake::Task['py:clean'].invoke
+      Bazel.execute('test', [],"//py:test-remote")
+    end
+  end
 end
 
 def ruby_version
@@ -706,7 +713,7 @@ namespace :rb do
   end
 
   desc 'Update generated Ruby files for local development'
-  task :update do
+  task :local_dev do
     Bazel.execute('build', [], '@bundle//:bundle')
     Rake::Task['rb:build'].invoke
     Rake::Task['grid'].invoke
