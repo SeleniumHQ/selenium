@@ -26,7 +26,7 @@ BROWSER_VERSIONS = [
     "v85",
     "v119",
     "v120",
-    "v118",
+    "v121",
 ]
 
 TEST_DEPS = [
