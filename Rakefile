@@ -935,7 +935,7 @@ namespace :java do
     file = 'java/version.bzl'
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, "w") { |f| f.puts text }
-    Rake::Task['java:changelog'].invoke unless old_version.include?('SNAPSHOT')
+    Rake::Task['java:changelog'].invoke if old_version.include?('SNAPSHOT')
   end
 end
 
@@ -1043,7 +1043,7 @@ namespace :all do
       Bazel.execute('run', args, '//scripts:update_cdp')
       Bazel.execute('run', args, '//scripts:pinned_browsers')
       Bazel.execute('run', args, '//scripts:selenium_manager')
-      Rake::Task['java:dependencies'].invoke
+      Rake::Task['java:update'].invoke
       Rake::Task['authors'].invoke
       Rake::Task['copyright:update'].invoke
     end
