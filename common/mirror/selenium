@@ -1,5 +1,25 @@
 [
   {
+    "tag_name": "selenium-4.17.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.17.0/selenium-dotnet-4.17.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.17.0/selenium-dotnet-strongnamed-4.17.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.17.0/selenium-java-4.17.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.17.0/selenium-server-4.17.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.17.0/selenium-server-4.17.0.zip"
+      }
+    ]
+  },
+  {
     "tag_name": "nightly",
     "assets": [
       {
@@ -897,26 +917,6 @@
       },
       {
         "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-4/selenium-server-4.0.0-alpha-4.zip"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-4.0.0-alpha-3",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-3/selenium-dotnet-4.0.0-alpha03.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-3/selenium-dotnet-strongnamed-4.0.0.alpha03.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-3/selenium-html-runner-4.0.0-alpha-3.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-3/selenium-java-4.0.0-alpha-3.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-3/selenium-server-4.0.0-alpha-3.jar"
       }
     ]
   }
