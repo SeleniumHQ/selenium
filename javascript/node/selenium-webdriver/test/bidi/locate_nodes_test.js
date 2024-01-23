@@ -35,7 +35,7 @@ suite(
     beforeEach(async function () {
       driver = await env
         .builder()
-        .setFirefoxOptions(new firefox.Options().setBinary('/Applications/Firefox Nightly.app/Contents/MacOS/firefox').enableBidi())
+        .setFirefoxOptions(new firefox.Options().enableBidi())
         .build()
     })
 
@@ -228,6 +228,19 @@ suite(
         const sharedId = response.result.value.sharedId
 
         assert.strictEqual(sharedId.value, nodeId)
+      })
+
+      xit('can find element', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.xhtmlTestPage)
+
+        const element = await browsingContext.locateElement(Locator.css('p'))
+        const elementText = await element.getText()
+        assert.strictEqual(elementText, "Open new window")
       })
     })
   },

@@ -18,6 +18,7 @@
 const { InvalidArgumentError, NoSuchFrameError } = require('../lib/error')
 const { BrowsingContextInfo } = require('./browsingContextTypes')
 const {SerializationOptions, ReferenceValue, RemoteValue} = require("./protocolValue");
+const {WebElement} = require("../lib/webdriver");
 
 class Locator {
   static Type = Object.freeze({
@@ -448,6 +449,11 @@ class BrowsingContext {
     startNodes = undefined) {
     const elements = await this.locateNodes(locator, 1, ownership, sandbox, serializationOptions, startNodes)
     return elements[0]
+  }
+
+  async locateElement(locator) {
+    const elements = await this.locateNodes(locator, 1)
+    return new WebElement(this._driver, elements[0].sharedId)
   }
 }
 
