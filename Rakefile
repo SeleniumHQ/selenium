@@ -1044,8 +1044,8 @@ namespace :all do
     @git.push if response == 'y' || response == 'yes'
   end
 
-  desc 'File updates for versions and metadata'
-    task :update, [:channel] do |_task, arguments|
+  desc 'Update everything in preparation for a release'
+    task :prepare, [:channel] do |_task, arguments|
       args = arguments[:channel] ? ['--', "--chrome_channel=#{arguments[:channel].capitalize}"] : []
       Bazel.execute('run', args, '//scripts:update_cdp')
       Bazel.execute('run', args, '//scripts:pinned_browsers')
@@ -1068,7 +1068,6 @@ namespace :all do
       Rake::Task['node:version'].invoke(version)
       Rake::Task['py:version'].invoke(version)
       Rake::Task['dotnet:version'].invoke(version)
-      Rake::Task['rust:version'].invoke(version)
     end
   end
 end
