@@ -8,6 +8,7 @@
       <meta name="title" content="Class ChromiumOptions
  ">
       
+      <meta name="description" content="Abstract class to manage options specific to Chromium-based browsers.">
       <link rel="icon" href="favicon.ico">
       <link rel="stylesheet" href="public/docfx.min.css">
       <link rel="stylesheet" href="public/main.css">
@@ -155,6 +156,9 @@
       <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_UseStrictFileInteractability">DriverOptions.UseStrictFileInteractability</a>
     </div>
     <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_EnableDownloads">DriverOptions.EnableDownloads</a>
+    </div>
+    <div>
       <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_AddAdditionalOption_System_String_System_Object_">DriverOptions.AddAdditionalOption(string, object)</a>
     </div>
     <div>
@@ -269,7 +273,7 @@
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="OpenQA.Selenium.Chromium.ChromiumAndroidOptions.html">ChromiumAndroidOptions</a></dt>
-    <dd></dd>
+    <dd>Abstract class to manage options specific to Chromium-based browsers.</dd>
   </dl>
 
 
@@ -301,7 +305,7 @@
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.readonlycollection-1">ReadOnlyCollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
-    <dd></dd>
+    <dd>Abstract class to manage options specific to Chromium-based browsers.</dd>
   </dl>
 
 
@@ -333,7 +337,7 @@
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
+    <dd>Abstract class to manage options specific to Chromium-based browsers.</dd>
   </dl>
 
 
@@ -366,7 +370,7 @@ an <a class="xref" href="OpenQA.Selenium.ICapabilities.html">ICapabilities</a> o
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
+    <dd>Abstract class to manage options specific to Chromium-based browsers.</dd>
   </dl>
 
 
@@ -399,7 +403,7 @@ Should be of the form &quot;{hostname|IP address}:port&quot;.</p>
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
+    <dd>Abstract class to manage options specific to Chromium-based browsers.</dd>
   </dl>
 
 
@@ -431,7 +435,7 @@ Should be of the form &quot;{hostname|IP address}:port&quot;.</p>
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.readonlycollection-1">ReadOnlyCollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
-    <dd></dd>
+    <dd>Abstract class to manage options specific to Chromium-based browsers.</dd>
   </dl>
 
 
@@ -464,7 +468,7 @@ ChromeDriver instance is exited. Defaults to <a href="https://learn.microsoft.co
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd></dd>
+    <dd>Abstract class to manage options specific to Chromium-based browsers.</dd>
   </dl>
 
 
@@ -496,7 +500,7 @@ ChromeDriver instance is exited. Defaults to <a href="https://learn.microsoft.co
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
+    <dd>Abstract class to manage options specific to Chromium-based browsers.</dd>
   </dl>
 
 
@@ -528,42 +532,7 @@ ChromeDriver instance is exited. Defaults to <a href="https://learn.microsoft.co
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="OpenQA.Selenium.Chromium.ChromiumPerformanceLoggingPreferences.html">ChromiumPerformanceLoggingPreferences</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_Chromium_ChromiumOptions_UseSpecCompliantProtocol_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.UseSpecCompliantProtocol*"></a>
-
-  <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_UseSpecCompliantProtocol" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.UseSpecCompliantProtocol">
-  UseSpecCompliantProtocol
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L193"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html">ChromiumDriver</a> instance
-should use the legacy OSS protocol dialect or a dialect compliant with the W3C
-WebDriver Specification.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Spec Compliant Protocol is the only supported protocol&quot;)]
-public bool UseSpecCompliantProtocol { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd></dd>
+    <dd>Abstract class to manage options specific to Chromium-based browsers.</dd>
   </dl>
 
 
@@ -595,7 +564,7 @@ public bool UseSpecCompliantProtocol { get; set; }</code></pre>
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
+    <dd>Abstract class to manage options specific to Chromium-based browsers.</dd>
   </dl>
 
 
@@ -613,7 +582,7 @@ public bool UseSpecCompliantProtocol { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddAdditionalChromiumOption_System_String_System_Object_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddAdditionalChromiumOption(System.String,System.Object)">
   AddAdditionalChromiumOption(string, object)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L513"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L492"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Provides a means to add additional capabilities not yet added as type safe options
@@ -664,7 +633,7 @@ when <code class="paramref">optionName</code> is <a href="https://learn.microsof
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddArgument_System_String_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddArgument(System.String)">
   AddArgument(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L213"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L192"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a single argument to the list of arguments to be appended to the browser executable command line.</p>
@@ -697,7 +666,7 @@ when <code class="paramref">optionName</code> is <a href="https://learn.microsof
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddArguments_System_Collections_Generic_IEnumerable_System_String__" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddArguments(System.Collections.Generic.IEnumerable{System.String})">
   AddArguments(IEnumerable&lt;string&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L236"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L215"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds arguments to be appended to the browser executable command line.</p>
@@ -730,7 +699,7 @@ when <code class="paramref">optionName</code> is <a href="https://learn.microsof
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddArguments_System_String___" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddArguments(System.String[])">
   AddArguments(params string[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L227"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L206"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds arguments to be appended to the browser executable command line.</p>
@@ -763,7 +732,7 @@ when <code class="paramref">optionName</code> is <a href="https://learn.microsof
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddEncodedExtension_System_String_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddEncodedExtension(System.String)">
   AddEncodedExtension(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L339"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L318"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a base64-encoded string representing a Chrome extension to the list of extensions
@@ -797,7 +766,7 @@ to be installed in the instance of Chrome.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddEncodedExtensions_System_Collections_Generic_IEnumerable_System_String__" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddEncodedExtensions(System.Collections.Generic.IEnumerable{System.String})">
   AddEncodedExtensions(IEnumerable&lt;string&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L365"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L344"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a list of base64-encoded strings representing Chrome extensions to be installed
@@ -832,7 +801,7 @@ representing the extensions to add.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddEncodedExtensions_System_String___" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddEncodedExtensions(System.String[])">
   AddEncodedExtensions(params string[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L354"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L333"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a list of base64-encoded strings representing Chrome extensions to the list of extensions
@@ -866,7 +835,7 @@ to be installed in the instance of Chrome.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddExcludedArgument_System_String_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddExcludedArgument(System.String)">
   AddExcludedArgument(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L251"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L230"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a single argument to be excluded from the list of arguments passed by default
@@ -900,7 +869,7 @@ to the browser executable command line by chromedriver.exe.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddExcludedArguments_System_Collections_Generic_IEnumerable_System_String__" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddExcludedArguments(System.Collections.Generic.IEnumerable{System.String})">
   AddExcludedArguments(IEnumerable&lt;string&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L276"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L255"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds arguments to be excluded from the list of arguments passed by default
@@ -934,7 +903,7 @@ to the browser executable command line by chromedriver.exe.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddExcludedArguments_System_String___" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddExcludedArguments(System.String[])">
   AddExcludedArguments(params string[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L266"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L245"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds arguments to be excluded from the list of arguments passed by default
@@ -968,7 +937,7 @@ to the browser executable command line by chromedriver.exe.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddExtension_System_String_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddExtension(System.String)">
   AddExtension(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L291"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L270"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a path to a packed Chrome extension (.crx file) to the list of extensions
@@ -1002,7 +971,7 @@ to be installed in the instance of Chrome.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddExtensions_System_Collections_Generic_IEnumerable_System_String__" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddExtensions(System.Collections.Generic.IEnumerable{System.String})">
   AddExtensions(IEnumerable&lt;string&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L316"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L295"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a list of paths to packed Chrome extensions (.crx files) to be installed
@@ -1036,7 +1005,7 @@ in the instance of Chrome.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddExtensions_System_String___" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddExtensions(System.String[])">
   AddExtensions(params string[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L306"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L285"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a list of paths to packed Chrome extensions (.crx files) to be installed
@@ -1070,7 +1039,7 @@ in the instance of Chrome.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddLocalStatePreference_System_String_System_Object_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddLocalStatePreference(System.String,System.Object)">
   AddLocalStatePreference(string, object)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L411"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L390"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a preference for the local state file in the user's data directory for Chromium.
@@ -1107,7 +1076,7 @@ If the specified preference already exists, it will be overwritten.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddUserProfilePreference_System_String_System_Object_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddUserProfilePreference(System.String,System.Object)">
   AddUserProfilePreference(string, object)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L395"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L374"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a preference for the user-specific profile or &quot;user data directory.&quot;
@@ -1144,7 +1113,7 @@ If the specified preference already exists, it will be overwritten.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddVendorSpecificChromiumCapabilities_OpenQA_Selenium_IWritableCapabilities_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddVendorSpecificChromiumCapabilities(OpenQA.Selenium.IWritableCapabilities)">
   AddVendorSpecificChromiumCapabilities(IWritableCapabilities)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L547"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L526"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds vendor-specific capabilities for Chromium-based browsers.</p>
@@ -1177,7 +1146,7 @@ If the specified preference already exists, it will be overwritten.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddWindowType_System_String_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddWindowType(System.String)">
   AddWindowType(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L463"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L442"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a type of window that will be listed in the list of window handles
@@ -1215,7 +1184,7 @@ elements by adding &quot;webview&quot; as a window type.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddWindowTypes_System_Collections_Generic_IEnumerable_System_String__" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddWindowTypes(System.Collections.Generic.IEnumerable{System.String})">
   AddWindowTypes(IEnumerable&lt;string&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L488"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L467"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a list of window types that will be listed in the list of window handles
@@ -1249,7 +1218,7 @@ returned by the Chromium driver.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_AddWindowTypes_System_String___" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.AddWindowTypes(System.String[])">
   AddWindowTypes(params string[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L478"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L457"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a list of window types that will be listed in the list of window handles
@@ -1283,7 +1252,7 @@ returned by the Chromium driver.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_EnableMobileEmulation_OpenQA_Selenium_Chromium_ChromiumMobileEmulationDeviceSettings_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.EnableMobileEmulation(OpenQA.Selenium.Chromium.ChromiumMobileEmulationDeviceSettings)">
   EnableMobileEmulation(ChromiumMobileEmulationDeviceSettings)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L445"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L424"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Allows the Chromium browser to emulate a mobile device.</p>
@@ -1329,7 +1298,7 @@ not have a user agent string set.</p>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_EnableMobileEmulation_System_String_" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.EnableMobileEmulation(System.String)">
   EnableMobileEmulation(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L429"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L408"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Allows the Chromium browser to emulate a mobile device.</p>
@@ -1368,7 +1337,7 @@ emulation, call this method with <a href="https://learn.microsoft.com/dotnet/csh
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumOptions_ToCapabilities" data-uid="OpenQA.Selenium.Chromium.ChromiumOptions.ToCapabilities">
   ToCapabilities()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L525"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumOptions.cs/#L504"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns DesiredCapabilities for Chromium with these options included as

@@ -369,12 +369,12 @@
       <pre class="lines">
 
 
-57
 58
-59</pre>
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/wheel_actions.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/wheel_actions.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scroll_by'>scroll_by</span><span class='lparen'>(</span><span class='id identifier rubyid_delta_x'>delta_x</span><span class='comma'>,</span> <span class='id identifier rubyid_delta_y'>delta_y</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_scroll'>scroll</span><span class='lparen'>(</span><span class='label'>delta_x:</span> <span class='id identifier rubyid_delta_x'>delta_x</span><span class='comma'>,</span> <span class='label'>delta_y:</span> <span class='id identifier rubyid_delta_y'>delta_y</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -534,7 +534,6 @@
       <pre class="lines">
 
 
-87
 88
 89
 90
@@ -543,10 +542,11 @@
 93
 94
 95
-96</pre>
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/wheel_actions.rb', line 87</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/wheel_actions.rb', line 88</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scroll_from'>scroll_from</span><span class='lparen'>(</span><span class='id identifier rubyid_scroll_origin'>scroll_origin</span><span class='comma'>,</span> <span class='id identifier rubyid_delta_x'>delta_x</span><span class='comma'>,</span> <span class='id identifier rubyid_delta_y'>delta_y</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_scroll_origin'>scroll_origin</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> isn&#39;t a valid ScrollOrigin</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_scroll_origin'>scroll_origin</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="WheelActions/ScrollOrigin.html" title="Selenium::WebDriver::WheelActions::ScrollOrigin (class)">ScrollOrigin</a></span></span><span class='rparen'>)</span>
@@ -599,7 +599,7 @@
   
     <li>
       
-        <span class='name'>Which</span>
+        <span class='name'>element</span>
       
       
         <span class='type'>(<tt>Object</tt>)</span>
@@ -608,7 +608,25 @@
       
         &mdash;
         <div class='inline'>
-<p>element to scroll into the viewport.</p>
+<p>Which element to scroll into the viewport.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>device</span>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Which device to use to scroll</p>
 </div>
       
     </li>
@@ -640,12 +658,12 @@
       <pre class="lines">
 
 
-43
 44
-45</pre>
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/wheel_actions.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/wheel_actions.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scroll_to'>scroll_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_scroll'>scroll</span><span class='lparen'>(</span><span class='label'>origin:</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -660,7 +678,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Dec  8 09:14:39 2023 by
+  Generated on Tue Jan 23 00:19:09 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.34 (ruby-3.0.6).
 </div>

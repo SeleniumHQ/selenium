@@ -78,7 +78,9 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="../chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome">ChromeDriver</a></code>, <code><a href="../chromium/ChromiumDriver.html" title="class in org.openqa.selenium.chromium">ChromiumDriver</a></code>, <code><a href="../edge/EdgeDriver.html" title="class in org.openqa.selenium.edge">EdgeDriver</a></code>, <code><a href="../remote/mobile/RemoteNetworkConnection.html" title="class in org.openqa.selenium.remote.mobile">RemoteNetworkConnection</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">NetworkConnection</span></div>
+<div class="type-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public interface </span><span class="element-name type-name-label">NetworkConnection</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Control a device's network connection
 
  <p>Example usage:
@@ -105,6 +107,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static class&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="NetworkConnection.ConnectionType.html" class="type-name-link" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></code></div>
 <div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">ConnectionType is a bitmask to represent a device's network connection</div>
 </div>
 </div>
@@ -115,20 +118,22 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel">
 <div class="summary-table three-column-summary" aria-labelledby="method-summary-table-tab0">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getNetworkConnection()" class="member-name-link">getNetworkConnection</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6"><code><a href="NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6"><code><a href="#getNetworkConnection()" class="member-name-link">getNetworkConnection</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Query the driver for the Airplane Mode setting state</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setNetworkConnection(org.openqa.selenium.mobile.NetworkConnection.ConnectionType)" class="member-name-link">setNetworkConnection</a><wbr>(<a href="NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a>&nbsp;type)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6"><code><a href="NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6"><code><a href="#setNetworkConnection(org.openqa.selenium.mobile.NetworkConnection.ConnectionType)" class="member-name-link">setNetworkConnection</a><wbr>(<a href="NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a>&nbsp;type)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Set the Connection type Not all connection type combinations are valid for an individual type
  of device and the remote endpoint will make a best effort to set the type as requested</div>
 </div>
@@ -150,6 +155,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getNetworkConnection()">
 <h3>getNetworkConnection</h3>
 <div class="member-signature"><span class="return-type"><a href="NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></span>&nbsp;<span class="element-name">getNetworkConnection</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Query the driver for the Airplane Mode setting state</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -162,6 +168,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="setNetworkConnection(org.openqa.selenium.mobile.NetworkConnection.ConnectionType)">
 <h3>setNetworkConnection</h3>
 <div class="member-signature"><span class="return-type"><a href="NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></span>&nbsp;<span class="element-name">setNetworkConnection</span><wbr><span class="parameters">(<a href="NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a>&nbsp;type)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Set the Connection type Not all connection type combinations are valid for an individual type
  of device and the remote endpoint will make a best effort to set the type as requested</div>
 <dl class="notes">

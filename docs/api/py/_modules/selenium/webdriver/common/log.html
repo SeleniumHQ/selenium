@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.log &#8212; Selenium 4.16.0 documentation</title>
+    <title>selenium.webdriver.common.log &#8212; Selenium 4.17.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.16.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.17.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -178,10 +178,7 @@
         <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">ConsoleAPICalled</span><span class="p">)</span> <span class="k">as</span> <span class="n">messages</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">console</span>
 
-        <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">Console</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span>
-            <span class="n">console</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
-            <span class="n">console</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type_</span>
-        <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">Console</span><span class="o">.</span><span class="n">ALL</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">Console</span><span class="o">.</span><span class="n">ALL</span> <span class="ow">or</span> <span class="n">event_type</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">type_</span><span class="p">:</span>
             <span class="n">console</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
             <span class="n">console</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type_</span></div></div>
 </pre></div>
@@ -216,7 +213,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.16.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.17.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

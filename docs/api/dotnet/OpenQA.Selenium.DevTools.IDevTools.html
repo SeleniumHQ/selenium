@@ -8,6 +8,7 @@
       <meta name="title" content="Interface IDevTools
  ">
       
+      <meta name="description" content="Interface indicating the driver supports the Chrome DevTools Protocol.">
       <link rel="icon" href="favicon.ico">
       <link rel="stylesheet" href="public/docfx.min.css">
       <link rel="stylesheet" href="public/main.css">
@@ -87,7 +88,7 @@
 
   <h1 id="OpenQA_Selenium_DevTools_IDevTools" data-uid="OpenQA.Selenium.DevTools.IDevTools" class="text-break">
     Interface IDevTools
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -123,7 +124,7 @@
 
   <h3 id="OpenQA_Selenium_DevTools_IDevTools_HasActiveDevToolsSession" data-uid="OpenQA.Selenium.DevTools.IDevTools.HasActiveDevToolsSession">
   HasActiveDevToolsSession
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether a DevTools session is active.</p>
@@ -141,7 +142,7 @@
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd></dd>
+    <dd>Interface indicating the driver supports the Chrome DevTools Protocol.</dd>
   </dl>
 
 
@@ -159,7 +160,7 @@
 
   <h3 id="OpenQA_Selenium_DevTools_IDevTools_CloseDevToolsSession" data-uid="OpenQA.Selenium.DevTools.IDevTools.CloseDevToolsSession">
   CloseDevToolsSession()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Closes a DevTools session</p>
@@ -186,7 +187,7 @@
 
   <h3 id="OpenQA_Selenium_DevTools_IDevTools_GetDevToolsSession" data-uid="OpenQA.Selenium.DevTools.IDevTools.GetDevToolsSession">
   GetDevToolsSession()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a session to communicate with a browser using a Developer Tools debugging protocol.</p>
@@ -217,9 +218,9 @@
 
   <a id="OpenQA_Selenium_DevTools_IDevTools_GetDevToolsSession_" data-uid="OpenQA.Selenium.DevTools.IDevTools.GetDevToolsSession*"></a>
 
-  <h3 id="OpenQA_Selenium_DevTools_IDevTools_GetDevToolsSession_System_Int32_" data-uid="OpenQA.Selenium.DevTools.IDevTools.GetDevToolsSession(System.Int32)">
-  GetDevToolsSession(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_DevTools_IDevTools_GetDevToolsSession_OpenQA_Selenium_DevTools_DevToolsOptions_" data-uid="OpenQA.Selenium.DevTools.IDevTools.GetDevToolsSession(OpenQA.Selenium.DevTools.DevToolsOptions)">
+  GetDevToolsSession(DevToolsOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.</p>
@@ -227,7 +228,47 @@
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">DevToolsSession GetDevToolsSession(int protocolVersion)</code></pre>
+    <pre><code class="lang-csharp hljs">DevToolsSession GetDevToolsSession(DevToolsOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.DevTools.DevToolsOptions.html">DevToolsOptions</a></dt>
+    <dd><p>The options for the DevToolsSession to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.DevTools.DevToolsSession.html">DevToolsSession</a></dt>
+    <dd><p>The active session to use to communicate with the Developer Tools debugging protocol.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_IDevTools_GetDevToolsSession_" data-uid="OpenQA.Selenium.DevTools.IDevTools.GetDevToolsSession*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_IDevTools_GetDevToolsSession_System_Int32_" data-uid="OpenQA.Selenium.DevTools.IDevTools.GetDevToolsSession(System.Int32)">
+  GetDevToolsSession(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use GetDevToolsSession(DevToolsOptions options)&quot;)]
+DevToolsSession GetDevToolsSession(int protocolVersion)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -258,7 +299,7 @@
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L24" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevTools.cs/#L26" class="edit-link">Edit this page</a>
         </div>
 
 

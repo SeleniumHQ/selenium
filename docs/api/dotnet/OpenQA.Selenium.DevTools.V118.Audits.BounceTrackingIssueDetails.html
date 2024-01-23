@@ -8,6 +8,7 @@
       <meta name="title" content="Class BounceTrackingIssueDetails
  ">
       
+      <meta name="description" content="This issue warns about sites in the redirect chain of a finished navigation that may be flagged as trackers and have their state cleared if they don&#39;t receive a user interaction. Note that in this context &#39;site&#39; means eTLD+1. For example, if the URL https://example.test:80/bounce was in the redirect chain, the site reported would be example.test.">
       <link rel="icon" href="favicon.ico">
       <link rel="stylesheet" href="public/docfx.min.css">
       <link rel="stylesheet" href="public/main.css">
@@ -175,7 +176,7 @@ public string[] TrackingSites { get; set; }</code></pre>
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</dt>
-    <dd></dd>
+    <dd>This issue warns about sites in the redirect chain of a finished navigation that may be flagged as trackers and have their state cleared if they don't receive a user interaction. Note that in this context 'site' means eTLD+1. For example, if the URL https://example.test:80/bounce was in the redirect chain, the site reported would be example.test.</dd>
   </dl>
 
 

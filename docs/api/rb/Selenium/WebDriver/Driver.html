@@ -858,7 +858,7 @@
 
 <span class='kw'>def</span> <span class='kw'>for</span><span class='lparen'>(</span><span class='id identifier rubyid_browser'>browser</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_browser'>browser</span>
-  <span class='kw'>when</span> <span class='symbol'>:chrome</span>
+  <span class='kw'>when</span> <span class='symbol'>:chrome</span><span class='comma'>,</span> <span class='symbol'>:chrome_headless_shell</span>
     <span class='const'><span class='object_link'><a href="Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Chrome/Driver.html" title="Selenium::WebDriver::Chrome::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Chrome/Driver.html#initialize-instance_method" title="Selenium::WebDriver::Chrome::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='symbol'>:internet_explorer</span><span class='comma'>,</span> <span class='symbol'>:ie</span>
     <span class='const'><span class='object_link'><a href="IE.html" title="Selenium::WebDriver::IE (module)">IE</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="IE/Driver.html" title="Selenium::WebDriver::IE::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="IE/Driver.html#initialize-instance_method" title="Selenium::WebDriver::IE::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
@@ -2068,7 +2068,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Dec  8 09:14:39 2023 by
+  Generated on Tue Jan 23 00:19:12 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.34 (ruby-3.0.6).
 </div>

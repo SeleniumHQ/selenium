@@ -8,6 +8,7 @@
       <meta name="title" content="Class CommandResponseTypeMap
  ">
       
+      <meta name="description" content="Class that maps a DevTools Protocol command&#39;s type to the type of object returned by the command.">
       <link rel="icon" href="favicon.ico">
       <link rel="stylesheet" href="public/docfx.min.css">
       <link rel="stylesheet" href="public/main.css">
@@ -176,6 +177,48 @@
 </dd>
   </dl>
 
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_CommandResponseTypeMap_TryGetCommandResponseType_" data-uid="OpenQA.Selenium.DevTools.CommandResponseTypeMap.TryGetCommandResponseType*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_CommandResponseTypeMap_TryGetCommandResponseType_OpenQA_Selenium_DevTools_ICommand_System_Type__" data-uid="OpenQA.Selenium.DevTools.CommandResponseTypeMap.TryGetCommandResponseType(OpenQA.Selenium.DevTools.ICommand,System.Type@)">
+  TryGetCommandResponseType(ICommand, out Type)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/CommandResponseTypeMap.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the command response type corresponding to the specified command type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetCommandResponseType(ICommand command, out Type commandResponseType)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.ICommand.html">ICommand</a></dt>
+    <dd><p>The type of command for which to retrieve the response type.</p>
+</dd>
+    <dt><code>commandResponseType</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></dt>
+    <dd><p>The returned response type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the specified command type has a mapped response type; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
 
 
 

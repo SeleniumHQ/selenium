@@ -52,12 +52,35 @@ loadScripts(document, 'script');</script>
 <h1 title="Deprecated API" class="title">Deprecated API</h1>
 <h2 title="Contents">Contents</h2>
 <ul>
+<li><a href="#for-removal">Terminally Deprecated</a></li>
 <li><a href="#interface">Interfaces</a></li>
 <li><a href="#class">Classes</a></li>
+<li><a href="#enum-class">Enum Classes</a></li>
+<li><a href="#exception">Exceptions</a></li>
 <li><a href="#field">Fields</a></li>
 <li><a href="#method">Methods</a></li>
+<li><a href="#constructor">Constructors</a></li>
 </ul>
 </div>
+<ul class="block-list">
+<li>
+<div id="for-removal">
+<div class="caption"><span>Terminally Deprecated Elements</span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Element</div>
+<div class="table-header col-last">Description</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.ErrorCodes</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/http/FormEncodedData.html" title="class in org.openqa.selenium.remote.http">org.openqa.selenium.remote.http.FormEncodedData</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.RemoteStatus</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/ScreenshotException.html#getBase64EncodedScreenshot()">org.openqa.selenium.remote.ScreenshotException.getBase64EncodedScreenshot()</a></div>
+<div class="col-last odd-row-color"></div>
+</div>
+</div>
+</li>
+</ul>
 <ul class="block-list">
 <li>
 <div id="interface">
@@ -65,10 +88,22 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Interface</div>
 <div class="table-header col-last">Description</div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/support/events/WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">org.openqa.selenium.support.events.WebDriverEventListener</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/ContextAware.html" title="interface in org.openqa.selenium">org.openqa.selenium.ContextAware</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">org.openqa.selenium.html5.LocalStorage</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">org.openqa.selenium.html5.LocationContext</a></div>
 <div class="col-last even-row-color">
-<div class="deprecation-comment">Use <a href="org/openqa/selenium/support/events/EventFiringDecorator.html" title="class in org.openqa.selenium.support.events"><code>EventFiringDecorator</code></a> and <a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverListener</code></a> instead</div>
+<div class="deprecation-comment">This functionality is no longer supported</div>
 </div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">org.openqa.selenium.html5.SessionStorage</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/html5/Storage.html" title="interface in org.openqa.selenium.html5">org.openqa.selenium.html5.Storage</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">org.openqa.selenium.html5.WebStorage</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/mobile/NetworkConnection.html" title="interface in org.openqa.selenium.mobile">org.openqa.selenium.mobile.NetworkConnection</a></div>
+<div class="col-last even-row-color"></div>
 </div>
 </div>
 </li>
@@ -80,14 +115,66 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Class</div>
 <div class="table-header col-last">Description</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">org.openqa.selenium.firefox.FirefoxBinary</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">Use <a href="org/openqa/selenium/firefox/FirefoxOptions.html#setBinary(java.nio.file.Path)"><code>FirefoxOptions.setBinary(Path)</code></a> or <a href="org/openqa/selenium/firefox/FirefoxOptions.html#setBinary(java.lang.String)"><code>FirefoxOptions.setBinary(String)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">org.openqa.selenium.html5.Location</a></div>
+<div class="col-last odd-row-color"></div>
 <div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os">org.openqa.selenium.os.CommandLine</a></div>
 <div class="col-last even-row-color"></div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">org.openqa.selenium.support.events.AbstractWebDriverEventListener</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.ErrorCodes</a></div>
 <div class="col-last odd-row-color"></div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">org.openqa.selenium.support.events.EventFiringWebDriver</a></div>
-<div class="col-last even-row-color">
-<div class="deprecation-comment">Use <a href="org/openqa/selenium/support/events/EventFiringDecorator.html" title="class in org.openqa.selenium.support.events"><code>EventFiringDecorator</code></a> and <a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverListener</code></a> instead</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/html5/AddWebStorage.html" title="class in org.openqa.selenium.remote.html5">org.openqa.selenium.remote.html5.AddWebStorage</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/html5/RemoteLocalStorage.html" title="class in org.openqa.selenium.remote.html5">org.openqa.selenium.remote.html5.RemoteLocalStorage</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">LocalStorage can be managed by executing JavaScript. @see #executeScript(String,
+     Object...)</div>
 </div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/html5/RemoteLocationContext.html" title="class in org.openqa.selenium.remote.html5">org.openqa.selenium.remote.html5.RemoteLocationContext</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">This functionality is no longer supported</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/html5/RemoteSessionStorage.html" title="class in org.openqa.selenium.remote.html5">org.openqa.selenium.remote.html5.RemoteSessionStorage</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">LocalStorage can be managed by executing JavaScript. @see #executeScript(String,
+     Object...)</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/http/FormEncodedData.html" title="class in org.openqa.selenium.remote.http">org.openqa.selenium.remote.http.FormEncodedData</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/mobile/RemoteNetworkConnection.html" title="class in org.openqa.selenium.remote.mobile">org.openqa.selenium.remote.mobile.RemoteNetworkConnection</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">This functionality is no longer supported</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.RemoteStatus</a></div>
+<div class="col-last even-row-color"></div>
+</div>
+</div>
+</li>
+</ul>
+<ul class="block-list">
+<li>
+<div id="enum-class">
+<div class="caption"><span>Deprecated Enum Classes</span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Enum Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/html5/AppCacheStatus.html" title="enum class in org.openqa.selenium.html5">org.openqa.selenium.html5.AppCacheStatus</a></div>
+<div class="col-last even-row-color"></div>
+</div>
+</div>
+</li>
+</ul>
+<ul class="block-list">
+<li>
+<div id="exception">
+<div class="caption"><span>Deprecated Exceptions</span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Exceptions</div>
+<div class="table-header col-last">Description</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/NoSuchContextException.html" title="class in org.openqa.selenium">org.openqa.selenium.NoSuchContextException</a></div>
+<div class="col-last even-row-color"></div>
 </div>
 </div>
 </li>
@@ -114,10 +201,26 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Method</div>
 <div class="table-header col-last">Description</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/chromium/ChromiumDriver.html#getLocalStorage()">org.openqa.selenium.chromium.ChromiumDriver.getLocalStorage()</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/chromium/ChromiumDriver.html#getNetworkConnection()">org.openqa.selenium.chromium.ChromiumDriver.getNetworkConnection()</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/chromium/ChromiumDriver.html#getSessionStorage()">org.openqa.selenium.chromium.ChromiumDriver.getSessionStorage()</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/chromium/ChromiumDriver.html#location()">org.openqa.selenium.chromium.ChromiumDriver.location()</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/chromium/ChromiumDriver.html#setLocation(org.openqa.selenium.html5.Location)">org.openqa.selenium.chromium.ChromiumDriver.setLocation<wbr>(Location)</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/chromium/ChromiumDriver.html#setNetworkConnection(org.openqa.selenium.mobile.NetworkConnection.ConnectionType)">org.openqa.selenium.chromium.ChromiumDriver.setNetworkConnection<wbr>(NetworkConnection.ConnectionType)</a></div>
+<div class="col-last odd-row-color"></div>
 <div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#getDevTools()">org.openqa.selenium.firefox.FirefoxDriver.getDevTools()</a></div>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">Use W3C-compliant BiDi protocol. Use {<a href="org/openqa/selenium/firefox/FirefoxDriver.html#getBiDi()"><code>FirefoxDriver.getBiDi()</code></a>}</div>
 </div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#getLocalStorage()">org.openqa.selenium.firefox.FirefoxDriver.getLocalStorage()</a></div>
+<div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#getSessionStorage()">org.openqa.selenium.firefox.FirefoxDriver.getSessionStorage()</a></div>
+<div class="col-last even-row-color"></div>
 <div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#maybeGetDevTools()">org.openqa.selenium.firefox.FirefoxDriver.maybeGetDevTools()</a></div>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">Use W3C-compliant BiDi protocol. Use {<a href="org/openqa/selenium/firefox/FirefoxDriver.html#maybeGetBiDi()"><code>FirefoxDriver.maybeGetBiDi()</code></a>}</div>
@@ -132,6 +235,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color"></div>
 <div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/DriverCommand.html#SET_SCRIPT_TIMEOUT(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT<wbr>(long, TimeUnit)</a></div>
 <div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/mobile/RemoteNetworkConnection.html#getNetworkConnection()">org.openqa.selenium.remote.mobile.RemoteNetworkConnection.getNetworkConnection()</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/mobile/RemoteNetworkConnection.html#setNetworkConnection(org.openqa.selenium.mobile.NetworkConnection.ConnectionType)">org.openqa.selenium.remote.mobile.RemoteNetworkConnection.setNetworkConnection<wbr>(NetworkConnection.ConnectionType)</a></div>
+<div class="col-last odd-row-color"></div>
 <div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#implicitlyWait(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.implicitlyWait<wbr>(long, TimeUnit)</a></div>
 <div class="col-last even-row-color"></div>
 <div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#pageLoadTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.pageLoadTimeout<wbr>(long, TimeUnit)</a></div>
@@ -144,8 +251,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color"></div>
 <div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/Response.html#setStatus(java.lang.Integer)">org.openqa.selenium.remote.Response.setStatus<wbr>(Integer)</a></div>
 <div class="col-last odd-row-color"></div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.implicitlyWait<wbr>(long, TimeUnit)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/ScreenshotException.html#getBase64EncodedScreenshot()">org.openqa.selenium.remote.ScreenshotException.getBase64EncodedScreenshot()</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.implicitlyWait<wbr>(long, TimeUnit)</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(java.time.Duration)"><code>WebDriver.Timeouts.implicitlyWait(Duration)</code></a>
      <p>Specifies the amount of time the driver should wait when searching for an element if
      it is not immediately present.
@@ -159,23 +268,38 @@ loadScripts(document, 'script');</script>
      <p>If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
      invalid argument will be returned.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.pageLoadTimeout<wbr>(long, TimeUnit)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.pageLoadTimeout<wbr>(long, TimeUnit)</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(java.time.Duration)"><code>WebDriver.Timeouts.pageLoadTimeout(Duration)</code></a>
      <p>Sets the amount of time to wait for a page load to complete before throwing an error.
      If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
      invalid argument will be returned.</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.setScriptTimeout<wbr>(long, TimeUnit)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.setScriptTimeout<wbr>(long, TimeUnit)</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#scriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.scriptTimeout(Duration)</code></a>
      <p>Sets the amount of time to wait for an asynchronous script to finish execution before
      throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
      error code with invalid argument will be returned.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)">org.openqa.selenium.WebDriver.Timeouts.setScriptTimeout<wbr>(Duration)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)">org.openqa.selenium.WebDriver.Timeouts.setScriptTimeout<wbr>(Duration)</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#scriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.scriptTimeout(Duration)</code></a></div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+<ul class="block-list">
+<li>
+<div id="constructor">
+<div class="caption"><span>Deprecated Constructors</span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Constructor</div>
+<div class="table-header col-last">Description</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/support/ui/SlowLoadableComponent.html#%3Cinit%3E(java.time.Clock,int)">org.openqa.selenium.support.ui.SlowLoadableComponent<wbr>(Clock, int)</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">Use <a href="org/openqa/selenium/support/ui/SlowLoadableComponent.html#%3Cinit%3E(java.time.Clock,java.time.Duration)"><code>SlowLoadableComponent(Clock, Duration)</code></a> instead.</div>
 </div>
 </div>
 </div>

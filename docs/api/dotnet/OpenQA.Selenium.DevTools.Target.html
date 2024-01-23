@@ -8,6 +8,7 @@
       <meta name="title" content="Class Target
  ">
       
+      <meta name="description" content="Class representing a target for DevTools Protocol commands">
       <link rel="icon" href="favicon.ico">
       <link rel="stylesheet" href="public/docfx.min.css">
       <link rel="stylesheet" href="public/main.css">
@@ -118,9 +119,9 @@
   <dl class="typelist derived">
     <dt>Derived</dt>
     <dd>
-      <div><a class="xref" href="OpenQA.Selenium.DevTools.V116.V116Target.html">V116Target</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.DevTools.V117.V117Target.html">V117Target</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.DevTools.V118.V118Target.html">V118Target</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.DevTools.V119.V119Target.html">V119Target</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.DevTools.V120.V120Target.html">V120Target</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.DevTools.V121.V121Target.html">V121Target</a></div>
       <div><a class="xref" href="OpenQA.Selenium.DevTools.V85.V85Target.html">V85Target</a></div>
     </dd>
   </dl>
@@ -164,7 +165,7 @@
 
   <h3 id="OpenQA_Selenium_DevTools_Target_AttachToTarget_System_String_" data-uid="OpenQA.Selenium.DevTools.Target.AttachToTarget(System.String)">
   AttachToTarget(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Asynchronously attaches to a target.</p>
@@ -204,7 +205,7 @@ session ID established for commands to the target attached to.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_Target_DetachFromTarget_System_String_System_String_" data-uid="OpenQA.Selenium.DevTools.Target.DetachFromTarget(System.String,System.String)">
   DetachFromTarget(string, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Asynchronously detaches from a target.</p>
@@ -246,7 +247,7 @@ session ID established for commands to the target attached to.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_Target_GetTargets_System_Object_" data-uid="OpenQA.Selenium.DevTools.Target.GetTargets(System.Object)">
   GetTargets(object)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Asynchronously gets the targets available for this session.</p>
@@ -260,7 +261,7 @@ session ID established for commands to the target attached to.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>settings</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
-    <dd></dd>
+    <dd>Class representing a target for DevTools Protocol commands</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -282,11 +283,43 @@ targets available for this session.</p>
 
 
 
+  <a id="OpenQA_Selenium_DevTools_Target_OnTargetAttached_" data-uid="OpenQA.Selenium.DevTools.Target.OnTargetAttached*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_Target_OnTargetAttached_OpenQA_Selenium_DevTools_TargetAttachedEventArgs_" data-uid="OpenQA.Selenium.DevTools.Target.OnTargetAttached(OpenQA.Selenium.DevTools.TargetAttachedEventArgs)">
+  OnTargetAttached(TargetAttachedEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the TargetAttached event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnTargetAttached(TargetAttachedEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.DevTools.TargetAttachedEventArgs.html">TargetAttachedEventArgs</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
   <a id="OpenQA_Selenium_DevTools_Target_OnTargetDetached_" data-uid="OpenQA.Selenium.DevTools.Target.OnTargetDetached*"></a>
 
   <h3 id="OpenQA_Selenium_DevTools_Target_OnTargetDetached_OpenQA_Selenium_DevTools_TargetDetachedEventArgs_" data-uid="OpenQA.Selenium.DevTools.Target.OnTargetDetached(OpenQA.Selenium.DevTools.TargetDetachedEventArgs)">
   OnTargetDetached(TargetDetachedEventArgs)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Raises the TargetDetached event.</p>
@@ -319,7 +352,7 @@ targets available for this session.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_Target_SetAutoAttach" data-uid="OpenQA.Selenium.DevTools.Target.SetAutoAttach">
   SetAutoAttach()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Asynchronously sets the DevTools Protocol connection to automatically attach to new targets.</p>
@@ -353,6 +386,37 @@ targets available for this session.</p>
 
 
 
+  <h3 id="OpenQA_Selenium_DevTools_Target_TargetAttached" data-uid="OpenQA.Selenium.DevTools.Target.TargetAttached">
+  TargetAttached
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Occurs when a target is attached.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;TargetAttachedEventArgs&gt; TargetAttached</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.TargetAttachedEventArgs.html">TargetAttachedEventArgs</a>&gt;</dt>
+    <dd>Class representing a target for DevTools Protocol commands</dd>
+  </dl>
+
+
+
+
+
+
+
+
   <h3 id="OpenQA_Selenium_DevTools_Target_TargetDetached" data-uid="OpenQA.Selenium.DevTools.Target.TargetDetached">
   TargetDetached
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Target.cs/#L33"><i class="bi bi-code-slash"></i></a>
@@ -374,7 +438,7 @@ targets available for this session.</p>
   <h4 class="section">Event Type</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.TargetDetachedEventArgs.html">TargetDetachedEventArgs</a>&gt;</dt>
-    <dd></dd>
+    <dd>Class representing a target for DevTools Protocol commands</dd>
   </dl>
 
 
