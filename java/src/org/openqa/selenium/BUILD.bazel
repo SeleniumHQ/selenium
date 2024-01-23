@@ -27,7 +27,7 @@ java_export(
     ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
     opens_to = [
-        "org.openqa.selenium.json",
+        "org.seleniumhq.selenium.json",
     ],
     pom_template = ":template-pom",
     visibility = ["//visibility:public"],

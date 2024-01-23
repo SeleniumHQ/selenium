@@ -10,6 +10,7 @@ java_library(
     deps = [
         "//java:auto-service",
         "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/server",
         "//java/src/org/openqa/selenium/grid/sessionmap",
         artifact("com.beust:jcommander"),
     ],

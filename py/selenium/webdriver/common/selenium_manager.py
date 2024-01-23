@@ -17,6 +17,7 @@
 import json
 import logging
 import os
+import platform
 import subprocess
 import sys
 from pathlib import Path
@@ -39,23 +40,34 @@ class SeleniumManager:
         """Determines the path of the correct Selenium Manager binary.
 
         :Returns: The Selenium Manager executable location
+
+        :Raises: WebDriverException if the platform is unsupported
         """
 
         if (path := os.getenv("SE_MANAGER_PATH")) is not None:
             return Path(path)
-        else:
-            platform = sys.platform
 
-            dirs = {
-                "darwin": "macos",
-                "win32": "windows",
-                "cygwin": "windows",
-            }
+        dirs = {
+            ("darwin", "any"): "macos",
+            ("win32", "any"): "windows",
+            ("cygwin", "any"): "windows",
+            ("linux", "x86_64"): "linux",
+            ("freebsd", "x86_64"): "linux",
+            ("openbsd", "x86_64"): "linux",
+        }
 
-            directory = dirs.get(platform) if dirs.get(platform) else platform
-            file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
+        arch = platform.machine() if sys.platform in ("linux", "freebsd", "openbsd") else "any"
 
-            path = Path(__file__).parent.joinpath(directory, file)
+        directory = dirs.get((sys.platform, arch))
+        if directory is None:
+            raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
+
+        if sys.platform in ["freebsd", "openbsd"]:
+            logger.warning("Selenium Manager binary may not be compatible with %s; verify settings", sys.platform)
+
+        file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
+
+        path = Path(__file__).parent.joinpath(directory, file)
 
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
@@ -113,6 +125,8 @@ class SeleniumManager:
         """
         if logger.getEffectiveLevel() == logging.DEBUG:
             args.append("--debug")
+        args.append("--language-binding")
+        args.append("python")
         args.append("--output")
         args.append("json")
 

@@ -1,3 +1,32 @@
+## 4.17.0
+
+* Add javascript to Selenium Manager input for tracking (see #13288)
+* remove deprecated headless methods and associated references
+* Add script message event (#13153)
+* Update channel name from Aurora to Dev
+* Remove firefox_channels.js example as Channels is deprecated
+* Add Input module command (#13360)
+* remove all references to firefox-bin
+* download files from remote server (#13102)
+* Add auth required event
+* Add traverse history command
+* Add test to get iframe's browsing context
+* Add Input module JS command
+* Add test for node properties in
+* Add CDP for Chrome 121 and remove 118
+
+## 4.16.0
+
+#### :bug: Bug fix
+
+* Fix logging levels in http.js and webdriver.js (#13098)
+* Remove unused targets from the JS tree (#13129)
+
+* #### :nail_care: Polish
+
+* Add CDP v120 and remove v117
+
+
 ## 4.15.0
 
 #### :bug: Bug fix

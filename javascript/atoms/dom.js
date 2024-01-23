@@ -587,7 +587,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     var parent = bot.dom.getParentNodeInComposedDom(e);
 
     if (bot.dom.IS_SHADOW_DOM_ENABLED && (parent instanceof ShadowRoot)) {
-      if (parent.host.shadowRoot !== parent) {
+      if (parent.host.shadowRoot && parent.host.shadowRoot !== parent) {
         // There is a younger shadow root, which will take precedence over
         // the shadow this element is in, thus this element won't be
         // displayed.
@@ -1325,7 +1325,9 @@ bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
         } else {
           shadowChildren = contentElem.assignedNodes();
         }
-        goog.array.forEach(shadowChildren, function(node) {
+        const childrenToTraverse =
+          shadowChildren.length > 0 ? shadowChildren : contentElem.childNodes;
+        goog.array.forEach(childrenToTraverse, function (node) {
           bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
               node, lines, shown, whitespace, textTransform);
         });

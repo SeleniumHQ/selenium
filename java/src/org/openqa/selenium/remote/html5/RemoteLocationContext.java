@@ -17,13 +17,16 @@
 
 package org.openqa.selenium.remote.html5;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 
+/**
+ * @deprecated This functionality is no longer supported
+ */
+@Deprecated
 public class RemoteLocationContext implements LocationContext {
   private final ExecuteMethod executeMethod;
 
@@ -57,7 +60,7 @@ public class RemoteLocationContext implements LocationContext {
 
   @Override
   public void setLocation(Location location) {
-    Map<String, Location> args = ImmutableMap.of("location", location);
+    Map<String, Location> args = Map.of("location", location);
     executeMethod.execute(DriverCommand.SET_LOCATION, args);
   }
 }

@@ -21,7 +21,7 @@ on:
 
 jobs:
   ruby:
-    if: inputs.language == 'ruby' || github.event_name == 'schedule'
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'ruby' || github.event_name == 'schedule')
     name: Ruby
     uses: ./.github/workflows/bazel.yml
     strategy:
@@ -37,8 +37,9 @@ jobs:
         bazel run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
         bazel run //rb:${{ matrix.gem }}-release-nightly
 
+
   java:
-    if: inputs.language == 'java' || github.event_name == 'schedule'
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'java' || github.event_name == 'schedule')
     name: Java
     uses: ./.github/workflows/bazel.yml
     with:
@@ -49,7 +50,7 @@ jobs:
     secrets: inherit
 
   grid:
-    if: inputs.language == 'grid' || github.event_name == 'schedule'
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'grid' || github.event_name == 'schedule')
     name: Grid
     uses: ./.github/workflows/bazel.yml
     with:
@@ -57,5 +58,5 @@ jobs:
       cache-key: grid-nightly
       run: |
         echo build --stamp >>.bazelrc.local
-        ./go prep-release-zip
+        ./go java-release-zip
       nightly-release-files: build/dist/*.*

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.html5;
 
+@Deprecated
 public interface WebStorage {
 
   LocalStorage getLocalStorage();

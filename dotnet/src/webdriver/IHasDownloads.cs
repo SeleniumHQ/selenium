@@ -1,4 +1,4 @@
-// <copyright file="IHasSessionId.cs" company="WebDriver Committers">
+// <copyright file="IHasDownloads.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,12 +16,10 @@
 // limitations under the License.
 // </copyright>
 
+using System.Collections.Generic;
+
 namespace OpenQA.Selenium
 {
-    using System.Collections.Generic;
-
-    using System.Collections.Generic;
-
     /// <summary>
     /// Interface indicating the driver can handle downloading remote files.
     /// </summary>
@@ -30,8 +28,8 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Retrieves the downloadable files.
         /// </summary>
-        /// <returns>A list of file names available for download.</returns>
-        List<string> GetDownloadableFiles();
+        /// <returns>A read-only list of file names available for download.</returns>
+        IReadOnlyList<string> GetDownloadableFiles();
 
         /// <summary>
         /// Downloads a file with the specified file name and returns a dictionary containing the downloaded file's data.
@@ -44,4 +42,5 @@ namespace OpenQA.Selenium
         /// Deletes the downloadable files.
         /// </summary>
         void DeleteDownloadableFiles();
-    }}
+    }
+}

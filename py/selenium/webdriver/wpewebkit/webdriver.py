@@ -17,12 +17,10 @@
 
 import http.client as http_client
 
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from .options import Options
-from .service import DEFAULT_EXECUTABLE_PATH
 from .service import Service
 
 
@@ -31,35 +29,25 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        executable_path=DEFAULT_EXECUTABLE_PATH,
-        port=0,
         options=None,
-        desired_capabilities=DesiredCapabilities.WPEWEBKIT,
-        service_log_path=None,
+        service: Service = None,
     ):
         """Creates a new instance of the WPEWebKit driver.
 
         Starts the service and then creates new instance of WPEWebKit Driver.
 
         :Args:
-         - executable_path : path to the executable. If the default is used it assumes the executable is in the $PATH.
-         - port : port you would like the service to run, if left as 0, a free port will be found.
-         - options : an instance of WPEWebKitOptions
-         - desired_capabilities : Dictionary object with desired capabilities
-         - service_log_path : Path to write service stdout and stderr output.
+         - options : an instance of ``WPEWebKitOptions``
+         - service : Service object for handling the browser driver if you need to pass extra details
         """
-        if options:
-            capabilities = options.to_capabilities()
-            capabilities.update(desired_capabilities)
-            desired_capabilities = capabilities
-        else:
+        if not options:
             options = Options()
 
-        self.service = Service(executable_path, port=port, log_path=service_log_path)
+        self.service = service if service else Service()
         self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
-        super().__init__(command_executor=self.service.service_url, desired_capabilities=desired_capabilities)
+        super().__init__(command_executor=self.service.service_url, options=options)
         self._is_remote = False
 
     def quit(self):

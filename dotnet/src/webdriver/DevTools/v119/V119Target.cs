@@ -40,6 +40,7 @@ namespace OpenQA.Selenium.DevTools.V119
         {
             this.adapter = adapter;
             adapter.DetachedFromTarget += OnDetachedFromTarget;
+            adapter.AttachedToTarget += OnAttachedToTarget;
         }
 
         /// <summary>
@@ -119,6 +120,43 @@ namespace OpenQA.Selenium.DevTools.V119
         private void OnDetachedFromTarget(object sender, DetachedFromTargetEventArgs e)
         {
             this.OnTargetDetached(new TargetDetachedEventArgs() { SessionId = e.SessionId, TargetId = e.TargetId });
+        }
+
+        private void OnAttachedToTarget(object sender, AttachedToTargetEventArgs e)
+        {
+            this.OnTargetAttached(new TargetAttachedEventArgs()
+            {
+                SessionId = e.SessionId,
+                TargetInfo = e.TargetInfo == null ? null : new TargetInfo
+                {
+                    BrowserContextId = e.TargetInfo.BrowserContextId,
+                    IsAttached = e.TargetInfo.Attached,
+                    OpenerId = e.TargetInfo.OpenerId,
+                    TargetId = e.TargetInfo.TargetId,
+                    Title = e.TargetInfo.Title,
+                    Type = e.TargetInfo.Type,
+                    Url = e.TargetInfo.Url
+                },
+                WaitingForDebugger = e.WaitingForDebugger
+            });
+        }
+
+        internal override ICommand CreateSetAutoAttachCommand(bool waitForDebuggerOnStart)
+        {
+            return new SetAutoAttachCommandSettings
+            {
+                AutoAttach = true,
+                Flatten = true,
+                WaitForDebuggerOnStart = waitForDebuggerOnStart
+            };
+        }
+
+        internal override ICommand CreateDiscoverTargetsCommand()
+        {
+            return new SetDiscoverTargetsCommandSettings
+            {
+                Discover = true
+            };
         }
     }
 }

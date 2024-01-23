@@ -63,7 +63,7 @@ function requireAtom(module, bazelTarget) {
       log_.log(`../../../bazel-bin/${file}`)
       return require(path.resolve(`../../../bazel-bin/${file}`))
     } catch (ex2) {
-      log_.error(ex2)
+      log_.severe(ex2)
       throw Error(
         `Failed to import atoms module ${module}. If running in dev mode, you` +
           ` need to run \`bazel build ${bazelTarget}\` from the project` +
@@ -400,6 +400,10 @@ const W3C_COMMAND_MAP = new Map([
     cmd.Name.SET_USER_VERIFIED,
     post('/session/:sessionId/webauthn/authenticator/:authenticatorId/uv'),
   ],
+
+  [cmd.Name.GET_DOWNLOADABLE_FILES, get('/session/:sessionId/se/files')],
+  [cmd.Name.DOWNLOAD_FILE, post(`/session/:sessionId/se/files`)],
+  [cmd.Name.DELETE_DOWNLOADABLE_FILES, del(`/session/:sessionId/se/files`)]
 ])
 
 /**

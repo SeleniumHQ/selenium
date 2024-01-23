@@ -1,0 +1,118 @@
+{
+  "geckodriver-releases": [
+    {
+      "geckodriver-version": "0.34.0",
+      "min-firefox-version": 115
+    },
+    {
+      "geckodriver-version": "0.33.0",
+      "min-firefox-version": 102,
+      "max-firefox-version": 120
+    },
+    {
+      "geckodriver-version": "0.32.2",
+      "min-firefox-version": 102,
+      "max-firefox-version": 120
+    },
+    {
+      "geckodriver-version": "0.32.1",
+      "min-firefox-version": 102,
+      "max-firefox-version": 120
+    },
+    {
+      "geckodriver-version": "0.32.0",
+      "min-firefox-version": 102,
+      "max-firefox-version": 120
+    },
+    {
+      "geckodriver-version": "0.31.0",
+      "min-firefox-version": 91,
+      "max-firefox-version": 120
+    },
+    {
+      "geckodriver-version": "0.30.0",
+      "min-firefox-version": 78,
+      "max-firefox-version": 90
+    },
+    {
+      "geckodriver-version": "0.29.1",
+      "min-firefox-version": 60,
+      "max-firefox-version": 90
+    },
+    {
+      "geckodriver-version": "0.29.0",
+      "min-firefox-version": 60,
+      "max-firefox-version": 90
+    },
+    {
+      "geckodriver-version": "0.28.0",
+      "min-firefox-version": 60,
+      "max-firefox-version": 90
+    },
+    {
+      "geckodriver-version": "0.27.0",
+      "min-firefox-version": 60,
+      "max-firefox-version": 90
+    },
+    {
+      "geckodriver-version": "0.26.0",
+      "min-firefox-version": 60,
+      "max-firefox-version": 90
+    },
+    {
+      "geckodriver-version": "0.25.0",
+      "min-firefox-version": 57,
+      "max-firefox-version": 90
+    },
+    {
+      "geckodriver-version": "0.24.0",
+      "min-firefox-version": 57,
+      "max-firefox-version": 79
+    },
+    {
+      "geckodriver-version": "0.23.0",
+      "min-firefox-version": 57,
+      "max-firefox-version": 79
+    },
+    {
+      "geckodriver-version": "0.22.0",
+      "min-firefox-version": 57,
+      "max-firefox-version": 79
+    },
+    {
+      "geckodriver-version": "0.21.0",
+      "min-firefox-version": 57,
+      "max-firefox-version": 79
+    },
+    {
+      "geckodriver-version": "0.20.1",
+      "min-firefox-version": 55,
+      "max-firefox-version": 62
+    },
+    {
+      "geckodriver-version": "0.20.0",
+      "min-firefox-version": 55,
+      "max-firefox-version": 62
+    },
+    {
+      "geckodriver-version": "0.19.1",
+      "min-firefox-version": 55,
+      "max-firefox-version": 62
+    },
+    {
+      "geckodriver-version": "0.19.0",
+      "min-firefox-version": 55,
+      "max-firefox-version": 62
+    },
+    {
+      "geckodriver-version": "0.18.0",
+      "min-firefox-version": 53,
+      "max-firefox-version": 62
+    },
+    {
+      "geckodriver-version": "0.17.0",
+      "min-firefox-version": 52,
+      "max-firefox-version": 62
+    }
+  ]
+}

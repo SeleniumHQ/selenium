@@ -115,6 +115,7 @@ const Pages = (function () {
   addPage('emptyPage', 'bidi/emptyPage.html')
   addPage('emptyText', 'bidi/emptyText.txt')
   addPage('redirectedHttpEquiv', 'bidi/redirected_http_equiv.html')
+  addPage('releaseAction', 'bidi/release_action.html')
 
   return pages
 })()

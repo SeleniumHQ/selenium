@@ -26,6 +26,7 @@ import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
+import org.openqa.selenium.grid.server.BaseServerOptions;
 
 public class DistributorOptions {
 
@@ -67,6 +68,8 @@ public class DistributorOptions {
       return host.get();
     }
 
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    String schema = (serverOptions.isSecure() || serverOptions.isSelfSigned()) ? "https" : "http";
     Optional<Integer> port = config.getInt(DISTRIBUTOR_SECTION, "port");
     Optional<String> hostname = config.get(DISTRIBUTOR_SECTION, "hostname");
 
@@ -75,7 +78,7 @@ public class DistributorOptions {
     }
 
     try {
-      return new URI("http", null, hostname.get(), port.get(), null, null, null);
+      return new URI(schema, null, hostname.get(), port.get(), null, null, null);
     } catch (URISyntaxException e) {
       throw new ConfigException(
           "Distributor uri configured through host (%s) and port (%d) is not a valid URI",

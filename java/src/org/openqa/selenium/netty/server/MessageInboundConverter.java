@@ -46,8 +46,8 @@ class MessageInboundConverter extends SimpleChannelInboundHandler<WebSocketFrame
   private static final Logger LOG = Logger.getLogger(MessageInboundConverter.class.getName());
 
   private Continuation next;
-  private StringBuilder builder;
-  private ByteArrayOutputStream buffer;
+  private final StringBuilder builder;
+  private final ByteArrayOutputStream buffer;
 
   public MessageInboundConverter() {
     next = Continuation.None;

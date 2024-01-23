@@ -30,6 +30,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
@@ -67,7 +68,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-public class RemoteNode extends Node {
+public class RemoteNode extends Node implements Closeable {
 
   public static final Json JSON = new Json();
   private final HttpHandler client;
@@ -265,6 +266,11 @@ public class RemoteNode extends Node {
         "id", getId(),
         "uri", externalUri,
         "capabilities", capabilities);
+  }
+
+  @Override
+  public void close() {
+    ((HttpClient) (this.client)).close();
   }
 
   private class RemoteCheck implements HealthCheck {

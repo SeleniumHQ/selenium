@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.router;
 
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -26,8 +27,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.BinaryMessage;
@@ -53,26 +54,27 @@ public class ProxyWebsocketsIntoGrid
 
   @Override
   public Optional<Consumer<Message>> apply(String uri, Consumer<Message> downstream) {
-    Objects.requireNonNull(uri);
-    Objects.requireNonNull(downstream);
+    Require.nonNull("uri", uri);
+    Require.nonNull("downstream", downstream);
 
     Optional<SessionId> sessionId = HttpSessionId.getSessionId(uri).map(SessionId::new);
-    if (!sessionId.isPresent()) {
+    if (sessionId.isEmpty()) {
+      LOG.warning("Session not found for uri " + uri);
       return Optional.empty();
     }
 
     try {
-      Session session = sessions.get(sessionId.get());
+      URI sessionUri = sessions.getUri(sessionId.get());
 
       HttpClient client =
-          clientFactory.createClient(ClientConfig.defaultConfig().baseUri(session.getUri()));
+          clientFactory.createClient(ClientConfig.defaultConfig().baseUri(sessionUri));
       WebSocket upstream =
           client.openSocket(new HttpRequest(GET, uri), new ForwardingListener(downstream));
 
       return Optional.of(upstream::send);
 
     } catch (NoSuchSessionException e) {
-      LOG.info("Attempt to connect to non-existent session: " + uri);
+      LOG.warning("Attempt to connect to non-existent session: " + uri);
       return Optional.empty();
     }
   }

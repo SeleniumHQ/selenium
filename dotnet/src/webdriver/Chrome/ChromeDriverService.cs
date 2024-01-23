@@ -57,18 +57,6 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Creates a default instance of the ChromeDriverService.
-        /// </summary>
-        /// /// <param name="options">Browser options used to find the correct ChromeDriver binary.</param>
-        /// <returns>A ChromeDriverService that implements default settings.</returns>
-        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
-        public static ChromeDriverService CreateDefaultService(ChromeOptions options)
-        {
-            string fullServicePath = DriverFinder.FullPath(options);
-            return CreateDefaultService(Path.GetDirectoryName(fullServicePath), Path.GetFileName(fullServicePath));
-        }
-
-        /// <summary>
         /// Creates a default instance of the ChromeDriverService using a specified path to the ChromeDriver executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the ChromeDriver executable.</param>

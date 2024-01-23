@@ -167,17 +167,9 @@ pinned_maven_install()
 
 http_archive(
     name = "rules_dotnet",
-    patch_args = ["-p1"],
-    patches = [
-        "//dotnet:0001-Include-more-of-the-SDK.patch",
-        "//dotnet:0002-Pass-through-information-about-location-of-the-nupkg.patch",
-        "//dotnet:0003-Make-Runfiles-library-compatible-with-net-standard-2-0.patch",
-        "//dotnet:0004-Ensure-data-runfiles-are-added-to-tests.patch",
-        "//dotnet:0005-Ensure-csharp_library-files-are-unique.patch",
-    ],
-    sha256 = "f445400dac566eed9d7895aa0fb168a5453a07e5128dc1c4852cd9c537e0ca60",
-    strip_prefix = "rules_dotnet-0.10.7",
-    url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.10.7/rules_dotnet-v0.10.7.tar.gz",
+    sha256 = "718cb2c3431523aaf3df7feed0e997e4ded002abbf56ac37d9c0536a812d6276",
+    strip_prefix = "rules_dotnet-0.12.0",
+    url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.12.0/rules_dotnet-v0.12.0.tar.gz",
 )
 
 load(
@@ -240,7 +232,7 @@ build_bazel_rules_nodejs_dependencies()
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
 
 node_repositories(
-    node_version = "18.12.0",
+    node_version = "18.17.0",
 )
 
 npm_install(
@@ -329,27 +321,32 @@ oci_pull(
     repository = "selenium/standalone-chrome",
 )
 
+load("//common:selenium_manager.bzl", "selenium_manager")
+
+selenium_manager()
+
 load("//common:repositories.bzl", "pin_browsers")
 
 pin_browsers()
 
 http_archive(
     name = "rules_ruby",
-    sha256 = "34296f8cad46ec10b7eea59f3399feabcfbc33935b7d8bec880ea0ecfadc23b5",
-    strip_prefix = "rules_ruby-9550503e1c1702375e87837d43eb137030edd28a",
-    url = "https://github.com/p0deje/rules_ruby/archive/9550503e1c1702375e87837d43eb137030edd28a.zip",
+    sha256 = "9bfab76e1272dae72355c65cc858ede68b659716381485baa4c8e7a70ddc38a6",
+    strip_prefix = "rules_ruby-0.5.0",
+    url = "https://github.com/bazel-contrib/rules_ruby/releases/download/v0.5.0/rules_ruby-v0.5.0.tar.gz",
 )
 
 load(
     "@rules_ruby//ruby:deps.bzl",
-    "rb_bundle",
+    "rb_bundle_fetch",
     "rb_register_toolchains",
 )
-load("//rb:ruby_version.bzl", "RUBY_VERSION")
 
-rb_register_toolchains(version = RUBY_VERSION)
+rb_register_toolchains(
+    version_file = "//:rb/.ruby-version",
+)
 
-rb_bundle(
+rb_bundle_fetch(
     name = "bundle",
     srcs = [
         "//:rb/lib/selenium/devtools/version.rb",
@@ -358,6 +355,7 @@ rb_bundle(
         "//:rb/selenium-webdriver.gemspec",
     ],
     gemfile = "//:rb/Gemfile",
+    gemfile_lock = "//:rb/Gemfile.lock",
 )
 
 http_archive(

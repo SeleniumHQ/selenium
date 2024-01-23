@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.support.ui;
 
-import com.google.common.base.Throwables;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -75,7 +74,7 @@ public class FluentWait<T> implements Wait<T> {
   private Duration interval = DEFAULT_WAIT_DURATION;
   private Supplier<String> messageSupplier = () -> null;
 
-  private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
+  private final List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
 
   /**
    * @param input The input value to pass to the evaluated conditions.
@@ -244,7 +243,12 @@ public class FluentWait<T> implements Wait<T> {
         return e;
       }
     }
-    Throwables.throwIfUnchecked(e);
+    if (e instanceof Error) {
+      throw (Error) e;
+    }
+    if (e instanceof RuntimeException) {
+      throw (RuntimeException) e;
+    }
     throw new RuntimeException(e);
   }
 

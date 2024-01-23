@@ -17,9 +17,26 @@
 import typing
 from abc import ABCMeta
 from abc import abstractmethod
+from enum import Enum
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy
+
+
+class PageLoadStrategy(str, Enum):
+    """Enum of possible page load strategies.
+
+    Selenium support following strategies:
+        * normal (default) - waits for all resources to download
+        * eager - DOM access is ready, but other resources like images may still be loading
+        * none - does not block `WebDriver` at all
+
+    Docs: https://www.selenium.dev/documentation/webdriver/drivers/options/#pageloadstrategy.
+    """
+
+    normal = "normal"
+    eager = "eager"
+    none = "none"
 
 
 class _BaseOptionsDescriptor:
@@ -348,7 +365,7 @@ class BaseOptions(metaclass=ABCMeta):
         super().__init__()
         self._caps = self.default_capabilities
         self._proxy = None
-        self.set_capability("pageLoadStrategy", "normal")
+        self.set_capability("pageLoadStrategy", PageLoadStrategy.normal)
         self.mobile_options = None
 
     @property
@@ -401,7 +418,7 @@ class ArgOptions(BaseOptions):
         """:Returns: A list of arguments needed for the browser."""
         return self._arguments
 
-    def add_argument(self, argument):
+    def add_argument(self, argument) -> None:
         """Adds an argument to the list.
 
         :Args:

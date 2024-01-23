@@ -112,8 +112,8 @@ public class CdpClientGenerator {
   }
 
   private static class Model {
-    private List<Domain> domains = new ArrayList<>();
-    private String basePackage;
+    private final List<Domain> domains = new ArrayList<>();
+    private final String basePackage;
 
     public Model(String basePackage) {
       this.basePackage = basePackage;
@@ -149,7 +149,7 @@ public class CdpClientGenerator {
   }
 
   private static class Parser<T extends BaseSpec> {
-    private Map<String, BiConsumer<T, Object>> processors;
+    private final Map<String, BiConsumer<T, Object>> processors;
 
     public Parser(Map<String, BiConsumer<T, Object>> processors) {
       this.processors = processors;
@@ -247,11 +247,11 @@ public class CdpClientGenerator {
   }
 
   private static class Domain extends BaseSpec {
-    private Model model;
+    private final Model model;
 
-    private List<TypeSpec> types = new ArrayList<>();
-    private List<CommandSpec> commands = new ArrayList<>();
-    private List<EventSpec> events = new ArrayList<>();
+    private final List<TypeSpec> types = new ArrayList<>();
+    private final List<CommandSpec> commands = new ArrayList<>();
+    private final List<EventSpec> events = new ArrayList<>();
 
     public Domain(Model model) {
       this.model = model;
@@ -269,12 +269,12 @@ public class CdpClientGenerator {
       Path domainDir = target.resolve(name.toLowerCase());
       ensureDirectoryExists(domainDir);
       dumpMainClass(domainDir);
-      if (types.size() > 0) {
+      if (!types.isEmpty()) {
         Path typesDir = domainDir.resolve("model");
         ensureDirectoryExists(typesDir);
         types.forEach(type -> type.dumpTo(typesDir));
       }
-      if (events.size() > 0) {
+      if (!events.isEmpty()) {
         Path eventsDir = domainDir.resolve("model");
         ensureDirectoryExists(eventsDir);
         events.forEach(event -> event.dumpTo(eventsDir));
@@ -437,7 +437,8 @@ public class CdpClientGenerator {
               .get()
               .addStatement(
                   String.format(
-                      "return new Event<>(\"%s.%s\", input -> null);", domain.name, name));
+                      "return new Event<>(\"%s.%s\", ConverterFunctions.empty());",
+                      domain.name, name));
         } else if (type instanceof ObjectType) {
           methodDecl
               .getBody()
@@ -446,6 +447,14 @@ public class CdpClientGenerator {
                   String.format(
                       "return new Event<>(\"%s.%s\", input -> %s);",
                       domain.name, name, type.getMapper()));
+        } else if (type instanceof ArrayType) {
+          methodDecl
+              .getBody()
+              .get()
+              .addStatement(
+                  String.format(
+                      "return new Event<>(\"%s.%s\", ConverterFunctions.map(\"%s\", input -> %s));",
+                      domain.name, name, type.getName(), type.getMapper()));
         } else {
           methodDecl
               .getBody()
@@ -477,7 +486,7 @@ public class CdpClientGenerator {
                               parameter.parse(item);
                               parameters.add(parameter);
                             });
-                    if (parameters.size() == 0) {
+                    if (parameters.isEmpty()) {
                       event.type = new VoidType();
                     } else if (parameters.size() == 1) {
                       event.type = parameters.get(0).type;
@@ -664,6 +673,12 @@ public class CdpClientGenerator {
             String.format(
                 "return new Command<>(\"%s.%s\", Map.copyOf(params), input -> %s);",
                 domain.name, name, type.getMapper()));
+      } else if (type instanceof ArrayType) {
+        body.addStatement(
+            String.format(
+                "return new Command<>(\"%s.%s\", Map.copyOf(params), ConverterFunctions.map(\"%s\","
+                    + " input -> %s));",
+                domain.name, name, type.getName(), type.getMapper()));
       } else {
         body.addStatement(
             String.format(
@@ -706,7 +721,7 @@ public class CdpClientGenerator {
                               res.parse(item);
                               returns.add(res);
                             });
-                    if (returns.size() == 0) {
+                    if (returns.isEmpty()) {
                       command.type = new VoidType();
                     } else if (returns.size() == 1) {
                       command.type = returns.get(0).type;
@@ -779,8 +794,8 @@ public class CdpClientGenerator {
   }
 
   private static class SimpleType implements IType {
-    private String name;
-    private String type;
+    private final String name;
+    private final String type;
 
     public SimpleType(String name, String type) {
       this.name = name;
@@ -1060,9 +1075,9 @@ public class CdpClientGenerator {
 
   private static class ObjectType implements IType {
 
-    private TypedSpec parent;
-    private String name;
-    private List<VariableSpec> properties;
+    private final TypedSpec parent;
+    private final String name;
+    private final List<VariableSpec> properties;
 
     public ObjectType(TypedSpec parent, String name, List<VariableSpec> properties) {
       this.parent = parent;
@@ -1150,7 +1165,7 @@ public class CdpClientGenerator {
       fromJson.setType(capitalize(name));
       fromJson.addParameter(JsonInput.class, "input");
       BlockStmt body = fromJson.getBody().get();
-      if (properties.size() > 0) {
+      if (!properties.isEmpty()) {
         properties.forEach(
             property -> {
               if (property.optional) {
@@ -1210,7 +1225,7 @@ public class CdpClientGenerator {
 
   private static class ArrayType implements IType {
     private IType itemType;
-    private String name;
+    private final String name;
 
     public ArrayType(String name) {
       this.name = name;
@@ -1295,9 +1310,9 @@ public class CdpClientGenerator {
   }
 
   private static class RefType implements IType {
-    private String name;
-    private Domain domain;
-    private String type;
+    private final String name;
+    private final Domain domain;
+    private final String type;
 
     public RefType(String name, Domain domain, String type) {
       this.name = name;

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 root = File.expand_path(File.dirname(__FILE__))
-raise "cwd must be #{root} when reading gemspec" if root != Dir.pwd
-
 $LOAD_PATH.push(File.expand_path('lib', root))
 require 'selenium/webdriver/version'
 
@@ -49,6 +47,7 @@ Gem::Specification.new do |s|
   s.bindir = 'bin'
   s.require_paths = ['lib']
 
+  s.add_runtime_dependency 'base64', ['~> 0.2']
   s.add_runtime_dependency 'rexml', ['~> 3.2', '>= 3.2.5']
   s.add_runtime_dependency 'rubyzip', ['>= 1.2.2', '< 3.0']
   s.add_runtime_dependency 'websocket', ['~> 1.0']

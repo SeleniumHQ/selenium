@@ -838,6 +838,7 @@ public class LocalNode extends Node {
   private URI rewrite(String path) {
     try {
       String scheme = "https".equals(gridUri.getScheme()) ? "wss" : "ws";
+      path = NodeOptions.normalizeSubPath(gridUri.getPath()) + path;
       return new URI(
           scheme, gridUri.getUserInfo(), gridUri.getHost(), gridUri.getPort(), path, null, null);
     } catch (URISyntaxException e) {

@@ -43,7 +43,7 @@ module Selenium
 
         def for(browser, opts = {})
           case browser
-          when :chrome
+          when :chrome, :chrome_headless_shell
             Chrome::Driver.new(**opts)
           when :internet_explorer, :ie
             IE::Driver.new(**opts)
@@ -329,7 +329,7 @@ module Selenium
 
       def add_extensions(browser)
         extensions = case browser
-                     when :chrome, :msedge
+                     when :chrome, :chrome_headless_shell, :msedge, :microsoftedge
                        Chromium::Driver::EXTENSIONS
                      when :firefox
                        Firefox::Driver::EXTENSIONS

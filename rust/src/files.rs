@@ -35,6 +35,7 @@ use std::io::{BufReader, Cursor, Read};
 use std::path::{Path, PathBuf};
 use tar::Archive;
 use tempfile::Builder;
+use walkdir::{DirEntry, WalkDir};
 use zip::ZipArchive;
 
 pub const PARSE_ERROR: &str = "Wrong browser/driver version";
@@ -65,14 +66,6 @@ impl BrowserPath {
             channel: channel.to_string(),
         }
     }
-}
-
-pub fn create_empty_parent_path_if_not_exists(path: &Path) -> Result<(), Error> {
-    if let Some(p) = path.parent() {
-        create_path_if_not_exists(p)?;
-        fs::remove_dir_all(p).and_then(|_| fs::create_dir(p))?;
-    }
-    Ok(())
 }
 
 pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Error> {
@@ -185,7 +178,7 @@ pub fn uncompress_sfx(compressed_file: &str, target: &Path, log: &Logger) -> Res
         "Moving extracted files and folders from {} to {}",
         core_str, target_str
     ));
-    create_empty_parent_path_if_not_exists(target)?;
+    create_parent_path_if_not_exists(target)?;
     fs::rename(&core_str, &target_str)?;
 
     Ok(())
@@ -291,7 +284,7 @@ pub fn uncompress_deb(
         "Moving extracted files and folders from {} to {}",
         opt_edge_str, target_str
     ));
-    create_empty_parent_path_if_not_exists(target)?;
+    create_parent_path_if_not_exists(target)?;
     fs::rename(&opt_edge_str, &target_str)?;
 
     Ok(())
@@ -562,4 +555,37 @@ pub fn find_bytes(buffer: &[u8], bytes: &[u8]) -> Option<usize> {
     buffer
         .windows(bytes.len())
         .position(|window| window == bytes)
+}
+
+pub fn collect_files_from_cache<F: Fn(&DirEntry) -> bool>(
+    cache_path: &PathBuf,
+    filter: F,
+) -> Vec<PathBuf> {
+    WalkDir::new(cache_path)
+        .sort_by_file_name()
+        .into_iter()
+        .filter_map(|entry| entry.ok())
+        .filter(|entry| filter(entry))
+        .map(|entry| entry.path().to_owned())
+        .collect()
+}
+
+pub fn find_latest_from_cache<F: Fn(&DirEntry) -> bool>(
+    cache_path: &PathBuf,
+    filter: F,
+) -> Result<Option<PathBuf>, Error> {
+    let files_in_cache = collect_files_from_cache(cache_path, filter);
+    if !files_in_cache.is_empty() {
+        Ok(Some(files_in_cache.iter().last().unwrap().to_owned()))
+    } else {
+        Ok(None)
+    }
+}
+
+pub fn capitalize(s: &str) -> String {
+    let mut chars = s.chars();
+    match chars.next() {
+        None => String::new(),
+        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+    }
 }

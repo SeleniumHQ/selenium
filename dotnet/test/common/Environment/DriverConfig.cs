@@ -1,10 +1,5 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -13,9 +8,6 @@ namespace OpenQA.Selenium.Environment
     {
         [JsonProperty]
         public string DriverTypeName { get; set; }
-
-        [JsonProperty]
-        public string AssemblyName { get; set; }
 
         [JsonProperty]
         [JsonConverter(typeof(StringEnumConverter))]

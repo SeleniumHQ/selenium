@@ -32,8 +32,8 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 class ReverseProxyHandlerTest {
-  private Tracer tracer = DefaultTestTracer.createTracer();
-  private HttpClient.Factory factory = HttpClient.Factory.createDefault();
+  private final Tracer tracer = DefaultTestTracer.createTracer();
+  private final HttpClient.Factory factory = HttpClient.Factory.createDefault();
 
   @Test
   void shouldForwardRequestsToEndPoint()

@@ -159,18 +159,6 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Creates a default instance of the InternetExplorerDriverService.
-        /// </summary>
-        /// <param name="options">Browser options used to find the correct IEDriver binary.</param>
-        /// <returns>A InternetExplorerDriverService that implements default settings.</returns>
-        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
-        public static InternetExplorerDriverService CreateDefaultService(InternetExplorerOptions options)
-        {
-            string fullServicePath = DriverFinder.FullPath(options);
-            return CreateDefaultService(Path.GetDirectoryName(fullServicePath), Path.GetFileName(fullServicePath));
-        }
-
-        /// <summary>
         /// Creates a default instance of the InternetExplorerDriverService using a specified path to the IEDriverServer executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the IEDriverServer executable.</param>

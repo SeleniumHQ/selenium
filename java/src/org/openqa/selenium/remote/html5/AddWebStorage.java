@@ -28,6 +28,7 @@ import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 
+@Deprecated
 public class AddWebStorage implements AugmenterProvider<WebStorage> {
 
   @Override
