@@ -52,6 +52,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rubyzip', ['>= 1.2.2', '< 3.0']
   s.add_runtime_dependency 'websocket', ['~> 1.0']
 
+  s.add_development_dependency 'git', ['~> 1.19']
   s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rake', ['~> 13.0']
   s.add_development_dependency 'rspec', ['~> 3.0']

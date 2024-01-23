@@ -42,6 +42,9 @@ GEM
     ffi (1.16.3)
     ffi (1.16.3-x64-mingw32)
     fileutils (1.7.2)
+    git (1.19.1)
+      addressable (~> 2.8)
+      rchardet (~> 1.8)
     hashdiff (1.1.0)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
@@ -75,6 +78,7 @@ GEM
       ffi (~> 1.0)
     rbs (3.4.2)
       abbrev
+    rchardet (1.8.0)
     rdoc (6.6.2)
       psych (>= 4.0.0)
     regexp_parser (2.9.0)
@@ -162,6 +166,7 @@ PLATFORMS
 
 DEPENDENCIES
   debug (~> 1.7)
+  git (~> 1.19)
   rack (~> 2.0)
   rake (~> 13.0)
   rspec (~> 3.0)
