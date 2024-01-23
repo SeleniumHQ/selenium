@@ -665,6 +665,12 @@ namespace :py do
         File.open(file, "w") { |f| f.puts text }
     end
 
+    old_short_version = old_version.split('.')[0..1].join('.')
+    new_short_version = new_version.split('.')[0..1].join('.')
+
+    text = File.read('py/docs/source/conf.py').gsub(old_short_version, new_short_version)
+    File.open('py/docs/source/conf.py', "w") { |f| f.puts text }
+
     Rake::Task['py:changelog'].invoke
   end
 
