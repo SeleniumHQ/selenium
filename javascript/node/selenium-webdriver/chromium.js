@@ -835,9 +835,8 @@ class Driver extends webdriver.WebDriver {
    *   containing the friendly device names of available cast sink targets.
    */
   getCastSinks() {
-    return this.schedule(
-      new command.Command(Command.GET_CAST_SINKS),
-      'Driver.getCastSinks()'
+    return this.execute(
+      new command.Command(Command.GET_CAST_SINKS)
     )
   }
 
@@ -849,12 +848,11 @@ class Driver extends webdriver.WebDriver {
    *     when the target device has been selected to respond further webdriver commands.
    */
   setCastSinkToUse(deviceName) {
-    return this.schedule(
+    return this.execute(
       new command.Command(Command.SET_CAST_SINK_TO_USE).setParameter(
         'sinkName',
         deviceName
-      ),
-      'Driver.setCastSinkToUse(' + deviceName + ')'
+      )
     )
   }
 
@@ -866,12 +864,11 @@ class Driver extends webdriver.WebDriver {
    *     when the mirror command has been issued to the device.
    */
   startDesktopMirroring(deviceName) {
-    return this.schedule(
+    return this.execute(
       new command.Command(Command.START_CAST_DESKTOP_MIRRORING).setParameter(
         'sinkName',
         deviceName
-      ),
-      'Driver.startDesktopMirroring(' + deviceName + ')'
+      )
     )
   }
 
@@ -883,12 +880,11 @@ class Driver extends webdriver.WebDriver {
    *     when the mirror command has been issued to the device.
    */
   startCastTabMirroring(deviceName) {
-    return this.schedule(
+    return this.execute(
       new command.Command(Command.START_CAST_TAB_MIRRORING).setParameter(
         'sinkName',
         deviceName
-      ),
-      'Driver.startCastTabMirroring(' + deviceName + ')'
+      )
     )
   }
 
@@ -898,9 +894,8 @@ class Driver extends webdriver.WebDriver {
    *     when the mirror command has been issued to the device.
    */
   getCastIssueMessage() {
-    return this.schedule(
-      new command.Command(Command.GET_CAST_ISSUE_MESSAGE),
-      'Driver.getCastIssueMessage()'
+    return this.execute(
+      new command.Command(Command.GET_CAST_ISSUE_MESSAGE)
     )
   }
 
@@ -912,12 +907,11 @@ class Driver extends webdriver.WebDriver {
    *     when the stop command has been issued to the device.
    */
   stopCasting(deviceName) {
-    return this.schedule(
+    return this.execute(
       new command.Command(Command.STOP_CASTING).setParameter(
         'sinkName',
         deviceName
-      ),
-      'Driver.stopCasting(' + deviceName + ')'
+      )
     )
   }
 }
