@@ -525,7 +525,7 @@ namespace :node do
 
   desc 'Build Node npm package'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : []
+    args = arguments[:args] || []
     Bazel.execute('build', args, '//javascript/node/selenium-webdriver')
   end
 
@@ -573,16 +573,16 @@ end
 namespace :py do
   desc 'Build Python wheel and sdist with optional arguments'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : []
+    args = arguments[:args] || []
     Bazel.execute('build', args, '//py:selenium-wheel')
     Bazel.execute('build', args, '//py:selenium-sdist')
   end
 
   desc 'Release Python wheel and sdist to pypi'
   task :release, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
+    args = arguments[:args] || ['--stamp']
     Rake::Task['py:build'].invoke(args)
-    sh "python3 -m twine upload `bazel-bin/py/selenium`-#{python_version}-py3-none-any.whl"
+    sh "python3 -m twine upload bazel-bin/py/selenium-#{python_version}-py3-none-any.whl"
     sh "python3 -m twine upload bazel-bin/py/selenium-#{python_version}.tar.gz"
   end
 
@@ -707,7 +707,7 @@ end
 namespace :rb do
   desc 'Generate Ruby gems'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : []
+    args = arguments[:args] || []
     Bazel.execute('build', args, '//rb:selenium-webdriver')
     Bazel.execute('build', args, '//rb:selenium-devtools')
   end
@@ -721,9 +721,9 @@ namespace :rb do
 
   desc 'Push Ruby gems to rubygems'
   task :release, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
-    Bazel.execute('run', args, '//rb:selenium-webdriver')
-    Bazel.execute('run', args, '//rb:selenium-devtools')
+    args = arguments[:args] || ['--stamp']
+    Bazel.execute('run', args, '//rb:selenium-webdriver-release')
+    Bazel.execute('run', args, '//rb:selenium-devtools-release')
   end
 
   desc 'Generate Ruby documentation'
@@ -772,13 +772,13 @@ end
 namespace :dotnet do
   desc 'Build nupkg files'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : []
+    args = arguments[:args] || []
     Bazel.execute('build', args, '//dotnet:all')
   end
 
   desc 'Create zipped assets for .NET for uploading to GitHub'
   task :zip_assets, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
+    args = arguments[:args] || ['--stamp']
     Rake::Task['dotnet:build'].invoke(args)
     mkdir_p 'build/dist'
     FileUtils.rm_f('build/dist/*dotnet*')
@@ -791,7 +791,7 @@ namespace :dotnet do
 
   desc 'Upload nupkg files to Nuget'
   task :release, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
+    args = arguments[:args] || ['--stamp']
     Rake::Task['dotnet:build'].invoke(args)
     Rake::Task['dotnet:zip_assets'].invoke(args)
 
@@ -852,26 +852,26 @@ end
 namespace :java do
   desc 'Build Java Client Jars'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : []
+    args = arguments[:args] || []
     Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-combined')
   end
 
   desc 'Build Grid Jar'
   task :grid, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : []
+    args = arguments[:args] || []
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:grid')
   end
 
   desc 'Package Java bindings and grid into releasable packages'
   task :package, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : []
+    args = arguments[:args] || []
     Rake::Task['java:build'].invoke(args)
     Rake::Task['java-release-zip'].invoke
   end
 
   desc 'Deploy all jars to Maven'
   task :release, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
+    args = arguments[:args] || ['--stamp']
     Rake::Task['java:package'].invoke(args)
     Rake::Task['publish-maven'].invoke
   end
@@ -947,7 +947,7 @@ end
 namespace :rust do
   desc 'Build Selenium Manager'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : []
+    args = arguments[:args] || []
     Bazel.execute('build', args, '//rust:selenium-manager')
   end
 
@@ -1002,7 +1002,7 @@ namespace :all do
 
   desc 'Build all artifacts for all language bindings'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] ? [arguments[:args]] : []
+    args = arguments[:args] || []
     Rake::Task['java:build'].invoke(args)
     Rake::Task['py:build'].invoke(args)
     Rake::Task['rb:build'].invoke(args)
@@ -1016,7 +1016,7 @@ namespace :all do
     tag = @git.add_tag("selenium-#{java_version}")
     @git.push('origin', tag.name)
 
-    args = arguments[:args] ? [arguments[:args]] : ['--stamp']
+    args = arguments[:args] || ['--stamp']
     Rake::Task['java:release'].invoke(args)
     Rake::Task['py:release'].invoke(args)
     Rake::Task['rb:release'].invoke(args)
@@ -1024,15 +1024,22 @@ namespace :all do
     Rake::Task['node:release'].invoke(args)
     Rake::Task['create_release_notes'].invoke(args)
     Rake::Task['all:docs'].invoke
-    Rake::Task['all:version'].invoke(['nightly'])
+    Rake::Task['all:version'].invoke('nightly')
 
     puts "Staging nightly version updates"
-    @git.add(['java/version.bzl', 'rb/lib/selenium/webdriver/version.rb'], all: true)
+    @git.add(['java/version.bzl',
+              'rb/lib/selenium/webdriver/version.rb',
+              'rb/Gemfile.lock',
+              'rust/BUILD.bazel',
+              'rust/Cargo.Bazel.lock',
+              'rust/Cargo.lock',
+              'rust/Cargo.toml'],
+             all: true)
     puts "Committing nightly version updates"
-    @git.commit('updating versions to nightly')
+    @git.commit('update versions to nightly')
     puts "Pushing changes to upstream repository"
 
-    print 'Do you want to commit the changes? (Y/n): '
+    print 'Do you want to push the committed changes? (Y/n): '
     response = STDIN.gets.chomp.downcase
     @git.push if response == 'y' || response == 'yes'
   end
@@ -1078,23 +1085,23 @@ task :create_release_notes do
   git_log_output = `#{git_log_command}`
 
   release_notes = <<~RELEASE_NOTES
-  ### Changelog
+    ### Changelog
 
-  For each component's detailed changelog, please check:
-  * [Ruby](https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES)
-  * [Python](https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES)
-  * [JavaScript](https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/CHANGES.md)
-  * [Java](https://github.com/SeleniumHQ/selenium/blob/trunk/java/CHANGELOG)
-  * [DotNet](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG)
-  * [IEDriverServer](https://github.com/SeleniumHQ/selenium/blob/trunk/cpp/iedriverserver/CHANGELOG)
+    For each component's detailed changelog, please check:
+    * [Ruby](https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES)
+    * [Python](https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES)
+    * [JavaScript](https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/CHANGES.md)
+    * [Java](https://github.com/SeleniumHQ/selenium/blob/trunk/java/CHANGELOG)
+    * [DotNet](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG)
+    * [IEDriverServer](https://github.com/SeleniumHQ/selenium/blob/trunk/cpp/iedriverserver/CHANGELOG)
 
-  ### Commits in this release
-  <details>
-  <summary>Click to see all the commits included in this release</summary>
+    ### Commits in this release
+    <details>
+    <summary>Click to see all the commits included in this release</summary>
 
-  #{git_log_output}
+    #{git_log_output}
 
-  </details>
+    </details>
   RELEASE_NOTES
 
   FileUtils.mkdir_p('build/dist')
