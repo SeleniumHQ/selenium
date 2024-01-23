@@ -1080,8 +1080,8 @@ end
 desc 'Create Release Notes for Minor Release'
 task :create_release_notes do
   range = "#{previous_tag(java_version)}...HEAD"
-  format = "* [\\`%h\\`](http://github.com/seleniumhq/selenium/commit/%H) - %s :: %an"
-  git_log_command = %Q(git --no-pager log "#{range}" --pretty=format:"#{format}"--reverse)
+  format = "* [\\`%h\\`](http://github.com/seleniumhq/selenium/commit/%H) - %s :: %aN"
+  git_log_command = %Q(git --no-pager log "#{range}" --pretty=format:"#{format}" --reverse)
   git_log_output = `#{git_log_command}`
 
   release_notes = <<~RELEASE_NOTES
