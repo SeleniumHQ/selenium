@@ -190,10 +190,10 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
             {
                 testedDriver.ExecuteScript("foo", element);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // This is the error we're trying to fix
-                throw e;
+                throw;
             }
         }
 

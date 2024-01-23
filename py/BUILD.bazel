@@ -1,3 +1,4 @@
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
 load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
@@ -19,13 +20,13 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.16.0"
+SE_VERSION = "4.17.0"
 
 BROWSER_VERSIONS = [
     "v85",
     "v119",
     "v120",
-    "v118",
+    "v121",
 ]
 
 TEST_DEPS = [
@@ -115,6 +116,24 @@ copy_file(
     out = "test/extensions/webextensions-selenium-example-unsigned.zip",
 )
 
+select_file(
+    name = "global-license",
+    srcs = "//:license",
+    subpath = "LICENSE",
+)
+
+copy_file(
+    name = "license",
+    src = ":global-license",
+    out = "LICENSE",
+)
+
+copy_file(
+    name = "license-wheel",
+    src = ":global-license",
+    out = "selenium-%s.dist-info/LICENSE" % SE_VERSION,
+)
+
 py_library(
     name = "selenium",
     srcs = glob(
@@ -135,6 +154,7 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
+        requirement("typing_extensions"),
         requirement("trio"),
         requirement("trio_websocket"),
         requirement("urllib3"),
@@ -167,6 +187,7 @@ pkg_files(
         "MANIFEST.in",
         "README.rst",
         "setup.py",
+        ":license",
         ":selenium-pkg",
         ":selenium-pkginfo",
     ],
@@ -228,6 +249,7 @@ py_wheel(
     version = SE_VERSION,
     visibility = ["//visibility:public"],
     deps = [
+        ":license-wheel",
         ":selenium-pkg",
     ],
 )
@@ -539,7 +561,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=WPEWebKit",
+        "--driver=wpewebkit",
         "--browser-binary=MiniBrowser",
         "--browser-args=--automation --headless",
     ],

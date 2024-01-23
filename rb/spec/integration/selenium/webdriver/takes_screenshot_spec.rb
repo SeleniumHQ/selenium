@@ -110,7 +110,8 @@ module Selenium
           expect(height).to be > viewport_height
         end
 
-        it 'does not take full page screenshot', except: {browser: :firefox} do
+        it 'does not take full page screenshot', only: {browser: %i[chrome edge safari safari_preview],
+                                                        reason: 'these browsers do not implement this feature'} do
           expect {
             driver.save_screenshot path, full_page: true
           }.to raise_exception(Error::UnsupportedOperationError, /Full Page Screenshots are not supported/)

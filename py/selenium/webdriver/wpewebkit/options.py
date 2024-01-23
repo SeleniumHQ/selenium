@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
@@ -25,7 +26,6 @@ class Options(ArgOptions):
     def __init__(self) -> None:
         super().__init__()
         self._binary_location = ""
-        self._caps = DesiredCapabilities.WPEWEBKIT.copy()
 
     @property
     def binary_location(self) -> str:
@@ -58,3 +58,7 @@ class Options(ArgOptions):
         caps[Options.KEY] = browser_options
 
         return caps
+
+    @property
+    def default_capabilities(self) -> typing.Dict[str, str]:
+        return DesiredCapabilities.WPEWEBKIT.copy()

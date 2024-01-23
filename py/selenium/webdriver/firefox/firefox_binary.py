@@ -23,10 +23,13 @@ from subprocess import DEVNULL
 from subprocess import STDOUT
 from subprocess import Popen
 
+from typing_extensions import deprecated
+
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 
 
+@deprecated("Use binary_location property in Firefox Options to set location")
 class FirefoxBinary:
     NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
 

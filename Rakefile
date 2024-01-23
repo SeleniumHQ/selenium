@@ -9,6 +9,7 @@ require 'stringio'
 require 'fileutils'
 require 'open-uri'
 require 'git'
+require 'find'
 
 include Rake::DSL
 
@@ -101,7 +102,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v119:v119.publish
   //java/src/org/openqa/selenium/devtools/v120:v120.publish
-  //java/src/org/openqa/selenium/devtools/v118:v118.publish
+  //java/src/org/openqa/selenium/devtools/v121:v121.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -585,12 +586,37 @@ namespace :py do
     sh "python3 -m twine upload bazel-bin/py/selenium-#{python_version}.tar.gz"
   end
 
-  desc 'Update generated Python files for local development'
-  task :update do
+  desc 'generate and copy files required for local development'
+  task :local_dev do
     Bazel.execute('build', [], '//py:selenium')
+    Rake::Task['grid'].invoke
 
     FileUtils.rm_rf('py/selenium/webdriver/common/devtools/')
     FileUtils.cp_r('bazel-bin/py/selenium/webdriver/.', 'py/selenium/webdriver', remove_destination: true)
+  end
+
+  desc 'Update generated Python files for local development'
+  task :clean do
+    Bazel.execute('build', [], '//py:selenium')
+    bazel_bin_path = 'bazel-bin/py/selenium/webdriver'
+    lib_path = 'py/selenium/webdriver'
+
+    dirs = %w[devtools linux mac windows]
+    dirs.each { |dir| FileUtils.rm_rf("#{lib_path}/common/#{dir}") }
+
+    Find.find(bazel_bin_path) do |path|
+      if File.directory?(path) && dirs.any? {|dir| path.include?("common/#{dir}")}
+        Find.prune
+        next
+      end
+      next if File.directory?(path)
+
+      target_file = File.join(lib_path, path.sub(/^#{bazel_bin_path}\//, ''))
+      if File.exist?(target_file)
+        puts "Removing target file: #{target_file}"
+        FileUtils.rm(target_file)
+      end
+    end
   end
 
   desc 'Generate Python documentation'
@@ -646,7 +672,30 @@ namespace :py do
 
   desc 'Update Python Syntax'
   task :lint do
-    `tox -c py/tox.ini -e linting`
+    sh 'tox -c py/tox.ini -e linting'
+  end
+
+  namespace :test do
+    desc 'Python unit tests'
+    task :unit do
+      Rake::Task['py:clean'].invoke
+      Bazel.execute('test', ['--test_size_filters=small'], '//py/...')
+    end
+
+    %i[chrome edge firefox safari].each do |browser|
+      desc "Python #{browser} tests"
+      task browser do
+        Rake::Task['py:clean'].invoke
+        Bazel.execute('test', [],"//py:common-#{browser}")
+        Bazel.execute('test', [],"//py:test-#{browser}")
+      end
+    end
+
+    desc "Python Remote tests with Firefox"
+    task :remote do
+      Rake::Task['py:clean'].invoke
+      Bazel.execute('test', [],"//py:test-remote")
+    end
   end
 end
 
@@ -664,7 +713,7 @@ namespace :rb do
   end
 
   desc 'Update generated Ruby files for local development'
-  task :update do
+  task :local_dev do
     Bazel.execute('build', [], '@bundle//:bundle')
     Rake::Task['rb:build'].invoke
     Rake::Task['grid'].invoke
@@ -886,7 +935,7 @@ namespace :java do
     file = 'java/version.bzl'
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, "w") { |f| f.puts text }
-    Rake::Task['java:changelog'].invoke unless old_version.include?('SNAPSHOT')
+    Rake::Task['java:changelog'].invoke if old_version.include?('SNAPSHOT')
   end
 end
 
@@ -994,7 +1043,7 @@ namespace :all do
       Bazel.execute('run', args, '//scripts:update_cdp')
       Bazel.execute('run', args, '//scripts:pinned_browsers')
       Bazel.execute('run', args, '//scripts:selenium_manager')
-      Rake::Task['java:dependencies'].invoke
+      Rake::Task['java:update'].invoke
       Rake::Task['authors'].invoke
       Rake::Task['copyright:update'].invoke
     end

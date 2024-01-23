@@ -163,7 +163,7 @@ rb_binary(
         "--readme=rb/README.md",
         "rb/",
     ],
-    main = "@bundle//:bin/yard",
+    main = "@bundle//bin:yard",
     deps = [
         ":selenium-devtools",
         ":selenium-webdriver",
@@ -180,7 +180,7 @@ rb_test(
         "rb/",
     ],
     data = [".rubocop.yml"],
-    main = "@bundle//:bin/rubocop",
+    main = "@bundle//bin:rubocop",
     tags = ["no-sandbox"],
     deps = [
         ":selenium-devtools",
@@ -199,7 +199,7 @@ rb_binary(
         "-rselenium/devtools",
         "-Irb/lib",
     ],
-    main = "@bundle//:bin/irb",
+    main = "@bundle//bin:irb",
     deps = [
         ":selenium-devtools",
         ":selenium-webdriver",

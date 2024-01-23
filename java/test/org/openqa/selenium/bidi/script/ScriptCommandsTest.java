@@ -156,6 +156,38 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
+  void canCallFunctionToGetElement() {
+    String url = appServer.whereIs("/bidi/logEntryAdded.html");
+    driver.get(url);
+
+    String id = driver.getWindowHandle();
+    Script script = new Script(id, driver);
+
+    List<LocalValue> arguments = new ArrayList<>();
+
+    EvaluateResult result =
+        script.callFunctionInBrowsingContext(
+            id,
+            "() => document.getElementById(\"consoleLog\")",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("node");
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat(((NodeProperties) successResult.getResult().getValue().get()).getNodeType())
+        .isNotNull();
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canCallFunctionWithAwaitPromise() {
     String id = driver.getWindowHandle();

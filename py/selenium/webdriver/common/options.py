@@ -418,7 +418,7 @@ class ArgOptions(BaseOptions):
         """:Returns: A list of arguments needed for the browser."""
         return self._arguments
 
-    def add_argument(self, argument):
+    def add_argument(self, argument) -> None:
         """Adds an argument to the list.
 
         :Args:

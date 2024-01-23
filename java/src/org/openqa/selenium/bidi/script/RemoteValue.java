@@ -197,6 +197,7 @@ public class RemoteValue {
 
     switch (type) {
       case ARRAY:
+      case NODE_LIST:
       case SET:
         try (StringReader reader = new StringReader(JSON.toJson(value));
             JsonInput input = JSON.newInput(reader)) {
@@ -237,6 +238,13 @@ public class RemoteValue {
         try (StringReader reader = new StringReader(JSON.toJson(value));
             JsonInput input = JSON.newInput(reader)) {
           finalValue = input.read(WindowProxyProperties.class);
+        }
+        break;
+
+      case NODE:
+        try (StringReader reader = new StringReader(JSON.toJson(value));
+            JsonInput input = JSON.newInput(reader)) {
+          finalValue = input.read(NodeProperties.class);
         }
         break;
 

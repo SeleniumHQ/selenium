@@ -84,6 +84,23 @@ suite(
         assert.notEqual(result.result.value.context, null)
       })
 
+      it('can call function to get element', async function () {
+        await driver.get(Pages.logEntryAdded)
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        const result = await manager.callFunctionInBrowsingContext(
+          id,
+          '() => document.getElementById(\"consoleLog\")',
+          false
+        )
+        assert.equal(result.resultType, EvaluateResultType.SUCCESS)
+        assert.notEqual(result.realmId, null)
+        assert.equal(result.result.type, 'node')
+        assert.notEqual(result.result.value, null)
+        assert.notEqual(result.result.value.nodeType, null)
+      })
+
       it('can call function with arguments', async function () {
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)

@@ -186,27 +186,6 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the <see cref="ChromiumDriver"/> instance
-        /// should use the legacy OSS protocol dialect or a dialect compliant with the W3C
-        /// WebDriver Specification.
-        /// </summary>
-        [Obsolete("Spec Compliant Protocol is the only supported protocol")]
-        public bool UseSpecCompliantProtocol
-        {
-            get { return this.useSpecCompliantProtocol; }
-            set
-            {
-                if (!value)
-                {
-                    throw new ArgumentException("Only the spec compliant protocol is supported, " +
-                                                "Please update to W3C Syntax: " +
-                                                "https://www.selenium.dev/blog/2022/legacy-protocol-support/");
-                }
-                this.useSpecCompliantProtocol = true;
-            }
-        }
-
-        /// <summary>
         /// Adds a single argument to the list of arguments to be appended to the browser executable command line.
         /// </summary>
         /// <param name="argument">The argument to add.</param>

@@ -148,7 +148,8 @@ def driver(request):
             options = get_options(driver_class, request.config)
         if driver_class == "Edge":
             options = get_options(driver_class, request.config)
-        if driver_class == "WPEWebKit":
+        if driver_class.lower() == "wpewebkit":
+            driver_class = "WPEWebKit"
             options = get_options(driver_class, request.config)
         if driver_path is not None:
             kwargs["service"] = get_service(driver_class, driver_path)

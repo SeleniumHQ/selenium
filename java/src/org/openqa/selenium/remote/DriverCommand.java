@@ -152,6 +152,7 @@ public interface DriverCommand {
   // https://fedidcg.github.io/FedCM/#automation
   String CANCEL_DIALOG = "cancelDialog";
   String SELECT_ACCOUNT = "selectAccount";
+  String CLICK_DIALOG = "clickDialog";
   String GET_ACCOUNTS = "getAccounts";
   String GET_FEDCM_TITLE = "getFedCmTitle";
   String GET_FEDCM_DIALOG_TYPE = "getFedCmDialogType";

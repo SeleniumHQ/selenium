@@ -20,9 +20,9 @@
 const assert = require('assert')
 const fileServer = require('../../lib/test/fileserver')
 const firefox = require('../../firefox')
-const { ignore, Pages, suite } = require('../../lib/test')
-const { Key, Origin } = require('../../lib/input')
-const { Browser, By, until } = require('../..')
+const {ignore, Pages, suite} = require('../../lib/test')
+const {Key, Origin} = require('../../lib/input')
+const {Browser, By, until} = require('../..')
 const Input = require('../../bidi/input')
 
 suite(
@@ -66,7 +66,7 @@ suite(
 
         const div = await driver.findElement(By.css('div'))
         const rect = await div.getRect()
-        assert.deepStrictEqual(rect, { width: 500, height: 500, x: 0, y: 0 })
+        assert.deepStrictEqual(rect, {width: 500, height: 500, x: 0, y: 0})
 
         const actions = await driver.actions().click(div).getSequences()
 
@@ -91,11 +91,11 @@ suite(
 
         const div = await driver.findElement(By.css('div'))
         const rect = await div.getRect()
-        assert.deepStrictEqual(rect, { width: 500, height: 500, x: 0, y: 0 })
+        assert.deepStrictEqual(rect, {width: 500, height: 500, x: 0, y: 0})
 
         const actions = await driver
           .actions()
-          .move({ x: 10, y: 10, origin: div })
+          .move({x: 10, y: 10, origin: div})
           .click()
           .getSequences()
 
@@ -171,9 +171,9 @@ suite(
 
         const actions = await driver
           .actions()
-          .move({ origin: slide })
+          .move({origin: slide})
           .press()
-          .move({ x: 100, y: 100, origin: Origin.POINTER })
+          .move({x: 100, y: 100, origin: Origin.POINTER})
           .release()
           .getSequences()
 
@@ -345,6 +345,34 @@ suite(
         },
       )
 
+      it('can execute release in browsing context', async function () {
+        const browsingContextId = await driver.getWindowHandle()
+        const input = await Input(driver)
+        await driver.get(Pages.releaseAction)
+
+        let inputTextBox = await driver.findElement(By.id('keys'))
+
+        await driver.executeScript('arguments[0].focus()', inputTextBox)
+
+
+        const actions = await driver
+          .actions()
+          .keyDown('a')
+          .keyDown('b')
+          .getSequences()
+
+        await input.perform(browsingContextId, actions)
+
+        await driver.executeScript('resetEvents()')
+
+        await input.release(browsingContextId)
+
+        const events =  await driver.executeScript('return allEvents.events')
+
+        assert.strictEqual(events[0].code, 'KeyB')
+        assert.strictEqual(events[1].code, 'KeyA')
+      })
+
       async function _getEvents(driver) {
         await driver.wait(async () => {
           const events = await driver.executeScript('return allEvents.events;')
@@ -354,5 +382,5 @@ suite(
       }
     })
   },
-  { browsers: [Browser.FIREFOX] },
+  {browsers: [Browser.FIREFOX]},
 )

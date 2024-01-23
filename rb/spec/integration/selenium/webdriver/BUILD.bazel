@@ -6,11 +6,10 @@ package(default_visibility = ["//rb:__subpackages__"])
 rb_library(
     name = "spec_helper",
     testonly = True,
-    srcs = glob([
+    srcs = [
         "spec_helper.rb",
         "spec_support.rb",
-        "spec_support/**/*",
-    ]),
+    ] + glob(["spec_support/**/*"]),
     data = [
         "//rb:manager-linux",
         "//rb:manager-macos",
@@ -19,7 +18,24 @@ rb_library(
         "//rb/spec/integration:remote": ["//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar"],
         "//conditions:default": [],
     }),
-    deps = ["@bundle"],
+    deps = [
+        "//rb/lib:selenium-webdriver",
+        "//rb/lib/selenium:devtools",
+        "//rb/lib/selenium:server",
+        "//rb/lib/selenium:webdriver",
+        "//rb/lib/selenium/webdriver:atoms",
+        "//rb/lib/selenium/webdriver:common",
+        "//rb/lib/selenium/webdriver:remote",
+        "//rb/spec:rspec_matchers",
+        "@bundle",
+    ] + select({
+        "//rb/spec/integration:edge": ["//rb/lib/selenium/webdriver:edge"],
+        "//rb/spec/integration:firefox": ["//rb/lib/selenium/webdriver:firefox"],
+        "//rb/spec/integration:ie": ["//rb/lib/selenium/webdriver:ie"],
+        "//rb/spec/integration:safari": ["//rb/lib/selenium/webdriver:safari"],
+        "//rb/spec/integration:safari-preview": ["//rb/lib/selenium/webdriver:safari"],
+        "//conditions:default": ["//rb/lib/selenium/webdriver:chrome"],
+    }),
 )
 
 [
@@ -29,7 +45,7 @@ rb_library(
         srcs = [file],
         args = ["rb/spec/"],
         env = ENV,
-        main = "@bundle//:bin/rspec",
+        main = "@bundle//bin:rspec",
         tags = TAGS,
         deps = [
             ":spec_helper",
@@ -53,7 +69,7 @@ rb_test(
     srcs = ["bidi_spec.rb"],
     args = ["rb/spec/"],
     env = ENV,
-    main = "@bundle//:bin/rspec",
+    main = "@bundle//bin:rspec",
     tags = TAGS + ["exclusive-if-local"],
     deps = [
         ":spec_helper",
@@ -68,7 +84,7 @@ rb_test(
     srcs = ["devtools_spec.rb"],
     args = ["rb/spec/"],
     env = ENV,
-    main = "@bundle//:bin/rspec",
+    main = "@bundle//bin:rspec",
     tags = TAGS + ["exclusive-if-local"],
     deps = [
         ":spec_helper",
@@ -83,7 +99,7 @@ rb_test(
     srcs = ["driver_spec.rb"],
     args = ["rb/spec/"],
     env = ENV,
-    main = "@bundle//:bin/rspec",
+    main = "@bundle//bin:rspec",
     tags = TAGS,
     deps = [
         ":spec_helper",
@@ -102,7 +118,7 @@ rb_test(
     srcs = ["element_spec.rb"],
     args = ["rb/spec/"],
     env = ENV,
-    main = "@bundle//:bin/rspec",
+    main = "@bundle//bin:rspec",
     tags = TAGS,
     deps = [
         ":spec_helper",
