@@ -1,3 +1,6 @@
+Selenium 4.17.1
+* Fix typo in setup.py (#13487)
+
 Selenium 4.17.0
 * Add page load strategy enum (#13258)
 * Use correct file name when bumping versions (#13282)
