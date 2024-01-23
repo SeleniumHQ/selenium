@@ -242,6 +242,7 @@ py_wheel(
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
+        "typing_extensions>=4.9.0",
     ],
     strip_path_prefixes = [
         "py/",
