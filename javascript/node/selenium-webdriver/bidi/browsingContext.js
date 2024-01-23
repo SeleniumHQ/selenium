@@ -186,7 +186,7 @@ class BrowsingContext {
       params: {
         context: this._id,
         clip: {
-          type: 'viewport',
+          type: 'box',
           x: x,
           y: y,
           width: width,
@@ -195,7 +195,10 @@ class BrowsingContext {
       },
     }
 
+    console.log(JSON.stringify(params))
+
     const response = await this.bidi.send(params)
+    console.log(JSON.stringify(response))
     this.checkErrorInScreenshot(response)
     return response['result']['data']
   }
@@ -308,6 +311,25 @@ class BrowsingContext {
     if ('error' in result) {
       throw Error(result['error'])
     }
+  }
+
+  async traverseHistory(delta) {
+    const params = {
+      method: 'browsingContext.traverseHistory',
+      params: {
+        context: this._id,
+        delta: delta,
+      },
+    }
+    await this.bidi.send(params)
+  }
+
+  async forward() {
+    await this.traverseHistory(1)
+  }
+
+  async back() {
+    await this.traverseHistory(-1)
   }
 }
 

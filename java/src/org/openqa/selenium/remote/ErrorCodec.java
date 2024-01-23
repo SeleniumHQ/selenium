@@ -113,6 +113,23 @@ public class ErrorCodec {
       throwable.printStackTrace(printWriter);
     }
 
+    if (throwable instanceof UnhandledAlertException) {
+      String text = ((UnhandledAlertException) throwable).getAlertText();
+      if (text != null) {
+        return Map.of(
+            "value",
+            Map.of(
+                "error",
+                err.w3cErrorString,
+                "message",
+                message,
+                "stacktrace",
+                stacktrace.toString(),
+                "data",
+                Map.of("text", text)));
+      }
+    }
+
     return Map.of(
         "value",
         Map.of(

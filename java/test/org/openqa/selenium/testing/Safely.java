@@ -55,7 +55,7 @@ public class Safely {
     try {
       CompletableFuture.allOf(futures.toArray(new CompletableFuture[] {})).get(2, TimeUnit.MINUTES);
     } catch (TimeoutException ex) {
-      LOG.log(Level.WARNING, "tear down timed out");
+      LOG.log(Level.WARNING, "tear down timed out: {}", ex.toString());
     } catch (Exception ex) {
       LOG.log(Level.WARNING, "tear down failed", ex);
     }

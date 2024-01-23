@@ -25,10 +25,7 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.Json.OBJECT_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,6 +35,7 @@ import java.util.logging.Logger;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.ErrorCodec;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.Response;
@@ -69,6 +67,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
   private static final Logger LOG = Logger.getLogger(W3CHttpResponseCodec.class.getName());
 
+  private final ErrorCodec errorCodec = ErrorCodec.createDefault();
   private final ErrorCodes errorCodes = new ErrorCodes();
   private final Json json = new Json();
   private final Function<Object, Object> elementConverter = new JsonToWebElementConverter(null);
@@ -165,31 +164,11 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
   @Override
   protected Object getValueToEncode(Response response) {
-    HashMap<Object, Object> toReturn = new HashMap<>();
     Object value = response.getValue();
     if (value instanceof WebDriverException) {
-      HashMap<Object, Object> exception = new HashMap<>();
-      exception.put(
-          "error",
-          response.getState() != null
-              ? response.getState()
-              : errorCodes.toState(response.getStatus()));
-      exception.put("message", ((WebDriverException) value).getMessage());
-      StringWriter stacktrace = new StringWriter();
-      try (PrintWriter printWriter = new PrintWriter(stacktrace)) {
-        ((WebDriverException) value).printStackTrace(printWriter);
-      }
-      exception.put("stacktrace", stacktrace.toString());
-      if (value instanceof UnhandledAlertException) {
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("text", ((UnhandledAlertException) value).getAlertText());
-        exception.put("data", data);
-      }
-
-      value = exception;
+      value = errorCodec.encode((WebDriverException) value);
     }
-    toReturn.put("value", value);
-    return toReturn;
+    return Map.of("value", value);
   }
 
   @Override

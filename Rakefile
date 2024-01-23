@@ -9,6 +9,7 @@ require 'stringio'
 require 'fileutils'
 require 'open-uri'
 require 'git'
+require 'find'
 
 include Rake::DSL
 
@@ -593,6 +594,30 @@ namespace :py do
     FileUtils.cp_r('bazel-bin/py/selenium/webdriver/.', 'py/selenium/webdriver', remove_destination: true)
   end
 
+  desc 'Update generated Python files for local development'
+  task :clean do
+    Bazel.execute('build', [], '//py:selenium')
+    bazel_bin_path = 'bazel-bin/py/selenium/webdriver'
+    lib_path = 'py/selenium/webdriver'
+
+    dirs = %w[devtools linux mac windows]
+    dirs.each { |dir| FileUtils.rm_rf("#{lib_path}/common/#{dir}") }
+
+    Find.find(bazel_bin_path) do |path|
+      if File.directory?(path) && dirs.any? {|dir| path.include?("common/#{dir}")}
+        Find.prune
+        next
+      end
+      next if File.directory?(path)
+
+      target_file = File.join(lib_path, path.sub(/^#{bazel_bin_path}\//, ''))
+      if File.exist?(target_file)
+        puts "Removing target file: #{target_file}"
+        FileUtils.rm(target_file)
+      end
+    end
+  end
+
   desc 'Generate Python documentation'
   task :docs, [:skip_update] do |_task, arguments|
     FileUtils.rm_rf('build/docs/api/py/')
@@ -624,7 +649,7 @@ namespace :py do
   desc 'Update Python changelog'
   task :changelog do
     header = "Selenium #{python_version}"
-    update_changelog(python_version, 'py', 'py/', 'py/CHANGES', header)
+    update_changelog(python_version, 'py', 'py/selenium/webdriver', 'py/CHANGES', header)
   end
 
   desc 'Update Python version'
@@ -643,6 +668,28 @@ namespace :py do
 
     Rake::Task['py:changelog'].invoke
   end
+
+  desc 'Update Python Syntax'
+  task :lint do
+    `tox -c py/tox.ini -e linting`
+  end
+
+    namespace :test do
+      desc 'Python unit tests'
+      task :unit do
+        Rake::Task['py:clean'].invoke
+        Bazel.execute('test', ['--test_size_filters=small'], '//py/...')
+      end
+
+      %i[chrome edge firefox safari].each do |browser|
+        desc "Python #{browser} tests"
+        task browser do
+          Rake::Task['py:clean'].invoke
+          Bazel.execute('test', [],"//py:common-#{browser}")
+          Bazel.execute('test', [],"//py:test-#{browser}")
+        end
+      end
+    end
 end
 
 def ruby_version
@@ -687,7 +734,7 @@ namespace :rb do
   desc 'Update Ruby changelog'
   task :changelog do
     header = "#{ruby_version} (#{Time.now.strftime("%Y-%m-%d")})\n========================="
-    update_changelog(ruby_version, 'rb', 'rb/', 'rb/CHANGES', header)
+    update_changelog(ruby_version, 'rb', 'rb/lib/', 'rb/CHANGES', header)
   end
 
   desc 'Update Ruby version'
@@ -702,6 +749,11 @@ namespace :rb do
 
     Rake::Task['rb:changelog'].invoke unless new_version.include?('nightly')
     sh 'cd rb && bundle update'
+  end
+
+  desc 'Update Ruby Syntax'
+  task :lint do
+    `cd rb && bundle exec rubocop -a`
   end
 end
 
@@ -774,7 +826,7 @@ namespace :dotnet do
   desc 'Update .NET changelog'
   task :changelog do
     header = "v#{dotnet_version}\n======"
-    update_changelog(dotnet_version, 'dotnet', 'dotnet/', 'dotnet/CHANGELOG', header)
+    update_changelog(dotnet_version, 'dotnet', 'dotnet/src/', 'dotnet/CHANGELOG', header)
   end
 
   desc 'Update .NET version'
@@ -864,7 +916,7 @@ namespace :java do
   desc 'Update Java changelog'
   task :changelog do
     header = "v#{java_version}\n======"
-    update_changelog(java_version, 'java', 'java/', 'java/CHANGELOG', header)
+    update_changelog(java_version, 'java', 'java/src/org/', 'java/CHANGELOG', header)
   end
 
   desc 'Update Java version'
@@ -901,7 +953,7 @@ namespace :rust do
   task :changelog do
     header = "#{rust_version}\n======"
     version = rust_version.split('.').tap(&:shift).join('.')
-    update_changelog(version, 'rust', 'rust/', 'rust/CHANGELOG.md', header)
+    update_changelog(version, 'rust', 'rust/src', 'rust/CHANGELOG.md', header)
   end
 
   desc 'Update Rust version'
