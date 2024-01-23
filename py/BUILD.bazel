@@ -10,6 +10,22 @@ load("//py:defs.bzl", "generate_devtools", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:import.bzl", "py_import")
 
+alias(
+    name = "twine",
+    actual = requirement("twine"),
+)
+
+genrule(
+    name = "selenium-release",
+    srcs = [
+        ":selenium-wheel",
+        ":selenium-sdist",
+    ],
+    outs = ["pypi_upload_complete.txt"],
+    cmd = "(twine upload $(location :selenium-wheel) $(location :selenium-sdist) && touch $@)",
+    tools = [":twine"],
+)
+
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",

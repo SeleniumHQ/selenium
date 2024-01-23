@@ -581,9 +581,7 @@ namespace :py do
   desc 'Release Python wheel and sdist to pypi'
   task :release, [:args] do |_task, arguments|
     args = arguments[:args] || ['--stamp']
-    Rake::Task['py:build'].invoke(args)
-    sh "python3 -m twine upload bazel-bin/py/selenium-#{python_version}-py3-none-any.whl"
-    sh "python3 -m twine upload bazel-bin/py/selenium-#{python_version}.tar.gz"
+    Bazel.execute('run', args, '//py:selenium-release')
   end
 
   desc 'generate and copy files required for local development'
