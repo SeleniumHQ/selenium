@@ -1,3 +1,25 @@
+Selenium 4.17.0
+* Add page load strategy enum (#13258)
+* Use correct file name when bumping versions (#13282)
+* Filter which bidi logs are recorded based on event type (#12951)
+* Add python to Selenium Manager input for tracking (see #13288)
+* Sleep depending on the number of attempts to check if the service has started (#13321)
+* Use subprocess.DEVNULL instead of open(os.devnull) to avoid leaking a file handle (#13329)
+* Remove all references to firefox-bin
+* Check if architecture/platform combination is supported for Selenium Manager (#13381)
+* Remove extension connection class and other usages of webdriver.xpi
+* remove deprecated verbose argument from edge service
+* remove deprecated desired_capabilities property from webdriver
+* remove deprecated application cache support
+* truncate large strings when logging requests
+* Update WPEWebKit support code (#13278)
+* [py] Fix WPEWebKit python support code
+* Do not change profile preferences of an existing directory by default (#13477)
+* Deprecate firefox profile methods that are not supported (#13477)
+* deprecate FirefoxBinary class (#13476)
+* Fix type error in mypy (#13482)
+* Add CDP for Chrome 121 and remove 118
+
 Selenium 4.16.0
 * Fix inadvertent code change in mutation_event
 * Fix bug in using SE_MANAGER_PATH

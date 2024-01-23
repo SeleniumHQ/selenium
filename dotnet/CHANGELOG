@@ -1,3 +1,21 @@
+v4.17.0
+======
+
+* Add csharp to Selenium Manager input for tracking (see #13288)
+* Consider log handlers as null when not initiated
+* Lazy initialization of log handlers when required
+* Specify the dll as nuget content explicitly (#13332)
+* Extract downloadable zip file in memory (#13277)
+* Update references from desiredCapabilities to capabilities
+* Don't output to user's console, rather use logging (Fixes #13410)
+* Add function to enable halting targets until runtime.runIfWaitingForDebugger is invoked (#13330)
+* Properly get selenium manager from bazel output (#13452)
+* Remove deprecated DriverService constructors with options parameter
+* Remove deprecated methods for toggling legacy protocol
+* Remove deprecated class RemoteWebElement
+* Improve logging performance when it is disabled (#13464)
+* Add CDP for Chrome 121 and remove 118
+
 v4.16.2
 ======
 

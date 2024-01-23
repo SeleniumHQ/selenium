@@ -1,3 +1,14 @@
+4.17.0 (2024-01-22)
+=========================
+
+* Logger defaults output to stderr instead of stdout
+* Fully support Chrome 120+ old headless mode (#13271)
+* Add ruby to Selenium Manager input for tracking (see #13288)
+* Define default command_list (fixes #13307)
+* Fix issues with incorrectly named edge browser
+* Check for whether driver supports full page screenshots to error (#12799)
+* Add CDP for Chrome 121 and remove 118
+
 4.16.0 (2023-12-06)
 =========================
 
