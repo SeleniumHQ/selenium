@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi.network;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.in;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -52,6 +53,21 @@ class NetworkCommandsTest extends JupiterTestBase {
       String intercept =
           network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT));
       assertThat(intercept).isNotNull();
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canRemoveIntercept() {
+    try (Network network = new Network(driver)) {
+      String intercept =
+          network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT));
+      assertThat(intercept).isNotNull();
+
+      network.removeIntercept(intercept);
     }
   }
 

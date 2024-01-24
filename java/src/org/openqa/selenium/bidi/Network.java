@@ -77,6 +77,10 @@ public class Network implements AutoCloseable {
             }));
   }
 
+  public void removeIntercept(String interceptId) {
+    this.bidi.send(new Command<>("network.removeIntercept", Map.of("intercept", interceptId)));
+  }
+
   public void onBeforeRequestSent(Consumer<BeforeRequestSent> consumer) {
     if (browsingContextIds.isEmpty()) {
       this.bidi.addListener(beforeRequestSentEvent, consumer);
