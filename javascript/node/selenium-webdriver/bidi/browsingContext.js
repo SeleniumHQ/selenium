@@ -455,6 +455,16 @@ class BrowsingContext {
     const elements = await this.locateNodes(locator, 1)
     return new WebElement(this._driver, elements[0].sharedId)
   }
+
+  async locateElements(locator) {
+    const elements = await this.locateNodes(locator)
+
+    let webElements = []
+    elements.forEach((element) => {
+      webElements.push(new WebElement(this._driver, element.sharedId))
+    })
+    return webElements
+  }
 }
 
 class NavigateResult {

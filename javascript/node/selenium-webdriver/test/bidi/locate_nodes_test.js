@@ -242,6 +242,21 @@ suite(
         const elementText = await element.getText()
         assert.strictEqual(elementText, "Open new window")
       })
+
+      xit('can find elements', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.xhtmlTestPage)
+
+        const elements = await browsingContext.locateElements(Locator.css('div'))
+        assert.strictEqual(elements.length, 13)
+
+        const elementText = await elements[0].getText()
+        assert.strictEqual(elementText.includes('Open new window'), true)
+      })
     })
   },
   {browsers: [Browser.FIREFOX]}
