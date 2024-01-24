@@ -19,9 +19,11 @@ package org.openqa.selenium.bidi;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.bidi.network.AddInterceptParameters;
 import org.openqa.selenium.bidi.network.BeforeRequestSent;
 import org.openqa.selenium.bidi.network.ResponseDetails;
 import org.openqa.selenium.internal.Require;
@@ -62,6 +64,17 @@ public class Network implements AutoCloseable {
 
     this.bidi = ((HasBiDi) driver).getBiDi();
     this.browsingContextIds = browsingContextIds;
+  }
+
+  public String addIntercept(AddInterceptParameters parameters) {
+    return this.bidi.send(
+        new Command<>(
+            "network.addIntercept",
+            parameters.toMap(),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return (String) result.get("intercept");
+            }));
   }
 
   public void onBeforeRequestSent(Consumer<BeforeRequestSent> consumer) {
