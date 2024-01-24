@@ -359,6 +359,10 @@ class ScriptManager {
     await this.subscribeAndHandleEvent('script.realmCreated', callback)
   }
 
+  async onRealmDestroyed(callback) {
+    await this.subscribeAndHandleEvent('script.realmDestroyed', callback)
+  }
+
   async subscribeAndHandleEvent(eventType, callback) {
     if (this._browsingContextIds != null) {
       await this.bidi.subscribe(eventType, this._browsingContextIds)
