@@ -35,7 +35,7 @@ const GET_CREDENTIAL = `getCredential([{
                           "id": Int8Array.from(arguments[0]),
                         }]).then(arguments[arguments.length - 1]);`
 
-async function createRkEnabledU2fAuthenticator(driver) {
+async function createRkEnabledU2fAuthenticator (driver) {
   let options
   options = new virtualAuthenticatorOptions()
   options.setProtocol(Protocol['U2F'])
@@ -44,7 +44,7 @@ async function createRkEnabledU2fAuthenticator(driver) {
   return driver
 }
 
-async function createRkDisabledU2fAuthenticator(driver) {
+async function createRkDisabledU2fAuthenticator (driver) {
   let options
   options = new virtualAuthenticatorOptions()
   options.setProtocol(Protocol['U2F'])
@@ -53,7 +53,7 @@ async function createRkDisabledU2fAuthenticator(driver) {
   return driver
 }
 
-async function createRkEnabledCTAP2Authenticator(driver) {
+async function createRkEnabledCTAP2Authenticator (driver) {
   let options
   options = new virtualAuthenticatorOptions()
   options.setProtocol(Protocol['CTAP2'])
@@ -64,7 +64,7 @@ async function createRkEnabledCTAP2Authenticator(driver) {
   return driver
 }
 
-async function createRkDisabledCTAP2Authenticator(driver) {
+async function createRkDisabledCTAP2Authenticator (driver) {
   let options
   options = new virtualAuthenticatorOptions()
   options.setProtocol(Protocol['CTAP2'])
@@ -75,15 +75,15 @@ async function createRkDisabledCTAP2Authenticator(driver) {
   return driver
 }
 
-async function getAssertionFor(driver, credentialId) {
+async function getAssertionFor (driver, credentialId) {
   return await driver.executeAsyncScript(GET_CREDENTIAL, credentialId)
 }
 
-function extractRawIdFrom(response) {
+function extractRawIdFrom (response) {
   return response.credential.rawId
 }
 
-function extractIdFrom(response) {
+function extractIdFrom (response) {
   return response.credential.id
 }
 
@@ -96,7 +96,7 @@ function extractIdFrom(response) {
  * @param array2 Second array to be checked for equality
  * @returns true if equal, otherwise false.
  */
-function arraysEqual(array1, array2) {
+function arraysEqual (array1, array2) {
   return (
     array1.length == array2.length &&
     array1.every((item) => array2.includes(item)) &&
@@ -150,7 +150,7 @@ suite(function (env) {
   })
 
   describe('VirtualAuthenticator Test Suit 2', function () {
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+    ignore(browsers(Browser.SAFARI)).it(
       'should test create authenticator',
       async function () {
         /**
@@ -170,7 +170,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+    ignore(browsers(Browser.SAFARI)).it(
       'should test remove authenticator',
       async function () {
         let options = new virtualAuthenticatorOptions()
@@ -182,7 +182,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+    ignore(browsers(Browser.SAFARI)).it(
       'should test add non-resident credential',
       async function () {
         /**
@@ -206,7 +206,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+    ignore(browsers(Browser.SAFARI)).it(
       'should test add non-resident credential when authenticator uses U2F protocol',
       async function () {
         /**
@@ -239,7 +239,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+    ignore(browsers(Browser.SAFARI)).it(
       'should test add resident credential',
       async function () {
         /**
@@ -269,7 +269,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+    ignore(browsers(Browser.SAFARI)).it(
       'should test add resident credential not supported when authenticator uses U2F protocol',
       async function () {
         /**
@@ -309,7 +309,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+    ignore(browsers(Browser.SAFARI)).it(
       'should test get credentials',
       async function () {
         /**
@@ -321,8 +321,9 @@ suite(function (env) {
          * Register a resident credential.
          */
         let response1 = await driver.executeAsyncScript(
-          'registerCredential({authenticatorSelection: {requireResidentKey: true}})' +
-            ' .then(arguments[arguments.length - 1]);'
+          'registerCredential({authenticatorSelection: {requireResidentKey: true}})'
+          +
+          ' .then(arguments[arguments.length - 1]);'
         )
         assert(response1['status'] === 'OK')
 
@@ -364,7 +365,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+    ignore(browsers(Browser.SAFARI)).it(
       'should test remove credential by rawID',
       async function () {
         driver = await createRkDisabledU2fAuthenticator(driver)
@@ -389,7 +390,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+    ignore(browsers(Browser.SAFARI)).it(
       'should test remove credential by base64url Id',
       async function () {
         driver = await createRkDisabledU2fAuthenticator(driver)
@@ -416,7 +417,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+    ignore(browsers(Browser.SAFARI)).it(
       'should test remove all credentials',
       async function () {
         driver = await createRkDisabledU2fAuthenticator(driver)
@@ -442,12 +443,12 @@ suite(function (env) {
          */
         let response = await driver.executeAsyncScript(
           'getCredential([{' +
-            '  "type": "public-key",' +
-            '  "id": Int8Array.from(arguments[0]),' +
-            '}, {' +
-            '  "type": "public-key",' +
-            '  "id": Int8Array.from(arguments[1]),' +
-            '}]).then(arguments[arguments.length - 1]);',
+          '  "type": "public-key",' +
+          '  "id": Int8Array.from(arguments[0]),' +
+          '}, {' +
+          '  "type": "public-key",' +
+          '  "id": Int8Array.from(arguments[1]),' +
+          '}]).then(arguments[arguments.length - 1]);',
           rawId1,
           rawId2
         )
@@ -455,7 +456,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+    ignore(browsers(Browser.SAFARI)).it(
       'should test set user verified',
       async function () {
         driver = await createRkEnabledCTAP2Authenticator(driver)
@@ -464,8 +465,9 @@ suite(function (env) {
          * Register a credential requiring UV.
          */
         let response = await driver.executeAsyncScript(
-          "registerCredential({authenticatorSelection: {userVerification: 'required'}})" +
-            '  .then(arguments[arguments.length - 1]);'
+          'registerCredential({authenticatorSelection: {userVerification: \'required\'}})'
+          +
+          '  .then(arguments[arguments.length - 1]);'
         )
         assert(response['status'] === 'OK')
         let rawId = extractRawIdFrom(response)
