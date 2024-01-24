@@ -34,6 +34,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.ScriptKey;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -1058,4 +1059,48 @@ public interface WebDriverListener {
    * @param window The window object that will be called
    */
   default void afterFullscreen(WebDriver.Window window) {}
+
+  // Target Locator
+
+  /**
+   * Called before any method in {@link WebDriver.TargetLocator} class.
+   *
+   * @param targetLocator the target locator being used for the action
+   * @param method the method being invoked
+   * @param args the arguments to the method
+   */
+  default void beforeAnyTargetLocatorCall(
+      WebDriver.TargetLocator targetLocator, Method method, Object[] args) {}
+
+  /**
+   * Called after any method in {@link WebDriver.TargetLocator} class.
+   *
+   * @param targetLocator the target locator being used for the action
+   * @param method the method being invoked
+   * @param args the arguments to the method
+   * @param result the result of the method call
+   */
+  default void afterAnyTargetLocatorCall(
+      WebDriver.TargetLocator targetLocator, Method method, Object[] args, Object result) {}
+
+  /**
+   * This action will be performed each time before {@link
+   * org.openqa.selenium.WebDriver.TargetLocator#window(String)}
+   *
+   * @param targetLocator the target locator being used for the action
+   * @param nameOrHandle The name of the window or the handle as returned by {@link
+   *     org.openqa.selenium.WebDriver#getWindowHandle()} or <code>null</code> if switching to a new
+   *     window created by {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
+   */
+  default void beforeWindow(WebDriver.TargetLocator targetLocator, String nameOrHandle) {}
+
+  /**
+   * @param targetLocator the target locator being used for the action
+   * @param nameOrHandle The name of the window or the handle as returned by {@link
+   *     org.openqa.selenium.WebDriver#getWindowHandle()} or <code>null</code> if switching to a new
+   *     window created by {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
+   * @param driver WebDriver
+   */
+  default void afterWindow(
+      WebDriver.TargetLocator targetLocator, String nameOrHandle, WebDriver driver) {}
 }
