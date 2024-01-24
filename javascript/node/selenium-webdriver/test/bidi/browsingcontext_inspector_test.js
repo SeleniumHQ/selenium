@@ -56,6 +56,24 @@ suite(
         assert.equal(contextInfo.parentBrowsingContext, null)
       })
 
+      it('can listen to browsing context destroyed event', async function () {
+        let contextInfo = null
+        const browsingcontextInspector = await BrowsingContextInspector(driver)
+        await browsingcontextInspector.onBrowsingContextDestroyed((entry) => {
+          contextInfo = entry
+        })
+
+        await driver.switchTo().newWindow('window')
+
+        const windowHandle = await driver.getWindowHandle()
+        await driver.close()
+
+        assert.equal(contextInfo.id, windowHandle)
+        assert.equal(contextInfo.url, 'about:blank')
+        assert.equal(contextInfo.children, null)
+        assert.equal(contextInfo.parentBrowsingContext, null)
+      })
+
       it('can listen to tab browsing context created event', async function () {
         let contextInfo = null
         const browsingcontextInspector = await BrowsingContextInspector(driver)
