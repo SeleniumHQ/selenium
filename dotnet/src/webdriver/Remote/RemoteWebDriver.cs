@@ -433,6 +433,11 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession(DevToolsOptions options)
         {
+            if (options is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             if (this.devToolsSession == null)
             {
                 if (!this.Capabilities.HasCapability(RemoteDevToolsEndPointCapabilityName))
@@ -453,6 +458,8 @@ namespace OpenQA.Selenium.Remote
                 {
                     throw new WebDriverException("Cannot parse protocol version from reported version string: " + version);
                 }
+
+                options.ProtocolVersion = devToolsProtocolVersion;
 
                 try
                 {
