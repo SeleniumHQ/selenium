@@ -557,9 +557,11 @@ namespace :node do
     old_version = node_version
     new_version = updated_version(old_version, arguments[:version])
 
-    file = 'javascript/node/selenium-webdriver/package.json'
-    text = File.read(file).gsub(old_version, new_version)
-    File.open(file, "w") { |f| f.puts text }
+    ['javascript/node/selenium-webdriver/package.json',
+     'javascript/node/selenium-webdriver/package-lock.json'].each do |file|
+      text = File.read(file).gsub(old_version, new_version)
+      File.open(file, "w") { |f| f.puts text }
+    end
 
     Rake::Task['node:changelog'].invoke
   end
