@@ -445,21 +445,24 @@ namespace OpenQA.Selenium.Remote
                     throw new WebDriverException("Cannot find " + RemoteDevToolsEndPointCapabilityName + " capability for driver");
                 }
 
-                if (!this.Capabilities.HasCapability(RemoteDevToolsVersionCapabilityName))
+                if (!options.ProtocolVersion.HasValue || options.ProtocolVersion == DevToolsSession.AutoDetectDevToolsProtocolVersion)
                 {
-                    throw new WebDriverException("Cannot find " + RemoteDevToolsVersionCapabilityName + " capability for driver");
+                    if (!this.Capabilities.HasCapability(RemoteDevToolsVersionCapabilityName))
+                    {
+                        throw new WebDriverException("Cannot find " + RemoteDevToolsVersionCapabilityName + " capability for driver");
+                    }
+
+                    string debuggerAddress = this.Capabilities.GetCapability(RemoteDevToolsEndPointCapabilityName).ToString();
+                    string version = this.Capabilities.GetCapability(RemoteDevToolsVersionCapabilityName).ToString();
+
+                    bool versionParsed = int.TryParse(version.Substring(0, version.IndexOf(".")), out int devToolsProtocolVersion);
+                    if (!versionParsed)
+                    {
+                        throw new WebDriverException("Cannot parse protocol version from reported version string: " + version);
+                    }
+
+                    options.ProtocolVersion = devToolsProtocolVersion;
                 }
-
-                string debuggerAddress = this.Capabilities.GetCapability(RemoteDevToolsEndPointCapabilityName).ToString();
-                string version = this.Capabilities.GetCapability(RemoteDevToolsVersionCapabilityName).ToString();
-
-                bool versionParsed = int.TryParse(version.Substring(0, version.IndexOf(".")), out int devToolsProtocolVersion);
-                if (!versionParsed)
-                {
-                    throw new WebDriverException("Cannot parse protocol version from reported version string: " + version);
-                }
-
-                options.ProtocolVersion = devToolsProtocolVersion;
 
                 try
                 {
