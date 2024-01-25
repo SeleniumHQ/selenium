@@ -43,9 +43,9 @@ module Selenium
           @lock = Mutex.new
         end
 
-        def intercept(&block)
+        def intercept(...)
           devtools.network.on(:loading_failed) { |params| track_cancelled_request(params) }
-          devtools.fetch.on(:request_paused) { |params| request_paused(params, &block) }
+          devtools.fetch.on(:request_paused) { |params| request_paused(params, ...) }
 
           devtools.network.set_cache_disabled(cache_disabled: true)
           devtools.network.enable

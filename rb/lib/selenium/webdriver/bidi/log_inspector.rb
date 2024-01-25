@@ -50,28 +50,28 @@ module Selenium
           @bidi.session.subscribe('log.entryAdded', browsing_context_ids)
         end
 
-        def on_console_entry(filter_by = nil, &block)
+        def on_console_entry(...)
           check_valid_filter(filter_by)
 
           on_log do |params|
             type = params['type']
-            console_log_events(params, filter_by, &block) if type.eql?('console')
+            console_log_events(params, filter_by, ...) if type.eql?('console')
           end
         end
 
-        def on_javascript_log(filter_by = nil, &block)
+        def on_javascript_log(...)
           check_valid_filter(filter_by)
 
           on_log do |params|
             type = params['type']
-            javascript_log_events(params, filter_by, &block) if type.eql?('javascript')
+            javascript_log_events(params, filter_by, ...) if type.eql?('javascript')
           end
         end
 
-        def on_javascript_exception(&block)
+        def on_javascript_exception(...)
           on_log do |params|
             type = params['type']
-            javascript_log_events(params, FilterBy.log_level('error'), &block) if type.eql?('javascript')
+            javascript_log_events(params, ...) if type.eql?('javascript')
           end
         end
 

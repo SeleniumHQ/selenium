@@ -51,7 +51,7 @@ module Selenium
         expect(wait.until(&block)).to be true
       end
 
-      it 'will use the message from any NoSuchElementError raised while waiting' do
+      it 'uses the message from any NoSuchElementError raised while waiting' do
         block = -> { raise Error::NoSuchElementError, 'foo' }
 
         expect {
