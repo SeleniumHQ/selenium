@@ -1092,9 +1092,6 @@ namespace :all do
     Rake::Task['authors'].invoke
     commit!('Update authors file', ['AUTHORS'])
 
-    Rake::Task['copyright:update'].invoke
-    commit!('Update copyright notice on files', all: true)
-
     # Note that this does not include Rust version changes that are handled in separate rake:version task
     Rake::Task['all:version'].invoke
     commit!("FIX CHANGELOGS BEFORE MERGING!\n\nUpdate versions and change logs to release Selenium #{java_version}",
