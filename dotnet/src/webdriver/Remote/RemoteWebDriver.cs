@@ -445,14 +445,15 @@ namespace OpenQA.Selenium.Remote
                     throw new WebDriverException("Cannot find " + RemoteDevToolsEndPointCapabilityName + " capability for driver");
                 }
 
+                string debuggerAddress = this.Capabilities.GetCapability(RemoteDevToolsEndPointCapabilityName).ToString();
+
                 if (!options.ProtocolVersion.HasValue || options.ProtocolVersion == DevToolsSession.AutoDetectDevToolsProtocolVersion)
                 {
                     if (!this.Capabilities.HasCapability(RemoteDevToolsVersionCapabilityName))
                     {
                         throw new WebDriverException("Cannot find " + RemoteDevToolsVersionCapabilityName + " capability for driver");
                     }
-
-                    string debuggerAddress = this.Capabilities.GetCapability(RemoteDevToolsEndPointCapabilityName).ToString();
+                    
                     string version = this.Capabilities.GetCapability(RemoteDevToolsVersionCapabilityName).ToString();
 
                     bool versionParsed = int.TryParse(version.Substring(0, version.IndexOf(".")), out int devToolsProtocolVersion);
