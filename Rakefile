@@ -971,6 +971,8 @@ namespace :rust do
     update_changelog(version, 'rust', 'rust/src', 'rust/CHANGELOG.md', header)
   end
 
+  # Rust versioning is currently difficult compared to the others because we are using the 0.4.x pattern
+  # until Selenium Manager comes out of beta
   desc 'Update Rust version'
   task :version, [:version] do |_task, arguments|
     old_version = rust_version.dup
@@ -990,6 +992,18 @@ namespace :rust do
 
     Rake::Task['rust:changelog'].invoke unless new_version.include?('nightly')
     Rake::Task['rust:update'].invoke
+  end
+
+  # Creating a special task for this because Rust version needs to be managed at a different place than
+  # everything else; want to use changelog updates later in process
+  namespace :version do
+    desc 'Commits updates from Rust version changes'
+    task :commit do
+      @git.reset
+      commit!("update Rust version to #{rust_version}",
+             ['rust/BUILD.bazel', 'rust/Cargo.Bazel.lock', 'rust/Cargo.lock', 'rust/Cargo.toml'])
+      commit!('Rust Changelog', ['rust/CHANGELOG.md'])
+    end
   end
 end
 
@@ -1051,12 +1065,56 @@ namespace :all do
   desc 'Update everything in preparation for a release'
   task :prepare, [:channel] do |_task, arguments|
     args = Array(arguments[:channel]) ? ['--', "--chrome_channel=#{arguments[:channel].capitalize}"] : []
-    Bazel.execute('run', args, '//scripts:update_cdp')
     Bazel.execute('run', args, '//scripts:pinned_browsers')
+    commit!('Update pinned browser versions', ['common/repositories.bzl'])
+
+    Bazel.execute('run', args, '//scripts:update_cdp')
+    commit!('Update supported versions for Chrome DevTools',
+           ['common/devtools/',
+            'dotnet/src/webdriver/DevTools/',
+            'dotnet/src/webdriver/WebDriver.csproj',
+            'dotnet/test/common/DevTools/',
+            'dotnet/test/common/CustomDriverConfigs/',
+            'dotnet/selenium-dotnet-version.bzl',
+            'java/src/org/openqa/selenium/devtools/',
+            'javascript/node/selenium-webdriver/BUILD.bazel',
+            'py/BUILD.bazel',
+            'rb/lib/selenium/devtools/',
+            'rb/Gemfile.lock',
+            'Rakefile'])
+
     Bazel.execute('run', args, '//scripts:selenium_manager')
+    commit!('Update selenium manager version', ['common/selenium_manager.bzl'])
+
     Rake::Task['java:update'].invoke
+    commit!('Update Maven Dependencies', ['java/maven_deps.bzl', 'java/maven_install.json'])
+
     Rake::Task['authors'].invoke
+    commit!('Update authors file', ['AUTHORS'])
+
     Rake::Task['copyright:update'].invoke
+    commit!('Update copyright notice on files', all: true)
+
+    # Note that this does not include Rust version changes that are handled in separate rake:version task
+    Rake::Task['all:version'].invoke
+    commit!("FIX CHANGELOGS BEFORE MERGING!\n\nUpdate versions and change logs to release Selenium #{java_version}",
+            ['dotnet/CHANGELOG',
+             'dotnet/selenium-dotnet-version.bzl',
+             'java/CHANGELOG',
+             'java/version.bzl',
+             'javascript/node/selenium-webdriver/CHANGES.md',
+             'javascript/node/selenium-webdriver/package.json',
+             'javascript/node/selenium-webdriver/package-lock.json',
+             'py/docs/source/conf.py',
+             'py/selenium/__init__.py',
+             'py/selenium/webdriver/__init__.py',
+             'py/BUILD.bazel',
+             'py/CHANGES',
+             'py/setup.py',
+             'rb/lib/selenium/webdriver/version.rb',
+             'rb/CHANGES',
+             'rb/Gemfile.lock',
+             'rust/CHANGELOG.md'])
   end
 
   desc 'Update all versions'
