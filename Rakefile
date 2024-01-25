@@ -712,8 +712,10 @@ namespace :rb do
   desc 'Generate Ruby gems'
   task :build, [:args] do |_task, arguments|
     args = Array(arguments[:args]) || []
-    Bazel.execute('build', args, '//rb:selenium-webdriver')
-    Bazel.execute('build', args, '//rb:selenium-devtools')
+    webdriver = args.reject! { |item| item == 'webdriver' }
+    devtools = args.reject! { |item| item == 'devtools' }
+    Bazel.execute('build', args, '//rb:selenium-webdriver') if webdriver
+    Bazel.execute('build', args, '//rb:selenium-devtools') if devtools
   end
 
   desc 'Update generated Ruby files for local development'
