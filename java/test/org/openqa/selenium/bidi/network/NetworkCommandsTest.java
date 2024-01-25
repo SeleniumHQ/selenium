@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi.network;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -27,13 +28,19 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.bidi.Network;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 class NetworkCommandsTest extends JupiterTestBase {
+  private String page;
   private AppServer server;
 
   @BeforeEach
@@ -67,6 +74,65 @@ class NetworkCommandsTest extends JupiterTestBase {
       assertThat(intercept).isNotNull();
 
       network.removeIntercept(intercept);
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canContinueWithAuthCredentials() {
+    try (Network network = new Network(driver)) {
+      network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
+      network.onAuthRequired(
+          responseDetails ->
+              network.continueWithAuth(
+                  responseDetails.getRequest().getRequestId(),
+                  new UsernameAndPassword("test", "test")));
+
+      page = server.whereIs("basicAuth");
+      driver.get(page);
+      assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canContinueWithoutAuthCredentials() {
+    try (Network network = new Network(driver)) {
+      network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
+      network.onAuthRequired(
+          responseDetails ->
+              // Does not handle the alert
+              network.continueWithAuthNoCredentials(responseDetails.getRequest().getRequestId()));
+      page = server.whereIs("basicAuth");
+      driver.get(page);
+      // This would fail if alert was handled
+      Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+      alert.dismiss();
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canCancelAuth() {
+    try (Network network = new Network(driver)) {
+      network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
+      network.onAuthRequired(
+          responseDetails ->
+              // Does not handle the alert
+              network.cancelAuth(responseDetails.getRequest().getRequestId()));
+      page = server.whereIs("basicAuth");
+      driver.get(page);
+      assertThatThrownBy(() -> wait.until(ExpectedConditions.alertIsPresent()))
+          .isInstanceOf(TimeoutException.class);
     }
   }
 

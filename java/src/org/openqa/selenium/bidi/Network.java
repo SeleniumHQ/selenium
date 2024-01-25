@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.network.AddInterceptParameters;
 import org.openqa.selenium.bidi.network.BeforeRequestSent;
@@ -79,6 +80,34 @@ public class Network implements AutoCloseable {
 
   public void removeIntercept(String interceptId) {
     this.bidi.send(new Command<>("network.removeIntercept", Map.of("intercept", interceptId)));
+  }
+
+  public void continueWithAuth(String requestId, UsernameAndPassword usernameAndPassword) {
+    this.bidi.send(
+        new Command<>(
+            "network.continueWithAuth",
+            Map.of(
+                "request",
+                requestId,
+                "action",
+                "provideCredentials",
+                "credentials",
+                Map.of(
+                    "type", "password",
+                    "username", usernameAndPassword.username(),
+                    "password", usernameAndPassword.password()))));
+  }
+
+  public void continueWithAuthNoCredentials(String requestId) {
+    this.bidi.send(
+        new Command<>(
+            "network.continueWithAuth", Map.of("request", requestId, "action", "default")));
+  }
+
+  public void cancelAuth(String requestId) {
+    this.bidi.send(
+        new Command<>(
+            "network.continueWithAuth", Map.of("request", requestId, "action", "cancel")));
   }
 
   public void onBeforeRequestSent(Consumer<BeforeRequestSent> consumer) {
