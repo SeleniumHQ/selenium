@@ -25,6 +25,8 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.Network;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
@@ -133,6 +136,23 @@ class NetworkCommandsTest extends JupiterTestBase {
       driver.get(page);
       assertThatThrownBy(() -> wait.until(ExpectedConditions.alertIsPresent()))
           .isInstanceOf(TimeoutException.class);
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canFailRequest() {
+    try (Network network = new Network(driver)) {
+      network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT));
+      network.onBeforeRequestSent(
+          responseDetails -> network.failRequest(responseDetails.getRequest().getRequestId()));
+      page = server.whereIs("basicAuth");
+      driver.manage().timeouts().pageLoadTimeout(Duration.of(5, ChronoUnit.SECONDS));
+
+      assertThatThrownBy(() -> driver.get(page)).isInstanceOf(WebDriverException.class);
     }
   }
 

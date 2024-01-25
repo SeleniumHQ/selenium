@@ -110,6 +110,10 @@ public class Network implements AutoCloseable {
             "network.continueWithAuth", Map.of("request", requestId, "action", "cancel")));
   }
 
+  public void failRequest(String requestId) {
+    this.bidi.send(new Command<>("network.failRequest", Map.of("request", requestId)));
+  }
+
   public void onBeforeRequestSent(Consumer<BeforeRequestSent> consumer) {
     if (browsingContextIds.isEmpty()) {
       this.bidi.addListener(beforeRequestSentEvent, consumer);
