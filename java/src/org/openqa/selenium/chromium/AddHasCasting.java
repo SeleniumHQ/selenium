@@ -59,10 +59,12 @@ public abstract class AddHasCasting
 
       @Override
       public void selectCastSink(String deviceName) {
-        Require.nonNull("Device Name", deviceName);
+                Require.nonNull("Device Name", deviceName);
 
         executeMethod.execute(SET_CAST_SINK_TO_USE, Map.of("sinkName", deviceName));
       }
+
+
 
       @Override
       public void startDesktopMirroring(String deviceName) {
