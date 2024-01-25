@@ -1030,18 +1030,14 @@ namespace :all do
     Rake::Task['all:docs'].invoke
     Rake::Task['all:version'].invoke('nightly')
 
-    puts "Staging nightly version updates"
-    @git.add(['java/version.bzl',
-              'rb/lib/selenium/webdriver/version.rb',
-              'rb/Gemfile.lock',
-              'rust/BUILD.bazel',
-              'rust/Cargo.Bazel.lock',
-              'rust/Cargo.lock',
-              'rust/Cargo.toml'],
-             all: true)
     puts "Committing nightly version updates"
-    @git.commit('update versions to nightly')
-    puts "Pushing changes to upstream repository"
+    commit!('update versions to nightly', ['java/version.bzl',
+                                                   'rb/lib/selenium/webdriver/version.rb',
+                                                   'rb/Gemfile.lock',
+                                                   'rust/BUILD.bazel',
+                                                   'rust/Cargo.Bazel.lock',
+                                                   'rust/Cargo.lock',
+                                                   'rust/Cargo.toml'])
 
     print 'Do you want to push the committed changes? (Y/n): '
     response = STDIN.gets.chomp.downcase
@@ -1175,15 +1171,12 @@ def update_gh_pages
     end
   end
 
-  puts "Staging changes for commit"
-  @git.add('docs/api', all: true)
-
   print 'Do you want to commit the changes? (Y/n): '
   response = STDIN.gets.chomp.downcase
   return restore_git(origin_reference) unless response == 'y' || response == 'yes'
 
   puts "Committing changes"
-  @git.commit('updating all API docs')
+  commit!('updating all API docs', 'docs/api/')
 
   puts "Pushing changes to upstream repository"
   @git.push
@@ -1245,4 +1238,14 @@ def update_changelog(version, language, path, changelog, header)
     file.write(new_content)
     file.truncate(file.pos)
   end
+end
+
+def commit!(message, files = [], all: false)
+  files.each do |file|
+    puts "adding: #{file}"
+    @git.add(file)
+  end
+  all ? @git.commit_all(message) : @git.commit(message)
+rescue Git::FailedError => ex
+  puts ex.message
 end
