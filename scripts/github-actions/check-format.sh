@@ -17,8 +17,4 @@ else
   # Fail the build if the format script needs to be re-run
   ./scripts/format.sh
   git diff --exit-code
-
-  # Now we're made it out, reapply changes made by the build
-  # runner
-  git reset --soft HEAD^
 fi

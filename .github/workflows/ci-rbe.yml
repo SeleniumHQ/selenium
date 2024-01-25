@@ -17,6 +17,40 @@ jobs:
       cache-key: rbe
       ruby-version: jruby-9.4.5.0
       run: ./scripts/github-actions/check-format.sh
+      artifact-name: format-fixes
+
+  push_fixes:
+    name: Push changes
+    runs-on: ubuntu-latest
+    needs: format
+    if: github.event_name != 'push' && ${{ failure() }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Download patch
+        uses: actions/download-artifact@v4
+        with:
+          name: format-fixes
+      - name: Apply Patch
+        run: |
+          git apply changes.patch
+          rm changes.patch
+      - name: Commit files
+        id: git
+        run: |
+          export CHANGES=$(git status -s)
+          if [ -n "$CHANGES" ]; then
+            git config --local user.email "selenium-ci@users.noreply.github.com"
+            git config --local user.name "Selenium CI Bot"
+            git commit -am "fix formatting errors"
+          fi
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          branch: ${{ github.head_ref }}
 
   test:
     name: Test
