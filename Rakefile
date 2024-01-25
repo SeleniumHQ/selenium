@@ -525,7 +525,7 @@ namespace :node do
 
   desc 'Build Node npm package'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] || []
+    args = Array(arguments[:args]) || []
     Bazel.execute('build', args, '//javascript/node/selenium-webdriver')
   end
 
@@ -573,14 +573,14 @@ end
 namespace :py do
   desc 'Build Python wheel and sdist with optional arguments'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] || []
+    args = Array(arguments[:args]) || []
     Bazel.execute('build', args, '//py:selenium-wheel')
     Bazel.execute('build', args, '//py:selenium-sdist')
   end
 
   desc 'Release Python wheel and sdist to pypi'
   task :release, [:args] do |_task, arguments|
-    args = arguments[:args] || ['--stamp']
+    args = Array(arguments[:args]) || ['--stamp']
     Bazel.execute('run', args, '//py:selenium-release')
   end
 
@@ -711,7 +711,7 @@ end
 namespace :rb do
   desc 'Generate Ruby gems'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] || []
+    args = Array(arguments[:args]) || []
     Bazel.execute('build', args, '//rb:selenium-webdriver')
     Bazel.execute('build', args, '//rb:selenium-devtools')
   end
@@ -725,7 +725,7 @@ namespace :rb do
 
   desc 'Push Ruby gems to rubygems'
   task :release, [:args] do |_task, arguments|
-    args = arguments[:args] || ['--stamp']
+    args = Array(arguments[:args]) || ['--stamp']
     Bazel.execute('run', args, '//rb:selenium-webdriver-release')
     Bazel.execute('run', args, '//rb:selenium-devtools-release')
   end
@@ -776,13 +776,13 @@ end
 namespace :dotnet do
   desc 'Build nupkg files'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] || []
+    args = Array(arguments[:args]) || []
     Bazel.execute('build', args, '//dotnet:all')
   end
 
   desc 'Create zipped assets for .NET for uploading to GitHub'
   task :zip_assets, [:args] do |_task, arguments|
-    args = arguments[:args] || ['--stamp']
+    args = Array(arguments[:args]) || ['--stamp']
     Rake::Task['dotnet:build'].invoke(args)
     mkdir_p 'build/dist'
     FileUtils.rm_f('build/dist/*dotnet*')
@@ -795,7 +795,7 @@ namespace :dotnet do
 
   desc 'Upload nupkg files to Nuget'
   task :release, [:args] do |_task, arguments|
-    args = arguments[:args] || ['--stamp']
+    args = Array(arguments[:args]) || ['--stamp']
     Rake::Task['dotnet:build'].invoke(args)
     Rake::Task['dotnet:zip_assets'].invoke(args)
 
@@ -856,26 +856,26 @@ end
 namespace :java do
   desc 'Build Java Client Jars'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] || []
+    args = Array(arguments[:args]) || []
     Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-combined')
   end
 
   desc 'Build Grid Jar'
   task :grid, [:args] do |_task, arguments|
-    args = arguments[:args] || []
+    args = Array(arguments[:args]) || []
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:grid')
   end
 
   desc 'Package Java bindings and grid into releasable packages'
   task :package, [:args] do |_task, arguments|
-    args = arguments[:args] || []
+    args = Array(arguments[:args]) || []
     Rake::Task['java:build'].invoke(args)
     Rake::Task['java-release-zip'].invoke
   end
 
   desc 'Deploy all jars to Maven'
   task :release, [:args] do |_task, arguments|
-    args = arguments[:args] || ['--stamp']
+    args = Array(arguments[:args]) || ['--stamp']
     Rake::Task['java:package'].invoke(args)
     Rake::Task['publish-maven'].invoke
   end
@@ -951,7 +951,7 @@ end
 namespace :rust do
   desc 'Build Selenium Manager'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] || []
+    args = Array(arguments[:args]) || []
     Bazel.execute('build', args, '//rust:selenium-manager')
   end
 
@@ -1006,7 +1006,7 @@ namespace :all do
 
   desc 'Build all artifacts for all language bindings'
   task :build, [:args] do |_task, arguments|
-    args = arguments[:args] || []
+    args = Array(arguments[:args]) || []
     Rake::Task['java:build'].invoke(args)
     Rake::Task['py:build'].invoke(args)
     Rake::Task['rb:build'].invoke(args)
@@ -1020,7 +1020,7 @@ namespace :all do
     tag = @git.add_tag("selenium-#{java_version}")
     @git.push('origin', tag.name)
 
-    args = arguments[:args] || ['--stamp']
+    args = Array(arguments[:args]) || ['--stamp']
     Rake::Task['java:release'].invoke(args)
     Rake::Task['py:release'].invoke(args)
     Rake::Task['rb:release'].invoke(args)
@@ -1049,15 +1049,15 @@ namespace :all do
   end
 
   desc 'Update everything in preparation for a release'
-    task :prepare, [:channel] do |_task, arguments|
-      args = arguments[:channel] ? ['--', "--chrome_channel=#{arguments[:channel].capitalize}"] : []
-      Bazel.execute('run', args, '//scripts:update_cdp')
-      Bazel.execute('run', args, '//scripts:pinned_browsers')
-      Bazel.execute('run', args, '//scripts:selenium_manager')
-      Rake::Task['java:update'].invoke
-      Rake::Task['authors'].invoke
-      Rake::Task['copyright:update'].invoke
-    end
+  task :prepare, [:channel] do |_task, arguments|
+    args = Array(arguments[:channel]) ? ['--', "--chrome_channel=#{arguments[:channel].capitalize}"] : []
+    Bazel.execute('run', args, '//scripts:update_cdp')
+    Bazel.execute('run', args, '//scripts:pinned_browsers')
+    Bazel.execute('run', args, '//scripts:selenium_manager')
+    Rake::Task['java:update'].invoke
+    Rake::Task['authors'].invoke
+    Rake::Task['copyright:update'].invoke
+  end
 
   desc 'Update all versions'
   task :version, [:version] do |_task, arguments|
