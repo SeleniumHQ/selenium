@@ -40,9 +40,15 @@ jobs:
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           add-paths: common/repositories.bzl
-          commit-message: Update pinned browser versions
+          commit-message: |
+            Update pinned browser versions
+
+            Run tests: [dotnet] [rb] [java] [js] [py]
           committer: Selenium CI Bot <selenium-ci@users.noreply.github.com>
           author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
           title: "Automated Browser Version Update"
-          body: "This is an automated pull request to update pinned browsers and drivers"
+          body: |
+            This is an automated pull request to update pinned browsers and drivers
+
+            Merge after verify the new browser versions properly passing the tests and no bugs need to be filed
           branch: "pinned-browser-updates"
