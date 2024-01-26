@@ -55,7 +55,7 @@ module Selenium
 
           on_log do |params|
             type = params['type']
-            console_log_events(params, filter_by, ...) if type.eql?('console')
+            console_log_events(params, ...) if type.eql?('console')
           end
         end
 
@@ -64,14 +64,14 @@ module Selenium
 
           on_log do |params|
             type = params['type']
-            javascript_log_events(params, filter_by, ...) if type.eql?('javascript')
+            javascript_log_events(params, ...) if type.eql?('javascript')
           end
         end
 
         def on_javascript_exception(...)
           on_log do |params|
             type = params['type']
-            javascript_log_events(params, ...) if type.eql?('javascript')
+            javascript_log_events(params, FilterBy.log_level('error'), ...) if type.eql?('javascript')
           end
         end
 
