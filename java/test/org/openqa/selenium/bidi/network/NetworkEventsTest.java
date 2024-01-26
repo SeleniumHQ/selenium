@@ -20,7 +20,6 @@ package org.openqa.selenium.bidi.network;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -148,7 +147,6 @@ class NetworkEventsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX) // Implemented in Firefox Nightly version 123
   void canListenToOnAuthRequiredEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
