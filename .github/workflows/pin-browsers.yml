@@ -40,7 +40,7 @@ jobs:
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           add-paths: common/repositories.bzl
-          commit-message: Update pinned browser versions
+          commit-message: "Update pinned browser versions"
           committer: Selenium CI Bot <selenium-ci@users.noreply.github.com>
           author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
           title: "[dotnet][rb][java][js][py] Automated Browser Version Update"
