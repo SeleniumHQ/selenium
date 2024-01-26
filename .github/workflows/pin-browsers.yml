@@ -12,6 +12,7 @@ jobs:
       name: Pin Browsers
       cache-key: pin-browsers
       run: bazel run //scripts:pinned_browsers
+      artifact-name: pinned-browsers
 
   pull-request:
     if: github.repository_owner == 'seleniumhq'
@@ -23,7 +24,7 @@ jobs:
       - name: Download patch
         uses: actions/download-artifact@v4
         with:
-          name: patch-file
+          name: pinned-browsers
       - name: Apply Patch
         run: |
           git apply changes.patch

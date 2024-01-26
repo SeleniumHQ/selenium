@@ -55,7 +55,7 @@ jobs:
       - name: "Rename binary"
         run: mv rust/target/release/selenium-manager.exe selenium-manager-windows.exe
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-windows
           path: selenium-manager-windows.exe
@@ -83,7 +83,7 @@ jobs:
       - name: "Rename binary"
         run: mv rust/target/debug/selenium-manager.exe selenium-manager-windows-debug.exe
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-windows-debug
           path: selenium-manager-windows-debug.exe
@@ -111,7 +111,7 @@ jobs:
       - name: "Rename binary"
         run: mv rust/target/x86_64-unknown-linux-musl/release/selenium-manager selenium-manager-linux
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-linux
           path: selenium-manager-linux
@@ -140,7 +140,7 @@ jobs:
           tar -cvf ../../../../selenium-manager-linux-debug.tar selenium-manager
         working-directory: rust
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-linux-debug
           path: selenium-manager-linux-debug.tar
@@ -170,7 +170,7 @@ jobs:
             target/x86_64-apple-darwin/release/selenium-manager
         working-directory: rust
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-macos
           path: rust/target/selenium-manager-macos
@@ -202,7 +202,7 @@ jobs:
           tar -cvf ../../selenium-manager-macos-debug.tar selenium-manager
         working-directory: rust
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-macos-debug
           path: selenium-manager-macos-debug.tar
@@ -220,7 +220,7 @@ jobs:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           repository: SeleniumHQ/selenium_manager_artifacts
       - name: "Download Artifacts"
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
       - name: "Prepare and Commit"
