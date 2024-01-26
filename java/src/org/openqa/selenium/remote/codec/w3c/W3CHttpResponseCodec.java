@@ -90,10 +90,12 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     if (!encodedResponse.isSuccessful()) {
       LOG.fine("Processing an error");
       if (HTTP_BAD_METHOD == encodedResponse.getStatus()) {
+        response.setState("unknown command");
         response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
         response.setValue(content);
       } else if (HTTP_GATEWAY_TIMEOUT == encodedResponse.getStatus()
           || HTTP_BAD_GATEWAY == encodedResponse.getStatus()) {
+        response.setState("unknown error");
         response.setStatus(ErrorCodes.UNHANDLED_ERROR);
         response.setValue(content);
       } else {
