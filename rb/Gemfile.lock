@@ -98,7 +98,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-support (3.12.1)
-    rubocop (1.60.1)
+    rubocop (1.60.2)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -170,7 +170,7 @@ DEPENDENCIES
   rack (~> 2.0)
   rake (~> 13.0)
   rspec (~> 3.0)
-  rubocop (~> 1.42)
+  rubocop (~> 1.60, >= 1.60.2)
   rubocop-performance (~> 1.15)
   rubocop-rspec (~> 2.16)
   selenium-devtools!
