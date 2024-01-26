@@ -75,7 +75,7 @@ module Selenium
           # Don't use Tempfile since it lacks rb_file_s_rename permission on Windows.
           Dir.mktmpdir do |tmp_dir|
             zip_path = File.join(tmp_dir, 'webdriver-zip')
-            Zip::File.open(zip_path, ...)
+            Zip::File.open(zip_path, Zip::File::CREATE, ...)
           end
         end
 
