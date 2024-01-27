@@ -57,7 +57,6 @@ jobs:
       - name: Add label
         uses: actions/github-script@v7
         with:
-          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
           script: |
             github.rest.issues.addLabels({
               issue_number: context.issue.number,
@@ -68,7 +67,7 @@ jobs:
 
   re_format:
     name: Format Fixed
-    if: github.repository_owner == 'seleniumhq' && (github.event_name != 'issues' || contains(github.event.issue.labels.*.name, 'rerun-tests'))
+    if: github.repository_owner == 'seleniumhq' && github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'rerun-tests')
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check format script run
@@ -85,7 +84,6 @@ jobs:
       - name: Remove label
         uses: actions/github-script@v7
         with:
-          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
           script: |
             github.issues.removeLabel({
               issue_number: context.issue.number,
