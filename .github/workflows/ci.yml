@@ -8,6 +8,8 @@ on:
   schedule:
     - cron: "0 */12 * * *"
   workflow_dispatch:
+  issues:
+    types: [ labeled ]
 
 jobs:
   check:
@@ -43,55 +45,59 @@ jobs:
     needs: check
     uses: ./.github/workflows/ci-dotnet.yml
     if: >
-      github.event_name == 'schedule' ||
+      (github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       contains(needs.check.outputs.targets, '//dotnet') ||
       contains(join(github.event.commits.*.message), '[dotnet]') ||
-      contains(github.event.pull_request.title, '[dotnet]')
-
+      contains(github.event.pull_request.title, '[dotnet]')) &&
+      (github.event_name != 'issues' || contains(github.event.issue.labels.*.name, 'rerun-tests'))
   java:
     name: Java
     needs: check
     uses: ./.github/workflows/ci-java.yml
     if: >
-      github.event_name == 'schedule' ||
+      (github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       contains(needs.check.outputs.targets, '//java') ||
       contains(join(github.event.commits.*.message), '[java]') ||
-      contains(github.event.pull_request.title, '[java]')
+      contains(github.event.pull_request.title, '[java]')) &&
+      (github.event_name != 'issues' || contains(github.event.issue.labels.*.name, 'rerun-tests'))
 
   javascript:
     name: JavaScript
     needs: check
     uses: ./.github/workflows/ci-javascript.yml
     if: >
-      github.event_name == 'schedule' ||
+      (github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       contains(needs.check.outputs.targets, '//javascript') ||
       contains(join(github.event.commits.*.message), '[js]') ||
-      contains(github.event.pull_request.title, '[js]')
+      contains(github.event.pull_request.title, '[js]')) &&
+      (github.event_name != 'issues' || contains(github.event.issue.labels.*.name, 'rerun-tests'))
 
   python:
     name: Python
     needs: check
     uses: ./.github/workflows/ci-python.yml
     if: >
-      github.event_name == 'schedule' ||
+      (github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       contains(needs.check.outputs.targets, '//py') ||
       contains(join(github.event.commits.*.message), '[py]') ||
-      contains(github.event.pull_request.title, '[py]')
+      contains(github.event.pull_request.title, '[py]')) &&
+      (github.event_name != 'issues' || contains(github.event.issue.labels.*.name, 'rerun-tests'))
 
   ruby:
     name: Ruby
     needs: check
     uses: ./.github/workflows/ci-ruby.yml
     if: >
-      github.event_name == 'schedule' ||
+      (github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       contains(needs.check.outputs.targets, '//rb') ||
       contains(join(github.event.commits.*.message), '[rb]') ||
-      contains(github.event.pull_request.title, '[rb]')
+      contains(github.event.pull_request.title, '[rb]')) &&
+      (github.event_name != 'issues' || contains(github.event.issue.labels.*.name, 'rerun-tests'))
 
   rust:
     name: Rust
@@ -100,8 +106,9 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
     if: >
-      github.event_name == 'schedule' ||
+      (github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       contains(needs.check.outputs.targets, '//rust') ||
       contains(join(github.event.commits.*.message), '[rust]') ||
-      contains(github.event.pull_request.title, '[rust]')
+      contains(github.event.pull_request.title, '[rust]')) &&
+      (github.event_name != 'issues' || contains(github.event.issue.labels.*.name, 'rerun-tests'))

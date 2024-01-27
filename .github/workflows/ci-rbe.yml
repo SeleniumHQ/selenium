@@ -6,11 +6,13 @@ on:
     branches:
       - trunk
   workflow_dispatch:
+  issues:
+    types: [ labeled ]
 
 jobs:
   format:
     name: Format
-    if: github.repository_owner == 'seleniumhq'
+    if: github.repository_owner == 'seleniumhq' && github.event_name != 'issues'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check format script run
@@ -18,12 +20,13 @@ jobs:
       ruby-version: jruby-9.4.5.0
       run: ./scripts/github-actions/check-format.sh
       artifact-name: format-fixes
+      ignore-failure: true
 
   push_fixes:
     name: Push changes
     runs-on: ubuntu-latest
     needs: format
-    if: github.event_name != 'push' && ${{ failure() }}
+    if: github.event_name != 'push' && ${{ failure() }} && github.event_name != 'issues'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -51,10 +54,49 @@ jobs:
         with:
           github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
           branch: ${{ github.head_ref }}
+      - name: Add label
+        uses: actions/github-script@v7
+        with:
+          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          script: |
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['rerun-tests']
+            })
+
+  re_format:
+    name: Format Fixed
+    if: github.repository_owner == 'seleniumhq' && (github.event_name != 'issues' || contains(github.event.issue.labels.*.name, 'rerun-tests'))
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Check format script run
+      cache-key: rbe
+      ruby-version: jruby-9.4.5.0
+      run: ./scripts/github-actions/check-format.sh
+      artifact-name: format-fixes
+
+  remove_label:
+    name: Remove Label
+    needs: re_format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove label
+        uses: actions/github-script@v7
+        with:
+          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          script: |
+            github.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: ['rerun-tests']
+            })
 
   test:
     name: Test
-    if: github.repository_owner == 'seleniumhq'
+    if: github.repository_owner == 'seleniumhq' && (github.event_name != 'issues' || contains(github.event.issue.labels.*.name, 'rerun-tests'))
     uses: ./.github/workflows/bazel.yml
     with:
       # TODO: experiment with turning off caches

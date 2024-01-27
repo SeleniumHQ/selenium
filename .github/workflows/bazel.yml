@@ -51,11 +51,17 @@ on:
         required: false
         type: string
         default: 'ignore-artifacts'
+      ignore-failure:
+        description: Ignore failure
+        required: false
+        type: string
+        default: false
 
 jobs:
   bazel:
     name: ${{ inputs.name }}
     runs-on: ${{ inputs.os }}-latest
+    continue-on-error: ${{ inputs.ignore-failure == 'true' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
