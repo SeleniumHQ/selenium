@@ -15,15 +15,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v118;
+'use strict'
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+const assert = require('assert')
+const chrome = require('../../chrome')
+const test = require('../../lib/test')
+const { ignore } = require('../../lib/test')
+const { Browser } = require('../../index')
 
-@AutoService(CdpInfo.class)
-public class v118CdpInfo extends CdpInfo {
+test.suite(
+  function (env) {
+    let driver
 
-  public v118CdpInfo() {
-    super(118, v118Domains::new);
-  }
-}
+    beforeEach(async function () {
+      driver = await env
+        .builder()
+        .build()
+    })
+    afterEach(async () => await driver.quit())
+    describe('can cast to devices', () => {
+      it(
+        'get sinks returns a list of devices',
+        async function () {
+
+          // Just testing if we can set get cast sink command.
+          // Testing this is tough because we need a device to cast to for the test.
+          const castSinks = await driver.getCastSinks()
+        }
+      )
+  })
+  },
+  { browsers: ['chrome'] }
+)

@@ -1,3 +1,10 @@
+0.4.17
+======
+
+* Use latest browser from cache when browser path is not discovered (#13283)
+* Throw a descriptive message when error parsing JSON from response (#13291)
+* Tracking Selenium Manager usage through Plausible (#11211) (#13173)
+
 0.4.16
 ======
 * Use online mapping to discover proper geckodriver version (#11671) (#13133)

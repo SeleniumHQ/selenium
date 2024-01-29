@@ -1006,6 +1006,27 @@ suite(
         assert.notEqual(realmInfo.realmId, null)
         assert.equal(realmInfo.realmType, RealmType.WINDOW)
       })
+
+      xit('can listen to realm destroyed message', async function () {
+        const manager = await ScriptManager(undefined, driver)
+
+        let realmInfo = null
+
+        await manager.onRealmDestroyed((result) => {
+          realmInfo = result
+        })
+
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await browsingContext.close()
+
+        assert.notEqual(realmInfo, null)
+        assert.notEqual(realmInfo.realmId, null)
+        assert.equal(realmInfo.realmType, RealmType.WINDOW)
+      })
     })
   },
   {browsers: [Browser.FIREFOX]}

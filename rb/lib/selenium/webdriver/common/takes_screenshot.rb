@@ -49,7 +49,7 @@ module Selenium
       # @api public
 
       def screenshot_as(format, full_page: false)
-        if full_page && !respond_to(:full_page)
+        if full_page && !respond_to?(:save_full_page_screenshot)
           raise Error::UnsupportedOperationError, "Full Page Screenshots are not supported for #{inspect}"
         end
 

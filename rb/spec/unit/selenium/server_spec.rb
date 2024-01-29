@@ -206,7 +206,7 @@ module Selenium
 
     it 'sets options after instantiation' do
       allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
-      server = described_class.new('selenium_server_deploy.jar')
+      server = described_class.new('selenium_server_deploy.jar', port: port)
       expect(server.port).to eq(port)
       expect(server.timeout).to eq(30)
       expect(server.background).to be false

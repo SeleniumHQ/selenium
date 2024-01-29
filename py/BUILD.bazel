@@ -10,6 +10,22 @@ load("//py:defs.bzl", "generate_devtools", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:import.bzl", "py_import")
 
+alias(
+    name = "twine",
+    actual = requirement("twine"),
+)
+
+genrule(
+    name = "selenium-release",
+    srcs = [
+        ":selenium-wheel",
+        ":selenium-sdist",
+    ],
+    outs = ["pypi_upload_complete.txt"],
+    cmd = "(twine upload $(location :selenium-wheel) $(location :selenium-sdist) && touch $@)",
+    tools = [":twine"],
+)
+
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
@@ -20,13 +36,13 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.16.0"
+SE_VERSION = "4.17.2"
 
 BROWSER_VERSIONS = [
     "v85",
     "v119",
     "v120",
-    "v118",
+    "v121",
 ]
 
 TEST_DEPS = [
@@ -242,6 +258,7 @@ py_wheel(
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
+        "typing_extensions>=4.9.0",
     ],
     strip_path_prefixes = [
         "py/",

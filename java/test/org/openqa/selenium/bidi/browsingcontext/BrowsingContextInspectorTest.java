@@ -78,6 +78,31 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
+  void canListenToBrowsingContextDestroyedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
+
+      inspector.onBrowsingContextDestroyed(future::complete);
+
+      String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
+
+      driver.close();
+
+      BrowsingContextInfo browsingContextInfo = future.get(5, TimeUnit.SECONDS);
+
+      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
+      assertThat("about:blank").isEqualTo(browsingContextInfo.getUrl());
+      assertThat(browsingContextInfo.getChildren()).isEqualTo(null);
+      assertThat(browsingContextInfo.getParentBrowsingContext()).isEqualTo(null);
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   void canListenToTabBrowsingContextCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {

@@ -186,6 +186,25 @@ suite(
         assert.equal(onResponseCompleted[0].redirectCount, 0)
       })
 
+      xit('can listen to auth required event', async function () {
+        let authRequiredEvent = null
+        const inspector = await NetworkInspector(driver)
+        await inspector.authRequired(function (event) {
+          authRequiredEvent = event
+        })
+
+        await driver.get(Pages.basicAuth)
+
+        const url = authRequiredEvent.request.url
+        assert.equal(authRequiredEvent.id, await driver.getWindowHandle())
+        assert.equal(authRequiredEvent.request.method, 'GET')
+        assert.equal(url.includes('basicAuth'), true)
+
+        assert.equal(authRequiredEvent.response.status, 401)
+        assert.equal(authRequiredEvent.response.headers.length > 1, true)
+        assert.equal(authRequiredEvent.response.url.includes('basicAuth'), true)
+      })
+
       it('test response completed mime type', async function () {
         let onResponseCompleted = []
         const inspector = await NetworkInspector(driver)

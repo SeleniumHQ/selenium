@@ -173,7 +173,7 @@ public class ErrorCodes {
               405,
               UnsupportedCommandException.class,
               false,
-              true),
+              false),
           new KnownError(
               METHOD_NOT_ALLOWED,
               "unsupported operation",
