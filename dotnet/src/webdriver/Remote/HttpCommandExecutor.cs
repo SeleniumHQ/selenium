@@ -309,14 +309,14 @@ namespace OpenQA.Selenium.Remote
         {
             Response response = new Response();
             string body = responseInfo.Body;
-            if (responseInfo.ContentType != null && responseInfo.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
-            {
-                response = Response.FromJson(body);
-            }
-            else if (responseInfo.StatusCode.ToString().First() != '2')
+            if (responseInfo.StatusCode.ToString().First() != '2')
             {
                 response.Status = WebDriverResult.UnhandledError;
                 response.Value = body;
+            }
+            else if (responseInfo.ContentType != null && responseInfo.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
+            {
+                response = Response.FromJson(body);
             }
             else
             {
