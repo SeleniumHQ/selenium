@@ -45,7 +45,6 @@ require 'rake_tasks/bazel/task'
 # These are the final items mixed into the global NS
 # These need moving into correct namespaces, and not be globally included
 require 'rake_tasks/bazel'
-require 'rake_tasks/copyright'
 require 'rake_tasks/python'
 
 $DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT
@@ -438,39 +437,6 @@ task 'selenium-java' => '//java/src/org/openqa/selenium:client-combined'
 desc 'Update AUTHORS file'
 task :authors do
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
-end
-
-namespace :copyright do
-  desc 'Update Copyright notices on all files in repo'
-  task :update do
-    Copyright.new.update(
-      FileList['javascript/**/*.js'].exclude(
-        'javascript/atoms/test/jquery.min.js',
-        'javascript/jsunit/**/*.js',
-        'javascript/node/selenium-webdriver/node_modules/**/*.js',
-        'javascript/selenium-core/lib/**/*.js',
-        'javascript/selenium-core/scripts/ui-element.js',
-        'javascript/selenium-core/scripts/ui-map-sample.js',
-        'javascript/selenium-core/scripts/user-extensions.js',
-        'javascript/selenium-core/scripts/xmlextras.js',
-        'javascript/selenium-core/xpath/**/*.js',
-        'javascript/grid-ui/node_modules/**/*.js'
-      )
-    )
-    Copyright.new.update(FileList['javascript/**/*.tsx'])
-    Copyright.new(comment_characters: '#').update(FileList['py/**/*.py'].exclude(
-                                                    'py/selenium/webdriver/common/bidi/cdp.py',
-                                                    'py/generate.py',
-                                                    'py/selenium/webdriver/common/devtools/**/*',
-                                                    'py/venv/**/*'
-                                                  ))
-    Copyright.new(comment_characters: '#', prefix: ["# frozen_string_literal: true\n", "\n"])
-             .update(FileList['rb/**/*.rb'])
-    Copyright.new.update(FileList['java/**/*.java'])
-    Copyright.new.update(FileList['rust/**/*.rs'])
-
-    sh './scripts/format.sh'
-  end
 end
 
 namespace :side do
