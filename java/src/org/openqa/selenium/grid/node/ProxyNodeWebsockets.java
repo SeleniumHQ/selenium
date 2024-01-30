@@ -49,7 +49,7 @@ public class ProxyNodeWebsockets
     implements BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> {
 
   private static final UrlTemplate CDP_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/cdp");
-  private static final UrlTemplate BIDI_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/bidi");
+  private static final UrlTemplate BIDI_TEMPLATE = new UrlTemplate("/session/{sessionId}");
   private static final UrlTemplate FWD_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/fwd");
   private static final UrlTemplate VNC_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/vnc");
   private static final Logger LOG = Logger.getLogger(ProxyNodeWebsockets.class.getName());
@@ -171,8 +171,23 @@ public class ProxyNodeWebsockets
       Consumer<SessionId> sessionConsumer,
       SessionId sessionId) {
     try {
-      URI uri = new URI(String.valueOf(caps.getCapability("webSocketUrl")));
-      return Optional.of(uri)
+      // Modified websocket uri that is used by the client to point to the Grid
+      // This is of the format  "ws://<external-grid-url>/session/{session-id}"
+      URI externalWebsocketUri = new URI(String.valueOf(caps.getCapability("webSocketUrl")));
+
+      // Constructed websocket uri that points to BiDi running on the browser
+      // This is of the format  "ws://localhost:{biDiPort}/session/{session-id}"
+      URI websocketUri =
+          new URI(
+              externalWebsocketUri.getScheme(),
+              externalWebsocketUri.getUserInfo(),
+              "localhost",
+              (Integer) caps.getCapability("bidi:port"),
+              externalWebsocketUri.getRawPath(),
+              externalWebsocketUri.getQuery(),
+              externalWebsocketUri.getFragment());
+
+      return Optional.of(websocketUri)
           .map(bidi -> createWsEndPoint(bidi, downstream, sessionConsumer, sessionId));
     } catch (URISyntaxException e) {
       LOG.warning("Unable to create URI from: " + caps.getCapability("webSocketUrl"));

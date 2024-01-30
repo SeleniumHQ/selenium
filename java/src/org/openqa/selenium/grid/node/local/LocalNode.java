@@ -806,19 +806,27 @@ public class LocalNode extends Node {
 
     // Check if the user wants to use BiDi
     boolean webSocketUrl = toUse.asMap().containsKey("webSocketUrl");
-    // Add se:bidi if necessary to send the bidi url back
-    boolean bidiSupported = isSupportingBiDi || toUse.getCapability("se:bidi") != null;
+    boolean bidiSupported = isSupportingBiDi || toUse.getCapability("webSocketUrl") != null;
     if (bidiSupported && bidiEnabled && webSocketUrl) {
-      String bidiPath = String.format("/session/%s/se/bidi", other.getId());
-      toUse = new PersistentCapabilities(toUse).setCapability("se:bidi", rewrite(bidiPath));
+      String biDiUrl = (String) other.getCapabilities().getCapability("webSocketUrl");
+      URI uri = null;
+      try {
+        uri = new URI(biDiUrl);
+      } catch (URISyntaxException e) {
+        throw new IllegalArgumentException("Unable to create URI from " + uri);
+      }
+      toUse =
+          new PersistentCapabilities(toUse)
+              .setCapability("bidi:port", uri.getPort())
+              .setCapability("webSocketUrl", rewrite(uri.getPath()));
     } else {
-      // Remove any se:bidi* from the response, BiDi is not supported nor enabled
+      // Remove any "webSocketUrl" from the response, BiDi is not supported nor enabled
       MutableCapabilities bidiFiltered = new MutableCapabilities();
       toUse
           .asMap()
           .forEach(
               (key, value) -> {
-                if (!key.startsWith("se:bidi")) {
+                if (!key.startsWith("webSocketUrl")) {
                   bidiFiltered.setCapability(key, value);
                 }
               });

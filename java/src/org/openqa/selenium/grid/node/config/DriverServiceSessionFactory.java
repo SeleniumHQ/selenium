@@ -186,7 +186,6 @@ public class DriverServiceSessionFactory implements SessionFactory {
         }
 
         caps = readDevToolsEndpointAndVersion(caps);
-        caps = readBiDiEndpoint(caps);
         caps = readVncEndpoint(capabilities, caps);
 
         span.addEvent("Driver service created session", attributeMap);
@@ -278,29 +277,6 @@ public class DriverServiceSessionFactory implements SessionFactory {
           .setCapability("se:cdp", info.cdpEndpoint)
           .setCapability("se:cdpVersion", info.version);
     }
-    return caps;
-  }
-
-  private Capabilities readBiDiEndpoint(Capabilities caps) {
-
-    Optional<String> webSocketUrl =
-        Optional.ofNullable((String) caps.getCapability("webSocketUrl"));
-
-    Optional<URI> websocketUri =
-        webSocketUrl.map(
-            uri -> {
-              try {
-                return new URI(uri);
-              } catch (URISyntaxException e) {
-                LOG.warning(e.getMessage());
-              }
-              return null;
-            });
-
-    if (websocketUri.isPresent()) {
-      return new PersistentCapabilities(caps).setCapability("se:bidi", websocketUri.get());
-    }
-
     return caps;
   }
 
