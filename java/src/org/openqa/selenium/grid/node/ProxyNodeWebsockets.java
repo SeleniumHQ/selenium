@@ -177,11 +177,13 @@ public class ProxyNodeWebsockets
 
       // Constructed websocket uri that points to BiDi running on the browser
       // This is of the format  "ws://localhost:{biDiPort}/session/{session-id}"
+      // The url can be recreated but only information that we need from original "webSocketUrl" is
+      // the port
       URI websocketUri =
           new URI(
               externalWebsocketUri.getScheme(),
               externalWebsocketUri.getUserInfo(),
-              "localhost",
+              "localhost", // Hardcoded the same way it is done in DriverService creation
               (Integer) caps.getCapability("bidi:port"),
               externalWebsocketUri.getRawPath(),
               externalWebsocketUri.getQuery(),
