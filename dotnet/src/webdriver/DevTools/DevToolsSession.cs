@@ -317,6 +317,90 @@ namespace OpenQA.Selenium.DevTools
         }
 
         /// <summary>
+        /// Send a collection of <see cref="DevToolsCommandSettings"/> and wait on all of their results.
+        /// </summary>
+        /// <param name="commands"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="millisecondsTimeout"></param>
+        /// <param name="throwExceptionIfResponseNotReceived"></param>
+        /// <returns>A list of command response object implementeing the <see cref="ICommandResponse{T}"/> interface.</returns>
+        public async Task<List<DevToolsCommandResponse>> SendCommands(List<DevToolsCommandSettings> commands, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
+        {
+            if (millisecondsTimeout.HasValue == false)
+            {
+                millisecondsTimeout = Convert.ToInt32(CommandTimeout.TotalMilliseconds);
+            }
+
+            if (this.attachedTargetId == null)
+            {
+                LogTrace("Session not currently attached to a target; reattaching");
+                await this.InitializeSession();
+            }
+
+            var messages = new List<DevToolsCommandData>();
+            foreach (var item in commands)
+            {
+                messages.Add(new DevToolsCommandData(Interlocked.Increment(ref this.currentCommandId), item.SessionId, item.CommandName, item.CommandParameters));
+            }
+
+            if (this.connection != null && this.connection.IsActive)
+            {
+                foreach (var message in messages)
+                {
+                    var contents = JsonConvert.SerializeObject(message);
+
+                    this.pendingCommands.TryAdd(message.CommandId, message);
+                    await this.connection.SendData(contents).ConfigureAwait(false);
+                }
+
+                WaitHandle.WaitAll(messages.Select(x => x.SyncEvent.WaitHandle).ToArray(), millisecondsTimeout.Value);
+
+                var noResponsesReceived = messages.Where(x => !x.SyncEvent.IsSet);
+                if (noResponsesReceived.Any() && throwExceptionIfResponseNotReceived)
+                {
+                    throw new InvalidOperationException($"A command response was not received: {string.Join(", ", noResponsesReceived.Select(x => x.CommandName))}");
+                }
+
+                foreach (var message in messages)
+                {
+                    DevToolsCommandData modified;
+                    if (this.pendingCommands.TryRemove(message.CommandId, out modified))
+                    {
+                        if (modified.IsError)
+                        {
+                            var errorMessage = modified.Result.Value<string>("message");
+                            var errorData = modified.Result.Value<string>("data");
+
+                            var exceptionMessage = $"{message.CommandName}: {errorMessage}";
+                            if (!string.IsNullOrWhiteSpace(errorData))
+                            {
+                                exceptionMessage = $"{exceptionMessage} - {errorData}";
+                            }
+
+                            LogTrace("Received Error Response {0}: {1} {2}", modified.CommandId, message, errorData);
+                            throw new CommandResponseException(exceptionMessage)
+                            {
+                                Code = modified.Result.Value<long>("code")
+                            };
+                        }
+                    }
+                }
+
+                return messages.Select(x => new DevToolsCommandResponse
+                {
+                    Result = x.Result,
+                    SessionId = x.SessionId
+                }).ToList();
+            }
+            else
+            {
+                LogTrace("WebSocket is not connected; not sending {0}", string.Join(", ", commands.Select(itm => itm.CommandName)));
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Releases all resources associated with this <see cref="DevToolsSession"/>.
         /// </summary>
         public void Dispose()

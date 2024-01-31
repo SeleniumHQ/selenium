@@ -85,5 +85,15 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
         /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
         Task<JToken> SendCommand(string commandName, JToken @params, CancellationToken cancellationToken, int? millisecondsTimeout, bool throwExceptionIfResponseNotReceived);
+
+        /// <summary>
+        /// Returns a collection of <see cref="DevToolsCommandResponse"/> based on a collection of commands.
+        /// </summary>
+        /// <param name="commands"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="millisecondsTimeout"></param>
+        /// <param name="throwExceptionIfResponseNotReceived"></param>
+        /// <returns>A list of command response object implementeing the <see cref="ICommandResponse{T}"/> interface.</returns>
+        Task<List<DevToolsCommandResponse>> SendCommands(List<DevToolsCommandSettings> commands, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true);
     }
 }
