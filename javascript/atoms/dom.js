@@ -1325,7 +1325,9 @@ bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
         } else {
           shadowChildren = contentElem.assignedNodes();
         }
-        goog.array.forEach(shadowChildren, function(node) {
+        const childrenToTraverse =
+          shadowChildren.length > 0 ? shadowChildren : contentElem.childNodes;
+        goog.array.forEach(childrenToTraverse, function (node) {
           bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
               node, lines, shown, whitespace, textTransform);
         });

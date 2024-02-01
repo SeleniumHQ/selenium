@@ -50,6 +50,7 @@ namespace OpenQA.Selenium.Edge
         /// <summary>
         /// Gets or sets a value indicating whether the service should use verbose logging.
         /// </summary>
+        [Obsolete("Use EnableVerboseLogging")]
         public bool UseVerboseLogging
         {
             get { return this.EnableVerboseLogging; }
@@ -66,30 +67,24 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Creates a default instance of the EdgeDriverService.
-        /// </summary>
-        /// <param name="options">Browser options used to find the correct MSEdgeDriver binary.</param>
-        /// <returns>A EdgeDriverService that implements default settings.</returns>
-        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
-        public static EdgeDriverService CreateDefaultService(EdgeOptions options)
-        {
-            string fullServicePath = DriverFinder.FullPath(options);
-            return CreateDefaultService(Path.GetDirectoryName(fullServicePath), Path.GetFileName(fullServicePath));
-        }
-
-        /// <summary>
         /// Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
         /// <returns>An EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath)
         {
+            string fileName;
             if (File.Exists(driverPath))
             {
+                fileName = Path.GetFileName(driverPath);
                 driverPath = Path.GetDirectoryName(driverPath);
             }
+            else
+            {
+                fileName = ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName);
+            }
 
-            return CreateDefaultService(driverPath, ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName));
+            return CreateDefaultService(driverPath, fileName);
         }
 
         /// <summary>

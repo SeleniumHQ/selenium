@@ -501,7 +501,8 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Downloads a file with the specified file name.
         /// </summary>
-        /// <param name="fileName">the name of the file to be downloaded</param>
+        /// <param name="fileName">The name of the file to be downloaded.</param>
+        /// <param name="targetDirectory">The target directory where the file should be downloaded to.</param>
         public void DownloadFile(string fileName, string targetDirectory)
         {
             var enableDownloads = this.Capabilities.GetCapability(CapabilityType.EnableDownloads);

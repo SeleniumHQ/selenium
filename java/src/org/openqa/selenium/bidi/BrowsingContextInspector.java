@@ -113,7 +113,7 @@ public class BrowsingContextInspector implements AutoCloseable {
     }
   }
 
-  private void onBrowsingContextDestroyed(Consumer<BrowsingContextInfo> consumer) {
+  public void onBrowsingContextDestroyed(Consumer<BrowsingContextInfo> consumer) {
     if (browsingContextIds.isEmpty()) {
       this.bidi.addListener(browsingContextDestroyed, consumer);
     } else {

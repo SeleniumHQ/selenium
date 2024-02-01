@@ -31,9 +31,9 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
         }
 
         /// <summary>
-        /// Returns a generator singleton for the specified template path.
+        /// Returns a generator singleton for the specified template settings.
         /// </summary>
-        /// <param name="templatePath"></param>
+        /// <param name="templateSettings">The settings for a generator.</param>
         /// <returns></returns>
         public Func<object, string> GetGeneratorForTemplate(CodeGenerationTemplateSettings templateSettings)
         {

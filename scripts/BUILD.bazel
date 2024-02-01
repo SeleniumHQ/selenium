@@ -27,6 +27,11 @@ py_binary(
     ],
 )
 
+py_binary(
+    name = "update_copyright",
+    srcs = ["update_copyright.py"],
+)
+
 java_binary(
     name = "google-java-format",
     jvm_flags = [

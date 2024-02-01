@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.Chromium
         private string logPath = string.Empty;
         private string urlPathPrefix = string.Empty;
         private string portServerAddress = string.Empty;
-        private string whitelistedIpAddresses = string.Empty;
+        private string allowedIpAddresses = string.Empty;
         private int adbPort = -1;
         private bool disableBuildCheck;
         private bool enableVerboseLogging;
@@ -45,8 +45,7 @@ namespace OpenQA.Selenium.Chromium
         /// <param name="executablePath">The full path to the ChromeDriver executable.</param>
         /// <param name="executableFileName">The file name of the ChromeDriver executable.</param>
         /// <param name="port">The port on which the ChromeDriver executable should listen.</param>
-        /// <param name="downloadUrl">The URL from which the driver executable can be downloaded.</param>
-        protected ChromiumDriverService(string executablePath, string executableFileName, int port, Uri downloadUrl = null)
+        protected ChromiumDriverService(string executablePath, string executableFileName, int port)
             : base(executablePath, port, executableFileName)
         {
         }
@@ -123,10 +122,22 @@ namespace OpenQA.Selenium.Chromium
         /// connect to this instance of the Chrome driver. Defaults to an empty string,
         /// which means only the local loopback address can connect.
         /// </summary>
-        public string WhitelistedIPAddresses
+        [Obsolete("Use AllowedIpAddresses")]
+        public string WhitelistedIpAddresses
         {
-            get { return this.whitelistedIpAddresses; }
-            set { this.whitelistedIpAddresses = value; }
+            get { return this.allowedIpAddresses; }
+            set { this.allowedIpAddresses = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the comma-delimited list of IP addresses that are approved to
+        /// connect to this instance of the Chrome driver. Defaults to an empty string,
+        /// which means only the local loopback address can connect.
+        /// </summary>
+        public string AllowedIpAddresses
+        {
+            get { return this.allowedIpAddresses; }
+            set { this.allowedIpAddresses = value; }
         }
 
         /// <summary>
@@ -177,9 +188,9 @@ namespace OpenQA.Selenium.Chromium
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --port-server={0}", this.portServerAddress);
                 }
 
-                if (!string.IsNullOrEmpty(this.whitelistedIpAddresses))
+                if (!string.IsNullOrEmpty(this.allowedIpAddresses))
                 {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -whitelisted-ips={0}", this.whitelistedIpAddresses));
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -allowed-ips={0}", this.allowedIpAddresses));
                 }
 
                 return argsBuilder.ToString();

@@ -27,7 +27,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "4.16.0",
+    'version': "4.17.2",
     'license': 'Apache 2.0',
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
@@ -49,7 +49,10 @@ setup_args = {
                     'Topic :: Software Development :: Libraries',
                     'Programming Language :: Python',
                     'Programming Language :: Python :: 3.8',
-                    'Programming Language :: Python :: 3.9'],
+                    'Programming Language :: Python :: 3.9',
+                    'Programming Language :: Python :: 3.10',
+                    'Programming Language :: Python :: 3.11',
+                    'Programming Language :: Python :: 3.12'],
     'package_dir': {
         'selenium': 'selenium',
         'selenium.common': 'selenium/common',
@@ -69,6 +72,7 @@ setup_args = {
                  'selenium.webdriver.support', ],
     'include_package_data': True,
     'install_requires': [
+        "typing_extensions~= 4.9",
         "urllib3[socks]>=1.26,<3",
         "trio~=0.17",
         "trio-websocket~=0.9",

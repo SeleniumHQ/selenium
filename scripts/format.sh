@@ -19,3 +19,6 @@ find "$PWD/java" -type f -name '*.java' | xargs "$GOOGLE_JAVA_FORMAT" --replace
 section "Rust"
 echo "   rustfmt" >&2
 bazel run @rules_rust//:rustfmt
+
+section "Copyright"
+bazel run //scripts:update_copyright
