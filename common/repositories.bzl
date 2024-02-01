@@ -34,8 +34,8 @@ exports_files(
 
     http_archive(
         name = "linux_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b3/linux-x86_64/en-US/firefox-123.0b3.tar.bz2",
-        sha256 = "496be0e58074ce544a00fce8e67c36db685590f5ecc0319c8388fdda0b9f0dd0",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b5/linux-x86_64/en-US/firefox-123.0b5.tar.bz2",
+        sha256 = "af65e0ebec0604e5b3b0ef10bf09ebae8926fbd9305bbaa437295507193753de",
         build_file_content = """
 filegroup(
     name = "files",
@@ -51,15 +51,15 @@ exports_files(
 
     dmg_archive(
         name = "mac_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b3/mac/en-US/Firefox%20123.0b3.dmg",
-        sha256 = "ba06728492cbe18f1194cf7cd5e9ee3ad271cda5ae9e2f845851691911b72a84",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b5/mac/en-US/Firefox%20123.0b5.dmg",
+        sha256 = "3eed1925991c3e2f7e60321a501f451b1e33709334e37dea6139d90e67d9fd1a",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
     http_archive(
         name = "linux_dev_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b3/linux-x86_64/en-US/firefox-123.0b3.tar.bz2",
-        sha256 = "496be0e58074ce544a00fce8e67c36db685590f5ecc0319c8388fdda0b9f0dd0",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b5/linux-x86_64/en-US/firefox-123.0b5.tar.bz2",
+        sha256 = "af65e0ebec0604e5b3b0ef10bf09ebae8926fbd9305bbaa437295507193753de",
         build_file_content = """
 filegroup(
     name = "files",
@@ -75,8 +75,8 @@ exports_files(
 
     dmg_archive(
         name = "mac_dev_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b3/mac/en-US/Firefox%20123.0b3.dmg",
-        sha256 = "ba06728492cbe18f1194cf7cd5e9ee3ad271cda5ae9e2f845851691911b72a84",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b5/mac/en-US/Firefox%20123.0b5.dmg",
+        sha256 = "3eed1925991c3e2f7e60321a501f451b1e33709334e37dea6139d90e67d9fd1a",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
