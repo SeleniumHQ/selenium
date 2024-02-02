@@ -311,8 +311,7 @@ namespace OpenQA.Selenium.Remote
             string body = responseInfo.Body;
             if (responseInfo.StatusCode.ToString().First() != '2')
             {
-                response.Status = WebDriverResult.UnhandledError;
-                response.Value = body;
+                response = Response.FromJson(body);
             }
             else if (responseInfo.ContentType != null && responseInfo.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
             {
