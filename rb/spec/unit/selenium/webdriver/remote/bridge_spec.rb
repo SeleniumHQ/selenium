@@ -141,6 +141,72 @@ module Selenium
             expect { bridge.quit }.not_to raise_error
           end
         end
+
+        describe 'finding elements' do
+          let(:http) { WebDriver::Remote::Http::Default.new }
+          let(:bridge) { described_class.new(http_client: http, url: 'http://localhost') }
+
+          before do
+            allow(http).to receive(:request)
+              .with(:post, URI('http://localhost/session'), any_args)
+              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
+            bridge.create_session({})
+          end
+
+          describe '#find_element_by' do
+            before do
+              allow(http).to receive(:request)
+                .with(:post, URI('http://localhost/session/foo/element'), any_args)
+                .and_return('status' => 200, 'value' => {Element::ELEMENT_KEY => 'bar'})
+            end
+
+            it 'returns an element' do
+              expect(bridge.find_element_by(:id, 'test', nil)).to be_an_instance_of(Element)
+            end
+
+            context 'when custom element class is used' do
+              before do
+                stub_const('MyCustomElement', Class.new(Selenium::WebDriver::Element))
+                described_class.element_class = MyCustomElement
+              end
+
+              after do
+                described_class.element_class = nil
+              end
+
+              it 'returns a custom element' do
+                expect(bridge.find_element_by(:id, 'test', nil)).to be_an_instance_of(MyCustomElement)
+              end
+            end
+          end
+
+          describe '#find_elements_by' do
+            before do
+              allow(http).to receive(:request)
+                .with(:post, URI('http://localhost/session/foo/elements'), any_args)
+                .and_return('status' => 200, 'value' => [{Element::ELEMENT_KEY => 'bar'}])
+            end
+
+            it 'returns an element' do
+              expect(bridge.find_elements_by(:id, 'test', nil)).to all(be_an_instance_of(Element))
+            end
+
+            context 'when custom element class is used' do
+              before do
+                stub_const('MyCustomElement', Class.new(Selenium::WebDriver::Element))
+                described_class.element_class = MyCustomElement
+              end
+
+              after do
+                described_class.element_class = nil
+              end
+
+              it 'returns a custom element' do
+                expect(bridge.find_elements_by(:id, 'test', nil)).to all(be_an_instance_of(MyCustomElement))
+              end
+            end
+          end
+        end
       end
     end # Remote
   end # WebDriver
