@@ -33,7 +33,7 @@ module Selenium
 
         class << self
           attr_reader :extra_commands
-          attr_writer :locator_converter
+          attr_writer :element_class, :locator_converter
 
           def add_command(name, verb, url, &block)
             @extra_commands ||= {}
@@ -43,6 +43,10 @@ module Selenium
 
           def locator_converter
             @locator_converter ||= LocatorConverter.new
+          end
+
+          def element_class
+            @element_class ||= Element
           end
         end
 
@@ -432,7 +436,7 @@ module Selenium
                    "e.initEvent('submit', true, true);\n" \
                    "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
 
-          execute_script(script, Element::ELEMENT_KEY => element)
+          execute_script(script, Bridge.element_class::ELEMENT_KEY => element)
         rescue Error::JavascriptError
           raise Error::UnsupportedOperationError, 'To submit an element, it must be nested inside a form element'
         end
@@ -519,7 +523,7 @@ module Selenium
         #
 
         def active_element
-          Element.new self, element_id_from(execute(:get_active_element))
+          Bridge.element_class.new self, element_id_from(execute(:get_active_element))
         end
 
         alias switch_to_active_element active_element
@@ -539,7 +543,7 @@ module Selenium
                  execute :find_element, {}, {using: how, value: what.to_s}
                end
 
-          Element.new self, element_id_from(id)
+          Bridge.element_class.new self, element_id_from(id)
         end
 
         def find_elements_by(how, what, parent_ref = [])
@@ -557,7 +561,7 @@ module Selenium
                   execute :find_elements, {}, {using: how, value: what.to_s}
                 end
 
-          ids.map { |id| Element.new self, element_id_from(id) }
+          ids.map { |id| Bridge.element_class.new self, element_id_from(id) }
         end
 
         def shadow_root(element)
@@ -631,7 +635,7 @@ module Selenium
         end
 
         def commands(command)
-          command_list[command]|| Bridge.extra_commands[command]
+          command_list[command] || Bridge.extra_commands[command]
         end
 
         def unwrap_script_result(arg)
@@ -640,7 +644,7 @@ module Selenium
             arg.map { |e| unwrap_script_result(e) }
           when Hash
             element_id = element_id_from(arg)
-            return Element.new(self, element_id) if element_id
+            return Bridge.element_class.new(self, element_id) if element_id
 
             shadow_root_id = shadow_root_id_from(arg)
             return ShadowRoot.new self, shadow_root_id if shadow_root_id
@@ -652,7 +656,7 @@ module Selenium
         end
 
         def element_id_from(id)
-          id['ELEMENT'] || id[Element::ELEMENT_KEY]
+          id['ELEMENT'] || id[Bridge.element_class::ELEMENT_KEY]
         end
 
         def shadow_root_id_from(id)
@@ -663,7 +667,6 @@ module Selenium
           capabilities = {alwaysMatch: capabilities} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
           {capabilities: capabilities}
         end
-
       end # Bridge
     end # Remote
   end # WebDriver
