@@ -16,6 +16,8 @@
 // limitations under the License.
 // </copyright>
 
+using Newtonsoft.Json.Linq;
+
 namespace OpenQA.Selenium.DevTools
 {
     public class DevToolsCommandSettings
