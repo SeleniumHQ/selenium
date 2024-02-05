@@ -21,7 +21,7 @@ module Selenium
 
       def add_pointer_input: (Symbol kind, String name) -> Interactions::PointerInput
 
-      def add_key_input: (String name) -> Interactions::KeyInput
+      def add_key_input: (String name) -> Interactions::InputDevice
 
       def add_wheel_input: (String name) -> Interactions::WheelInput
 

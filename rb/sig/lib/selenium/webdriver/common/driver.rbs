@@ -7,7 +7,7 @@ module Selenium
 
       @navigate: untyped
 
-      def self.for: (Symbol browser, ?::Hash[Symbol, untyped] opts) -> Driver
+      def self.for: (Symbol browser, ?Hash[Symbol, untyped] opts) -> untyped
 
       def initialize: (?bridge: Support::EventFiringBridge? bridge, ?listener: Support::AbstractEventListener? listener, **untyped opts) -> void
 
