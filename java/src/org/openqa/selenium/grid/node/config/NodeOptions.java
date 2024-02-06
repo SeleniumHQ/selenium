@@ -370,6 +370,10 @@ public class NodeOptions {
         .ifPresent(
             drivers -> {
               List<Map<String, String>> configList = new ArrayList<>();
+              if (drivers.isEmpty()) {
+                // This is the case when the configuration is provided through the CLI.
+                config.getAll(NODE_SECTION, "driver-configuration").ifPresent(drivers::add);
+              }
 
               // iterate over driver configurations
               for (List<String> driver : drivers) {
