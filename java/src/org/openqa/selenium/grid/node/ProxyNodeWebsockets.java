@@ -171,25 +171,8 @@ public class ProxyNodeWebsockets
       Consumer<SessionId> sessionConsumer,
       SessionId sessionId) {
     try {
-      // Modified websocket uri that is used by the client to point to the Grid
-      // This is of the format  "ws://<external-grid-url>/session/{session-id}"
-      URI externalWebsocketUri = new URI(String.valueOf(caps.getCapability("webSocketUrl")));
-
-      // Constructed websocket uri that points to BiDi running on the browser
-      // This is of the format  "ws://localhost:{biDiPort}/session/{session-id}"
-      // The url can be recreated but only information that we need from original "webSocketUrl" is
-      // the port
-      URI websocketUri =
-          new URI(
-              externalWebsocketUri.getScheme(),
-              externalWebsocketUri.getUserInfo(),
-              "localhost", // Hardcoded the same way it is done in DriverService creation
-              (Integer) caps.getCapability("bidi:port"),
-              externalWebsocketUri.getRawPath(),
-              externalWebsocketUri.getQuery(),
-              externalWebsocketUri.getFragment());
-
-      return Optional.of(websocketUri)
+      URI uri = new URI(String.valueOf(caps.getCapability("se:gridWebSocketUrl")));
+      return Optional.of(uri)
           .map(bidi -> createWsEndPoint(bidi, downstream, sessionConsumer, sessionId));
     } catch (URISyntaxException e) {
       LOG.warning("Unable to create URI from: " + caps.getCapability("webSocketUrl"));

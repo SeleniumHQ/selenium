@@ -817,7 +817,7 @@ public class LocalNode extends Node {
       }
       toUse =
           new PersistentCapabilities(toUse)
-              .setCapability("bidi:port", uri.getPort())
+              .setCapability("se:gridWebSocketUrl", uri)
               .setCapability("webSocketUrl", rewrite(uri.getPath()));
     } else {
       // Remove any "webSocketUrl" from the response, BiDi is not supported nor enabled
