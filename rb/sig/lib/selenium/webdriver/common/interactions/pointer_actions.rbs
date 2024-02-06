@@ -35,7 +35,7 @@ module Selenium
 
       def button_action: (Symbol button, Symbol action, ?device: Symbol | String?, **Symbol | String opts) -> self
 
-      def pointer_input: (?Symbol | String? name) -> Interactions::InputDevice
+      def pointer_input: (?Symbol | String? name) -> Interactions::PointerInput
     end
   end
 end
