@@ -10,8 +10,8 @@ def pin_browsers():
 
     http_archive(
         name = "linux_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/122.0/linux-x86_64/en-US/firefox-122.0.tar.bz2",
-        sha256 = "0b36d796ba88d48000b0a3e43854a00556148221776879c91fae03735a0e5c21",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/122.0.1/linux-x86_64/en-US/firefox-122.0.1.tar.bz2",
+        sha256 = "1c502c15f71bb729e6506667c32de525849d6571f4a3a21e5b02fc08312b20e7",
         build_file_content = """
 filegroup(
     name = "files",
@@ -27,8 +27,8 @@ exports_files(
 
     dmg_archive(
         name = "mac_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/122.0/mac/en-US/Firefox%20122.0.dmg",
-        sha256 = "ccd68fe5388b044062410ce71885911f618fd4222cd617e429eb8ab0b68795d4",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/122.0.1/mac/en-US/Firefox%20122.0.1.dmg",
+        sha256 = "42721425ca279d48b729eab8e443ce2ad83465ada46dee367d84a103791deb2a",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
@@ -106,15 +106,15 @@ exports_files(
 
     http_archive(
         name = "linux_edgedriver",
-        url = "https://msedgedriver.azureedge.net/121.0.2277.98/edgedriver_linux64.zip",
-        sha256 = "3cc167bc7d605275cedca317989a3064d66b7069a312bbf6b802f6d12bae4bad",
+        url = "https://msedgedriver.azureedge.net/121.0.2277.106/edgedriver_linux64.zip",
+        sha256 = "c842ab7c6b4013b7cf782186693dc52264b798124aabbf217aa6ef7564fe01f5",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
 
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.azureedge.net/121.0.2277.98/edgedriver_mac64.zip",
-        sha256 = "181ce8040e3c59b3f5a781012b3b37be4cc1ddf0ddb81f7727d94219becbaae7",
+        url = "https://msedgedriver.azureedge.net/121.0.2277.106/edgedriver_mac64.zip",
+        sha256 = "80e872ad410e25f0eda90b22ccc190a87fbc95e13c76e86648932599185e7a8c",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
 
