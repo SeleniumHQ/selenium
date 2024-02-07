@@ -17,6 +17,56 @@
 
 const { InvalidArgumentError, NoSuchFrameError } = require('../lib/error')
 const { BrowsingContextInfo } = require('./browsingContextTypes')
+const {SerializationOptions, ReferenceValue, RemoteValue} = require("./protocolValue");
+const {WebElement} = require("../lib/webdriver");
+
+class Locator {
+  static Type = Object.freeze({
+    CSS: 'css',
+    INNER_TEXT: 'innerText',
+    XPATH: 'xpath',
+  })
+
+  #type
+  #value
+  #ignoreCase
+  #matchType
+  #maxDepth
+
+  constructor(
+    type, value, ignoreCase = undefined, matchType = undefined, maxDepth = undefined) {
+    this.#type = type
+    this.#value = value
+    this.#ignoreCase = ignoreCase
+    this.#matchType = matchType
+    this.#maxDepth = maxDepth
+  }
+
+  static css(value) {
+    return new Locator(Locator.Type.CSS, value)
+  }
+
+  static xpath(value) {
+    return new Locator(Locator.Type.XPATH, value)
+  }
+
+  static innerText(value, ignoreCase = undefined, matchType = undefined, maxDepth = undefined) {
+    return new Locator(Locator.Type.INNER_TEXT, value, ignoreCase, matchType, maxDepth)
+  }
+
+  toMap() {
+    const map = new Map()
+
+    map.set('type', this.#type.toString())
+    map.set('value', this.#value)
+    map.set('ignoreCase', this.#ignoreCase)
+    map.set('matchType', this.#matchType)
+    map.set('maxDepth', this.#maxDepth)
+
+    return map
+  }
+}
+
 class BrowsingContext {
   constructor(driver) {
     this._driver = driver
@@ -331,6 +381,90 @@ class BrowsingContext {
   async back() {
     await this.traverseHistory(-1)
   }
+
+  async locateNodes(
+    locator,
+    maxNodeCount = undefined,
+    ownership = undefined,
+    sandbox = undefined,
+    serializationOptions = undefined,
+    startNodes = undefined) {
+
+    if (!(locator instanceof Locator)) {
+      throw Error(`Pass in a Locator object. Received: ${locator}`)
+    }
+
+    if (serializationOptions !== undefined && !(serializationOptions instanceof SerializationOptions)) {
+      throw Error(`Pass in SerializationOptions object. Received: ${serializationOptions} `)
+    }
+
+    if (ownership !== undefined && !['root', 'none'].includes(ownership)) {
+      throw Error(`Valid types are 'root' and 'none. Received: ${ownership}`)
+    }
+
+    if (startNodes !== undefined && !Array.isArray(startNodes)) {
+      throw Error(`Pass in an array of ReferenceValue objects. Received: ${startNodes}`)
+    }
+
+    if (startNodes !== undefined && Array.isArray(startNodes)) {
+      startNodes.forEach((node) => {
+        if (!(node instanceof ReferenceValue)) {
+          throw Error(`Pass in a ReferenceValue object. Received: ${node}`)
+        }
+      })
+    }
+
+    const params = {
+      method: 'browsingContext.locateNodes',
+      params: {
+        context: this._id,
+        locator: Object.fromEntries(locator.toMap()),
+        maxNodeCount: maxNodeCount,
+        ownership: ownership,
+        sandbox: sandbox,
+        serializationOptions: serializationOptions,
+        startNodes: startNodes
+      },
+    }
+
+    let response = await this.bidi.send(params)
+    if ('error' in response) {
+      throw Error(response['error'])
+    }
+
+    const nodes = response.result.nodes
+    const remoteValues = []
+
+    nodes.forEach((node) => {
+      remoteValues.push(new RemoteValue(node))
+    })
+    return remoteValues
+  }
+
+  async locateNode(
+    locator,
+    ownership = undefined,
+    sandbox = undefined,
+    serializationOptions = undefined,
+    startNodes = undefined) {
+    const elements = await this.locateNodes(locator, 1, ownership, sandbox, serializationOptions, startNodes)
+    return elements[0]
+  }
+
+  async locateElement(locator) {
+    const elements = await this.locateNodes(locator, 1)
+    return new WebElement(this._driver, elements[0].sharedId)
+  }
+
+  async locateElements(locator) {
+    const elements = await this.locateNodes(locator)
+
+    let webElements = []
+    elements.forEach((element) => {
+      webElements.push(new WebElement(this._driver, element.sharedId))
+    })
+    return webElements
+  }
 }
 
 class NavigateResult {
@@ -380,3 +514,4 @@ async function getBrowsingContextInstance(
  * @type {function(*, {*,*,*}): Promise<BrowsingContext>}
  */
 module.exports = getBrowsingContextInstance
+module.exports.Locator = Locator
