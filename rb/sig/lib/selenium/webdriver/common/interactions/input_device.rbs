@@ -18,7 +18,7 @@ module Selenium
 
         def clear_actions: () -> []
 
-        def create_pause: (Integer duration) -> Array[Interaction]
+        def create_pause: (Float duration) -> Array[Interaction]
 
         def encode: () -> ({ type: String, id: String, actions: Array[untyped] } | nil)
       end

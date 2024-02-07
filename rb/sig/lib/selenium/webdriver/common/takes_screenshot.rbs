@@ -3,7 +3,7 @@ module Selenium
     module TakesScreenshot
       def save_screenshot: (String png_path, ?full_page: bool full_page) -> untyped
 
-      def screenshot_as: (Symbol format, ?full_page: bool full_page) -> String
+      def screenshot_as: (Symbol format, ?full_page: bool full_page) -> (::Integer | ::Float | ::String | nil)
     end
   end
 end
