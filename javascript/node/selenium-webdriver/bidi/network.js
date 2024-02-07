@@ -17,13 +17,7 @@
 
 const { BeforeRequestSent, ResponseStarted } = require('./networkTypes')
 
-/**
- * @deprecated
- * in favor of using the `Network` class from `bidi/network.js`
- *  Inspector is specific to listening to events.
- *  Goal is to club commands and events under one class called Network.
- */
-class NetworkInspector {
+class Network {
   constructor(driver, browsingContextIds) {
     this._driver = driver
     this._browsingContextIds = browsingContextIds
@@ -89,10 +83,10 @@ class NetworkInspector {
   }
 }
 
-async function getNetworkInspectorInstance(driver, browsingContextIds = null) {
-  let instance = new NetworkInspector(driver, browsingContextIds)
+async function getNetworkInstance(driver, browsingContextIds = null) {
+  let instance = new Network(driver, browsingContextIds)
   await instance.init()
   return instance
 }
 
-module.exports = getNetworkInspectorInstance
+module.exports = getNetworkInstance

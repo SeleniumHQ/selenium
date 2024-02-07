@@ -150,7 +150,7 @@ suite(function (env) {
   })
 
   describe('VirtualAuthenticator Test Suit 2', function () {
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test create authenticator',
       async function () {
         /**
@@ -170,7 +170,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test remove authenticator',
       async function () {
         let options = new virtualAuthenticatorOptions()
@@ -182,7 +182,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test add non-resident credential',
       async function () {
         /**
@@ -206,7 +206,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test add non-resident credential when authenticator uses U2F protocol',
       async function () {
         /**
@@ -239,7 +239,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test add resident credential',
       async function () {
         /**
@@ -269,7 +269,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test add resident credential not supported when authenticator uses U2F protocol',
       async function () {
         /**
@@ -309,7 +309,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test get credentials',
       async function () {
         /**
@@ -365,7 +365,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test remove credential by rawID',
       async function () {
         driver = await createRkDisabledU2fAuthenticator(driver)
@@ -390,7 +390,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test remove credential by base64url Id',
       async function () {
         driver = await createRkDisabledU2fAuthenticator(driver)
@@ -417,7 +417,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test remove all credentials',
       async function () {
         driver = await createRkDisabledU2fAuthenticator(driver)
@@ -456,7 +456,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test set user verified',
       async function () {
         driver = await createRkEnabledCTAP2Authenticator(driver)

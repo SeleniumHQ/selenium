@@ -21,7 +21,7 @@ const assert = require('assert')
 const firefox = require('../../firefox')
 const { Browser, By, WebElement } = require('../../')
 const { Pages, suite } = require('../../lib/test')
-const NetworkInspector = require('../../bidi/networkInspector')
+const Network = require('../../bidi/network')
 const until = require('../../lib/until')
 
 suite(
@@ -39,11 +39,11 @@ suite(
       await driver.quit()
     })
 
-    describe('Network Inspector', function () {
+    describe('Network network', function () {
       it('can listen to event before request is sent', async function () {
         let beforeRequestEvent = null
-        const inspector = await NetworkInspector(driver)
-        await inspector.beforeRequestSent(function (event) {
+        const network = await Network(driver)
+        await network.beforeRequestSent(function (event) {
           beforeRequestEvent = event
         })
 
@@ -55,9 +55,9 @@ suite(
       })
 
       it('can request cookies', async function () {
-        const inspector = await NetworkInspector(driver)
+        const network = await Network(driver)
         let beforeRequestEvent = null
-        await inspector.beforeRequestSent(function (event) {
+        await network.beforeRequestSent(function (event) {
           beforeRequestEvent = event
         })
 
@@ -89,8 +89,8 @@ suite(
 
       it('can redirect http equiv', async function () {
         let beforeRequestEvent = []
-        const inspector = await NetworkInspector(driver)
-        await inspector.beforeRequestSent(function (event) {
+        const network = await Network(driver)
+        await network.beforeRequestSent(function (event) {
           beforeRequestEvent.push(event)
         })
 
@@ -109,8 +109,8 @@ suite(
 
       it('can subscribe to response started', async function () {
         let onResponseStarted = []
-        const inspector = await NetworkInspector(driver)
-        await inspector.responseStarted(function (event) {
+        const network = await Network(driver)
+        await network.responseStarted(function (event) {
           onResponseStarted.push(event)
         })
 
@@ -133,8 +133,8 @@ suite(
 
       it('test response started mime type', async function () {
         let onResponseStarted = []
-        const inspector = await NetworkInspector(driver)
-        await inspector.responseStarted(function (event) {
+        const network = await Network(driver)
+        await network.responseStarted(function (event) {
           onResponseStarted.push(event)
         })
 
@@ -163,8 +163,8 @@ suite(
 
       it('can subscribe to response completed', async function () {
         let onResponseCompleted = []
-        const inspector = await NetworkInspector(driver)
-        await inspector.responseCompleted(function (event) {
+        const network = await Network(driver)
+        await network.responseCompleted(function (event) {
           onResponseCompleted.push(event)
         })
 
@@ -188,8 +188,8 @@ suite(
 
       xit('can listen to auth required event', async function () {
         let authRequiredEvent = null
-        const inspector = await NetworkInspector(driver)
-        await inspector.authRequired(function (event) {
+        const network = await Network(driver)
+        await network.authRequired(function (event) {
           authRequiredEvent = event
         })
 
@@ -207,8 +207,8 @@ suite(
 
       it('test response completed mime type', async function () {
         let onResponseCompleted = []
-        const inspector = await NetworkInspector(driver)
-        await inspector.responseCompleted(function (event) {
+        const network = await Network(driver)
+        await network.responseCompleted(function (event) {
           onResponseCompleted.push(event)
         })
 
