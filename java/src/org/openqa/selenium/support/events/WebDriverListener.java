@@ -1084,23 +1084,156 @@ public interface WebDriverListener {
       WebDriver.TargetLocator targetLocator, Method method, Object[] args, Object result) {}
 
   /**
-   * This action will be performed each time before {@link
-   * org.openqa.selenium.WebDriver.TargetLocator#window(String)}
+   * This action will be performed each time before {@link WebDriver.TargetLocator#frame(int)} ()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param index         The zero-based index.
+   */
+  default void beforeFrame(WebDriver.TargetLocator targetLocator, int index) {}
+
+  /**
+   * This action will be performed each time after {@link WebDriver.TargetLocator#frame(int)} ()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param index         The zero-based index.
+   */
+  default void afterFrame(WebDriver.TargetLocator targetLocator, int index, WebDriver driver) {}
+
+  /**
+   * This action will be performed each time before {@link WebDriver.TargetLocator#frame(String)} ()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param nameOrId      The name of the frame window, the id of the &lt;frame&gt; or &lt;iframe&gt; element, or the
+   *                     (zero-based) index.
+   */
+  default void beforeFrame(WebDriver.TargetLocator targetLocator, String nameOrId) {}
+
+  /**
+   * This action will be performed each time after {@link WebDriver.TargetLocator#frame(String)} ()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param nameOrId      The name of the frame window, the id of the &lt;frame&gt; or &lt;iframe&gt; element, or the
+   *                      (zero-based) index.
+   * @param driver        The current driver instance.
+   */
+  default void afterFrame(WebDriver.TargetLocator targetLocator, String nameOrId, WebDriver driver) {}
+
+  /**
+   * This action will be performed each time before {@link WebDriver.TargetLocator#frame(WebElement)} ()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param frameElement  The frame element to switch to.
+   */
+  default void beforeFrame(WebDriver.TargetLocator targetLocator, WebElement frameElement) {}
+
+  /**
+   * This action will be performed each time after {@link WebDriver.TargetLocator#frame(WebElement)} ()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param frameElement  The frame element to switch to.
+   * @param driver        The current driver instance.
+   */
+  default void afterFrame(WebDriver.TargetLocator targetLocator, WebElement frameElement, WebDriver driver) {}
+
+  /**
+   * This action will be performed each time before {@link WebDriver.TargetLocator#parentFrame()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   */
+  default void beforeParentFrame(WebDriver.TargetLocator targetLocator) {}
+
+  /**
+   * This action will be performed each time after {@link WebDriver.TargetLocator#parentFrame()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param driver        The current driver instance.
+   */
+  default void afterParentFrame(WebDriver.TargetLocator targetLocator, WebDriver driver) {}
+
+  /**
+   * This action will be performed each time before {@link WebDriver.TargetLocator#window(String)}.
    *
    * @param targetLocator the target locator being used for the action
-   * @param nameOrHandle The name of the window or the handle as returned by {@link
-   *     org.openqa.selenium.WebDriver#getWindowHandle()} or <code>null</code> if switching to a new
-   *     window created by {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
+   * @param nameOrHandle The name of the window or the handle as returned by {@link WebDriver#getWindowHandle()} or
+   *                     <code>null</code> if switching to a new window created by
+   *                     {@link WebDriver.TargetLocator#newWindow(WindowType)}
    */
   default void beforeWindow(WebDriver.TargetLocator targetLocator, String nameOrHandle) {}
 
   /**
-   * @param targetLocator the target locator being used for the action
-   * @param nameOrHandle The name of the window or the handle as returned by {@link
-   *     org.openqa.selenium.WebDriver#getWindowHandle()} or <code>null</code> if switching to a new
-   *     window created by {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
-   * @param driver WebDriver
+   * This action will be performed each time after {@link WebDriver.TargetLocator#window(String)}.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param nameOrHandle  The name of the window or the handle as returned by {@link WebDriver#getWindowHandle()} or
+   *                      <code>null</code> if switching to a new window created by
+   *                      {@link WebDriver.TargetLocator#newWindow(WindowType)}.
+   * @param driver        The current driver instance.
    */
-  default void afterWindow(
-      WebDriver.TargetLocator targetLocator, String nameOrHandle, WebDriver driver) {}
+  default void afterWindow(WebDriver.TargetLocator targetLocator, String nameOrHandle, WebDriver driver) {}
+
+  /**
+   * This action will be performed each time before {@link WebDriver.TargetLocator#newWindow(WindowType)} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param typeHint      The type of new browser window to be created. The created window is not
+   *                      guaranteed to be of the requested type; if the driver does not support the requested
+   *                      type, a new browser window will be created of whatever type the driver does support.
+   */
+  default void beforeNewWindow(WebDriver.TargetLocator targetLocator, WindowType typeHint) {}
+
+  /**
+   * This action will be performed each time after {@link WebDriver.TargetLocator#newWindow(WindowType)} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param typeHint      The type of new browser window to be created. The created window is not
+   *                      guaranteed to be of the requested type; if the driver does not support the requested
+   *                      type, a new browser window will be created of whatever type the driver does support.
+   * @param driver        The current driver instance.
+   */
+  default void afterNewWindow(WebDriver.TargetLocator targetLocator, WindowType typeHint, WebDriver driver) {}
+
+  /**
+   * This action will be performed each time before {@link WebDriver.TargetLocator#defaultContent()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   */
+  default void beforeDefaultContent(WebDriver.TargetLocator targetLocator) {}
+
+  /**
+   * This action will be performed each time after {@link WebDriver.TargetLocator#defaultContent()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param driver        The current driver instance.
+   */
+  default void afterDefaultContent(WebDriver.TargetLocator targetLocator, WebDriver driver) {}
+
+  /**
+   * This action will be performed each time before {@link WebDriver.TargetLocator#activeElement()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   */
+  default void beforeActiveElement(WebDriver.TargetLocator targetLocator) {}
+
+  /**
+   * This action will be performed each time after {@link WebDriver.TargetLocator#activeElement()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param driver        The current driver instance.
+   */
+  default void afterActiveElement(WebDriver.TargetLocator targetLocator, WebDriver driver) {}
+
+  /**
+   * This action will be performed each time before {@link WebDriver.TargetLocator#alert()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   */
+  default void beforeAlert(WebDriver.TargetLocator targetLocator) {}
+
+  /**
+   * This action will be performed each time after {@link WebDriver.TargetLocator#alert()} is called.
+   *
+   * @param targetLocator The target locator being used for the action.
+   * @param alert         The found alert.
+   */
+  default void afterAlert(WebDriver.TargetLocator targetLocator, Alert alert) {}
 }
