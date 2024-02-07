@@ -820,10 +820,11 @@ public class LocalNode extends Node {
       } catch (URISyntaxException e) {
         throw new IllegalArgumentException("Unable to create URI from " + uri);
       }
+      String bidiPath = String.format("/session/%s/se/bidi", other.getId());
       toUse =
           new PersistentCapabilities(toUse)
               .setCapability("se:gridWebSocketUrl", uri)
-              .setCapability("webSocketUrl", rewrite(uri.getPath()));
+              .setCapability("webSocketUrl", rewrite(bidiPath));
     } else {
       // Remove any "webSocketUrl" from the response, BiDi is not supported nor enabled
       MutableCapabilities bidiFiltered = new MutableCapabilities();

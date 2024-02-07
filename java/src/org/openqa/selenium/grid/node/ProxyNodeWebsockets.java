@@ -49,7 +49,7 @@ public class ProxyNodeWebsockets
     implements BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> {
 
   private static final UrlTemplate CDP_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/cdp");
-  private static final UrlTemplate BIDI_TEMPLATE = new UrlTemplate("/session/{sessionId}");
+  private static final UrlTemplate BIDI_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/bidi");
   private static final UrlTemplate FWD_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/fwd");
   private static final UrlTemplate VNC_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/vnc");
   private static final Logger LOG = Logger.getLogger(ProxyNodeWebsockets.class.getName());
