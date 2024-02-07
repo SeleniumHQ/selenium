@@ -44,6 +44,7 @@ const BrowsingContext = require('./bidi/browsingContext')
 const BrowsingContextInspector = require('./bidi/browsingContextInspector')
 const ScriptManager = require('./bidi/scriptManager')
 const NetworkInspector = require('./bidi/networkInspector')
+const {BiDiExecutor, getBiDiExecutorInstance} = require("./lib/bidiExecutor");
 
 const Browser = capabilities.Browser
 const Capabilities = capabilities.Capabilities
@@ -136,8 +137,21 @@ function createDriver(ctor, ...args) {
       constructor(session, ...rest) {
         super(session, ...rest)
 
+        let driver
         const pd = this.getSession().then((session) => {
-          return new ctor(session, ...rest)
+          driver = new ctor(session, ...rest)
+          return this.getCapabilities()
+        }).then(caps => {
+          if (caps.get('webSocketUrl')) {
+            return getBiDiExecutorInstance(driver)
+            } else {
+            return driver
+          }
+          }).then(obj => {
+            if (obj instanceof BiDiExecutor) {
+              driver.getExecutor().setBidiExecutor(obj)
+            }
+            return driver
         })
 
         /** @override */
@@ -656,6 +670,7 @@ class Builder {
       let client = Promise.resolve(url).then(
         (url) => new _http.HttpClient(url, this.agent_, this.proxy_)
       )
+      // Porting executor for the Grid
       let executor = new _http.Executor(client)
 
       if (browser === Browser.CHROME) {

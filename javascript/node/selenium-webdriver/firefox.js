@@ -119,6 +119,7 @@ const zip = require('./io/zip')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
 const { getPath } = require('./common/driverFinder')
+const BiDiDelegator = require("./lib/bidiDelegator");
 const FIREFOX_CAPABILITY_KEY = 'moz:firefoxOptions'
 
 /**
@@ -467,9 +468,10 @@ const ExtensionCommand = {
  */
 function createExecutor (serverUrl) {
   let client = serverUrl.then((url) => new http.HttpClient(url))
-  let executor = new http.Executor(client)
-  configureExecutor(executor)
-  return executor
+
+  let httpExecutor = new http.Executor(client)
+  configureExecutor(httpExecutor)
+  return new BiDiDelegator(httpExecutor)
 }
 
 /**

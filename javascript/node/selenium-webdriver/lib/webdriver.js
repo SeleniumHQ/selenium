@@ -789,6 +789,7 @@ class WebDriver {
     })
   }
 
+  // This needs to be updated based on BiDi support
   /** @override */
   actions(options) {
     return new input.Actions(this, options || undefined)
