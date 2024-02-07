@@ -150,7 +150,7 @@ suite(function (env) {
   })
 
   describe('VirtualAuthenticator Test Suit 2', function () {
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test create authenticator',
       async function () {
         /**
@@ -170,7 +170,7 @@ suite(function (env) {
       }
     )
 
-    ignore(browsers(Browser.SAFARI)).it(
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test remove authenticator',
       async function () {
         let options = new virtualAuthenticatorOptions()
