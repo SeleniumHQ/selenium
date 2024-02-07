@@ -210,8 +210,7 @@ const Capability = {
    */
   STRICT_FILE_INTERACTABILITY: 'strictFileInteractability',
 
-
-  ENABLE_DOWNLOADS: "se:downloadsEnabled",
+  ENABLE_DOWNLOADS: 'se:downloadsEnabled',
 }
 
 /**
@@ -265,9 +264,7 @@ class Capabilities {
    * @return {!Capabilities} A basic set of capabilities for Firefox.
    */
   static firefox() {
-    return new Capabilities()
-      .setBrowserName(Browser.FIREFOX)
-      .set('moz:debuggerAddress', true)
+    return new Capabilities().setBrowserName(Browser.FIREFOX).set('moz:debuggerAddress', true)
   }
 
   /**
@@ -517,10 +514,7 @@ class Capabilities {
    * Sets the boolean flag configuration for this instance.
    */
   setStrictFileInteractability(strictFileInteractability) {
-    return this.set(
-      Capability.STRICT_FILE_INTERACTABILITY,
-      strictFileInteractability
-    )
+    return this.set(Capability.STRICT_FILE_INTERACTABILITY, strictFileInteractability)
   }
 
   enableDownloads() {

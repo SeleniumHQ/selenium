@@ -19,8 +19,8 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const {Browser, By, WebElement} = require('../../')
-const {Pages, suite} = require('../../lib/test')
+const { Browser, By } = require('../../')
+const { Pages, suite } = require('../../lib/test')
 const BrowsingContext = require('../../bidi/browsingContext')
 const until = require('../../lib/until')
 
@@ -29,10 +29,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .setFirefoxOptions(new firefox.Options().enableBidi())
-        .build()
+      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
     })
 
     afterEach(async function () {
@@ -100,10 +97,7 @@ suite(
           type: 'tab',
         })
 
-        const info = await browsingContext.navigate(
-          Pages.logEntryAdded,
-          'complete'
-        )
+        const info = await browsingContext.navigate(Pages.logEntryAdded, 'complete')
 
         assert.notEqual(browsingContext.id, null)
         assert.notEqual(info.navigationId, null)
@@ -136,15 +130,15 @@ suite(
       })
 
       it('can close a window', async function () {
-        const window1 = await BrowsingContext(driver, {type: 'window'})
-        const window2 = await BrowsingContext(driver, {type: 'window'})
+        const window1 = await BrowsingContext(driver, { type: 'window' })
+        const window2 = await BrowsingContext(driver, { type: 'window' })
 
         await window2.close()
 
         assert.doesNotThrow(async function () {
           await window1.getTree()
         })
-        await assert.rejects(window2.getTree(), {message: 'no such frame'})
+        await assert.rejects(window2.getTree(), { message: 'no such frame' })
       })
 
       it('can print PDF with total pages', async function () {
@@ -202,12 +196,7 @@ suite(
           browsingContextId: id,
         })
 
-        const response = await browsingContext.captureBoxScreenshot(
-          5,
-          5,
-          10,
-          10
-        )
+        const response = await browsingContext.captureBoxScreenshot(5, 5, 10, 10)
 
         const base64code = response.slice(startIndex, endIndex)
         assert.equal(base64code, pngMagicNumber)
@@ -222,9 +211,7 @@ suite(
         await driver.get(Pages.formPage)
         const element = await driver.findElement(By.id('checky'))
         const elementId = await element.getId()
-        const response = await browsingContext.captureElementScreenshot(
-          elementId
-        )
+        const response = await browsingContext.captureElementScreenshot(elementId)
 
         const base64code = response.slice(startIndex, endIndex)
         assert.equal(base64code, pngMagicNumber)
@@ -239,11 +226,7 @@ suite(
         await driver.get(Pages.formPage)
         const element = await driver.findElement(By.id('checkbox-with-label'))
         const elementId = await element.getId()
-        const response = await browsingContext.captureElementScreenshot(
-          elementId,
-          undefined,
-          true
-        )
+        const response = await browsingContext.captureElementScreenshot(elementId, undefined, true)
 
         const base64code = response.slice(startIndex, endIndex)
         assert.equal(base64code, pngMagicNumber)
@@ -264,9 +247,7 @@ suite(
         assert.equal(result, false)
 
         await window1.activate()
-        const result2 = await driver.executeScript(
-          'return document.hasFocus();'
-        )
+        const result2 = await driver.executeScript('return document.hasFocus();')
 
         assert.equal(result2, true)
       })
@@ -394,10 +375,7 @@ suite(
           browsingContextId: id,
         })
 
-        const result = await browsingContext.navigate(
-          Pages.logEntryAdded,
-          'complete'
-        )
+        const result = await browsingContext.navigate(Pages.logEntryAdded, 'complete')
 
         await browsingContext.reload()
         assert.equal(result.navigationId, null)
@@ -410,10 +388,7 @@ suite(
           browsingContextId: id,
         })
 
-        const result = await browsingContext.navigate(
-          Pages.logEntryAdded,
-          'complete'
-        )
+        const result = await browsingContext.navigate(Pages.logEntryAdded, 'complete')
 
         await browsingContext.reload(undefined, 'complete')
         assert.notEqual(result.navigationId, null)
@@ -430,9 +405,7 @@ suite(
 
         await browsingContext.setViewport(250, 300)
 
-        const result = await driver.executeScript(
-          'return [window.innerWidth, window.innerHeight];'
-        )
+        const result = await driver.executeScript('return [window.innerWidth, window.innerHeight];')
         assert.equal(result[0], 250)
         assert.equal(result[1], 300)
       })
@@ -447,18 +420,14 @@ suite(
 
         await browsingContext.setViewport(250, 300, 5)
 
-        const result = await driver.executeScript(
-          'return [window.innerWidth, window.innerHeight];'
-        )
+        const result = await driver.executeScript('return [window.innerWidth, window.innerHeight];')
         assert.equal(result[0], 250)
         assert.equal(result[1], 300)
 
-        const devicePixelRatio = await driver.executeScript(
-          'return window.devicePixelRatio;'
-        )
+        const devicePixelRatio = await driver.executeScript('return window.devicePixelRatio;')
         assert.equal(devicePixelRatio, 5)
       })
     })
   },
-  {browsers: [Browser.FIREFOX]}
+  { browsers: [Browser.FIREFOX] },
 )

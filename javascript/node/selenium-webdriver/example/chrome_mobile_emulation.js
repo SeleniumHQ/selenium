@@ -30,9 +30,7 @@ const { Options } = require('../chrome')
   try {
     driver = await new Builder()
       .forBrowser('chrome')
-      .setChromeOptions(
-        new Options().setMobileEmulation({ deviceName: 'Nexus 5X' })
-      )
+      .setChromeOptions(new Options().setMobileEmulation({ deviceName: 'Nexus 5X' }))
       .build()
     await driver.get('http://www.google.com/ncr')
     await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN)
@@ -42,5 +40,5 @@ const { Options } = require('../chrome')
   }
 })().then(
   (_) => console.log('SUCCESS'),
-  (err) => console.error('ERROR: ' + err)
+  (err) => console.error('ERROR: ' + err),
 )

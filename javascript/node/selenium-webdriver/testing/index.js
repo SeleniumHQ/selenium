@@ -214,7 +214,7 @@ function init(force = false) {
   if (seleniumJar && seleniumUrl) {
     throw Error(
       'Ambiguous test configuration: both SELENIUM_REMOTE_URL' +
-        ' && SELENIUM_SERVER_JAR environment variables are set'
+        ' && SELENIUM_SERVER_JAR environment variables are set',
     )
   }
 
@@ -223,14 +223,12 @@ function init(force = false) {
     throw Error(
       'Ambiguous test configuration: when either the SELENIUM_REMOTE_URL or' +
         ' SELENIUM_SERVER_JAR environment variable is set, the' +
-        ' SELENIUM_BROWSER variable must also be set.'
+        ' SELENIUM_BROWSER variable must also be set.',
     )
   }
 
   targetBrowsers = envBrowsers.length > 0 ? envBrowsers : getAvailableBrowsers()
-  info(
-    `Running tests against [${targetBrowsers.map((b) => b.name).join(', ')}]`
-  )
+  info(`Running tests against [${targetBrowsers.map((b) => b.name).join(', ')}]`)
 
   after(function () {
     if (seleniumServer) {
@@ -240,8 +238,7 @@ function init(force = false) {
 }
 
 const TARGET_MAP = /** !WeakMap<!Environment, !TargetBrowser> */ new WeakMap()
-const URL_MAP =
-  /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */ new WeakMap()
+const URL_MAP = /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */ new WeakMap()
 
 /**
  * Defines the environment a {@linkplain suite test suite} is running against.
@@ -254,9 +251,7 @@ class Environment {
    *     Selenium server to test against.
    */
   constructor(browser, url = undefined) {
-    browser = /** @type {!TargetBrowser} */ (
-      Object.seal(Object.assign({}, browser))
-    )
+    browser = /** @type {!TargetBrowser} */ (Object.seal(Object.assign({}, browser)))
 
     TARGET_MAP.set(this, browser)
     URL_MAP.set(this, url || null)
@@ -495,7 +490,7 @@ function getTestHook(name) {
     throw TypeError(
       `Expected global.${name} to be a function, but is ${type}.` +
         ' This can happen if you try using this module when running with' +
-        ' node directly instead of using jasmine or mocha'
+        ' node directly instead of using jasmine or mocha',
     )
   }
   return fn

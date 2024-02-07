@@ -184,9 +184,7 @@ class Select {
 
     if (options.length - 1 < index) {
       throw new Error(
-        `Option with index "${index}" not found. Select element only contains ${
-          options.length - 1
-        } option elements`
+        `Option with index "${index}" not found. Select element only contains ${options.length - 1} option elements`,
       )
     }
 
@@ -408,9 +406,7 @@ class Select {
 
     if (options.length - 1 < index) {
       throw new Error(
-        `Option with index "${index}" not found. Select element only contains ${
-          options.length - 1
-        } option elements`
+        `Option with index "${index}" not found. Select element only contains ${options.length - 1} option elements`,
       )
     }
 
@@ -454,9 +450,7 @@ class Select {
   async setSelected(option) {
     if (!(await option.isSelected())) {
       if (!(await option.isEnabled())) {
-        throw new error.UnsupportedOperationError(
-          `You may not select a disabled option`
-        )
+        throw new error.UnsupportedOperationError(`You may not select a disabled option`)
       }
       await option.click()
     }

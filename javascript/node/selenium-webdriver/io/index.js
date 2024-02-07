@@ -293,7 +293,7 @@ function mkdirp(dir) {
             .then(() => mkdirp(dir))
             .then(
               () => callback(null, dir),
-              (err) => callback(err)
+              (err) => callback(err),
             )
         default:
           callback(err)
@@ -326,8 +326,8 @@ function walkDir(rootPath) {
             })
             return stats.isDirectory() && walk(file)
           })
-        })
-      )
+        }),
+      ),
     )
   })(rootPath).then(() => seen)
 }

@@ -95,8 +95,7 @@ function useTechnologyPreview(o) {
   return false
 }
 
-const SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE =
-  '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'
+const SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE = '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'
 
 /**
  * A WebDriver client for Safari. This class should never be instantiated
@@ -126,13 +125,9 @@ class Driver extends webdriver.WebDriver {
     if (!service.getExecutable()) {
       service.setExecutable(getPath(caps).driverPath)
     }
-    let executor = new http.Executor(
-      service.start().then((url) => new http.HttpClient(url))
-    )
+    let executor = new http.Executor(service.start().then((url) => new http.HttpClient(url)))
 
-    return /** @type {!Driver} */ (
-      super.createSession(executor, caps, () => service.kill())
-    )
+    return /** @type {!Driver} */ (super.createSession(executor, caps, () => service.kill()))
   }
 }
 
