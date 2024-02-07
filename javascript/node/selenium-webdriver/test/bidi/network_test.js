@@ -19,7 +19,7 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const { Browser, By, WebElement } = require('../../')
+const { Browser } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const Network = require('../../bidi/network')
 const until = require('../../lib/until')
@@ -29,10 +29,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .setFirefoxOptions(new firefox.Options().enableBidi())
-        .build()
+      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
     })
 
     afterEach(async function () {
@@ -70,10 +67,7 @@ suite(
 
         assert.equal(beforeRequestEvent.request.method, 'GET')
         assert.equal(beforeRequestEvent.request.cookies[0].name, 'north')
-        assert.equal(
-          beforeRequestEvent.request.cookies[0].value.value,
-          'biryani'
-        )
+        assert.equal(beforeRequestEvent.request.cookies[0].value.value, 'biryani')
         const url = beforeRequestEvent.request.url
         assert.equal(url, await driver.getCurrentUrl())
 
@@ -98,11 +92,7 @@ suite(
         await driver.wait(until.urlContains('redirected.html'), 1000)
 
         assert.equal(beforeRequestEvent[0].request.method, 'GET')
-        assert(
-          beforeRequestEvent[0].request.url.includes(
-            'redirected_http_equiv.html'
-          )
-        )
+        assert(beforeRequestEvent[0].request.url.includes('redirected_http_equiv.html'))
         assert.equal(beforeRequestEvent[2].request.method, 'GET')
         assert(beforeRequestEvent[2].request.url.includes('redirected.html'))
       })
@@ -117,14 +107,8 @@ suite(
         await driver.get(Pages.emptyText)
 
         assert.equal(onResponseStarted[0].request.method, 'GET')
-        assert.equal(
-          onResponseStarted[0].request.url,
-          await driver.getCurrentUrl()
-        )
-        assert.equal(
-          onResponseStarted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseStarted[0].request.url, await driver.getCurrentUrl())
+        assert.equal(onResponseStarted[0].response.url, await driver.getCurrentUrl())
         assert.equal(onResponseStarted[0].response.fromCache, false)
         assert(onResponseStarted[0].response.mimeType.includes('text/plain'))
         assert.equal(onResponseStarted[0].response.status, 200)
@@ -141,23 +125,14 @@ suite(
         // Checking mime type for 'html' text
         await driver.get(Pages.emptyPage)
         assert.equal(onResponseStarted[0].request.method, 'GET')
-        assert.equal(
-          onResponseStarted[0].request.url,
-          await driver.getCurrentUrl()
-        )
-        assert.equal(
-          onResponseStarted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseStarted[0].request.url, await driver.getCurrentUrl())
+        assert.equal(onResponseStarted[0].response.url, await driver.getCurrentUrl())
         assert(onResponseStarted[0].response.mimeType.includes('text/html'))
 
         // Checking mime type for 'plain' text
         onResponseStarted = []
         await driver.get(Pages.emptyText)
-        assert.equal(
-          onResponseStarted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseStarted[0].response.url, await driver.getCurrentUrl())
         assert(onResponseStarted[0].response.mimeType.includes('text/plain'))
       })
 
@@ -171,14 +146,8 @@ suite(
         await driver.get(Pages.emptyPage)
 
         assert.equal(onResponseCompleted[0].request.method, 'GET')
-        assert.equal(
-          onResponseCompleted[0].request.url,
-          await driver.getCurrentUrl()
-        )
-        assert.equal(
-          onResponseCompleted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseCompleted[0].request.url, await driver.getCurrentUrl())
+        assert.equal(onResponseCompleted[0].response.url, await driver.getCurrentUrl())
         assert.equal(onResponseCompleted[0].response.fromCache, false)
         assert(onResponseCompleted[0].response.mimeType.includes('text/html'))
         assert.equal(onResponseCompleted[0].response.status, 200)
@@ -215,27 +184,17 @@ suite(
         // Checking mime type for 'html' text
         await driver.get(Pages.emptyPage)
         assert.equal(onResponseCompleted[0].request.method, 'GET')
-        assert.equal(
-          onResponseCompleted[0].request.url,
-          await driver.getCurrentUrl()
-        )
-        assert.equal(
-          onResponseCompleted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseCompleted[0].request.url, await driver.getCurrentUrl())
+        assert.equal(onResponseCompleted[0].response.url, await driver.getCurrentUrl())
         assert(onResponseCompleted[0].response.mimeType.includes('text/html'))
 
         // Checking mime type for 'plain' text
         onResponseCompleted = []
         await driver.get(Pages.emptyText)
-        assert.equal(
-          onResponseCompleted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseCompleted[0].response.url, await driver.getCurrentUrl())
         assert(onResponseCompleted[0].response.mimeType.includes('text/plain'))
       })
     })
-
   },
-  { browsers: [Browser.FIREFOX] }
+  { browsers: [Browser.FIREFOX] },
 )

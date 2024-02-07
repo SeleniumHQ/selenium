@@ -19,15 +19,15 @@ const { FilterBy } = require('./filterBy')
 const { ConsoleLogEntry, JavascriptLogEntry, GenericLogEntry } = require('./logEntries')
 
 const LOG = {
-  TYPE_CONSOLE : 'console',
-  TYPE_JS_LOGS : 'javascript',
+  TYPE_CONSOLE: 'console',
+  TYPE_JS_LOGS: 'javascript',
 }
 
 class LogInspector {
   bidi
   ws
 
-  constructor (driver, browsingContextIds) {
+  constructor(driver, browsingContextIds) {
     this._driver = driver
     this._browsingContextIds = browsingContextIds
     this.listener = {}
@@ -37,7 +37,7 @@ class LogInspector {
    * Subscribe to log event
    * @returns {Promise<void>}
    */
-  async init () {
+  async init() {
     this.bidi = await this._driver.getBidi()
     await this.bidi.subscribe('log.entryAdded', this._browsingContextIds)
   }
@@ -45,7 +45,7 @@ class LogInspector {
   /**
    * @param kind
    */
-  logListener (kind) {
+  logListener(kind) {
     if (!(kind in this.listener)) {
       this.listener[kind] = []
     }
@@ -76,7 +76,7 @@ class LogInspector {
           params.method,
           params.realm,
           params.args,
-          params.stackTrace
+          params.stackTrace,
         )
 
         if (filterBy !== undefined) {
@@ -113,7 +113,7 @@ class LogInspector {
           params.text,
           params.timestamp,
           params.type,
-          params.stackTrace
+          params.stackTrace,
         )
 
         if (filterBy !== undefined) {
@@ -135,9 +135,7 @@ class LogInspector {
    */
   async onJavascriptException(callback) {
     this.ws = await this.bidi.socket
-    let enabled =
-      LOG.TYPE_JS_EXCEPTION in this.listener ||
-      this.logListener(LOG.TYPE_JS_EXCEPTION)
+    let enabled = LOG.TYPE_JS_EXCEPTION in this.listener || this.logListener(LOG.TYPE_JS_EXCEPTION)
     this.listener[LOG.TYPE_JS_EXCEPTION].push(callback)
 
     if (enabled) {
@@ -152,7 +150,7 @@ class LogInspector {
           params.text,
           params.timestamp,
           params.type,
-          params.stackTrace
+          params.stackTrace,
         )
 
         this.listener[LOG.TYPE_JS_EXCEPTION].forEach((listener) => {
@@ -183,7 +181,7 @@ class LogInspector {
           params.text,
           params.timestamp,
           params.type,
-          params.stackTrace
+          params.stackTrace,
         )
 
         if (filterBy !== undefined) {
@@ -206,7 +204,7 @@ class LogInspector {
           params.method,
           params.realm,
           params.args,
-          params.stackTrace
+          params.stackTrace,
         )
 
         if (filterBy !== undefined) {
@@ -220,16 +218,13 @@ class LogInspector {
         return
       }
 
-      if (
-        params !== undefined &&
-        !['console', 'javascript'].includes(params?.type)
-      ) {
+      if (params !== undefined && !['console', 'javascript'].includes(params?.type)) {
         let genericEntry = new GenericLogEntry(
           params.level,
           params.text,
           params.timestamp,
           params.type,
-          params.stackTrace
+          params.stackTrace,
         )
 
         if (filterBy !== undefined) {
@@ -248,7 +243,7 @@ class LogInspector {
    * Unsubscribe to log event
    * @returns {Promise<void>}
    */
-  async close () {
+  async close() {
     await this.bidi.unsubscribe('log.entryAdded', this._browsingContextIds)
   }
 }
@@ -259,7 +254,7 @@ class LogInspector {
  * @param browsingContextIds
  * @returns {Promise<LogInspector>}
  */
-async function getLogInspectorInstance (driver, browsingContextIds) {
+async function getLogInspectorInstance(driver, browsingContextIds) {
   let instance = new LogInspector(driver, browsingContextIds)
   await instance.init()
   return instance

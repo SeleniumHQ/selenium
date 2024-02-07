@@ -26,9 +26,7 @@ const logging = require('../lib/logging')
  * @returns {string}
  */
 function getJavaPath() {
-  return process.env['JAVA_HOME']
-    ? path.join(process.env['JAVA_HOME'], 'bin/java')
-    : 'java'
+  return process.env['JAVA_HOME'] ? path.join(process.env['JAVA_HOME'], 'bin/java') : 'java'
 }
 
 /**
@@ -38,11 +36,7 @@ function getJavaPath() {
 function isSelenium3x(seleniumStandalonePath) {
   const javaPath = getJavaPath()
 
-  const execRes = cp.execFileSync(javaPath, [
-    '-jar',
-    seleniumStandalonePath,
-    '--version',
-  ])
+  const execRes = cp.execFileSync(javaPath, ['-jar', seleniumStandalonePath, '--version'])
 
   return execRes.toString().trim().startsWith('Selenium server version: 3')
 }
@@ -57,9 +51,7 @@ function formatSpawnArgs(seleniumStandalonePath, args) {
   if (isSelenium3x(seleniumStandalonePath)) {
     logging
       .getLogger(logging.Type.SERVER)
-      .warning(
-        'Deprecation: Support for Standalone Server 3.x will be removed soon. Please update to version 4.x',
-      )
+      .warning('Deprecation: Support for Standalone Server 3.x will be removed soon. Please update to version 4.x')
     return args
   }
 
@@ -69,12 +61,8 @@ function formatSpawnArgs(seleniumStandalonePath, args) {
 
   let formattedArgs = Array.from(args)
 
-  const standaloneArgIndex = formattedArgs.findIndex(
-    (arg) => arg === seleniumStandalonePath
-  )
-  const v3portArgFormat = formattedArgs.findIndex(
-    (arg) => arg === port3xArgFormat
-  )
+  const standaloneArgIndex = formattedArgs.findIndex((arg) => arg === seleniumStandalonePath)
+  const v3portArgFormat = formattedArgs.findIndex((arg) => arg === port3xArgFormat)
 
   // old v3x port arg format was -port, new v4x port arg format is --port
   if (v3portArgFormat !== -1) {
@@ -83,8 +71,7 @@ function formatSpawnArgs(seleniumStandalonePath, args) {
 
   // 'standalone' arg should be right after jar file path
   // in case if it is already in place - returns args
-  if (formattedArgs[standaloneArgIndex + 1] === standaloneArg)
-    return formattedArgs
+  if (formattedArgs[standaloneArgIndex + 1] === standaloneArg) return formattedArgs
 
   // insert 'standalone' right after jar file path
   formattedArgs.splice(standaloneArgIndex + 1, 0, standaloneArg)

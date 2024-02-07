@@ -17,33 +17,23 @@
 
 'use strict'
 
-const assert = require('assert')
-const chrome = require('../../chrome')
 const test = require('../../lib/test')
-const { ignore } = require('../../lib/test')
-const { Browser } = require('../../index')
 
 test.suite(
   function (env) {
     let driver
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .build()
+      driver = await env.builder().build()
     })
     afterEach(async () => await driver.quit())
     describe('can cast to devices', () => {
-      it(
-        'get sinks returns a list of devices',
-        async function () {
-
-          // Just testing if we can set get cast sink command.
-          // Testing this is tough because we need a device to cast to for the test.
-          const castSinks = await driver.getCastSinks()
-        }
-      )
-  })
+      it('get sinks returns a list of devices', async function () {
+        // Just testing if we can set get cast sink command.
+        // Testing this is tough because we need a device to cast to for the test.
+        const _ = await driver.getCastSinks()
+      })
+    })
   },
-  { browsers: ['chrome'] }
+  { browsers: ['chrome'] },
 )

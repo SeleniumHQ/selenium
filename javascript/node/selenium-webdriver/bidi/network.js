@@ -65,7 +65,7 @@ class Network {
             params.redirectCount,
             params.request,
             params.timestamp,
-            params.initiator
+            params.initiator,
           )
         } else if ('response' in params) {
           response = new ResponseStarted(
@@ -74,7 +74,7 @@ class Network {
             params.redirectCount,
             params.request,
             params.timestamp,
-            params.response
+            params.response,
           )
         }
         callback(response)

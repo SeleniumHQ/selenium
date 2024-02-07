@@ -17,8 +17,8 @@
 
 const { InvalidArgumentError, NoSuchFrameError } = require('../lib/error')
 const { BrowsingContextInfo } = require('./browsingContextTypes')
-const {SerializationOptions, ReferenceValue, RemoteValue} = require("./protocolValue");
-const {WebElement} = require("../lib/webdriver");
+const { SerializationOptions, ReferenceValue, RemoteValue } = require('./protocolValue')
+const { WebElement } = require('../lib/webdriver')
 
 class Locator {
   static Type = Object.freeze({
@@ -33,8 +33,7 @@ class Locator {
   #matchType
   #maxDepth
 
-  constructor(
-    type, value, ignoreCase = undefined, matchType = undefined, maxDepth = undefined) {
+  constructor(type, value, ignoreCase = undefined, matchType = undefined, maxDepth = undefined) {
     this.#type = type
     this.#value = value
     this.#ignoreCase = ignoreCase
@@ -115,13 +114,8 @@ class BrowsingContext {
    * @returns NavigateResult object
    */
   async navigate(url, readinessState = undefined) {
-    if (
-      readinessState !== undefined &&
-      !['none', 'interactive', 'complete'].includes(readinessState)
-    ) {
-      throw Error(
-        `Valid readiness states are 'none', 'interactive' & 'complete'. Received: ${readinessState}`
-      )
+    if (readinessState !== undefined && !['none', 'interactive', 'complete'].includes(readinessState)) {
+      throw Error(`Valid readiness states are 'none', 'interactive' & 'complete'. Received: ${readinessState}`)
     }
 
     const params = {
@@ -134,10 +128,7 @@ class BrowsingContext {
     }
     const navigateResult = (await this.bidi.send(params))['result']
 
-    return new NavigateResult(
-      navigateResult['url'],
-      navigateResult['navigation']
-    )
+    return new NavigateResult(navigateResult['url'], navigateResult['navigation'])
   }
 
   /**
@@ -159,12 +150,7 @@ class BrowsingContext {
     }
 
     result = result['result']['contexts'][0]
-    return new BrowsingContextInfo(
-      result['context'],
-      result['url'],
-      result['children'],
-      result['parent']
-    )
+    return new BrowsingContextInfo(result['context'], result['url'], result['children'], result['parent'])
   }
 
   /**
@@ -253,11 +239,7 @@ class BrowsingContext {
     return response['result']['data']
   }
 
-  async captureElementScreenshot(
-    sharedId,
-    handle = undefined,
-    scrollIntoView = undefined
-  ) {
+  async captureElementScreenshot(sharedId, handle = undefined, scrollIntoView = undefined) {
     let params = {
       method: 'browsingContext.captureScreenshot',
       params: {
@@ -323,13 +305,8 @@ class BrowsingContext {
   }
 
   async reload(ignoreCache = undefined, readinessState = undefined) {
-    if (
-      readinessState !== undefined &&
-      !['none', 'interactive', 'complete'].includes(readinessState)
-    ) {
-      throw Error(
-        `Valid readiness states are 'none', 'interactive' & 'complete'. Received: ${readinessState}`
-      )
+    if (readinessState !== undefined && !['none', 'interactive', 'complete'].includes(readinessState)) {
+      throw Error(`Valid readiness states are 'none', 'interactive' & 'complete'. Received: ${readinessState}`)
     }
 
     const params = {
@@ -342,10 +319,7 @@ class BrowsingContext {
     }
     const navigateResult = (await this.bidi.send(params))['result']
 
-    return new NavigateResult(
-      navigateResult['url'],
-      navigateResult['navigation']
-    )
+    return new NavigateResult(navigateResult['url'], navigateResult['navigation'])
   }
 
   async setViewport(width, height, devicePixelRatio = undefined) {
@@ -388,8 +362,8 @@ class BrowsingContext {
     ownership = undefined,
     sandbox = undefined,
     serializationOptions = undefined,
-    startNodes = undefined) {
-
+    startNodes = undefined,
+  ) {
     if (!(locator instanceof Locator)) {
       throw Error(`Pass in a Locator object. Received: ${locator}`)
     }
@@ -423,7 +397,7 @@ class BrowsingContext {
         ownership: ownership,
         sandbox: sandbox,
         serializationOptions: serializationOptions,
-        startNodes: startNodes
+        startNodes: startNodes,
       },
     }
 
@@ -446,7 +420,8 @@ class BrowsingContext {
     ownership = undefined,
     sandbox = undefined,
     serializationOptions = undefined,
-    startNodes = undefined) {
+    startNodes = undefined,
+  ) {
     const elements = await this.locateNodes(locator, 1, ownership, sandbox, serializationOptions, startNodes)
     return elements[0]
   }
@@ -500,10 +475,7 @@ class PrintResult {
  * @param referenceContext To get a browsing context for this reference if passed
  * @returns {Promise<BrowsingContext>}
  */
-async function getBrowsingContextInstance(
-  driver,
-  { browsingContextId, type, referenceContext }
-) {
+async function getBrowsingContextInstance(driver, { browsingContextId, type, referenceContext }) {
   let instance = new BrowsingContext(driver)
   await instance.init({ browsingContextId, type, referenceContext })
   return instance

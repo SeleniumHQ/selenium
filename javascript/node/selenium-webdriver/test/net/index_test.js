@@ -50,19 +50,16 @@ describe('net.splitHostAndPort', function () {
   })
 
   it('IPv6 with no port', function () {
-    assert.deepStrictEqual(
-      net.splitHostAndPort('1234:0:1000:5768:1234:5678:90'),
-      {
-        host: '1234:0:1000:5768:1234:5678:90',
-        port: null,
-      }
-    )
+    assert.deepStrictEqual(net.splitHostAndPort('1234:0:1000:5768:1234:5678:90'), {
+      host: '1234:0:1000:5768:1234:5678:90',
+      port: null,
+    })
   })
 
   it('IPv6 with port', function () {
-    assert.deepStrictEqual(
-      net.splitHostAndPort('[1234:0:1000:5768:1234:5678:90]:1234'),
-      { host: '1234:0:1000:5768:1234:5678:90', port: 1234 }
-    )
+    assert.deepStrictEqual(net.splitHostAndPort('[1234:0:1000:5768:1234:5678:90]:1234'), {
+      host: '1234:0:1000:5768:1234:5678:90',
+      port: 1234,
+    })
   })
 })
