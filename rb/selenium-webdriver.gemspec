@@ -47,14 +47,16 @@ Gem::Specification.new do |s|
   s.bindir = 'bin'
   s.require_paths = ['lib']
 
+  s.add_runtime_dependency 'base64', ['~> 0.2']
   s.add_runtime_dependency 'rexml', ['~> 3.2', '>= 3.2.5']
   s.add_runtime_dependency 'rubyzip', ['>= 1.2.2', '< 3.0']
   s.add_runtime_dependency 'websocket', ['~> 1.0']
 
+  s.add_development_dependency 'git', ['~> 1.19']
   s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rake', ['~> 13.0']
   s.add_development_dependency 'rspec', ['~> 3.0']
-  s.add_development_dependency 'rubocop', ['~> 1.42']
+  s.add_development_dependency 'rubocop', ['~> 1.60', '>=1.60.2']
   s.add_development_dependency 'rubocop-performance', ['~> 1.15']
   s.add_development_dependency 'rubocop-rspec', ['~> 2.16']
   s.add_development_dependency 'webmock', ['~> 3.5']

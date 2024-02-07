@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   action:
+    if: github.repository_owner == 'seleniumhq'
     runs-on: ubuntu-latest
     steps:
       - uses: dessant/lock-threads@v5

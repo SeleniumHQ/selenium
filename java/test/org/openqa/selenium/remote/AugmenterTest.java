@@ -308,6 +308,7 @@ class AugmenterTest {
     public Response execute(Command command) {
       if (DriverCommand.NEW_SESSION.equals(command.getName())) {
         Response response = new Response(new SessionId("foo"));
+        response.setState("success");
         response.setValue(capabilities.asMap());
         return response;
       }
@@ -316,6 +317,7 @@ class AugmenterTest {
         if (possibleMatch.commandName.equals(command.getName())
             && possibleMatch.args.equals(command.getParameters())) {
           Response response = new Response(new SessionId("foo"));
+          response.setState("success");
           response.setValue(possibleMatch.returnValue);
           return response;
         }

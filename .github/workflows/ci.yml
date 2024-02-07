@@ -9,10 +9,6 @@ on:
     - cron: "0 */12 * * *"
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}${{ github.event_name == 'workflow_dispatch' && '-all' || '' }}${{ github.event_name == 'schedule' && '-all' || '' }}
-  cancel-in-progress: true
-
 jobs:
   check:
     name: Check
@@ -40,7 +36,7 @@ jobs:
         id: check-targets
         run: ./scripts/github-actions/check-bazel-targets.sh
         env:
-          COMMIT_RANGE: ${{ github.event.pull_request.base.sha || github.event.before }}..${{ github.event.pull_request.head.sha || github.sha }}
+          COMMIT_RANGE: ${{ github.event.pull_request.base.sha || github.event.before }}...${{ github.event.pull_request.head.sha || github.sha }}
 
   dotnet:
     name: .NET

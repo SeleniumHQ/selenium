@@ -37,6 +37,13 @@ class BrowsingContextInspector {
     )
   }
 
+  async onBrowsingContextDestroyed(callback) {
+    await this.subscribeAndHandleEvent(
+      'browsingContext.contextDestroyed',
+      callback
+    )
+  }
+
   async onNavigationStarted(callback) {
     await this.subscribeAndHandleEvent(
       'browsingContext.navigationStarted',
