@@ -127,7 +127,7 @@ const FIREFOX_CAPABILITY_KEY = 'moz:firefoxOptions'
  */
 class AddonFormatError extends Error {
   /** @param {string} msg The error message. */
-  constructor (msg) {
+  constructor(msg) {
     super(msg)
     /** @override */
     this.name = this.constructor.name
@@ -141,7 +141,7 @@ class AddonFormatError extends Error {
  * @return {!Promise<string>} A promise for the add-on ID once
  *     installed.
  */
-async function installExtension (extension, dir) {
+async function installExtension(extension, dir) {
   const ext = extension.slice(-4)
   if (ext !== '.xpi' && ext !== '.zip') {
     throw Error('File name does not end in ".zip" or ".xpi": ' + ext)
@@ -179,7 +179,7 @@ async function installExtension (extension, dir) {
 }
 
 class Profile {
-  constructor () {
+  constructor() {
     /** @private {?string} */
     this.template_ = null
 
@@ -187,7 +187,7 @@ class Profile {
     this.extensions_ = []
   }
 
-  addExtensions (/** !Array<string> */ paths) {
+  addExtensions(/** !Array<string> */ paths) {
     this.extensions_ = this.extensions_.concat(...paths)
   }
 
@@ -195,7 +195,7 @@ class Profile {
    * @return {(!Promise<string>|undefined)} a promise for a base64 encoded
    *     profile, or undefined if there's no data to include.
    */
-  [Symbols.serialize] () {
+  [Symbols.serialize]() {
     if (this.template_ || this.extensions_.length) {
       return buildProfile(this.template_, this.extensions_)
     }
@@ -209,17 +209,13 @@ class Profile {
  *     profile.
  * @return {!Promise<string>} a promise for the base64 encoded profile.
  */
-async function buildProfile (template, extensions) {
+async function buildProfile(template, extensions) {
   let dir = template
 
   if (extensions.length) {
     dir = await io.tmpDir()
     if (template) {
-      await io.copyDir(
-        /** @type {string} */ (template),
-        dir,
-        /(parent\.lock|lock|\.parentlock)/
-      )
+      await io.copyDir(/** @type {string} */ (template), dir, /(parent\.lock|lock|\.parentlock)/)
     }
 
     const extensionsDir = path.join(dir, 'extensions')
@@ -245,7 +241,7 @@ class Options extends Capabilities {
    * @param {(Capabilities|Map<string, ?>|Object)=} other Another set of
    *     capabilities to initialize this instance from.
    */
-  constructor (other) {
+  constructor(other) {
     super(other)
     this.setBrowserName(Browser.FIREFOX)
   }
@@ -254,7 +250,7 @@ class Options extends Capabilities {
    * @return {!Object}
    * @private
    */
-  firefoxOptions_ () {
+  firefoxOptions_() {
     let options = this.get(FIREFOX_CAPABILITY_KEY)
     if (!options) {
       options = {}
@@ -267,7 +263,7 @@ class Options extends Capabilities {
    * @return {!Profile}
    * @private
    */
-  profile_ () {
+  profile_() {
     let options = this.firefoxOptions_()
     if (!options.profile) {
       options.profile = new Profile()
@@ -282,7 +278,7 @@ class Options extends Capabilities {
    * @param {...(string|!Array<string>)} args The arguments to include.
    * @return {!Options} A self reference.
    */
-  addArguments (...args) {
+  addArguments(...args) {
     if (args.length) {
       let options = this.firefoxOptions_()
       options.args = options.args ? options.args.concat(...args) : args
@@ -298,8 +294,8 @@ class Options extends Capabilities {
    * @throws {TypeError} if width or height is unspecified, not a number, or
    *     less than or equal to 0.
    */
-  windowSize ({ width, height }) {
-    function checkArg (arg) {
+  windowSize({ width, height }) {
+    function checkArg(arg) {
       if (typeof arg !== 'number' || arg <= 0) {
         throw TypeError('Arguments must be {width, height} with numbers > 0')
       }
@@ -316,7 +312,7 @@ class Options extends Capabilities {
    * @param {...string} paths The paths to the extension XPI files to install.
    * @return {!Options} A self reference.
    */
-  addExtensions (...paths) {
+  addExtensions(...paths) {
     this.profile_().addExtensions(paths)
     return this
   }
@@ -327,18 +323,12 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    * @throws {TypeError} if either the key or value has an invalid type.
    */
-  setPreference (key, value) {
+  setPreference(key, value) {
     if (typeof key !== 'string') {
       throw TypeError(`key must be a string, but got ${typeof key}`)
     }
-    if (
-      typeof value !== 'string' &&
-      typeof value !== 'number' &&
-      typeof value !== 'boolean'
-    ) {
-      throw TypeError(
-        `value must be a string, number, or boolean, but got ${typeof value}`
-      )
+    if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'boolean') {
+      throw TypeError(`value must be a string, number, or boolean, but got ${typeof value}`)
     }
     let options = this.firefoxOptions_()
     options.prefs = options.prefs || {}
@@ -355,7 +345,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    * @throws {TypeError} if profile is not a string.
    */
-  setProfile (profile) {
+  setProfile(profile) {
     if (typeof profile !== 'string') {
       throw TypeError(`profile must be a string, but got ${typeof profile}`)
     }
@@ -371,7 +361,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    * @throws {TypeError} If `binary` is an invalid type.
    */
-  setBinary (binary) {
+  setBinary(binary) {
     if (binary instanceof Channel || typeof binary === 'string') {
       this.firefoxOptions_().binary = binary
       return this
@@ -385,11 +375,7 @@ class Options extends Capabilities {
    * @param {string} androidPackage The package to use
    * @return {!Options} A self reference
    */
-  enableMobile (
-    androidPackage = 'org.mozilla.firefox',
-    androidActivity = null,
-    deviceSerial = null
-  ) {
+  enableMobile(androidPackage = 'org.mozilla.firefox', androidActivity = null, deviceSerial = null) {
     this.firefoxOptions_().androidPackage = androidPackage
 
     if (androidActivity) {
@@ -404,7 +390,7 @@ class Options extends Capabilities {
   /**
    * Enables moz:debuggerAddress for firefox cdp
    */
-  enableDebugger () {
+  enableDebugger() {
     return this.set('moz:debuggerAddress', true)
   }
 
@@ -412,7 +398,7 @@ class Options extends Capabilities {
    * Enable bidi connection
    * @returns {!Capabilities}
    */
-  enableBidi () {
+  enableBidi() {
     return this.set('webSocketUrl', true)
   }
 }
@@ -438,7 +424,7 @@ const Context = {
  * @return {!Promise<?string>} A promise for the located executable.
  *     The promise will resolve to {@code null} if Firefox was not found.
  */
-function findInProgramFiles (file) {
+function findInProgramFiles(file) {
   let files = [
     process.env['PROGRAMFILES'] || 'C:\\Program Files',
     process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)',
@@ -447,8 +433,8 @@ function findInProgramFiles (file) {
     return exists
       ? files[0]
       : io.exists(files[1]).then(function (exists) {
-        return exists ? files[1] : null
-      })
+          return exists ? files[1] : null
+        })
   })
 }
 
@@ -465,7 +451,7 @@ const ExtensionCommand = {
  * @param {!Promise<string>} serverUrl The server's URL.
  * @return {!command.Executor} The new command executor.
  */
-function createExecutor (serverUrl) {
+function createExecutor(serverUrl) {
   let client = serverUrl.then((url) => new http.HttpClient(url))
   let executor = new http.Executor(client)
   configureExecutor(executor)
@@ -476,30 +462,14 @@ function createExecutor (serverUrl) {
  * Configures the given executor with Firefox-specific commands.
  * @param {!http.Executor} executor the executor to configure.
  */
-function configureExecutor (executor) {
-  executor.defineCommand(
-    ExtensionCommand.GET_CONTEXT,
-    'GET',
-    '/session/:sessionId/moz/context'
-  )
+function configureExecutor(executor) {
+  executor.defineCommand(ExtensionCommand.GET_CONTEXT, 'GET', '/session/:sessionId/moz/context')
 
-  executor.defineCommand(
-    ExtensionCommand.SET_CONTEXT,
-    'POST',
-    '/session/:sessionId/moz/context'
-  )
+  executor.defineCommand(ExtensionCommand.SET_CONTEXT, 'POST', '/session/:sessionId/moz/context')
 
-  executor.defineCommand(
-    ExtensionCommand.INSTALL_ADDON,
-    'POST',
-    '/session/:sessionId/moz/addon/install'
-  )
+  executor.defineCommand(ExtensionCommand.INSTALL_ADDON, 'POST', '/session/:sessionId/moz/addon/install')
 
-  executor.defineCommand(
-    ExtensionCommand.UNINSTALL_ADDON,
-    'POST',
-    '/session/:sessionId/moz/addon/uninstall'
-  )
+  executor.defineCommand(ExtensionCommand.UNINSTALL_ADDON, 'POST', '/session/:sessionId/moz/addon/uninstall')
 }
 
 /**
@@ -512,7 +482,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    * @param {string=} opt_exe Path to the server executable to use. If omitted,
    *     the builder will attempt to locate the geckodriver on the system PATH.
    */
-  constructor (opt_exe) {
+  constructor(opt_exe) {
     super(opt_exe)
     this.setLoopback(true) // Required.
   }
@@ -524,7 +494,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     default, only debug logging is enabled.
    * @return {!ServiceBuilder} A self reference.
    */
-  enableVerboseLogging (opt_trace) {
+  enableVerboseLogging(opt_trace) {
     return this.addArguments(opt_trace ? '-vv' : '-v')
   }
 }
@@ -555,9 +525,8 @@ class Driver extends webdriver.WebDriver {
    *     configured to use the legacy FirefoxDriver from the Selenium project.
    * @return {!Driver} A new driver instance.
    */
-  static createSession (opt_config, opt_executor) {
-    let caps =
-      opt_config instanceof Capabilities ? opt_config : new Options(opt_config)
+  static createSession(opt_config, opt_executor) {
+    let caps = opt_config instanceof Capabilities ? opt_config : new Options(opt_config)
 
     let firefoxBrowserPath = null
 
@@ -604,14 +573,14 @@ class Driver extends webdriver.WebDriver {
    * implementation.
    * @override
    */
-  setFileDetector () {}
+  setFileDetector() {}
 
   /**
    * Get the context that is currently in effect.
    *
    * @return {!Promise<Context>} Current context.
    */
-  getContext () {
+  getContext() {
     return this.execute(new command.Command(ExtensionCommand.GET_CONTEXT))
   }
 
@@ -629,13 +598,8 @@ class Driver extends webdriver.WebDriver {
    *
    * @param {!Promise<void>} ctx The context to switch to.
    */
-  setContext (ctx) {
-    return this.execute(
-      new command.Command(ExtensionCommand.SET_CONTEXT).setParameter(
-        'context',
-        ctx
-      )
-    )
+  setContext(ctx) {
+    return this.execute(new command.Command(ExtensionCommand.SET_CONTEXT).setParameter('context', ctx))
   }
 
   /**
@@ -652,7 +616,7 @@ class Driver extends webdriver.WebDriver {
    *     newly installed addon.
    * @see #uninstallAddon
    */
-  async installAddon (path, temporary = false) {
+  async installAddon(path, temporary = false) {
     let stats = fs.statSync(path)
     let buf
     if (stats.isDirectory()) {
@@ -665,7 +629,7 @@ class Driver extends webdriver.WebDriver {
     return this.execute(
       new command.Command(ExtensionCommand.INSTALL_ADDON)
         .setParameter('addon', buf.toString('base64'))
-        .setParameter('temporary', temporary)
+        .setParameter('temporary', temporary),
     )
   }
 
@@ -677,14 +641,9 @@ class Driver extends webdriver.WebDriver {
    *     completed.
    * @see #installAddon
    */
-  async uninstallAddon (id) {
+  async uninstallAddon(id) {
     id = await Promise.resolve(id)
-    return this.execute(
-      new command.Command(ExtensionCommand.UNINSTALL_ADDON).setParameter(
-        'id',
-        id
-      )
-    )
+    return this.execute(new command.Command(ExtensionCommand.UNINSTALL_ADDON).setParameter('id', id))
   }
 }
 
@@ -702,7 +661,7 @@ class Channel {
    * @param {string} darwin The path to check when running on MacOS.
    * @param {string} win32 The path to check when running on Windows.
    */
-  constructor (darwin, win32) {
+  constructor(darwin, win32) {
     /** @private @const */ this.darwin_ = darwin
     /** @private @const */ this.win32_ = win32
     /** @private {Promise<string>} */
@@ -718,7 +677,7 @@ class Channel {
    * @return {!Promise<string>} A promise for the location of the located
    *     Firefox executable.
    */
-  locate () {
+  locate() {
     if (this.found_) {
       return this.found_
     }
@@ -726,15 +685,11 @@ class Channel {
     let found
     switch (process.platform) {
       case 'darwin':
-        found = io
-          .exists(this.darwin_)
-          .then((exists) => (exists ? this.darwin_ : io.findInPath('firefox')))
+        found = io.exists(this.darwin_).then((exists) => (exists ? this.darwin_ : io.findInPath('firefox')))
         break
 
       case 'win32':
-        found = findInProgramFiles(this.win32_).then(
-          (found) => found || io.findInPath('firefox.exe')
-        )
+        found = findInProgramFiles(this.win32_).then((found) => found || io.findInPath('firefox.exe'))
         break
 
       default:
@@ -753,7 +708,7 @@ class Channel {
   }
 
   /** @return {!Promise<string>} */
-  [Symbols.serialize] () {
+  [Symbols.serialize]() {
     return this.locate()
   }
 }
@@ -765,7 +720,7 @@ class Channel {
  */
 Channel.DEV = new Channel(
   '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
-  'Firefox Developer Edition\\firefox.exe'
+  'Firefox Developer Edition\\firefox.exe',
 )
 
 /**
@@ -775,30 +730,21 @@ Channel.DEV = new Channel(
  * @const
  * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#beta>
  */
-Channel.BETA = new Channel(
-  '/Applications/Firefox.app/Contents/MacOS/firefox',
-  'Mozilla Firefox\\firefox.exe'
-)
+Channel.BETA = new Channel('/Applications/Firefox.app/Contents/MacOS/firefox', 'Mozilla Firefox\\firefox.exe')
 
 /**
  * Firefox's release channel.
  * @const
  * @see <https://www.mozilla.org/en-US/firefox/desktop/>
  */
-Channel.RELEASE = new Channel(
-  '/Applications/Firefox.app/Contents/MacOS/firefox',
-  'Mozilla Firefox\\firefox.exe'
-)
+Channel.RELEASE = new Channel('/Applications/Firefox.app/Contents/MacOS/firefox', 'Mozilla Firefox\\firefox.exe')
 
 /**
  * Firefox's nightly release channel.
  * @const
  * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#nightly>
  */
-Channel.NIGHTLY = new Channel(
-  '/Applications/Firefox Nightly.app/Contents/MacOS/firefox',
-  'Nightly\\firefox.exe'
-)
+Channel.NIGHTLY = new Channel('/Applications/Firefox Nightly.app/Contents/MacOS/firefox', 'Nightly\\firefox.exe')
 
 // PUBLIC API
 

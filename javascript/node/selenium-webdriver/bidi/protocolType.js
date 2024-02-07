@@ -27,9 +27,7 @@ const PrimitiveType = {
   findByName(name) {
     return (
       Object.values(this).find((type) => {
-        return (
-          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
-        )
+        return typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
       }) || null
     )
   },
@@ -47,9 +45,7 @@ const NonPrimitiveType = {
   findByName(name) {
     return (
       Object.values(this).find((type) => {
-        return (
-          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
-        )
+        return typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
       }) || null
     )
   },
@@ -75,9 +71,7 @@ const RemoteType = {
   findByName(name) {
     return (
       Object.values(this).find((type) => {
-        return (
-          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
-        )
+        return typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
       }) || null
     )
   },

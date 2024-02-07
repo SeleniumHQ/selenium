@@ -57,59 +57,40 @@ suite(
       it('Should be able to select by value', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(singleSelectValues1['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(singleSelectValues1['name'])))
         for (let x in singleSelectValues1['values']) {
-          await selector.selectByValue(
-            singleSelectValues1['values'][x].toLowerCase()
-          )
+          await selector.selectByValue(singleSelectValues1['values'][x].toLowerCase())
           let ele = await selector.getFirstSelectedOption()
-          assert.deepEqual(
-            await ele.getText(),
-            singleSelectValues1['values'][x]
-          )
+          assert.deepEqual(await ele.getText(), singleSelectValues1['values'][x])
         }
       })
 
       it('Should be able to select by index', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(singleSelectValues1['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(singleSelectValues1['name'])))
         for (let x in singleSelectValues1['values']) {
           await selector.selectByIndex(x)
           let ele = await selector.getFirstSelectedOption()
-          assert.deepEqual(
-            await ele.getText(),
-            singleSelectValues1['values'][x]
-          )
+          assert.deepEqual(await ele.getText(), singleSelectValues1['values'][x])
         }
       })
 
       it('Should be able to select by visible text', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(singleSelectValues1['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(singleSelectValues1['name'])))
         for (let x in singleSelectValues1['values']) {
           await selector.selectByVisibleText(singleSelectValues1['values'][x])
           let ele = await selector.getFirstSelectedOption()
-          assert.deepEqual(
-            await ele.getText(),
-            singleSelectValues1['values'][x]
-          )
+          assert.deepEqual(await ele.getText(), singleSelectValues1['values'][x])
         }
       })
 
       it('Should select by multiple index', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(multiSelectValues1['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(multiSelectValues1['name'])))
         await selector.deselectAll()
 
         for (let x in multiSelectValues1['values']) {
@@ -119,19 +100,14 @@ suite(
         let ele = await selector.getAllSelectedOptions()
 
         for (let x in ele) {
-          assert.deepEqual(
-            await ele[x].getText(),
-            multiSelectValues1['values'][x]
-          )
+          assert.deepEqual(await ele[x].getText(), multiSelectValues1['values'][x])
         }
       })
 
       it('Should select by multiple value', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(multiSelectValues2['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(multiSelectValues2['name'])))
         await selector.deselectAll()
 
         for (let value of multiSelectValues2['values']) {
@@ -141,19 +117,14 @@ suite(
         let ele = await selector.getAllSelectedOptions()
 
         for (let x in ele) {
-          assert.deepEqual(
-            await ele[x].getText(),
-            multiSelectValues2['values'][x]
-          )
+          assert.deepEqual(await ele[x].getText(), multiSelectValues2['values'][x])
         }
       })
 
       it('Should select by multiple text', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(multiSelectValues2['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(multiSelectValues2['name'])))
         await selector.deselectAll()
 
         for (let value of multiSelectValues2['values']) {
@@ -163,43 +134,31 @@ suite(
         let ele = await selector.getAllSelectedOptions()
 
         for (let x in ele) {
-          assert.deepEqual(
-            await ele[x].getText(),
-            multiSelectValues2['values'][x]
-          )
+          assert.deepEqual(await ele[x].getText(), multiSelectValues2['values'][x])
         }
       })
 
       it('Should raise exception select by value single disabled', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(disabledSingleSelect['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(disabledSingleSelect['name'])))
 
         await assert.rejects(
           async () => {
-            await selector.selectByValue(
-              disabledSingleSelect.values[1].toLowerCase()
-            )
+            await selector.selectByValue(disabledSingleSelect.values[1].toLowerCase())
           },
           (err) => {
             assert.strictEqual(err.name, 'UnsupportedOperationError')
-            assert.strictEqual(
-              err.message,
-              'You may not select a disabled option'
-            )
+            assert.strictEqual(err.message, 'You may not select a disabled option')
             return true
-          }
+          },
         )
       })
 
       it('Should raise exception select by index single disabled', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(disabledSingleSelect['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(disabledSingleSelect['name'])))
 
         await assert.rejects(
           async () => {
@@ -207,21 +166,16 @@ suite(
           },
           (err) => {
             assert.strictEqual(err.name, 'UnsupportedOperationError')
-            assert.strictEqual(
-              err.message,
-              'You may not select a disabled option'
-            )
+            assert.strictEqual(err.message, 'You may not select a disabled option')
             return true
-          }
+          },
         )
       })
 
       it('Should raise exception select by text single disabled', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(disabledSingleSelect['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(disabledSingleSelect['name'])))
 
         await assert.rejects(
           async () => {
@@ -229,21 +183,16 @@ suite(
           },
           (err) => {
             assert.strictEqual(err.name, 'UnsupportedOperationError')
-            assert.strictEqual(
-              err.message,
-              'You may not select a disabled option'
-            )
+            assert.strictEqual(err.message, 'You may not select a disabled option')
             return true
-          }
+          },
         )
       })
 
       it('Should raise exception select by index multiple disabled', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(disabledMultiSelect['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(disabledMultiSelect['name'])))
 
         await assert.rejects(
           async () => {
@@ -251,45 +200,33 @@ suite(
           },
           (err) => {
             assert.strictEqual(err.name, 'UnsupportedOperationError')
-            assert.strictEqual(
-              err.message,
-              'You may not select a disabled option'
-            )
+            assert.strictEqual(err.message, 'You may not select a disabled option')
             return true
-          }
+          },
         )
       })
 
       it('Should raise exception select by value multiple disabled', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(disabledMultiSelect['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(disabledMultiSelect['name'])))
 
         await assert.rejects(
           async () => {
-            await selector.selectByValue(
-              disabledMultiSelect.values[1].toLowerCase()
-            )
+            await selector.selectByValue(disabledMultiSelect.values[1].toLowerCase())
           },
           (err) => {
             assert.strictEqual(err.name, 'UnsupportedOperationError')
-            assert.strictEqual(
-              err.message,
-              'You may not select a disabled option'
-            )
+            assert.strictEqual(err.message, 'You may not select a disabled option')
             return true
-          }
+          },
         )
       })
 
       it('Should raise exception select by text multiple disabled', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(
-          driver.findElement(By.name(disabledMultiSelect['name']))
-        )
+        let selector = new Select(driver.findElement(By.name(disabledMultiSelect['name'])))
 
         await assert.rejects(
           async () => {
@@ -297,15 +234,12 @@ suite(
           },
           (err) => {
             assert.strictEqual(err.name, 'UnsupportedOperationError')
-            assert.strictEqual(
-              err.message,
-              'You may not select a disabled option'
-            )
+            assert.strictEqual(err.message, 'You may not select a disabled option')
             return true
-          }
+          },
         )
       })
     })
   },
-  { browsers: ['firefox', 'chrome'] }
+  { browsers: ['firefox', 'chrome'] },
 )

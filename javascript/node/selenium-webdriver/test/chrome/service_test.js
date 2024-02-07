@@ -43,5 +43,5 @@ test.suite(
       })
     })
   },
-  { browsers: ['chrome'] }
+  { browsers: ['chrome'] },
 )
