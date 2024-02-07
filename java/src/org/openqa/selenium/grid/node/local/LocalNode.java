@@ -805,9 +805,14 @@ public class LocalNode extends Node {
     }
 
     // Check if the user wants to use BiDi
-    boolean webSocketUrl = toUse.asMap().containsKey("webSocketUrl");
-    boolean bidiSupported = isSupportingBiDi || toUse.getCapability("webSocketUrl") != null;
-    if (bidiSupported && bidiEnabled && webSocketUrl) {
+    // This will be null if the user has not set the capability.
+    Object webSocketUrl = toUse.getCapability("webSocketUrl");
+
+    // In case of Firefox versions that do not support webSocketUrl, it returns the capability as it
+    // is i.e. boolean value. So need to check if it is a string.
+    // Check if the Node supports BiDi and if the client wants to use BiDi.
+    boolean bidiSupported = isSupportingBiDi && (webSocketUrl instanceof String);
+    if (bidiSupported && bidiEnabled) {
       String biDiUrl = (String) other.getCapabilities().getCapability("webSocketUrl");
       URI uri = null;
       try {
