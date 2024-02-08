@@ -16,6 +16,7 @@
 // under the License.
 
 const { BeforeRequestSent, ResponseStarted } = require('./networkTypes')
+const {AddInterceptParameters} = require("./addInterceptParameters");
 
 class Network {
   constructor(driver, browsingContextIds) {
@@ -80,6 +81,31 @@ class Network {
         callback(response)
       }
     })
+  }
+
+  async addIntercept(params) {
+
+    if (!params instanceof AddInterceptParameters) {
+      throw new Error(`Params must be an instance of AddInterceptParamenters. Received:'${params}'`)
+    }
+
+    const command = {
+      method: 'network.addIntercept',
+      params: Object.fromEntries(params.asMap())
+    }
+
+    let response = await this.bidi.send(command)
+
+    return response.result.intercept
+  }
+
+  async removeIntercept(interceptId) {
+    const command = {
+      method: 'network.removeIntercept',
+      params: {intercept: interceptId},
+    }
+
+    await this.bidi.send(command)
   }
 }
 
