@@ -89,7 +89,7 @@ public class FluentWait<T> implements Wait<T> {
    * @param sleeper Used to put the thread to sleep between evaluation loops.
    */
   public FluentWait(T input, java.time.Clock clock, Sleeper sleeper) {
-    this.input = Require.nonNull("Input", input);
+    this.input = input;
     this.clock = Require.nonNull("Clock", clock);
     this.sleeper = Require.nonNull("Sleeper", sleeper);
   }
