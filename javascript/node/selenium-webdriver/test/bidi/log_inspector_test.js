@@ -19,8 +19,8 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const {Browser} = require('../../')
-const {Pages, suite} = require('../../lib/test')
+const { Browser } = require('../../')
+const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
 const filterBy = require('../../bidi/filterBy')
 
@@ -29,10 +29,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .setFirefoxOptions(new firefox.Options().enableBidi())
-        .build()
+      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
     })
 
     afterEach(async function () {
@@ -48,7 +45,7 @@ suite(
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'consoleLog'}).click()
+        await driver.findElement({ id: 'consoleLog' }).click()
 
         assert.equal(logEntry.text, 'Hello, world!')
         assert.equal(logEntry.realm, null)
@@ -74,7 +71,7 @@ suite(
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'consoleLog'}).click()
+        await driver.findElement({ id: 'consoleLog' }).click()
 
         assert.equal(logEntry.text, 'Hello, world!')
         assert.equal(logEntry.realm, null)
@@ -97,7 +94,7 @@ suite(
         }, filterBy.FilterBy.logLevel('info'))
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'consoleLog'}).click()
+        await driver.findElement({ id: 'consoleLog' }).click()
 
         assert.equal(logEntry.text, 'Hello, world!')
         assert.equal(logEntry.realm, null)
@@ -119,7 +116,7 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
         // Generating info level log but we are filtering by error level
-        await driver.findElement({id: 'consoleLog'}).click()
+        await driver.findElement({ id: 'consoleLog' }).click()
 
         assert.equal(logEntry, null)
         await inspector.close()
@@ -133,7 +130,7 @@ suite(
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
+        await driver.findElement({ id: 'jsException' }).click()
 
         assert.equal(logEntry.text, 'Error: Not working')
         assert.equal(logEntry.type, 'javascript')
@@ -150,7 +147,7 @@ suite(
         }, filterBy.FilterBy.logLevel('error'))
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
+        await driver.findElement({ id: 'jsException' }).click()
 
         assert.equal(logEntry.text, 'Error: Not working')
         assert.equal(logEntry.type, 'javascript')
@@ -167,7 +164,7 @@ suite(
         }, filterBy.FilterBy.logLevel('info'))
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
+        await driver.findElement({ id: 'jsException' }).click()
 
         assert.equal(logEntry, null)
 
@@ -182,7 +179,7 @@ suite(
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
+        await driver.findElement({ id: 'jsException' }).click()
 
         assert.equal(logEntry.text, 'Error: Not working')
         assert.equal(logEntry.type, 'javascript')
@@ -199,7 +196,7 @@ suite(
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
+        await driver.findElement({ id: 'jsException' }).click()
 
         const stackTrace = logEntry.stackTrace
         assert.notEqual(stackTrace, null)
@@ -216,7 +213,7 @@ suite(
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'consoleLog'}).click()
+        await driver.findElement({ id: 'consoleLog' }).click()
 
         assert.equal(logEntry.text, 'Hello, world!')
         assert.equal(logEntry.realm, null)
@@ -237,7 +234,7 @@ suite(
         }, filterBy.FilterBy.logLevel('info'))
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'consoleLog'}).click()
+        await driver.findElement({ id: 'consoleLog' }).click()
 
         assert.equal(logEntry.text, 'Hello, world!')
         assert.equal(logEntry.realm, null)
@@ -258,7 +255,7 @@ suite(
         }, filterBy.FilterBy.logLevel('error'))
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
+        await driver.findElement({ id: 'jsException' }).click()
 
         assert.equal(logEntry.text, 'Error: Not working')
         assert.equal(logEntry.type, 'javascript')
@@ -267,5 +264,5 @@ suite(
       })
     })
   },
-  {browsers: [Browser.FIREFOX]}
+  { browsers: [Browser.FIREFOX] },
 )

@@ -48,10 +48,7 @@ function getIPAddress(loopback, family) {
     }
 
     for (let ipAddress of interfaces[key]) {
-      if (
-        (ipAddress.family === family || `IPv${ipAddress.family}` === family) &&
-        ipAddress.internal === loopback
-      ) {
+      if ((ipAddress.family === family || `IPv${ipAddress.family}` === family) && ipAddress.internal === loopback) {
         return ipAddress.address
       }
     }
