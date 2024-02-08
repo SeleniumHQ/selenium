@@ -805,7 +805,8 @@ class EventFiringDecoratorTest {
           }
 
           @Override
-          public void afterFrame(WebDriver.TargetLocator targetLocator, int index, WebDriver driver) {
+          public void afterFrame(
+              WebDriver.TargetLocator targetLocator, int index, WebDriver driver) {
             acc.append("afterFrame ").append(index).append("\n");
           }
 
@@ -815,7 +816,8 @@ class EventFiringDecoratorTest {
           }
 
           @Override
-          public void afterFrame(WebDriver.TargetLocator targetLocator, String nameOrId, WebDriver driver) {
+          public void afterFrame(
+              WebDriver.TargetLocator targetLocator, String nameOrId, WebDriver driver) {
             acc.append("afterFrame ").append(nameOrId).append("\n");
           }
 
@@ -825,7 +827,8 @@ class EventFiringDecoratorTest {
           }
 
           @Override
-          public void afterFrame(WebDriver.TargetLocator targetLocator, WebElement frameElement, WebDriver driver) {
+          public void afterFrame(
+              WebDriver.TargetLocator targetLocator, WebElement frameElement, WebDriver driver) {
             acc.append("afterFrame ").append(frameElement).append("\n");
           }
 
@@ -856,7 +859,8 @@ class EventFiringDecoratorTest {
           }
 
           @Override
-          public void afterNewWindow(WebDriver.TargetLocator targetLocator, WindowType typeHint, WebDriver driver) {
+          public void afterNewWindow(
+              WebDriver.TargetLocator targetLocator, WindowType typeHint, WebDriver driver) {
             acc.append("afterNewWindow ").append(typeHint).append("\n");
           }
 
@@ -905,7 +909,6 @@ class EventFiringDecoratorTest {
     decoratedTargetLocator.activeElement();
     decoratedTargetLocator.alert();
 
-
     assertThat(listener.acc.toString().trim())
         .isEqualTo(
             String.join(
@@ -914,70 +917,60 @@ class EventFiringDecoratorTest {
                 "beforeAnyWebDriverCall switchTo",
                 "afterAnyWebDriverCall switchTo",
                 "afterAnyCall switchTo",
-
                 "beforeAnyCall frame",
                 "beforeAnyTargetLocatorCall frame",
                 "beforeFrame 3",
                 "afterFrame 3",
                 "afterAnyTargetLocatorCall frame",
                 "afterAnyCall frame",
-
                 "beforeAnyCall frame",
                 "beforeAnyTargetLocatorCall frame",
                 "beforeFrame frame-id",
                 "afterFrame frame-id",
                 "afterAnyTargetLocatorCall frame",
                 "afterAnyCall frame",
-
                 "beforeAnyCall frame",
                 "beforeAnyTargetLocatorCall frame",
                 "beforeFrame " + frameElement,
                 "afterFrame " + frameElement,
                 "afterAnyTargetLocatorCall frame",
                 "afterAnyCall frame",
-
                 "beforeAnyCall parentFrame",
                 "beforeAnyTargetLocatorCall parentFrame",
                 "beforeParentFrame",
                 "afterParentFrame",
                 "afterAnyTargetLocatorCall parentFrame",
                 "afterAnyCall parentFrame",
-
                 "beforeAnyCall window",
                 "beforeAnyTargetLocatorCall window",
                 "beforeWindow windowName",
                 "afterWindow windowName",
                 "afterAnyTargetLocatorCall window",
                 "afterAnyCall window",
-
                 "beforeAnyCall newWindow",
                 "beforeAnyTargetLocatorCall newWindow",
                 "beforeNewWindow tab",
                 "afterNewWindow tab",
                 "afterAnyTargetLocatorCall newWindow",
                 "afterAnyCall newWindow",
-
                 "beforeAnyCall defaultContent",
                 "beforeAnyTargetLocatorCall defaultContent",
                 "beforeDefaultContent",
                 "afterDefaultContent",
                 "afterAnyTargetLocatorCall defaultContent",
                 "afterAnyCall defaultContent",
-
                 "beforeAnyCall activeElement",
                 "beforeAnyTargetLocatorCall activeElement",
                 "beforeActiveElement",
                 "afterActiveElement",
                 "afterAnyTargetLocatorCall activeElement",
                 "afterAnyCall activeElement",
-
                 "beforeAnyCall alert",
                 "beforeAnyTargetLocatorCall alert",
                 "beforeAlert",
                 "afterAlert",
                 "afterAnyTargetLocatorCall alert",
-                "afterAnyCall alert"
-              ));
+                "afterAnyCall alert"));
   }
 
   @Test
