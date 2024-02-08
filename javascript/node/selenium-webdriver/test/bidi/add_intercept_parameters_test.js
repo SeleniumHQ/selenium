@@ -20,6 +20,7 @@
 const assert = require('assert')
 const firefox = require('../../firefox')
 const {Browser, By, WebElement} = require('../../')
+const { suite } = require('../../lib/test')
 const Network = require('../../bidi/network')
 const {AddInterceptParameters} = require("../../bidi/addInterceptParameters");
 const {InterceptPhase} = require("../../bidi/interceptPhase");
