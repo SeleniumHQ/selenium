@@ -17,7 +17,6 @@
 
 use crate::config::BooleanKey;
 use crate::metadata::now_unix_timestamp;
-use env_logger::fmt::Color;
 use env_logger::Target::Stdout;
 use env_logger::DEFAULT_FILTER_ENV;
 use log::Level;
@@ -26,9 +25,7 @@ use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::env;
 use std::fmt::Display;
-use std::io::Write;
 use std::ops::Deref;
-use Color::{Blue, Cyan, Green, Red, Yellow};
 
 pub const DRIVER_PATH: &str = "Driver path: ";
 pub const BROWSER_PATH: &str = "Browser path: ";
@@ -99,22 +96,8 @@ impl Logger {
                     env_logger::Builder::new()
                         .filter_module(env!("CARGO_CRATE_NAME"), filter)
                         .target(Stdout)
-                        .format(|buf, record| {
-                            let mut level_style = buf.style();
-                            match record.level() {
-                                Level::Trace => level_style.set_color(Cyan),
-                                Level::Debug => level_style.set_color(Blue),
-                                Level::Info => level_style.set_color(Green),
-                                Level::Warn => level_style.set_color(Yellow),
-                                Level::Error => level_style.set_color(Red).set_bold(true),
-                            };
-                            writeln!(
-                                buf,
-                                "{}\t{}",
-                                level_style.value(record.level()),
-                                record.args()
-                            )
-                        })
+                        .format_target(false)
+                        .format_timestamp_millis()
                         .try_init()
                         .unwrap_or_default();
                 } else {

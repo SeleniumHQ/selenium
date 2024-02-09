@@ -31,7 +31,8 @@ use crate::grid::GRID_NAME;
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::logger::Logger;
 use crate::metadata::{
-    create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
+    create_browser_metadata, create_stats_metadata, get_browser_version_from_metadata,
+    get_metadata, is_stats_in_metadata, write_metadata,
 };
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
@@ -846,9 +847,22 @@ pub trait SeleniumManager {
             };
             let http_client = self.get_http_client().to_owned();
             let sender = self.get_sender().to_owned();
-            thread::spawn(move || {
-                send_stats_to_plausible(http_client, props, sender);
-            });
+            let cache_path = self.get_cache_path()?;
+            let mut metadata = get_metadata(self.get_logger(), &cache_path);
+            if !is_stats_in_metadata(&metadata.stats, &props) {
+                self.get_logger()
+                    .debug(format!("Sending stats to Plausible: {:?}", props,));
+                let stats_ttl = self.get_ttl();
+                if stats_ttl > 0 {
+                    metadata
+                        .stats
+                        .push(create_stats_metadata(&props, stats_ttl));
+                    write_metadata(&metadata, self.get_logger(), cache_path);
+                }
+                thread::spawn(move || {
+                    send_stats_to_plausible(http_client, props, sender);
+                });
+            }
         }
         Ok(())
     }
