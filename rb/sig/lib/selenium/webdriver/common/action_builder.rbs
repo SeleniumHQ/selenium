@@ -25,7 +25,7 @@ module Selenium
 
       def add_wheel_input: (String name) -> Interactions::InputDevice
 
-      def device: (?name: String?, ?type: String?) -> Selenium::WebDriver::Interactions::InputDevice?
+      def device: (?name: String?, ?type: String?) -> Interactions::InputDevice?
 
       def pointer_inputs: () -> Array[Interactions::InputDevice]
 
