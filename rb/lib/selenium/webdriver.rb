@@ -49,7 +49,7 @@ module Selenium
     # @api private
 
     def self.root
-      @root ||= File.expand_path('..', __dir__)
+      @root ||= File.expand_path('..', __dir__.to_s)
     end
 
     #

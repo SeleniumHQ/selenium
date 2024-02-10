@@ -17,7 +17,7 @@ module Selenium
 
       private
 
-      CONNECT_TIMEOUT: 5
+      CONNECT_TIMEOUT: Integer
 
       NOT_CONNECTED_ERRORS: untyped
 

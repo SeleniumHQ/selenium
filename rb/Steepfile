@@ -1,6 +1,11 @@
 target :lib do
   signature 'sig' # Signature directory
   check 'lib' # Directory name
+  ignore(
+    'lib/selenium/webdriver/common/platform.rb', # Ignore line 166 due to UDP RBS issue
+    'lib/selenium/webdriver/remote/http/curb.rb' # Ignore due to webmock gem not having RBS signatures
+  )
+
 
   library(
     'base64',
