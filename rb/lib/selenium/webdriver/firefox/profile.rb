@@ -206,8 +206,8 @@ module Selenium
           File.read(path).split("\n").each do |line|
             next unless line =~ /user_pref\("([^"]+)"\s*,\s*(.+?)\);/
 
-            key = Regexp.last_match(1).strip
-            value = Regexp.last_match(2).strip
+            key = Regexp.last_match(1)&.strip
+            value = Regexp.last_match(2)&.strip
 
             # wrap the value in an array to make it a valid JSON string.
             prefs[key] = JSON.parse("[#{value}]").first
