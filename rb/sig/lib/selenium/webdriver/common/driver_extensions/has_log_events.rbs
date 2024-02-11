@@ -2,6 +2,10 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasLogEvents
+        include _ExecuteScript
+        include _FindElements
+        include _DevTools
+
         @log_listeners: untyped
 
         @mutation_listener: untyped
@@ -28,4 +32,16 @@ module Selenium
       end
     end
   end
+end
+
+interface _DevTools
+  def devtools: () -> untyped
+end
+
+interface _ExecuteScript
+  def execute_script: (untyped) -> untyped
+end
+
+interface _FindElements
+  def find_elements: (untyped) -> untyped
 end
