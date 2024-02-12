@@ -2,6 +2,8 @@ module Selenium
   module WebDriver
     module Firefox
       class Profile
+        WEBDRIVER_PREFS: untyped
+
         self.@ini: untyped
 
         @model: untyped

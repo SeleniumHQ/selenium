@@ -7,7 +7,7 @@ module Selenium
 
       include TakesScreenshot
 
-      def initialize: (Remote::Bridge bridge, String id) -> void
+      def initialize: (Remote::Bridge | Support::EventFiringBridge bridge, String id) -> void
 
       def inspect: () -> untyped
 

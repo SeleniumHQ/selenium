@@ -24,6 +24,7 @@ module Selenium
         include ProfileHelper
 
         VALID_PREFERENCE_TYPES = [TrueClass, FalseClass, Integer, Float, String].freeze
+        WEBDRIVER_PREFS = []
 
         DEFAULT_PREFERENCES = {
           'browser.newtabpage.enabled' => false,

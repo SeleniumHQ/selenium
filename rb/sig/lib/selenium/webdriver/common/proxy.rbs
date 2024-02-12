@@ -1,6 +1,8 @@
 module Selenium
   module WebDriver
     class Proxy
+      include _ProxyMethods
+
       @ftp: untyped
 
       @http: untyped
@@ -62,4 +64,14 @@ module Selenium
       def to_json: (*untyped) -> untyped
     end
   end
+end
+
+interface _ProxyMethods
+  def type: -> untyped
+  def ftp: -> untyped
+  def pac: -> untyped
+  def http: -> untyped
+  def ssl: -> untyped
+  def socks: -> untyped
+  def no_proxy: -> untyped
 end
