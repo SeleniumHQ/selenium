@@ -107,8 +107,8 @@ jobs:
               ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
           repository-cache: true
       - name: Setup Bazel without caching
-        if: !inputs.caching
-        uses: p0deje/setup-bazel@0.4.0
+        if: inputs.caching == false
+        uses: p0deje/setup-bazel@0.6.0
         with:
           bazelrc: common --color=yes
       - name: Setup Fluxbox and Xvfb
