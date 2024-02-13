@@ -14,7 +14,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check format script run
-      cache-key: rbe
+      caching: false
       ruby-version: jruby-9.4.5.0
       run: ./scripts/github-actions/check-format.sh
 
@@ -23,8 +23,7 @@ jobs:
     if: github.repository_owner == 'seleniumhq'
     uses: ./.github/workflows/bazel.yml
     with:
-      # TODO: experiment with turning off caches
       name: All RBE tests
-      cache-key: rbe
+      caching: false
       ruby-version: jruby-9.4.5.0
       run: ./scripts/github-actions/ci-build.sh
