@@ -107,6 +107,37 @@ class Network {
 
     await this.bidi.send(command)
   }
+
+  async continueWithAuthNoCredentials(requestId) {
+    const command = {
+      method: 'network.continueWithAuth',
+      params: {
+        request: requestId.toString(),
+        action: 'default'
+      },
+    }
+    await this.bidi.send(command)
+  }
+
+  async cancelAuth(requestId) {
+    const command = {
+      method: 'network.continueWithAuth',
+      params: {
+        request: requestId.toString(),
+        action: 'cancel'
+      },
+    }
+    await this.bidi.send(command)
+  }
+
+  async close() {
+    await this.bidi.unsubscribe(
+      'network.beforeRequestSent',
+      'network.responseStarted',
+      'network.responseCompleted',
+      'network.authRequired')
+  }
+
 }
 
 async function getNetworkInstance(driver, browsingContextIds = null) {
