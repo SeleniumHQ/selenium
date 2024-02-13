@@ -259,7 +259,7 @@ namespace OpenQA.Selenium.DevTools.V85
                 }
                 else
                 {
-                    responseData.Content = new HttpResponseContent(Encoding.UTF8.GetBytes(bodyResponse.Body));
+                    responseData.Content = new HttpResponseContent(bodyResponse.Body);
                 }
             }
         }
