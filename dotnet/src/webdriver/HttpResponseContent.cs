@@ -37,6 +37,15 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="HttpResponseContent"/> class.
+        /// </summary>
+        /// <param name="content">The UTF8 encoded string representing the content of the response.</param>
+        public HttpResponseContent(string content)
+        {
+            this.content = Encoding.UTF8.GetBytes(content);
+        }
+
+        /// <summary>
         /// Reads the content of the response as a UTF8 encoded string.
         /// </summary>
         /// <returns>The content of the response as a string.</returns>

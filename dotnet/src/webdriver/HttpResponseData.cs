@@ -46,7 +46,17 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets or sets the body of the HTTP response.
         /// </summary>
-        public string Body => this.Content?.ReadAsString();
+        public string Body
+        {
+            get
+            {
+                return this.Content?.ReadAsString();
+            }
+            set
+            {
+                this.Content = new HttpResponseContent(value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the content of the HTTP response.
