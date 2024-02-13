@@ -16,10 +16,7 @@
 // limitations under the License.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
 
 namespace OpenQA.Selenium
 {
@@ -49,7 +46,12 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets or sets the body of the HTTP response.
         /// </summary>
-        public string Body { get; set; }
+        public string Body => this.Content?.ReadAsString();
+
+        /// <summary>
+        /// Gets or sets the content of the HTTP response.
+        /// </summary>
+        public HttpResponseContent Content { get; set; }
 
         /// <summary>
         /// Gets or sets the type of resource for this response.

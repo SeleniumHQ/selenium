@@ -257,11 +257,11 @@ namespace OpenQA.Selenium.DevTools.V120
                 {
                     if (bodyResponse.Base64Encoded)
                     {
-                        responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(bodyResponse.Body));
+                        responseData.Content = new HttpResponseContent(Convert.FromBase64String(bodyResponse.Body));
                     }
                     else
                     {
-                        responseData.Body = bodyResponse.Body;
+                        responseData.Content = new HttpResponseContent(Encoding.UTF8.GetBytes(bodyResponse.Body));
                     }
                 }
             }

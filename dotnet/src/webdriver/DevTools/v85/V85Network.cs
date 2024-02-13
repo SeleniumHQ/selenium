@@ -255,11 +255,11 @@ namespace OpenQA.Selenium.DevTools.V85
                 var bodyResponse = await fetch.GetResponseBody(new Fetch.GetResponseBodyCommandSettings() { RequestId = responseData.RequestId }).ConfigureAwait(false);
                 if (bodyResponse.Base64Encoded)
                 {
-                    responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(bodyResponse.Body));
+                    responseData.Content = new HttpResponseContent(Convert.FromBase64String(bodyResponse.Body));
                 }
                 else
                 {
-                    responseData.Body = bodyResponse.Body;
+                    responseData.Content = new HttpResponseContent(Encoding.UTF8.GetBytes(bodyResponse.Body));
                 }
             }
         }
