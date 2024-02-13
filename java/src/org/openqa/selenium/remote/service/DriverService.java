@@ -222,7 +222,7 @@ public class DriverService implements Closeable {
                       ? StartOrDie.PROCESS_DIED
                       : StartOrDie.PROCESS_IS_ACTIVE;
                 } catch (InterruptedException ex) {
-                   return null;
+                  return null;
                 }
               },
               executorService);
