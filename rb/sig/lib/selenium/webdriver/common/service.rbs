@@ -1,6 +1,10 @@
 module Selenium
   module WebDriver
     class Service
+      SHUTDOWN_SUPPORTED: untyped
+
+      DEFAULT_PORT: untyped
+
       self.@driver_path: untyped
 
       @executable_path: untyped

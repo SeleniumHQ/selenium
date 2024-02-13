@@ -7,6 +7,12 @@ module Selenium
 
       GRID_OPTIONS: ::Array[:enable_downloads]
 
+      BROWSER: untyped
+
+      KEY: untyped
+
+      CAPABILITIES: untyped
+
       attr_reader self.driver_path: untyped
 
       def self.chrome: (**untyped opts) -> untyped

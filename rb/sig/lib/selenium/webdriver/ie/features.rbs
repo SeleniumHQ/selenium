@@ -2,6 +2,8 @@ module Selenium
   module WebDriver
     module IE
       module Features
+        COMMANDS: untyped
+
         def command_list: () -> untyped
 
         def commands: (untyped command) -> untyped

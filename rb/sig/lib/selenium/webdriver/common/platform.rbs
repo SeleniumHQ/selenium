@@ -55,6 +55,8 @@ module Selenium
       def self?.ip: () -> untyped
 
       def self?.interfaces: () -> untyped
+
+      def unix?: -> untyped
     end
   end
 end
