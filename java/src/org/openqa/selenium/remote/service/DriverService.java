@@ -222,8 +222,7 @@ public class DriverService implements Closeable {
                       ? StartOrDie.PROCESS_DIED
                       : StartOrDie.PROCESS_IS_ACTIVE;
                 } catch (InterruptedException ex) {
-                  process.shutdown();
-                  return null;
+                   return null;
                 }
               },
               executorService);
@@ -246,6 +245,7 @@ public class DriverService implements Closeable {
             process = null;
             throw new WebDriverException("Driver server process died prematurely.");
           case PROCESS_IS_ACTIVE:
+            process.shutdown();
             throw new WebDriverException("Timed out waiting for driver server to bind the port.");
         }
       } catch (ExecutionException e) {
