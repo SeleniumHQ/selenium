@@ -59,7 +59,20 @@ suite(
         await network.removeIntercept(intercept)
       })
 
-      xit('can continue without auth credentials ', async function () {
+      xit('can continue with auth credentials ', async function () {
+        await network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED))
+
+        await network.authRequired(async (event) => {
+          await network.continueWithAuth(event.request.request, 'genie','bottle')
+        })
+        await driver.get(Pages.basicAuth)
+
+        await driver.wait(until.elementLocated(By.css('pre')))
+        let source = await driver.getPageSource()
+        assert.equal(source.includes('Access granted'), true)
+      })
+
+      it('can continue without auth credentials ', async function () {
         await network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED))
 
         await network.authRequired(async (event) => {

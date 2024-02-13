@@ -108,6 +108,22 @@ class Network {
     await this.bidi.send(command)
   }
 
+  async continueWithAuth(requestId, username, password) {
+    const command = {
+            method: 'network.continueWithAuth',
+            params: {
+              request: requestId.toString(),
+              action: 'provideCredentials',
+              credentials: {
+                type: 'password',
+                username: username,
+                password: password
+              },
+            },
+          }
+    await this.bidi.send(command)
+  }
+
   async continueWithAuthNoCredentials(requestId) {
     const command = {
       method: 'network.continueWithAuth',

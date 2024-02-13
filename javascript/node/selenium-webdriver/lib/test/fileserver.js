@@ -201,7 +201,7 @@ function sendBasicAuth(request, response) {
 
   const userNameAndPass = Buffer.from(match[1], 'base64').toString()
   const parts = userNameAndPass.split(':', 2)
-  if (parts[0] !== 'genie' && parts[1] !== 'bottle') {
+  if (parts[0] !== 'genie' || parts[1] !== 'bottle') {
     denyAccess()
     return
   }
