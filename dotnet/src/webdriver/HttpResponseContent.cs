@@ -58,7 +58,7 @@ namespace OpenQA.Selenium
         /// Reads the content of the response as a byte array.
         /// </summary>
         /// <returns>The content of the response as a byte array.</returns>
-        public byte[] ReadAsBytes()
+        public byte[] ReadAsByteArray()
         {
             return content;
         }
