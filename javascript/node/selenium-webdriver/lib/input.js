@@ -256,9 +256,7 @@ function checkCodePoint(key) {
 
   key = key.normalize()
   if (Array.from(key).length !== 1) {
-    throw new InvalidArgumentError(
-      `key input is not a single code point: ${key}`
-    )
+    throw new InvalidArgumentError(`key input is not a single code point: ${key}`)
   }
   return key
 }
@@ -333,10 +331,7 @@ class Pointer extends Device {
 
   /** @override */
   toJSON() {
-    return Object.assign(
-      { parameters: { pointerType: this.pointerType_ } },
-      super.toJSON()
-    )
+    return Object.assign({ parameters: { pointerType: this.pointerType_ } }, super.toJSON())
   }
 
   /**
@@ -371,7 +366,7 @@ class Pointer extends Device {
     tiltY = 0,
     twist = 0,
     altitudeAngle = 0,
-    azimuthAngle = 0
+    azimuthAngle = 0,
   ) {
     return {
       type: Action.Type.POINTER_DOWN,
@@ -814,10 +809,7 @@ class Actions {
     for (const key of keys) {
       if (typeof key === 'string') {
         for (const symbol of key) {
-          actions.push(
-            this.keyboard_.keyDown(symbol),
-            this.keyboard_.keyUp(symbol)
-          )
+          actions.push(this.keyboard_.keyDown(symbol), this.keyboard_.keyUp(symbol))
         }
       } else {
         actions.push(this.keyboard_.keyDown(key), this.keyboard_.keyUp(key))
@@ -857,10 +849,7 @@ class Actions {
    * @returns {!Actions} An action to scroll with this device.
    */
   scroll(x, y, targetDeltaX, targetDeltaY, origin, duration) {
-    return this.insert(
-      this.wheel_,
-      this.wheel_.scroll(x, y, targetDeltaX, targetDeltaY, origin, duration)
-    )
+    return this.insert(this.wheel_, this.wheel_.scroll(x, y, targetDeltaX, targetDeltaY, origin, duration))
   }
 
   /**
@@ -885,10 +874,7 @@ class Actions {
    * @return {!Actions} a self reference.
    */
   move({ x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT } = {}) {
-    return this.insert(
-      this.mouse_,
-      this.mouse_.move({ x, y, duration, origin })
-    )
+    return this.insert(this.mouse_, this.mouse_.move({ x, y, duration, origin }))
   }
 
   /**
@@ -953,13 +939,8 @@ class Actions {
   dragAndDrop(from, to) {
     // Do not require up top to avoid a cycle that breaks static analysis.
     const { WebElement } = require('./webdriver')
-    if (
-      !(to instanceof WebElement) &&
-      (!to || typeof to.x !== 'number' || typeof to.y !== 'number')
-    ) {
-      throw new InvalidArgumentError(
-        'Invalid drag target; must specify a WebElement or {x, y} offset'
-      )
+    if (!(to instanceof WebElement) && (!to || typeof to.x !== 'number' || typeof to.y !== 'number')) {
+      throw new InvalidArgumentError('Invalid drag target; must specify a WebElement or {x, y} offset')
     }
 
     this.move({ origin: from }).press()
@@ -1003,9 +984,7 @@ class Actions {
       return Promise.resolve()
     }
 
-    await this.executor_.execute(
-      new Command(Name.ACTIONS).setParameter('actions', _actions)
-    )
+    await this.executor_.execute(new Command(Name.ACTIONS).setParameter('actions', _actions))
   }
 
   getSequences() {
@@ -1026,10 +1005,7 @@ class Actions {
  * @return {boolean}
  */
 function isIdle(actions) {
-  return (
-    actions.length === 0 ||
-    actions.every((a) => a.type === Action.Type.PAUSE && !a.duration)
-  )
+  return actions.length === 0 || actions.every((a) => a.type === Action.Type.PAUSE && !a.duration)
 }
 
 /**

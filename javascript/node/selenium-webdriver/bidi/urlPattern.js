@@ -15,28 +15,44 @@
 // specific language governing permissions and limitations
 // under the License.
 
-class FilterBy {
-  constructor(level) {
-    this.level_ = level
+const {LocalValue} = require('./protocolValue')
+
+class UrlPattern {
+  #map = new Map()
+
+  protocol(protocol) {
+    this.#map.set('protocol', protocol)
+    return this
   }
 
-  static logLevel(level) {
-    if (level === undefined || (level != undefined && !['debug', 'error', 'info', 'warning'].includes(level))) {
-      throw Error(
-        `Please pass valid log level. Valid log levels are 'debug', 'error', 'info' and 'warning'. Received: ${level}`,
-      )
+  hostname(hostname) {
+    this.#map.set('hostname', hostname)
+    return this
+  }
+
+  port(port) {
+    if (typeof port === 'number') {
+      this.#map.set('port', port.toString())
+    } else {
+      throw new Error(`Port must be a number. Received:'${port}'`)
     }
-
-    return new FilterBy(level)
+    return this
   }
 
-  getLevel() {
-    return this.level_
+  pathname(pathname) {
+    this.#map.set('pathname', pathname)
+    return this
+  }
+
+  search(search) {
+    this.#map.set('search', search)
+    return this
+  }
+
+  asMap() {
+    this.#map.set('type', 'pattern')
+    return this.#map
   }
 }
 
-// PUBLIC API
-
-module.exports = {
-  FilterBy,
-}
+module.exports = {UrlPattern}

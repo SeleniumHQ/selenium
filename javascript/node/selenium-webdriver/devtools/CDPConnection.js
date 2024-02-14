@@ -67,9 +67,7 @@ class CDPConnection {
             resolve(payload)
           }
         } catch (err) {
-          logging
-            .getLogger(logging.Type.BROWSER)
-            .severe(`Failed parse message: ${err.message}`)
+          logging.getLogger(logging.Type.BROWSER).severe(`Failed parse message: ${err.message}`)
         }
       }
 

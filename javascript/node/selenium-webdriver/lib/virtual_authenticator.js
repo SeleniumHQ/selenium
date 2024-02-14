@@ -119,14 +119,7 @@ class VirtualAuthenticatorOptions {
  * @see https://w3c.github.io/webauthn/#credential-parameters
  */
 class Credential {
-  constructor(
-    credentialId,
-    isResidentCredential,
-    rpId,
-    userHandle,
-    privateKey,
-    signCount
-  ) {
+  constructor(credentialId, isResidentCredential, rpId, userHandle, privateKey, signCount) {
     this._id = credentialId
     this._isResidentCredential = isResidentCredential
     this._rpId = rpId
@@ -207,9 +200,7 @@ class Credential {
     }
 
     if (this.userHandle() != null) {
-      credentialData['userHandle'] = Buffer.from(this._userHandle).toString(
-        'base64url'
-      )
+      credentialData['userHandle'] = Buffer.from(this._userHandle).toString('base64url')
     }
 
     return credentialData
@@ -222,9 +213,7 @@ class Credential {
     let id = new Uint8Array(Buffer.from(data['credentialId'], 'base64url'))
     let isResidentCredential = data['isResidentCredential']
     let rpId = data['rpId']
-    let privateKey = Buffer.from(data['privateKey'], 'base64url').toString(
-      'binary'
-    )
+    let privateKey = Buffer.from(data['privateKey'], 'base64url').toString('binary')
     let signCount = data['signCount']
     let userHandle
 
@@ -233,14 +222,7 @@ class Credential {
     } else {
       userHandle = null
     }
-    return new Credential(
-      id,
-      isResidentCredential,
-      rpId,
-      userHandle,
-      privateKey,
-      signCount
-    )
+    return new Credential(id, isResidentCredential, rpId, userHandle, privateKey, signCount)
   }
 }
 

@@ -35,14 +35,11 @@ suite(function (env) {
   })
 
   describe('Api Tests', function () {
-    ignore(browsers(Browser.SAFARI)).it(
-      'getDomAttribute test',
-      async function () {
-        await driver.get(Pages.formPage)
-        const element = await driver.findElement(By.id('vsearchGadget'))
-        const attr = await element.getDomAttribute('accesskey')
-        assert.strictEqual(attr, '4')
-      }
-    )
+    ignore(browsers(Browser.SAFARI)).it('getDomAttribute test', async function () {
+      await driver.get(Pages.formPage)
+      const element = await driver.findElement(By.id('vsearchGadget'))
+      const attr = await element.getDomAttribute('accesskey')
+      assert.strictEqual(attr, '4')
+    })
   })
 })

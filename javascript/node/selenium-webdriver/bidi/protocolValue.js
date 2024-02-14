@@ -15,11 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const {
-  PrimitiveType,
-  NonPrimitiveType,
-  RemoteType,
-} = require('./protocolType')
+const { PrimitiveType, NonPrimitiveType, RemoteType } = require('./protocolType')
 
 const TYPE_CONSTANT = 'type'
 const VALUE_CONSTANT = 'value'
@@ -106,12 +102,7 @@ class LocalValue {
     let toReturn = {}
     toReturn[TYPE_CONSTANT] = this.type
 
-    if (
-      !(
-        this.type === PrimitiveType.NULL ||
-        this.type === PrimitiveType.UNDEFINED
-      )
-    ) {
+    if (!(this.type === PrimitiveType.NULL || this.type === PrimitiveType.UNDEFINED)) {
       toReturn[VALUE_CONSTANT] = this.value
     }
     return toReturn
@@ -200,18 +191,12 @@ class RegExpValue {
 }
 
 class SerializationOptions {
-  constructor(
-    maxDomDepth = 0,
-    maxObjectDepth = null,
-    includeShadowTree = 'none'
-  ) {
+  constructor(maxDomDepth = 0, maxObjectDepth = null, includeShadowTree = 'none') {
     this._maxDomDepth = maxDomDepth
     this._maxObjectDepth = maxObjectDepth
 
     if (['none', 'open', 'all'].includes(includeShadowTree)) {
-      throw Error(
-        `Valid types are 'none', 'open', and 'all'. Received: ${includeShadowTree}`
-      )
+      throw Error(`Valid types are 'none', 'open', and 'all'. Received: ${includeShadowTree}`)
     }
     this._includeShadowTree = includeShadowTree
   }
@@ -225,9 +210,7 @@ class ChannelValue {
       if (options instanceof SerializationOptions) {
         this.options = options
       } else {
-        throw Error(
-          `Pass in SerializationOptions object. Received: ${options} `
-        )
+        throw Error(`Pass in SerializationOptions object. Received: ${options} `)
       }
     }
 
@@ -235,9 +218,7 @@ class ChannelValue {
       if (['root', 'none'].includes(resultOwnership)) {
         this.resultOwnership = resultOwnership
       } else {
-        throw Error(
-          `Valid types are 'root' and 'none. Received: ${resultOwnership}`
-        )
+        throw Error(`Valid types are 'root' and 'none. Received: ${resultOwnership}`)
       }
     }
   }

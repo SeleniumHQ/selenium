@@ -224,9 +224,7 @@ class Options extends Capabilities {
   addBrowserCommandSwitches(...args) {
     let current = this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] || []
     if (typeof current == 'string') current = current.split(' ')
-    this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current
-      .concat(args)
-      .join(' ')
+    this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current.concat(args).join(' ')
     return this
   }
 
@@ -242,9 +240,7 @@ class Options extends Capabilities {
   addArguments(...args) {
     let current = this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] || []
     if (typeof current == 'string') current = current.split(' ')
-    this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current
-      .concat(args)
-      .join(' ')
+    this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current.concat(args).join(' ')
     return this
   }
 
@@ -364,11 +360,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setScrollBehavior(behavior) {
-    if (
-      behavior &&
-      behavior !== SCROLL_BEHAVIOUR.TOP &&
-      behavior !== SCROLL_BEHAVIOUR.BOTTOM
-    ) {
+    if (behavior && behavior !== SCROLL_BEHAVIOUR.TOP && behavior !== SCROLL_BEHAVIOUR.BOTTOM) {
       throw new error.InvalidArgumentError(`Element Scroll Behavior out of range.
       It should be either ${SCROLL_BEHAVIOUR.TOP} or ${SCROLL_BEHAVIOUR.BOTTOM}`)
     }
@@ -383,7 +375,7 @@ function createServiceFromCapabilities(capabilities) {
       'The IEDriver may only be used on Windows, but you appear to be on ' +
         process.platform +
         '. Did you mean to run against a remote ' +
-        'WebDriver server?'
+        'WebDriver server?',
     )
   }
 
@@ -461,9 +453,7 @@ class Driver extends webdriver.WebDriver {
     let client = service.start().then((url) => new http.HttpClient(url))
     let executor = new http.Executor(client)
 
-    return /** @type {!Driver} */ (
-      super.createSession(executor, options, () => service.kill())
-    )
+    return /** @type {!Driver} */ (super.createSession(executor, options, () => service.kill()))
   }
 
   /**

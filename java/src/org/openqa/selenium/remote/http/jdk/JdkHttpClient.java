@@ -185,8 +185,10 @@ public class JdkHttpClient implements HttpClient {
                     builder.append(data);
 
                     if (last) {
-                      LOG.fine(
-                          "Final part of text message received. Calling listener with " + builder);
+                      LOG.log(
+                          Level.FINE,
+                          "Final part of text message received. Calling listener with {0}",
+                          builder);
                       listener.onText(builder.toString());
                       builder.setLength(0);
                     }
@@ -208,10 +210,11 @@ public class JdkHttpClient implements HttpClient {
                     }
 
                     if (last) {
-                      LOG.fine(
-                          "Final part of binary data received. Calling listener with "
-                              + buffer.size()
-                              + " bytes of data");
+                      LOG.log(
+                          Level.FINE,
+                          "Final part of binary data received. Calling listener with {0} bytes of"
+                              + " data",
+                          buffer.size());
                       listener.onBinary(buffer.toByteArray());
                       buffer.reset();
                     }
@@ -229,8 +232,7 @@ public class JdkHttpClient implements HttpClient {
 
                   @Override
                   public void onError(java.net.http.WebSocket webSocket, Throwable error) {
-                    LOG.log(
-                        Level.FINE, error, () -> "An error has occurred: " + error.getMessage());
+                    LOG.log(Level.FINE, "An error has occurred: " + error.getMessage(), error);
                     listener.onError(error);
                   }
                 });
@@ -267,7 +269,7 @@ public class JdkHttpClient implements HttpClient {
                   () -> underlyingSocket.sendBinary(ByteBuffer.wrap(binaryMessage.data()), true);
             } else if (message instanceof TextMessage) {
               TextMessage textMessage = (TextMessage) message;
-              LOG.fine("Sending text message: " + textMessage.text());
+              LOG.log(Level.FINE, "Sending text message: {0}", textMessage.text());
               makeCall = () -> underlyingSocket.sendText(textMessage.text(), true);
             } else if (message instanceof CloseMessage) {
               CloseMessage closeMessage = (CloseMessage) message;
@@ -275,11 +277,10 @@ public class JdkHttpClient implements HttpClient {
                 // Sometimes the statusCode is -1, which could mean the socket is already closed.
                 // We send a normal closure code in that case, though
                 int statusCode = closeMessage.code() == -1 ? 1000 : closeMessage.code();
-                LOG.fine(
-                    () ->
-                        String.format(
-                            "Sending close message, statusCode %s, reason: %s",
-                            statusCode, closeMessage.reason()));
+                LOG.log(
+                    Level.FINE,
+                    "Sending close message, statusCode {0}, reason: {1}",
+                    new Object[] {statusCode, closeMessage.reason()});
                 makeCall = () -> underlyingSocket.sendClose(statusCode, closeMessage.reason());
               } else {
                 LOG.fine("Output is closed, not sending close message");
@@ -308,10 +309,10 @@ public class JdkHttpClient implements HttpClient {
               } catch (java.util.concurrent.TimeoutException e) {
                 throw new TimeoutException(e);
               } finally {
-                LOG.fine(
-                    String.format(
-                        "Websocket response to %s read in %sms",
-                        message, (System.currentTimeMillis() - start)));
+                LOG.log(
+                    Level.FINE,
+                    "Websocket response to {0} read in {1}ms",
+                    new Object[] {message, (System.currentTimeMillis() - start)});
               }
             }
             return this;
@@ -361,7 +362,7 @@ public class JdkHttpClient implements HttpClient {
   private HttpResponse execute0(HttpRequest req) throws UncheckedIOException {
     Objects.requireNonNull(req, "Request");
 
-    LOG.fine("Executing request: " + req);
+    LOG.log(Level.FINE, "Executing request: {0}", req);
     long start = System.currentTimeMillis();
 
     BodyHandler<byte[]> byteHandler = BodyHandlers.ofByteArray();
@@ -444,8 +445,10 @@ public class JdkHttpClient implements HttpClient {
       Thread.currentThread().interrupt();
       throw new RuntimeException(e);
     } finally {
-      LOG.fine(
-          String.format("Ending request %s in %sms", req, (System.currentTimeMillis() - start)));
+      LOG.log(
+          Level.FINE,
+          "Ending request {0} in {1}ms",
+          new Object[] {req, (System.currentTimeMillis() - start)});
     }
   }
 

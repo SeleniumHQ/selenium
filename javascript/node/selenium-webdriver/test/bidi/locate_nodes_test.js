@@ -19,24 +19,21 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const {Browser, By, WebElement} = require('../../')
-const {Pages, suite} = require('../../lib/test')
+const { Browser } = require('../../')
+const { Pages, suite } = require('../../lib/test')
 const BrowsingContext = require('../../bidi/browsingContext')
-const {Locator} = require("../../bidi/browsingContext");
-const {ScriptManager} = require("../../index");
-const {EvaluateResultType} = require("../../bidi/evaluateResult");
-const {LocalValue, ReferenceValue} = require("../../bidi/protocolValue");
-const {ArgumentValue} = require("../../bidi/argumentValue");
+const { Locator } = require('../../bidi/browsingContext')
+const { ScriptManager } = require('../../index')
+const { EvaluateResultType } = require('../../bidi/evaluateResult')
+const { LocalValue, ReferenceValue } = require('../../bidi/protocolValue')
+const { ArgumentValue } = require('../../bidi/argumentValue')
 
 suite(
   function (env) {
     let driver
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .setFirefoxOptions(new firefox.Options().enableBidi())
-        .build()
+      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
     })
 
     afterEach(async function () {
@@ -44,7 +41,6 @@ suite(
     })
 
     describe('Locate Nodes', function () {
-
       xit('can locate nodes', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
@@ -93,7 +89,7 @@ suite(
         })
 
         await driver.get(Pages.xhtmlTestPage)
-        const elements = await browsingContext.locateNodes(Locator.xpath("/html/body/div[2]"), 1)
+        const elements = await browsingContext.locateNodes(Locator.xpath('/html/body/div[2]'), 1)
 
         const element = elements[0]
         assert.strictEqual(element.type, 'node')
@@ -110,7 +106,7 @@ suite(
         })
 
         await driver.get(Pages.xhtmlTestPage)
-        const elements = await browsingContext.locateNodes(Locator.innerText("Spaced out"), 1)
+        const elements = await browsingContext.locateNodes(Locator.innerText('Spaced out'), 1)
 
         const element = elements[0]
         assert.strictEqual(element.type, 'node')
@@ -168,7 +164,12 @@ suite(
 
         const script = await ScriptManager(id, driver)
 
-        const result = await script.evaluateFunctionInBrowsingContext(id, 'document.querySelectorAll(\'form\')', false, 'root')
+        const result = await script.evaluateFunctionInBrowsingContext(
+          id,
+          "document.querySelectorAll('form')",
+          false,
+          'root',
+        )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
         assert.notEqual(result.realmId, null)
@@ -182,7 +183,14 @@ suite(
           startNodes.push(new ReferenceValue(node.handle, node.sharedId))
         })
 
-        const elements = await browsingContext.locateNodes(Locator.css('input'), 50, 'none', undefined, undefined, startNodes)
+        const elements = await browsingContext.locateNodes(
+          Locator.css('input'),
+          50,
+          'none',
+          undefined,
+          undefined,
+          startNodes,
+        )
 
         assert.strictEqual(elements.length, 35)
       })
@@ -196,12 +204,7 @@ suite(
 
         await browsingContext.navigate(Pages.xhtmlTestPage, 'complete')
 
-        const elements = await browsingContext.locateNodes(
-          Locator.css('div'),
-          1,
-          undefined,
-          sandbox
-        )
+        const elements = await browsingContext.locateNodes(Locator.css('div'), 1, undefined, sandbox)
 
         assert.strictEqual(elements.length, 1)
 
@@ -210,7 +213,7 @@ suite(
         const script = await ScriptManager(id, driver)
 
         let argumentValues = []
-        let mapValue = {sharedId: LocalValue.createStringValue(nodeId)}
+        let mapValue = { sharedId: LocalValue.createStringValue(nodeId) }
         argumentValues.push(new ArgumentValue(LocalValue.createMapValue(mapValue)))
 
         const response = await script.callFunctionInBrowsingContext(
@@ -220,7 +223,8 @@ suite(
           argumentValues,
           undefined,
           undefined,
-          sandbox)
+          sandbox,
+        )
 
         assert.equal(response.resultType, EvaluateResultType.SUCCESS)
         assert.equal(response.result.type, 'map')
@@ -240,7 +244,7 @@ suite(
 
         const element = await browsingContext.locateElement(Locator.css('p'))
         const elementText = await element.getText()
-        assert.strictEqual(elementText, "Open new window")
+        assert.strictEqual(elementText, 'Open new window')
       })
 
       xit('can find elements', async function () {
@@ -259,5 +263,5 @@ suite(
       })
     })
   },
-  {browsers: [Browser.FIREFOX]}
+  { browsers: [Browser.FIREFOX] },
 )

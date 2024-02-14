@@ -16,6 +16,7 @@
 // under the License.
 
 const { BeforeRequestSent, ResponseStarted } = require('./networkTypes')
+const {AddInterceptParameters} = require("./addInterceptParameters");
 
 class Network {
   constructor(driver, browsingContextIds) {
@@ -65,7 +66,7 @@ class Network {
             params.redirectCount,
             params.request,
             params.timestamp,
-            params.initiator
+            params.initiator,
           )
         } else if ('response' in params) {
           response = new ResponseStarted(
@@ -74,13 +75,85 @@ class Network {
             params.redirectCount,
             params.request,
             params.timestamp,
-            params.response
+            params.response,
           )
         }
         callback(response)
       }
     })
   }
+
+  async addIntercept(params) {
+
+    if (!params instanceof AddInterceptParameters) {
+      throw new Error(`Params must be an instance of AddInterceptParamenters. Received:'${params}'`)
+    }
+
+    const command = {
+      method: 'network.addIntercept',
+      params: Object.fromEntries(params.asMap())
+    }
+
+    let response = await this.bidi.send(command)
+
+    return response.result.intercept
+  }
+
+  async removeIntercept(interceptId) {
+    const command = {
+      method: 'network.removeIntercept',
+      params: {intercept: interceptId},
+    }
+
+    await this.bidi.send(command)
+  }
+
+  async continueWithAuth(requestId, username, password) {
+    const command = {
+            method: 'network.continueWithAuth',
+            params: {
+              request: requestId.toString(),
+              action: 'provideCredentials',
+              credentials: {
+                type: 'password',
+                username: username,
+                password: password
+              },
+            },
+          }
+    await this.bidi.send(command)
+  }
+
+  async continueWithAuthNoCredentials(requestId) {
+    const command = {
+      method: 'network.continueWithAuth',
+      params: {
+        request: requestId.toString(),
+        action: 'default'
+      },
+    }
+    await this.bidi.send(command)
+  }
+
+  async cancelAuth(requestId) {
+    const command = {
+      method: 'network.continueWithAuth',
+      params: {
+        request: requestId.toString(),
+        action: 'cancel'
+      },
+    }
+    await this.bidi.send(command)
+  }
+
+  async close() {
+    await this.bidi.unsubscribe(
+      'network.beforeRequestSent',
+      'network.responseStarted',
+      'network.responseCompleted',
+      'network.authRequired')
+  }
+
 }
 
 async function getNetworkInstance(driver, browsingContextIds = null) {
