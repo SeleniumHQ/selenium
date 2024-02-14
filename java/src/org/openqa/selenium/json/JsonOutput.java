@@ -28,11 +28,13 @@ import java.net.URL;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,6 +44,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LogLevelMapping;
@@ -106,7 +109,7 @@ public class JsonOutput implements Closeable {
 
   private final Map<Predicate<Class<?>>, DepthAwareConsumer> converters;
   private final Appendable appendable;
-  private final Consumer<String> appender;
+  private final Consumer<CharSequence> appender;
   private final Deque<Node> stack;
   private String indent = "";
   private String lineSeparator = "\n";
@@ -432,8 +435,8 @@ public class JsonOutput implements Closeable {
     }
   }
 
-  private JsonOutput append(String text) {
-    stack.getFirst().write(text);
+  private JsonOutput append(CharSequence... fragments) {
+    stack.getFirst().write(fragments);
     return this;
   }
 
@@ -441,26 +444,36 @@ public class JsonOutput implements Closeable {
    * Return a quoted JSON string representing the specified Java object.
    *
    * @param obj Java object to be represented
-   * @return quoted JSON string
+   * @return the quoted JSON string, might be fragmented into chucks
    */
-  private String asString(Object obj) {
-    StringBuilder toReturn = new StringBuilder("\"");
+  private CharSequence[] asString(Object obj) {
+    List<CharSequence> quoted = new ArrayList<>(3);
+    quoted.add("\"");
 
-    String.valueOf(obj)
-        .chars()
-        .forEach(
-            i -> {
-              String escaped = ESCAPES.get(i);
-              if (escaped != null) {
-                toReturn.append(escaped);
-              } else {
-                toReturn.append((char) i);
-              }
-            });
+    String value = String.valueOf(obj);
+    int n = value.length();
+    int last = 0;
 
-    toReturn.append('"');
+    for (int i = 0; i < n; i++) {
+      String escaped = ESCAPES.get(Integer.valueOf(value.charAt(i)));
 
-    return toReturn.toString();
+      if (escaped != null) {
+        // the text until we need to write an escaped char
+        quoted.add(value.subSequence(last, i));
+        last = i + 1;
+
+        // the escaped char
+        quoted.add(escaped);
+      }
+    }
+
+    // the text after the last escaped char, might be the complete string e.g. when processing huge
+    // base64 encoded data
+    quoted.add(value.subSequence(last, n));
+
+    quoted.add("\"");
+
+    return quoted.toArray(CharSequence[]::new);
   }
 
   /**
@@ -570,9 +583,9 @@ public class JsonOutput implements Closeable {
      * a comma and the defined line separator (either {@literal <newline>} or empty string) to
      * delimit a new object property or array item.
      *
-     * @param text text to be appended to the output
+     * @param fragments text to be appended to the output, might be fragmented into multiple parts
      */
-    public void write(String text) {
+    public void write(CharSequence... fragments) {
       if (isEmpty) {
         isEmpty = false;
       } else {
@@ -580,7 +593,10 @@ public class JsonOutput implements Closeable {
       }
 
       appender.accept(indent);
-      appender.accept(text);
+
+      for (int i = 0; i < fragments.length; i++) {
+        appender.accept(fragments[i]);
+      }
     }
   }
 
@@ -590,16 +606,16 @@ public class JsonOutput implements Closeable {
     /**
      * Write the specified text to the appender of this JSON output object.
      *
-     * @param text text to be appended to the output
+     * @param fragments text to be appended to the output, might be fragmented into multiple parts
      * @throws JsonException if this {@link JsonOutput} has already been used.
      */
     @Override
-    public void write(String text) {
+    public void write(CharSequence... fragments) {
       if (!isEmpty) {
         throw new JsonException("Only allowed to write one value to a json stream");
       }
 
-      super.write(text);
+      super.write(fragments);
     }
   }
 
@@ -629,17 +645,21 @@ public class JsonOutput implements Closeable {
     /**
      * Write the value of a JSON property to the appender of this JSON output object.
      *
-     * @param text JSON object property value
+     * @param fragments JSON object property value, might be fragmented into multiple parts
      * @throws JsonException if not expecting a JSON property value
      */
     @Override
-    public void write(String text) {
+    public void write(CharSequence... fragments) {
       if (isNameNext) {
-        throw new JsonException("Unexpected attempt to write value before name: " + text);
+        throw new JsonException(
+            "Unexpected attempt to write value before name: "
+                + Stream.of(fragments).collect(Collectors.joining()));
       }
       isNameNext = true;
 
-      appender.accept(text);
+      for (int i = 0; i < fragments.length; i++) {
+        appender.accept(fragments[i]);
+      }
     }
   }
 
