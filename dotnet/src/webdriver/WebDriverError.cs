@@ -183,33 +183,9 @@ namespace OpenQA.Selenium
         /// </summary>
         public const string UnsupportedOperation = "unsupported operation";
 
-        private static Dictionary<string, WebDriverResult> resultMap;
-        private static object lockObject = new object();
+        private static readonly Dictionary<string, WebDriverResult> resultMap;
 
-        /// <summary>
-        /// Converts a string error to a <see cref="WebDriverResult"/> value.
-        /// </summary>
-        /// <param name="error">The error string to convert.</param>
-        /// <returns>The converted <see cref="WebDriverResult"/> value.</returns>
-        public static WebDriverResult ResultFromError(string error)
-        {
-            lock (lockObject)
-            {
-                if (resultMap == null)
-                {
-                    InitializeResultMap();
-                }
-            }
-
-            if (!resultMap.ContainsKey(error))
-            {
-                error = UnsupportedOperation;
-            }
-
-            return resultMap[error];
-        }
-
-        private static void InitializeResultMap()
+        static WebDriverError()
         {
             resultMap = new Dictionary<string, WebDriverResult>();
             resultMap[ElementClickIntercepted] = WebDriverResult.ElementClickIntercepted;
@@ -243,6 +219,21 @@ namespace OpenQA.Selenium
             resultMap[UnknownError] = WebDriverResult.UnhandledError;
             resultMap[UnknownMethod] = WebDriverResult.UnknownCommand;
             resultMap[UnsupportedOperation] = WebDriverResult.UnhandledError;
+        }
+
+        /// <summary>
+        /// Converts a string error to a <see cref="WebDriverResult"/> value.
+        /// </summary>
+        /// <param name="error">The error string to convert.</param>
+        /// <returns>The converted <see cref="WebDriverResult"/> value.</returns>
+        public static WebDriverResult ResultFromError(string error)
+        {
+            if (!resultMap.ContainsKey(error))
+            {
+                error = UnsupportedOperation;
+            }
+
+            return resultMap[error];
         }
     }
 }
