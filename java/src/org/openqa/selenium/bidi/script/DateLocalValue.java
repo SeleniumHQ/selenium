@@ -19,7 +19,7 @@ package org.openqa.selenium.bidi.script;
 
 import java.util.Map;
 
-class DateLocalValue extends LocalValue {
+public class DateLocalValue extends LocalValue {
 
   private final String value;
 

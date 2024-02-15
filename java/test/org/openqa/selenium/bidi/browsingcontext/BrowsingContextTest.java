@@ -503,7 +503,7 @@ class BrowsingContextTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
-  public void canNavigateBackInTheBrowserHistory() {
+  void canNavigateBackInTheBrowserHistory() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     browsingContext.navigate(pages.formPage, ReadinessState.COMPLETE);
 
