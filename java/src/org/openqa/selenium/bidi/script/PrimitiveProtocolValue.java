@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.openqa.selenium.internal.Require;
 
-class PrimitiveProtocolValue extends LocalValue {
+public class PrimitiveProtocolValue extends LocalValue {
 
   private final PrimitiveType type;
   private Object value;

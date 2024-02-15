@@ -20,7 +20,7 @@ package org.openqa.selenium.bidi.script;
 import java.util.List;
 import java.util.Map;
 
-class ArrayLocalValue extends LocalValue {
+public class ArrayLocalValue extends LocalValue {
 
   private final List<LocalValue> value;
 
