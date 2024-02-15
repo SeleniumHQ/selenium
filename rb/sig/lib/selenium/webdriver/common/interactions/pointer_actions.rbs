@@ -41,11 +41,3 @@ module Selenium
     end
   end
 end
-
-interface _ActionBuilder
-  def tick: (untyped) -> (nil | Array[Selenium::WebDriver::Interactions::InputDevice])
-
-  def device: (untyped) -> Selenium::WebDriver::Interactions::InputDevice
-
-  def add_pointer_input: (Symbol kind, String name) -> ::Selenium::WebDriver::Interactions::PointerInput
-end

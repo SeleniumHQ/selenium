@@ -6,6 +6,8 @@ module Selenium
     # @api private
     #
     class SeleniumManager
+      include _Platform
+
       self.@bin_path: untyped
 
       self.@binary: untyped

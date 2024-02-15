@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasNetworkInterception
-        include _HasDevTools
+        include _DevTools
 
         @interceptor: untyped
 
@@ -10,8 +10,4 @@ module Selenium
       end
     end
   end
-end
-
-interface _HasDevTools
-  def devtools: () -> Selenium::WebDriver::DevTools
 end

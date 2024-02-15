@@ -34,7 +34,7 @@ module Selenium
             @execution = if blk
                            proc(&blk)
                          else
-                           proc { |guarded| guarded&.include?(condition) }
+                           proc { |guarded| guarded.include?(condition) }
                          end
           end
 

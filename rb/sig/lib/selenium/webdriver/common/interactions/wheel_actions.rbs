@@ -1,6 +1,9 @@
 module Selenium
   module WebDriver
     module WheelActions
+      include _ActionBuilder
+      include _Driver
+
       @default_scroll_duration: untyped
 
       attr_writer default_scroll_duration: untyped

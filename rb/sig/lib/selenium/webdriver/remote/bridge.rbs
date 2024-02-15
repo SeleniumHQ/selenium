@@ -247,10 +247,6 @@ module Selenium
         UNICODE_CODE_POINT: 30
 
         def escape_css: (untyped string) -> untyped
-
-        interface _BridgeInterface
-          def execute: (Symbol command, ?untyped opts, ?untyped command_hash) -> untyped
-        end
       end
     end
   end

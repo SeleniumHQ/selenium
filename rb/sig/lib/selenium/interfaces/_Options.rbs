@@ -1,0 +1,3 @@
+interface _Options
+  def enable_login: -> untyped
+end

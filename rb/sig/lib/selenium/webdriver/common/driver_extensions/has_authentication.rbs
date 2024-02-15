@@ -2,6 +2,8 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasAuthentication
+        include _DevTools
+
         @auth_handlers: untyped
 
         def register: (username: untyped, password: untyped, ?uri: untyped) -> untyped

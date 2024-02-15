@@ -2,6 +2,8 @@ module Selenium
   module WebDriver
     module Chromium
       module Features
+        include _Bridge
+
         CHROMIUM_COMMANDS: Hash[Symbol, Array[Symbol | String]]
 
         def commands: (Symbol command) -> Array[Symbol | String]

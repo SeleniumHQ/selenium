@@ -2,6 +2,8 @@ module Selenium
   module WebDriver
     module Chromium
       class Options < WebDriver::Options
+        include _Options
+
         @profile: untyped
 
         @options: untyped

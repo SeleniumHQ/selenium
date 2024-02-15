@@ -2,6 +2,8 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasDevTools
+        include _Driver
+
         @devtools: untyped
 
         def devtools: () -> untyped
