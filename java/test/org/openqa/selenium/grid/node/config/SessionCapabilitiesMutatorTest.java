@@ -308,18 +308,18 @@ public class SessionCapabilitiesMutatorTest {
         .isEqualTo("different-profile-string");
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("moz:firefoxOptions")
-      .asInstanceOf(MAP)
-      .extractingByKey("androidDeviceSerial")
-      .asInstanceOf(STRING)
-      .isEqualTo("emulator-5556");
+        .extractingByKey("moz:firefoxOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("androidDeviceSerial")
+        .asInstanceOf(STRING)
+        .isEqualTo("emulator-5556");
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("moz:firefoxOptions")
-      .asInstanceOf(MAP)
-      .extractingByKey("androidPackage")
-      .asInstanceOf(STRING)
-      .isEqualTo("com.android.chrome");
+        .extractingByKey("moz:firefoxOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("androidPackage")
+        .asInstanceOf(STRING)
+        .isEqualTo("com.android.chrome");
   }
 
   @Test
