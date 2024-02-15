@@ -27,6 +27,11 @@ namespace OpenQA.Selenium
     internal static class WebDriverError
     {
         /// <summary>
+        /// Represents the detached shadow root error.
+        /// </summary>
+        public const string DetachedShadowRoot = "detached shadow root";
+
+        /// <summary>
         /// Represents the element click intercepted error.
         /// </summary>
         public const string ElementClickIntercepted = "element click intercepted";
@@ -188,6 +193,7 @@ namespace OpenQA.Selenium
         static WebDriverError()
         {
             resultMap = new Dictionary<string, WebDriverResult>();
+            resultMap[DetachedShadowRoot] = WebDriverResult.DetachedShadowRoot;
             resultMap[ElementClickIntercepted] = WebDriverResult.ElementClickIntercepted;
             resultMap[ElementNotSelectable] = WebDriverResult.ElementNotSelectable;
             resultMap[ElementNotVisible] = WebDriverResult.ElementNotDisplayed;
