@@ -115,7 +115,7 @@ class W3CHttpResponseCodecTest {
     error.put("message", "I like peas");
     error.put("stacktrace", "");
 
-    HttpResponse response = createValidResponse(HTTP_INTERNAL_ERROR, error);
+    HttpResponse response = createValidResponse(HTTP_INTERNAL_ERROR, Map.of("value", error));
 
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
