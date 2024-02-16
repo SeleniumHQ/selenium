@@ -1,6 +1,7 @@
 module Selenium
   module WebDriver
     module ProfileHelper
+
       def self.included: (untyped base) -> untyped
 
       def self.decoded: (untyped json) -> untyped

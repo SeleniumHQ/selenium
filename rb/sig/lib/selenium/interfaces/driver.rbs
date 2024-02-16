@@ -6,4 +6,8 @@ interface _Driver
   def devtools_version: () -> untyped
 
   def devtools_address: () -> untyped
+
+  def ref: () -> untyped
+
+  def bridge: () -> untyped
 end

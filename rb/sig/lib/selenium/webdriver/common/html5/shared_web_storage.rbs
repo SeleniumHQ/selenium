@@ -3,6 +3,7 @@ module Selenium
     module HTML5
       module SharedWebStorage
         include Enumerable[untyped]
+        include _LocalStorage
 
         def key?: (untyped key) -> untyped
 
