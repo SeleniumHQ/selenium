@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class ObjectLocalValue extends LocalValue {
+public class ObjectLocalValue extends LocalValue {
 
   private final Map<Object, LocalValue> map;
 

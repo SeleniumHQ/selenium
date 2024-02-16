@@ -25,7 +25,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.Json.OBJECT_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -99,12 +98,15 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
         response.setStatus(ErrorCodes.UNHANDLED_ERROR);
         response.setValue(content);
       } else {
-        Map<String, Object> obj = json.toType(content, MAP_TYPE);
+        Map<String, Object> org = json.toType(content, MAP_TYPE);
+        Map<String, Object> obj;
 
-        Object w3cWrappedValue = obj.get("value");
+        Object w3cWrappedValue = org.get("value");
         if (w3cWrappedValue instanceof Map && ((Map<?, ?>) w3cWrappedValue).containsKey("error")) {
           //noinspection unchecked
           obj = (Map<String, Object>) w3cWrappedValue;
+        } else {
+          obj = org;
         }
 
         String message = "An unknown error has occurred";
@@ -133,7 +135,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
           }
           response.setValue(new UnhandledAlertException(message, text));
         } else {
-          response.setValue(createException(error, message));
+          response.setValue(errorCodec.decode(org));
         }
       }
       return response;
@@ -177,16 +179,5 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
   protected Response reconstructValue(Response response) {
     response.setValue(elementConverter.apply(response.getValue()));
     return response;
-  }
-
-  private WebDriverException createException(String error, String message) {
-    Class<? extends WebDriverException> clazz = errorCodes.getExceptionType(error);
-
-    try {
-      Constructor<? extends WebDriverException> constructor = clazz.getConstructor(String.class);
-      return constructor.newInstance(message);
-    } catch (ReflectiveOperationException e) {
-      throw new WebDriverException(message);
-    }
   }
 }
