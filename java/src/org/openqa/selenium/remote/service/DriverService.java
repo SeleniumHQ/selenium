@@ -298,6 +298,11 @@ public class DriverService implements Closeable {
         try {
           URL killUrl = new URL(url.toString() + "/shutdown");
           new UrlChecker().waitUntilUnavailable(3, SECONDS, killUrl);
+          try {
+            process.waitFor(Duration.ofSeconds(10));
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          }
         } catch (MalformedURLException e) {
           toThrow = new WebDriverException(e);
         } catch (UrlChecker.TimeoutException e) {
