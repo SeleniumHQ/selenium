@@ -347,6 +347,17 @@ class BeforeRequestSent extends BaseParameters {
   }
 }
 
+class FetchError extends BaseParameters {
+  constructor(id, navigation, redirectCount, request, timestamp, errorText) {
+    super(id, navigation, redirectCount, request, timestamp)
+    this._errorText = errorText
+  }
+
+  get errorText() {
+    return this._errorText
+  }
+}
+
 class ResponseData {
   constructor(
     url,
@@ -442,4 +453,4 @@ class ResponseStarted extends BaseParameters {
   }
 }
 
-module.exports = { BeforeRequestSent, ResponseStarted }
+module.exports = { BeforeRequestSent, ResponseStarted, FetchError }

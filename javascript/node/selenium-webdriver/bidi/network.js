@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { BeforeRequestSent, ResponseStarted } = require('./networkTypes')
+const { BeforeRequestSent, ResponseStarted, FetchError} = require('./networkTypes')
 const {AddInterceptParameters} = require("./addInterceptParameters");
 
 class Network {
@@ -42,6 +42,10 @@ class Network {
 
   async authRequired(callback) {
     await this.subscribeAndHandleEvent('network.authRequired', callback)
+  }
+
+  async fetchError(callback) {
+    await this.subscribeAndHandleEvent('network.fetchError', callback)
   }
 
   async subscribeAndHandleEvent(eventType, callback) {
@@ -77,9 +81,18 @@ class Network {
             params.timestamp,
             params.response,
           )
+        } else if ('errorText' in params) {
+          response = new FetchError(
+            params.context,
+            params.navigation,
+            params.redirectCount,
+            params.request,
+            params.timestamp,
+            params.errorText,
+          )
         }
         callback(response)
-      }
+        }
     })
   }
 

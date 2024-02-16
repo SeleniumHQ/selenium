@@ -19,8 +19,8 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const { Browser } = require('../../')
-const { Pages, suite } = require('../../lib/test')
+const {Browser} = require('../../')
+const {Pages, suite} = require('../../lib/test')
 const Network = require('../../bidi/network')
 const until = require('../../lib/until')
 
@@ -174,6 +174,27 @@ suite(
         assert.equal(authRequiredEvent.response.url.includes('basicAuth'), true)
       })
 
+      xit('can listen to fetch error event', async function () {
+        let fetchErrorEvent = null
+        const network = await Network(driver)
+        await network.fetchError(function (event) {
+          fetchErrorEvent = event
+        })
+
+        try {
+          await driver.get('https://not_a_valid_url.test/')
+        } catch (e) {
+          // ignore
+        }
+
+        const url = fetchErrorEvent.request.url
+        assert.equal(fetchErrorEvent.id, await driver.getWindowHandle())
+        assert.equal(fetchErrorEvent.request.method, 'GET')
+        assert.equal(url.includes('valid_url'), true)
+        assert.equal(fetchErrorEvent.request.headers.length > 1, true)
+        assert.equal(fetchErrorEvent.errorText, 'NS_ERROR_UNKNOWN_HOST')
+      })
+
       it('test response completed mime type', async function () {
         let onResponseCompleted = []
         const network = await Network(driver)
@@ -196,5 +217,5 @@ suite(
       })
     })
   },
-  { browsers: [Browser.FIREFOX] },
+  {browsers: [Browser.FIREFOX]},
 )
