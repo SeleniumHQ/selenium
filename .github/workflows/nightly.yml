@@ -17,6 +17,7 @@ on:
         options:
           - java
           - ruby
+          - python
           - grid
 
 jobs:
@@ -36,6 +37,18 @@ jobs:
         export GEM_HOST_API_KEY="Bearer $GITHUB_TOKEN"
         bazel run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
         bazel run //rb:${{ matrix.gem }}-release-nightly
+
+  python:
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'python' || github.event_name == 'schedule')
+    name: Python
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Release
+      cache-key: python-nightly
+      run: |
+        ./go "py:version[dev]"
+        ./go py:release
+    secrets: inherit
 
 
   java:
