@@ -621,10 +621,11 @@ namespace :py do
 
   desc 'Update Python version'
   task :version, [:version] do |_task, arguments|
+    bump_nightly = arguments[:version] === 'nightly'
     old_version = python_version
     new_version = nil
-    if arguments[:version] === 'nightly' && old_version.include?('nightly')
-      new_version = old_version + ".#{Time.now.strftime("%Y%m%d")}"
+    if bump_nightly && old_version.include?('nightly')
+      new_version = old_version.gsub('nightly', "#{Time.now.strftime("%Y%m%d")}")
     else
       new_version = updated_version(old_version, arguments[:version])
       new_version += '.nightly' unless old_version.include?('nightly')
@@ -645,7 +646,7 @@ namespace :py do
     text = File.read('py/docs/source/conf.py').gsub(old_short_version, new_short_version)
     File.open('py/docs/source/conf.py', "w") { |f| f.puts text }
 
-    Rake::Task['py:changelog'].invoke unless new_version.include?('nightly')
+    Rake::Task['py:changelog'].invoke unless new_version.include?('nightly') || bump_nightly
   end
 
   desc 'Update Python Syntax'
