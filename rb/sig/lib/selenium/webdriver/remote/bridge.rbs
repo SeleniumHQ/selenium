@@ -2,6 +2,8 @@ module Selenium
   module WebDriver
     module Remote
       class Bridge
+        include _CommandList
+
         @http: untyped
 
         @file_detector: untyped

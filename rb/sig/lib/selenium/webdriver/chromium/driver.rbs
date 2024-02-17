@@ -6,9 +6,6 @@ module Selenium
 
         EXTENSIONS: ::Array[untyped]
 
-        def devtools_url: () -> untyped
-
-        def devtools_version: () -> untyped
       end
     end
   end

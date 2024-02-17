@@ -1,6 +1,7 @@
 module Selenium
   module WebDriver
     module ProfileHelper
+      include _Profile
 
       def self.included: (untyped base) -> untyped
 
