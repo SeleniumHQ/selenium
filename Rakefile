@@ -622,7 +622,13 @@ namespace :py do
   desc 'Update Python version'
   task :version, [:version] do |_task, arguments|
     old_version = python_version
-    new_version = updated_version(old_version, arguments[:version])
+    new_version = nil
+    if arguments[:version] === 'nightly' && old_version.include?('nightly')
+      new_version = old_version + ".#{Time.now.strftime("%Y%m%d")}"
+    else
+      new_version = updated_version(old_version, arguments[:version])
+      new_version += '.nightly' unless old_version.include?('nightly')
+    end
 
     ['py/setup.py',
      'py/BUILD.bazel',
@@ -639,7 +645,7 @@ namespace :py do
     text = File.read('py/docs/source/conf.py').gsub(old_short_version, new_short_version)
     File.open('py/docs/source/conf.py', "w") { |f| f.puts text }
 
-    Rake::Task['py:changelog'].invoke
+    Rake::Task['py:changelog'].invoke unless new_version.include?('nightly')
   end
 
   desc 'Update Python Syntax'
@@ -1016,12 +1022,17 @@ namespace :all do
 
     puts "Committing nightly version updates"
     commit!('update versions to nightly', ['java/version.bzl',
-                                                   'rb/lib/selenium/webdriver/version.rb',
-                                                   'rb/Gemfile.lock',
-                                                   'rust/BUILD.bazel',
-                                                   'rust/Cargo.Bazel.lock',
-                                                   'rust/Cargo.lock',
-                                                   'rust/Cargo.toml'])
+                                                'rb/lib/selenium/webdriver/version.rb',
+                                                'rb/Gemfile.lock',
+                                                'py/setup.py',
+                                                'py/BUILD.bazel',
+                                                'py/selenium/__init__.py',
+                                                'py/selenium/webdriver/__init__.py',
+                                                'py/docs/source/conf.py',
+                                                'rust/BUILD.bazel',
+                                                'rust/Cargo.Bazel.lock',
+                                                'rust/Cargo.lock',
+                                                'rust/Cargo.toml'])
 
     print 'Do you want to push the committed changes? (Y/n): '
     response = STDIN.gets.chomp.downcase
@@ -1087,6 +1098,7 @@ namespace :all do
       Rake::Task['java:version'].invoke
       Rake::Task['rb:version'].invoke
       Rake::Task['rust:version'].invoke
+      Rake::Task['py:version'].invoke
     else
       Rake::Task['java:version'].invoke(version)
       Rake::Task['rb:version'].invoke(version)
