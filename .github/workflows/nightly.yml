@@ -46,7 +46,7 @@ jobs:
       name: Release
       cache-key: python-nightly
       run: |
-        ./go "py:version[dev]"
+        ./go "py:version[nightly]"
         ./go py:release
     secrets: inherit
 
