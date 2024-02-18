@@ -625,7 +625,7 @@ namespace :py do
     old_version = python_version
     new_version = nil
     if bump_nightly && old_version.include?('nightly')
-      new_version = old_version.gsub('nightly', "#{Time.now.strftime("%Y%m%d")}")
+      new_version = old_version.gsub('nightly', "#{Time.now.strftime("%Y%m%d%H%M")}")
     else
       new_version = updated_version(old_version, arguments[:version])
       new_version += '.nightly' unless old_version.include?('nightly')
