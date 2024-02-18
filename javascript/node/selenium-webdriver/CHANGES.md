@@ -1,3 +1,26 @@
+## 4.18.0
+
+>>> [js] Fix running the casting related methods in chromium (#13479)
+Casting methods call "this.schedule", but it does not exist in the class. Updating the methods to actually execute the commands.
+>>> [js] Enabling virtual authenticator tests for Firefox
+@whimboo mentioned this is supported now
+>>> [bidi] Add browsing context destroyed event
+>>> [bidi][js] Add test for basic auth network event
+>>> [bidi] [js] Add realm destroyed event
+>>> [build] update version in package-lock for node
+>>> [js] guard failing virtual authenticator tests from running on firefox
+>>> [bidi] [js] Add locate node command (#13489)
+>>> [bidi][js] Deprecate NetworkInspector in favor of Network
+>>> [js] Skipping two failing FF tests
+[skip ci]
+>>> [js] Make `npm run lint` pass for javascript/node/selenium-webdriver (#13560)
+>>> [bidi][js] Add "addintercept" and "removeintercept" commands (#13564)
+>>> [js] Add import
+>>> [js] Add import
+>>> [bidi] [js] Add auth related commands (#13572)
+>>> [bidi][js] Add 'continueWithAuth' command
+>>> [bidi][js] Add 'fetchError' command
+
 ## 4.17.0
 
 * Add javascript to Selenium Manager input for tracking (see #13288)
