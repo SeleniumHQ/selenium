@@ -40,7 +40,7 @@ module Selenium
 
         def self.hue_to_rgb: (untyped lum1, untyped lum2, untyped hue) -> untyped
 
-        def initialize: (untyped red, untyped green, untyped blue, ?Float alpha) -> void
+        def initialize: (String ?red, String ?green, String ?blue, ?Float | Integer | String ?alpha, *untyped args) -> void
 
         def ==: (untyped other) -> (bool | untyped)
 

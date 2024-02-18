@@ -34,7 +34,7 @@ module Selenium
 
         def available_log_types: () -> Array[Symbol]
 
-        def log: (untyped type) -> untyped
+        def log: (Symbol type) -> Array[Hash[String, untyped]]
       end
     end
   end

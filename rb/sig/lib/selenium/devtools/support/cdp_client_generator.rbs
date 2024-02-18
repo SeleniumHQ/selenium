@@ -2,6 +2,8 @@ module Selenium
   module DevTools
     module Support
       class CDPClientGenerator
+        DIR: untyped
+
         @domain_template: untyped
 
         @loader_template: untyped
