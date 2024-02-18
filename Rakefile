@@ -1042,7 +1042,12 @@ namespace :all do
 
   desc 'Update everything in preparation for a release'
   task :prepare, [:channel] do |_task, arguments|
-    args = Array(arguments[:channel]) ? ['--', "--chrome_channel=#{arguments[:channel].capitalize}"] : []
+    chrome_channel = if arguments[:channel].nil?
+                        'Stable'
+                     else
+                        arguments[:channel]
+                     end
+    args = Array(chrome_channel) ? ['--', "--chrome_channel=#{chrome_channel.capitalize}"] : []
     Bazel.execute('run', args, '//scripts:pinned_browsers')
     commit!('Update pinned browser versions', ['common/repositories.bzl'])
 
