@@ -1,3 +1,10 @@
+0.4.18
+======
+
+>>> [rust] Add timestamps to Selenium Manager logs (#13554)
+>>> [rust] Selenium Manager decrease frequency of statistics reporting (#13555)
+>>> [rust] Selenium Manager log level (#13566)
+
 0.4.17
 ======
 
