@@ -1,3 +1,44 @@
+v4.18.0
+======
+
+>>> [java] Recommitting self-signed certificate should not require certificate file
+>>> [bidi] Add browsing context destroyed event
+>>> [java] Add missing support events for Web Driver Listener  (#13210)
+* add missing events to listeners w/ javadoc and tests
+* run format script
+* run format script
+>>> [bidi][java] Add network intercept commands 
+>>> [bidi][java] Add command "continuewithAuth"
+>>> [bidi][java] Add failRequest command
+>>> [java] use the W3C state to detect errors
+>>> [grid] Fixing driver configuration parsing
+This covers the case again when the config
+is passed through the CLI.
+Fixes #13531
+>>> [java][cdp] Ensure dom mutation listener calls to webdriver apis are thread safe
+Fixes #13500.
+>>> Fix typo in comment (#13549)
+>>> [java] Allow `null` input in `FluentWait` (#13558)
+>>> [java] Add missing event handlers for `TargetLocator` interface (#13559)
+* [java] Add missing event handlers for `TargetLocator` interface
+* Fix formatting
+>>> [java] shutdown the process of a failed driver server start
+>>> [java] ensure ExternalProcess.waitFor will not block
+>>> [java] fixed the format of DriverService
+>>> [java] use message templates in logger calls
+>>> [bidi][java] Add 'fetchError' event
+>>> Fixing NPE when "se:downloadsEnabled" not set (#13583)
+Fixes the NPE described in https://github.com/SeleniumHQ/selenium/issues/13578
+>>> Make Rectangle fields final to enhance immutability (#13586)
+>>> Use all provided options while merging them for Firefox (#13582)
+* Use all provided options while merging them for Firefox
+This fix addresses the discrepancy that we have in methods of processing browser options for Chromium and Firefox. In the case of Chromium, if the option name doesn't match any of previously processed, we add it anyway. It doesn't happen for Firefox. So in the case when one option is set in stereotype, but other is provided in capabilities this second one is missed from the result.
+Unit test updated to cover this case.
+* fixed formatting in SessionCapabilitiesMutatorTest
+>>> [java] Fix access modifier for script module classes
+>>> [java] use the ErrorCodec to build the WebDriverException #13580
+>>> [java] give the driver some time to terminate graceful
+
 v4.17.0
 ======
 

@@ -34,8 +34,8 @@ exports_files(
 
     http_archive(
         name = "linux_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b7/linux-x86_64/en-US/firefox-123.0b7.tar.bz2",
-        sha256 = "05de0ab4a48c7a2c798172f68a11ba249785f60be97c6729b269dffa78328e12",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b9/linux-x86_64/en-US/firefox-123.0b9.tar.bz2",
+        sha256 = "c29d96875b8eb03d37e948e3f62cd4505300fce85f0e09dfae6a4443d3878607",
         build_file_content = """
 filegroup(
     name = "files",
@@ -51,15 +51,15 @@ exports_files(
 
     dmg_archive(
         name = "mac_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b7/mac/en-US/Firefox%20123.0b7.dmg",
-        sha256 = "f598649bae4035bcf5f003b2faf1810d972898da63fff27b13cff8f0fd9e50a7",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b9/mac/en-US/Firefox%20123.0b9.dmg",
+        sha256 = "6addddfd288a16c08dc59a88c8f9fe252d7d608b83bc2458f139e77fda4ddab8",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
     http_archive(
         name = "linux_dev_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b7/linux-x86_64/en-US/firefox-123.0b7.tar.bz2",
-        sha256 = "05de0ab4a48c7a2c798172f68a11ba249785f60be97c6729b269dffa78328e12",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b9/linux-x86_64/en-US/firefox-123.0b9.tar.bz2",
+        sha256 = "c29d96875b8eb03d37e948e3f62cd4505300fce85f0e09dfae6a4443d3878607",
         build_file_content = """
 filegroup(
     name = "files",
@@ -75,8 +75,8 @@ exports_files(
 
     dmg_archive(
         name = "mac_dev_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b7/mac/en-US/Firefox%20123.0b7.dmg",
-        sha256 = "f598649bae4035bcf5f003b2faf1810d972898da63fff27b13cff8f0fd9e50a7",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/123.0b9/mac/en-US/Firefox%20123.0b9.dmg",
+        sha256 = "6addddfd288a16c08dc59a88c8f9fe252d7d608b83bc2458f139e77fda4ddab8",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
@@ -96,32 +96,32 @@ exports_files(
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/d6fb84d9-f938-4de1-a97f-b3e346a924be/MicrosoftEdge-121.0.2277.106.pkg",
-        sha256 = "b295496582213abecc4f12e29162a5998d8f47881ba9d9e0927cfe5fc6c0c9cd",
+        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/7d455fa7-376b-4ff4-a83c-e74664b24a02/MicrosoftEdge-121.0.2277.128.pkg",
+        sha256 = "a9b0e772ab1d5545349e312a94526bd3376b9deaa159f13dce070f713c793261",
         move = {
-            "MicrosoftEdge-121.0.2277.106.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-121.0.2277.128.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )
 
     http_archive(
         name = "linux_edgedriver",
-        url = "https://msedgedriver.azureedge.net/121.0.2277.106/edgedriver_linux64.zip",
-        sha256 = "c842ab7c6b4013b7cf782186693dc52264b798124aabbf217aa6ef7564fe01f5",
+        url = "https://msedgedriver.azureedge.net/121.0.2277.128/edgedriver_linux64.zip",
+        sha256 = "9375569e62132ebf68bbe18af7415d572198bc027e15273e8d979c8083ae156a",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
 
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.azureedge.net/121.0.2277.106/edgedriver_mac64.zip",
-        sha256 = "80e872ad410e25f0eda90b22ccc190a87fbc95e13c76e86648932599185e7a8c",
+        url = "https://msedgedriver.azureedge.net/121.0.2277.128/edgedriver_mac64.zip",
+        sha256 = "bdf456bf444e2878a672f3eebb3211ca05a10a896ca57d70ccfe9d1dc3e90100",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
 
     http_archive(
         name = "linux_chrome",
-        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/121.0.6167.85/linux64/chrome-linux64.zip",
-        sha256 = "0d4c2fbb4db86121bc72450cb9e8659335a72c1719c348e32331cf512ab1487c",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/121.0.6167.184/linux64/chrome-linux64.zip",
+        sha256 = "f2496409f3f440c039c967751818480c6029da43b808db307fd2381cabc836ee",
         build_file_content = """
 filegroup(
     name = "files",
@@ -137,8 +137,8 @@ exports_files(
 
     http_archive(
         name = "mac_chrome",
-        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/121.0.6167.85/mac-x64/chrome-mac-x64.zip",
-        sha256 = "e150319a0fb5e13adbc703772545c7c9fa20b0474b56667f99f7967f5eefe0b8",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/121.0.6167.184/mac-x64/chrome-mac-x64.zip",
+        sha256 = "2c228be3134ea66fd4e8648d6eb937fde5f7d2591e2f2c16966eb7edc72d9e17",
         strip_prefix = "chrome-mac-x64",
         patch_cmds = [
             "mv 'Google Chrome for Testing.app' Chrome.app",
@@ -149,16 +149,16 @@ exports_files(
 
     http_archive(
         name = "linux_chromedriver",
-        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/121.0.6167.85/linux64/chromedriver-linux64.zip",
-        sha256 = "3bc538a59efafcdeeaf5b57b77403ec2522aa9aa33e96c9f6503b87085760883",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/121.0.6167.184/linux64/chromedriver-linux64.zip",
+        sha256 = "a1e864dd3b087733e5c654f57b93a241ee5f9dbf82c6b5a48e7c1768ea9e78e6",
         strip_prefix = "chromedriver-linux64",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
 
     http_archive(
         name = "mac_chromedriver",
-        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/121.0.6167.85/mac-x64/chromedriver-mac-x64.zip",
-        sha256 = "2033dd8eadc5a4bcba63dc64475e66cdb21a97cc23790cf35ad5ae678b8a9b30",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/121.0.6167.184/mac-x64/chromedriver-mac-x64.zip",
+        sha256 = "3d3f4a9575ff356258b6f12a9375d8c92f47cdff79f191b3faeff723a29bf308",
         strip_prefix = "chromedriver-mac-x64",
         build_file_content = "exports_files([\"chromedriver\"])",
     )

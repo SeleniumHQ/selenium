@@ -1,3 +1,7 @@
+Selenium 4.18.0
+
+>>> [py] Bumping Python for nightly
+
 Selenium 4.17.2
 * [py] Correct typing_extension dependency for wheel generation
 
