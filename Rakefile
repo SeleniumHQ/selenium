@@ -549,7 +549,7 @@ namespace :py do
   desc 'Release Python wheel and sdist to pypi'
   task :release, [:args] do |_task, arguments|
     args = Array(arguments[:args]) || ['--stamp']
-    Bazel.execute('run', args, '//py:selenium-release')
+    Bazel.execute('build', args, '//py:selenium-release')
   end
 
   desc 'generate and copy files required for local development'
