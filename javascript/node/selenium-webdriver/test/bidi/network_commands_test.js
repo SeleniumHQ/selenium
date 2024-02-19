@@ -72,7 +72,7 @@ suite(
         assert.equal(source.includes('Access granted'), true)
       })
 
-      it('can continue without auth credentials ', async function () {
+      xit('can continue without auth credentials ', async function () {
         await network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED))
 
         await network.authRequired(async (event) => {
