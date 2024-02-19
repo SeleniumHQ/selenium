@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.script;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,5 +123,19 @@ public abstract class LocalValue {
 
   public static LocalValue remoteReference(RemoteReference.Type type, String id) {
     return new RemoteReference(type, id);
+  }
+
+  protected Map<String, Object> createJsonValue(String type, Map<Object, LocalValue> map) {
+    List<List<Object>> value = new ArrayList<>();
+
+    map.forEach(
+      (k, v) -> {
+        List<Object> entry = new ArrayList<>();
+        entry.add(k);
+        entry.add(v);
+        value.add(entry);
+      });
+
+    return Map.of("type", type, "value", value);
   }
 }
