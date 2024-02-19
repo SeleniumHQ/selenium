@@ -99,7 +99,7 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v119:v119.publish
+  //java/src/org/openqa/selenium/devtools/v122:v122.publish
   //java/src/org/openqa/selenium/devtools/v120:v120.publish
   //java/src/org/openqa/selenium/devtools/v121:v121.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
@@ -1066,35 +1066,35 @@ namespace :all do
             'rb/Gemfile.lock',
             'Rakefile'])
 
-    Bazel.execute('run', args, '//scripts:selenium_manager')
-    commit!('Update selenium manager version', ['common/selenium_manager.bzl'])
+    # Bazel.execute('run', args, '//scripts:selenium_manager')
+    # commit!('Update selenium manager version', ['common/selenium_manager.bzl'])
 
-    Rake::Task['java:update'].invoke
-    commit!('Update Maven Dependencies', ['java/maven_deps.bzl', 'java/maven_install.json'])
+    # Rake::Task['java:update'].invoke
+    # commit!('Update Maven Dependencies', ['java/maven_deps.bzl', 'java/maven_install.json'])
 
-    Rake::Task['authors'].invoke
-    commit!('Update authors file', ['AUTHORS'])
+    # Rake::Task['authors'].invoke
+    # commit!('Update authors file', ['AUTHORS'])
 
     # Note that this does not include Rust version changes that are handled in separate rake:version task
-    Rake::Task['all:version'].invoke
-    commit!("FIX CHANGELOGS BEFORE MERGING!\n\nUpdate versions and change logs to release Selenium #{java_version}",
-            ['dotnet/CHANGELOG',
-             'dotnet/selenium-dotnet-version.bzl',
-             'java/CHANGELOG',
-             'java/version.bzl',
-             'javascript/node/selenium-webdriver/CHANGES.md',
-             'javascript/node/selenium-webdriver/package.json',
-             'javascript/node/selenium-webdriver/package-lock.json',
-             'py/docs/source/conf.py',
-             'py/selenium/__init__.py',
-             'py/selenium/webdriver/__init__.py',
-             'py/BUILD.bazel',
-             'py/CHANGES',
-             'py/setup.py',
-             'rb/lib/selenium/webdriver/version.rb',
-             'rb/CHANGES',
-             'rb/Gemfile.lock',
-             'rust/CHANGELOG.md'])
+    # Rake::Task['all:version'].invoke
+    # commit!("FIX CHANGELOGS BEFORE MERGING!\n\nUpdate versions and change logs to release Selenium #{java_version}",
+    #         ['dotnet/CHANGELOG',
+    #          'dotnet/selenium-dotnet-version.bzl',
+    #          'java/CHANGELOG',
+    #          'java/version.bzl',
+    #          'javascript/node/selenium-webdriver/CHANGES.md',
+    #          'javascript/node/selenium-webdriver/package.json',
+    #          'javascript/node/selenium-webdriver/package-lock.json',
+    #          'py/docs/source/conf.py',
+    #          'py/selenium/__init__.py',
+    #          'py/selenium/webdriver/__init__.py',
+    #          'py/BUILD.bazel',
+    #          'py/CHANGES',
+    #          'py/setup.py',
+    #          'rb/lib/selenium/webdriver/version.rb',
+    #          'rb/CHANGES',
+    #          'rb/Gemfile.lock',
+    #          'rust/CHANGELOG.md'])
   end
 
   desc 'Update all versions'
