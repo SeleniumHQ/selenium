@@ -549,7 +549,7 @@ namespace :py do
   desc 'Release Python wheel and sdist to pypi'
   task :release, [:args] do |_task, arguments|
     args = Array(arguments[:args]) || ['--stamp']
-    Bazel.execute('run', args, '//py:selenium-release')
+    Bazel.execute('build', args, '//py:selenium-release')
   end
 
   desc 'generate and copy files required for local development'
@@ -1042,7 +1042,12 @@ namespace :all do
 
   desc 'Update everything in preparation for a release'
   task :prepare, [:channel] do |_task, arguments|
-    args = Array(arguments[:channel]) ? ['--', "--chrome_channel=#{arguments[:channel].capitalize}"] : []
+    chrome_channel = if arguments[:channel].nil?
+                        'Stable'
+                     else
+                        arguments[:channel]
+                     end
+    args = Array(chrome_channel) ? ['--', "--chrome_channel=#{chrome_channel.capitalize}"] : []
     Bazel.execute('run', args, '//scripts:pinned_browsers')
     commit!('Update pinned browser versions', ['common/repositories.bzl'])
 

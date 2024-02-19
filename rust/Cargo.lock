@@ -1444,7 +1444,7 @@ dependencies = [
 
 [[package]]
 name = "selenium-manager"
-version = "0.4.18-nightly"
+version = "0.4.18"
 dependencies = [
  "anyhow",
  "assert_cmd",
