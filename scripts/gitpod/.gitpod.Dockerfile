@@ -10,8 +10,8 @@ USER root
 # So we can install browsers and browser drivers later
 RUN wget https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
     && dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/google-chrome.gpg && \
+    echo "deb [signed-by=/etc/apt/trusted.gpg.d/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
 RUN mkdir -p /home/gitpod/selenium /var/run/supervisor /var/log/supervisor && \
   chmod -R 777 /var/run/supervisor /var/log/supervisor
 
@@ -21,7 +21,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -qqy && \
     apt-get -qy install python-is-python3 \
-                        dotnet-sdk-5.0 \
+                        dotnet-sdk-6.0 \
                         supervisor \
                         x11vnc \
                         fluxbox \
