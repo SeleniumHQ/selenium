@@ -2,10 +2,13 @@ target :lib do
   signature 'sig' # Signature directory
   check 'lib' # Directory name
   ignore(
-    'lib/selenium/webdriver/common/platform.rb', # Ignore line 166 due to UDP RBS issue
-    'lib/selenium/webdriver/remote/http/curb.rb' # Ignore due to webmock gem not having RBS signatures
+    # Ignore line 166 due to UDP RBS issue
+    'lib/selenium/webdriver/common/platform.rb',
+    # Ignore due to webmock gem not having RBS signatures
+    'lib/selenium/webdriver/remote/http/curb.rb',
+    # Ignore due to line 71, there is one last error where RBS thinks backtrace is nil
+    'lib/selenium/webdriver/remote/response.rb'
   )
-
 
   library(
     'base64',
