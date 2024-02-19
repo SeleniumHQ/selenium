@@ -1,6 +1,7 @@
 Selenium 4.18.0
 
->>> [py] Bumping Python for nightly
+* Update linting dependencies
+* Setting Python for nightly releases - https://test.pypi.org/project/selenium/
 
 Selenium 4.17.2
 * [py] Correct typing_extension dependency for wheel generation

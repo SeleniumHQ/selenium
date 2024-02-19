@@ -1,23 +1,15 @@
 v4.18.0
 ======
 
->>> [dotnet] update parameter name to allowedIpAddresses and make whitelistedIpAddresses obsolete
->>> [dotnet] remove download url parameter from driver service constructor
-nothing is done with this parameter and users passing in a value should get an error rather than having it be ignored
->>> [dotnet] mark UseVerboseLogging obsolete for Edge service in favor of EnableVerboseLogging
->>> [dotnet] explicitly support passing the full path to driver in Service constructor
->>> [dotnet] Fix protocol cdp version for remote webdriver (#13507)
-* Amend protocol cdp version for remote webdriver
-* Don't parse protocol version if it is specified by user
->>> [dotnet] Move initialization of error codes to static ctor
->>> [dotnet] Add DetachedShadowRoot exception for error response handling
->>> [dotnet] Add InsecureCertificate exception for error response handling
-Related to #13580
->>> [dotnet] Fix network response data encoding (#13576)
-* Fix network response data encoding
-* Fix network interception tests
-* Avoid unnecessary convertion
-* Rename to ReadAsByteArray
+* update parameter name to allowedIpAddresses and make whitelistedIpAddresses obsolete
+* remove download url parameter from driver service constructor
+* mark UseVerboseLogging obsolete for Edge service in favor of EnableVerboseLogging
+* explicitly support passing the full path to driver in Service constructor
+* Fix protocol cdp version for remote webdriver (#13507)
+* Move initialization of error codes to static ctor
+* Add DetachedShadowRoot exception for error response handling
+* Add InsecureCertificate exception for error response handling
+* Fix network response data encoding (#13576)
 
 v4.17.0
 ======
