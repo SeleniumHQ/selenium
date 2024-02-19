@@ -28,13 +28,13 @@ under the License."""
 
     def update(self, files):
         for file in files:
-            with open(file, 'r') as f:
+            with open(file, 'r', encoding='utf-8-sig') as f:
                 lines = f.readlines()
 
             index = -1
             for i, line in enumerate(lines):
                 if line.startswith(self._comment_characters) or \
-                  self.valid_copyright_notice_line(line, index):
+                  self.valid_copyright_notice_line(line, index, file):
                     index += 1
                 else:
                     break
@@ -43,20 +43,24 @@ under the License."""
                 self.write_update_notice(file, lines)
             else:
                 current = ''.join(lines[:index + 1])
-                if current != self.copyright_notice:
+                if current != self.copyright_notice(file):
                     self.write_update_notice(file, lines[index + 1:])
 
-    def valid_copyright_notice_line(self, line, index):
-        return index + 1 < len(self.copyright_notice_lines) and \
-            line.startswith(self.copyright_notice_lines[index + 1])
+    def valid_copyright_notice_line(self, line, index, file):
+        return index + 1 < len(self.copyright_notice_lines(file)) and \
+            line.startswith(self.copyright_notice_lines(file)[index + 1])
 
-    @property
-    def copyright_notice(self):
-        return ''.join(self.copyright_notice_lines)
+    def copyright_notice(self, file):
+        return ''.join(self.copyright_notice_lines(file))
 
-    @property
-    def copyright_notice_lines(self):
-        return self._prefix + self.commented_notice_lines
+    def copyright_notice_lines(self, file):
+        return self.dotnet(file) if file.endswith("cs") else self._prefix + self.commented_notice_lines
+
+    def dotnet(self, file):
+        file_name = os.path.basename(file)
+        first = f"{self._comment_characters} <copyright file=\"{file_name}\" company=\"Selenium Committers\">\n"
+        last = f"{self._comment_characters} </copyright>"
+        return [first] + self.commented_notice_lines + [last]
 
     @property
     def commented_notice_lines(self):
@@ -65,8 +69,11 @@ under the License."""
     def write_update_notice(self, file, lines):
         print(f"Adding notice to {file}")
         with open(file, 'w') as f:
-            f.write(self.copyright_notice + "\n")
-            f.writelines(lines)
+            f.write(self.copyright_notice(file) + "\n")
+            if lines and lines[0] != "\n":
+                f.write("\n")
+            trimmed_lines = [line.rstrip() + "\n" for line in lines]
+            f.writelines(trimmed_lines)
 
 ROOT = Path(os.path.realpath(__file__)).parent.parent
 
@@ -109,3 +116,4 @@ if __name__ == "__main__":
     update_files(f"{ROOT}/rb/**/*.rb", [], comment_characters="#", prefix=["# frozen_string_literal: true\n", "\n"])
     update_files(f"{ROOT}/java/**/*.java", [])
     update_files(f"{ROOT}/rust/**/*.rs", [])
+    update_files(f"{ROOT}/dotnet/**/*.cs", [])

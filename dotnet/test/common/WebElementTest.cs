@@ -1,3 +1,22 @@
+// <copyright file="WebElementTest.cs" company="Selenium Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+// </copyright>
+
 using NUnit.Framework;
 using OpenQA.Selenium.Internal;
 
@@ -45,7 +64,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldGetElementName() 
+        public void ShouldGetElementName()
         {
             driver.Url = simpleTestPage;
 
@@ -55,7 +74,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldGetElementText() 
+        public void ShouldGetElementText()
         {
             driver.Url = simpleTestPage;
 
@@ -63,14 +82,14 @@ namespace OpenQA.Selenium
             Assert.AreEqual("A single line of text", oneliner.Text);
 
             IWebElement twoblocks = driver.FindElement(By.Id("twoblocks"));
-            Assert.AreEqual("Some text" + 
-                System.Environment.NewLine + 
+            Assert.AreEqual("Some text" +
+                System.Environment.NewLine +
                 "Some more text", twoblocks.Text);
 
         }
 
         [Test]
-        public void ShouldReturnWhetherElementIsDisplayed() 
+        public void ShouldReturnWhetherElementIsDisplayed()
         {
             driver.Url = javascriptPage;
 
@@ -107,7 +126,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldSendKeysToElement() 
+        public void ShouldSendKeysToElement()
         {
             driver.Url = javascriptPage;
 
@@ -117,7 +136,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldSubmitElement() 
+        public void ShouldSubmitElement()
         {
             driver.Url = javascriptPage;
 
@@ -128,7 +147,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldClickLinkElement() 
+        public void ShouldClickLinkElement()
         {
             driver.Url = javascriptPage;
             IWebElement changedDiv = driver.FindElement(By.Id("dynamo"));
@@ -138,7 +157,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldGetAttributesFromElement() 
+        public void ShouldGetAttributesFromElement()
         {
             driver.Url = (javascriptPage);
 
