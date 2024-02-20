@@ -309,7 +309,7 @@ namespace OpenQA.Selenium.Remote
         {
             Response response = new Response();
             string body = responseInfo.Body;
-            if (responseInfo.StatusCode.ToString().First() != '2')
+            if ((int)responseInfo.StatusCode < 200 || (int)responseInfo.StatusCode > 299)
             {
                 response = Response.FromErrorJson(body);
             }
