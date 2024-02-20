@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
 
@@ -103,10 +104,6 @@ namespace OpenQA.Selenium
                         this.responseValue = valueDictionary["value"];
                     }
                 }
-                else if (valueDictionary.ContainsKey("error"))
-                {
-                    this.responseStatus = WebDriverError.ResultFromError(valueDictionary["error"].ToString());
-                }
             }
         }
 
@@ -146,6 +143,26 @@ namespace OpenQA.Selenium
         {
             Dictionary<string, object> deserializedResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
             Response response = new Response(deserializedResponse);
+            return response;
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="Response"/> from a JSON-encoded string.
+        /// </summary>
+        /// <param name="value">The JSON string to deserialize into a <see cref="Response"/>.</param>
+        /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
+        public static Response FromErrorJson(string value)
+        {
+            Dictionary<string, object> deserializedResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
+
+            var response = new Response();
+
+            var valueDictionary = deserializedResponse["value"] as Dictionary<string, object>;
+
+            response.Value = valueDictionary;
+
+            response.Status = WebDriverError.ResultFromError(valueDictionary["error"].ToString());
+
             return response;
         }
 

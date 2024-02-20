@@ -311,7 +311,7 @@ namespace OpenQA.Selenium.Remote
             string body = responseInfo.Body;
             if (responseInfo.StatusCode.ToString().First() != '2')
             {
-                response = Response.FromJson(body);
+                response = Response.FromErrorJson(body);
             }
             else if (responseInfo.ContentType != null && responseInfo.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
             {
