@@ -807,7 +807,7 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame("inner");
             IWebElement element = driver.FindElement(By.Id("oneline"));
             driver.SwitchTo().DefaultContent();
-            Assert.That(() => { string foo = element.Text; }, Throws.InstanceOf<StaleElementReferenceException>());
+            Assert.That(() => { string foo = element.Text; }, Throws.InstanceOf<NoSuchElementException>());
         }
 
         /////////////////////////////////////////////////
