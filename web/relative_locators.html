@@ -10,6 +10,17 @@
     td {
       border: solid;
     }
+    .small-rectangle {
+      border: 1px solid black;
+      width: 100px;
+      height: 50px;
+      margin: 5px 25px;
+    }
+    .big-rectangle {
+      border: 1px solid black;
+      width: 150px;
+      height: 400px;                
+    }
   </style>
 </head>
 <body>
@@ -36,6 +47,20 @@
     <td id="ninth">9</td>
   </tr>
 </table>
+
+<div class="small-rectangle" id="rect1">
+  Rectangle 1
+</div>
+<div class="big-rectangle" id="rect2">
+  Rectangle 2, which is near Rectangle 1
+</div>
+
+<div class="small-rectangle" style="margin:60px 25px" id="rect3">
+  Rectangle 3
+</div>
+<div class="big-rectangle" id="rect4">
+  Rectangle 4, which is not near Rectangle 2 because it is more than 50 px away
+</div>
 
 </body>
 </html>
