@@ -435,99 +435,113 @@ loadScripts(document, 'script');</script>
 <div class="block">This action will be performed each time after <a href="../WebElement.html#findElements(org.openqa.selenium.By)"><code>findElements(By)</code></a> is called.</div>
 </div>
 <div class="col-first even-row-color"><code>default void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetAttribute(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">afterGetAttribute</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterFrame(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)" class="member-name-link">afterFrame</a><wbr>(<a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameElement,
+ <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last even-row-color">
+<div class="block">This action will be performed each time after <a href="../WebDriver.TargetLocator.html#frame(org.openqa.selenium.WebElement)"><code>WebDriver.TargetLocator.frame(WebElement)</code></a>
+ ()} is called.</div>
+</div>
+<div class="col-first odd-row-color"><code>default void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetAttribute(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">afterGetAttribute</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block">This action will be performed each time after <a href="../WebElement.html#getAttribute(java.lang.String)"><code>getAttribute(String)</code></a> is
  called.</div>
 </div>
-<div class="col-first odd-row-color"><code>default void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetCssValue(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">afterGetCssValue</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first even-row-color"><code>default void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetCssValue(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">afterGetCssValue</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;propertyName,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">This action will be performed each time after <a href="../WebElement.html#getCssValue(java.lang.String)"><code>getCssValue(String)</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color"><code>default void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetLocation(org.openqa.selenium.WebElement,org.openqa.selenium.Point)" class="member-name-link">afterGetLocation</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first odd-row-color"><code>default void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetLocation(org.openqa.selenium.WebElement,org.openqa.selenium.Point)" class="member-name-link">afterGetLocation</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block">This action will be performed each time after <a href="../WebElement.html#getLocation()"><code>getLocation()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color"><code>default void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetSize(org.openqa.selenium.WebElement,org.openqa.selenium.Dimension)" class="member-name-link">afterGetSize</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first even-row-color"><code>default void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetSize(org.openqa.selenium.WebElement,org.openqa.selenium.Dimension)" class="member-name-link">afterGetSize</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">This action will be performed each time after <a href="../WebElement.html#getSize()"><code>getSize()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color"><code>default void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetTagName(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">afterGetTagName</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first odd-row-color"><code>default void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetTagName(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">afterGetTagName</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block">This action will be performed each time after <a href="../WebElement.html#getTagName()"><code>getTagName()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color"><code>default void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetText(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">afterGetText</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first even-row-color"><code>default void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetText(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">afterGetText</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">This action will be performed each time after <a href="../WebElement.html#getText()"><code>getText()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color"><code>default void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterIsDisplayed(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsDisplayed</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first odd-row-color"><code>default void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterIsDisplayed(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsDisplayed</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  boolean&nbsp;result)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block">This action will be performed each time after <a href="../WebElement.html#isDisplayed()"><code>isDisplayed()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color"><code>default void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterIsEnabled(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsEnabled</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first even-row-color"><code>default void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterIsEnabled(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsEnabled</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  boolean&nbsp;result)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">This action will be performed each time after <a href="../WebElement.html#isEnabled()"><code>isEnabled()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color"><code>default void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterIsSelected(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsSelected</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first odd-row-color"><code>default void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterIsSelected(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsSelected</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  boolean&nbsp;result)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block">This action will be performed each time after <a href="../WebElement.html#isSelected()"><code>isSelected()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color"><code>default void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterSendKeys(org.openqa.selenium.WebElement,java.lang.CharSequence...)" class="member-name-link">afterSendKeys</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a>...&nbsp;keysToSend)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>default void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterSubmit(org.openqa.selenium.WebElement)" class="member-name-link">afterSubmit</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last even-row-color">
+<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterSendKeys(org.openqa.selenium.WebElement,java.lang.CharSequence...)" class="member-name-link">afterSendKeys</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a>...&nbsp;keysToSend)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>default void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterSubmit(org.openqa.selenium.WebElement)" class="member-name-link">afterSubmit</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">This action will be performed each time after <a href="../WebElement.html#submit()"><code>submit()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color"><code>default void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeAnyWebElementCall(org.openqa.selenium.WebElement,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWebElementCall</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first even-row-color"><code>default void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeAnyWebElementCall(org.openqa.selenium.WebElement,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWebElementCall</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">This method will be called before any method of a <a href="../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> instance is called.</div>
 </div>
-<div class="col-first even-row-color"><code>default void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeClear(org.openqa.selenium.WebElement)" class="member-name-link">beforeClear</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code>default void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeClear(org.openqa.selenium.WebElement)" class="member-name-link">beforeClear</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">This action will be performed each time before <a href="../WebElement.html#clear()"><code>clear()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color"><code>default void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeClick(org.openqa.selenium.WebElement)" class="member-name-link">beforeClick</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code>default void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeClick(org.openqa.selenium.WebElement)" class="member-name-link">beforeClick</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last even-row-color">
 <div class="block">This action will be performed each time before <a href="../WebElement.html#click()"><code>click()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color"><code>default void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeFindElement(org.openqa.selenium.WebElement,org.openqa.selenium.By)" class="member-name-link">beforeFindElement</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
- <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
-<div class="col-last even-row-color">
-<div class="block">This action will be performed each time before <a href="../WebElement.html#findElement(org.openqa.selenium.By)"><code>findElement(By)</code></a> is called.</div>
-</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeFindElements(org.openqa.selenium.WebElement,org.openqa.selenium.By)" class="member-name-link">beforeFindElements</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeFindElement(org.openqa.selenium.WebElement,org.openqa.selenium.By)" class="member-name-link">beforeFindElement</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
 <div class="col-last odd-row-color">
+<div class="block">This action will be performed each time before <a href="../WebElement.html#findElement(org.openqa.selenium.By)"><code>findElement(By)</code></a> is called.</div>
+</div>
+<div class="col-first even-row-color"><code>default void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeFindElements(org.openqa.selenium.WebElement,org.openqa.selenium.By)" class="member-name-link">beforeFindElements</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+ <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
+<div class="col-last even-row-color">
 <div class="block">This action will be performed each time before <a href="../WebElement.html#findElements(org.openqa.selenium.By)"><code>findElements(By)</code></a> is called.</div>
+</div>
+<div class="col-first odd-row-color"><code>default void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeFrame(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebElement)" class="member-name-link">beforeFrame</a><wbr>(<a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameElement)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">This action will be performed each time before <a href="../WebDriver.TargetLocator.html#frame(org.openqa.selenium.WebElement)"><code>WebDriver.TargetLocator.frame(WebElement)</code></a> ()} is called.</div>
 </div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeGetAttribute(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">beforeGetAttribute</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,

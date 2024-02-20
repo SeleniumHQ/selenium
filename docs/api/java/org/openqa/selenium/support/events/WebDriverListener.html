@@ -100,10 +100,24 @@ loadScripts(document, 'script');</script>
 <div class="block">This action will be performed each time after <a href="../../Alert.html#accept()"><code>Alert.accept()</code></a></div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAddCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">afterAddCookie</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
- <a href="../../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&nbsp;cookie)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterActiveElement(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebDriver)" class="member-name-link">afterActiveElement</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#activeElement()"><code>WebDriver.TargetLocator.activeElement()</code></a>
+ is called.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAddCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">afterAddCookie</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
+ <a href="../../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&nbsp;cookie)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Options.html#addCookie(org.openqa.selenium.Cookie)"><code>WebDriver.Options.addCookie(Cookie)</code></a></div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAlert(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.Alert)" class="member-name-link">afterAlert</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#alert()"><code>WebDriver.TargetLocator.alert()</code></a> is
+ called.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAnyAlertCall(org.openqa.selenium.Alert,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyAlertCall</a><wbr>(<a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert,
@@ -135,56 +149,71 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;result)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAnyTimeoutsCall(org.openqa.selenium.WebDriver.Timeouts,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyTimeoutsCall</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAnyTargetLocatorCall(org.openqa.selenium.WebDriver.TargetLocator,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyTargetLocatorCall</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;result)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Called after any method in <a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium"><code>WebDriver.TargetLocator</code></a> class.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAnyTimeoutsCall(org.openqa.selenium.WebDriver.Timeouts,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyTimeoutsCall</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;result)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after any method of a <a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium"><code>WebDriver.Timeouts</code></a> instance is</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAnyWebDriverCall(org.openqa.selenium.WebDriver,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyWebDriverCall</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAnyWebDriverCall(org.openqa.selenium.WebDriver,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyWebDriverCall</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after any method of a <a href="../../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAnyWebElementCall(org.openqa.selenium.WebElement,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyWebElementCall</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAnyWebElementCall(org.openqa.selenium.WebElement,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyWebElementCall</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after any method of a <a href="../../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> instance is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAnyWindowCall(org.openqa.selenium.WebDriver.Window,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyWindowCall</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterAnyWindowCall(org.openqa.selenium.WebDriver.Window,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyWindowCall</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after any method of a <a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium"><code>WebDriver.Window</code></a> instance is</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterBack(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">afterBack</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterBack(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">afterBack</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Navigation.html#back()"><code>WebDriver.Navigation.back()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterClear(org.openqa.selenium.WebElement)" class="member-name-link">afterClear</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterClear(org.openqa.selenium.WebElement)" class="member-name-link">afterClear</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebElement.html#clear()"><code>WebElement.clear()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterClick(org.openqa.selenium.WebElement)" class="member-name-link">afterClick</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterClick(org.openqa.selenium.WebElement)" class="member-name-link">afterClick</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebElement.html#click()"><code>WebElement.click()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterClose(org.openqa.selenium.WebDriver)" class="member-name-link">afterClose</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterClose(org.openqa.selenium.WebDriver)" class="member-name-link">afterClose</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after <a href="../../WebDriver.html#close()"><code>WebDriver.close()</code></a> is called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterDefaultContent(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebDriver)" class="member-name-link">afterDefaultContent</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#defaultContent()"><code>WebDriver.TargetLocator.defaultContent()</code></a>
+ is called.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterDeleteAllCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">afterDeleteAllCookies</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options)</code></div>
@@ -259,144 +288,175 @@ loadScripts(document, 'script');</script>
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Navigation.html#forward()"><code>WebDriver.Navigation.forward()</code></a> is called.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterFullscreen(org.openqa.selenium.WebDriver.Window)" class="member-name-link">afterFullscreen</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterFrame(org.openqa.selenium.WebDriver.TargetLocator,int,org.openqa.selenium.WebDriver)" class="member-name-link">afterFrame</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ int&nbsp;index,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
-<div class="block">This action will be performed each time after <a href="../../WebDriver.Window.html#fullscreen()"><code>WebDriver.Window.fullscreen()</code></a> is called.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGet(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGet</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
-<div class="block">This method will be called after <a href="../../WebDriver.html#get(java.lang.String)"><code>WebDriver.get(String)</code></a> is called.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetAttribute(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">afterGetAttribute</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
-<div class="block">This action will be performed each time after <a href="../../WebElement.html#getAttribute(java.lang.String)"><code>WebElement.getAttribute(String)</code></a> is
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#frame(int)"><code>WebDriver.TargetLocator.frame(int)</code></a> ()} is
  called.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String,org.openqa.selenium.Cookie)" class="member-name-link">afterGetCookieNamed</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterFrame(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">afterFrame</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nameOrId,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#frame(java.lang.String)"><code>WebDriver.TargetLocator.frame(String)</code></a> ()}
+ is called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterFrame(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)" class="member-name-link">afterFrame</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameElement,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#frame(org.openqa.selenium.WebElement)"><code>WebDriver.TargetLocator.frame(WebElement)</code></a>
+ ()} is called.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterFullscreen(org.openqa.selenium.WebDriver.Window)" class="member-name-link">afterFullscreen</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time after <a href="../../WebDriver.Window.html#fullscreen()"><code>WebDriver.Window.fullscreen()</code></a> is called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGet(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGet</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This method will be called after <a href="../../WebDriver.html#get(java.lang.String)"><code>WebDriver.get(String)</code></a> is called.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetAttribute(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">afterGetAttribute</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time after <a href="../../WebElement.html#getAttribute(java.lang.String)"><code>WebElement.getAttribute(String)</code></a> is
+ called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String,org.openqa.selenium.Cookie)" class="member-name-link">afterGetCookieNamed</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="../../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Options.html#getCookieNamed(java.lang.String)"><code>WebDriver.Options.getCookieNamed(String)</code></a></div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetCookies(org.openqa.selenium.WebDriver.Options,java.util.Set)" class="member-name-link">afterGetCookies</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetCookies(org.openqa.selenium.WebDriver.Options,java.util.Set)" class="member-name-link">afterGetCookies</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&gt;&nbsp;result)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Options.html#getCookies()"><code>WebDriver.Options.getCookies()</code></a></div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetCssValue(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">afterGetCssValue</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetCssValue(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">afterGetCssValue</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;propertyName,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebElement.html#getCssValue(java.lang.String)"><code>WebElement.getCssValue(String)</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetCurrentUrl(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetCurrentUrl</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetCurrentUrl(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetCurrentUrl</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after <a href="../../WebDriver.html#getCurrentUrl()"><code>WebDriver.getCurrentUrl()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetLocation(org.openqa.selenium.WebElement,org.openqa.selenium.Point)" class="member-name-link">afterGetLocation</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetLocation(org.openqa.selenium.WebElement,org.openqa.selenium.Point)" class="member-name-link">afterGetLocation</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="../../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebElement.html#getLocation()"><code>WebElement.getLocation()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetPageSource(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetPageSource</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetPageSource(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetPageSource</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after <a href="../../WebDriver.html#getPageSource()"><code>WebDriver.getPageSource()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetPosition(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Point)" class="member-name-link">afterGetPosition</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetPosition(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Point)" class="member-name-link">afterGetPosition</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
  <a href="../../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Window.html#getPosition()"><code>WebDriver.Window.getPosition()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetSize(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Dimension)" class="member-name-link">afterGetSize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetSize(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Dimension)" class="member-name-link">afterGetSize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
  <a href="../../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Window.html#getSize()"><code>WebDriver.Window.getSize()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetSize(org.openqa.selenium.WebElement,org.openqa.selenium.Dimension)" class="member-name-link">afterGetSize</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetSize(org.openqa.selenium.WebElement,org.openqa.selenium.Dimension)" class="member-name-link">afterGetSize</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="../../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebElement.html#getSize()"><code>WebElement.getSize()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetTagName(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">afterGetTagName</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetTagName(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">afterGetTagName</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebElement.html#getTagName()"><code>WebElement.getTagName()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetText(org.openqa.selenium.Alert,java.lang.String)" class="member-name-link">afterGetText</a><wbr>(<a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetText(org.openqa.selenium.Alert,java.lang.String)" class="member-name-link">afterGetText</a><wbr>(<a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../Alert.html#getText()"><code>Alert.getText()</code></a></div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetText(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">afterGetText</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetText(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">afterGetText</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebElement.html#getText()"><code>WebElement.getText()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetTitle(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetTitle</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetTitle(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetTitle</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after <a href="../../WebDriver.html#getTitle()"><code>WebDriver.getTitle()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetWindowHandle(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetWindowHandle</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetWindowHandle(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetWindowHandle</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after <a href="../../WebDriver.html#getWindowHandle()"><code>WebDriver.getWindowHandle()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetWindowHandles(org.openqa.selenium.WebDriver,java.util.Set)" class="member-name-link">afterGetWindowHandles</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetWindowHandles(org.openqa.selenium.WebDriver,java.util.Set)" class="member-name-link">afterGetWindowHandles</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;result)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after <a href="../../WebDriver.html#getWindowHandles()"><code>WebDriver.getWindowHandles()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterImplicitlyWait(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">afterImplicitlyWait</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterImplicitlyWait(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">afterImplicitlyWait</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;duration)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Timeouts.html#implicitlyWait(java.time.Duration)"><code>WebDriver.Timeouts.implicitlyWait(Duration)</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterIsDisplayed(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsDisplayed</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterIsDisplayed(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsDisplayed</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  boolean&nbsp;result)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebElement.html#isDisplayed()"><code>WebElement.isDisplayed()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterIsEnabled(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsEnabled</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
- boolean&nbsp;result)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
-<div class="block">This action will be performed each time after <a href="../../WebElement.html#isEnabled()"><code>WebElement.isEnabled()</code></a> is called.</div>
-</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterIsSelected(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsSelected</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterIsEnabled(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsEnabled</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  boolean&nbsp;result)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
-<div class="block">This action will be performed each time after <a href="../../WebElement.html#isSelected()"><code>WebElement.isSelected()</code></a> is called.</div>
+<div class="block">This action will be performed each time after <a href="../../WebElement.html#isEnabled()"><code>WebElement.isEnabled()</code></a> is called.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterMaximize(org.openqa.selenium.WebDriver.Window)" class="member-name-link">afterMaximize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterIsSelected(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsSelected</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+ boolean&nbsp;result)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time after <a href="../../WebElement.html#isSelected()"><code>WebElement.isSelected()</code></a> is called.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterMaximize(org.openqa.selenium.WebDriver.Window)" class="member-name-link">afterMaximize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Window.html#maximize()"><code>WebDriver.Window.maximize()</code></a> is called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterNewWindow(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WindowType,org.openqa.selenium.WebDriver)" class="member-name-link">afterNewWindow</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WindowType.html" title="enum class in org.openqa.selenium">WindowType</a>&nbsp;typeHint,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)"><code>WebDriver.TargetLocator.newWindow(WindowType)</code></a> is called.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterPageLoadTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">afterPageLoadTimeout</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
@@ -405,73 +465,87 @@ loadScripts(document, 'script');</script>
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Timeouts.html#pageLoadTimeout(java.time.Duration)"><code>WebDriver.Timeouts.pageLoadTimeout(Duration)</code></a> is called.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterPerform(org.openqa.selenium.WebDriver,java.util.Collection)" class="member-name-link">afterPerform</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterParentFrame(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebDriver)" class="member-name-link">afterParentFrame</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#parentFrame()"><code>WebDriver.TargetLocator.parentFrame()</code></a> is
+ called.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterPerform(org.openqa.selenium.WebDriver,java.util.Collection)" class="member-name-link">afterPerform</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after <a href="../../interactions/Actions.html#perform()"><code>Actions.perform()</code></a> } is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterQuit(org.openqa.selenium.WebDriver)" class="member-name-link">afterQuit</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterQuit(org.openqa.selenium.WebDriver)" class="member-name-link">afterQuit</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after <a href="../../WebDriver.html#quit()"><code>WebDriver.quit()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterRefresh(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">afterRefresh</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterRefresh(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">afterRefresh</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Navigation.html#refresh()"><code>WebDriver.Navigation.refresh()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterResetInputState(org.openqa.selenium.WebDriver)" class="member-name-link">afterResetInputState</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterResetInputState(org.openqa.selenium.WebDriver)" class="member-name-link">afterResetInputState</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called after <a href="../../remote/RemoteWebDriver.html#resetInputState()"><code>RemoteWebDriver.resetInputState()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSendKeys(org.openqa.selenium.Alert,java.lang.String)" class="member-name-link">afterSendKeys</a><wbr>(<a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSendKeys(org.openqa.selenium.Alert,java.lang.String)" class="member-name-link">afterSendKeys</a><wbr>(<a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../Alert.html#sendKeys(java.lang.String)"><code>Alert.sendKeys(String)</code></a></div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSendKeys(org.openqa.selenium.WebElement,java.lang.CharSequence...)" class="member-name-link">afterSendKeys</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a>...&nbsp;keysToSend)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSetPosition(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Point)" class="member-name-link">afterSetPosition</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSendKeys(org.openqa.selenium.WebElement,java.lang.CharSequence...)" class="member-name-link">afterSendKeys</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a>...&nbsp;keysToSend)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSetPosition(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Point)" class="member-name-link">afterSetPosition</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
  <a href="../../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;position)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Window.html#setPosition(org.openqa.selenium.Point)"><code>WebDriver.Window.setPosition(Point)</code></a> is
  called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSetScriptTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">afterSetScriptTimeout</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSetScriptTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">afterSetScriptTimeout</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;duration)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(Duration)</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSetSize(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Dimension)" class="member-name-link">afterSetSize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSetSize(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Dimension)" class="member-name-link">afterSetSize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
  <a href="../../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;size)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Window.html#setSize(org.openqa.selenium.Dimension)"><code>WebDriver.Window.setSize(Dimension)</code></a> is
  called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSubmit(org.openqa.selenium.WebElement)" class="member-name-link">afterSubmit</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterSubmit(org.openqa.selenium.WebElement)" class="member-name-link">afterSubmit</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebElement.html#submit()"><code>WebElement.submit()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterTo(org.openqa.selenium.WebDriver.Navigation,java.lang.String)" class="member-name-link">afterTo</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterTo(org.openqa.selenium.WebDriver.Navigation,java.lang.String)" class="member-name-link">afterTo</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Navigation.html#to(java.lang.String)"><code>WebDriver.Navigation.to(String)</code></a> is
  called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterTo(org.openqa.selenium.WebDriver.Navigation,java.net.URL)" class="member-name-link">afterTo</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterTo(org.openqa.selenium.WebDriver.Navigation,java.net.URL)" class="member-name-link">afterTo</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a>&nbsp;url)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Navigation.html#to(java.net.URL)"><code>WebDriver.Navigation.to(URL)</code></a> is called.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterWindow(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">afterWindow</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nameOrHandle,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a>.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAccept(org.openqa.selenium.Alert)" class="member-name-link">beforeAccept</a><wbr>(<a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert)</code></div>
@@ -479,10 +553,22 @@ loadScripts(document, 'script');</script>
 <div class="block">This action will be performed each time before <a href="../../Alert.html#accept()"><code>Alert.accept()</code></a></div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAddCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">beforeAddCookie</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
- <a href="../../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&nbsp;cookie)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeActiveElement(org.openqa.selenium.WebDriver.TargetLocator)" class="member-name-link">beforeActiveElement</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#activeElement()"><code>WebDriver.TargetLocator.activeElement()</code></a>
+ is called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAddCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">beforeAddCookie</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
+ <a href="../../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&nbsp;cookie)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Options.html#addCookie(org.openqa.selenium.Cookie)"><code>WebDriver.Options.addCookie(Cookie)</code></a></div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAlert(org.openqa.selenium.WebDriver.TargetLocator)" class="member-name-link">beforeAlert</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#alert()"><code>WebDriver.TargetLocator.alert()</code></a> is
+ called.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAnyAlertCall(org.openqa.selenium.Alert,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyAlertCall</a><wbr>(<a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert,
@@ -510,52 +596,65 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAnyTimeoutsCall(org.openqa.selenium.WebDriver.Timeouts,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyTimeoutsCall</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAnyTargetLocatorCall(org.openqa.selenium.WebDriver.TargetLocator,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyTargetLocatorCall</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Called before any method in <a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium"><code>WebDriver.TargetLocator</code></a> class.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAnyTimeoutsCall(org.openqa.selenium.WebDriver.Timeouts,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyTimeoutsCall</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called before any method of a <a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium"><code>WebDriver.Timeouts</code></a> instance is</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAnyWebDriverCall(org.openqa.selenium.WebDriver,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWebDriverCall</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAnyWebDriverCall(org.openqa.selenium.WebDriver,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWebDriverCall</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called before any method of a <a href="../../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAnyWebElementCall(org.openqa.selenium.WebElement,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWebElementCall</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAnyWebElementCall(org.openqa.selenium.WebElement,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWebElementCall</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called before any method of a <a href="../../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> instance is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAnyWindowCall(org.openqa.selenium.WebDriver.Window,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWindowCall</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeAnyWindowCall(org.openqa.selenium.WebDriver.Window,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWindowCall</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called before any method of a <a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium"><code>WebDriver.Window</code></a> instance is</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeBack(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">beforeBack</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeBack(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">beforeBack</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Navigation.html#back()"><code>WebDriver.Navigation.back()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeClear(org.openqa.selenium.WebElement)" class="member-name-link">beforeClear</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeClear(org.openqa.selenium.WebElement)" class="member-name-link">beforeClear</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#clear()"><code>WebElement.clear()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeClick(org.openqa.selenium.WebElement)" class="member-name-link">beforeClick</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeClick(org.openqa.selenium.WebElement)" class="member-name-link">beforeClick</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#click()"><code>WebElement.click()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeClose(org.openqa.selenium.WebDriver)" class="member-name-link">beforeClose</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeClose(org.openqa.selenium.WebDriver)" class="member-name-link">beforeClose</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called before <a href="../../WebDriver.html#close()"><code>WebDriver.close()</code></a> is called.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeDefaultContent(org.openqa.selenium.WebDriver.TargetLocator)" class="member-name-link">beforeDefaultContent</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#defaultContent()"><code>WebDriver.TargetLocator.defaultContent()</code></a>
+ is called.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeDeleteAllCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">beforeDeleteAllCookies</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options)</code></div>
@@ -624,127 +723,153 @@ loadScripts(document, 'script');</script>
  called.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeFullscreen(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeFullscreen</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeFrame(org.openqa.selenium.WebDriver.TargetLocator,int)" class="member-name-link">beforeFrame</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ int&nbsp;index)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
-<div class="block">This action will be performed each time before <a href="../../WebDriver.Window.html#fullscreen()"><code>WebDriver.Window.fullscreen()</code></a> is called.</div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#frame(int)"><code>WebDriver.TargetLocator.frame(int)</code></a> ()}
+ is called.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGet(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">beforeGet</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeFrame(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String)" class="member-name-link">beforeFrame</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nameOrId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
-<div class="block">This method will be called before <a href="../../WebDriver.html#get(java.lang.String)"><code>WebDriver.get(String)</code></a> is called.</div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#frame(java.lang.String)"><code>WebDriver.TargetLocator.frame(String)</code></a>
+ ()} is called.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetAttribute(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">beforeGetAttribute</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeFrame(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebElement)" class="member-name-link">beforeFrame</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameElement)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#frame(org.openqa.selenium.WebElement)"><code>WebDriver.TargetLocator.frame(WebElement)</code></a> ()} is called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeFullscreen(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeFullscreen</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time before <a href="../../WebDriver.Window.html#fullscreen()"><code>WebDriver.Window.fullscreen()</code></a> is called.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGet(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">beforeGet</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This method will be called before <a href="../../WebDriver.html#get(java.lang.String)"><code>WebDriver.get(String)</code></a> is called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetAttribute(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">beforeGetAttribute</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#getAttribute(java.lang.String)"><code>WebElement.getAttribute(String)</code></a> is
  called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String)" class="member-name-link">beforeGetCookieNamed</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String)" class="member-name-link">beforeGetCookieNamed</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Options.html#getCookieNamed(java.lang.String)"><code>WebDriver.Options.getCookieNamed(String)</code></a></div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">beforeGetCookies</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">beforeGetCookies</a><wbr>(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Options.html#getCookies()"><code>WebDriver.Options.getCookies()</code></a></div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetCssValue(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">beforeGetCssValue</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetCssValue(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">beforeGetCssValue</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;propertyName)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#getCssValue(java.lang.String)"><code>WebElement.getCssValue(String)</code></a> is
  called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetCurrentUrl(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetCurrentUrl</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetCurrentUrl(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetCurrentUrl</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called before <a href="../../WebDriver.html#getCurrentUrl()"><code>WebDriver.getCurrentUrl()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetLocation(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetLocation</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetLocation(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetLocation</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#getLocation()"><code>WebElement.getLocation()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetPageSource(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetPageSource</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetPageSource(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetPageSource</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called before <a href="../../WebDriver.html#getPageSource()"><code>WebDriver.getPageSource()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetPosition(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeGetPosition</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetPosition(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeGetPosition</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Window.html#getPosition()"><code>WebDriver.Window.getPosition()</code></a> is
  called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetSize(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeGetSize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetSize(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeGetSize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Window.html#getSize()"><code>WebDriver.Window.getSize()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetSize(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetSize</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetSize(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetSize</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#getSize()"><code>WebElement.getSize()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetTagName(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetTagName</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetTagName(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetTagName</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#getTagName()"><code>WebElement.getTagName()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetText(org.openqa.selenium.Alert)" class="member-name-link">beforeGetText</a><wbr>(<a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetText(org.openqa.selenium.Alert)" class="member-name-link">beforeGetText</a><wbr>(<a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../Alert.html#getText()"><code>Alert.getText()</code></a></div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetText(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetText</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetText(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetText</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#getText()"><code>WebElement.getText()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetTitle(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetTitle</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetTitle(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetTitle</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called before <a href="../../WebDriver.html#getTitle()"><code>WebDriver.getTitle()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetWindowHandle(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetWindowHandle</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetWindowHandle(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetWindowHandle</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called before <a href="../../WebDriver.html#getWindowHandle()"><code>WebDriver.getWindowHandle()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetWindowHandles(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetWindowHandles</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetWindowHandles(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetWindowHandles</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called before <a href="../../WebDriver.html#getWindowHandles()"><code>WebDriver.getWindowHandles()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeImplicitlyWait(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">beforeImplicitlyWait</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeImplicitlyWait(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">beforeImplicitlyWait</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;duration)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Timeouts.html#implicitlyWait(java.time.Duration)"><code>WebDriver.Timeouts.implicitlyWait(Duration)</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeIsDisplayed(org.openqa.selenium.WebElement)" class="member-name-link">beforeIsDisplayed</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeIsDisplayed(org.openqa.selenium.WebElement)" class="member-name-link">beforeIsDisplayed</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#isDisplayed()"><code>WebElement.isDisplayed()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeIsEnabled(org.openqa.selenium.WebElement)" class="member-name-link">beforeIsEnabled</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeIsEnabled(org.openqa.selenium.WebElement)" class="member-name-link">beforeIsEnabled</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#isEnabled()"><code>WebElement.isEnabled()</code></a> is called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeIsSelected(org.openqa.selenium.WebElement)" class="member-name-link">beforeIsSelected</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeIsSelected(org.openqa.selenium.WebElement)" class="member-name-link">beforeIsSelected</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#isSelected()"><code>WebElement.isSelected()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeMaximize(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeMaximize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeMaximize(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeMaximize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Window.html#maximize()"><code>WebDriver.Window.maximize()</code></a> is called.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeNewWindow(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WindowType)" class="member-name-link">beforeNewWindow</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WindowType.html" title="enum class in org.openqa.selenium">WindowType</a>&nbsp;typeHint)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)"><code>WebDriver.TargetLocator.newWindow(WindowType)</code></a> is called.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforePageLoadTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">beforePageLoadTimeout</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
@@ -753,77 +878,89 @@ loadScripts(document, 'script');</script>
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Timeouts.html#pageLoadTimeout(java.time.Duration)"><code>WebDriver.Timeouts.pageLoadTimeout(Duration)</code></a> is called.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforePerform(org.openqa.selenium.WebDriver,java.util.Collection)" class="member-name-link">beforePerform</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeParentFrame(org.openqa.selenium.WebDriver.TargetLocator)" class="member-name-link">beforeParentFrame</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
-<div class="block">This method will be called before <a href="../../interactions/Actions.html#perform()"><code>Actions.perform()</code></a> } is called.</div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#parentFrame()"><code>WebDriver.TargetLocator.parentFrame()</code></a> is
+ called.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeQuit(org.openqa.selenium.WebDriver)" class="member-name-link">beforeQuit</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforePerform(org.openqa.selenium.WebDriver,java.util.Collection)" class="member-name-link">beforePerform</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
-<div class="block">This method will be called before <a href="../../WebDriver.html#quit()"><code>WebDriver.quit()</code></a> is called.</div>
+<div class="block">This method will be called before <a href="../../interactions/Actions.html#perform()"><code>Actions.perform()</code></a> } is called.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeRefresh(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">beforeRefresh</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeQuit(org.openqa.selenium.WebDriver)" class="member-name-link">beforeQuit</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This method will be called before <a href="../../WebDriver.html#quit()"><code>WebDriver.quit()</code></a> is called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeRefresh(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">beforeRefresh</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Navigation.html#refresh()"><code>WebDriver.Navigation.refresh()</code></a> is
  called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeResetInputState(org.openqa.selenium.WebDriver)" class="member-name-link">beforeResetInputState</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeResetInputState(org.openqa.selenium.WebDriver)" class="member-name-link">beforeResetInputState</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This method will be called before <a href="../../remote/RemoteWebDriver.html#resetInputState()"><code>RemoteWebDriver.resetInputState()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSendKeys(org.openqa.selenium.Alert,java.lang.String)" class="member-name-link">beforeSendKeys</a><wbr>(<a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSendKeys(org.openqa.selenium.Alert,java.lang.String)" class="member-name-link">beforeSendKeys</a><wbr>(<a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../Alert.html#sendKeys(java.lang.String)"><code>Alert.sendKeys(String)</code></a></div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSendKeys(org.openqa.selenium.WebElement,java.lang.CharSequence...)" class="member-name-link">beforeSendKeys</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSendKeys(org.openqa.selenium.WebElement,java.lang.CharSequence...)" class="member-name-link">beforeSendKeys</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a>...&nbsp;keysToSend)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(CharSequence...)</code></a> is
  called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSetPosition(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Point)" class="member-name-link">beforeSetPosition</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSetPosition(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Point)" class="member-name-link">beforeSetPosition</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
  <a href="../../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;position)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Window.html#setPosition(org.openqa.selenium.Point)"><code>WebDriver.Window.setPosition(Point)</code></a> is
  called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSetScriptTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">beforeSetScriptTimeout</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSetScriptTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">beforeSetScriptTimeout</a><wbr>(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;timeouts,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;duration)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(Duration)</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSetSize(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Dimension)" class="member-name-link">beforeSetSize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSetSize(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Dimension)" class="member-name-link">beforeSetSize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
  <a href="../../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;size)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Window.html#setSize(org.openqa.selenium.Dimension)"><code>WebDriver.Window.setSize(Dimension)</code></a> is
  called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSubmit(org.openqa.selenium.WebElement)" class="member-name-link">beforeSubmit</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeSubmit(org.openqa.selenium.WebElement)" class="member-name-link">beforeSubmit</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebElement.html#submit()"><code>WebElement.submit()</code></a> is called.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeTo(org.openqa.selenium.WebDriver.Navigation,java.lang.String)" class="member-name-link">beforeTo</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeTo(org.openqa.selenium.WebDriver.Navigation,java.lang.String)" class="member-name-link">beforeTo</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Navigation.html#to(java.lang.String)"><code>WebDriver.Navigation.to(String)</code></a> is
  called.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeTo(org.openqa.selenium.WebDriver.Navigation,java.net.URL)" class="member-name-link">beforeTo</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeTo(org.openqa.selenium.WebDriver.Navigation,java.net.URL)" class="member-name-link">beforeTo</a><wbr>(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;navigation,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a>&nbsp;url)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Navigation.html#to(java.net.URL)"><code>WebDriver.Navigation.to(URL)</code></a> is called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeWindow(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String)" class="member-name-link">beforeWindow</a><wbr>(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nameOrHandle)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a>.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#onError(java.lang.Object,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.reflect.InvocationTargetException)" class="member-name-link">onError</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;target,
@@ -2435,6 +2572,294 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>window</code> - The window object that will be called</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="beforeAnyTargetLocatorCall(org.openqa.selenium.WebDriver.TargetLocator,java.lang.reflect.Method,java.lang.Object[])">
+<h3>beforeAnyTargetLocatorCall</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeAnyTargetLocatorCall</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args)</span></div>
+<div class="block">Called before any method in <a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium"><code>WebDriver.TargetLocator</code></a> class.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - the target locator being used for the action</dd>
+<dd><code>method</code> - the method being invoked</dd>
+<dd><code>args</code> - the arguments to the method</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterAnyTargetLocatorCall(org.openqa.selenium.WebDriver.TargetLocator,java.lang.reflect.Method,java.lang.Object[],java.lang.Object)">
+<h3>afterAnyTargetLocatorCall</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterAnyTargetLocatorCall</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;result)</span></div>
+<div class="block">Called after any method in <a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium"><code>WebDriver.TargetLocator</code></a> class.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - the target locator being used for the action</dd>
+<dd><code>method</code> - the method being invoked</dd>
+<dd><code>args</code> - the arguments to the method</dd>
+<dd><code>result</code> - the result of the method call</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="beforeFrame(org.openqa.selenium.WebDriver.TargetLocator,int)">
+<h3>beforeFrame</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeFrame</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ int&nbsp;index)</span></div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#frame(int)"><code>WebDriver.TargetLocator.frame(int)</code></a> ()}
+ is called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>index</code> - The zero-based index.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterFrame(org.openqa.selenium.WebDriver.TargetLocator,int,org.openqa.selenium.WebDriver)">
+<h3>afterFrame</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterFrame</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ int&nbsp;index,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</span></div>
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#frame(int)"><code>WebDriver.TargetLocator.frame(int)</code></a> ()} is
+ called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>index</code> - The zero-based index.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="beforeFrame(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String)">
+<h3>beforeFrame</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeFrame</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nameOrId)</span></div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#frame(java.lang.String)"><code>WebDriver.TargetLocator.frame(String)</code></a>
+ ()} is called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>nameOrId</code> - The name of the frame window, the id of the &lt;frame&gt; or &lt;iframe&gt;
+     element, or the (zero-based) index.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterFrame(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String,org.openqa.selenium.WebDriver)">
+<h3>afterFrame</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterFrame</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nameOrId,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</span></div>
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#frame(java.lang.String)"><code>WebDriver.TargetLocator.frame(String)</code></a> ()}
+ is called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>nameOrId</code> - The name of the frame window, the id of the &lt;frame&gt; or &lt;iframe&gt;
+     element, or the (zero-based) index.</dd>
+<dd><code>driver</code> - The current driver instance.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="beforeFrame(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebElement)">
+<h3>beforeFrame</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeFrame</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameElement)</span></div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#frame(org.openqa.selenium.WebElement)"><code>WebDriver.TargetLocator.frame(WebElement)</code></a> ()} is called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>frameElement</code> - The frame element to switch to.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterFrame(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">
+<h3>afterFrame</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterFrame</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameElement,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</span></div>
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#frame(org.openqa.selenium.WebElement)"><code>WebDriver.TargetLocator.frame(WebElement)</code></a>
+ ()} is called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>frameElement</code> - The frame element to switch to.</dd>
+<dd><code>driver</code> - The current driver instance.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="beforeParentFrame(org.openqa.selenium.WebDriver.TargetLocator)">
+<h3>beforeParentFrame</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeParentFrame</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator)</span></div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#parentFrame()"><code>WebDriver.TargetLocator.parentFrame()</code></a> is
+ called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterParentFrame(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebDriver)">
+<h3>afterParentFrame</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterParentFrame</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</span></div>
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#parentFrame()"><code>WebDriver.TargetLocator.parentFrame()</code></a> is
+ called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>driver</code> - The current driver instance.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="beforeWindow(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String)">
+<h3>beforeWindow</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeWindow</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nameOrHandle)</span></div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a>.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - the target locator being used for the action</dd>
+<dd><code>nameOrHandle</code> - The name of the window or the handle as returned by <a href="../../WebDriver.html#getWindowHandle()"><code>WebDriver.getWindowHandle()</code></a> or <code>null</code> if switching to a new window created by
+     <a href="../../WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)"><code>WebDriver.TargetLocator.newWindow(WindowType)</code></a></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterWindow(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String,org.openqa.selenium.WebDriver)">
+<h3>afterWindow</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterWindow</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nameOrHandle,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</span></div>
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a>.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>nameOrHandle</code> - The name of the window or the handle as returned by <a href="../../WebDriver.html#getWindowHandle()"><code>WebDriver.getWindowHandle()</code></a> or <code>null</code> if switching to a new window created by
+     <a href="../../WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)"><code>WebDriver.TargetLocator.newWindow(WindowType)</code></a>.</dd>
+<dd><code>driver</code> - The current driver instance.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="beforeNewWindow(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WindowType)">
+<h3>beforeNewWindow</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeNewWindow</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WindowType.html" title="enum class in org.openqa.selenium">WindowType</a>&nbsp;typeHint)</span></div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)"><code>WebDriver.TargetLocator.newWindow(WindowType)</code></a> is called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>typeHint</code> - The type of new browser window to be created. The created window is not
+     guaranteed to be of the requested type; if the driver does not support the requested type,
+     a new browser window will be created of whatever type the driver does support.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterNewWindow(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WindowType,org.openqa.selenium.WebDriver)">
+<h3>afterNewWindow</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterNewWindow</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WindowType.html" title="enum class in org.openqa.selenium">WindowType</a>&nbsp;typeHint,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</span></div>
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)"><code>WebDriver.TargetLocator.newWindow(WindowType)</code></a> is called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>typeHint</code> - The type of new browser window to be created. The created window is not
+     guaranteed to be of the requested type; if the driver does not support the requested type,
+     a new browser window will be created of whatever type the driver does support.</dd>
+<dd><code>driver</code> - The current driver instance.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="beforeDefaultContent(org.openqa.selenium.WebDriver.TargetLocator)">
+<h3>beforeDefaultContent</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeDefaultContent</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator)</span></div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#defaultContent()"><code>WebDriver.TargetLocator.defaultContent()</code></a>
+ is called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterDefaultContent(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebDriver)">
+<h3>afterDefaultContent</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterDefaultContent</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</span></div>
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#defaultContent()"><code>WebDriver.TargetLocator.defaultContent()</code></a>
+ is called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>driver</code> - The current driver instance.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="beforeActiveElement(org.openqa.selenium.WebDriver.TargetLocator)">
+<h3>beforeActiveElement</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeActiveElement</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator)</span></div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#activeElement()"><code>WebDriver.TargetLocator.activeElement()</code></a>
+ is called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterActiveElement(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebDriver)">
+<h3>afterActiveElement</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterActiveElement</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</span></div>
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#activeElement()"><code>WebDriver.TargetLocator.activeElement()</code></a>
+ is called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>driver</code> - The current driver instance.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="beforeAlert(org.openqa.selenium.WebDriver.TargetLocator)">
+<h3>beforeAlert</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeAlert</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator)</span></div>
+<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#alert()"><code>WebDriver.TargetLocator.alert()</code></a> is
+ called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterAlert(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.Alert)">
+<h3>afterAlert</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterAlert</span><wbr><span class="parameters">(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;targetLocator,
+ <a href="../../Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;alert)</span></div>
+<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#alert()"><code>WebDriver.TargetLocator.alert()</code></a> is
+ called.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>targetLocator</code> - The target locator being used for the action.</dd>
+<dd><code>alert</code> - The found alert.</dd>
 </dl>
 </section>
 </li>

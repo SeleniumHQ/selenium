@@ -323,12 +323,20 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/safari/AddHasPermissions.html#%3Cinit%3E()" class="member-name-link">AddHasPermissions()</a> - Constructor for class org.openqa.selenium.safari.<a href="org/openqa/selenium/safari/AddHasPermissions.html" title="class in org.openqa.selenium.safari">AddHasPermissions</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#addHeader(java.lang.String,java.lang.String)" class="member-name-link">addHeader(String, String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#addHeader(java.lang.String,java.lang.String)" class="member-name-link">addHeader(String, String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>
 <div class="block">Adds a header with the <code>name</code> and <code>value</code>, headers with the same (case-insensitive)
  name will be preserved.</div>
 </dd>
 <dt><a href="org/openqa/selenium/WebDriverException.html#addInfo(java.lang.String,java.lang.String)" class="member-name-link">addInfo(String, String)</a> - Method in exception org.openqa.selenium.<a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/Network.html#addIntercept(org.openqa.selenium.bidi.network.AddInterceptParameters)" class="member-name-link">addIntercept(AddInterceptParameters)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Network.html" title="class in org.openqa.selenium.bidi">Network</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">AddInterceptParameters</a> - Class in <a href="org/openqa/selenium/bidi/network/package-summary.html">org.openqa.selenium.bidi.network</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html#%3Cinit%3E(java.util.List)" class="member-name-link">AddInterceptParameters(List&lt;InterceptPhase&gt;)</a> - Constructor for class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html" title="class in org.openqa.selenium.bidi.network">AddInterceptParameters</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html#%3Cinit%3E(org.openqa.selenium.bidi.network.InterceptPhase)" class="member-name-link">AddInterceptParameters(InterceptPhase)</a> - Constructor for class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html" title="class in org.openqa.selenium.bidi.network">AddInterceptParameters</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/AdditionalHttpCommands.html" class="type-name-link" title="interface in org.openqa.selenium.remote">AdditionalHttpCommands</a> - Interface in <a href="org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</a></dt>
 <dd>
@@ -429,9 +437,19 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">This action will be performed each time after <a href="org/openqa/selenium/Alert.html#accept()"><code>Alert.accept()</code></a></div>
 </dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterActiveElement(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebDriver)" class="member-name-link">afterActiveElement(WebDriver.TargetLocator, WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.TargetLocator.html#activeElement()"><code>WebDriver.TargetLocator.activeElement()</code></a>
+ is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAddCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">afterAddCookie(WebDriver.Options, Cookie)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Options.html#addCookie(org.openqa.selenium.Cookie)"><code>WebDriver.Options.addCookie(Cookie)</code></a></div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAlert(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.Alert)" class="member-name-link">afterAlert(WebDriver.TargetLocator, Alert)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.TargetLocator.html#alert()"><code>WebDriver.TargetLocator.alert()</code></a> is
+ called.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyAlertCall(org.openqa.selenium.Alert,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyAlertCall(Alert, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>&nbsp;</dd>
@@ -446,6 +464,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyOptionsCall(org.openqa.selenium.WebDriver.Options,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyOptionsCall(WebDriver.Options, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyTargetLocatorCall(org.openqa.selenium.WebDriver.TargetLocator,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyTargetLocatorCall(WebDriver.TargetLocator, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">Called after any method in <a href="org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium"><code>WebDriver.TargetLocator</code></a> class.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyTimeoutsCall(org.openqa.selenium.WebDriver.Timeouts,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyTimeoutsCall(WebDriver.Timeouts, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This method will be called after any method of a <a href="org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium"><code>WebDriver.Timeouts</code></a> instance is</div>
@@ -485,6 +507,11 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterClose(org.openqa.selenium.WebDriver)" class="member-name-link">afterClose(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This method will be called after <a href="org/openqa/selenium/WebDriver.html#close()"><code>WebDriver.close()</code></a> is called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterDefaultContent(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebDriver)" class="member-name-link">afterDefaultContent(WebDriver.TargetLocator, WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.TargetLocator.html#defaultContent()"><code>WebDriver.TargetLocator.defaultContent()</code></a>
+ is called.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterDeleteAllCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">afterDeleteAllCookies(WebDriver.Options)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
@@ -530,6 +557,21 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterForward(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">afterForward(WebDriver.Navigation)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Navigation.html#forward()"><code>WebDriver.Navigation.forward()</code></a> is called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterFrame(org.openqa.selenium.WebDriver.TargetLocator,int,org.openqa.selenium.WebDriver)" class="member-name-link">afterFrame(WebDriver.TargetLocator, int, WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.TargetLocator.html#frame(int)"><code>WebDriver.TargetLocator.frame(int)</code></a> ()} is
+ called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterFrame(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">afterFrame(WebDriver.TargetLocator, String, WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.TargetLocator.html#frame(java.lang.String)"><code>WebDriver.TargetLocator.frame(String)</code></a> ()}
+ is called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterFrame(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)" class="member-name-link">afterFrame(WebDriver.TargetLocator, WebElement, WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.TargetLocator.html#frame(org.openqa.selenium.WebElement)"><code>WebDriver.TargetLocator.frame(WebElement)</code></a>
+ ()} is called.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterFullscreen(org.openqa.selenium.WebDriver.Window)" class="member-name-link">afterFullscreen(WebDriver.Window)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
@@ -624,9 +666,18 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Window.html#maximize()"><code>WebDriver.Window.maximize()</code></a> is called.</div>
 </dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterNewWindow(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WindowType,org.openqa.selenium.WebDriver)" class="member-name-link">afterNewWindow(WebDriver.TargetLocator, WindowType, WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)"><code>WebDriver.TargetLocator.newWindow(WindowType)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterPageLoadTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">afterPageLoadTimeout(WebDriver.Timeouts, Duration)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(java.time.Duration)"><code>WebDriver.Timeouts.pageLoadTimeout(Duration)</code></a> is called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterParentFrame(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebDriver)" class="member-name-link">afterParentFrame(WebDriver.TargetLocator, WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.TargetLocator.html#parentFrame()"><code>WebDriver.TargetLocator.parentFrame()</code></a> is
+ called.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterPerform(org.openqa.selenium.WebDriver,java.util.Collection)" class="member-name-link">afterPerform(WebDriver, Collection&lt;Sequence&gt;)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
@@ -676,6 +727,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterTo(org.openqa.selenium.WebDriver.Navigation,java.net.URL)" class="member-name-link">afterTo(WebDriver.Navigation, URL)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Navigation.html#to(java.net.URL)"><code>WebDriver.Navigation.to(URL)</code></a> is called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterWindow(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">afterWindow(WebDriver.TargetLocator, String, WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a>.</div>
 </dd>
 <dt><a href="org/openqa/selenium/mobile/NetworkConnection.ConnectionType.html#AIRPLANE_MODE" class="member-name-link">AIRPLANE_MODE</a> - Static variable in class org.openqa.selenium.mobile.<a href="org/openqa/selenium/mobile/NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></dt>
 <dd>
@@ -859,6 +914,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Architecture.html#ARM" class="member-name-link">ARM</a> - Enum constant in enum class org.openqa.selenium.<a href="org/openqa/selenium/Architecture.html" title="enum class in org.openqa.selenium">Architecture</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/ArrayLocalValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">ArrayLocalValue</a> - Class in <a href="org/openqa/selenium/bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/LocalValue.html#arrayValue(java.util.List)" class="member-name-link">arrayValue(List&lt;LocalValue&gt;)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/LocalValue.html" title="class in org.openqa.selenium.bidi.script">LocalValue</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Keys.html#ARROW_DOWN" class="member-name-link">ARROW_DOWN</a> - Enum constant in enum class org.openqa.selenium.<a href="org/openqa/selenium/Keys.html" title="enum class in org.openqa.selenium">Keys</a></dt>
@@ -977,6 +1034,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/openqa/selenium/remote/RemoteWebDriverBuilder.html#augmentUsing(org.openqa.selenium.remote.Augmenter)" class="member-name-link">augmentUsing(Augmenter)</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/InterceptPhase.html#AUTH_REQUIRED" class="member-name-link">AUTH_REQUIRED</a> - Enum constant in enum class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/InterceptPhase.html" title="enum class in org.openqa.selenium.bidi.network">InterceptPhase</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/network/AuthChallenge.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">AuthChallenge</a> - Class in <a href="org/openqa/selenium/bidi/network/package-summary.html">org.openqa.selenium.bidi.network</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/ClientConfig.html#authenticateAs(org.openqa.selenium.Credentials)" class="member-name-link">authenticateAs(Credentials)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></dt>
@@ -1046,15 +1105,27 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/RemoteWebDriver.When.html#BEFORE" class="member-name-link">BEFORE</a> - Enum constant in enum class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriver.When.html" title="enum class in org.openqa.selenium.remote">RemoteWebDriver.When</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/InterceptPhase.html#BEFORE_REQUEST_SENT" class="member-name-link">BEFORE_REQUEST_SENT</a> - Enum constant in enum class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/InterceptPhase.html" title="enum class in org.openqa.selenium.bidi.network">InterceptPhase</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/browsingcontext/UserPromptType.html#BEFORE_UNLOAD" class="member-name-link">BEFORE_UNLOAD</a> - Enum constant in enum class org.openqa.selenium.bidi.browsingcontext.<a href="org/openqa/selenium/bidi/browsingcontext/UserPromptType.html" title="enum class in org.openqa.selenium.bidi.browsingcontext">UserPromptType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAccept(org.openqa.selenium.Alert)" class="member-name-link">beforeAccept(Alert)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This action will be performed each time before <a href="org/openqa/selenium/Alert.html#accept()"><code>Alert.accept()</code></a></div>
 </dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeActiveElement(org.openqa.selenium.WebDriver.TargetLocator)" class="member-name-link">beforeActiveElement(WebDriver.TargetLocator)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.TargetLocator.html#activeElement()"><code>WebDriver.TargetLocator.activeElement()</code></a>
+ is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAddCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">beforeAddCookie(WebDriver.Options, Cookie)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Options.html#addCookie(org.openqa.selenium.Cookie)"><code>WebDriver.Options.addCookie(Cookie)</code></a></div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAlert(org.openqa.selenium.WebDriver.TargetLocator)" class="member-name-link">beforeAlert(WebDriver.TargetLocator)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.TargetLocator.html#alert()"><code>WebDriver.TargetLocator.alert()</code></a> is
+ called.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyAlertCall(org.openqa.selenium.Alert,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyAlertCall(Alert, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>&nbsp;</dd>
@@ -1069,6 +1140,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyOptionsCall(org.openqa.selenium.WebDriver.Options,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyOptionsCall(WebDriver.Options, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyTargetLocatorCall(org.openqa.selenium.WebDriver.TargetLocator,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyTargetLocatorCall(WebDriver.TargetLocator, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">Called before any method in <a href="org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium"><code>WebDriver.TargetLocator</code></a> class.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyTimeoutsCall(org.openqa.selenium.WebDriver.Timeouts,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyTimeoutsCall(WebDriver.Timeouts, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This method will be called before any method of a <a href="org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium"><code>WebDriver.Timeouts</code></a> instance is</div>
@@ -1108,6 +1183,11 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeClose(org.openqa.selenium.WebDriver)" class="member-name-link">beforeClose(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This method will be called before <a href="org/openqa/selenium/WebDriver.html#close()"><code>WebDriver.close()</code></a> is called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeDefaultContent(org.openqa.selenium.WebDriver.TargetLocator)" class="member-name-link">beforeDefaultContent(WebDriver.TargetLocator)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.TargetLocator.html#defaultContent()"><code>WebDriver.TargetLocator.defaultContent()</code></a>
+ is called.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeDeleteAllCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">beforeDeleteAllCookies(WebDriver.Options)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
@@ -1153,6 +1233,20 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Navigation.html#forward()"><code>WebDriver.Navigation.forward()</code></a> is
  called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeFrame(org.openqa.selenium.WebDriver.TargetLocator,int)" class="member-name-link">beforeFrame(WebDriver.TargetLocator, int)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.TargetLocator.html#frame(int)"><code>WebDriver.TargetLocator.frame(int)</code></a> ()}
+ is called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeFrame(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String)" class="member-name-link">beforeFrame(WebDriver.TargetLocator, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.TargetLocator.html#frame(java.lang.String)"><code>WebDriver.TargetLocator.frame(String)</code></a>
+ ()} is called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeFrame(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WebElement)" class="member-name-link">beforeFrame(WebDriver.TargetLocator, WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.TargetLocator.html#frame(org.openqa.selenium.WebElement)"><code>WebDriver.TargetLocator.frame(WebElement)</code></a> ()} is called.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeFullscreen(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeFullscreen(WebDriver.Window)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
@@ -1249,9 +1343,18 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Window.html#maximize()"><code>WebDriver.Window.maximize()</code></a> is called.</div>
 </dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeNewWindow(org.openqa.selenium.WebDriver.TargetLocator,org.openqa.selenium.WindowType)" class="member-name-link">beforeNewWindow(WebDriver.TargetLocator, WindowType)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)"><code>WebDriver.TargetLocator.newWindow(WindowType)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforePageLoadTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">beforePageLoadTimeout(WebDriver.Timeouts, Duration)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(java.time.Duration)"><code>WebDriver.Timeouts.pageLoadTimeout(Duration)</code></a> is called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeParentFrame(org.openqa.selenium.WebDriver.TargetLocator)" class="member-name-link">beforeParentFrame(WebDriver.TargetLocator)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.TargetLocator.html#parentFrame()"><code>WebDriver.TargetLocator.parentFrame()</code></a> is
+ called.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforePerform(org.openqa.selenium.WebDriver,java.util.Collection)" class="member-name-link">beforePerform(WebDriver, Collection&lt;Sequence&gt;)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
@@ -1307,6 +1410,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeTo(org.openqa.selenium.WebDriver.Navigation,java.net.URL)" class="member-name-link">beforeTo(WebDriver.Navigation, URL)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>
 <div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Navigation.html#to(java.net.URL)"><code>WebDriver.Navigation.to(URL)</code></a> is called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeWindow(org.openqa.selenium.WebDriver.TargetLocator,java.lang.String)" class="member-name-link">beforeWindow(WebDriver.TargetLocator, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a>.</div>
 </dd>
 <dt><a href="org/openqa/selenium/json/JsonInput.html#beginArray()" class="member-name-link">beginArray()</a> - Method in class org.openqa.selenium.json.<a href="org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></dt>
 <dd>
@@ -1660,6 +1767,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/remote/DriverCommand.html#CANCEL_DIALOG" class="member-name-link">CANCEL_DIALOG</a> - Static variable in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/idealized/Network.html#cancelAuth(AUTHREQUIRED)" class="member-name-link">cancelAuth(AUTHREQUIRED)</a> - Method in class org.openqa.selenium.devtools.idealized.<a href="org/openqa/selenium/devtools/idealized/Network.html" title="class in org.openqa.selenium.devtools.idealized">Network</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/Network.html#cancelAuth(java.lang.String)" class="member-name-link">cancelAuth(String)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Network.html" title="class in org.openqa.selenium.bidi">Network</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/federatedcredentialmanagement/FederatedCredentialManagementDialog.html#cancelDialog()" class="member-name-link">cancelDialog()</a> - Method in interface org.openqa.selenium.federatedcredentialmanagement.<a href="org/openqa/selenium/federatedcredentialmanagement/FederatedCredentialManagementDialog.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">FederatedCredentialManagementDialog</a></dt>
 <dd>
@@ -2376,6 +2485,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/idealized/Network.html#continueWithAuth(AUTHREQUIRED,org.openqa.selenium.UsernameAndPassword)" class="member-name-link">continueWithAuth(AUTHREQUIRED, UsernameAndPassword)</a> - Method in class org.openqa.selenium.devtools.idealized.<a href="org/openqa/selenium/devtools/idealized/Network.html" title="class in org.openqa.selenium.devtools.idealized">Network</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/Network.html#continueWithAuth(java.lang.String,org.openqa.selenium.UsernameAndPassword)" class="member-name-link">continueWithAuth(String, UsernameAndPassword)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Network.html" title="class in org.openqa.selenium.bidi">Network</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/Network.html#continueWithAuthNoCredentials(java.lang.String)" class="member-name-link">continueWithAuthNoCredentials(String)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Network.html" title="class in org.openqa.selenium.bidi">Network</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/idealized/Network.html#continueWithoutModification(REQUESTPAUSED)" class="member-name-link">continueWithoutModification(REQUESTPAUSED)</a> - Method in class org.openqa.selenium.devtools.idealized.<a href="org/openqa/selenium/devtools/idealized/Network.html" title="class in org.openqa.selenium.devtools.idealized">Network</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Keys.html#CONTROL" class="member-name-link">CONTROL</a> - Enum constant in enum class org.openqa.selenium.<a href="org/openqa/selenium/Keys.html" title="enum class in org.openqa.selenium">Keys</a></dt>
@@ -2820,6 +2933,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/remote/tracing/AttributeKey.html#DATABASE_SYSTEM" class="member-name-link">DATABASE_SYSTEM</a> - Enum constant in enum class org.openqa.selenium.remote.tracing.<a href="org/openqa/selenium/remote/tracing/AttributeKey.html" title="enum class in org.openqa.selenium.remote.tracing">AttributeKey</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/tracing/AttributeKey.html#DATABASE_USER" class="member-name-link">DATABASE_USER</a> - Enum constant in enum class org.openqa.selenium.remote.tracing.<a href="org/openqa/selenium/remote/tracing/AttributeKey.html" title="enum class in org.openqa.selenium.remote.tracing">AttributeKey</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/DateLocalValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">DateLocalValue</a> - Class in <a href="org/openqa/selenium/bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/LocalValue.html#dateValue(java.lang.String)" class="member-name-link">dateValue(String)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/LocalValue.html" title="class in org.openqa.selenium.bidi.script">LocalValue</a></dt>
 <dd>&nbsp;</dd>
@@ -4264,6 +4379,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/tracing/TracedHttpClient.Factory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory)" class="member-name-link">Factory(Tracer, HttpClient.Factory)</a> - Constructor for class org.openqa.selenium.remote.tracing.<a href="org/openqa/selenium/remote/tracing/TracedHttpClient.Factory.html" title="class in org.openqa.selenium.remote.tracing">TracedHttpClient.Factory</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/Network.html#failRequest(java.lang.String)" class="member-name-link">failRequest(String)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Network.html" title="class in org.openqa.selenium.bidi">Network</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/Route.html#fallbackTo(java.util.function.Supplier)" class="member-name-link">fallbackTo(Supplier&lt;HttpHandler&gt;)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/Route.html" title="class in org.openqa.selenium.remote.http">Route</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Platform.html#family()" class="member-name-link">family()</a> - Method in enum class org.openqa.selenium.<a href="org/openqa/selenium/Platform.html" title="enum class in org.openqa.selenium">Platform</a></dt>
@@ -4284,6 +4401,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Represents an open dialog of the Federated Credential Management API.</div>
 </dd>
+<dt><a href="org/openqa/selenium/bidi/network/FetchError.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">FetchError</a> - Class in <a href="org/openqa/selenium/bidi/network/package-summary.html">org.openqa.selenium.bidi.network</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/network/FetchTimingInfo.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">FetchTimingInfo</a> - Class in <a href="org/openqa/selenium/bidi/network/package-summary.html">org.openqa.selenium.bidi.network</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/pagefactory/FieldDecorator.html" class="type-name-link" title="interface in org.openqa.selenium.support.pagefactory">FieldDecorator</a> - Interface in <a href="org/openqa/selenium/support/pagefactory/package-summary.html">org.openqa.selenium.support.pagefactory</a></dt>
@@ -4584,7 +4703,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Capability that defines launch API of IE used by IEDriverServer.</div>
 </dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#forEachHeader(java.util.function.BiConsumer)" class="member-name-link">forEachHeader(BiConsumer&lt;String, String&gt;)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#forEachHeader(java.util.function.BiConsumer)" class="member-name-link">forEachHeader(BiConsumer&lt;String, String&gt;)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>
 <div class="block">Calls the <code>action</code> for all headers set.</div>
 </dd>
@@ -4733,6 +4852,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/logging/SessionLogs.html#fromJSON(java.util.Map)" class="member-name-link">fromJSON(Map&lt;String, Object&gt;)</a> - Static method in class org.openqa.selenium.logging.<a href="org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/network/BeforeRequestSent.html#fromJsonMap(java.util.Map)" class="member-name-link">fromJsonMap(Map&lt;String, Object&gt;)</a> - Static method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/BeforeRequestSent.html" title="class in org.openqa.selenium.bidi.network">BeforeRequestSent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/FetchError.html#fromJsonMap(java.util.Map)" class="member-name-link">fromJsonMap(Map&lt;String, Object&gt;)</a> - Static method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/FetchError.html" title="class in org.openqa.selenium.bidi.network">FetchError</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/network/ResponseDetails.html#fromJsonMap(java.util.Map)" class="member-name-link">fromJsonMap(Map&lt;String, Object&gt;)</a> - Static method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/ResponseDetails.html" title="class in org.openqa.selenium.bidi.network">ResponseDetails</a></dt>
 <dd>&nbsp;</dd>
@@ -5142,7 +5263,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/openqa/selenium/grid/jmx/MBean.html#getAttribute(java.lang.String)" class="member-name-link">getAttribute(String)</a> - Method in class org.openqa.selenium.grid.jmx.<a href="org/openqa/selenium/grid/jmx/MBean.html" title="class in org.openqa.selenium.grid.jmx">MBean</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getAttribute(java.lang.String)" class="member-name-link">getAttribute(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getAttribute(java.lang.String)" class="member-name-link">getAttribute(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>
 <div class="block">Retrieves a user-defined attribute of this message.</div>
 </dd>
@@ -5154,7 +5275,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/openqa/selenium/devtools/events/DomMutationEvent.html#getAttributeName()" class="member-name-link">getAttributeName()</a> - Method in class org.openqa.selenium.devtools.events.<a href="org/openqa/selenium/devtools/events/DomMutationEvent.html" title="class in org.openqa.selenium.devtools.events">DomMutationEvent</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getAttributeNames()" class="member-name-link">getAttributeNames()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getAttributeNames()" class="member-name-link">getAttributeNames()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/NodeProperties.html#getAttributes()" class="member-name-link">getAttributes()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/NodeProperties.html" title="class in org.openqa.selenium.bidi.script">NodeProperties</a></dt>
 <dd>&nbsp;</dd>
@@ -5413,9 +5534,9 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Pdf.html#getContent()" class="member-name-link">getContent()</a> - Method in class org.openqa.selenium.<a href="org/openqa/selenium/Pdf.html" title="class in org.openqa.selenium">Pdf</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getContent()" class="member-name-link">getContent()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getContent()" class="member-name-link">getContent()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getContentEncoding()" class="member-name-link">getContentEncoding()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getContentEncoding()" class="member-name-link">getContentEncoding()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/ContextAware.html#getContext()" class="member-name-link">getContext()</a> - Method in interface org.openqa.selenium.<a href="org/openqa/selenium/ContextAware.html" title="interface in org.openqa.selenium">ContextAware</a></dt>
 <dd>
@@ -5788,6 +5909,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/RemoteWebDriver.html#getErrorHandler()" class="member-name-link">getErrorHandler()</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/FetchError.html#getErrorText()" class="member-name-link">getErrorText()</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/FetchError.html" title="class in org.openqa.selenium.bidi.network">FetchError</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/graphql/SessionNotFoundException.html#getErrorType()" class="member-name-link">getErrorType()</a> - Method in exception org.openqa.selenium.grid.graphql.<a href="org/openqa/selenium/grid/graphql/SessionNotFoundException.html" title="class in org.openqa.selenium.grid.graphql">SessionNotFoundException</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/server/EventBusOptions.html#getEventBus()" class="member-name-link">getEventBus()</a> - Method in class org.openqa.selenium.grid.server.<a href="org/openqa/selenium/grid/server/EventBusOptions.html" title="class in org.openqa.selenium.grid.server">EventBusOptions</a></dt>
@@ -5932,11 +6055,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/logging/LocalLogs.html#getHandlerBasedLoggerInstance(org.openqa.selenium.logging.LoggingHandler,java.util.Set)" class="member-name-link">getHandlerBasedLoggerInstance(LoggingHandler, Set&lt;String&gt;)</a> - Static method in class org.openqa.selenium.logging.<a href="org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getHeader(java.lang.String)" class="member-name-link">getHeader(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getHeader(java.lang.String)" class="member-name-link">getHeader(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>
 <div class="block">Returns the value of the first header with the <code>name</code> (case-insensitive).</div>
 </dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getHeaderNames()" class="member-name-link">getHeaderNames()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getHeaderNames()" class="member-name-link">getHeaderNames()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>
 <div class="block">Returns an iterable with all the names of the headers set.</div>
 </dd>
@@ -5944,7 +6067,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/network/ResponseData.html#getHeaders()" class="member-name-link">getHeaders()</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/ResponseData.html" title="class in org.openqa.selenium.bidi.network">ResponseData</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getHeaders(java.lang.String)" class="member-name-link">getHeaders(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getHeaders(java.lang.String)" class="member-name-link">getHeaders(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>
 <div class="block">Returns an iterable of the values of headers with the <code>name</code> (case-insensitive).</div>
 </dd>
@@ -7769,6 +7892,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/net/HostIdentifier.html#%3Cinit%3E()" class="member-name-link">HostIdentifier()</a> - Constructor for class org.openqa.selenium.net.<a href="org/openqa/selenium/net/HostIdentifier.html" title="class in org.openqa.selenium.net">HostIdentifier</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/UrlPattern.html#hostname(java.lang.String)" class="member-name-link">hostname(String)</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/UrlPattern.html" title="class in org.openqa.selenium.bidi.network">UrlPattern</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/Colors.html#HOTPINK" class="member-name-link">HOTPINK</a> - Enum constant in enum class org.openqa.selenium.support.<a href="org/openqa/selenium/support/Colors.html" title="enum class in org.openqa.selenium.support">Colors</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/FindBy.html#how()" class="member-name-link">how()</a> - Element in annotation interface org.openqa.selenium.support.<a href="org/openqa/selenium/support/FindBy.html" title="annotation interface in org.openqa.selenium.support">FindBy</a></dt>
@@ -8145,6 +8270,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Indicates that a class can be used with the W3C WebDriver <a href="https://www.w3.org/TR/webdriver/#actions">Actions commands</a>.</div>
 </dd>
 <dt><a href="org/openqa/selenium/bidi/browsingcontext/ReadinessState.html#INTERACTIVE" class="member-name-link">INTERACTIVE</a> - Enum constant in enum class org.openqa.selenium.bidi.browsingcontext.<a href="org/openqa/selenium/bidi/browsingcontext/ReadinessState.html" title="enum class in org.openqa.selenium.bidi.browsingcontext">ReadinessState</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/InterceptPhase.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.network">InterceptPhase</a> - Enum Class in <a href="org/openqa/selenium/bidi/network/package-summary.html">org.openqa.selenium.bidi.network</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/idealized/Network.html#interceptTrafficWith(org.openqa.selenium.remote.http.Filter)" class="member-name-link">interceptTrafficWith(Filter)</a> - Method in class org.openqa.selenium.devtools.idealized.<a href="org/openqa/selenium/devtools/idealized/Network.html" title="class in org.openqa.selenium.devtools.idealized">Network</a></dt>
 <dd>&nbsp;</dd>
@@ -9233,6 +9360,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/internal/Either.html#mapLeft(java.util.function.Function)" class="member-name-link">mapLeft(Function&lt;? super A, ? extends R&gt;)</a> - Method in class org.openqa.selenium.internal.<a href="org/openqa/selenium/internal/Either.html" title="class in org.openqa.selenium.internal">Either</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/MapLocalValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">MapLocalValue</a> - Class in <a href="org/openqa/selenium/bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/LocalValue.html#mapValue(java.util.Map)" class="member-name-link">mapValue(Map&lt;Object, LocalValue&gt;)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/LocalValue.html" title="class in org.openqa.selenium.bidi.script">LocalValue</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/Colors.html#MAROON" class="member-name-link">MAROON</a> - Enum constant in enum class org.openqa.selenium.support.<a href="org/openqa/selenium/support/Colors.html" title="enum class in org.openqa.selenium.support">Colors</a></dt>
@@ -10054,6 +10183,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Specifier for <code>Object</code> input/output type</div>
 </dd>
+<dt><a href="org/openqa/selenium/bidi/script/ObjectLocalValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">ObjectLocalValue</a> - Class in <a href="org/openqa/selenium/bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/jmx/ManagedService.html#objectName()" class="member-name-link">objectName()</a> - Element in annotation interface org.openqa.selenium.grid.jmx.<a href="org/openqa/selenium/grid/jmx/ManagedService.html" title="annotation interface in org.openqa.selenium.grid.jmx">ManagedService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/LocalValue.html#objectValue(java.util.Map)" class="member-name-link">objectValue(Map&lt;Object, LocalValue&gt;)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/LocalValue.html" title="class in org.openqa.selenium.bidi.script">LocalValue</a></dt>
@@ -10098,6 +10229,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/BrowsingContextInspector.html#onBrowsingContextCreated(java.util.function.Consumer)" class="member-name-link">onBrowsingContextCreated(Consumer&lt;BrowsingContextInfo&gt;)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/BrowsingContextInspector.html" title="class in org.openqa.selenium.bidi">BrowsingContextInspector</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/BrowsingContextInspector.html#onBrowsingContextDestroyed(java.util.function.Consumer)" class="member-name-link">onBrowsingContextDestroyed(Consumer&lt;BrowsingContextInfo&gt;)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/BrowsingContextInspector.html" title="class in org.openqa.selenium.bidi">BrowsingContextInspector</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/BrowsingContextInspector.html#onBrowsingContextLoaded(java.util.function.Consumer)" class="member-name-link">onBrowsingContextLoaded(Consumer&lt;NavigationInfo&gt;)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/BrowsingContextInspector.html" title="class in org.openqa.selenium.bidi">BrowsingContextInspector</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/WebSocket.Listener.html#onClose(int,java.lang.String)" class="member-name-link">onClose(int, String)</a> - Method in interface org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/WebSocket.Listener.html" title="interface in org.openqa.selenium.remote.http">WebSocket.Listener</a></dt>
@@ -10127,6 +10260,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/support/decorators/WebDriverDecorator.html#onError(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.reflect.InvocationTargetException)" class="member-name-link">onError(Decorated&lt;?&gt;, Method, Object[], InvocationTargetException)</a> - Method in class org.openqa.selenium.support.decorators.<a href="org/openqa/selenium/support/decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">WebDriverDecorator</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/events/EventFiringDecorator.html#onError(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.reflect.InvocationTargetException)" class="member-name-link">onError(Decorated&lt;?&gt;, Method, Object[], InvocationTargetException)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/EventFiringDecorator.html" title="class in org.openqa.selenium.support.events">EventFiringDecorator</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/Network.html#onFetchError(java.util.function.Consumer)" class="member-name-link">onFetchError(Consumer&lt;FetchError&gt;)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Network.html" title="class in org.openqa.selenium.bidi">Network</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/BrowsingContextInspector.html#onFragmentNavigated(java.util.function.Consumer)" class="member-name-link">onFragmentNavigated(Consumer&lt;NavigationInfo&gt;)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/BrowsingContextInspector.html" title="class in org.openqa.selenium.bidi">BrowsingContextInspector</a></dt>
 <dd>&nbsp;</dd>
@@ -10539,6 +10674,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Cookie.Builder.html#path(java.lang.String)" class="member-name-link">path(String)</a> - Method in class org.openqa.selenium.<a href="org/openqa/selenium/Cookie.Builder.html" title="class in org.openqa.selenium">Cookie.Builder</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/UrlPattern.html#pathname(java.lang.String)" class="member-name-link">pathname(String)</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/UrlPattern.html" title="class in org.openqa.selenium.bidi.network">UrlPattern</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/web/PathResource.html" class="type-name-link" title="class in org.openqa.selenium.grid.web">PathResource</a> - Class in <a href="org/openqa/selenium/grid/web/package-summary.html">org.openqa.selenium.grid.web</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/web/PathResource.html#%3Cinit%3E(java.nio.file.Path)" class="member-name-link">PathResource(Path)</a> - Constructor for class org.openqa.selenium.grid.web.<a href="org/openqa/selenium/grid/web/PathResource.html" title="class in org.openqa.selenium.grid.web">PathResource</a></dt>
@@ -10666,6 +10803,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/openqa/selenium/grid/commands/StandaloneFlags.html#port" class="member-name-link">port</a> - Variable in class org.openqa.selenium.grid.commands.<a href="org/openqa/selenium/grid/commands/StandaloneFlags.html" title="class in org.openqa.selenium.grid.commands">StandaloneFlags</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/UrlPattern.html#port(java.lang.String)" class="member-name-link">port(String)</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/UrlPattern.html" title="class in org.openqa.selenium.bidi.network">UrlPattern</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/docker/Port.html" class="type-name-link" title="class in org.openqa.selenium.docker">Port</a> - Class in <a href="org/openqa/selenium/docker/package-summary.html">org.openqa.selenium.docker</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/net/PortProber.html" class="type-name-link" title="class in org.openqa.selenium.net">PortProber</a> - Class in <a href="org/openqa/selenium/net/package-summary.html">org.openqa.selenium.net</a></dt>
@@ -10724,6 +10863,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">An expectation for checking child WebElement as a part of parent element to present</div>
 </dd>
+<dt><a href="org/openqa/selenium/bidi/script/PrimitiveProtocolValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">PrimitiveProtocolValue</a> - Class in <a href="org/openqa/selenium/bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/PrimitiveType.html" class="type-name-link" title="enum class in org.openqa.selenium.bidi.script">PrimitiveType</a> - Enum Class in <a href="org/openqa/selenium/bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/browsingcontext/BrowsingContext.html#print(org.openqa.selenium.print.PrintOptions)" class="member-name-link">print(PrintOptions)</a> - Method in class org.openqa.selenium.bidi.browsingcontext.<a href="org/openqa/selenium/bidi/browsingcontext/BrowsingContext.html" title="class in org.openqa.selenium.bidi.browsingcontext">BrowsingContext</a></dt>
@@ -10757,7 +10898,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/logging/LogType.html#PROFILER" class="member-name-link">PROFILER</a> - Static variable in class org.openqa.selenium.logging.<a href="org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging">LogType</a></dt>
 <dd>
-<div class="block">This log type pertains to logs relating to performance timings.</div>
+<div class="block">This log type pertains to logs relating to profiler timings.</div>
 </dd>
 <dt><a href="org/openqa/selenium/logging/profiler/ProfilerLogEntry.html" class="type-name-link" title="class in org.openqa.selenium.logging.profiler">ProfilerLogEntry</a> - Class in <a href="org/openqa/selenium/logging/profiler/package-summary.html">org.openqa.selenium.logging.profiler</a></dt>
 <dd>&nbsp;</dd>
@@ -10782,6 +10923,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Used to specify the strategy used to assign values during deserialization.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/ThreadGuard.html#protect(org.openqa.selenium.WebDriver)" class="member-name-link">protect(WebDriver)</a> - Static method in class org.openqa.selenium.support.<a href="org/openqa/selenium/support/ThreadGuard.html" title="class in org.openqa.selenium.support">ThreadGuard</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/UrlPattern.html#protocol(java.lang.String)" class="member-name-link">protocol(String)</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/UrlPattern.html" title="class in org.openqa.selenium.bidi.network">UrlPattern</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/ProtocolHandshake.html" class="type-name-link" title="class in org.openqa.selenium.remote">ProtocolHandshake</a> - Class in <a href="org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</a></dt>
 <dd>&nbsp;</dd>
@@ -11237,7 +11380,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Removes all the credentials from the authenticator.</div>
 </dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#removeAttribute(java.lang.String)" class="member-name-link">removeAttribute(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#removeAttribute(java.lang.String)" class="member-name-link">removeAttribute(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/virtualauthenticator/VirtualAuthenticator.html#removeCredential(byte%5B%5D)" class="member-name-link">removeCredential(byte[])</a> - Method in interface org.openqa.selenium.virtualauthenticator.<a href="org/openqa/selenium/virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a></dt>
 <dd>
@@ -11249,10 +11392,12 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/openqa/selenium/grid/sessionqueue/RemoveFromSessionQueue.html" class="type-name-link" title="class in org.openqa.selenium.grid.sessionqueue">RemoveFromSessionQueue</a> - Class in <a href="org/openqa/selenium/grid/sessionqueue/package-summary.html">org.openqa.selenium.grid.sessionqueue</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#removeHeader(java.lang.String)" class="member-name-link">removeHeader(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#removeHeader(java.lang.String)" class="member-name-link">removeHeader(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>
 <div class="block">Removes all headers with the <code>name</code> (case-insensitive).</div>
 </dd>
+<dt><a href="org/openqa/selenium/bidi/Network.html#removeIntercept(java.lang.String)" class="member-name-link">removeIntercept(String)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Network.html" title="class in org.openqa.selenium.bidi">Network</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/html5/Storage.html#removeItem(java.lang.String)" class="member-name-link">removeItem(String)</a> - Method in interface org.openqa.selenium.html5.<a href="org/openqa/selenium/html5/Storage.html" title="interface in org.openqa.selenium.html5">Storage</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -11366,6 +11511,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/remote/Response.html#%3Cinit%3E()" class="member-name-link">Response()</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/Response.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId)" class="member-name-link">Response(SessionId)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/InterceptPhase.html#RESPONSE_STARTED" class="member-name-link">RESPONSE_STARTED</a> - Enum constant in enum class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/InterceptPhase.html" title="enum class in org.openqa.selenium.bidi.network">InterceptPhase</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/ResponseCodec.html" class="type-name-link" title="interface in org.openqa.selenium.remote">ResponseCodec</a>&lt;<a href="org/openqa/selenium/remote/ResponseCodec.html" title="type parameter in ResponseCodec">T</a>&gt; - Interface in <a href="org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</a></dt>
 <dd>
@@ -11628,6 +11775,8 @@ loadScripts(document, 'script');</script>
  viewport.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/Colors.html#SEAGREEN" class="member-name-link">SEAGREEN</a> - Enum constant in enum class org.openqa.selenium.support.<a href="org/openqa/selenium/support/Colors.html" title="enum class in org.openqa.selenium.support">Colors</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/UrlPattern.html#search(java.lang.String)" class="member-name-link">search(String)</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/UrlPattern.html" title="class in org.openqa.selenium.bidi.network">UrlPattern</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/SearchContext.html" class="type-name-link" title="interface in org.openqa.selenium">SearchContext</a> - Interface in <a href="org/openqa/selenium/package-summary.html">org.openqa.selenium</a></dt>
 <dd>&nbsp;</dd>
@@ -12031,7 +12180,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/tracing/Span.html#setAttribute(java.lang.String,java.lang.Number)" class="member-name-link">setAttribute(String, Number)</a> - Method in interface org.openqa.selenium.remote.tracing.<a href="org/openqa/selenium/remote/tracing/Span.html" title="interface in org.openqa.selenium.remote.tracing">Span</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#setAttribute(java.lang.String,java.lang.Object)" class="member-name-link">setAttribute(String, Object)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#setAttribute(java.lang.String,java.lang.Object)" class="member-name-link">setAttribute(String, Object)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/tracing/empty/NullSpan.html#setAttribute(java.lang.String,java.lang.String)" class="member-name-link">setAttribute(String, String)</a> - Method in class org.openqa.selenium.remote.tracing.empty.<a href="org/openqa/selenium/remote/tracing/empty/NullSpan.html" title="class in org.openqa.selenium.remote.tracing.empty">NullSpan</a></dt>
 <dd>&nbsp;</dd>
@@ -12099,7 +12248,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/RemoteWebDriver.html#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)" class="member-name-link">setCommandExecutor(CommandExecutor)</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#setContent(java.util.function.Supplier)" class="member-name-link">setContent(Supplier&lt;InputStream&gt;)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#setContent(java.util.function.Supplier)" class="member-name-link">setContent(Supplier&lt;InputStream&gt;)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/firefox/FirefoxDriver.html#setContext(org.openqa.selenium.firefox.FirefoxCommandContext)" class="member-name-link">setContext(FirefoxCommandContext)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a></dt>
 <dd>&nbsp;</dd>
@@ -12169,7 +12318,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/virtualauthenticator/VirtualAuthenticatorOptions.html#setHasUserVerification(boolean)" class="member-name-link">setHasUserVerification(boolean)</a> - Method in class org.openqa.selenium.virtualauthenticator.<a href="org/openqa/selenium/virtualauthenticator/VirtualAuthenticatorOptions.html" title="class in org.openqa.selenium.virtualauthenticator">VirtualAuthenticatorOptions</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#setHeader(java.lang.String,java.lang.String)" class="member-name-link">setHeader(String, String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#setHeader(java.lang.String,java.lang.String)" class="member-name-link">setHeader(String, String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
 <dd>
 <div class="block">Removes all headers with the <code>name</code> (case-insensitive) and adds a header with the <code>
  value</code>.</div>
@@ -12217,6 +12366,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/logging/NeedsLocalLogs.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)" class="member-name-link">setLocalLogs(LocalLogs)</a> - Method in interface org.openqa.selenium.logging.<a href="org/openqa/selenium/logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)" class="member-name-link">setLocalLogs(LocalLogs)</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/SetLocalValue.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">SetLocalValue</a> - Class in <a href="org/openqa/selenium/bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/chromium/ChromiumDriver.html#setLocation(org.openqa.selenium.html5.Location)" class="member-name-link">setLocation(Location)</a> - Method in class org.openqa.selenium.chromium.<a href="org/openqa/selenium/chromium/ChromiumDriver.html" title="class in org.openqa.selenium.chromium">ChromiumDriver</a></dt>
 <dd>
@@ -13084,15 +13235,27 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/idealized/Events.html#toJsException(EXCEPTIONTHROWN)" class="member-name-link">toJsException(EXCEPTIONTHROWN)</a> - Method in class org.openqa.selenium.devtools.idealized.<a href="org/openqa/selenium/devtools/idealized/Events.html" title="class in org.openqa.selenium.devtools.idealized">Events</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/ArrayLocalValue.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/ArrayLocalValue.html" title="class in org.openqa.selenium.bidi.script">ArrayLocalValue</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/ChannelValue.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/ChannelValue.html" title="class in org.openqa.selenium.bidi.script">ChannelValue</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/DateLocalValue.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/DateLocalValue.html" title="class in org.openqa.selenium.bidi.script">DateLocalValue</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/LocalValue.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/LocalValue.html" title="class in org.openqa.selenium.bidi.script">LocalValue</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/MapLocalValue.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/MapLocalValue.html" title="class in org.openqa.selenium.bidi.script">MapLocalValue</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/ObjectLocalValue.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/ObjectLocalValue.html" title="class in org.openqa.selenium.bidi.script">ObjectLocalValue</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/PrimitiveProtocolValue.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/PrimitiveProtocolValue.html" title="class in org.openqa.selenium.bidi.script">PrimitiveProtocolValue</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/RegExpValue.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/RegExpValue.html" title="class in org.openqa.selenium.bidi.script">RegExpValue</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/RemoteReference.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/RemoteReference.html" title="class in org.openqa.selenium.bidi.script">RemoteReference</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/SerializationOptions.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/SerializationOptions.html" title="class in org.openqa.selenium.bidi.script">SerializationOptions</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/SetLocalValue.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/SetLocalValue.html" title="class in org.openqa.selenium.bidi.script">SetLocalValue</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/By.ByCssSelector.html#toJson()" class="member-name-link">toJson()</a> - Method in class org.openqa.selenium.<a href="org/openqa/selenium/By.ByCssSelector.html" title="class in org.openqa.selenium">By.ByCssSelector</a></dt>
 <dd>&nbsp;</dd>
@@ -13152,6 +13315,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/browsingcontext/Locator.html#toMap()" class="member-name-link">toMap()</a> - Method in class org.openqa.selenium.bidi.browsingcontext.<a href="org/openqa/selenium/bidi/browsingcontext/Locator.html" title="class in org.openqa.selenium.bidi.browsingcontext">Locator</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html#toMap()" class="member-name-link">toMap()</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html" title="class in org.openqa.selenium.bidi.network">AddInterceptParameters</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/UrlPattern.html#toMap()" class="member-name-link">toMap()</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/UrlPattern.html" title="class in org.openqa.selenium.bidi.network">UrlPattern</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/print/PageMargin.html#toMap()" class="member-name-link">toMap()</a> - Method in class org.openqa.selenium.print.<a href="org/openqa/selenium/print/PageMargin.html" title="class in org.openqa.selenium.print">PageMargin</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/print/PageSize.html#toMap()" class="member-name-link">toMap()</a> - Method in class org.openqa.selenium.print.<a href="org/openqa/selenium/print/PageSize.html" title="class in org.openqa.selenium.print">PageSize</a></dt>
@@ -13197,6 +13364,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/bidi/log/LogLevel.html#toString()" class="member-name-link">toString()</a> - Method in enum class org.openqa.selenium.bidi.log.<a href="org/openqa/selenium/bidi/log/LogLevel.html" title="enum class in org.openqa.selenium.bidi.log">LogLevel</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/network/Cookie.SameSite.html#toString()" class="member-name-link">toString()</a> - Method in enum class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/Cookie.SameSite.html" title="enum class in org.openqa.selenium.bidi.network">Cookie.SameSite</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/InterceptPhase.html#toString()" class="member-name-link">toString()</a> - Method in enum class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/InterceptPhase.html" title="enum class in org.openqa.selenium.bidi.network">InterceptPhase</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/EvaluateResult.Type.html#toString()" class="member-name-link">toString()</a> - Method in enum class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/EvaluateResult.Type.html" title="enum class in org.openqa.selenium.bidi.script">EvaluateResult.Type</a></dt>
 <dd>&nbsp;</dd>
@@ -13684,7 +13853,19 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/openqa/selenium/remote/http/UrlPath.html" class="type-name-link" title="class in org.openqa.selenium.remote.http">UrlPath</a> - Class in <a href="org/openqa/selenium/remote/http/package-summary.html">org.openqa.selenium.remote.http</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html#urlPattern(org.openqa.selenium.bidi.network.UrlPattern)" class="member-name-link">urlPattern(UrlPattern)</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html" title="class in org.openqa.selenium.bidi.network">AddInterceptParameters</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/UrlPattern.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">UrlPattern</a> - Class in <a href="org/openqa/selenium/bidi/network/package-summary.html">org.openqa.selenium.bidi.network</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/UrlPattern.html#%3Cinit%3E()" class="member-name-link">UrlPattern()</a> - Constructor for class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/UrlPattern.html" title="class in org.openqa.selenium.bidi.network">UrlPattern</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html#urlPatterns(java.util.List)" class="member-name-link">urlPatterns(List&lt;UrlPattern&gt;)</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html" title="class in org.openqa.selenium.bidi.network">AddInterceptParameters</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/net/Urls.html" class="type-name-link" title="class in org.openqa.selenium.net">Urls</a> - Class in <a href="org/openqa/selenium/net/package-summary.html">org.openqa.selenium.net</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html#urlStringPattern(java.lang.String)" class="member-name-link">urlStringPattern(String)</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html" title="class in org.openqa.selenium.bidi.network">AddInterceptParameters</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html#urlStringPatterns(java.util.List)" class="member-name-link">urlStringPatterns(List&lt;String&gt;)</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/AddInterceptParameters.html" title="class in org.openqa.selenium.bidi.network">AddInterceptParameters</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/UrlTemplate.html" class="type-name-link" title="class in org.openqa.selenium.remote.http">UrlTemplate</a> - Class in <a href="org/openqa/selenium/remote/http/package-summary.html">org.openqa.selenium.remote.http</a></dt>
 <dd>
@@ -13814,6 +13995,10 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
 </dd>
 <dt><a href="org/openqa/selenium/bidi/network/Cookie.SameSite.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/Cookie.SameSite.html" title="enum class in org.openqa.selenium.bidi.network">Cookie.SameSite</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this class with the specified name.</div>
+</dd>
+<dt><a href="org/openqa/selenium/bidi/network/InterceptPhase.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/InterceptPhase.html" title="enum class in org.openqa.selenium.bidi.network">InterceptPhase</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
 </dd>
@@ -13996,6 +14181,11 @@ the order they are declared.</div>
 the order they are declared.</div>
 </dd>
 <dt><a href="org/openqa/selenium/bidi/network/Cookie.SameSite.html#values()" class="member-name-link">values()</a> - Static method in enum class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/Cookie.SameSite.html" title="enum class in org.openqa.selenium.bidi.network">Cookie.SameSite</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum class, in
+the order they are declared.</div>
+</dd>
+<dt><a href="org/openqa/selenium/bidi/network/InterceptPhase.html#values()" class="member-name-link">values()</a> - Static method in enum class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/InterceptPhase.html" title="enum class in org.openqa.selenium.bidi.network">InterceptPhase</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum class, in
 the order they are declared.</div>
