@@ -1,3 +1,7 @@
+## 4.18.1
+
+* Add CDP for Chrome 122 and remove 119
+
 ## 4.18.0
 
 * Fix running the casting related methods in chromium (#13479)
