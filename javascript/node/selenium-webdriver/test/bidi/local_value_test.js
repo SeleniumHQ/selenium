@@ -19,27 +19,21 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const {Browser} = require('../../')
-const {suite} = require('../../lib/test')
+const { Browser } = require('../../')
+const { suite } = require('../../lib/test')
 
 const ScriptManager = require('../../bidi/scriptManager')
-const {
-  LocalValue,
-  RegExpValue,
-} = require('../../bidi/protocolValue')
-const {ArgumentValue} = require('../../bidi/argumentValue')
-const {EvaluateResultType} = require('../../bidi/evaluateResult')
-const {SpecialNumberType} = require('../../bidi/protocolType')
+const { LocalValue, RegExpValue } = require('../../bidi/protocolValue')
+const { ArgumentValue } = require('../../bidi/argumentValue')
+const { EvaluateResultType } = require('../../bidi/evaluateResult')
+const { SpecialNumberType } = require('../../bidi/protocolType')
 
 suite(
   function (env) {
     let driver
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .setFirefoxOptions(new firefox.Options().enableBidi())
-        .build()
+      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
     })
 
     afterEach(async function () {
@@ -57,12 +51,12 @@ suite(
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(arg!==undefined)\n' +
-          '                throw Error("Argument should be undefined, but was "+arg);\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(arg!==undefined)\n' +
+            '                throw Error("Argument should be undefined, but was "+arg);\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -80,12 +74,12 @@ suite(
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(arg!==null)\n' +
-          '                throw Error("Argument should be null, but was "+arg);\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(arg!==null)\n' +
+            '                throw Error("Argument should be null, but was "+arg);\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -97,20 +91,18 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(
-          LocalValue.createSpecialNumberValue(SpecialNumberType.MINUS_ZERO)
-        )
+        let value = new ArgumentValue(LocalValue.createSpecialNumberValue(SpecialNumberType.MINUS_ZERO))
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(arg!==-0)\n' +
-          '                throw Error("Argument should be -0, but was "+arg);\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(arg!==-0)\n' +
+            '                throw Error("Argument should be -0, but was "+arg);\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -124,20 +116,18 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(
-          LocalValue.createSpecialNumberValue(SpecialNumberType.INFINITY)
-        )
+        let value = new ArgumentValue(LocalValue.createSpecialNumberValue(SpecialNumberType.INFINITY))
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(arg!==Infinity)\n' +
-          '                throw Error("Argument should be Infinity, but was "+arg);\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(arg!==Infinity)\n' +
+            '                throw Error("Argument should be Infinity, but was "+arg);\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -151,20 +141,18 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(
-          LocalValue.createSpecialNumberValue(SpecialNumberType.MINUS_INFINITY)
-        )
+        let value = new ArgumentValue(LocalValue.createSpecialNumberValue(SpecialNumberType.MINUS_INFINITY))
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(arg!==-Infinity)\n' +
-          '                throw Error("Argument should be -Infinity, but was "+arg);\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(arg!==-Infinity)\n' +
+            '                throw Error("Argument should be -Infinity, but was "+arg);\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -184,12 +172,12 @@ suite(
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(arg!==1.4)\n' +
-          '                throw Error("Argument should be 1.4, but was "+arg);\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(arg!==1.4)\n' +
+            '                throw Error("Argument should be 1.4, but was "+arg);\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -209,12 +197,12 @@ suite(
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(arg!==true)\n' +
-          '                throw Error("Argument should be true, but was "+arg);\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(arg!==true)\n' +
+            '                throw Error("Argument should be true, but was "+arg);\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -234,12 +222,12 @@ suite(
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(arg!==42n)\n' +
-          '                throw Error("Argument should be 42n, but was "+arg);\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(arg!==42n)\n' +
+            '                throw Error("Argument should be 42n, but was "+arg);\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -260,13 +248,13 @@ suite(
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(! (arg instanceof Array))\n' +
-          '                throw Error("Argument type should be Array, but was "+\n' +
-          '                    Object.prototype.toString.call(arg));\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(! (arg instanceof Array))\n' +
+            '                throw Error("Argument type should be Array, but was "+\n' +
+            '                    Object.prototype.toString.call(arg));\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -291,13 +279,13 @@ suite(
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(! (arg instanceof Set))\n' +
-          '                throw Error("Argument type should be Set, but was "+\n' +
-          '                    Object.prototype.toString.call(arg));\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(! (arg instanceof Set))\n' +
+            '                throw Error("Argument type should be Set, but was "+\n' +
+            '                    Object.prototype.toString.call(arg));\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -315,21 +303,19 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(
-          LocalValue.createDateValue('2022-05-31T13:47:29.000Z')
-        )
+        let value = new ArgumentValue(LocalValue.createDateValue('2022-05-31T13:47:29.000Z'))
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(! (arg instanceof Date))\n' +
-          '                throw Error("Argument type should be Date, but was "+\n' +
-          '                    Object.prototype.toString.call(arg));\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(! (arg instanceof Date))\n' +
+            '                throw Error("Argument type should be Date, but was "+\n' +
+            '                    Object.prototype.toString.call(arg));\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -343,20 +329,20 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let mapValue = {foobar: LocalValue.createStringValue('foobar')}
+        let mapValue = { foobar: LocalValue.createStringValue('foobar') }
         let value = new ArgumentValue(LocalValue.createMapValue(mapValue))
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(! (arg instanceof Map))\n' +
-          '                throw Error("Argument type should be Map, but was "+\n' +
-          '                    Object.prototype.toString.call(arg));\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(! (arg instanceof Map))\n' +
+            '                throw Error("Argument type should be Map, but was "+\n' +
+            '                    Object.prototype.toString.call(arg));\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -375,20 +361,20 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let mapValue = {foobar: LocalValue.createStringValue('foobar')}
+        let mapValue = { foobar: LocalValue.createStringValue('foobar') }
         let value = new ArgumentValue(LocalValue.createObjectValue(mapValue))
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(! (arg instanceof Object))\n' +
-          '                throw Error("Argument type should be Object, but was "+\n' +
-          '                    Object.prototype.toString.call(arg));\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(! (arg instanceof Object))\n' +
+            '                throw Error("Argument type should be Object, but was "+\n' +
+            '                    Object.prototype.toString.call(arg));\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -406,21 +392,19 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(
-          LocalValue.createRegularExpressionValue(new RegExpValue('foo', 'g'))
-        )
+        let value = new ArgumentValue(LocalValue.createRegularExpressionValue(new RegExpValue('foo', 'g')))
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
-          '            if(! (arg instanceof RegExp))\n' +
-          '                throw Error("Argument type should be RegExp, but was "+\n' +
-          '                    Object.prototype.toString.call(arg));\n' +
-          '            return arg;\n' +
-          '        }}',
+            '            if(! (arg instanceof RegExp))\n' +
+            '                throw Error("Argument type should be RegExp, but was "+\n' +
+            '                    Object.prototype.toString.call(arg));\n' +
+            '            return arg;\n' +
+            '        }}',
           false,
-          argumentValues
+          argumentValues,
         )
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -434,5 +418,5 @@ suite(
       })
     })
   },
-  {browsers: [Browser.FIREFOX]}
+  { browsers: [Browser.FIREFOX] },
 )

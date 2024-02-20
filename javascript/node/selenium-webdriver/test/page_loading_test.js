@@ -141,13 +141,10 @@ test.suite(function (env) {
           throw Error('Should have timed out on page load')
         },
         function (e) {
-          if (
-            !(e instanceof error.ScriptTimeoutError) &&
-            !(e instanceof error.TimeoutError)
-          ) {
+          if (!(e instanceof error.ScriptTimeoutError) && !(e instanceof error.TimeoutError)) {
             throw Error('Unexpected error response: ' + e)
           }
-        }
+        },
       )
     })
   })

@@ -1,5 +1,14 @@
+Selenium 4.18.1
+
+* Add CDP for Chrome 122 and remove 119
+
+Selenium 4.18.0
+
+* Update linting dependencies
+* Setting Python for nightly releases - https://test.pypi.org/project/selenium/
+
 Selenium 4.17.2
-* py] Correct typing_extension dependency for wheel generation
+* [py] Correct typing_extension dependency for wheel generation
 
 Selenium 4.17.1
 * Fix typo in setup.py (#13487)

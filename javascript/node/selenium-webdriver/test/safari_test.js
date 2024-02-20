@@ -40,5 +40,5 @@ test.suite(
       })
     })
   },
-  { browsers: ['safari'] }
+  { browsers: ['safari'] },
 )

@@ -67,10 +67,7 @@ async function updateActions(actions) {
 
     if (action.type === 'pointer' || action.type === 'wheel') {
       for (const sequence of sequenceList) {
-        if (
-          (sequence.type === 'pointerMove' || sequence.type === 'scroll') &&
-          sequence.origin instanceof WebElement
-        ) {
+        if ((sequence.type === 'pointerMove' || sequence.type === 'scroll') && sequence.origin instanceof WebElement) {
           const element = sequence.origin
           const elementId = await element.getId()
           sequence.origin = {

@@ -38,18 +38,7 @@ class Header {
 }
 
 class Cookie {
-  constructor(
-    name,
-    value,
-    binaryValue,
-    domain,
-    path,
-    expires,
-    size,
-    httpOnly,
-    secure,
-    sameSite
-  ) {
+  constructor(name, value, binaryValue, domain, path, expires, size, httpOnly, secure, sameSite) {
     this._name = name
     this._value = value
     this._binaryValue = binaryValue
@@ -118,7 +107,7 @@ class FetchTimingInfo {
     tlsStart,
     requestStart,
     responseStart,
-    responseEnd
+    responseEnd,
   ) {
     this._originTime = originTime
     this._requestTime = requestTime
@@ -189,16 +178,7 @@ class FetchTimingInfo {
 }
 
 class RequestData {
-  constructor(
-    request,
-    url,
-    method,
-    headers,
-    cookies,
-    headersSize,
-    bodySize,
-    timings
-  ) {
+  constructor(request, url, method, headers, cookies, headersSize, bodySize, timings) {
     this._request = request
     this._url = url
     this._method = method
@@ -224,20 +204,7 @@ class RequestData {
       let binaryValue = 'binaryValue' in cookie ? cookie.binaryValue : null
       let expires = 'expires' in cookie ? cookie.expires : null
 
-      this._cookies.push(
-        new Cookie(
-          name,
-          value,
-          binaryValue,
-          domain,
-          path,
-          expires,
-          size,
-          httpOnly,
-          secure,
-          sameSite
-        )
-      )
+      this._cookies.push(new Cookie(name, value, binaryValue, domain, path, expires, size, httpOnly, secure, sameSite))
     })
     this._headersSize = headersSize
     this._bodySize = bodySize
@@ -254,7 +221,7 @@ class RequestData {
       timings.tlsStart,
       timings.requestStart,
       timings.responseStart,
-      timings.responseEnd
+      timings.responseEnd,
     )
   }
 
@@ -296,12 +263,7 @@ class BaseParameters {
     this._id = id
     this._navigation =
       navigation != null
-        ? new NavigationInfo(
-            navigation.context,
-            navigation.navigation,
-            navigation.timestamp,
-            navigation.url
-          )
+        ? new NavigationInfo(navigation.context, navigation.navigation, navigation.timestamp, navigation.url)
         : null
     this._redirectCount = redirectCount
     this._request = new RequestData(
@@ -312,7 +274,7 @@ class BaseParameters {
       request.cookies,
       request.headersSize,
       request.bodySize,
-      request.timings
+      request.timings,
     )
     this._timestamp = timestamp
   }
@@ -376,12 +338,23 @@ class BeforeRequestSent extends BaseParameters {
       initiator.columnNumber,
       initiator.lineNumber,
       initiator.stackTrace,
-      initiator.request
+      initiator.request,
     )
   }
 
   get initiator() {
     return this._initiator
+  }
+}
+
+class FetchError extends BaseParameters {
+  constructor(id, navigation, redirectCount, request, timestamp, errorText) {
+    super(id, navigation, redirectCount, request, timestamp)
+    this._errorText = errorText
+  }
+
+  get errorText() {
+    return this._errorText
   }
 }
 
@@ -397,7 +370,7 @@ class ResponseData {
     bytesReceived,
     headersSize,
     bodySize,
-    content
+    content,
   ) {
     this._url = url
     this._protocol = protocol
@@ -471,7 +444,7 @@ class ResponseStarted extends BaseParameters {
       response.bytesReceived,
       response.headerSize,
       response.bodySize,
-      response.content
+      response.content,
     )
   }
 
@@ -480,4 +453,4 @@ class ResponseStarted extends BaseParameters {
   }
 }
 
-module.exports = { BeforeRequestSent, ResponseStarted }
+module.exports = { BeforeRequestSent, ResponseStarted, FetchError }

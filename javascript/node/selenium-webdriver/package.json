@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.17.0",
+  "version": "4.18.1",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -42,6 +42,7 @@
   },
   "scripts": {
     "lint": "eslint --ignore-pattern node_modules --ignore-pattern generator --ext js lib/http.js \"**/*.js\"",
+    "lint:fix": "eslint --ignore-pattern node_modules --ignore-pattern generator --ext js lib/http.js \"**/*.js\" --fix",
     "test": "npm run lint && mocha -t 600000 --recursive test",
     "test-jasmine": "bazel test //javascript/node/selenium-webdriver:tests"
   },

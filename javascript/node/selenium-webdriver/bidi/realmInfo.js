@@ -28,9 +28,7 @@ const RealmType = {
   findByName(name) {
     return (
       Object.values(this).find((type) => {
-        return (
-          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
-        )
+        return typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
       }) || null
     )
   },
@@ -72,13 +70,7 @@ class RealmInfo {
     }
 
     if (realmType === RealmType.WINDOW) {
-      return new WindowRealmInfo(
-        realmId,
-        origin,
-        realmType,
-        browsingContext,
-        sandbox
-      )
+      return new WindowRealmInfo(realmId, origin, realmType, browsingContext, sandbox)
     }
 
     return new RealmInfo(realmId, origin, realmType)

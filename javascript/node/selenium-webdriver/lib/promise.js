@@ -173,9 +173,7 @@ async function filter(array, fn, self = undefined) {
   const values = []
 
   for (const [index, item] of arr.entries()) {
-    const isConditionTrue = await Promise.resolve(
-      fn.call(self, item, index, arr)
-    )
+    const isConditionTrue = await Promise.resolve(fn.call(self, item, index, arr))
     if (isConditionTrue) {
       values.push(item)
     }
@@ -247,10 +245,7 @@ async function fullyResolveKeys(obj) {
 
   const forEachKey = isArray ? forEachElement : forEachProperty
   await forEachKey(obj, async function (partialValue, key) {
-    if (
-      !Array.isArray(partialValue) &&
-      (!partialValue || typeof partialValue !== 'object')
-    ) {
+    if (!Array.isArray(partialValue) && (!partialValue || typeof partialValue !== 'object')) {
       return
     }
     obj[key] = await fullyResolved(partialValue)

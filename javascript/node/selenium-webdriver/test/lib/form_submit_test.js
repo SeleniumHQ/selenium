@@ -43,5 +43,5 @@ test.suite(
       assert.deepStrictEqual(await success.getText(), 'Success!')
     })
   },
-  { browsers: ['chrome', 'firefox'] }
+  { browsers: ['chrome', 'firefox'] },
 )

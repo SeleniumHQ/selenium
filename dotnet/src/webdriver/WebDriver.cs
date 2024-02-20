@@ -799,6 +799,12 @@ namespace OpenQA.Selenium
                         case WebDriverResult.NoSuchShadowRoot:
                             throw new NoSuchShadowRootException(errorMessage);
 
+                        case WebDriverResult.DetachedShadowRoot:
+                            throw new DetachedShadowRootException(errorMessage);
+
+                        case WebDriverResult.InsecureCertificate:
+                            throw new InsecureCertificateException(errorMessage);
+
                         default:
                             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", errorMessage, errorResponse.Status));
                     }

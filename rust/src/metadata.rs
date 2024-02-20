@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::stats::Props;
 use crate::Logger;
 use serde::{Deserialize, Serialize};
 use std::fs;
@@ -24,6 +25,17 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 const METADATA_FILE_OLD: &str = "selenium-manager.json";
 const METADATA_FILE: &str = "se-metadata.json";
+
+#[derive(Serialize, Deserialize)]
+pub struct Stats {
+    pub browser: String,
+    pub browser_version: String,
+    pub os: String,
+    pub arch: String,
+    pub lang: String,
+    pub selenium_version: String,
+    pub stats_ttl: u64,
+}
 
 #[derive(Serialize, Deserialize)]
 pub struct Browser {
@@ -45,6 +57,7 @@ pub struct Driver {
 pub struct Metadata {
     pub browsers: Vec<Browser>,
     pub drivers: Vec<Driver>,
+    pub stats: Vec<Stats>,
 }
 
 fn get_metadata_path(cache_path: PathBuf) -> PathBuf {
@@ -67,6 +80,7 @@ fn new_metadata(log: &Logger) -> Metadata {
     Metadata {
         browsers: Vec::new(),
         drivers: Vec::new(),
+        stats: Vec::new(),
     }
 }
 
@@ -82,6 +96,7 @@ pub fn get_metadata(log: &Logger, cache_path: &Option<PathBuf>) -> Metadata {
                     let now = now_unix_timestamp();
                     meta.browsers.retain(|b| b.browser_ttl > now);
                     meta.drivers.retain(|d| d.driver_ttl > now);
+                    meta.stats.retain(|s| s.stats_ttl > now);
                     meta
                 }
                 Err(_e) => new_metadata(log), // Empty metadata
@@ -128,6 +143,21 @@ pub fn get_driver_version_from_metadata(
     }
 }
 
+pub fn is_stats_in_metadata(stats_metadata: &[Stats], props: &Props) -> bool {
+    let props: Vec<&Stats> = stats_metadata
+        .iter()
+        .filter(|p| {
+            p.browser.eq(&props.browser)
+                && p.browser_version.eq(&props.browser_version)
+                && p.os.eq(&props.os)
+                && p.arch.eq(&props.arch)
+                && p.lang.eq(&props.lang)
+                && p.selenium_version.eq(&props.selenium_version)
+        })
+        .collect();
+    !props.is_empty()
+}
+
 pub fn create_browser_metadata(
     browser_name: &str,
     major_browser_version: &str,
@@ -153,6 +183,18 @@ pub fn create_driver_metadata(
         driver_name: driver_name.to_string(),
         driver_version: driver_version.to_string(),
         driver_ttl: now_unix_timestamp() + driver_ttl,
+    }
+}
+
+pub fn create_stats_metadata(props: &Props, stats_ttl: u64) -> Stats {
+    Stats {
+        browser: props.browser.to_string(),
+        browser_version: props.browser_version.to_string(),
+        os: props.os.to_string(),
+        arch: props.arch.to_string(),
+        lang: props.lang.to_string(),
+        selenium_version: props.selenium_version.to_string(),
+        stats_ttl: now_unix_timestamp() + stats_ttl,
     }
 }
 

@@ -26,6 +26,7 @@ import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.network.AddInterceptParameters;
 import org.openqa.selenium.bidi.network.BeforeRequestSent;
+import org.openqa.selenium.bidi.network.FetchError;
 import org.openqa.selenium.bidi.network.ResponseDetails;
 import org.openqa.selenium.internal.Require;
 
@@ -37,6 +38,9 @@ public class Network implements AutoCloseable {
 
   private final Event<BeforeRequestSent> beforeRequestSentEvent =
       new Event<>("network.beforeRequestSent", BeforeRequestSent::fromJsonMap);
+
+  private final Event<FetchError> fetchErrorEvent =
+      new Event<>("network.fetchError", FetchError::fromJsonMap);
 
   private final Event<ResponseDetails> responseStarted =
       new Event<>("network.responseStarted", ResponseDetails::fromJsonMap);
@@ -119,6 +123,14 @@ public class Network implements AutoCloseable {
       this.bidi.addListener(beforeRequestSentEvent, consumer);
     } else {
       this.bidi.addListener(browsingContextIds, beforeRequestSentEvent, consumer);
+    }
+  }
+
+  public void onFetchError(Consumer<FetchError> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(fetchErrorEvent, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, fetchErrorEvent, consumer);
     }
   }
 

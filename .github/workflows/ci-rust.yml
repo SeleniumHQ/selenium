@@ -119,7 +119,6 @@ jobs:
       - name: "Install cross"
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
-          cross -V
       - name: "Build release binary"
         run: cross build --target x86_64-unknown-linux-musl --release
         working-directory: rust
@@ -149,7 +148,6 @@ jobs:
       - name: "Install cross"
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
-          cross -V
       - name: "Build release binary"
         run: |
           cross build --target x86_64-unknown-linux-musl --profile dev
