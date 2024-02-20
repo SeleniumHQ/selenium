@@ -1219,7 +1219,7 @@ def update_gh_pages
   return restore_git(origin_reference) unless response == 'y' || response == 'yes'
 
   puts "Committing changes"
-  commit!('updating all API docs', 'docs/api/')
+  commit!('updating all API docs', ['docs/api/'])
 
   puts "Pushing changes to upstream repository"
   @git.push
