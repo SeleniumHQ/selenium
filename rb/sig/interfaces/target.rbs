@@ -1,0 +1,3 @@
+interface _Target
+  def target: () -> String
+end

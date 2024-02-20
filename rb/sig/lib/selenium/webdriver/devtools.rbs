@@ -1,6 +1,9 @@
 module Selenium
   module WebDriver
     class DevTools
+      include _DefineMethod
+      include _Target
+
       @ws: untyped
 
       @session_id: untyped

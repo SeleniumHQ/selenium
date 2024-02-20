@@ -1,6 +1,8 @@
 module Selenium
   module WebDriver
     class WebSocketConnection
+      include WebSocket
+
       @callback_threads: untyped
 
       @session_id: untyped

@@ -21,6 +21,10 @@ module Selenium
 
       module ClassMethods
         def from_json: (untyped json) -> untyped
+
+        def new: (untyped directory) -> untyped
+
+        def decoded: (untyped json) -> untyped
       end
     end
   end

@@ -3,6 +3,7 @@ module Selenium
     module Remote
       class Bridge
         include _CommandList
+        include _Features
 
         @http: untyped
 

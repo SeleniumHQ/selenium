@@ -34,7 +34,7 @@ module Selenium
 
         attr_reader alpha: untyped
 
-        def self.from_string: (untyped str) -> untyped
+        def self.from_string: (String str) -> untyped
 
         def self.from_hsl: (untyped h, untyped s, untyped l, untyped a) -> untyped
 
