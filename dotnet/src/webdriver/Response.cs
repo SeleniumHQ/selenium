@@ -16,10 +16,8 @@
 // limitations under the License.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
 
