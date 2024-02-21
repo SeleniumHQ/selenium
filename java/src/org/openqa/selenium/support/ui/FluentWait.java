@@ -204,7 +204,7 @@ public class FluentWait<T> implements Wait<T> {
    * @see #ignoreAll(Collection)
    */
   public FluentWait<T> ignoring(
-  Class<? extends Throwable> firstType, Class<? extends Throwable> secondType) {
+      Class<? extends Throwable> firstType, Class<? extends Throwable> secondType) {
 
     return this.ignoreAll(List.of(firstType, secondType));
   }
