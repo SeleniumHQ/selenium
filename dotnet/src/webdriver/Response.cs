@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
@@ -155,11 +156,29 @@ namespace OpenQA.Selenium
 
             var response = new Response();
 
-            var valueDictionary = deserializedResponse["value"] as Dictionary<string, object>;
+            if (!deserializedResponse.TryGetValue("value", out var valueObject))
+            {
+                throw new WebDriverException($"The 'value' property was not found in the response:{Environment.NewLine}{value}");
+            }
+
+            if (valueObject is not Dictionary<string, object> valueDictionary)
+            {
+                throw new WebDriverException($"The 'value' property is not a dictionary of <string, object>{Environment.NewLine}{value}");
+            }
 
             response.Value = valueDictionary;
 
-            response.Status = WebDriverError.ResultFromError(valueDictionary["error"].ToString());
+            if (!valueDictionary.TryGetValue("error", out var errorObject))
+            {
+                throw new WebDriverException($"The 'value > error' property was not found in the response:{Environment.NewLine}{value}");
+            }
+
+            if (errorObject is not string)
+            {
+                throw new WebDriverException($"The 'value > error' property is not a string{Environment.NewLine}{value}");
+            }
+
+            response.Status = WebDriverError.ResultFromError(errorObject.ToString());
 
             return response;
         }
