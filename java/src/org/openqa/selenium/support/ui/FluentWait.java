@@ -22,9 +22,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -66,13 +70,14 @@ public class FluentWait<T> implements Wait<T> {
 
   private static final Duration DEFAULT_WAIT_DURATION = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 
-  private final T input;
+  protected final T input;
   private final java.time.Clock clock;
   private final Sleeper sleeper;
 
   private Duration timeout = DEFAULT_WAIT_DURATION;
   private Duration interval = DEFAULT_WAIT_DURATION;
   private Supplier<String> messageSupplier = () -> null;
+  protected final Map<String, String> extraInfoTimeoutException = new HashMap<>();
 
   private final List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
 
@@ -84,8 +89,8 @@ public class FluentWait<T> implements Wait<T> {
   }
 
   /**
-   * @param input The input value to pass to the evaluated conditions.
-   * @param clock The clock to use when measuring the timeout.
+   * @param input   The input value to pass to the evaluated conditions.
+   * @param clock   The clock to use when measuring the timeout.
    * @param sleeper Used to put the thread to sleep between evaluation loops.
    */
   public FluentWait(T input, java.time.Clock clock, Sleeper sleeper) {
@@ -129,6 +134,34 @@ public class FluentWait<T> implements Wait<T> {
   }
 
   /**
+   * Adds the key and value as extra info when a time exception happens.
+   *
+   * @param key to be added as a key on timeout exception
+   * @param value to be added as a value on timeout exception
+   * @return A self reference.
+   */
+  public FluentWait<T> withExtraInfoTimeoutException(String key, String value) {
+    var extraInfoKey = Require.nonNull("Key", key);
+    var extraInfoValue = Require.nonNull("Value", value);
+    extraInfoTimeoutException.put(extraInfoKey, extraInfoValue);
+    return this;
+  }
+
+  /**
+   * Adds the key and value as extra info when a time exception happens.
+   *
+   * @param key to be added as a key on timeout exception
+   * @param valueExtractor to be resolved and added as a value on timeout exception
+   * @return A self reference.
+   */
+  public FluentWait<T> withExtraInfoTimeoutException(String key, Function<T, String> valueExtractor) {
+    var extraInfoValueExtractor = Require.nonNull("ValueExtractor", valueExtractor);
+    var extraInfoValue = extraInfoValueExtractor.apply(input);
+    withExtraInfoTimeoutException(key, extraInfoValue);
+    return this;
+  }
+
+  /**
    * Sets how often the condition should be evaluated.
    *
    * <p>In reality, the interval may be greater as the cost of actually evaluating a condition
@@ -147,7 +180,7 @@ public class FluentWait<T> implements Wait<T> {
    * Any exceptions not whitelisted will be allowed to propagate, terminating the wait.
    *
    * @param types The types of exceptions to ignore.
-   * @param <K> an Exception that extends Throwable
+   * @param <K>   an Exception that extends Throwable
    * @return A self reference.
    */
   public <K extends Throwable> FluentWait<T> ignoreAll(Collection<Class<? extends K>> types) {
@@ -165,13 +198,13 @@ public class FluentWait<T> implements Wait<T> {
   }
 
   /**
-   * @param firstType exception to ignore
+   * @param firstType  exception to ignore
    * @param secondType another exception to ignore
    * @return a self reference
    * @see #ignoreAll(Collection)
    */
   public FluentWait<T> ignoring(
-      Class<? extends Throwable> firstType, Class<? extends Throwable> secondType) {
+    Class<? extends Throwable> firstType, Class<? extends Throwable> secondType) {
 
     return this.ignoreAll(List.of(firstType, secondType));
   }
@@ -188,9 +221,9 @@ public class FluentWait<T> implements Wait<T> {
    * </ol>
    *
    * @param isTrue the parameter to pass to the {@link ExpectedCondition}
-   * @param <V> The function's expected return type.
+   * @param <V>    The function's expected return type.
    * @return The function's return value if the function returned something different from null or
-   *     false before the timeout expired.
+   * false before the timeout expired.
    * @throws TimeoutException If the timeout expires.
    */
   @Override
@@ -256,12 +289,16 @@ public class FluentWait<T> implements Wait<T> {
    * Throws a timeout exception. This method may be overridden to throw an exception that is
    * idiomatic for a particular test infrastructure, such as an AssertionError in JUnit4.
    *
-   * @param message The timeout message.
+   * @param message       The timeout message.
    * @param lastException The last exception to be thrown and subsequently suppressed while waiting
-   *     on a function.
+   *                      on a function.
    * @return Nothing will ever be returned; this return type is only specified as a convenience.
    */
   protected RuntimeException timeoutException(String message, Throwable lastException) {
-    throw new TimeoutException(message, lastException);
+    var timeoutException = new TimeoutException(message, lastException);
+    if (!extraInfoTimeoutException.isEmpty()) {
+      extraInfoTimeoutException.forEach(timeoutException::addInfo);
+    }
+    throw timeoutException;
   }
 }

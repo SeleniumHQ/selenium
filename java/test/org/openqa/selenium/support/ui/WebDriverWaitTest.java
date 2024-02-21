@@ -82,6 +82,60 @@ class WebDriverWaitTest {
   }
 
   @Test
+  void shouldIncludeRemoteInfoForWrappedDriverTimeoutWithExtraInfo() throws IOException {
+    Capabilities caps = new MutableCapabilities();
+    Response response = new Response(new SessionId("foo"));
+    response.setState("success");
+    response.setValue(caps.asMap());
+    CommandExecutor executor = mock(CommandExecutor.class);
+    when(executor.execute(any(Command.class))).thenReturn(response);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, caps);
+    WebDriver testDriver = mock(WebDriver.class, withSettings().extraInterfaces(WrapsDriver.class));
+    when(((WrapsDriver) testDriver).getWrappedDriver()).thenReturn(driver);
+
+    TickingClock clock = new TickingClock();
+    var wait =
+      new WebDriverWait(testDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock)
+        .withExtraInfoTimeoutException("status", "unit-test");
+
+    assertThatExceptionOfType(TimeoutException.class)
+      .isThrownBy(() -> wait.until(d -> false))
+      .withMessageContaining("Capabilities {platformName: any}")
+      .withMessageContaining("Session ID: foo")
+      .withMessageContaining("status: unit-test");
+  }
+
+  @Test
+  void shouldIncludeRemoteInfoForWrappedDriverTimeoutWithExtraInfoUsingFunction() throws IOException {
+    Capabilities caps = new MutableCapabilities();
+    Response response = new Response(new SessionId("foo"));
+    response.setState("success");
+    response.setValue(caps.asMap());
+    CommandExecutor executor = mock(CommandExecutor.class);
+    when(executor.execute(any(Command.class))).thenReturn(response);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, caps);
+    WebDriver testDriver = mock(WebDriver.class, withSettings().extraInterfaces(WrapsDriver.class));
+    when(testDriver.getCurrentUrl()).thenReturn("https://selenium.dev/unit-test");
+    when(testDriver.getTitle()).thenReturn("Selenium Dev - Unit test");
+    when(((WrapsDriver) testDriver).getWrappedDriver()).thenReturn(driver);
+
+    TickingClock clock = new TickingClock();
+    var wait =
+      new WebDriverWait(testDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock)
+        .withExtraInfoTimeoutException("Current URL", WebDriver::getCurrentUrl)
+        .withExtraInfoTimeoutException("Title", WebDriver::getTitle);
+
+    assertThatExceptionOfType(TimeoutException.class)
+      .isThrownBy(() -> wait.until(d -> false))
+      .withMessageContaining("Capabilities {platformName: any}")
+      .withMessageContaining("Session ID: foo")
+      .withMessageContaining("Current URL: https://selenium.dev/unit-test")
+      .withMessageContaining("Title: Selenium Dev - Unit test");
+  }
+
+  @Test
   void shouldThrowAnExceptionIfTheTimerRunsOut() {
     TickingClock clock = new TickingClock();
     WebDriverWait wait =

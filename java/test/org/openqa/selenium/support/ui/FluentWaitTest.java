@@ -25,6 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -220,6 +221,66 @@ class FluentWaitTest {
     assertThatExceptionOfType(TimeoutException.class)
         .isThrownBy(() -> wait.until(condition))
         .withMessage(exception.getMessage());
+  }
+
+  @Test
+  void timeoutMessageIncludesExtraInfo() {
+    Function<Object, Boolean> condition = Objects::isNull;
+
+    Wait<Object> wait = new FluentWait<Object>("cheese")
+      .withTimeout(Duration.ofMillis(0))
+      .withExtraInfoTimeoutException("test-status", "testing extra info");
+
+    assertThatExceptionOfType(TimeoutException.class)
+      .isThrownBy(() -> wait.until(condition))
+      .withMessageContaining("test-status: testing extra info");
+  }
+
+  @Test
+  void timeoutMessageIncludesExtraInfoFromObject() {
+    Function<String, Boolean> condition = String::isBlank;
+
+    Wait<String> wait = new FluentWait<>("selenium")
+      .withTimeout(Duration.ofMillis(0))
+      .withExtraInfoTimeoutException("input-uppercase", String::toUpperCase)
+      .withExtraInfoTimeoutException("input-size", input -> Objects.toString(input.length()));
+
+    assertThatExceptionOfType(TimeoutException.class)
+      .isThrownBy(() -> wait.until(condition))
+      .withMessageContaining("input-uppercase: SELENIUM")
+      .withMessageContaining("input-size: 8");
+  }
+
+  @Test
+  void shouldThrowAnExceptionIfNullKeyOnExtraInfoTimeoutException() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> new FluentWait<Object>("cheese")
+        .withExtraInfoTimeoutException(null, "testing extra info"))
+      .withMessage("Key must be set");
+  }
+
+  @Test
+  void shouldThrowAnExceptionIfNullValueAsStringOnExtraInfoTimeoutException() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> new FluentWait<Object>("cheese")
+        .withExtraInfoTimeoutException("valid-key", (String) null))
+      .withMessage("Value must be set");
+  }
+
+  @Test
+  void shouldThrowAnExceptionIfNullValueAsFunctionOnExtraInfoTimeoutException() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> new FluentWait<Object>("cheese")
+        .withExtraInfoTimeoutException("valid-key", (Function<Object, String>) null))
+      .withMessage("ValueExtractor must be set");
+  }
+
+  @Test
+  void shouldThrowAnExceptionIfNullValueAsFunctionReturnOnExtraInfoTimeoutException() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> new FluentWait<Object>("cheese")
+        .withExtraInfoTimeoutException("valid-key", obj -> null))
+      .withMessage("Value must be set");
   }
 
   @Test

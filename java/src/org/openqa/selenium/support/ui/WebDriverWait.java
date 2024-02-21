@@ -95,6 +95,9 @@ public class WebDriverWait extends FluentWait<WebDriver> {
         ex.addInfo("Capabilities", remote.getCapabilities().toString());
       }
     }
+    if (!extraInfoTimeoutException.isEmpty()) {
+      extraInfoTimeoutException.forEach(ex::addInfo);
+    }
     throw ex;
   }
 }
