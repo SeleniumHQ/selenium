@@ -1,7 +1,7 @@
 module Selenium
   module WebDriver
     module Zipper
-      EXTENSIONS: ::Array[".zip" | ".xpi"]
+      EXTENSIONS: Array[String]
 
       def self.unzip: (untyped path) -> untyped
 
