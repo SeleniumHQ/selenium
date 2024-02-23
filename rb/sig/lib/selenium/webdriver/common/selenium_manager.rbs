@@ -7,6 +7,7 @@ module Selenium
     #
     class SeleniumManager
       include _Platform
+      include Open3
 
       self.@bin_path: untyped
 

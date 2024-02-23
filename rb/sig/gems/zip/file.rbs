@@ -1,5 +1,7 @@
 module Zip
   class File
+    CREATE: untyped
+
     def open: (untyped) -> untyped
   end
 end
