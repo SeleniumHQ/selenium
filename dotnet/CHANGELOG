@@ -15,6 +15,7 @@ v4.18.0
 * Add DetachedShadowRoot exception for error response handling
 * Add InsecureCertificate exception for error response handling
 * Fix network response data encoding (#13576)
+* Breaking change: `desiredCapabilities` was renamed to `capabilities` in RemoteWebDriver ctor
 
 v4.17.0
 ======

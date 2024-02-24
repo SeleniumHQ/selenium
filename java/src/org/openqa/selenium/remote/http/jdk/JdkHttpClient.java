@@ -45,6 +45,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,6 +70,7 @@ import org.openqa.selenium.remote.http.WebSocket;
 
 public class JdkHttpClient implements HttpClient {
   public static final Logger LOG = Logger.getLogger(JdkHttpClient.class.getName());
+  private static final AtomicInteger POOL_COUNTER = new AtomicInteger(0);
   private final JdkHttpMessages messages;
   private final HttpHandler handler;
   private java.net.http.HttpClient client;
@@ -84,7 +86,15 @@ public class JdkHttpClient implements HttpClient {
     this.websockets = new ArrayList<>();
     this.handler = config.filter().andFinally(this::execute0);
 
-    executorService = Executors.newCachedThreadPool();
+    String poolName = "JdkHttpClient-" + POOL_COUNTER.getAndIncrement();
+    AtomicInteger threadCounter = new AtomicInteger(0);
+    executorService =
+        Executors.newCachedThreadPool(
+            r -> {
+              Thread thread = new Thread(r, poolName + "-" + threadCounter.getAndIncrement());
+              thread.setDaemon(true);
+              return thread;
+            });
 
     java.net.http.HttpClient.Builder builder =
         java.net.http.HttpClient.newBuilder()
