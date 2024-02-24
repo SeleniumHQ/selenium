@@ -10,4 +10,8 @@ interface _Driver
   def ref: () -> untyped
 
   def bridge: () -> untyped
+
+  def browser: () -> untyped
+
+  def service_url: (untyped service) -> untyped
 end

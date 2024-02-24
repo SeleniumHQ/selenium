@@ -2,6 +2,8 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasFileDownloads
+        include _Driver
+
         def downloadable_files: () -> untyped
 
         def download_file: (untyped file_name, untyped target_directory) -> untyped

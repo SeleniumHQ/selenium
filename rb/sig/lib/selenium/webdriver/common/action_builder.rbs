@@ -39,7 +39,7 @@ module Selenium
 
       def perform: () -> nil
 
-      def clear_all_actions: () -> []
+      def clear_all_actions: () -> Array[::Selenium::WebDriver::Interactions::InputDevice]
 
       def release_actions: () -> untyped
 
@@ -47,7 +47,7 @@ module Selenium
 
       def tick: (*Interactions::InputDevice action_devices) -> (nil | Array[Interactions::InputDevice])
 
-      def add_input: (Interactions::InputDevice | Symbol device) -> Interactions::InputDevice
+      def add_input: (Interactions::InputDevice | Symbol | interned device) -> Interactions::InputDevice
     end
   end
 end

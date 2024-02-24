@@ -12,7 +12,7 @@ module Selenium
 
         include PointerEventProperties
 
-        BUTTONS: { left: 0, touch: 0, pen_contact: 0, middle: 1, right: 2, pen_barrel: 2, x1: 3, back: 3, x2: 4, forward: 4 }
+        BUTTONS: { Symbol: Integer }
 
         DIRECTIONS: { down: :pointerDown, up: :pointerUp }
 

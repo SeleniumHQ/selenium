@@ -7,6 +7,8 @@ module Selenium
 
       @navigate: untyped
 
+      @service_manager: untyped
+
       def self.for: (*Symbol | Hash[Symbol, untyped]) -> untyped
 
       def initialize: (?bridge: Support::EventFiringBridge? bridge, ?listener: Support::AbstractEventListener? listener, **untyped opts) -> void

@@ -16,6 +16,8 @@ module Selenium
         def empty?: () -> untyped
 
         def each: () ?{ (untyped, untyped) -> untyped } -> untyped
+
+        def []: (untyped key) -> untyped
       end
     end
   end
