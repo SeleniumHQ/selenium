@@ -19,9 +19,9 @@ module Selenium
 
       CONNECT_TIMEOUT: Integer
 
-      NOT_CONNECTED_ERRORS: untyped
+      NOT_CONNECTED_ERRORS: Array[singleton(::Errno::ECONNREFUSED) | singleton(::Errno::ENOTCONN)  | singleton(::Errno::EPERM)]
 
-      CONNECTED_ERRORS: untyped
+      CONNECTED_ERRORS: Array[singleton(::Errno::EISCONN) | singleton(::Errno::EINVAL) | singleton(::Errno::EALREADY)]
 
       # we use a plain TCPSocket here since JRuby has issues closing socket
       # see https://github.com/jruby/jruby/issues/5709
