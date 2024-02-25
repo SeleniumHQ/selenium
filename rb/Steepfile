@@ -19,5 +19,6 @@ target :lib do
     'ipaddr',
     'net-http',
     'openssl',
+    'tmpdir',
     'securerandom') # Standard libraries used
 end
