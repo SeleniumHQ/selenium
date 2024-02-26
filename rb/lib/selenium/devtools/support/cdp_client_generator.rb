@@ -98,12 +98,12 @@ module Selenium
 end
 
 if $PROGRAM_NAME == __FILE__
-  browser_protocol_path, js_protocol_path, output_dir, loader_path, version = *ARGV
+  browser_protocol_path, js_protocol_path, loader_path, version = *ARGV
 
   Selenium::DevTools::Support::CDPClientGenerator.new.call(
     browser_protocol_path: browser_protocol_path,
     js_protocol_path: js_protocol_path,
-    output_dir: output_dir,
+    output_dir: loader_path.sub(/\.rb$/, ''),
     loader_path: loader_path,
     version: version
   )

@@ -15,6 +15,7 @@ rb_test(
         "//rb/lib/selenium:webdriver",
         "//rb/lib/selenium/webdriver:atoms",
         "//rb/lib/selenium/webdriver:common",
+        "//rb/spec/unit/selenium/webdriver:spec_helper",
         "@bundle",
     ],
 )
@@ -33,6 +34,7 @@ rb_test(
         "//rb/lib/selenium:webdriver",
         "//rb/lib/selenium/webdriver:atoms",
         "//rb/lib/selenium/webdriver:common",
+        "//rb/spec/unit/selenium/webdriver:spec_helper",
         "@bundle",
     ],
 )
