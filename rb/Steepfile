@@ -1,5 +1,5 @@
 target :lib do
-  signature 'sig' # Signature directory
+  signature 'sig', '.gem_rbs_collection/rubyzip' # Signature directory
   check 'lib' # Directory name
   ignore(
     # Ignore line 166 due to UDP RBS issue
@@ -10,6 +10,7 @@ target :lib do
     'lib/selenium/webdriver/remote/response.rb'
   )
 
+  # Standard libraries used in the project
   library(
     'base64',
     'date',
@@ -20,5 +21,8 @@ target :lib do
     'net-http',
     'openssl',
     'tmpdir',
-    'securerandom') # Standard libraries used
+    'securerandom',
+    'uri',
+    'zlib'
+  )
 end

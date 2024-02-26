@@ -6,7 +6,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4b0d2f72e63b6c3e92dc54e19ce23dd24524f9a7
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: ast
@@ -14,9 +14,13 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 8149bc3fc0f720d935dc0592dc8886e03052f65f
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: bigdecimal
+  version: '0'
+  source:
+    type: stdlib
 - name: cgi
   version: '0'
   source:
@@ -25,6 +29,14 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: hashdiff
+  version: '1.1'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
 - name: json
   version: '0'
   source:
@@ -46,7 +58,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 8149bc3fc0f720d935dc0592dc8886e03052f65f
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: parser
@@ -54,7 +66,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4b0d2f72e63b6c3e92dc54e19ce23dd24524f9a7
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rack
@@ -62,7 +74,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 8149bc3fc0f720d935dc0592dc8886e03052f65f
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rainbow
@@ -70,7 +82,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 8149bc3fc0f720d935dc0592dc8886e03052f65f
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rake
@@ -78,7 +90,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4b0d2f72e63b6c3e92dc54e19ce23dd24524f9a7
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: regexp_parser
@@ -86,15 +98,19 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4b0d2f72e63b6c3e92dc54e19ce23dd24524f9a7
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: ripper
+  version: '0'
+  source:
+    type: stdlib
 - name: rubocop
   version: '1.57'
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4b0d2f72e63b6c3e92dc54e19ce23dd24524f9a7
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rubocop-ast
@@ -102,7 +118,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 4b0d2f72e63b6c3e92dc54e19ce23dd24524f9a7
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: tempfile
@@ -118,7 +134,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 8149bc3fc0f720d935dc0592dc8886e03052f65f
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 gemfile_lock_path: Gemfile.lock

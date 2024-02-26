@@ -1,7 +1,0 @@
-module Zip
-  class Entry
-    def initialize: (untyped name, untyped entry_name) -> untyped
-
-    def follow_symlinks=: (untyped) -> untyped
-  end
-end
