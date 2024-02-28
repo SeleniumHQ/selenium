@@ -1,8 +1,0 @@
-{
-  "name": "selenium-devcontainer",
-  "build": {
-    "dockerfile": "./scripts/dev-image/Dockerfile"
-  },
-  "runArgs": ["--name", "selenium_devcontainer"],
-  "initializeCommand" : "echo 'Starting Selenium Devcontainer'"
-}
