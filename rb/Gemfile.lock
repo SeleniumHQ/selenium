@@ -42,6 +42,8 @@ GEM
     drb (2.2.0)
       ruby2_keywords
     ffi (1.16.3)
+    ffi (1.16.3-java)
+    ffi (1.16.3-x64-mingw32)
     fileutils (1.7.2)
     git (1.19.1)
       addressable (~> 2.8)
@@ -160,7 +162,7 @@ GEM
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.8.1)
     websocket (1.2.10)
-    yard (0.9.34)
+    yard (0.9.35)
 
 PLATFORMS
   java
