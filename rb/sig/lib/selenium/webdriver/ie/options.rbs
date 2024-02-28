@@ -10,7 +10,7 @@ module Selenium
 
         SCROLL_BOTTOM: 1
 
-        CAPABILITIES: { browser_attach_timeout: "browserAttachTimeout", element_scroll_behavior: "elementScrollBehavior", full_page_screenshot: "ie.enableFullPageScreenshot", ensure_clean_session: "ie.ensureCleanSession", file_upload_dialog_timeout: "ie.fileUploadDialogTimeout", force_create_process_api: "ie.forceCreateProcessApi", force_shell_windows_api: "ie.forceShellWindowsApi", ignore_protected_mode_settings: "ignoreProtectedModeSettings", ignore_zoom_level: "ignoreZoomSetting", initial_browser_url: "initialBrowserUrl", native_events: "nativeEvents", persistent_hover: "enablePersistentHover", require_window_focus: "requireWindowFocus", use_per_process_proxy: "ie.usePerProcessProxy", use_legacy_file_upload_dialog_handling: "ie.useLegacyFileUploadDialogHandling", attach_to_edge_chrome: "ie.edgechromium", edge_executable_path: "ie.edgepath", ignore_process_match: "ie.ignoreprocessmatch" }
+        CAPABILITIES: Hash[Symbol, String]
 
         BROWSER: "internet explorer"
 

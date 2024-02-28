@@ -104,7 +104,7 @@ if $PROGRAM_NAME == __FILE__
   Selenium::DevTools::Support::CDPClientGenerator.new.call(
     browser_protocol_path: browser_protocol_path,
     js_protocol_path: js_protocol_path,
-    output_dir: loader_path.sub(/\.rb$/, ''),
+    output_dir: loader_path&.sub(/\.rb$/, ''),
     loader_path: loader_path,
     version: version
   )

@@ -9,7 +9,7 @@ module Selenium
 
       @service_manager: untyped
 
-      def self.for: (Symbol browser, ?Hash[Symbol, untyped] opts) -> untyped
+      def self.for: (?Symbol browser, ?Hash[Symbol, untyped] opts, *untyped args) -> untyped
 
       def initialize: (?bridge: Support::EventFiringBridge? bridge, ?listener: Support::AbstractEventListener? listener, **untyped opts) -> void
 

@@ -40,7 +40,7 @@ module Selenium
 
         def self.hue_to_rgb: (untyped lum1, untyped lum2, untyped hue) -> untyped
 
-        def initialize: (String ?red, String ?green, String ?blue, ?Float | Integer | String ?alpha, *untyped args) -> void
+        def initialize: (String red, String green, String blue, Float | Integer | String ?alpha, *untyped args) -> void
 
         def ==: (untyped other) -> (bool | untyped)
 
@@ -48,9 +48,9 @@ module Selenium
 
         def hash: () -> untyped
 
-        def rgb: () -> ::String
+        def rgb: () -> String
 
-        def rgba: () -> ::String
+        def rgba: () -> String
 
         def hex: () -> untyped
       end

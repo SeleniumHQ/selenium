@@ -12,7 +12,7 @@ module Selenium
 
         include PointerEventProperties
 
-        BUTTONS: { Symbol: Integer }
+        BUTTONS: Array[Hash[Symbol, Integer]]
 
         DIRECTIONS: { down: :pointerDown, up: :pointerUp }
 

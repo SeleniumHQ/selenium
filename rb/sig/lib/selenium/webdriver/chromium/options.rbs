@@ -18,10 +18,8 @@ module Selenium
 
         attr_accessor logging_prefs: untyped
 
-        # see: http://chromedriver.chromium.org/capabilities
-        CAPABILITIES: { args: "args", binary: "binary", local_state: "localState", prefs: "prefs", detach: "detach", debugger_address: "debuggerAddress", exclude_switches: "excludeSwitches", minidump_path: "minidumpPath", emulation: "mobileEmulation", perf_logging_prefs: "perfLoggingPrefs", window_types: "windowTypes", android_package: "androidPackage", android_activity: "androidActivity", android_device_serial: "androidDeviceSerial", android_use_running_app: "androidUseRunningApp" }
+        CAPABILITIES: Hash[Symbol, String]
 
-        # NOTE: special handling of 'extensions' to validate when set instead of when used
         attr_reader extensions: untyped
 
         def initialize: (?profile: untyped?, **untyped opts) -> void

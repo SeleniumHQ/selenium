@@ -16,11 +16,12 @@ module Selenium
 
         @delta_y: untyped
 
-        def initialize: (source: untyped, ?origin: ::Symbol, ?duration: ::Float, **untyped opts) -> void
+        def initialize: (source: untyped, ?origin: Symbol, ?duration: Float, **untyped opts) -> void |
+          (**untyped opts) -> void
 
         def assert_source: (untyped source) -> (untyped | nil)
 
-        def encode: () -> ::Hash[::String, untyped]
+        def encode: () -> Hash[String, untyped]
       end
     end
   end

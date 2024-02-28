@@ -3,9 +3,9 @@ module Selenium
     module Chrome
       module Features
         include WebDriver::Chromium::Features
-        include _Commands
 
         CHROME_COMMANDS: Hash[Symbol, Array[Symbol | String]]
+        COMMANDS: Array[Symbol | String]
 
         def command_list: -> untyped
 

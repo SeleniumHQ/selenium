@@ -4,8 +4,7 @@ module Selenium
       class Options < WebDriver::Options
         attr_accessor options: untyped
 
-        # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
-        CAPABILITIES: { automatic_inspection: "safari:automaticInspection", automatic_profiling: "safari:automaticProfiling" }
+        CAPABILITIES: Hash[Symbol, String]
 
         BROWSER: untyped
 

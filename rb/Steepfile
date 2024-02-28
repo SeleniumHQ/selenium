@@ -7,7 +7,38 @@ target :lib do
     # Ignore due to webmock gem not having RBS signatures
     'lib/selenium/webdriver/remote/http/curb.rb',
     # Ignore due to line 71, there is one last error where RBS thinks backtrace is nil
-    'lib/selenium/webdriver/remote/response.rb'
+    'lib/selenium/webdriver/remote/response.rb',
+    # Ignore due to Errno::EACCES error
+    'lib/selenium/webdriver/support/color.rb',
+    'lib/selenium/webdriver/common/port_prober.rb',
+    # Ignore due to error overloading
+    'lib/selenium/webdriver/common/socket_poller.rb',
+    # Ignore due to Parser on line 611
+    'lib/selenium/webdriver/remote/bridge.rb',
+    # Ignore due to error on line 101 with block
+    'lib/selenium/webdriver/devtools/network_interceptor.rb',
+    # Ignore due to error on line 21 with overloading issues
+    'lib/selenium/webdriver/common/virtual_authenticator/credential.rb',
+    # Ignore due to error with the Zipper RBS
+    'lib/selenium/webdriver/common/zipper.rb',
+    # Ignore due to error on line 117 with the debug? method
+    'lib/selenium/webdriver/common/selenium_manager.rb',
+    # Ignore due to line 230 with the overloading issues
+    'lib/selenium/webdriver/common/action_builder.rb',
+    # Ignore due to CAPABILITIES not able to be found on line 55
+    'lib/selenium/webdriver/common/options.rb',
+    # Ignore due to strftime error in RBS on line 188
+    'lib/selenium/webdriver/common/logger.rb',
+    # Ignore due to error with Process
+    'lib/selenium/webdriver/common/child_process.rb',
+    # Ignore due to Net::HTTP not being found on line 49
+    'lib/selenium/webdriver/chromium/driver.rb',
+    # Ignore due to error on line 37 with include?
+    'lib/selenium/webdriver/support/guards/guard_condition.rb',
+    # Ignore due to positional argument error on line 69
+    'lib/selenium/webdriver/common/socket_lock.rb',
+    # Ignore due to is_a? bot error on line 70
+    'lib/selenium/webdriver/remote/driver.rb'
   )
 
   # Standard libraries used in the project

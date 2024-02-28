@@ -22,8 +22,6 @@ module Selenium
     module Safari
       class Options < WebDriver::Options
         attr_accessor :options
-
-        # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
         CAPABILITIES = {automatic_inspection: 'safari:automaticInspection',
                         automatic_profiling: 'safari:automaticProfiling'}.freeze
         BROWSER = Selenium::WebDriver::Safari.technology_preview? ? 'Safari Technology Preview' : 'safari'

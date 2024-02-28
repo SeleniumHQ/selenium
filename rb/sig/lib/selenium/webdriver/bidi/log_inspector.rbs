@@ -4,7 +4,7 @@ module Selenium
       class LogInspector
         @bidi: untyped
 
-        EVENTS: { entry_added: "entryAdded" }
+        EVENTS: Hash[Symbol, String]
 
         LOG_LEVEL: { DEBUG: "debug", ERROR: "error", INFO: "info", WARNING: "warning" }
 

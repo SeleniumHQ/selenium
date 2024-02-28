@@ -10,12 +10,10 @@ module Selenium
 
         KEY: "moz:firefoxOptions"
 
-        # see: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions
-        CAPABILITIES: { binary: "binary", args: "args", log: "log", prefs: "prefs", env: "env", android_package: "androidPackage", android_activity: "androidActivity", android_device_serial: "androidDeviceSerial", android_intent_arguments: "androidIntentArguments" }
+        CAPABILITIES: Hash[Symbol, String]
 
         BROWSER: "firefox"
 
-        # NOTE: special handling of 'profile' to validate when set instead of when used
         attr_reader profile: untyped
 
         def initialize: (?log_level: untyped?, **untyped opts) -> void

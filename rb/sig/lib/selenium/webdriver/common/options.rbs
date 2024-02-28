@@ -3,15 +3,15 @@ module Selenium
     class Options
       @options: untyped
 
-      W3C_OPTIONS: ::Array[:browser_name | :browser_version | :platform_name | :accept_insecure_certs | :page_load_strategy | :proxy | :set_window_rect | :timeouts | :unhandled_prompt_behavior | :strict_file_interactability | :web_socket_url]
+      W3C_OPTIONS: Array[Symbol]
 
-      GRID_OPTIONS: ::Array[:enable_downloads]
+      GRID_OPTIONS: Array[Symbol]
 
       BROWSER: untyped
 
       KEY: untyped
 
-      CAPABILITIES: untyped
+      CAPABILITIES: Hash[Symbol, String]
 
       attr_reader self.driver_path: untyped
 
