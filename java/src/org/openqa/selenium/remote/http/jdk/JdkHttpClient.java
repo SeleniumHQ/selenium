@@ -135,24 +135,7 @@ public class JdkHttpClient implements HttpClient {
 
     Proxy proxy = config.proxy();
     if (proxy != null) {
-      ProxySelector proxySelector =
-          new ProxySelector() {
-            @Override
-            public List<Proxy> select(URI uri) {
-              if (proxy == null) {
-                return List.of();
-              }
-              if (uri.getScheme().toLowerCase().startsWith("http")) {
-                return List.of(proxy);
-              }
-              return List.of();
-            }
-
-            @Override
-            public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
-              // Do nothing
-            }
-          };
+      ProxySelector proxySelector = new HttpProxySelector(proxy);
       builder = builder.proxy(proxySelector);
     }
 
@@ -486,6 +469,30 @@ public class JdkHttpClient implements HttpClient {
     public HttpClient createClient(ClientConfig config) {
       Objects.requireNonNull(config, "Client config must be set");
       return new JdkHttpClient(config);
+    }
+  }
+
+  private static class HttpProxySelector extends ProxySelector {
+    private final Proxy proxy;
+
+    public HttpProxySelector(Proxy proxy) {
+      this.proxy = proxy;
+    }
+
+    @Override
+    public List<Proxy> select(URI uri) {
+      if (proxy == null) {
+        return List.of();
+      }
+      if (uri.getScheme().toLowerCase().startsWith("http")) {
+        return List.of(proxy);
+      }
+      return List.of();
+    }
+
+    @Override
+    public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+      // Do nothing
     }
   }
 }
