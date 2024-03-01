@@ -31,3 +31,6 @@
 -//py:test-chrome-test/selenium/webdriver/chrome/chrome_service_tests.py
 -//py:test-chrome-test/selenium/webdriver/chrome/proxy_tests.py
 -//py:unit-test/unit/selenium/webdriver/common/cdp_module_fallback_tests.py
+-//rb/spec/integration/selenium/webdriver/chrome:service
+-//rb/spec/integration/selenium/webdriver/edge:service
+-//rb/spec/integration/selenium/webdriver/firefox:service

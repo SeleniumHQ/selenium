@@ -20,7 +20,12 @@ bazel test --config=remote-ci --build_tests_only \
   //java/... \
   //javascript/atoms/... //javascript/webdriver/... \
   //py/... \
-  //rb/spec/unit/... -- $(cat .skipped-tests | tr '\n' ' ')
+  //rb/spec/... -- $(cat .skipped-tests | tr '\n' ' ')
 
 # Build the packages we want to ship to users
-bazel build --config=remote-ci //dotnet:all java/src/... //javascript/node/selenium-webdriver:selenium-webdriver //py:selenium-wheel
+bazel build --config=remote-ci \
+  //dotnet:all \
+  //java/src/... \
+  //javascript/node/selenium-webdriver:selenium-webdriver \
+  //py:selenium-wheel \
+  //rb:selenium-devtools //rb:selenium-webdriver
