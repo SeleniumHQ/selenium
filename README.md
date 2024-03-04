@@ -101,12 +101,18 @@ Rather than creating your own local dev environment, GitPod provides a ready to 
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/SeleniumHQ/selenium)
 
+#### Using Dev Container
+
+As an alternative you can build a [Dev Container](https://containers.dev/) - basically a docker container -
+suitable for building and testing Selenium using the devcontainer.json in the
+[.devcontainer](.devcontainer/devcontainer.json) directory. Supporting IDEs like VS Code or IntelliJ IDEA
+should point you to how such a container can be created.
+
 #### Using Docker Image
 
 You can also build a Docker image suitable
 for building and testing Selenium using the Dockerfile in the
 [dev image](scripts/dev-image/Dockerfile) directory.
-
 
 ## Building
 
