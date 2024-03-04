@@ -209,8 +209,7 @@ public class RelaySessionFactory implements SessionFactory {
       // If no status endpoint was configured, we assume the server is up.
       return true;
     }
-    try {
-      HttpClient client = clientFactory.createClient(serviceStatusUrl);
+    try (HttpClient client = clientFactory.createClient(serviceStatusUrl)) {
       HttpResponse response =
           client.execute(new HttpRequest(HttpMethod.GET, serviceStatusUrl.toString()));
       LOG.log(Debug.getDebugLogLevel(), () -> Contents.string(response));
