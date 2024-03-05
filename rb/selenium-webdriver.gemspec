@@ -61,5 +61,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop-rspec', ['~> 2.16']
   s.add_development_dependency 'webmock', ['~> 3.5']
   s.add_development_dependency 'webrick', ['~> 1.7']
-  s.add_development_dependency 'yard', ['~> 0.9.11']
+  s.add_development_dependency 'yard', ['~> 0.9.11', '>= 0.9.36']
 end
