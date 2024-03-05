@@ -20,7 +20,7 @@ module Selenium
 
         def create_pause: (Float duration) -> Array[Interaction]
 
-        def encode: () -> Hash[untyped, untyped]
+        def encode: () -> untyped
       end
     end
   end

@@ -1,7 +1,6 @@
 module Selenium
   module WebDriver
     class Logger
-      extend Forwardable
 
       @allowed: Array[Symbol]
       @first_warning: bool
@@ -30,6 +29,8 @@ module Selenium
       def warn: (String message, ?id: Symbol | Array[Symbol] id) ?{ () -> void } -> void
 
       def deprecate: (String old, ?String? new, ?id: Symbol | Array[Symbol] id, ?reference: String reference) { () -> void } -> (void)
+
+      def debug?: () -> bool
 
       private
 

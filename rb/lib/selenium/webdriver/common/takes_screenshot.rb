@@ -57,7 +57,7 @@ module Selenium
         when :base64
           full_page ? full_screenshot : screenshot
         when :png
-          screenshot_as(:base64, full_page: full_page)&.unpack1('m')
+          screenshot_as(:base64, full_page: full_page).unpack1('m')
         else
           raise Error::UnsupportedOperationError, "unsupported format: #{format.inspect}"
         end
