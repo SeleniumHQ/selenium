@@ -33,6 +33,7 @@ module Selenium
            body: {value: {sessionId: 0, capabilities: {browserName: 'firefox'}}}.to_json,
            headers: {content_type: 'application/json'}}
         end
+        let(:finder) { instance_double(DriverFinder, browser_path?: false, driver_path: '/path/to/driver') }
 
         def expect_request(body: nil, endpoint: nil)
           body = (body || {capabilities: {alwaysMatch: {acceptInsecureCerts: true,
@@ -48,36 +49,32 @@ module Selenium
         end
 
         it 'uses DriverFinder when provided Service without path' do
+          allow(DriverFinder).to receive(:new).and_return(finder)
           expect_request
-          allow(DriverFinder).to receive(:path)
           options = Options.new
 
           described_class.new(service: service, options: options)
-          expect(DriverFinder).to have_received(:path).with(options, service.class)
+          expect(finder).to have_received(:driver_path)
         end
 
         it 'does not use DriverFinder when provided Service with path' do
           expect_request
+          allow(DriverFinder).to receive(:new).and_return(finder)
           allow(service).to receive(:executable_path).and_return('path')
-          allow(DriverFinder).to receive(:path)
 
           described_class.new(service: service)
-          expect(DriverFinder).not_to have_received(:path)
+          expect(finder).not_to have_received(:driver_path)
         end
 
         it 'does not require any parameters' do
-          allow(DriverFinder).to receive(:path).and_return('path')
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
+          allow(DriverFinder).to receive(:new).and_return(finder)
           expect_request
 
           expect { described_class.new }.not_to raise_exception
         end
 
         it 'accepts provided Options as sole parameter' do
-          allow(DriverFinder).to receive(:path).and_return('path')
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
+          allow(DriverFinder).to receive(:new).and_return(finder)
 
           opts = {args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {acceptInsecureCerts: true,

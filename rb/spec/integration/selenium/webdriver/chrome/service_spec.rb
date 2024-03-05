@@ -29,7 +29,7 @@ module Selenium
         after { service_manager.stop }
 
         it 'auto uses chromedriver' do
-          service.executable_path = DriverFinder.path(Options.new, described_class)
+          service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
 
           expect(service_manager.uri).to be_a(URI)
         end
