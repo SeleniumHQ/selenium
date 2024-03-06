@@ -1,7 +1,7 @@
 target :lib do
   signature 'sig', '.gem_rbs_collection/rubyzip' # Signature directory
   check 'lib' # Directory name
-  # Total amount of errors ignore 62
+  # Total amount of errors ignore 62 in 28 files
   ignore(
     # Ignore line 166 due to UDP RBS issue
     'lib/selenium/webdriver/common/platform.rb',
