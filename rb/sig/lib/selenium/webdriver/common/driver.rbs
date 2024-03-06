@@ -9,7 +9,7 @@ module Selenium
 
       @service_manager: untyped
 
-      def self.for: (?Symbol browser, ?Hash[Symbol, untyped] opts, *untyped args) -> untyped
+      def self.for: (untyped browser, Hash[untyped, untyped] opts) -> untyped
 
       def initialize: (?bridge: Support::EventFiringBridge? bridge, ?listener: Support::AbstractEventListener? listener, **untyped opts) -> void
 
@@ -65,7 +65,7 @@ module Selenium
 
       attr_reader bridge: untyped
 
-      def create_bridge: (caps: untyped caps, url: String url, ?http_client: untyped? http_client) -> untyped
+      def create_bridge: (caps: untyped?, url: untyped?, http_client: untyped? ) -> untyped
 
       def service_url: (untyped service) -> untyped
 

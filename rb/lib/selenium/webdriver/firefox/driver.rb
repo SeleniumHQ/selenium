@@ -55,6 +55,7 @@ module Selenium
           end
 
           uri = URI("http://#{capabilities['moz:debuggerAddress']}")
+
           response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
 
           JSON.parse(response)['webSocketDebuggerUrl']
