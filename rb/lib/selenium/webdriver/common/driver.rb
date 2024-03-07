@@ -71,7 +71,7 @@ module Selenium
       def initialize(bridge: nil, listener: nil, **opts)
         @devtools = nil
         @bidi = nil
-        bridge ||= create_bridge(**opts)
+        bridge ||= create_bridge(caps: opts[:caps], url: opts[:url], http_client: opts[:http_client])
         add_extensions(bridge.browser)
         @bridge = listener ? Support::EventFiringBridge.new(bridge, listener) : bridge
       end
@@ -292,7 +292,7 @@ module Selenium
       end
 
       def browser
-        bridge&.browser
+        bridge.browser
       end
 
       def capabilities

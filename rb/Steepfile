@@ -1,7 +1,7 @@
 target :lib do
   signature 'sig', '.gem_rbs_collection/rubyzip' # Signature directory
   check 'lib' # Directory name
-  # Total amount of errors ignore 62 in 28 files
+  # Total amount of errors ignore 61 in 27 files
   ignore(
     # Ignore line 166 due to UDP RBS issue
     'lib/selenium/webdriver/common/platform.rb',
@@ -48,8 +48,6 @@ target :lib do
     'lib/selenium/webdriver/firefox/driver.rb',
     # Ignore due to line 27 with overloading issue
     'lib/selenium/webdriver/bidi/log/console_log_entry.rb',
-    # Ignore due to line 74 with overloading issue
-    'lib/selenium/webdriver/common/driver.rb',
     # Ignore due to line 89 with overloading issue
     'lib/selenium/webdriver.rb',
     # Ignore due to line 37 with overloading issue

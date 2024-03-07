@@ -5,6 +5,8 @@ module Selenium
 
       include TakesScreenshot
 
+      @bidi: untyped
+      @devtools: untyped
       @navigate: untyped
 
       @service_manager: untyped
@@ -65,7 +67,7 @@ module Selenium
 
       attr_reader bridge: untyped
 
-      def create_bridge: (caps: untyped?, url: untyped?, http_client: untyped? ) -> untyped
+      def create_bridge: (caps: untyped, url: untyped, ?http_client: untyped) -> untyped
 
       def service_url: (untyped service) -> untyped
 
