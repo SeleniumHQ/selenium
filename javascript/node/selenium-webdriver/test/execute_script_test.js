@@ -280,10 +280,12 @@ suite(function (env) {
             var input = ['fa', 'fe', 'fi']
             return execute(function (thearray) {
               var ret = []
+
               function build_response(thearray, ret) {
                 ret.push(thearray.shift())
                 return (!thearray.length && ret) || build_response(thearray, ret)
               }
+
               return build_response(thearray, ret)
             }, input).then(verifyJson(input))
           })
@@ -294,11 +296,13 @@ suite(function (env) {
             }
             return execute(function (thing) {
               var ret = []
+
               function build_response(thing, ret) {
                 var item = thing.words.shift()
                 ret.push(item.word)
                 return (!thing.words.length && ret) || build_response(thing, ret)
               }
+
               return build_response(thing, ret)
             }, input).then(verifyJson(['fa', 'fe', 'fi']))
           })

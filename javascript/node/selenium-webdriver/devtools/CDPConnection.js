@@ -18,6 +18,7 @@
 const logging = require('../lib/logging')
 
 const RESPONSE_TIMEOUT = 1000 * 30
+
 class CDPConnection {
   constructor(wsConnection) {
     this._wsConnection = wsConnection
