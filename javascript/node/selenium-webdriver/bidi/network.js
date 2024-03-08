@@ -97,7 +97,7 @@ class Network {
   }
 
   async addIntercept(params) {
-    if (!params instanceof AddInterceptParameters) {
+    if (!(params instanceof AddInterceptParameters)) {
       throw new Error(`Params must be an instance of AddInterceptParamenters. Received:'${params}'`)
     }
 

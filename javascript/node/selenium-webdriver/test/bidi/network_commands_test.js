@@ -19,7 +19,7 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const { Browser, By, WebElement } = require('../../')
+const { Browser, By } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const Network = require('../../bidi/network')
 const { AddInterceptParameters } = require('../../bidi/addInterceptParameters')
@@ -92,7 +92,7 @@ suite(
           await network.cancelAuth(event.request.request)
         })
         try {
-          const alert = await driver.wait(until.alertIsPresent(), 3000)
+          await driver.wait(until.alertIsPresent(), 3000)
           assert.fail('Alert should not be present')
         } catch (e) {
           assert.strictEqual(e.name, 'TimeoutError')

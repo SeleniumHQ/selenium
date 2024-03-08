@@ -133,7 +133,7 @@ exports.isDevMode = isDevMode
  * @return {!Build} The new build.
  * @throws {Error} If not running in dev mode.
  */
-exports.of = function (var_args) {
+exports.of = function (_) {
   // eslint-disable-line
   let targets = Array.prototype.slice.call(arguments, 0)
   return new Build(targets)
