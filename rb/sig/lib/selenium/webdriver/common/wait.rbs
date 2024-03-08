@@ -1,19 +1,19 @@
 module Selenium
   module WebDriver
     class Wait
-      @timeout: untyped
+      @timeout: Numeric
 
-      @interval: untyped
+      @interval: Numeric
 
-      @message: untyped
+      @message: String
 
-      @ignored: untyped
+      @ignored: Array[Exception]
 
-      DEFAULT_TIMEOUT: 5
+      DEFAULT_TIMEOUT: Integer
 
-      DEFAULT_INTERVAL: ::Float
+      DEFAULT_INTERVAL: Float
 
-      def initialize: (?::Hash[untyped, untyped] opts) -> void
+      def initialize: (Hash[untyped, untyped] opts) -> void
 
       def until: () { () -> untyped } -> untyped
 
