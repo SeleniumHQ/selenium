@@ -15,8 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { BeforeRequestSent, ResponseStarted, FetchError} = require('./networkTypes')
-const {AddInterceptParameters} = require("./addInterceptParameters");
+const { BeforeRequestSent, ResponseStarted, FetchError } = require('./networkTypes')
+const { AddInterceptParameters } = require('./addInterceptParameters')
 
 class Network {
   constructor(driver, browsingContextIds) {
@@ -92,19 +92,18 @@ class Network {
           )
         }
         callback(response)
-        }
+      }
     })
   }
 
   async addIntercept(params) {
-
     if (!params instanceof AddInterceptParameters) {
       throw new Error(`Params must be an instance of AddInterceptParamenters. Received:'${params}'`)
     }
 
     const command = {
       method: 'network.addIntercept',
-      params: Object.fromEntries(params.asMap())
+      params: Object.fromEntries(params.asMap()),
     }
 
     let response = await this.bidi.send(command)
@@ -115,7 +114,7 @@ class Network {
   async removeIntercept(interceptId) {
     const command = {
       method: 'network.removeIntercept',
-      params: {intercept: interceptId},
+      params: { intercept: interceptId },
     }
 
     await this.bidi.send(command)
@@ -123,17 +122,17 @@ class Network {
 
   async continueWithAuth(requestId, username, password) {
     const command = {
-            method: 'network.continueWithAuth',
-            params: {
-              request: requestId.toString(),
-              action: 'provideCredentials',
-              credentials: {
-                type: 'password',
-                username: username,
-                password: password
-              },
-            },
-          }
+      method: 'network.continueWithAuth',
+      params: {
+        request: requestId.toString(),
+        action: 'provideCredentials',
+        credentials: {
+          type: 'password',
+          username: username,
+          password: password,
+        },
+      },
+    }
     await this.bidi.send(command)
   }
 
@@ -142,7 +141,7 @@ class Network {
       method: 'network.continueWithAuth',
       params: {
         request: requestId.toString(),
-        action: 'default'
+        action: 'default',
       },
     }
     await this.bidi.send(command)
@@ -153,7 +152,7 @@ class Network {
       method: 'network.continueWithAuth',
       params: {
         request: requestId.toString(),
-        action: 'cancel'
+        action: 'cancel',
       },
     }
     await this.bidi.send(command)
@@ -164,9 +163,9 @@ class Network {
       'network.beforeRequestSent',
       'network.responseStarted',
       'network.responseCompleted',
-      'network.authRequired')
+      'network.authRequired',
+    )
   }
-
 }
 
 async function getNetworkInstance(driver, browsingContextIds = null) {

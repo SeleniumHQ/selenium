@@ -19,12 +19,12 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const {Browser, By, WebElement} = require('../../')
+const { Browser, By, WebElement } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const Network = require('../../bidi/network')
-const {AddInterceptParameters} = require("../../bidi/addInterceptParameters");
-const {InterceptPhase} = require("../../bidi/interceptPhase");
-const {until} = require("../../index");
+const { AddInterceptParameters } = require('../../bidi/addInterceptParameters')
+const { InterceptPhase } = require('../../bidi/interceptPhase')
+const { until } = require('../../index')
 
 suite(
   function (env) {
@@ -32,10 +32,7 @@ suite(
     let network
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .setFirefoxOptions(new firefox.Options().enableBidi())
-        .build()
+      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
 
       network = await Network(driver)
     })
@@ -63,7 +60,7 @@ suite(
         await network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED))
 
         await network.authRequired(async (event) => {
-          await network.continueWithAuth(event.request.request, 'genie','bottle')
+          await network.continueWithAuth(event.request.request, 'genie', 'bottle')
         })
         await driver.get(Pages.basicAuth)
 
@@ -96,12 +93,12 @@ suite(
         })
         try {
           const alert = await driver.wait(until.alertIsPresent(), 3000)
-          assert.fail("Alert should not be present")
+          assert.fail('Alert should not be present')
         } catch (e) {
           assert.strictEqual(e.name, 'TimeoutError')
         }
       })
     })
   },
-  {browsers: [Browser.FIREFOX]},
+  { browsers: [Browser.FIREFOX] },
 )

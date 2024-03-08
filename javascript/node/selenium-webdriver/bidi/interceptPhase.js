@@ -21,4 +21,4 @@ const InterceptPhase = {
   AUTH_REQUIRED: 'authRequired',
 }
 
-module.exports = {InterceptPhase}
+module.exports = { InterceptPhase }

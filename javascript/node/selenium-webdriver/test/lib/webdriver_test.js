@@ -991,10 +991,12 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
       let driver = executor.createDriver()
       let count = 0
+
       function condition() {
         count++
         return true
       }
+
       return driver.wait(condition, 1).then(() => assert.strictEqual(1, count))
     })
 
@@ -1002,9 +1004,11 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
       let driver = executor.createDriver()
       let count = 0
+
       function condition() {
         return ++count === 3
       }
+
       return driver.wait(condition, 250).then(() => assert.strictEqual(3, count))
     })
 
@@ -1013,6 +1017,7 @@ describe('WebDriver', function () {
       let driver = executor.createDriver()
 
       let count = 0
+
       function condition() {
         count += 1
         return new Promise((resolve) => {
@@ -1028,6 +1033,7 @@ describe('WebDriver', function () {
       let driver = executor.createDriver()
 
       let count = 0
+
       function condition() {
         count += 1
         return new Promise((resolve) => {
@@ -1047,9 +1053,11 @@ describe('WebDriver', function () {
     it('fails if condition returns a rejected promise', function () {
       let executor = new FakeExecutor()
       let driver = executor.createDriver()
+
       function condition() {
         return new Promise((_, reject) => reject(new StubError()))
       }
+
       return driver.wait(condition, 0, 'goes boom').then(fail, assertIsStubError)
     })
 
