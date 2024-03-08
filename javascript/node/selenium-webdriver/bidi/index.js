@@ -41,6 +41,31 @@ class Index extends EventEmitter {
   }
 
   /**
+   * @returns {WebSocket}
+   */
+  get socket() {
+    return this._ws
+  }
+
+  /**
+   * @returns {boolean|*}
+   */
+  get isConnected() {
+    return this.connected
+  }
+
+  /**
+   * Get Bidi Status
+   * @returns {Promise<*>}
+   */
+  get status() {
+    return this.send({
+      method: 'session.status',
+      params: {},
+    })
+  }
+
+  /**
    * Resolve connection
    * @returns {Promise<unknown>}
    */
@@ -54,20 +79,6 @@ class Index extends EventEmitter {
         })
       }
     })
-  }
-
-  /**
-   * @returns {WebSocket}
-   */
-  get socket() {
-    return this._ws
-  }
-
-  /**
-   * @returns {boolean|*}
-   */
-  get isConnected() {
-    return this.connected
   }
 
   /**
@@ -181,17 +192,6 @@ class Index extends EventEmitter {
     }
 
     await this.send(params)
-  }
-
-  /**
-   * Get Bidi Status
-   * @returns {Promise<*>}
-   */
-  get status() {
-    return this.send({
-      method: 'session.status',
-      params: {},
-    })
   }
 
   /**

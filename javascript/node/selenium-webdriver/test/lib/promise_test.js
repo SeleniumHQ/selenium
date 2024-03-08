@@ -58,7 +58,9 @@ describe('promise', function () {
     const x = new Promise(v, v)
     const p = createRejectedPromise('reject')
     const q = Promise.resolve('resolved')
-    const t = { then() {} }
+    const t = {
+      then() {},
+    }
     const f = () => {}
     f.then = () => {}
     assert.equal(true, promise.isPromise(x))
@@ -96,6 +98,7 @@ describe('promise', function () {
       function runTest(value) {
         return promise.fullyResolved(value).then((resolved) => assert.strictEqual(value, resolved))
       }
+
       return runTest(true)
         .then(() => runTest(function () {}))
         .then(() => runTest(null))
@@ -245,6 +248,7 @@ describe('promise', function () {
       function Foo() {
         this.bar = 'baz'
       }
+
       var foo = new Foo()
 
       return promise.fullyResolved(foo).then(function (resolvedFoo) {

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const {LocalValue} = require('./protocolValue')
+const { LocalValue } = require('./protocolValue')
 
 class UrlPattern {
   #map = new Map()
@@ -55,4 +55,4 @@ class UrlPattern {
   }
 }
 
-module.exports = {UrlPattern}
+module.exports = { UrlPattern }

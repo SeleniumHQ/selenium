@@ -4,18 +4,11 @@ module.exports = {
     node: true,
     es6: true,
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:node/recommended',
-    'plugin:prettier/recommended',
-  ],
+  extends: ['eslint:recommended', 'plugin:node/recommended', 'plugin:prettier/recommended'],
   parserOptions: {
     ecmaVersion: 2022,
   },
-  ignorePatterns: [
-    '.eslintrc.js',
-    '.prettierrc',
-  ],
+  ignorePatterns: ['.eslintrc.js', '.prettierrc'],
   plugins: ['no-only-tests'],
   rules: {
     'no-const-assign': 'error',

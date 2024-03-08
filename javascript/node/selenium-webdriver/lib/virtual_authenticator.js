@@ -128,6 +128,14 @@ class Credential {
     this._signCount = signCount
   }
 
+  static createResidentCredential(id, rpId, userHandle, privateKey, signCount) {
+    return new Credential(id, true, rpId, userHandle, privateKey, signCount)
+  }
+
+  static createNonResidentCredential(id, rpId, privateKey, signCount) {
+    return new Credential(id, false, rpId, null, privateKey, signCount)
+  }
+
   id() {
     return this._id
   }
@@ -169,10 +177,6 @@ class Credential {
     return new Credential(id, true, rpId, userHandle, privateKey, signCount)
   }
 
-  static createResidentCredential(id, rpId, userHandle, privateKey, signCount) {
-    return new Credential(id, true, rpId, userHandle, privateKey, signCount)
-  }
-
   /**
    * Creates a non-resident (i.e. stateless) credential.
    * @param id Unique base64 encoded string.
@@ -183,10 +187,6 @@ class Credential {
    * @returns A non-resident credential
    */
   createNonResidentCredential(id, rpId, privateKey, signCount) {
-    return new Credential(id, false, rpId, null, privateKey, signCount)
-  }
-
-  static createNonResidentCredential(id, rpId, privateKey, signCount) {
     return new Credential(id, false, rpId, null, privateKey, signCount)
   }
 
