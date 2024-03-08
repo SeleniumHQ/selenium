@@ -30,7 +30,7 @@ class AddInterceptParameters {
   }
 
   urlPattern(pattern) {
-    if (!pattern instanceof UrlPattern) {
+    if (!(pattern instanceof UrlPattern)) {
       throw new Error(`Pattern must be an instance of UrlPattern. Received: '${pattern})'`)
     }
     this.#urlPatterns.push(Object.fromEntries(pattern.asMap()))
@@ -39,7 +39,7 @@ class AddInterceptParameters {
 
   urlPatterns(patterns) {
     patterns.forEach((pattern) => {
-      if (!pattern instanceof UrlPattern) {
+      if (!(pattern instanceof UrlPattern)) {
         throw new Error(`Pattern must be an instance of UrlPattern. Received:'${pattern}'`)
       }
       this.#urlPatterns.push(Object.fromEntries(pattern.asMap()))
@@ -48,7 +48,7 @@ class AddInterceptParameters {
   }
 
   urlStringPattern(pattern) {
-    if (!pattern instanceof String) {
+    if (!(pattern instanceof String)) {
       throw new Error(`Pattern must be an instance of String. Received:'${pattern}'`)
     }
 
@@ -58,7 +58,7 @@ class AddInterceptParameters {
 
   urlStringPatterns(patterns) {
     patterns.forEach((pattern) => {
-      if (!pattern instanceof String) {
+      if (!(pattern instanceof String)) {
         throw new Error(`Pattern must be an instance of String. Received:'${pattern}'`)
       }
       this.#urlPatterns.push({ type: 'string', pattern: pattern })
