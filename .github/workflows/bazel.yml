@@ -95,7 +95,7 @@ jobs:
           distribution: 'temurin'
       - name: Setup Bazel with caching
         if: inputs.caching
-        uses: p0deje/setup-bazel@0.6.0
+        uses: bazel-contrib/setup-bazel@0.8.0
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
@@ -110,7 +110,7 @@ jobs:
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: p0deje/setup-bazel@0.6.0
+        uses: bazel-contrib/setup-bazel@0.8.0
         with:
           bazelrc: common --color=yes
       - name: Setup Fluxbox and Xvfb
