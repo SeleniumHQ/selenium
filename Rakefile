@@ -639,7 +639,6 @@ namespace :py do
       new_version = old_version + ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
     else
       new_version = updated_version(old_version.gsub(/\.dev\d+$/, ''), arguments[:version])
-      puts "Calculated new version to be #{new_version}"
     end
 
     ['py/setup.py',
