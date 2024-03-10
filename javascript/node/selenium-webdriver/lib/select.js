@@ -161,9 +161,9 @@ class Select {
    *
    * <example>
    <select id="selectbox">
-    <option value="1">Option 1</option>
-    <option value="2">Option 2</option>
-    <option value="3">Option 3</option>
+   <option value="1">Option 1</option>
+   <option value="2">Option 2</option>
+   <option value="3">Option 3</option>
    </select>
    const selectBox = await driver.findElement(By.id("selectbox"));
    await selectObject.selectByIndex(1);

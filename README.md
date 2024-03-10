@@ -53,12 +53,12 @@ This article is out of date, but it includes more detailed descriptions and scre
 <summary>Click to see Current Windows Setup Requirements</summary>
 
 #### Option 1: Automatic Installation from Scratch
-This script will ensure a complete ready to execute developer environment. 
-(nothing is installed or set that is already present unless otherwise prompted) 
+This script will ensure a complete ready to execute developer environment.
+(nothing is installed or set that is already present unless otherwise prompted)
 
 1. Open Powershell as an Administrator
 2. Execute: `Set-ExecutionPolicy Bypass -Scope Process -Force` to allow running the script in the process
-3. Navigate to the directory you want to clone Selenium in, or the parent directory of an already cloned Selenium repo 
+3. Navigate to the directory you want to clone Selenium in, or the parent directory of an already cloned Selenium repo
 4. Download and execute this script in the powershell terminal: [scripts/dev-environment-setup.ps1]`
 
 #### Option 2: Manual Installation
@@ -101,16 +101,22 @@ Rather than creating your own local dev environment, GitPod provides a ready to 
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/SeleniumHQ/selenium)
 
+#### Using Dev Container
+
+As an alternative you can build a [Dev Container](https://containers.dev/) - basically a docker container -
+suitable for building and testing Selenium using the devcontainer.json in the
+[.devcontainer](.devcontainer/devcontainer.json) directory. Supporting IDEs like VS Code or IntelliJ IDEA
+should point you to how such a container can be created.
+
 #### Using Docker Image
 
 You can also build a Docker image suitable
 for building and testing Selenium using the Dockerfile in the
 [dev image](scripts/dev-image/Dockerfile) directory.
 
-
 ## Building
 
-Selenium is built using a common build tool called [Bazel](https://bazel.build/), to 
+Selenium is built using a common build tool called [Bazel](https://bazel.build/), to
 allow us to easily manage dependency downloads, generate required binaries, build and release packages, and execute tests;
 all in a fast, efficient manner. For a more detailed discussion, read Simon Stewart's article on [Building Selenium](https://www.selenium.dev/blog/2023/building-selenium/)
 
@@ -119,12 +125,12 @@ Often we wrap Bazel commands with our custom [Rake](http://rake.rubyforge.org/) 
 The common Bazel commands are:
 * `bazel build` — evaluates dependencies, compiles source files and generates output files for the specified target.
 It's used to create executable binaries, libraries, or other artifacts.
-* `bazel run` — builds the target and then executes it. 
+* `bazel run` — builds the target and then executes it.
 It's typically used for targets that produce executable binaries.
 * `bazel test` — builds and runs the target in a context with additional testing functionality
 * `bazel query` — identifies available targets for the provided path.
 
-Each module that can be built is defined in a `BUILD.bazel` file. To execute the module you refer to it starting with a 
+Each module that can be built is defined in a `BUILD.bazel` file. To execute the module you refer to it starting with a
 `//`, then include the relative path to the file that defines it, then `:`, then the name of the target.
 For example, the target to build the Grid is named `executable-grid` and it is
 defined in the `'selenium/java/src/org/openqa/selenium/grid/BAZEL.build'` file.
@@ -164,7 +170,7 @@ view file from the [scripts](scripts) directory. `ij.bazelproject` for Mac/Linux
 
 #### Linting
 We also use Google Java Format for linting, so using the Google Java Formatter Plugin is useful;
-there are a few steps to get it working, so read their [configuration documentation](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config). 
+there are a few steps to get it working, so read their [configuration documentation](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config).
 There is also an auto-formatting script that can be run: `./scripts/format.sh`
 
 #### Local Installation
@@ -208,7 +214,7 @@ If you want to debug code, you can do it via [`debug`](https://github.com/ruby/d
 bazel-selenium/external/bundle/bin/rdbg -A
 ```
 
-If you want to use [RubyMine](https://www.jetbrains.com/ruby/) for development, 
+If you want to use [RubyMine](https://www.jetbrains.com/ruby/) for development,
 you can configure it use Bazel artifacts:
 
 1. Open `rb/` as a main project directory.
@@ -451,9 +457,9 @@ API documentation can be found here:
 * [Python](https://seleniumhq.github.io/selenium/docs/api/py/)
 * [Ruby](https://seleniumhq.github.io/selenium/docs/api/rb/)
 
-To update API documentation for a specific language: `./generate_api_docs.sh <language>`
+To update API documentation for a specific language: `./go <language>:docs`
 
-To update all documentation: `./generate_api_docs.sh all`
+To update all documentation: `./go all:docs`
 
 Note that JavaScript generation is [currently broken](https://github.com/SeleniumHQ/selenium/issues/10185).
 
@@ -463,7 +469,7 @@ Note that JavaScript generation is [currently broken](https://github.com/Seleniu
 The full process for doing a release can be found in [the wiki](https://github.com/SeleniumHQ/selenium/wiki/Releasing-Selenium)
 
 Releasing is a combination of building and publishing, which often requires coordination of multiple executions
-and additional processing. 
+and additional processing.
 As discussed in the [Building](#building) section, we use Rake tasks with the `./go` command for these things.
 These `./go` commands include the `--stamp` argument to provide necessary information about the constructed asset.
 

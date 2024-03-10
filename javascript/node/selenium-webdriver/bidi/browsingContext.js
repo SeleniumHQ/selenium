@@ -71,6 +71,13 @@ class BrowsingContext {
     this._driver = driver
   }
 
+  /**
+   * @returns id
+   */
+  get id() {
+    return this._id
+  }
+
   async init({ browsingContextId, type, referenceContext }) {
     if (!(await this._driver.getCapabilities()).get('webSocketUrl')) {
       throw Error('WebDriver instance must support BiDi protocol')
@@ -99,13 +106,6 @@ class BrowsingContext {
       },
     }
     return await this.bidi.send(params)
-  }
-
-  /**
-   * @returns id
-   */
-  get id() {
-    return this._id
   }
 
   /**

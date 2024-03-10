@@ -19,8 +19,8 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const {Browser} = require('../../')
-const {Pages, suite} = require('../../lib/test')
+const { Browser } = require('../../')
+const { Pages, suite } = require('../../lib/test')
 const Network = require('../../bidi/network')
 const until = require('../../lib/until')
 
@@ -217,5 +217,5 @@ suite(
       })
     })
   },
-  {browsers: [Browser.FIREFOX]},
+  { browsers: [Browser.FIREFOX] },
 )

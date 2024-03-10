@@ -175,7 +175,7 @@ namespace OpenQA.Selenium.DevTools.V120
 
             var wrapped = new ConsoleApiCalledEventArgs()
             {
-                Timestamp = new DateTime(1979, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(e.Timestamp),
+                Timestamp = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(e.Timestamp),
                 Type = e.Type,
                 Arguments = args.AsReadOnly()
             };
