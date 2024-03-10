@@ -18,17 +18,13 @@
 package org.openqa.selenium.grid.node.config;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
 
-public class SessionCapabilitiesMutator implements Function<Capabilities, Capabilities> {
+import java.util.*;
+
+public class SessionCapabilitiesMutator implements CapabilityMutator {
 
   private static final ImmutableMap<String, String> BROWSER_OPTIONS =
       ImmutableMap.of(
