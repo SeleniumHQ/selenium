@@ -22,25 +22,28 @@ import org.openqa.selenium.Capabilities;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class CapabilitiesMutatorService {
   Capabilities stereotype;
-  private List<CapabilityMutator> customMutators;
+  private final List<CapabilityMutator> customMutators = new CopyOnWriteArrayList<>();
+
+  private static final Comparator<CapabilityMutator> MUTATOR_COMPARATOR =
+    Comparator.comparingInt(CapabilityMutator::getOrder).reversed();
 
   public CapabilitiesMutatorService(Capabilities stereotype) {
     this.stereotype = stereotype;
 
-    ServiceLoader<CapabilityMutator> loader = ServiceLoader.load(CapabilityMutator.class);
-
-    customMutators = StreamSupport.stream(loader.spliterator(), false)
-      .sorted(Comparator.comparingInt(CapabilityMutator::getOrder).reversed())
-      .collect(Collectors.toList());
+    loadAllCustomMutators();
   }
 
   public Capabilities getMutatedCapabilities(Capabilities desiredCapabilities) {
+    Objects.requireNonNull(desiredCapabilities, "desiredCapabilities must not be null");
+
     // Always apply this default capability mutator before applying any other mutator
     SessionCapabilitiesMutator defaultMutator = new SessionCapabilitiesMutator(stereotype);
     Capabilities newCapability = defaultMutator.apply(desiredCapabilities);
@@ -52,9 +55,20 @@ public class CapabilitiesMutatorService {
     return newCapability;
   }
 
+  private void loadAllCustomMutators() {
+    ServiceLoader<CapabilityMutator> loader = ServiceLoader.load(CapabilityMutator.class);
+
+    List<CapabilityMutator> allMutators = StreamSupport.stream(loader.spliterator(), false)
+      .sorted(MUTATOR_COMPARATOR)
+      .collect(Collectors.toList());
+
+    customMutators.addAll(allMutators);
+  }
+
   @VisibleForTesting
   void setCustomMutators(List<CapabilityMutator> mutators) {
-    customMutators = mutators;
+    customMutators.clear();
+    customMutators.addAll(mutators);
   }
 
   @VisibleForTesting
