@@ -18,10 +18,14 @@
 package org.openqa.selenium.bidi.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.Safely.safelyCall;
 
 import java.time.Instant;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
@@ -33,7 +37,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
 
 class StorageCommandsTest extends JupiterTestBase {
   private String cookiePage;
-  private static final Random random = new Random();
+  private static final Random random = ThreadLocalRandom.current();
 
   private Storage storage;
 
@@ -286,6 +290,13 @@ class StorageCommandsTest extends JupiterTestBase {
 
     driver.get(appServer.whereIs("/common/simpleTest.html"));
     assertCookieIsNotPresentWithName("fish");
+  }
+
+  @AfterEach
+  public void quitDriver() {
+    if (driver != null) {
+      driver.quit();
+    }
   }
 
   private String generateUniqueKey() {
