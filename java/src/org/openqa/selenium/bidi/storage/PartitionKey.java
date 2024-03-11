@@ -15,66 +15,50 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.bidi.network;
+package org.openqa.selenium.bidi.storage;
 
 import org.openqa.selenium.json.JsonInput;
 
-public class BytesValue {
+public class PartitionKey {
+  private final String userContext;
+  private final String sourceOrigin;
 
-  public enum Type {
-    STRING("string"),
-    BASE64("base64");
-
-    private final String bytesValueType;
-
-    Type(String type) {
-      this.bytesValueType = type;
-    }
-
-    @Override
-    public String toString() {
-      return bytesValueType;
-    }
+  public PartitionKey(String userContext, String sourceOrigin) {
+    this.userContext = userContext;
+    this.sourceOrigin = sourceOrigin;
   }
 
-  private final Type type;
-
-  private final String value;
-
-  public BytesValue(Type type, String value) {
-    this.type = type;
-    this.value = value;
-  }
-
-  public static BytesValue fromJson(JsonInput input) {
-    Type type = null;
-    String value = null;
+  public static PartitionKey fromJson(JsonInput input) {
+    String userContext = null;
+    String sourceOrigin = null;
 
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "type":
-          String bytesValue = input.read(String.class);
-          type = bytesValue.equals(Type.BASE64.toString()) ? Type.BASE64 : Type.STRING;
+        case "userContext":
+          userContext = input.read(String.class);
           break;
-        case "value":
-          value = input.read(String.class);
+
+        case "sourceOrigin":
+          sourceOrigin = input.read(String.class);
           break;
+
         default:
           input.skipValue();
+          break;
       }
     }
 
     input.endObject();
 
-    return new BytesValue(type, value);
+    return new PartitionKey(userContext, sourceOrigin);
   }
 
-  public Type getType() {
-    return type;
+  public String getUserContext() {
+    return userContext;
   }
 
-  public String getValue() {
-    return value;
+  public String getSourceOrigin() {
+    return sourceOrigin;
   }
 }
