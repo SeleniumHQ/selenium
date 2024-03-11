@@ -94,7 +94,7 @@ build:remote --remote_cache=grpcs://gypsum.cluster.engflow.com
 build:remote -j 50
 
 # Build Without The Bytes
-build:remote --remote_download_outputs=minimal
+build:remote --remote_download_minimal
 
 build:remote --define=EXECUTOR=remote
 build:remote --experimental_inmemory_dotd_files
