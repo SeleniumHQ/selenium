@@ -30,22 +30,3 @@ java_library(
         artifact("io.netty:netty-transport"),
     ] + JUNIT5_DEPS,
 )
-
-java_test_suite(
-    name = "SmallTests",
-    size = "small",
-    srcs = glob(["*Test.java"]),
-    tags = [
-        "no-sandbox",
-    ],
-    deps = [
-        ":test-lib",
-        "//java/src/org/openqa/selenium:core",
-        "//java/src/org/openqa/selenium/remote",
-        "//java/src/org/openqa/selenium/remote/http",
-        "//java/test/org/openqa/selenium:helpers",
-        artifact("org.assertj:assertj-core"),
-        artifact("com.google.guava:guava"),
-        artifact("org.junit.jupiter:junit-jupiter-api"),
-    ] + JUNIT5_DEPS,
-)
