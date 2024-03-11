@@ -111,7 +111,7 @@ public class Cookie {
         case "secure":
           isSecure = input.read(Boolean.class);
           break;
-        case "isHttpOnly":
+        case "httpOnly":
           isHttpOnly = input.read(Boolean.class);
           break;
         case "sameSite":
@@ -119,7 +119,7 @@ public class Cookie {
           sameSite = SameSite.findByName(sameSiteValue);
           break;
         case "expiry":
-          expiry = input.read(Long.class);
+          expiry = Optional.of(input.read(Long.class));
           break;
         default:
           input.skipValue();

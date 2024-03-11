@@ -15,66 +15,54 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.bidi.network;
+package org.openqa.selenium.bidi.storage;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.openqa.selenium.bidi.network.Cookie;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
-public class BytesValue {
+public class GetCookiesResult {
+  private final List<Cookie> cookies;
 
-  public enum Type {
-    STRING("string"),
-    BASE64("base64");
+  private final PartitionKey partitionKey;
 
-    private final String bytesValueType;
-
-    Type(String type) {
-      this.bytesValueType = type;
-    }
-
-    @Override
-    public String toString() {
-      return bytesValueType;
-    }
+  public GetCookiesResult(List<Cookie> cookies, PartitionKey partitionKey) {
+    this.cookies = cookies;
+    this.partitionKey = partitionKey;
   }
 
-  private final Type type;
-
-  private final String value;
-
-  public BytesValue(Type type, String value) {
-    this.type = type;
-    this.value = value;
-  }
-
-  public static BytesValue fromJson(JsonInput input) {
-    Type type = null;
-    String value = null;
-
+  public static GetCookiesResult fromJson(JsonInput input) {
+    List<Cookie> cookies = new ArrayList<>();
+    PartitionKey partitionKey = null;
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "type":
-          String bytesValue = input.read(String.class);
-          type = bytesValue.equals(Type.BASE64.toString()) ? Type.BASE64 : Type.STRING;
+        case "cookies":
+          cookies = input.read(new TypeToken<List<Cookie>>() {}.getType());
           break;
-        case "value":
-          value = input.read(String.class);
+
+        case "partitionKey":
+          partitionKey = input.read(PartitionKey.class);
           break;
+
         default:
           input.skipValue();
+          break;
       }
     }
 
     input.endObject();
 
-    return new BytesValue(type, value);
+    return new GetCookiesResult(cookies, partitionKey);
   }
 
-  public Type getType() {
-    return type;
+  public List<Cookie> getCookies() {
+    return cookies;
   }
 
-  public String getValue() {
-    return value;
+  public PartitionKey getPartitionKey() {
+    return partitionKey;
   }
 }
