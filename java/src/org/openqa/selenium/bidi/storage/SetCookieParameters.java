@@ -36,7 +36,7 @@ public class SetCookieParameters {
   public Map<String, Object> toMap() {
     Map<String, Object> map = new HashMap<>();
     map.put("cookie", cookie.toMap());
-    partitionDescriptor.ifPresent(descriptor -> map.put("partition", partitionDescriptor));
+    partitionDescriptor.ifPresent(descriptor -> map.put("partition", descriptor));
 
     return map;
   }

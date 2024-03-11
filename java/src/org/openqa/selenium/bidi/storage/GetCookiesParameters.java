@@ -39,8 +39,8 @@ public class GetCookiesParameters {
 
   public Map<String, Object> toMap() {
     Map<String, Object> map = new HashMap<>();
-    cookieFilter.ifPresent(filter -> map.put("filter", cookieFilter));
-    partitionDescriptor.ifPresent(descriptor -> map.put("partition", partitionDescriptor));
+    cookieFilter.ifPresent(filter -> map.put("filter", filter));
+    partitionDescriptor.ifPresent(descriptor -> map.put("partition", descriptor));
 
     return map;
   }
