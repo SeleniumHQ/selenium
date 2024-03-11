@@ -17,36 +17,36 @@
 
 package org.openqa.selenium.bidi;
 
-import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
 
 public class Browser {
   private final BiDi bidi;
 
-  private static final Json JSON = new Json();
-
   private final Function<JsonInput, String> userContextInfoMapper =
       jsonInput -> {
         Map<String, Object> response = jsonInput.read(Map.class);
-        try (StringReader reader = new StringReader(JSON.toJson(response.get("userContext")));
-            JsonInput input = JSON.newInput(reader)) {
-          return input.read(String.class);
-        }
+        return (String) response.get("userContext");
       };
 
   private final Function<JsonInput, List<String>> userContextsInfoMapper =
       jsonInput -> {
         Map<String, Object> response = jsonInput.read(Map.class);
-        try (StringReader reader = new StringReader(JSON.toJson(response.get("userContexts")));
-            JsonInput input = JSON.newInput(reader)) {
-          return input.read(new TypeToken<List<String>>() {}.getType());
-        }
+        List<Map<String, String>> userContextsResponse =
+            (List<Map<String, String>>) response.get("userContexts");
+
+        List<String> userContexts = new ArrayList<>();
+        userContextsResponse.forEach(
+            map -> {
+              String userContext = map.get("userContext");
+              userContexts.add(userContext);
+            });
+
+        return userContexts;
       };
 
   public Browser(WebDriver driver) {
