@@ -48,6 +48,7 @@ jobs:
       run: |
         ./go "py:version[nightly]"
         ./go py:build
+        pip install twine
         twine upload --repository testpypi bazel-bin/py/selenium-4*.whl bazel-bin/py/selenium-4*.tar.gz
     secrets: inherit
 
