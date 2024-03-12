@@ -4,7 +4,6 @@ load("//rb/spec:tests.bzl", "rb_integration_test")
     rb_integration_test(
         name = file[:-8],
         srcs = [file],
-        deps = ["//rb/lib/selenium/webdriver:remote"],
     )
     for file in glob(["*_spec.rb"])
 ]

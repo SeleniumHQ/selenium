@@ -334,36 +334,44 @@ bazel test //py:all
 
 Test targets:
 
-| Command                                                                              | Description                                    |
-|--------------------------------------------------------------------------------------|------------------------------------------------|
-| `bazel test //rb/...`                                                                | Run unit, integration tests (Chrome) and lint  |
-| `bazel test //rb:lint`                                                               | Run RuboCop linter                             |
-| `bazel test //rb/spec/...`                                                           | Run unit and integration tests (Chrome)        |
-| `bazel test --test_size_filters large //rb/...`                                      | Run integration tests using (Chrome)           |
-| `bazel test //rb/spec/integration/...`                                               | Run integration tests using (Chrome)           |
-| `bazel test //rb/spec/integration/... --define browser=firefox`                      | Run integration tests using (Firefox)          |
-| `bazel test //rb/spec/integration/... --define remote=true`                          | Run integration tests using (Chrome and Grid)  |
-| `bazel test //rb/spec/integration/... --define browser=firefox --define remote=true` | Run integration tests using (Firefox and Grid) |
-| `bazel test --test_size_filters small //rb/...`                                      | Run unit tests                                 |
-| `bazel test //rb/spec/unit/...`                                                      | Run unit tests                                 |
+| Command                                                                          | Description                                        |
+| -------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `bazel test //rb/...`                                                            | Run unit, all integration tests and lint           |
+| `bazel test //rb:lint`                                                           | Run RuboCop linter                                 |
+| `bazel test //rb/spec/...`                                                       | Run unit and integration tests for all browsers    |
+| `bazel test //rb/spec/... --test_size_filters small`                             | Run unit tests                                     |
+| `bazel test //rb/spec/unit/...`                                                  | Run unit tests                                     |
+| `bazel test //rb/spec/... --test_size_filters large`                             | Run integration tests for all browsers             |
+| `bazel test //rb/spec/integration/...`                                           | Run integration tests for all browsers             |
+| `bazel test //rb/spec/integration/... --test_tag_filters firefox`                | Run integration tests for local Firefox only       |
+| `bazel test //rb/spec/integration/... --test_tag_filters firefox-remote`         | Run integration tests for remote Firefox only      |
+| `bazel test //rb/spec/integration/... --test_tag_filters firefox,firefox-remote` | Run integration tests for local and remote Firefox |
 
-Ruby test modules have the same name as the spec file with `_spec.rb` removed, so you can run them individually:
+Ruby test targets have the same name as the spec file with `_spec.rb` removed, so you can run them individually.
+Integration tests targets also have a browser and remote suffix to control which browser to pick and whether to use Grid.
 
-| Test file                                                      | Test target                                              |
-|----------------------------------------------------------------|----------------------------------------------------------|
-| `rb/spec/integration/selenium/webdriver/chrome/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver/chrome:driver` |
-| `rb/spec/unit/selenium/webdriver/proxy_spec.rb`                | `//rb/spec/unit/selenium/webdriver:proxy`                |
+| Test file                                               | Test target                                                      |
+| ------------------------------------------------------- | ---------------------------------------------------------------- |
+| `rb/spec/unit/selenium/webdriver/proxy_spec.rb`         | `//rb/spec/unit/selenium/webdriver:proxy`                        |
+| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome`         |
+| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome-remote`  |
+| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-firefox`        |
+| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-firefox-remote` |
 
 Supported browsers:
 
 * `chrome`
 * `edge`
 * `firefox`
+* `firefox-beta`
 * `ie`
-* `safari` (cannot be run in parallel - use `--local_test_jobs 1`)
-* `safari-preview` (cannot be run in parallel - use `--local_test_jobs 1`)
+* `safari`
+* `safari-preview`
 
 Useful command line options:
+
+* `--pin_browsers` - use browsers and drivers downloaded by Bazel
+* `--headless` - run browsers in headless mode (supported be Chrome, Edge and Firefox)
 
 In addition to the [Common Options Examples](#common-options-examples), here are some additional Ruby specific ones:
 * `--test_arg "-tfocus"` - test only [focused specs](https://relishapp.com/rspec/rspec-core/v/3-12/docs/filtering/inclusion-filters)
@@ -380,8 +388,11 @@ Supported environment variables for use with `--test_env`:
 - `HEADLESS` - for chrome, edge and firefox; runs tests in headless mode
 - `DISABLE_BUILD_CHECK` - for chrome and edge; whether to ignore driver and browser version mismatches (allows testing Canary builds)
 - `CHROME_BINARY` - path to test specific Chrome browser
+- `CHROMEDRIVER_BINARY` - path to test specific ChromeDriver
 - `EDGE_BINARY` - path to test specific Edge browser
+- `MSEDGEDRIVER_BINARY` - path to test specific msedgedriver
 - `FIREFOX_BINARY` - path to test specific Firefox browser
+- `GECKODRIVER_BINARY` - path to test specific GeckoDriver
 
 To run with a specific version of Ruby you can change the version in `rb/.ruby-version` or from command line:
 

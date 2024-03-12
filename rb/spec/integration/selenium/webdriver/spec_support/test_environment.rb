@@ -217,13 +217,15 @@ module Selenium
           service ||= WebDriver::Service.edge
           service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
           service.args << '--verbose' if WebDriver.logger.debug?
+          service.executable_path = ENV['MSEDGEDRIVER_BINARY'] if ENV.key?('MSEDGEDRIVER_BINARY')
           WebDriver::Driver.for(:edge, service: service, **opts)
         end
 
         def firefox_driver(service: nil, **opts)
           service ||= WebDriver::Service.firefox
           service.args.push('--log', 'trace') if WebDriver.logger.debug?
-          WebDriver::Driver.for(:firefox, **opts)
+          service.executable_path = ENV['GECKODRIVER_BINARY'] if ENV.key?('GECKODRIVER_BINARY')
+          WebDriver::Driver.for(:firefox, service: service, **opts)
         end
 
         def safari_driver(**opts)
@@ -255,7 +257,7 @@ module Selenium
         def firefox_options(args: [], **opts)
           opts[:binary] ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
           args << '--headless' if ENV['HEADLESS']
-          WebDriver::Options.firefox(browser_version: 'stable', args: args, **opts)
+          WebDriver::Options.firefox(args: args, **opts)
         end
 
         def ie_options(**opts)
