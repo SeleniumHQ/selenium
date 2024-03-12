@@ -59,7 +59,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canLocateNodes() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
@@ -77,7 +76,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canLocateNodesWithJustLocator() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
@@ -93,7 +91,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canLocateNode() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
@@ -109,7 +106,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canLocateNodesWithCSSLocator() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
@@ -138,7 +134,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canLocateNodesWithXPathLocator() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
@@ -192,7 +187,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canLocateNodesWithMaxNodeCount() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
@@ -211,7 +205,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canLocateNodesWithNoneOwnershipParameter() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
@@ -233,7 +226,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canLocateNodesWithRootOwnershipParameter() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
@@ -255,7 +247,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canLocateNodesGivenStartNodes() {
     String handle = driver.getWindowHandle();
     BrowsingContext browsingContext = new BrowsingContext(driver, handle);
@@ -299,7 +290,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canLocateNodesInAGivenSandbox() {
     String sandbox = "sandbox";
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -350,7 +340,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canFindElement() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
