@@ -15,8 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const {WebElement} = require('../lib/webdriver')
-
 class Browser {
   constructor(driver) {
     this._driver = driver

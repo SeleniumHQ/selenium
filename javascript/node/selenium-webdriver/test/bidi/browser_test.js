@@ -18,7 +18,6 @@
 'use strict'
 
 const assert = require('assert')
-const fileServer = require('../../lib/test/fileserver')
 const firefox = require('../../firefox')
 const {ignore, Pages, suite} = require('../../lib/test')
 const {Browser, By, until} = require('../..')
