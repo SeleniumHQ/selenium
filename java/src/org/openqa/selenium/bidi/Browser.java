@@ -61,11 +61,7 @@ public class Browser {
     return bidi.send(new Command<>("browser.getUserContexts", Map.of(), userContextsInfoMapper));
   }
 
-  public String removeUserContext(String userContext) {
-    return bidi.send(
-        new Command<>(
-            "browser.removeUserContext",
-            Map.of("userContext", userContext),
-            userContextInfoMapper));
+  public void removeUserContext(String userContext) {
+    bidi.send(new Command<>("browser.removeUserContext", Map.of("userContext", userContext)));
   }
 }
