@@ -15,7 +15,49 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { NavigationInfo } = require('./browsingContextTypes')
+const {NavigationInfo} = require('./browsingContextTypes')
+
+const SameSite = {
+  STRICT: 'strict',
+  LAX: 'lax',
+  NONE: 'none',
+
+  findByName(name) {
+    return (
+      Object.values(this).find((type) => {
+        return typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
+      }) || null
+    )
+  },
+}
+
+class BytesValue {
+
+  static Type = {
+    STRING: 'string',
+    BASE64: 'base64',
+  }
+
+  constructor(type, value) {
+    this._type = type
+    this._value = value
+  }
+
+  get type() {
+    return this._type
+  }
+
+  get value() {
+    return this._value
+  }
+
+  asMap() {
+    const map = new Map()
+    map.set('type', this._type)
+    map.set('value', this._value)
+    return map
+  }
+}
 
 class Header {
   constructor(name, value, binaryValue) {
@@ -38,10 +80,9 @@ class Header {
 }
 
 class Cookie {
-  constructor(name, value, binaryValue, domain, path, expires, size, httpOnly, secure, sameSite) {
+  constructor(name, value, domain, path, size, httpOnly, secure, sameSite, expires) {
     this._name = name
     this._value = value
-    this._binaryValue = binaryValue
     this._domain = domain
     this._path = path
     this._expires = expires
@@ -57,10 +98,6 @@ class Cookie {
 
   get value() {
     return this._value
-  }
-
-  get binaryValue() {
-    return this._binaryValue
   }
 
   get domain() {
@@ -201,10 +238,9 @@ class RequestData {
       let secure = cookie.secure
       let sameSite = cookie.sameSite
       let value = 'value' in cookie ? cookie.value : null
-      let binaryValue = 'binaryValue' in cookie ? cookie.binaryValue : null
       let expires = 'expires' in cookie ? cookie.expires : null
 
-      this._cookies.push(new Cookie(name, value, binaryValue, domain, path, expires, size, httpOnly, secure, sameSite))
+      this._cookies.push(new Cookie(name, value, domain, path, size, httpOnly, secure, sameSite, expires))
     })
     this._headersSize = headersSize
     this._bodySize = bodySize
@@ -453,4 +489,4 @@ class ResponseStarted extends BaseParameters {
   }
 }
 
-module.exports = { BeforeRequestSent, ResponseStarted, FetchError }
+module.exports = {BytesValue, Cookie, SameSite, BeforeRequestSent, ResponseStarted, FetchError}
