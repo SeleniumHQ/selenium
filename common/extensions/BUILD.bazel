@@ -11,7 +11,7 @@ filegroup(
         "//java/test/org/openqa/selenium/firefox:__pkg__",
         "//javascript/node/selenium-webdriver:__pkg__",
         "//py:__pkg__",
-        "//rb:__pkg__",
+        "//rb/spec:__subpackages__",
     ],
 )
 
