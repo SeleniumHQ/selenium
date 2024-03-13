@@ -58,23 +58,25 @@ namespace OpenQA.Selenium
             try
             {
                 this.StartSession(capabilities);
-                this.elementFactory = new WebElementFactory(this);
-                this.network = new NetworkManager(this);
-                this.registeredCommands.AddRange(DriverCommand.KnownCommands);
-
-                if ((this as ISupportsLogs) != null)
-                {
-                    // Only add the legacy log commands if the driver supports
-                    // retrieving the logs via the extension end points.
-                    this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
-                    this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
-                }
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                this.Dispose();
-                throw ex;
+                // Failed to start driver session, disposing of driver
+                this.DriverDispose();
+                throw;
             }
+
+            this.elementFactory = new WebElementFactory(this);
+            this.network = new NetworkManager(this);
+            this.registeredCommands.AddRange(DriverCommand.KnownCommands);
+
+            if ((this as ISupportsLogs) != null)
+            {
+                // Only add the legacy log commands if the driver supports
+                // retrieving the logs via the extension end points.
+                this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
+                this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
+            }            
         }
 
         /// <summary>
@@ -684,6 +686,15 @@ namespace OpenQA.Selenium
         /// <param name="disposing">if its in the process of disposing</param>
         protected virtual void Dispose(bool disposing)
         {
+            this.DriverDispose();
+            this.executor.Dispose();
+        }
+
+        /// <summary>
+        /// Send Quit command to stop driver
+        /// </summary>
+        protected virtual void DriverDispose()
+        {
             try
             {
                 this.Execute(DriverCommand.Quit, null);
@@ -701,8 +712,6 @@ namespace OpenQA.Selenium
             {
                 this.sessionId = null;
             }
-
-            this.executor.Dispose();
         }
 
         private static void UnpackAndThrowOnError(Response errorResponse, string commandToExecute)
