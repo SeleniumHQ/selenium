@@ -15,72 +15,85 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.bidi;
+package org.openqa.selenium.bidi.browser;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
-import org.openqa.selenium.bidi.browsingcontext.NavigationResult;
-import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
-import org.openqa.selenium.bidi.log.JavascriptLogEntry;
-import org.openqa.selenium.bidi.log.LogLevel;
-import org.openqa.selenium.bidi.module.LogInspector;
+import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-class BiDiTest extends JupiterTestBase {
+class BrowserCommandsTest extends JupiterTestBase {
 
-  String page;
   private AppServer server;
+  private Browser browser;
 
   @BeforeEach
   public void setUp() {
     server = new NettyAppServer();
     server.start();
+    browser = new Browser(driver);
   }
 
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  void canNavigateAndListenToErrors()
-      throws ExecutionException, InterruptedException, TimeoutException {
-    try (org.openqa.selenium.bidi.module.LogInspector logInspector = new LogInspector(driver)) {
-      CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
-      logInspector.onJavaScriptException(future::complete);
+  @NotYetImplemented(FIREFOX)
+  void canCreateAUserContext() {
+    String userContext = browser.createUserContext();
 
-      BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+    assertThat(userContext).isNotNull();
 
-      page = server.whereIs("/bidi/logEntryAdded.html");
-      NavigationResult info = browsingContext.navigate(page, ReadinessState.COMPLETE);
+    browser.removeUserContext(userContext);
+  }
 
-      // If navigation was successful, we expect both the url and navigation id to be set
-      assertThat(browsingContext.getId()).isNotEmpty();
-      assertThat(info.getNavigationId()).isNotNull();
-      assertThat(info.getUrl()).contains("/bidi/logEntryAdded.html");
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canGetUserContexts() {
+    String userContext1 = browser.createUserContext();
+    String userContext2 = browser.createUserContext();
 
-      driver.findElement(By.id("jsException")).click();
+    List<String> userContexts = browser.getUserContexts();
+    assertThat(userContexts.size()).isGreaterThanOrEqualTo(2);
 
-      JavascriptLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
+    browser.removeUserContext(userContext1);
+    browser.removeUserContext(userContext2);
+  }
 
-      assertThat(logEntry.getText()).isEqualTo("Error: Not working");
-      assertThat(logEntry.getType()).isEqualTo("javascript");
-      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.ERROR);
-    }
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canRemoveUserContext() {
+    String userContext1 = browser.createUserContext();
+    String userContext2 = browser.createUserContext();
+
+    List<String> userContexts = browser.getUserContexts();
+    assertThat(userContexts.size()).isGreaterThanOrEqualTo(2);
+
+    browser.removeUserContext(userContext2);
+
+    List<String> updatedUserContexts = browser.getUserContexts();
+    assertThat(userContext1).isIn(updatedUserContexts);
+    assertThat(userContext2).isNotIn(updatedUserContexts);
+
+    browser.removeUserContext(userContext1);
   }
 
   @AfterEach
