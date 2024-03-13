@@ -624,11 +624,23 @@ namespace :py do
     bump_nightly = arguments[:version] === 'nightly'
     old_version = python_version
     new_version = nil
-    if bump_nightly && old_version.include?('nightly')
-      new_version = old_version.gsub('nightly', "#{Time.now.strftime("%Y%m%d%H%M")}")
+
+    # There are three cases we want to deal with:
+    # 1. Switching from a release build to a nightly one
+    # 2. Updating a nightly build for the next nightly build
+    # 3. Switching from nightlies to a release build.
+
+    if bump_nightly && old_version.include?('.dev')
+      # This is the case where we are updating a nightly build to the next nightly build.
+      # This change is usually done by the CI system and never committed.
+      # The ".dev" is removed to have the pushed package in TestPyPi be shown as latest.
+      new_version = old_version.gsub(/\.dev\d+$/, '') + + ".#{Time.now.strftime("%Y%m%d%H%M")}"
+    elsif bump_nightly
+      # This is the case after a production release and the version number is configured
+      # to start doing nightly builds.
+      new_version = old_version + ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
     else
-      new_version = updated_version(old_version, arguments[:version])
-      new_version += '.nightly' unless old_version.include?('nightly')
+      new_version = updated_version(old_version.gsub(/\.dev\d+$/, ''), arguments[:version])
     end
 
     ['py/setup.py',
@@ -1154,6 +1166,7 @@ task :create_release_notes do
 end
 
 def updated_version(current, desired = nil)
+  puts "Calculating "
   version = desired ? desired.split('.') : current.split(/\.|-/)
   if desired
     # Allows user to pass in only major/minor versions

@@ -21,7 +21,7 @@ import org.openqa.selenium.json.JsonInput;
 
 public class BytesValue {
 
-  enum Type {
+  public enum Type {
     STRING("string"),
     BASE64("base64");
 
@@ -41,7 +41,7 @@ public class BytesValue {
 
   private final String value;
 
-  private BytesValue(Type type, String value) {
+  public BytesValue(Type type, String value) {
     this.type = type;
     this.value = value;
   }
