@@ -35,7 +35,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.bidi.Network;
+import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.support.ui.ExpectedConditions;

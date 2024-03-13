@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WindowType;
-import org.openqa.selenium.bidi.Storage;
+import org.openqa.selenium.bidi.module.Storage;
 import org.openqa.selenium.bidi.network.BytesValue;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;

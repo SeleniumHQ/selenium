@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.bidi;
+package org.openqa.selenium.bidi.module;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,6 +24,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.Command;
+import org.openqa.selenium.bidi.Event;
+import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.network.AddInterceptParameters;
 import org.openqa.selenium.bidi.network.BeforeRequestSent;
 import org.openqa.selenium.bidi.network.FetchError;
