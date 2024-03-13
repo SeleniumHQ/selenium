@@ -72,15 +72,19 @@ TargetBrowser.prototype.platform
 function color(c, s) {
   return isatty(process.stdout) ? `\u001b[${c}m${s}\u001b[0m` : s
 }
+
 function green(s) {
   return color(32, s)
 }
+
 function cyan(s) {
   return color(36, s)
 }
+
 function info(msg) {
   console.info(`${green('[INFO]')} ${msg}`)
 }
+
 function warn(msg) {
   console.warn(`${cyan('[WARNING]')} ${msg}`)
 }
@@ -396,6 +400,7 @@ function suite(fn, options = undefined) {
           seleniumServer = new remote.SeleniumServer(seleniumJar)
 
           const startTimeout = 65 * 1000
+
           // eslint-disable-next-line no-inner-declarations
           function startSelenium() {
             if (typeof this.timeout === 'function') {

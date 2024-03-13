@@ -38,6 +38,7 @@ const jsDirectory = resources.locate('javascript')
 
 const Pages = (function () {
   let pages = {}
+
   function addPage(page, path) {
     pages.__defineGetter__(page, function () {
       return exports.whereIs(path)

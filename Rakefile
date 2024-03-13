@@ -624,11 +624,21 @@ namespace :py do
     bump_nightly = arguments[:version] === 'nightly'
     old_version = python_version
     new_version = nil
-    if bump_nightly && old_version.include?('nightly')
-      new_version = old_version.gsub('nightly', "#{Time.now.strftime("%Y%m%d%H%M")}")
+
+    # There are three cases we want to deal with:
+    # 1. Switching from a release build to a nightly one
+    # 2. Updating a nightly build for the next nightly build
+    # 3. Switching from nightlies to a release build.
+    # According to PEP440, the way to indicate a nightly build is `M.m.v.devN`
+    # Where `N` is sorted numerically. That means we can create the dev
+    # version number from today's date.
+
+    if bump_nightly && old_version.include?('.dev')
+      new_version = old_version.gsub(/\d+$/, "#{Time.now.strftime("%Y%m%d%H%M")}")
+    elsif bump_nightly
+      new_version = old_version + ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
     else
-      new_version = updated_version(old_version, arguments[:version])
-      new_version += '.nightly' unless old_version.include?('nightly')
+      new_version = updated_version(old_version.gsub(/\.dev\d+$/, ''), arguments[:version])
     end
 
     ['py/setup.py',
@@ -711,6 +721,7 @@ namespace :rb do
   task :docs, [:skip_update] do |_task, arguments|
     FileUtils.rm_rf('build/docs/api/rb/')
     Bazel.execute('run', [], '//rb:docs')
+    FileUtils.mkdir_p('build/docs/api')
     FileUtils.cp_r('bazel-bin/rb/docs.rb.sh.runfiles/selenium/docs/api/rb/.', 'build/docs/api/rb')
 
     unless arguments[:skip_update]
@@ -1153,6 +1164,7 @@ task :create_release_notes do
 end
 
 def updated_version(current, desired = nil)
+  puts "Calculating "
   version = desired ? desired.split('.') : current.split(/\.|-/)
   if desired
     # Allows user to pass in only major/minor versions

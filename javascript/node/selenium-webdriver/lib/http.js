@@ -147,12 +147,15 @@ const Atom = {
 function post(path) {
   return resource('POST', path)
 }
+
 function del(path) {
   return resource('DELETE', path)
 }
+
 function get(path) {
   return resource('GET', path)
 }
+
 function resource(method, path) {
   return { method: method, path: path }
 }
