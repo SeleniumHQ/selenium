@@ -55,7 +55,9 @@ target :lib do
     # Cannot override last error on line 71
     'lib/selenium/webdriver/common/wait.rb',
     # Cannot override params on line 83
-    'lib/selenium/webdriver/bidi/log_inspector.rb'
+    'lib/selenium/webdriver/bidi/log_inspector.rb',
+    # Kwargs issue on line 74
+    'lib/selenium/webdriver/common/driver.rb'
   )
 
   # Standard libraries used in the project
