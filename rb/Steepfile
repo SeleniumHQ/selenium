@@ -1,7 +1,7 @@
 target :lib do
   signature 'sig', '.gem_rbs_collection/rubyzip' # Signature directory
   check 'lib' # Directory name
-  # Total amount of errors ignore 61 in 27 files
+  # Total amount of errors ignore 63 in 29 files
   ignore(
     # Ignore line 166 due to UDP RBS issue
     'lib/selenium/webdriver/common/platform.rb',
@@ -57,7 +57,9 @@ target :lib do
     # Cannot override params on line 83
     'lib/selenium/webdriver/bidi/log_inspector.rb',
     # Kwargs issue on line 74
-    'lib/selenium/webdriver/common/driver.rb'
+    'lib/selenium/webdriver/common/driver.rb',
+    # issue with the Zipper RBS library on line 54
+    'lib/selenium/webdriver/firefox/extension.rb'
   )
 
   # Standard libraries used in the project
