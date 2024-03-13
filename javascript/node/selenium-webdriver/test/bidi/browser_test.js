@@ -19,8 +19,8 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const {ignore, Pages, suite} = require('../../lib/test')
-const {Browser, By, until} = require('../..')
+const { suite } = require('../../lib/test')
+const { Browser } = require('../..')
 const BrowserBiDi = require('../../bidi/browser')
 
 suite(
@@ -81,5 +81,5 @@ suite(
       })
     })
   },
-  {browsers: [Browser.FIREFOX]},
+  { browsers: [Browser.FIREFOX] },
 )
