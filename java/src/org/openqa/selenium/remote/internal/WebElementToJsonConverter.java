@@ -19,7 +19,9 @@ package org.openqa.selenium.remote.internal;
 
 /**
  * {@inheritDoc}
- * @deprecated This class has moved to a {@link org.openqa.selenium.remote.WebElementToJsonConverter new location}.
+ *
+ * @deprecated This class has moved to a {@link org.openqa.selenium.remote.WebElementToJsonConverter
+ *     new location}.
  */
-public class WebElementToJsonConverter extends org.openqa.selenium.remote.WebElementToJsonConverter {
-}
+public class WebElementToJsonConverter
+    extends org.openqa.selenium.remote.WebElementToJsonConverter {}

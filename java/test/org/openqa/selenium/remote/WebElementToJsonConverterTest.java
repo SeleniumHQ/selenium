@@ -223,8 +223,8 @@ class WebElementToJsonConverterTest {
     ShadowRoot context = new ShadowRoot(createIdleDriver(), "abc123");
     Object value = CONVERTER.apply(new Object[] {context});
     assertContentsInOrder(
-      new ArrayList<>((Collection<?>) value),
-      ImmutableMap.of(Dialect.W3C.getShadowRootElementKey(), "abc123"));
+        new ArrayList<>((Collection<?>) value),
+        ImmutableMap.of(Dialect.W3C.getShadowRootElementKey(), "abc123"));
   }
 
   private static WrappedWebElement wrapElement(WebElement element) {
