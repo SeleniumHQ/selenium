@@ -15,12 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.bidi;
+package org.openqa.selenium.bidi.module;
 
 import java.io.StringReader;
 import java.util.Map;
 import java.util.function.Function;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.Command;
+import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.storage.DeleteCookiesParameters;
 import org.openqa.selenium.bidi.storage.GetCookiesParameters;
 import org.openqa.selenium.bidi.storage.GetCookiesResult;
