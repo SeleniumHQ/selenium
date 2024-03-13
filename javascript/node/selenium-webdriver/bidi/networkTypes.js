@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const {NavigationInfo} = require('./browsingContextTypes')
+const { NavigationInfo } = require('./browsingContextTypes')
 
 const SameSite = {
   STRICT: 'strict',
@@ -32,7 +32,6 @@ const SameSite = {
 }
 
 class BytesValue {
-
   static Type = {
     STRING: 'string',
     BASE64: 'base64',
@@ -489,4 +488,4 @@ class ResponseStarted extends BaseParameters {
   }
 }
 
-module.exports = {BytesValue, Cookie, SameSite, BeforeRequestSent, ResponseStarted, FetchError}
+module.exports = { BytesValue, Cookie, SameSite, BeforeRequestSent, ResponseStarted, FetchError }

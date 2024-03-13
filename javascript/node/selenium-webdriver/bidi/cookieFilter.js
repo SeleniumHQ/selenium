@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const {SameSite} = require("./networkTypes");
+const { SameSite } = require('./networkTypes')
 
 class CookieFilter {
   #map = new Map()
@@ -56,7 +56,6 @@ class CookieFilter {
   }
 
   sameSite(sameSite) {
-
     if (!(sameSite instanceof SameSite)) {
       throw new Error(`Params must be a value in SameSite. Received:'${sameSite}'`)
     }
@@ -74,4 +73,4 @@ class CookieFilter {
   }
 }
 
-module.exports = {CookieFilter}
+module.exports = { CookieFilter }

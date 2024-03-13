@@ -59,4 +59,4 @@ class PartialCookie {
   }
 }
 
-module.exports = {PartialCookie}
+module.exports = { PartialCookie }

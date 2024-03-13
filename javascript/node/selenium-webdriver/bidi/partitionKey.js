@@ -33,4 +33,4 @@ class PartitionKey {
   }
 }
 
-module.exports = {PartitionKey}
+module.exports = { PartitionKey }

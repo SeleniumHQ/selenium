@@ -15,11 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const {CookieFilter} = require("./cookieFilter");
-const {BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor} = require("./partitionDescriptor");
-const {PartitionKey} = require("./partitionKey");
-const {PartialCookie} = require("./partialCookie");
-const {Cookie} = require("./networkTypes");
+const { CookieFilter } = require('./cookieFilter')
+const { BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor } = require('./partitionDescriptor')
+const { PartitionKey } = require('./partitionKey')
+const { PartialCookie } = require('./partialCookie')
+const { Cookie } = require('./networkTypes')
 
 class Storage {
   constructor(driver) {
@@ -35,13 +35,14 @@ class Storage {
   }
 
   async getCookies(filter = undefined, partition = undefined) {
-
     if (filter !== undefined && !(filter instanceof CookieFilter)) {
       throw new Error(`Params must be an instance of CookieFilter. Received:'${filter}'`)
     }
 
-    if (partition !== undefined &&
-      !(partition instanceof (BrowsingContextPartitionDescriptor || StorageKeyPartitionDescriptor))) {
+    if (
+      partition !== undefined &&
+      !(partition instanceof (BrowsingContextPartitionDescriptor || StorageKeyPartitionDescriptor))
+    ) {
       throw new Error(`Params must be an instance of PartitionDescriptor. Received:'${partition}'`)
     }
 
@@ -57,27 +58,46 @@ class Storage {
 
     let cookies = []
     response.result.cookies.forEach((cookie) => {
-      cookies.push(new Cookie(cookie.name, cookie.value, cookie.domain, cookie.path, cookie.size, cookie.httpOnly, cookie.secure, cookie.sameSite, cookie.expiry))
+      cookies.push(
+        new Cookie(
+          cookie.name,
+          cookie.value,
+          cookie.domain,
+          cookie.path,
+          cookie.size,
+          cookie.httpOnly,
+          cookie.secure,
+          cookie.sameSite,
+          cookie.expiry,
+        ),
+      )
     })
 
     if (response.result.hasOwnProperty('partitionKey')) {
-      if (response.result.partitionKey.hasOwnProperty('userContext') && response.result.partitionKey.hasOwnProperty('sourceOrigin')) {
-        let partitionKey = new PartitionKey(response.result.partitionKey.userContext, response.result.partitionKey.sourceOrigin)
-        return {cookies, partitionKey}
+      if (
+        response.result.partitionKey.hasOwnProperty('userContext') &&
+        response.result.partitionKey.hasOwnProperty('sourceOrigin')
+      ) {
+        let partitionKey = new PartitionKey(
+          response.result.partitionKey.userContext,
+          response.result.partitionKey.sourceOrigin,
+        )
+        return { cookies, partitionKey }
       }
 
-      return {cookies}
+      return { cookies }
     }
   }
 
   async setCookie(cookie, partition = undefined) {
-
     if (!(cookie instanceof PartialCookie)) {
       throw new Error(`Params must be an instance of PartialCookie. Received:'${cookie}'`)
     }
 
-    if (partition !== undefined &&
-      !(partition instanceof (BrowsingContextPartitionDescriptor || StorageKeyPartitionDescriptor))) {
+    if (
+      partition !== undefined &&
+      !(partition instanceof (BrowsingContextPartitionDescriptor || StorageKeyPartitionDescriptor))
+    ) {
       throw new Error(`Params must be an instance of PartitionDescriptor. Received:'${partition}'`)
     }
 
@@ -92,21 +112,28 @@ class Storage {
     let response = await this.bidi.send(command)
 
     if (response.result.hasOwnProperty('partitionKey')) {
-      if (response.result.partitionKey.hasOwnProperty('userContext') && response.result.partitionKey.hasOwnProperty('sourceOrigin')) {
-        let partitionKey = new PartitionKey(response.result.partitionKey.userContext, response.result.partitionKey.sourceOrigin)
+      if (
+        response.result.partitionKey.hasOwnProperty('userContext') &&
+        response.result.partitionKey.hasOwnProperty('sourceOrigin')
+      ) {
+        let partitionKey = new PartitionKey(
+          response.result.partitionKey.userContext,
+          response.result.partitionKey.sourceOrigin,
+        )
         return partitionKey
       }
     }
   }
 
   async deleteCookies(cookieFilter = undefined, partition = undefined) {
-
     if (cookieFilter !== undefined && !(cookieFilter instanceof CookieFilter)) {
       throw new Error(`Params must be an instance of CookieFilter. Received:'${cookieFilter}'`)
     }
 
-    if (partition !== undefined &&
-      !(partition instanceof (BrowsingContextPartitionDescriptor || StorageKeyPartitionDescriptor))) {
+    if (
+      partition !== undefined &&
+      !(partition instanceof (BrowsingContextPartitionDescriptor || StorageKeyPartitionDescriptor))
+    ) {
       throw new Error(`Params must be an instance of PartitionDescriptor. Received:'${partition}'`)
     }
 
@@ -121,8 +148,14 @@ class Storage {
     let response = await this.bidi.send(command)
 
     if (response.result.hasOwnProperty('partitionKey')) {
-      if (response.result.partitionKey.hasOwnProperty('userContext') && response.result.partitionKey.hasOwnProperty('sourceOrigin')) {
-        let partitionKey = new PartitionKey(response.result.partitionKey.userContext, response.result.partitionKey.sourceOrigin)
+      if (
+        response.result.partitionKey.hasOwnProperty('userContext') &&
+        response.result.partitionKey.hasOwnProperty('sourceOrigin')
+      ) {
+        let partitionKey = new PartitionKey(
+          response.result.partitionKey.userContext,
+          response.result.partitionKey.sourceOrigin,
+        )
         return partitionKey
       }
     }

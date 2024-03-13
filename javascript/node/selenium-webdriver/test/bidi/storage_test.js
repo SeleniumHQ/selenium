@@ -18,16 +18,16 @@
 'use strict'
 
 const assert = require('assert')
-require('../../lib/test/fileserver');
+require('../../lib/test/fileserver')
 const firefox = require('../../firefox')
-const {ignore, Pages, suite} = require('../../lib/test')
-const {Browser, By, until} = require('../..')
+const { ignore, Pages, suite } = require('../../lib/test')
+const { Browser, By, until } = require('../..')
 const Storage = require('../../bidi/storage')
-const fileserver = require("../../lib/test/fileserver");
-const {CookieFilter} = require("../../bidi/cookieFilter");
-const {BytesValue, SameSite} = require("../../bidi/networkTypes");
-const {BrowsingContextPartitionDescriptor} = require("../../bidi/partitionDescriptor");
-const {PartialCookie} = require("../../bidi/partialCookie");
+const fileserver = require('../../lib/test/fileserver')
+const { CookieFilter } = require('../../bidi/cookieFilter')
+const { BytesValue, SameSite } = require('../../bidi/networkTypes')
+const { BrowsingContextPartitionDescriptor } = require('../../bidi/partitionDescriptor')
+const { PartialCookie } = require('../../bidi/partialCookie')
 
 suite(
   function (env) {
@@ -46,12 +46,13 @@ suite(
       })
 
       xit('can get cookie by name', async function () {
-
         const cookie = createCookieSpec()
 
         await driver.manage().addCookie(cookie)
 
-        const cookieFilter = new CookieFilter().name(cookie.name).value(new BytesValue(BytesValue.Type.STRING, cookie.value))
+        const cookieFilter = new CookieFilter()
+          .name(cookie.name)
+          .value(new BytesValue(BytesValue.Type.STRING, cookie.value))
 
         const storage = await Storage(driver)
         const result = await storage.getCookies(cookieFilter)
@@ -60,13 +61,14 @@ suite(
       })
 
       xit('can get cookie in default user context', async function () {
-
         const windowHandle = await driver.getWindowHandle()
         const cookie = createCookieSpec()
 
         await driver.manage().addCookie(cookie)
 
-        const cookieFilter = new CookieFilter().name(cookie.name).value(new BytesValue(BytesValue.Type.STRING, cookie.value))
+        const cookieFilter = new CookieFilter()
+          .name(cookie.name)
+          .value(new BytesValue(BytesValue.Type.STRING, cookie.value))
 
         await driver.switchTo().newWindow('window')
 
@@ -89,7 +91,7 @@ suite(
 
         assert.notEqual(partitionKey.userContext, null)
         assert.notEqual(partitionKey.sourceOrigin, null)
-        assert.strictEqual(partitionKey.userContext, "default")
+        assert.strictEqual(partitionKey.userContext, 'default')
       })
 
       xit('can add cookie', async function () {
@@ -97,9 +99,13 @@ suite(
 
         const storage = await Storage(driver)
 
-        await storage.setCookie(new PartialCookie(cookie.name, new BytesValue(BytesValue.Type.STRING, cookie.value), fileserver.whereIs('/')))
+        await storage.setCookie(
+          new PartialCookie(cookie.name, new BytesValue(BytesValue.Type.STRING, cookie.value), fileserver.whereIs('/')),
+        )
 
-        const cookieFilter = new CookieFilter().name(cookie.name).value(new BytesValue(BytesValue.Type.STRING, cookie.value))
+        const cookieFilter = new CookieFilter()
+          .name(cookie.name)
+          .value(new BytesValue(BytesValue.Type.STRING, cookie.value))
 
         const result = await storage.getCookies(cookieFilter)
 
@@ -111,21 +117,26 @@ suite(
 
         const storage = await Storage(driver)
 
-        const now = Date.now();
-        const oneHourInMillis = 3600 * 1000;
-        const expiry = now + oneHourInMillis;
+        const now = Date.now()
+        const oneHourInMillis = 3600 * 1000
+        const expiry = now + oneHourInMillis
 
         const partitionDescriptor = new BrowsingContextPartitionDescriptor(await driver.getWindowHandle())
 
-        await storage.setCookie(new PartialCookie(cookie.name, new BytesValue(BytesValue.Type.STRING, cookie.value), fileserver.whereIs('/'))
-          .path('/ajaxy_page.html')
-          .size(100)
-          .httpOnly(true)
-          .secure(false)
-          .sameSite(SameSite.LAX)
-          .expiry(expiry), partitionDescriptor)
+        await storage.setCookie(
+          new PartialCookie(cookie.name, new BytesValue(BytesValue.Type.STRING, cookie.value), fileserver.whereIs('/'))
+            .path('/ajaxy_page.html')
+            .size(100)
+            .httpOnly(true)
+            .secure(false)
+            .sameSite(SameSite.LAX)
+            .expiry(expiry),
+          partitionDescriptor,
+        )
 
-        const cookieFilter = new CookieFilter().name(cookie.name).value(new BytesValue(BytesValue.Type.STRING, cookie.value))
+        const cookieFilter = new CookieFilter()
+          .name(cookie.name)
+          .value(new BytesValue(BytesValue.Type.STRING, cookie.value))
 
         const result = await storage.getCookies(cookieFilter)
 
@@ -190,7 +201,7 @@ suite(
 
         assert.strictEqual(result.cookies.length, 1)
       })
-      
+
       function createCookieSpec(opt_options) {
         let spec = {
           name: getRandomString(),
@@ -211,10 +222,10 @@ suite(
               cookies.length,
               expected.length,
               'Wrong # of cookies.' +
-              '\n  Expected: ' +
-              JSON.stringify(expected) +
-              '\n  Was     : ' +
-              JSON.stringify(cookies),
+                '\n  Expected: ' +
+                JSON.stringify(expected) +
+                '\n  Was     : ' +
+                JSON.stringify(cookies),
             )
 
             const map = buildCookieMap(cookies)
@@ -238,5 +249,5 @@ suite(
       }
     })
   },
-  {browsers: [Browser.FIREFOX]},
+  { browsers: [Browser.FIREFOX] },
 )

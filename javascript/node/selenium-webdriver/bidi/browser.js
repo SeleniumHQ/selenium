@@ -66,7 +66,6 @@ class Browser {
 
     await this.bidi.send(command)
   }
-
 }
 
 async function getBrowserInstance(driver) {

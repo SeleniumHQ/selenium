@@ -21,7 +21,6 @@ Type = {
 }
 
 class PartitionDescriptor {
-
   #type
 
   constructor(type) {
@@ -33,12 +32,12 @@ class BrowsingContextPartitionDescriptor extends PartitionDescriptor {
   #context = null
 
   constructor(context) {
-    super(Type.CONTEXT);
+    super(Type.CONTEXT)
     this.#context = context
   }
 
   asMap() {
-    const map = new Map();
+    const map = new Map()
     map.set('type', Type.CONTEXT)
     map.set('context', this.#context)
     return map
@@ -67,4 +66,4 @@ class StorageKeyPartitionDescriptor extends PartitionDescriptor {
   }
 }
 
-module.exports = {BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor}
+module.exports = { BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor }
