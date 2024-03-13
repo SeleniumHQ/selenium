@@ -76,7 +76,7 @@ namespace OpenQA.Selenium
                 // retrieving the logs via the extension end points.
                 this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
                 this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
-            }            
+            }
         }
 
         /// <summary>
