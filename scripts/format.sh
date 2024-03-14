@@ -16,6 +16,11 @@ section "Java"
 echo "    google-java-format" >&2
 find "$PWD/java" -type f -name '*.java' | xargs "$GOOGLE_JAVA_FORMAT" --replace
 
+section "Python"
+echo "    black" >&2
+# Keep the flags here in sync with what we have in `//py:black-config`
+bazel run //py/private:black -- --line-length 120 "$(pwd)/py"
+
 section "Rust"
 echo "   rustfmt" >&2
 bazel run @rules_rust//:rustfmt

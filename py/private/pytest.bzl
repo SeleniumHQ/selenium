@@ -1,4 +1,5 @@
 load("@rules_python//python:defs.bzl", "PyInfo", "py_test")
+load(":py_with_lint_macro.bzl", "create_lint_tests")
 
 def _stringify(paths):
     return repr(paths)
@@ -58,6 +59,11 @@ _pytest_runner = rule(
 
 def pytest_test(name, srcs, deps = None, args = None, data = None, python_version = None, **kwargs):
     runner_target = "%s-runner.py" % name
+
+    create_lint_tests(
+        name = name,
+        srcs = srcs,
+    )
 
     _pytest_runner(
         name = runner_target,

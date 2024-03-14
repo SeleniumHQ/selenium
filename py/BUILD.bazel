@@ -2,13 +2,17 @@ load("@bazel_skylib//rules:select_file.bzl", "select_file")
 load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
-load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("//common:defs.bzl", "copy_file")
-load("//py:defs.bzl", "generate_devtools", "py_test_suite")
+load("//py:defs.bzl", "black_config", "generate_devtools", "py_binary", "py_import", "py_library", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
-load("//py/private:import.bzl", "py_import")
+
+black_config(
+    name = "black-config",
+    line_length = 120,
+    visibility = ["//visibility:public"],
+)
 
 alias(
     name = "twine",
@@ -23,6 +27,9 @@ genrule(
     ],
     outs = ["pypi_upload_complete.txt"],
     cmd = "(twine upload $(location :selenium-wheel) $(location :selenium-sdist) && touch $@)",
+    tags = [
+        "manual",
+    ],
     tools = [":twine"],
 )
 

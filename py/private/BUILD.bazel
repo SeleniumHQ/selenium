@@ -1,4 +1,7 @@
+load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("@rules_python//python:defs.bzl", "py_binary")
+
+package(default_visibility = ["//visibility:public"])
 
 py_binary(
     name = "untar",
@@ -6,5 +9,21 @@ py_binary(
         "untar.py",
     ],
     legacy_create_init = False,
-    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "black",
+    actual = ":black-bin",
+)
+
+py_binary(
+    name = "black-bin",
+    srcs = [
+        # If the source is called `black` you can't then import black into black
+        "black-bin.py",
+    ],
+    legacy_create_init = False,
+    deps = [
+        requirement("black"),
+    ],
 )
