@@ -62,7 +62,7 @@ namespace OpenQA.Selenium
             catch (Exception)
             {
                 // Failed to start driver session, disposing of driver
-                this.DriverDispose();
+                this.Quit();
                 throw;
             }
 
@@ -686,15 +686,6 @@ namespace OpenQA.Selenium
         /// <param name="disposing">if its in the process of disposing</param>
         protected virtual void Dispose(bool disposing)
         {
-            this.DriverDispose();
-            this.executor.Dispose();
-        }
-
-        /// <summary>
-        /// Send Quit command to stop driver
-        /// </summary>
-        protected virtual void DriverDispose()
-        {
             try
             {
                 this.Execute(DriverCommand.Quit, null);
@@ -712,6 +703,7 @@ namespace OpenQA.Selenium
             {
                 this.sessionId = null;
             }
+            this.executor.Dispose();
         }
 
         private static void UnpackAndThrowOnError(Response errorResponse, string commandToExecute)
