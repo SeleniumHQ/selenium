@@ -629,13 +629,15 @@ namespace :py do
     # 1. Switching from a release build to a nightly one
     # 2. Updating a nightly build for the next nightly build
     # 3. Switching from nightlies to a release build.
-    # According to PEP440, the way to indicate a nightly build is `M.m.v.devN`
-    # Where `N` is sorted numerically. That means we can create the dev
-    # version number from today's date.
 
     if bump_nightly && old_version.include?('.dev')
-      new_version = old_version.gsub(/\d+$/, "#{Time.now.strftime("%Y%m%d%H%M")}")
+      # This is the case where we are updating a nightly build to the next nightly build.
+      # This change is usually done by the CI system and never committed.
+      # The ".dev" is removed to have the pushed package in TestPyPi be shown as latest.
+      new_version = old_version.gsub(/\.dev\d+$/, '') + + ".#{Time.now.strftime("%Y%m%d%H%M")}"
     elsif bump_nightly
+      # This is the case after a production release and the version number is configured
+      # to start doing nightly builds.
       new_version = old_version + ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
     else
       new_version = updated_version(old_version.gsub(/\.dev\d+$/, ''), arguments[:version])

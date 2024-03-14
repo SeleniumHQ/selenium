@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.bidi;
+package org.openqa.selenium.bidi.module;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -24,6 +24,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.Command;
+import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.interactions.Sequence;
 
 public class Input {
