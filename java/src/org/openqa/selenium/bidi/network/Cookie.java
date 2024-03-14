@@ -16,6 +16,8 @@
 // under the License.
 package org.openqa.selenium.bidi.network;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.openqa.selenium.json.JsonInput;
 
@@ -165,5 +167,21 @@ public class Cookie {
 
   public Optional<Long> getExpiry() {
     return expiry;
+  }
+
+  public Map<String, Object> toMap() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("name", getName());
+    map.put("value", getValue().toMap());
+    map.put("domain", getDomain());
+    map.put("path", getPath());
+    map.put("size", getSize());
+    map.put("secure", isSecure());
+    map.put("httpOnly", isHttpOnly());
+    map.put("sameSite", getSameSite().toString());
+
+    getExpiry().ifPresent(expiryValue -> map.put("expiry", expiryValue));
+
+    return map;
   }
 }

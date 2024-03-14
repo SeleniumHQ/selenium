@@ -30,6 +30,8 @@ import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.network.AddInterceptParameters;
 import org.openqa.selenium.bidi.network.BeforeRequestSent;
+import org.openqa.selenium.bidi.network.ContinueRequestParameters;
+import org.openqa.selenium.bidi.network.ContinueResponseParameters;
 import org.openqa.selenium.bidi.network.FetchError;
 import org.openqa.selenium.bidi.network.ResponseDetails;
 import org.openqa.selenium.internal.Require;
@@ -120,6 +122,14 @@ public class Network implements AutoCloseable {
 
   public void failRequest(String requestId) {
     this.bidi.send(new Command<>("network.failRequest", Map.of("request", requestId)));
+  }
+
+  public void continueRequest(ContinueRequestParameters parameters) {
+    this.bidi.send(new Command<>("network.continueRequest", parameters.toMap()));
+  }
+
+  public void continueResponse(ContinueResponseParameters parameters) {
+    this.bidi.send(new Command<>("network.continueResponse", parameters.toMap()));
   }
 
   public void onBeforeRequestSent(Consumer<BeforeRequestSent> consumer) {
