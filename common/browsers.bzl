@@ -30,6 +30,9 @@ chrome_data = select({
 }) + chromedriver_data
 
 edgedriver_data = select({
+    "@selenium//common:use_pinned_linux_edge": [
+        "@linux_edgedriver//:msedgedriver",
+    ],
     "@selenium//common:use_pinned_macos_edge": [
         "@mac_edgedriver//:msedgedriver",
     ],
@@ -38,6 +41,10 @@ edgedriver_data = select({
 })
 
 edge_data = select({
+    "@selenium//common:use_pinned_linux_edge": [
+        "@linux_edge//:files",
+        "@linux_edge//:opt/microsoft/msedge/microsoft-edge",
+    ],
     "@selenium//common:use_pinned_macos_edge": [
         "@mac_edge//:Edge.app",
     ],

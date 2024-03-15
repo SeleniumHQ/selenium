@@ -1,6 +1,7 @@
 # This file has been generated using `bazel run scripts:pinned_browsers`
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("//common/private:deb_archive.bzl", "deb_archive")
 load("//common/private:dmg_archive.bzl", "dmg_archive")
 load("//common/private:drivers.bzl", "local_drivers")
 load("//common/private:pkg_archive.bzl", "pkg_archive")
@@ -96,12 +97,29 @@ exports_files(
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/9c227984-0429-48e9-bade-ba93774a430a/MicrosoftEdge-122.0.2365.80.pkg",
-        sha256 = "4fca764d70068e29d1b4657fb4c8b28bfcd8aebc295368bb49e7560f19af0716",
+        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/61b13da3-c921-482a-9166-743689310b71/MicrosoftEdge-122.0.2365.92.pkg",
+        sha256 = "304243a7ef631781b707c0d9cb8fd35e718cebad91c29078e389bb4e813afef9",
         move = {
-            "MicrosoftEdge-122.0.2365.80.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-122.0.2365.92.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
+    )
+
+    deb_archive(
+        name = "linux_edge",
+        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_122.0.2365.92-1_amd64.deb",
+        sha256 = "eab115c454b669dbc42f83b6b9ccc94ec4f2df5a2cf6be762069c75f18f703e8",
+        build_file_content = """
+filegroup(
+    name = "files",
+    srcs = glob(["**/*"]),
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    ["opt/microsoft/msedge/microsoft-edge"],
+)
+""",
     )
 
     http_archive(
@@ -120,8 +138,8 @@ exports_files(
 
     http_archive(
         name = "linux_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/122.0.6261.111/linux64/chrome-linux64.zip",
-        sha256 = "b059c80216abd74f25a35c08c6ad601a30dfdb09588af27828a9bc7adde65bd3",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/122.0.6261.128/linux64/chrome-linux64.zip",
+        sha256 = "d20be2808665743423536a2ce030ffa8f6092b9dd9a29f72cd8999ef71955700",
         build_file_content = """
 filegroup(
     name = "files",
@@ -137,8 +155,8 @@ exports_files(
 
     http_archive(
         name = "mac_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/122.0.6261.111/mac-x64/chrome-mac-x64.zip",
-        sha256 = "4754c5793fec0080e29c6df1720d09c4052b447a14239a55682948635612c0e8",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/122.0.6261.128/mac-x64/chrome-mac-x64.zip",
+        sha256 = "f4efaa5dbe4e02d5d324ac862427be2facbca1bed1c75c5bacaa4c922ab5b643",
         strip_prefix = "chrome-mac-x64",
         patch_cmds = [
             "mv 'Google Chrome for Testing.app' Chrome.app",
@@ -149,16 +167,16 @@ exports_files(
 
     http_archive(
         name = "linux_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/122.0.6261.111/linux64/chromedriver-linux64.zip",
-        sha256 = "a73431662c53100171823855de88aea4191c66262c9f61b9829f7ecddc76b754",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/122.0.6261.128/linux64/chromedriver-linux64.zip",
+        sha256 = "40aaf6063c9d88fe43dd3e5b79cc101de1662b42ccac81616ecb0310ba921103",
         strip_prefix = "chromedriver-linux64",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
 
     http_archive(
         name = "mac_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/122.0.6261.111/mac-x64/chromedriver-mac-x64.zip",
-        sha256 = "16d7e9b92808cd8193fb00ded4c805744bfe0f89cbb647b3ddd1450226ec9212",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/122.0.6261.128/mac-x64/chromedriver-mac-x64.zip",
+        sha256 = "41d2fd29a9a5b955fa908218e85ef3c4a2f997b72586c13b416196c3861152d3",
         strip_prefix = "chromedriver-mac-x64",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
