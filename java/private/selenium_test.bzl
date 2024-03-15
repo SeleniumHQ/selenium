@@ -30,7 +30,7 @@ BROWSERS = {
         "deps": ["//java/src/org/openqa/selenium/edge"],
         "jvm_flags": ["-Dselenium.browser=edge"] + edge_jvm_flags,
         "data": edge_data,
-        "tags": COMMON_TAGS + ["edge", "skip-remote"],
+        "tags": COMMON_TAGS + ["edge"],
     },
     "firefox": {
         "deps": ["//java/src/org/openqa/selenium/firefox"],

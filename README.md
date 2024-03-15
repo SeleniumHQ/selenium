@@ -237,7 +237,8 @@ There are a number of bazel configurations specific for testing.
 ### Common Options Examples
 
 Here are examples of arguments we make use of in testing the Selenium code:
-* `--pin_browsers=true` - run specific browser versions defined in the build (versions are updated regularly)
+* `--pin_browsers` - run specific browser versions defined in the build (versions are updated regularly)
+* `--headless` - run browsers in headless mode (supported be Chrome, Edge and Firefox)
 * `--flaky_test_attempts 3` - re-run failed tests up to 3 times
 * `--local_test_jobs 1` - control parallelism of tests
 * `--cache_test_results=no`, `-t-` - disable caching of test results and re-runs all of them
@@ -367,11 +368,6 @@ Supported browsers:
 * `ie`
 * `safari`
 * `safari-preview`
-
-Useful command line options:
-
-* `--pin_browsers` - use browsers and drivers downloaded by Bazel
-* `--headless` - run browsers in headless mode (supported be Chrome, Edge and Firefox)
 
 In addition to the [Common Options Examples](#common-options-examples), here are some additional Ruby specific ones:
 * `--test_arg "-tfocus"` - test only [focused specs](https://relishapp.com/rspec/rspec-core/v/3-12/docs/filtering/inclusion-filters)

@@ -27,6 +27,9 @@ chrome_jvm_flags = select({
 }) + chromedriver_jvm_flags
 
 edgedriver_jvm_flags = select({
+    "@selenium//common:use_pinned_linux_edge": [
+        "-Dwebdriver.edge.driver=$(location @linux_edgedriver//:msedgedriver)",
+    ],
     "@selenium//common:use_pinned_macos_edge": [
         "-Dwebdriver.edge.driver=$(location @mac_edgedriver//:msedgedriver)",
     ],
@@ -34,6 +37,9 @@ edgedriver_jvm_flags = select({
 })
 
 edge_jvm_flags = select({
+    "@selenium//common:use_pinned_linux_edge": [
+        "-Dwebdriver.edge.binary=$(location @linux_edge//:opt/microsoft/msedge/microsoft-edge)",
+    ],
     "@selenium//common:use_pinned_macos_edge": [
         "-Dwebdriver.edge.binary=\"$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge\"",
     ],
