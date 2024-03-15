@@ -176,13 +176,17 @@ namespace OpenQA.Selenium.Environment
                 options.PageLoadStrategy = overriddenOptions.PageLoadStrategy;
                 options.UnhandledPromptBehavior = overriddenOptions.UnhandledPromptBehavior;
                 options.Proxy = overriddenOptions.Proxy;
+
+                options.ScriptTimeout = overriddenOptions.ScriptTimeout;
+                options.PageLoadTimeout = overriddenOptions.PageLoadTimeout;
+                options.ImplicitWaitTimeout = overriddenOptions.ImplicitWaitTimeout;
             }
 
             return options;
         }
 
 
-        private T MergeOptions<T>(object baseOptions, DriverOptions overriddenOptions) where T:DriverOptions, new()
+        private T MergeOptions<T>(object baseOptions, DriverOptions overriddenOptions) where T : DriverOptions, new()
         {
             // If the driver type has a static DefaultOptions property,
             // get the value of that property, which should be a valid
@@ -204,7 +208,7 @@ namespace OpenQA.Selenium.Environment
             return mergedOptions;
         }
 
-        private T CreateService<T>() where T:DriverService
+        private T CreateService<T>() where T : DriverService
         {
             T service = default(T);
             Type serviceType = typeof(T);
@@ -212,7 +216,7 @@ namespace OpenQA.Selenium.Environment
             MethodInfo createDefaultServiceMethod = serviceType.GetMethod("CreateDefaultService", BindingFlags.Public | BindingFlags.Static, null, new Type[] { }, null);
             if (createDefaultServiceMethod != null && createDefaultServiceMethod.ReturnType == serviceType)
             {
-                service = (T)createDefaultServiceMethod.Invoke(null, new object[] {});
+                service = (T)createDefaultServiceMethod.Invoke(null, new object[] { });
             }
 
             return service;
