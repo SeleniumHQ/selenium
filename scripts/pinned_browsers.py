@@ -298,13 +298,7 @@ def firefox():
     if latest_firefox != beta_firefox:
         sha_linux = calculate_hash(firefox_linux(beta_firefox))
         sha_mac = calculate_hash(firefox_mac(beta_firefox))
-    content = content + print_firefox(beta_firefox, "beta_", sha_linux, sha_mac)
-
-    dev_firefox = firefox_versions["FIREFOX_DEVEDITION"]
-    if beta_firefox != dev_firefox:
-        sha_linux = calculate_hash(firefox_linux(dev_firefox))
-        sha_mac = calculate_hash(firefox_mac(dev_firefox))
-    return content + print_firefox(dev_firefox, "dev_", sha_linux, sha_mac)
+    return content + print_firefox(beta_firefox, "beta_", sha_linux, sha_mac)
 
 
 def firefox_version_data():

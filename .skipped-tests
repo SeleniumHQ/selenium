@@ -32,7 +32,6 @@
 -//javascript/atoms:test-chrome
 -//javascript/atoms:test-edge
 -//javascript/atoms:test-firefox-beta
--//javascript/atoms:test-firefox-dev
 -//py:common-chrome-test/selenium/webdriver/common/virtual_authenticator_tests.py
 -//py:test-chrome-test/selenium/webdriver/chrome/chrome_launcher_tests.py
 -//py:test-chrome-test/selenium/webdriver/chrome/chrome_service_tests.py

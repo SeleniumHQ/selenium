@@ -58,30 +58,6 @@ exports_files(
     )
 
     http_archive(
-        name = "linux_dev_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/124.0b9/linux-x86_64/en-US/firefox-124.0b9.tar.bz2",
-        sha256 = "80208d269dc8d251a7f9f292a7a6ea9ad217189a01075ff6d77326cb0352c1db",
-        build_file_content = """
-filegroup(
-    name = "files",
-    srcs = glob(["**/*"]),
-    visibility = ["//visibility:public"],
-)
-
-exports_files(
-    ["firefox/firefox"],
-)
-""",
-    )
-
-    dmg_archive(
-        name = "mac_dev_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/124.0b9/mac/en-US/Firefox%20124.0b9.dmg",
-        sha256 = "c716240f5fd76937cccbe93e9ffdb681782fbacb9af1face7416351a6e71a1a3",
-        build_file_content = "exports_files([\"Firefox.app\"])",
-    )
-
-    http_archive(
         name = "linux_geckodriver",
         url = "https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz",
         sha256 = "79b2e77edd02c0ec890395140d7cdc04a7ff0ec64503e62a0b74f88674ef1313",

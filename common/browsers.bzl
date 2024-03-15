@@ -83,14 +83,3 @@ firefox_beta_data = select({
     ],
     "//conditions:default": [],
 }) + geckodriver_data
-
-firefox_dev_data = select({
-    "@selenium//common:use_pinned_linux_firefox": [
-        "@linux_dev_firefox//:files",
-        "@linux_dev_firefox//:firefox/firefox",
-    ],
-    "@selenium//common:use_pinned_macos_firefox": [
-        "@mac_dev_firefox//:Firefox.app",
-    ],
-    "//conditions:default": [],
-}) + geckodriver_data
