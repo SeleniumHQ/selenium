@@ -1,5 +1,6 @@
 -//dotnet/test/common:DevTools/DevToolsNetworkTest-chrome
 -//dotnet/test/common:Interactions/BasicMouseInterfaceTest-chrome
+-//dotnet/test/common:Interactions/BasicMouseInterfaceTest-edge
 -//dotnet/test/common:Interactions/BasicMouseInterfaceTest-firefox
 -//dotnet/test/common:JavascriptEnabledBrowserTest-chrome
 -//dotnet/test/common:NetworkInterceptionTests-chrome
@@ -29,6 +30,7 @@
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverScreenshotTest-remote
 -//javascript/atoms:test-chrome
+-//javascript/atoms:test-edge
 -//javascript/atoms:test-firefox-beta
 -//javascript/atoms:test-firefox-dev
 -//py:common-chrome-test/selenium/webdriver/common/virtual_authenticator_tests.py
