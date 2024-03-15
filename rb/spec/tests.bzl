@@ -35,14 +35,16 @@ BROWSERS = {
     "edge": {
         "data": edge_data,
         "deps": ["//rb/lib/selenium/webdriver:edge"],
-        "tags": [
-            "skip-remote",  # TODO: Add Linux version of Edge to pinned browsers.
-        ],
+        "tags": [],
         "target_compatible_with": [],
         "env": {
             "WD_REMOTE_BROWSER": "edge",
             "WD_SPEC_DRIVER": "edge",
         } | select({
+            "@selenium//common:use_pinned_linux_edge": {
+                "EDGE_BINARY": "$(location @linux_edge//:opt/microsoft/msedge/microsoft-edge)",
+                "MSEDGEDRIVER_BINARY": "$(location @linux_edgedriver//:msedgedriver)",
+            },
             "@selenium//common:use_pinned_macos_edge": {
                 "EDGE_BINARY": "$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft\\ Edge",
                 "MSEDGEDRIVER_BINARY": "$(location @mac_edgedriver//:msedgedriver)",
