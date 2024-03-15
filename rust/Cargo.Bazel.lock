@@ -1,5 +1,5 @@
 {
-  "checksum": "beb59fd2515c805087325f9fe24ebd5d96c275ce70990cf49dbde615349509de",
+  "checksum": "4529f2854cf8e3949ad4c30256971bf8bbc9e48298e87f19f40dea2e43b76083",
   "crates": {
     "addr2line 0.19.0": {
       "name": "addr2line",
@@ -1524,13 +1524,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap 4.5.2": {
+    "clap 4.4.18": {
       "name": "clap",
-      "version": "4.5.2",
+      "version": "4.4.18",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/clap/4.5.2/download",
-          "sha256": "b230ab84b0ffdf890d5a10abdbc8b83ae1c4918275daea1ab8801f71536b2651"
+          "url": "https://static.crates.io/crates/clap/4.4.18/download",
+          "sha256": "1e578d6ec4194633722ccf9544794b71b1385c3c027efe0c55db226fc880865c"
         }
       },
       "targets": [
@@ -1566,7 +1566,7 @@
         "deps": {
           "common": [
             {
-              "id": "clap_builder 4.5.2",
+              "id": "clap_builder 4.4.18",
               "target": "clap_builder"
             }
           ],
@@ -1576,23 +1576,23 @@
         "proc_macro_deps": {
           "common": [
             {
-              "id": "clap_derive 4.5.0",
+              "id": "clap_derive 4.4.7",
               "target": "clap_derive"
             }
           ],
           "selects": {}
         },
-        "version": "4.5.2"
+        "version": "4.4.18"
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap_builder 4.5.2": {
+    "clap_builder 4.4.18": {
       "name": "clap_builder",
-      "version": "4.5.2",
+      "version": "4.4.18",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/clap_builder/4.5.2/download",
-          "sha256": "ae129e2e766ae0ec03484e609954119f123cc1fe650337e155d03b022f24f7b4"
+          "url": "https://static.crates.io/crates/clap_builder/4.4.18/download",
+          "sha256": "4df4df40ec50c46000231c914968278b1eb05098cf8f1b3a518a95030e71d1c7"
         }
       },
       "targets": [
@@ -1634,28 +1634,28 @@
               "target": "anstyle"
             },
             {
-              "id": "clap_lex 0.7.0",
+              "id": "clap_lex 0.6.0",
               "target": "clap_lex"
             },
             {
-              "id": "strsim 0.11.0",
+              "id": "strsim 0.10.0",
               "target": "strsim"
             }
           ],
           "selects": {}
         },
         "edition": "2021",
-        "version": "4.5.2"
+        "version": "4.4.18"
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap_derive 4.5.0": {
+    "clap_derive 4.4.7": {
       "name": "clap_derive",
-      "version": "4.5.0",
+      "version": "4.4.7",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/clap_derive/4.5.0/download",
-          "sha256": "307bc0538d5f0f83b8248db3087aa92fe504e4691294d0c96c0eabc33f47ba47"
+          "url": "https://static.crates.io/crates/clap_derive/4.4.7/download",
+          "sha256": "cf9804afaaf59a91e75b022a30fb7229a7901f60c755489cc61c9b423b836442"
         }
       },
       "targets": [
@@ -1702,17 +1702,17 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "4.5.0"
+        "version": "4.4.7"
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap_lex 0.7.0": {
+    "clap_lex 0.6.0": {
       "name": "clap_lex",
-      "version": "0.7.0",
+      "version": "0.6.0",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/clap_lex/0.7.0/download",
-          "sha256": "98cc8fbded0c607b7ba9dd60cd98df59af97e84d24e49c8557331cfc26d301ce"
+          "url": "https://static.crates.io/crates/clap_lex/0.6.0/download",
+          "sha256": "702fc72eb24e5a1e48ce58027a675bc24edd52096d5397d4aea7c6dd9eca0bd1"
         }
       },
       "targets": [
@@ -1732,7 +1732,7 @@
           "**"
         ],
         "edition": "2021",
-        "version": "0.7.0"
+        "version": "0.6.0"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -2653,7 +2653,7 @@
               "target": "humantime"
             },
             {
-              "id": "is-terminal 0.4.12",
+              "id": "is-terminal 0.4.10",
               "target": "is_terminal"
             },
             {
@@ -4078,13 +4078,13 @@
       },
       "license": "MIT/Apache-2.0"
     },
-    "hermit-abi 0.3.9": {
+    "hermit-abi 0.3.5": {
       "name": "hermit-abi",
-      "version": "0.3.9",
+      "version": "0.3.5",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/hermit-abi/0.3.9/download",
-          "sha256": "d231dfb89cfffdbc30e7fc41579ed6066ad03abda9e567ccafae602b97ec5024"
+          "url": "https://static.crates.io/crates/hermit-abi/0.3.5/download",
+          "sha256": "d0c62115964e08cb8039170eb33c1d0e2388a256930279edca206fff675f82c3"
         }
       },
       "targets": [
@@ -4104,7 +4104,7 @@
           "**"
         ],
         "edition": "2021",
-        "version": "0.3.9"
+        "version": "0.3.5"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -4869,13 +4869,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "is-terminal 0.4.12": {
+    "is-terminal 0.4.10": {
       "name": "is-terminal",
-      "version": "0.4.12",
+      "version": "0.4.10",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/is-terminal/0.4.12/download",
-          "sha256": "f23ff5ef2b80d608d61efee834934d862cd92461afc0560dedf493e4c033738b"
+          "url": "https://static.crates.io/crates/is-terminal/0.4.10/download",
+          "sha256": "0bad00257d07be169d870ab665980b06cdb366d792ad690bf2e76876dc503455"
         }
       },
       "targets": [
@@ -4897,15 +4897,15 @@
         "deps": {
           "common": [],
           "selects": {
-            "cfg(any(unix, target_os = \"wasi\"))": [
+            "cfg(not(any(windows, target_os = \"hermit\", target_os = \"unknown\")))": [
               {
-                "id": "libc 0.2.153",
-                "target": "libc"
+                "id": "rustix 0.38.31",
+                "target": "rustix"
               }
             ],
             "cfg(target_os = \"hermit\")": [
               {
-                "id": "hermit-abi 0.3.9",
+                "id": "hermit-abi 0.3.5",
                 "target": "hermit_abi"
               }
             ],
@@ -4918,7 +4918,7 @@
           }
         },
         "edition": "2018",
-        "version": "0.4.12"
+        "version": "0.4.10"
       },
       "license": "MIT"
     },
@@ -7357,6 +7357,7 @@
             "default",
             "fs",
             "std",
+            "termios",
             "use-libc-auxv"
           ],
           "selects": {}
@@ -7738,7 +7739,7 @@
               "target": "bzip2"
             },
             {
-              "id": "clap 4.5.2",
+              "id": "clap 4.4.18",
               "target": "clap"
             },
             {
@@ -8590,13 +8591,13 @@
       },
       "license": "MIT"
     },
-    "strsim 0.11.0": {
+    "strsim 0.10.0": {
       "name": "strsim",
-      "version": "0.11.0",
+      "version": "0.10.0",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/strsim/0.11.0/download",
-          "sha256": "5ee073c9e4cd00e28217186dbe12796d692868f432bf2e97ee73bed0c56dfa01"
+          "url": "https://static.crates.io/crates/strsim/0.10.0/download",
+          "sha256": "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
         }
       },
       "targets": [
@@ -8616,7 +8617,7 @@
           "**"
         ],
         "edition": "2015",
-        "version": "0.11.0"
+        "version": "0.10.0"
       },
       "license": "MIT"
     },
@@ -12916,6 +12917,35 @@
       "x86_64-linux-android",
       "x86_64-unknown-freebsd",
       "x86_64-unknown-linux-gnu"
+    ],
+    "cfg(not(any(windows, target_os = \"hermit\", target_os = \"unknown\")))": [
+      "aarch64-apple-darwin",
+      "aarch64-apple-ios",
+      "aarch64-apple-ios-sim",
+      "aarch64-fuchsia",
+      "aarch64-linux-android",
+      "aarch64-unknown-linux-gnu",
+      "arm-unknown-linux-gnueabi",
+      "armv7-linux-androideabi",
+      "armv7-unknown-linux-gnueabi",
+      "i686-apple-darwin",
+      "i686-linux-android",
+      "i686-unknown-freebsd",
+      "i686-unknown-linux-gnu",
+      "powerpc-unknown-linux-gnu",
+      "riscv32imc-unknown-none-elf",
+      "riscv64gc-unknown-none-elf",
+      "s390x-unknown-linux-gnu",
+      "thumbv7em-none-eabi",
+      "thumbv8m.main-none-eabi",
+      "wasm32-wasi",
+      "x86_64-apple-darwin",
+      "x86_64-apple-ios",
+      "x86_64-fuchsia",
+      "x86_64-linux-android",
+      "x86_64-unknown-freebsd",
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-none"
     ],
     "cfg(not(target_arch = \"wasm32\"))": [
       "aarch64-apple-darwin",
