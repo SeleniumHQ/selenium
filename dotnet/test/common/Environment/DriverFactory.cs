@@ -87,6 +87,10 @@ namespace OpenQA.Selenium.Environment
             {
                 browser = Browser.Edge;
                 options = GetDriverOptions<EdgeOptions>(driverType, driverOptions);
+
+                var edgeOptions = (EdgeOptions)options;
+                edgeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
+
                 service = CreateService<EdgeDriverService>();
                 if (!string.IsNullOrEmpty(this.browserBinaryLocation))
                 {
