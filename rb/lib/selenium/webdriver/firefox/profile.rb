@@ -24,7 +24,10 @@ module Selenium
         include ProfileHelper
 
         VALID_PREFERENCE_TYPES = [TrueClass, FalseClass, Integer, Float, String].freeze
-        WEBDRIVER_PREFS = []
+        WEBDRIVER_PREFS = {
+          :port => 'webdriver_firefox_port',
+          :log_file => 'webdriver.log.file'
+        }
 
         DEFAULT_PREFERENCES = {
           'browser.newtabpage.enabled' => false,
@@ -36,8 +39,8 @@ module Selenium
 
         LOCK_FILES = %w[.parentlock parent.lock lock].freeze
 
-        attr_reader   :name, :log_file
-        attr_writer   :secure_ssl, :load_no_focus_lib
+        attr_reader :name, :log_file
+        attr_writer :secure_ssl, :load_no_focus_lib
 
         class << self
           def ini
@@ -163,7 +166,7 @@ module Selenium
           destination = File.join(directory, 'extensions')
 
           @extensions.each do |name, extension|
-            WebDriver.logger.debug({extension: name}.inspect, id: :firefox_profile)
+            WebDriver.logger.debug({ extension: name }.inspect, id: :firefox_profile)
             extension.write_to(destination)
           end
         end
@@ -224,7 +227,9 @@ module Selenium
             end
           end
         end
-      end # Profile
+      end
+
+      # Profile
     end # Firefox
   end # WebDriver
 end # Selenium
