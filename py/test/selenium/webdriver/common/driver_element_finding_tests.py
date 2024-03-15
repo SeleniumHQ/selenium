@@ -360,7 +360,7 @@ def test_finding_alink_by_xpath_using_contains_keyword_should_work(driver, pages
 
 
 # @pytest.mark.xfail_chrome(raises=InvalidSelectorException)
-# @pytest.mark.xfail_chromiumedge(raises=InvalidSelectorException)
+# @pytest.mark.xfail_edge(raises=InvalidSelectorException)
 # @pytest.mark.xfail_firefox(raises=InvalidSelectorException)
 # @pytest.mark.xfail_remote(raises=InvalidSelectorException)
 # @pytest.mark.xfail_safari(raises=NoSuchElementException)

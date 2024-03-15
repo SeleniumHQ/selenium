@@ -54,7 +54,18 @@ namespace OpenQA.Selenium
         protected WebDriver(ICommandExecutor executor, ICapabilities capabilities)
         {
             this.executor = executor;
-            this.StartSession(capabilities);
+
+            try
+            {
+                this.StartSession(capabilities);
+            }
+            catch (Exception)
+            {
+                // Failed to start driver session, disposing of driver
+                this.Quit();
+                throw;
+            }
+
             this.elementFactory = new WebElementFactory(this);
             this.network = new NetworkManager(this);
             this.registeredCommands.AddRange(DriverCommand.KnownCommands);
@@ -692,7 +703,6 @@ namespace OpenQA.Selenium
             {
                 this.sessionId = null;
             }
-
             this.executor.Dispose();
         }
 

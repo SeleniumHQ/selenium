@@ -270,6 +270,7 @@ def test_should_return_true_for_present_boolean_attributes(driver, pages):
 
 
 @pytest.mark.xfail_chrome
+@pytest.mark.xfail_edge
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
@@ -280,6 +281,7 @@ def test_should_get_unicode_chars_from_attribute(driver, pages):
 
 
 @pytest.mark.xfail_chrome
+@pytest.mark.xfail_edge
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote

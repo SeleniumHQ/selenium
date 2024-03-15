@@ -121,7 +121,7 @@ def test_should_wait_for_document_to_be_loaded(driver, pages):
 # @pytest.mark.xfail_firefox(run=False)
 # @pytest.mark.xfail_remote(run=False)
 # @pytest.mark.xfail_chrome(run=False)
-# @pytest.mark.xfail_chromiumedge(run=False)
+# @pytest.mark.xfail_edge(run=False)
 # def test_should_not_hang_if_document_open_call_is_never_followed_by_document_close_call(driver, pages):
 #     pages.load("document_write_in_onload.html")
 #     driver.find_element(By.XPATH, "//body")

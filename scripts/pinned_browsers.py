@@ -141,11 +141,14 @@ exports_files(
 
 
 def edge():
+    content = ""
     r = http.request("GET", "https://edgeupdates.microsoft.com/api/products")
     all_data = json.loads(r.data)
 
-    edge = None
-    hash = None
+    linux = None
+    linux_hash = None
+    mac = None
+    mac_hash = None
     version = None
 
     for data in all_data:
@@ -155,12 +158,17 @@ def edge():
             if "MacOS" == release.get("Platform"):
                 for artifact in release["Artifacts"]:
                     if "pkg" == artifact["ArtifactName"]:
-                        edge = artifact["Location"]
-                        hash = artifact["Hash"]
-                        version = release["ProductVersion"]
+                        mac = artifact["Location"]
+                        mac_hash = artifact["Hash"]
+                        mac_version = release["ProductVersion"]
+            elif "Linux" == release.get("Platform"):
+                for artifact in release["Artifacts"]:
+                    if "deb" == artifact["ArtifactName"]:
+                        linux = artifact["Location"]
+                        linux_hash = artifact["Hash"]
 
-    if edge and hash:
-        return """
+    if mac and mac_hash:
+        content += """
     pkg_archive(
         name = "mac_edge",
         url = "%s",
@@ -171,12 +179,35 @@ def edge():
         build_file_content = "exports_files([\\"Edge.app\\"])",
     )
 """ % (
-            edge,
-            hash.lower(),
-            version,
+            mac,
+            mac_hash.lower(),
+            mac_version,
         )
 
-    return ""
+    if linux and linux_hash:
+        content += """
+    deb_archive(
+        name = "linux_edge",
+        url = "%s",
+        sha256 = "%s",
+        build_file_content = \"\"\"
+filegroup(
+    name = "files",
+    srcs = glob(["**/*"]),
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    ["opt/microsoft/msedge/microsoft-edge"],
+)
+\"\"\",
+    )
+""" % (
+            linux,
+            linux_hash.lower()
+        )
+
+    return content
 
 
 def edgedriver():
@@ -267,13 +298,7 @@ def firefox():
     if latest_firefox != beta_firefox:
         sha_linux = calculate_hash(firefox_linux(beta_firefox))
         sha_mac = calculate_hash(firefox_mac(beta_firefox))
-    content = content + print_firefox(beta_firefox, "beta_", sha_linux, sha_mac)
-
-    dev_firefox = firefox_versions["FIREFOX_DEVEDITION"]
-    if beta_firefox != dev_firefox:
-        sha_linux = calculate_hash(firefox_linux(dev_firefox))
-        sha_mac = calculate_hash(firefox_mac(dev_firefox))
-    return content + print_firefox(dev_firefox, "dev_", sha_linux, sha_mac)
+    return content + print_firefox(beta_firefox, "beta_", sha_linux, sha_mac)
 
 
 def firefox_version_data():
@@ -333,6 +358,7 @@ if __name__ == "__main__":
     content = """# This file has been generated using `bazel run scripts:pinned_browsers`
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("//common/private:deb_archive.bzl", "deb_archive")
 load("//common/private:dmg_archive.bzl", "dmg_archive")
 load("//common/private:drivers.bzl", "local_drivers")
 load("//common/private:pkg_archive.bzl", "pkg_archive")
