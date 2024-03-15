@@ -12,12 +12,17 @@
 -//java/test/org/openqa/selenium/bidi/browsingcontext:BrowsingContextTest-remote
 -//java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
 -//java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+-//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest
+-//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest-edge
+-//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest-remote
 -//java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
 -//java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
 -//java/test/org/openqa/selenium/grid/gridui:OverallGridTest
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-chrome
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-chrome-remote
+-//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-edge
+-//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-edge-remote
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-remote
 -//java/test/org/openqa/selenium/interactions:DefaultMouseTest
 -//java/test/org/openqa/selenium/interactions:DefaultMouseTest-remote

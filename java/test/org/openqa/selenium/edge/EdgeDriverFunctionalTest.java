@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import java.time.Duration;
 import java.util.List;
@@ -39,6 +40,7 @@ import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.chromium.HasPermissions;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -93,6 +95,7 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = EDGE, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4350")
   void canSetPermission() {
     HasPermissions permissions = (HasPermissions) driver;
 
