@@ -98,6 +98,23 @@ suite(
           assert.strictEqual(e.name, 'TimeoutError')
         }
       })
+
+      xit('can fail request', async function () {
+        await network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT))
+
+        await network.beforeRequestSent(async (event) => {
+          await network.failRequest(event.request.request)
+        })
+
+        await driver.manage().setTimeouts({ pageLoad: 5000 })
+
+        try {
+          await driver.get(Pages.basicAuth)
+          assert.fail('Page should not be loaded')
+        } catch (e) {
+          assert.strictEqual(e.name, 'TimeoutError')
+        }
+      })
     })
   },
   { browsers: [Browser.FIREFOX] },

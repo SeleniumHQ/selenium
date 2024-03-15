@@ -136,6 +136,16 @@ class Network {
     await this.bidi.send(command)
   }
 
+  async failRequest(requestId) {
+    const command = {
+      method: 'network.failRequest',
+      params: {
+        request: requestId.toString(),
+      },
+    }
+    await this.bidi.send(command)
+  }
+
   async continueWithAuthNoCredentials(requestId) {
     const command = {
       method: 'network.continueWithAuth',

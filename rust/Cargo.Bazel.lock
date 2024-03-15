@@ -1,12 +1,12 @@
 {
-  "checksum": "2aba38966441201afd0855ab9112e742ce367dab8e7145cb0fee37ce9798a484",
+  "checksum": "4529f2854cf8e3949ad4c30256971bf8bbc9e48298e87f19f40dea2e43b76083",
   "crates": {
     "addr2line 0.19.0": {
       "name": "addr2line",
       "version": "0.19.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/addr2line/0.19.0/download",
+          "url": "https://static.crates.io/crates/addr2line/0.19.0/download",
           "sha256": "a76fd60b23679b7d19bd066031410fb7e458ccc5e958eb5c325888ce4baedc97"
         }
       },
@@ -45,7 +45,7 @@
       "version": "1.0.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/adler/1.0.2/download",
+          "url": "https://static.crates.io/crates/adler/1.0.2/download",
           "sha256": "f26201604c87b1e01bd3d98f8d5d9a8fcbb815e8cedb41ffccbeb4bf593a35fe"
         }
       },
@@ -75,7 +75,7 @@
       "version": "0.8.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/aes/0.8.3/download",
+          "url": "https://static.crates.io/crates/aes/0.8.3/download",
           "sha256": "ac1f845298e95f983ff1944b728ae08b8cebab80d684f0a832ed0fc74dfa27e2"
         }
       },
@@ -125,7 +125,7 @@
       "version": "1.0.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/aho-corasick/1.0.2/download",
+          "url": "https://static.crates.io/crates/aho-corasick/1.0.2/download",
           "sha256": "43f6cb1bf222025340178f382c426f13757b2960e89779dfcb319c32542a5a41"
         }
       },
@@ -171,7 +171,7 @@
       "version": "0.6.11",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/anstream/0.6.11/download",
+          "url": "https://static.crates.io/crates/anstream/0.6.11/download",
           "sha256": "6e2e1ebcb11de5c03c67de28a7df593d32191b44939c482e97702baaaa6ab6a5"
         }
       },
@@ -241,7 +241,7 @@
       "version": "0.3.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/anstyle/0.3.5/download",
+          "url": "https://static.crates.io/crates/anstyle/0.3.5/download",
           "sha256": "23ea9e81bd02e310c216d080f6223c179012256e5151c41db88d12c88a1684d2"
         }
       },
@@ -278,7 +278,7 @@
       "version": "1.0.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/anstyle/1.0.6/download",
+          "url": "https://static.crates.io/crates/anstyle/1.0.6/download",
           "sha256": "8901269c6307e8d93993578286ac0edf7f195079ffff5ebdeea6a59ffb7e36bc"
         }
       },
@@ -315,7 +315,7 @@
       "version": "0.2.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/anstyle-parse/0.2.1/download",
+          "url": "https://static.crates.io/crates/anstyle-parse/0.2.1/download",
           "sha256": "938874ff5980b03a87c5524b3ae5b59cf99b1d6bc836848df7bc5ada9643c333"
         }
       },
@@ -361,7 +361,7 @@
       "version": "1.0.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/anstyle-query/1.0.0/download",
+          "url": "https://static.crates.io/crates/anstyle-query/1.0.0/download",
           "sha256": "5ca11d4be1bab0c8bc8734a9aa7bf4ee8316d462a08c6ac5052f888fef5b494b"
         }
       },
@@ -402,7 +402,7 @@
       "version": "3.0.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/anstyle-wincon/3.0.1/download",
+          "url": "https://static.crates.io/crates/anstyle-wincon/3.0.1/download",
           "sha256": "f0699d10d2f4d628a98ee7b57b289abbc98ff3bad977cb3152709d4bf2330628"
         }
       },
@@ -443,13 +443,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "anyhow 1.0.79": {
+    "anyhow 1.0.81": {
       "name": "anyhow",
-      "version": "1.0.79",
+      "version": "1.0.81",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/anyhow/1.0.79/download",
-          "sha256": "080e9890a082662b09c1ad45f567faeeb47f22b5fb23895fbe1e651e718e25ca"
+          "url": "https://static.crates.io/crates/anyhow/1.0.81/download",
+          "sha256": "0952808a6c2afd1aa8947271f3a60f1a6763c7b912d210184c5149b5cf147247"
         }
       },
       "targets": [
@@ -488,7 +488,7 @@
         "deps": {
           "common": [
             {
-              "id": "anyhow 1.0.79",
+              "id": "anyhow 1.0.81",
               "target": "build_script_build"
             },
             {
@@ -499,7 +499,7 @@
           "selects": {}
         },
         "edition": "2018",
-        "version": "1.0.79"
+        "version": "1.0.81"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -513,7 +513,7 @@
       "version": "0.9.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/ar/0.9.0/download",
+          "url": "https://static.crates.io/crates/ar/0.9.0/download",
           "sha256": "d67af77d68a931ecd5cbd8a3b5987d63a1d1d1278f7f6a60ae33db485cdebb69"
         }
       },
@@ -543,7 +543,7 @@
       "version": "0.7.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/arrayvec/0.7.4/download",
+          "url": "https://static.crates.io/crates/arrayvec/0.7.4/download",
           "sha256": "96d30a06541fbafbc7f82ed10c06164cfbd2c401138f6addd8404629c4b16711"
         }
       },
@@ -575,13 +575,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "assert_cmd 2.0.13": {
+    "assert_cmd 2.0.14": {
       "name": "assert_cmd",
-      "version": "2.0.13",
+      "version": "2.0.14",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/assert_cmd/2.0.13/download",
-          "sha256": "00ad3f3a942eee60335ab4342358c161ee296829e0d16ff42fc1d6cb07815467"
+          "url": "https://static.crates.io/crates/assert_cmd/2.0.14/download",
+          "sha256": "ed72493ac66d5804837f480ab3766c72bdfab91a65e565fc54fa9e42db0073a8"
         }
       },
       "targets": [
@@ -589,6 +589,15 @@
           "Library": {
             "crate_name": "assert_cmd",
             "crate_root": "src/lib.rs",
+            "srcs": [
+              "**/*.rs"
+            ]
+          }
+        },
+        {
+          "BuildScript": {
+            "crate_name": "build_script_build",
+            "crate_root": "build.rs",
             "srcs": [
               "**/*.rs"
             ]
@@ -605,6 +614,10 @@
             {
               "id": "anstyle 1.0.6",
               "target": "anstyle"
+            },
+            {
+              "id": "assert_cmd 2.0.14",
+              "target": "build_script_build"
             },
             {
               "id": "bstr 1.4.0",
@@ -634,7 +647,12 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "2.0.13"
+        "version": "2.0.14"
+      },
+      "build_script_attrs": {
+        "data_glob": [
+          "**"
+        ]
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -643,7 +661,7 @@
       "version": "1.1.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/autocfg/1.1.0/download",
+          "url": "https://static.crates.io/crates/autocfg/1.1.0/download",
           "sha256": "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
         }
       },
@@ -673,7 +691,7 @@
       "version": "0.3.67",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/backtrace/0.3.67/download",
+          "url": "https://static.crates.io/crates/backtrace/0.3.67/download",
           "sha256": "233d376d6d185f2a3093e58f283f60f880315b6c60075b01f36b3b85154564ca"
         }
       },
@@ -766,7 +784,7 @@
       "version": "0.21.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/base64/0.21.0/download",
+          "url": "https://static.crates.io/crates/base64/0.21.0/download",
           "sha256": "a4a4ddaa51a5bc52a6948f74c06d20aaaddb71924eab79b8c97a8c556e942d6a"
         }
       },
@@ -803,7 +821,7 @@
       "version": "1.6.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/base64ct/1.6.0/download",
+          "url": "https://static.crates.io/crates/base64ct/1.6.0/download",
           "sha256": "8c3c1a368f70d6cf7302d78f8f7093da241fb8e8807c05cc9e51a125895a6d5b"
         }
       },
@@ -833,7 +851,7 @@
       "version": "0.5.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/bit-set/0.5.3/download",
+          "url": "https://static.crates.io/crates/bit-set/0.5.3/download",
           "sha256": "0700ddab506f33b20a03b13996eccd309a48e5ff77d0d95926aa0210fb4e95f1"
         }
       },
@@ -879,7 +897,7 @@
       "version": "0.6.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/bit-vec/0.6.3/download",
+          "url": "https://static.crates.io/crates/bit-vec/0.6.3/download",
           "sha256": "349f9b6a179ed607305526ca489b34ad0a41aed5f7980fa90eb03160b69598fb"
         }
       },
@@ -915,7 +933,7 @@
       "version": "1.3.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/bitflags/1.3.2/download",
+          "url": "https://static.crates.io/crates/bitflags/1.3.2/download",
           "sha256": "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
         }
       },
@@ -951,7 +969,7 @@
       "version": "2.4.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/bitflags/2.4.0/download",
+          "url": "https://static.crates.io/crates/bitflags/2.4.0/download",
           "sha256": "b4682ae6287fcf752ecaabbfcc7b6f9b72aa33933dc23a554d853aea8eea8635"
         }
       },
@@ -987,7 +1005,7 @@
       "version": "0.10.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/block-buffer/0.10.4/download",
+          "url": "https://static.crates.io/crates/block-buffer/0.10.4/download",
           "sha256": "3078c7629b62d3f0439517fa394996acacc5cbc91c5a20d8c658e77abd503a71"
         }
       },
@@ -1026,7 +1044,7 @@
       "version": "1.4.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/bstr/1.4.0/download",
+          "url": "https://static.crates.io/crates/bstr/1.4.0/download",
           "sha256": "c3d4260bcc2e8fc9df1eac4919a720effeb63a3f0952f5bf4944adfa18897f09"
         }
       },
@@ -1082,7 +1100,7 @@
       "version": "3.12.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/bumpalo/3.12.0/download",
+          "url": "https://static.crates.io/crates/bumpalo/3.12.0/download",
           "sha256": "0d261e256854913907f67ed06efbc3338dfe6179796deefc1ff763fc1aee5535"
         }
       },
@@ -1118,7 +1136,7 @@
       "version": "1.5.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/byteorder/1.5.0/download",
+          "url": "https://static.crates.io/crates/byteorder/1.5.0/download",
           "sha256": "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
         }
       },
@@ -1155,7 +1173,7 @@
       "version": "1.4.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/bytes/1.4.0/download",
+          "url": "https://static.crates.io/crates/bytes/1.4.0/download",
           "sha256": "89b2fd2a0dcf38d7971e2194b6b6eebab45ae01067456a7fd93d5547a61b70be"
         }
       },
@@ -1192,7 +1210,7 @@
       "version": "0.4.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/bzip2/0.4.4/download",
+          "url": "https://static.crates.io/crates/bzip2/0.4.4/download",
           "sha256": "bdb116a6ef3f6c3698828873ad02c3014b3c85cadb88496095628e3ef1e347f8"
         }
       },
@@ -1235,7 +1253,7 @@
       "version": "0.1.11+1.0.8",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/bzip2-sys/0.1.11+1.0.8/download",
+          "url": "https://static.crates.io/crates/bzip2-sys/0.1.11+1.0.8/download",
           "sha256": "736a955f3fa7875102d57c82b8cac37ec45224a07fd32d58f9f7a186b6cd4cdc"
         }
       },
@@ -1306,7 +1324,7 @@
       "version": "1.0.79",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/cc/1.0.79/download",
+          "url": "https://static.crates.io/crates/cc/1.0.79/download",
           "sha256": "50d30906286121d95be3d479533b458f87493b30a4b5f79a607db8f5d11aa91f"
         }
       },
@@ -1352,7 +1370,7 @@
       "version": "0.7.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/cfb/0.7.3/download",
+          "url": "https://static.crates.io/crates/cfb/0.7.3/download",
           "sha256": "d38f2da7a0a2c4ccf0065be06397cc26a81f4e528be095826eee9d4adbb8c60f"
         }
       },
@@ -1399,7 +1417,7 @@
       "version": "1.0.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/cfg-if/1.0.0/download",
+          "url": "https://static.crates.io/crates/cfg-if/1.0.0/download",
           "sha256": "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
         }
       },
@@ -1429,7 +1447,7 @@
       "version": "0.4.31",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/chrono/0.4.31/download",
+          "url": "https://static.crates.io/crates/chrono/0.4.31/download",
           "sha256": "7f2c685bad3eb3d45a01354cedb7d5faa66194d1d58ba6e267a8de788f79db38"
         }
       },
@@ -1468,7 +1486,7 @@
       "version": "0.4.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/cipher/0.4.4/download",
+          "url": "https://static.crates.io/crates/cipher/0.4.4/download",
           "sha256": "773f3b9af64447d2ce9850330c473515014aa235e6a783b02db81ff39e4a3dad"
         }
       },
@@ -1511,7 +1529,7 @@
       "version": "4.4.18",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap/4.4.18/download",
+          "url": "https://static.crates.io/crates/clap/4.4.18/download",
           "sha256": "1e578d6ec4194633722ccf9544794b71b1385c3c027efe0c55db226fc880865c"
         }
       },
@@ -1573,7 +1591,7 @@
       "version": "4.4.18",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap_builder/4.4.18/download",
+          "url": "https://static.crates.io/crates/clap_builder/4.4.18/download",
           "sha256": "4df4df40ec50c46000231c914968278b1eb05098cf8f1b3a518a95030e71d1c7"
         }
       },
@@ -1636,7 +1654,7 @@
       "version": "4.4.7",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap_derive/4.4.7/download",
+          "url": "https://static.crates.io/crates/clap_derive/4.4.7/download",
           "sha256": "cf9804afaaf59a91e75b022a30fb7229a7901f60c755489cc61c9b423b836442"
         }
       },
@@ -1693,7 +1711,7 @@
       "version": "0.6.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap_lex/0.6.0/download",
+          "url": "https://static.crates.io/crates/clap_lex/0.6.0/download",
           "sha256": "702fc72eb24e5a1e48ce58027a675bc24edd52096d5397d4aea7c6dd9eca0bd1"
         }
       },
@@ -1723,7 +1741,7 @@
       "version": "1.0.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/colorchoice/1.0.0/download",
+          "url": "https://static.crates.io/crates/colorchoice/1.0.0/download",
           "sha256": "acbf1af155f9b9ef647e42cdc158db4b64a1b61f743629225fde6f3e0be2a7c7"
         }
       },
@@ -1753,7 +1771,7 @@
       "version": "0.1.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/constant_time_eq/0.1.5/download",
+          "url": "https://static.crates.io/crates/constant_time_eq/0.1.5/download",
           "sha256": "245097e9a4535ee1e3e3931fcfcd55a796a44c643e8596ff6566d68f09b87bbc"
         }
       },
@@ -1783,7 +1801,7 @@
       "version": "0.9.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/core-foundation/0.9.3/download",
+          "url": "https://static.crates.io/crates/core-foundation/0.9.3/download",
           "sha256": "194a7a9e6de53fa55116934067c844d9d749312f75c6f6d0980e8c252f8c2146"
         }
       },
@@ -1826,7 +1844,7 @@
       "version": "0.8.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/core-foundation-sys/0.8.4/download",
+          "url": "https://static.crates.io/crates/core-foundation-sys/0.8.4/download",
           "sha256": "e496a50fda8aacccc86d7529e2c1e0892dbd0f898a6b5645b5561b89c3210efa"
         }
       },
@@ -1856,7 +1874,7 @@
       "version": "0.2.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/cpufeatures/0.2.5/download",
+          "url": "https://static.crates.io/crates/cpufeatures/0.2.5/download",
           "sha256": "28d997bd5e24a5928dd43e46dc529867e207907fe0b239c3477d924f7f2ca320"
         }
       },
@@ -1909,7 +1927,7 @@
       "version": "3.0.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/crc/3.0.1/download",
+          "url": "https://static.crates.io/crates/crc/3.0.1/download",
           "sha256": "86ec7a15cbe22e59248fc7eadb1907dab5ba09372595da4d73dd805ed4417dfe"
         }
       },
@@ -1948,7 +1966,7 @@
       "version": "2.2.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/crc-catalog/2.2.0/download",
+          "url": "https://static.crates.io/crates/crc-catalog/2.2.0/download",
           "sha256": "9cace84e55f07e7301bae1c519df89cdad8cc3cd868413d3fdbdeca9ff3db484"
         }
       },
@@ -1978,7 +1996,7 @@
       "version": "1.3.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/crc32fast/1.3.2/download",
+          "url": "https://static.crates.io/crates/crc32fast/1.3.2/download",
           "sha256": "b540bd8bc810d3885c6ea91e2018302f68baba2129ab3e88f32389ee9370880d"
         }
       },
@@ -2042,7 +2060,7 @@
       "version": "0.8.15",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/crossbeam-utils/0.8.15/download",
+          "url": "https://static.crates.io/crates/crossbeam-utils/0.8.15/download",
           "sha256": "3c063cd8cc95f5c377ed0d4b49a4b21f632396ff690e8470c29b3359b346984b"
         }
       },
@@ -2106,7 +2124,7 @@
       "version": "0.1.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/crypto-common/0.1.6/download",
+          "url": "https://static.crates.io/crates/crypto-common/0.1.6/download",
           "sha256": "1bfb12502f3fc46cca1bb51ac28df9d618d813cdc3d2f25b9fe775a34af26bb3"
         }
       },
@@ -2155,7 +2173,7 @@
       "version": "0.6.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/debpkg/0.6.0/download",
+          "url": "https://static.crates.io/crates/debpkg/0.6.0/download",
           "sha256": "7ffffa9a03449467cfac11c9a4260556f477de22a935bb5e9475153de323c337"
         }
       },
@@ -2202,7 +2220,7 @@
               "target": "infer"
             },
             {
-              "id": "log 0.4.20",
+              "id": "log 0.4.21",
               "target": "log"
             },
             {
@@ -2230,7 +2248,7 @@
       "version": "0.3.11",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/deranged/0.3.11/download",
+          "url": "https://static.crates.io/crates/deranged/0.3.11/download",
           "sha256": "b42b6fa04a440b495c8b04d0e71b707c585f83cb9cb28cf8cd0d976c315e31b4"
         }
       },
@@ -2277,7 +2295,7 @@
       "version": "0.4.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/difflib/0.4.0/download",
+          "url": "https://static.crates.io/crates/difflib/0.4.0/download",
           "sha256": "6184e33543162437515c2e2b48714794e37845ec9851711914eec9d308f6ebe8"
         }
       },
@@ -2307,7 +2325,7 @@
       "version": "0.10.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/digest/0.10.6/download",
+          "url": "https://static.crates.io/crates/digest/0.10.6/download",
           "sha256": "8168378f4e5023e7218c89c891c0fd8ecdb5e5e4f18cb78f38cf245dd021e76f"
         }
       },
@@ -2366,7 +2384,7 @@
       "version": "5.0.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/directories/5.0.1/download",
+          "url": "https://static.crates.io/crates/directories/5.0.1/download",
           "sha256": "9a49173b84e034382284f27f1af4dcbbd231ffa358c0fe316541a7337f376a35"
         }
       },
@@ -2405,7 +2423,7 @@
       "version": "0.4.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/dirs-sys/0.4.1/download",
+          "url": "https://static.crates.io/crates/dirs-sys/0.4.1/download",
           "sha256": "520f05a5cbd335fae5a99ff7a6ab8627577660ee5cfd6a94a6a929b52ff0321c"
         }
       },
@@ -2463,7 +2481,7 @@
       "version": "0.3.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/doc-comment/0.3.3/download",
+          "url": "https://static.crates.io/crates/doc-comment/0.3.3/download",
           "sha256": "fea41bba32d969b513997752735605054bc0dfa92b4c56bf1189f2e174be7a10"
         }
       },
@@ -2516,7 +2534,7 @@
       "version": "1.8.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/either/1.8.1/download",
+          "url": "https://static.crates.io/crates/either/1.8.1/download",
           "sha256": "7fcaabb2fef8c910e7f4c7ce9f67a1283a1715879a7c230ca9d6d1ae31f16d91"
         }
       },
@@ -2552,7 +2570,7 @@
       "version": "0.8.32",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/encoding_rs/0.8.32/download",
+          "url": "https://static.crates.io/crates/encoding_rs/0.8.32/download",
           "sha256": "071a31f4ee85403370b58aca746f01041ede6f0da2730960ad001edc2b71b394"
         }
       },
@@ -2598,7 +2616,7 @@
       "version": "0.10.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/env_logger/0.10.2/download",
+          "url": "https://static.crates.io/crates/env_logger/0.10.2/download",
           "sha256": "4cd405aab171cb85d6735e5c8d9db038c17d3ca007a4d2c25f337935c3d90580"
         }
       },
@@ -2639,7 +2657,7 @@
               "target": "is_terminal"
             },
             {
-              "id": "log 0.4.20",
+              "id": "log 0.4.21",
               "target": "log"
             },
             {
@@ -2663,7 +2681,7 @@
       "version": "1.0.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/equivalent/1.0.0/download",
+          "url": "https://static.crates.io/crates/equivalent/1.0.0/download",
           "sha256": "88bffebc5d80432c9b140ee17875ff173a8ab62faad5b257da912bd2f6c1c0a1"
         }
       },
@@ -2693,7 +2711,7 @@
       "version": "0.3.8",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/errno/0.3.8/download",
+          "url": "https://static.crates.io/crates/errno/0.3.8/download",
           "sha256": "a258e46cdc063eb8519c00b9fc845fc47bcfca4130e2f08e88665ceda8474245"
         }
       },
@@ -2758,7 +2776,7 @@
       "version": "1.1.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/exitcode/1.1.2/download",
+          "url": "https://static.crates.io/crates/exitcode/1.1.2/download",
           "sha256": "de853764b47027c2e862a995c34978ffa63c1501f2e15f987ba11bd4f9bba193"
         }
       },
@@ -2788,7 +2806,7 @@
       "version": "2.0.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/fastrand/2.0.1/download",
+          "url": "https://static.crates.io/crates/fastrand/2.0.1/download",
           "sha256": "25cbce373ec4653f1a01a31e8a5e5ec0c622dc27ff9c4e6606eefef5cbbed4a5"
         }
       },
@@ -2826,7 +2844,7 @@
       "version": "0.2.22",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/filetime/0.2.22/download",
+          "url": "https://static.crates.io/crates/filetime/0.2.22/download",
           "sha256": "d4029edd3e734da6fe05b6cd7bd2960760a616bd2ddd0d59a0124746d6272af0"
         }
       },
@@ -2884,7 +2902,7 @@
       "version": "0.1.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/filetime_creation/0.1.6/download",
+          "url": "https://static.crates.io/crates/filetime_creation/0.1.6/download",
           "sha256": "3aea213d5ab4e6cd49f50c0688a4e20e5b75ff3bc07ff63f814778bd9b1dd42d"
         }
       },
@@ -2934,7 +2952,7 @@
       "version": "1.0.28",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/flate2/1.0.28/download",
+          "url": "https://static.crates.io/crates/flate2/1.0.28/download",
           "sha256": "46303f565772937ffe1d394a4fac6f411c6013172fadde9dcdb1e147a086940e"
         }
       },
@@ -2986,7 +3004,7 @@
       "version": "1.0.7",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/fnv/1.0.7/download",
+          "url": "https://static.crates.io/crates/fnv/1.0.7/download",
           "sha256": "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
         }
       },
@@ -3023,7 +3041,7 @@
       "version": "1.1.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/form_urlencoded/1.1.0/download",
+          "url": "https://static.crates.io/crates/form_urlencoded/1.1.0/download",
           "sha256": "a9c384f161156f5260c24a097c56119f9be8c798586aecc13afbcbe7b7e26bf8"
         }
       },
@@ -3062,7 +3080,7 @@
       "version": "0.3.27",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/futures/0.3.27/download",
+          "url": "https://static.crates.io/crates/futures/0.3.27/download",
           "sha256": "531ac96c6ff5fd7c62263c5e3c67a603af4fcaee2e1a0ae5565ba3a11e69e549"
         }
       },
@@ -3136,7 +3154,7 @@
       "version": "0.3.27",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/futures-channel/0.3.27/download",
+          "url": "https://static.crates.io/crates/futures-channel/0.3.27/download",
           "sha256": "164713a5a0dcc3e7b4b1ed7d3b433cabc18025386f9339346e8daf15963cf7ac"
         }
       },
@@ -3207,7 +3225,7 @@
       "version": "0.3.27",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/futures-core/0.3.27/download",
+          "url": "https://static.crates.io/crates/futures-core/0.3.27/download",
           "sha256": "86d7a0c1aa76363dac491de0ee99faf6941128376f1cf96f07db7603b7de69dd"
         }
       },
@@ -3268,7 +3286,7 @@
       "version": "0.3.27",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/futures-executor/0.3.27/download",
+          "url": "https://static.crates.io/crates/futures-executor/0.3.27/download",
           "sha256": "1997dd9df74cdac935c76252744c1ed5794fac083242ea4fe77ef3ed60ba0f83"
         }
       },
@@ -3321,7 +3339,7 @@
       "version": "0.3.27",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/futures-io/0.3.27/download",
+          "url": "https://static.crates.io/crates/futures-io/0.3.27/download",
           "sha256": "89d422fa3cbe3b40dca574ab087abb5bc98258ea57eea3fd6f1fa7162c778b91"
         }
       },
@@ -3357,7 +3375,7 @@
       "version": "0.3.27",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/futures-macro/0.3.27/download",
+          "url": "https://static.crates.io/crates/futures-macro/0.3.27/download",
           "sha256": "3eb14ed937631bd8b8b8977f2c198443447a8355b6e3ca599f38c975e5a963b6"
         }
       },
@@ -3404,7 +3422,7 @@
       "version": "0.3.27",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/futures-sink/0.3.27/download",
+          "url": "https://static.crates.io/crates/futures-sink/0.3.27/download",
           "sha256": "ec93083a4aecafb2a80a885c9de1f0ccae9dbd32c2bb54b0c3a65690e0b8d2f2"
         }
       },
@@ -3442,7 +3460,7 @@
       "version": "0.3.27",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/futures-task/0.3.27/download",
+          "url": "https://static.crates.io/crates/futures-task/0.3.27/download",
           "sha256": "fd65540d33b37b16542a0438c12e6aeead10d4ac5d05bd3f805b8f35ab592879"
         }
       },
@@ -3502,7 +3520,7 @@
       "version": "3.0.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/futures-timer/3.0.2/download",
+          "url": "https://static.crates.io/crates/futures-timer/3.0.2/download",
           "sha256": "e64b03909df88034c26dc1547e8970b91f98bdb65165d6a4e9110d94263dbb2c"
         }
       },
@@ -3532,7 +3550,7 @@
       "version": "0.3.27",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/futures-util/0.3.27/download",
+          "url": "https://static.crates.io/crates/futures-util/0.3.27/download",
           "sha256": "3ef6b17e481503ec85211fed8f39d1970f128935ca1f814cd32ac4a6842e84ab"
         }
       },
@@ -3648,7 +3666,7 @@
       "version": "0.14.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/generic-array/0.14.6/download",
+          "url": "https://static.crates.io/crates/generic-array/0.14.6/download",
           "sha256": "bff49e947297f3312447abdca79f45f4738097cc82b06e72054d2223f601f1b9"
         }
       },
@@ -3720,7 +3738,7 @@
       "version": "0.2.8",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/getrandom/0.2.8/download",
+          "url": "https://static.crates.io/crates/getrandom/0.2.8/download",
           "sha256": "c05aeb6a22b8f62540c194aac980f2115af067bfe15a0734d7277a768d396b31"
         }
       },
@@ -3772,7 +3790,7 @@
       "version": "0.27.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/gimli/0.27.3/download",
+          "url": "https://static.crates.io/crates/gimli/0.27.3/download",
           "sha256": "b6c80984affa11d98d1b88b66ac8853f143217b399d3c74116778ff8fdb4ed2e"
         }
       },
@@ -3809,7 +3827,7 @@
       "version": "0.3.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/glob/0.3.1/download",
+          "url": "https://static.crates.io/crates/glob/0.3.1/download",
           "sha256": "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
         }
       },
@@ -3839,7 +3857,7 @@
       "version": "0.3.17",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/h2/0.3.17/download",
+          "url": "https://static.crates.io/crates/h2/0.3.17/download",
           "sha256": "66b91535aa35fea1523ad1b86cb6b53c28e0ae566ba4a460f4457e936cad7c6f"
         }
       },
@@ -3918,7 +3936,7 @@
       "version": "0.12.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/hashbrown/0.12.3/download",
+          "url": "https://static.crates.io/crates/hashbrown/0.12.3/download",
           "sha256": "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
         }
       },
@@ -3954,7 +3972,7 @@
       "version": "0.14.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/hashbrown/0.14.0/download",
+          "url": "https://static.crates.io/crates/hashbrown/0.14.0/download",
           "sha256": "2c6201b9ff9fd90a5a3bac2e56a830d0caa509576f0e503818ee82c181b3437a"
         }
       },
@@ -3990,7 +4008,7 @@
       "version": "0.4.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/heck/0.4.1/download",
+          "url": "https://static.crates.io/crates/heck/0.4.1/download",
           "sha256": "95505c38b4572b2d910cecb0281560f54b440a19336cbbcb27bf6ce6adc6f5a8"
         }
       },
@@ -4026,7 +4044,7 @@
       "version": "0.2.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/hermit-abi/0.2.6/download",
+          "url": "https://static.crates.io/crates/hermit-abi/0.2.6/download",
           "sha256": "ee512640fe35acbfb4bb779db6f0d80704c2cacfa2e39b601ef3e3f47d1ae4c7"
         }
       },
@@ -4065,7 +4083,7 @@
       "version": "0.3.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/hermit-abi/0.3.5/download",
+          "url": "https://static.crates.io/crates/hermit-abi/0.3.5/download",
           "sha256": "d0c62115964e08cb8039170eb33c1d0e2388a256930279edca206fff675f82c3"
         }
       },
@@ -4095,7 +4113,7 @@
       "version": "0.12.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/hmac/0.12.1/download",
+          "url": "https://static.crates.io/crates/hmac/0.12.1/download",
           "sha256": "6c49c37c09c17a53d937dfbb742eb3a961d65a994e6bcdcf37e7399d0cc8ab5e"
         }
       },
@@ -4140,7 +4158,7 @@
       "version": "0.2.9",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/http/0.2.9/download",
+          "url": "https://static.crates.io/crates/http/0.2.9/download",
           "sha256": "bd6effc99afb63425aff9b05836f029929e345a6148a14b7ecd5ab67af944482"
         }
       },
@@ -4187,7 +4205,7 @@
       "version": "0.4.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/http-body/0.4.5/download",
+          "url": "https://static.crates.io/crates/http-body/0.4.5/download",
           "sha256": "d5f38f16d184e36f2408a55281cd658ecbd3ca05cce6d6510a176eca393e26d1"
         }
       },
@@ -4234,7 +4252,7 @@
       "version": "1.8.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/httparse/1.8.0/download",
+          "url": "https://static.crates.io/crates/httparse/1.8.0/download",
           "sha256": "d897f394bad6a705d5f4104762e116a75639e470d80901eed05a860a95cb1904"
         }
       },
@@ -4294,7 +4312,7 @@
       "version": "1.0.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/httpdate/1.0.2/download",
+          "url": "https://static.crates.io/crates/httpdate/1.0.2/download",
           "sha256": "c4a1e36c821dbe04574f602848a19f742f4fb3c98d40449f11bcad18d6b17421"
         }
       },
@@ -4324,7 +4342,7 @@
       "version": "2.1.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/humantime/2.1.0/download",
+          "url": "https://static.crates.io/crates/humantime/2.1.0/download",
           "sha256": "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
         }
       },
@@ -4354,7 +4372,7 @@
       "version": "0.14.25",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/hyper/0.14.25/download",
+          "url": "https://static.crates.io/crates/hyper/0.14.25/download",
           "sha256": "cc5e554ff619822309ffd57d8734d77cd5ce6238bc956f037ea06c58238c9899"
         }
       },
@@ -4465,7 +4483,7 @@
       "version": "0.24.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/hyper-rustls/0.24.0/download",
+          "url": "https://static.crates.io/crates/hyper-rustls/0.24.0/download",
           "sha256": "0646026eb1b3eea4cd9ba47912ea5ce9cc07713d105b1a14698f4e6433d348b7"
         }
       },
@@ -4520,7 +4538,7 @@
       "version": "0.3.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/idna/0.3.0/download",
+          "url": "https://static.crates.io/crates/idna/0.3.0/download",
           "sha256": "e14ddfc70884202db2244c223200c204c2bda1bc6e0998d11b5e024d657209e6"
         }
       },
@@ -4563,7 +4581,7 @@
       "version": "1.9.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/indexmap/1.9.2/download",
+          "url": "https://static.crates.io/crates/indexmap/1.9.2/download",
           "sha256": "1885e79c1fc4b10f0e172c475f458b7f7b93061064d98c3293e98c5ba0c8b399"
         }
       },
@@ -4635,7 +4653,7 @@
       "version": "2.0.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/indexmap/2.0.0/download",
+          "url": "https://static.crates.io/crates/indexmap/2.0.0/download",
           "sha256": "d5477fe2230a79769d8dc68e0eabf5437907c0457a5614a9e8dddb67f65eb65d"
         }
       },
@@ -4685,7 +4703,7 @@
       "version": "0.15.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/infer/0.15.0/download",
+          "url": "https://static.crates.io/crates/infer/0.15.0/download",
           "sha256": "cb33622da908807a06f9513c19b3c1ad50fab3e4137d82a78107d502075aa199"
         }
       },
@@ -4733,7 +4751,7 @@
       "version": "0.8.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/infer/0.8.1/download",
+          "url": "https://static.crates.io/crates/infer/0.8.1/download",
           "sha256": "e035cede526e0b21d5adffc9fa0eb4ef5d6026fe9c5b0bfe8084b9472b587a55"
         }
       },
@@ -4781,7 +4799,7 @@
       "version": "0.1.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/inout/0.1.3/download",
+          "url": "https://static.crates.io/crates/inout/0.1.3/download",
           "sha256": "a0c10553d664a4d0bcff9f4215d0aac67a639cc68ef660840afe309b807bc9f5"
         }
       },
@@ -4820,7 +4838,7 @@
       "version": "2.7.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/ipnet/2.7.1/download",
+          "url": "https://static.crates.io/crates/ipnet/2.7.1/download",
           "sha256": "30e22bd8629359895450b59ea7a776c850561b96a3b1d31321c1949d9e6c9146"
         }
       },
@@ -4856,7 +4874,7 @@
       "version": "0.4.10",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/is-terminal/0.4.10/download",
+          "url": "https://static.crates.io/crates/is-terminal/0.4.10/download",
           "sha256": "0bad00257d07be169d870ab665980b06cdb366d792ad690bf2e76876dc503455"
         }
       },
@@ -4909,7 +4927,7 @@
       "version": "1.0.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/is_executable/1.0.1/download",
+          "url": "https://static.crates.io/crates/is_executable/1.0.1/download",
           "sha256": "fa9acdc6d67b75e626ad644734e8bc6df893d9cd2a834129065d3dd6158ea9c8"
         }
       },
@@ -4950,7 +4968,7 @@
       "version": "0.10.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/itertools/0.10.5/download",
+          "url": "https://static.crates.io/crates/itertools/0.10.5/download",
           "sha256": "b0fd2260e829bddf4cb6ea802289de2f86d6a7a690192fbe91b3f46e0f2c8473"
         }
       },
@@ -4997,7 +5015,7 @@
       "version": "1.0.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/itoa/1.0.6/download",
+          "url": "https://static.crates.io/crates/itoa/1.0.6/download",
           "sha256": "453ad9f582a441959e5f0d088b02ce04cfe8d51a8eaf077f12ac6d3e94164ca6"
         }
       },
@@ -5027,7 +5045,7 @@
       "version": "0.1.26",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/jobserver/0.1.26/download",
+          "url": "https://static.crates.io/crates/jobserver/0.1.26/download",
           "sha256": "936cfd212a0155903bcbc060e316fb6cc7cbf2e1907329391ebadc1fe0ce77c2"
         }
       },
@@ -5068,7 +5086,7 @@
       "version": "0.3.66",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/js-sys/0.3.66/download",
+          "url": "https://static.crates.io/crates/js-sys/0.3.66/download",
           "sha256": "cee9c64da59eae3b50095c18d3e74f8b73c0b86d2792824ff01bbce68ba229ca"
         }
       },
@@ -5107,7 +5125,7 @@
       "version": "0.2.153",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/libc/0.2.153/download",
+          "url": "https://static.crates.io/crates/libc/0.2.153/download",
           "sha256": "9c198f91728a82281a64e1f4f9eeb25d82cb32a5de251c6bd1b5154d63a8e7bd"
         }
       },
@@ -5168,7 +5186,7 @@
       "version": "0.4.13",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/linux-raw-sys/0.4.13/download",
+          "url": "https://static.crates.io/crates/linux-raw-sys/0.4.13/download",
           "sha256": "01cda141df6706de531b6c46c3a33ecca755538219bd484262fa09410c13539c"
         }
       },
@@ -5203,13 +5221,13 @@
       },
       "license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT"
     },
-    "log 0.4.20": {
+    "log 0.4.21": {
       "name": "log",
-      "version": "0.4.20",
+      "version": "0.4.21",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/log/0.4.20/download",
-          "sha256": "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
+          "url": "https://static.crates.io/crates/log/0.4.21/download",
+          "sha256": "90ed8c1e510134f979dbc4f070f87d4313098b704861a105fe34231c70a3901c"
         }
       },
       "targets": [
@@ -5234,8 +5252,8 @@
           ],
           "selects": {}
         },
-        "edition": "2015",
-        "version": "0.4.20"
+        "edition": "2021",
+        "version": "0.4.21"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -5244,7 +5262,7 @@
       "version": "0.1.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/lzma-rust/0.1.5/download",
+          "url": "https://static.crates.io/crates/lzma-rust/0.1.5/download",
           "sha256": "7f798132166cc040cb70dbab4ccbb89643a6966a4ac33f0b312e76a8238673a5"
         }
       },
@@ -5289,7 +5307,7 @@
       "version": "0.1.20",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/lzma-sys/0.1.20/download",
+          "url": "https://static.crates.io/crates/lzma-sys/0.1.20/download",
           "sha256": "5fda04ab3764e6cde78b9974eec4f779acaba7c4e84b36eca3cf77c581b85d27"
         }
       },
@@ -5360,7 +5378,7 @@
       "version": "2.6.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/memchr/2.6.4/download",
+          "url": "https://static.crates.io/crates/memchr/2.6.4/download",
           "sha256": "f665ee40bc4a3c5590afb1e9677db74a508659dfd71e126420da8274909a0167"
         }
       },
@@ -5398,7 +5416,7 @@
       "version": "0.3.17",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/mime/0.3.17/download",
+          "url": "https://static.crates.io/crates/mime/0.3.17/download",
           "sha256": "6877bb514081ee2a7ff5ef9de3281f14a4dd4bceac4c09388074a6b5df8a139a"
         }
       },
@@ -5428,7 +5446,7 @@
       "version": "0.6.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/miniz_oxide/0.6.2/download",
+          "url": "https://static.crates.io/crates/miniz_oxide/0.6.2/download",
           "sha256": "b275950c28b37e794e8c55d88aeb5e139d0ce23fdbbeda68f8d7174abdf9e8fa"
         }
       },
@@ -5467,7 +5485,7 @@
       "version": "0.7.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/miniz_oxide/0.7.1/download",
+          "url": "https://static.crates.io/crates/miniz_oxide/0.7.1/download",
           "sha256": "e7810e0be55b428ada41041c41f32c9f1a42817901b4ccf45fa3d4b6561e74c7"
         }
       },
@@ -5512,7 +5530,7 @@
       "version": "0.8.9",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/mio/0.8.9/download",
+          "url": "https://static.crates.io/crates/mio/0.8.9/download",
           "sha256": "3dce281c5e46beae905d4de1870d8b1509a9142b62eedf18b443b011ca8343d0"
         }
       },
@@ -5577,7 +5595,7 @@
       "version": "0.6.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/nt-time/0.6.5/download",
+          "url": "https://static.crates.io/crates/nt-time/0.6.5/download",
           "sha256": "5a78d75290c9f5bc3d0ec21d88ef94968a3338969f63d98d2878b7b58b952c19"
         }
       },
@@ -5623,7 +5641,7 @@
       "version": "0.2.16",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/num-traits/0.2.16/download",
+          "url": "https://static.crates.io/crates/num-traits/0.2.16/download",
           "sha256": "f30b0abd723be7e2ffca1272140fac1a2f084c77ec3e123c192b66af1ee9e6c2"
         }
       },
@@ -5685,7 +5703,7 @@
       "version": "1.15.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/num_cpus/1.15.0/download",
+          "url": "https://static.crates.io/crates/num_cpus/1.15.0/download",
           "sha256": "0fac9e2da13b5eb447a6ce3d392f23a29d8694bff781bf03a16cd9ac8697593b"
         }
       },
@@ -5732,7 +5750,7 @@
       "version": "0.30.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/object/0.30.4/download",
+          "url": "https://static.crates.io/crates/object/0.30.4/download",
           "sha256": "03b4680b86d9cfafba8fc491dc9b6df26b68cf40e9e6cd73909194759a63c385"
         }
       },
@@ -5783,7 +5801,7 @@
       "version": "1.17.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/once_cell/1.17.1/download",
+          "url": "https://static.crates.io/crates/once_cell/1.17.1/download",
           "sha256": "b7e5500299e16ebb147ae15a00a942af264cf3688f47923b8fc2cd5858f23ad3"
         }
       },
@@ -5822,7 +5840,7 @@
       "version": "0.2.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/option-ext/0.2.0/download",
+          "url": "https://static.crates.io/crates/option-ext/0.2.0/download",
           "sha256": "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
         }
       },
@@ -5852,7 +5870,7 @@
       "version": "0.4.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/password-hash/0.4.2/download",
+          "url": "https://static.crates.io/crates/password-hash/0.4.2/download",
           "sha256": "7676374caaee8a325c9e7a2ae557f216c5563a171d6997b0ef8a65af35147700"
         }
       },
@@ -5905,7 +5923,7 @@
       "version": "0.11.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/pbkdf2/0.11.0/download",
+          "url": "https://static.crates.io/crates/pbkdf2/0.11.0/download",
           "sha256": "83a0692ec44e4cf1ef28ca317f14f8f07da2d95ec3fa01f86e4467b725e60917"
         }
       },
@@ -5966,7 +5984,7 @@
       "version": "2.2.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/percent-encoding/2.2.0/download",
+          "url": "https://static.crates.io/crates/percent-encoding/2.2.0/download",
           "sha256": "478c572c3d73181ff3c2539045f6eb99e5491218eae919370993b890cdbdd98e"
         }
       },
@@ -6003,7 +6021,7 @@
       "version": "0.2.12",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/pin-project-lite/0.2.12/download",
+          "url": "https://static.crates.io/crates/pin-project-lite/0.2.12/download",
           "sha256": "12cc1b0bf1727a77a54b6654e7b5f1af8604923edc8b81885f8ec92f9e3f0a05"
         }
       },
@@ -6033,7 +6051,7 @@
       "version": "0.1.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/pin-utils/0.1.0/download",
+          "url": "https://static.crates.io/crates/pin-utils/0.1.0/download",
           "sha256": "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
         }
       },
@@ -6063,7 +6081,7 @@
       "version": "0.3.26",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/pkg-config/0.3.26/download",
+          "url": "https://static.crates.io/crates/pkg-config/0.3.26/download",
           "sha256": "6ac9a59f73473f1b8d852421e59e64809f025994837ef743615c6d0c5b305160"
         }
       },
@@ -6093,7 +6111,7 @@
       "version": "0.2.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/powerfmt/0.2.0/download",
+          "url": "https://static.crates.io/crates/powerfmt/0.2.0/download",
           "sha256": "439ee305def115ba05938db6eb1644ff94165c5ab5e9420d1c1bcedbba909391"
         }
       },
@@ -6123,7 +6141,7 @@
       "version": "3.0.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/predicates/3.0.1/download",
+          "url": "https://static.crates.io/crates/predicates/3.0.1/download",
           "sha256": "1ba7d6ead3e3966038f68caa9fc1f860185d95a793180bbcfe0d0da47b3961ed"
         }
       },
@@ -6180,7 +6198,7 @@
       "version": "1.0.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/predicates-core/1.0.6/download",
+          "url": "https://static.crates.io/crates/predicates-core/1.0.6/download",
           "sha256": "b794032607612e7abeb4db69adb4e33590fa6cf1149e95fd7cb00e634b92f174"
         }
       },
@@ -6210,7 +6228,7 @@
       "version": "1.0.9",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/predicates-tree/1.0.9/download",
+          "url": "https://static.crates.io/crates/predicates-tree/1.0.9/download",
           "sha256": "368ba315fb8c5052ab692e68a0eefec6ec57b23a36959c14496f0b0df2c0cecf"
         }
       },
@@ -6253,7 +6271,7 @@
       "version": "1.0.78",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/proc-macro2/1.0.78/download",
+          "url": "https://static.crates.io/crates/proc-macro2/1.0.78/download",
           "sha256": "e2422ad645d89c99f8f3e6b88a9fdeca7fabeac836b1002371c4367c8f984aae"
         }
       },
@@ -6317,7 +6335,7 @@
       "version": "1.0.35",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/quote/1.0.35/download",
+          "url": "https://static.crates.io/crates/quote/1.0.35/download",
           "sha256": "291ec9ab5efd934aaf503a6466c5d5251535d108ee747472c3977cc5acc868ef"
         }
       },
@@ -6363,7 +6381,7 @@
       "version": "0.6.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rand_core/0.6.4/download",
+          "url": "https://static.crates.io/crates/rand_core/0.6.4/download",
           "sha256": "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
         }
       },
@@ -6393,7 +6411,7 @@
       "version": "0.2.16",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/redox_syscall/0.2.16/download",
+          "url": "https://static.crates.io/crates/redox_syscall/0.2.16/download",
           "sha256": "fb5a58c1855b4b6819d59012155603f0b22ad30cad752600aadfcb695265519a"
         }
       },
@@ -6432,7 +6450,7 @@
       "version": "0.3.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/redox_syscall/0.3.5/download",
+          "url": "https://static.crates.io/crates/redox_syscall/0.3.5/download",
           "sha256": "567664f262709473930a4bf9e51bf2ebf3348f2e748ccc50dea20646858f8f29"
         }
       },
@@ -6471,7 +6489,7 @@
       "version": "0.4.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/redox_users/0.4.3/download",
+          "url": "https://static.crates.io/crates/redox_users/0.4.3/download",
           "sha256": "b033d837a7cf162d7993aded9304e30a83213c648b6e389db233191f891e5c2b"
         }
       },
@@ -6518,7 +6536,7 @@
       "version": "1.10.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/regex/1.10.3/download",
+          "url": "https://static.crates.io/crates/regex/1.10.3/download",
           "sha256": "b62dbe01f0b06f9d8dc7d49e05a0785f153b00b2c227856282f671e0318c9b15"
         }
       },
@@ -6591,7 +6609,7 @@
       "version": "0.1.10",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/regex-automata/0.1.10/download",
+          "url": "https://static.crates.io/crates/regex-automata/0.1.10/download",
           "sha256": "6c230d73fb8d8c1b9c0b3135c5142a8acee3a0558fb8db5cf1cb65f8d7862132"
         }
       },
@@ -6621,7 +6639,7 @@
       "version": "0.4.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/regex-automata/0.4.5/download",
+          "url": "https://static.crates.io/crates/regex-automata/0.4.5/download",
           "sha256": "5bb987efffd3c6d0d8f5f89510bb458559eab11e4f869acb20bf845e016259cd"
         }
       },
@@ -6695,7 +6713,7 @@
       "version": "0.8.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/regex-syntax/0.8.2/download",
+          "url": "https://static.crates.io/crates/regex-syntax/0.8.2/download",
           "sha256": "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
         }
       },
@@ -6740,7 +6758,7 @@
       "version": "1.9.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/relative-path/1.9.0/download",
+          "url": "https://static.crates.io/crates/relative-path/1.9.0/download",
           "sha256": "c707298afce11da2efef2f600116fa93ffa7a032b5d7b628aa17711ec81383ca"
         }
       },
@@ -6771,13 +6789,13 @@
       },
       "license": "MIT/Apache-2.0"
     },
-    "reqwest 0.11.24": {
+    "reqwest 0.11.26": {
       "name": "reqwest",
-      "version": "0.11.24",
+      "version": "0.11.26",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/reqwest/0.11.24/download",
-          "sha256": "c6920094eb85afde5e4a138be3f2de8bbdf28000f0029e72c45025a56b042251"
+          "url": "https://static.crates.io/crates/reqwest/0.11.26/download",
+          "sha256": "78bf93c4af7a8bb7d879d51cebe797356ff10ae8516ace542b5182d9dcac10b2"
         }
       },
       "targets": [
@@ -6832,7 +6850,7 @@
               "target": "http"
             },
             {
-              "id": "serde 1.0.196",
+              "id": "serde 1.0.197",
               "target": "serde"
             },
             {
@@ -6879,7 +6897,7 @@
                 "target": "ipnet"
               },
               {
-                "id": "log 0.4.20",
+                "id": "log 0.4.21",
                 "target": "log"
               },
               {
@@ -6925,7 +6943,7 @@
                 "target": "js_sys"
               },
               {
-                "id": "serde_json 1.0.113",
+                "id": "serde_json 1.0.114",
                 "target": "serde_json"
               },
               {
@@ -6955,8 +6973,8 @@
             ]
           }
         },
-        "edition": "2018",
-        "version": "0.11.24"
+        "edition": "2021",
+        "version": "0.11.26"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -6965,7 +6983,7 @@
       "version": "0.16.20",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/ring/0.16.20/download",
+          "url": "https://static.crates.io/crates/ring/0.16.20/download",
           "sha256": "3053cf52e236a3ed746dfc745aa9cacf1b791d846bdaf412f60a8d7d6e17c8fc"
         }
       },
@@ -7076,7 +7094,7 @@
       "version": "0.18.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rstest/0.18.2/download",
+          "url": "https://static.crates.io/crates/rstest/0.18.2/download",
           "sha256": "97eeab2f3c0a199bc4be135c36c924b6590b88c377d416494288c14f2db30199"
         }
       },
@@ -7135,7 +7153,7 @@
       "version": "0.18.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rstest_macros/0.18.2/download",
+          "url": "https://static.crates.io/crates/rstest_macros/0.18.2/download",
           "sha256": "d428f8247852f894ee1be110b375111b586d4fa431f6c46e64ba5a0dcccbe605"
         }
       },
@@ -7235,7 +7253,7 @@
       "version": "0.1.23",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rustc-demangle/0.1.23/download",
+          "url": "https://static.crates.io/crates/rustc-demangle/0.1.23/download",
           "sha256": "d626bb9dae77e28219937af045c257c28bfd3f69333c512553507f5f9798cb76"
         }
       },
@@ -7265,7 +7283,7 @@
       "version": "0.4.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rustc_version/0.4.0/download",
+          "url": "https://static.crates.io/crates/rustc_version/0.4.0/download",
           "sha256": "bfa0f585226d2e68097d4f95d113b15b83a82e819ab25717ec0590d9584ef366"
         }
       },
@@ -7304,7 +7322,7 @@
       "version": "0.38.31",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rustix/0.38.31/download",
+          "url": "https://static.crates.io/crates/rustix/0.38.31/download",
           "sha256": "6ea3e1a662af26cd7a3ba09c0297a31af215563ecf42817c98df621387f4e949"
         }
       },
@@ -7412,7 +7430,7 @@
       "version": "0.21.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rustls/0.21.6/download",
+          "url": "https://static.crates.io/crates/rustls/0.21.6/download",
           "sha256": "1d1feddffcfcc0b33f5c6ce9a29e341e4cd59c3f78e7ee45f4a40c038b1d6cbb"
         }
       },
@@ -7454,7 +7472,7 @@
         "deps": {
           "common": [
             {
-              "id": "log 0.4.20",
+              "id": "log 0.4.21",
               "target": "log"
             },
             {
@@ -7491,7 +7509,7 @@
       "version": "1.0.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rustls-pemfile/1.0.2/download",
+          "url": "https://static.crates.io/crates/rustls-pemfile/1.0.2/download",
           "sha256": "d194b56d58803a43635bdc398cd17e383d6f71f9182b9a192c127ca42494a59b"
         }
       },
@@ -7530,7 +7548,7 @@
       "version": "0.101.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rustls-webpki/0.101.4/download",
+          "url": "https://static.crates.io/crates/rustls-webpki/0.101.4/download",
           "sha256": "7d93931baf2d282fff8d3a532bbfd7653f734643161b87e3e01e59a04439bf0d"
         }
       },
@@ -7581,7 +7599,7 @@
       "version": "1.0.13",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/ryu/1.0.13/download",
+          "url": "https://static.crates.io/crates/ryu/1.0.13/download",
           "sha256": "f91339c0467de62360649f8d3e185ca8de4224ff281f66000de5eb2a77a79041"
         }
       },
@@ -7611,7 +7629,7 @@
       "version": "1.0.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/same-file/1.0.6/download",
+          "url": "https://static.crates.io/crates/same-file/1.0.6/download",
           "sha256": "93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502"
         }
       },
@@ -7652,7 +7670,7 @@
       "version": "0.7.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/sct/0.7.0/download",
+          "url": "https://static.crates.io/crates/sct/0.7.0/download",
           "sha256": "d53dcdb7c9f8158937a7981b48accfd39a43af418591a5d008c7b22b5e1b7ca4"
         }
       },
@@ -7690,9 +7708,9 @@
       },
       "license": "Apache-2.0/ISC/MIT"
     },
-    "selenium-manager 0.4.18": {
+    "selenium-manager 0.4.19-nightly": {
       "name": "selenium-manager",
-      "version": "0.4.18",
+      "version": "0.4.19-nightly",
       "repository": null,
       "targets": [
         {
@@ -7713,7 +7731,7 @@
         "deps": {
           "common": [
             {
-              "id": "anyhow 1.0.79",
+              "id": "anyhow 1.0.81",
               "target": "anyhow"
             },
             {
@@ -7753,7 +7771,7 @@
               "target": "is_executable"
             },
             {
-              "id": "log 0.4.20",
+              "id": "log 0.4.21",
               "target": "log"
             },
             {
@@ -7761,15 +7779,15 @@
               "target": "regex"
             },
             {
-              "id": "reqwest 0.11.24",
+              "id": "reqwest 0.11.26",
               "target": "reqwest"
             },
             {
-              "id": "serde 1.0.196",
+              "id": "serde 1.0.197",
               "target": "serde"
             },
             {
-              "id": "serde_json 1.0.113",
+              "id": "serde_json 1.0.114",
               "target": "serde_json"
             },
             {
@@ -7781,7 +7799,7 @@
               "target": "tar"
             },
             {
-              "id": "tempfile 3.10.0",
+              "id": "tempfile 3.10.1",
               "target": "tempfile"
             },
             {
@@ -7789,11 +7807,11 @@
               "target": "tokio"
             },
             {
-              "id": "toml 0.8.10",
+              "id": "toml 0.8.11",
               "target": "toml"
             },
             {
-              "id": "walkdir 2.4.0",
+              "id": "walkdir 2.5.0",
               "target": "walkdir"
             },
             {
@@ -7806,7 +7824,7 @@
         "deps_dev": {
           "common": [
             {
-              "id": "assert_cmd 2.0.13",
+              "id": "assert_cmd 2.0.14",
               "target": "assert_cmd"
             },
             {
@@ -7817,7 +7835,7 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "0.4.18"
+        "version": "0.4.19-nightly"
       },
       "license": "Apache-2.0"
     },
@@ -7826,7 +7844,7 @@
       "version": "1.0.17",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/semver/1.0.17/download",
+          "url": "https://static.crates.io/crates/semver/1.0.17/download",
           "sha256": "bebd363326d05ec3e2f532ab7660680f3b02130d780c299bca73469d521bc0ed"
         }
       },
@@ -7881,13 +7899,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "serde 1.0.196": {
+    "serde 1.0.197": {
       "name": "serde",
-      "version": "1.0.196",
+      "version": "1.0.197",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/serde/1.0.196/download",
-          "sha256": "870026e60fa08c69f064aa766c10f10b1d62db9ccd4d0abb206472bee0ce3b32"
+          "url": "https://static.crates.io/crates/serde/1.0.197/download",
+          "sha256": "3fb1c873e1b9b056a4dc4c0c198b24c3ffa059243875552b2bd0933b1aee4ce2"
         }
       },
       "targets": [
@@ -7927,7 +7945,7 @@
         "deps": {
           "common": [
             {
-              "id": "serde 1.0.196",
+              "id": "serde 1.0.197",
               "target": "build_script_build"
             }
           ],
@@ -7937,13 +7955,13 @@
         "proc_macro_deps": {
           "common": [
             {
-              "id": "serde_derive 1.0.196",
+              "id": "serde_derive 1.0.197",
               "target": "serde_derive"
             }
           ],
           "selects": {}
         },
-        "version": "1.0.196"
+        "version": "1.0.197"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -7952,13 +7970,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "serde_derive 1.0.196": {
+    "serde_derive 1.0.197": {
       "name": "serde_derive",
-      "version": "1.0.196",
+      "version": "1.0.197",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/serde_derive/1.0.196/download",
-          "sha256": "33c85360c95e7d137454dc81d9a4ed2b8efd8fbe19cee57357b32b9771fccb67"
+          "url": "https://static.crates.io/crates/serde_derive/1.0.197/download",
+          "sha256": "7eb0b34b42edc17f6b7cac84a52a1c5f0e1bb2227e997ca9011ea3dd34e8610b"
         }
       },
       "targets": [
@@ -8001,17 +8019,17 @@
           "selects": {}
         },
         "edition": "2015",
-        "version": "1.0.196"
+        "version": "1.0.197"
       },
       "license": "MIT OR Apache-2.0"
     },
-    "serde_json 1.0.113": {
+    "serde_json 1.0.114": {
       "name": "serde_json",
-      "version": "1.0.113",
+      "version": "1.0.114",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/serde_json/1.0.113/download",
-          "sha256": "69801b70b1c3dac963ecb03a364ba0ceda9cf60c71cfe475e99864759c8b8a79"
+          "url": "https://static.crates.io/crates/serde_json/1.0.114/download",
+          "sha256": "c5f09b1bd632ef549eaa9f60a1f8de742bdbc698e6cee2095fc84dde5f549ae0"
         }
       },
       "targets": [
@@ -8057,18 +8075,18 @@
               "target": "ryu"
             },
             {
-              "id": "serde 1.0.196",
+              "id": "serde 1.0.197",
               "target": "serde"
             },
             {
-              "id": "serde_json 1.0.113",
+              "id": "serde_json 1.0.114",
               "target": "build_script_build"
             }
           ],
           "selects": {}
         },
         "edition": "2021",
-        "version": "1.0.113"
+        "version": "1.0.114"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -8082,7 +8100,7 @@
       "version": "0.6.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/serde_spanned/0.6.5/download",
+          "url": "https://static.crates.io/crates/serde_spanned/0.6.5/download",
           "sha256": "eb3622f419d1296904700073ea6cc23ad690adbd66f13ea683df73298736f0c1"
         }
       },
@@ -8111,7 +8129,7 @@
         "deps": {
           "common": [
             {
-              "id": "serde 1.0.196",
+              "id": "serde 1.0.197",
               "target": "serde"
             }
           ],
@@ -8127,7 +8145,7 @@
       "version": "0.7.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/serde_urlencoded/0.7.1/download",
+          "url": "https://static.crates.io/crates/serde_urlencoded/0.7.1/download",
           "sha256": "d3491c14715ca2294c4d6a88f15e84739788c1d030eed8c110436aafdaa2f3fd"
         }
       },
@@ -8162,7 +8180,7 @@
               "target": "ryu"
             },
             {
-              "id": "serde 1.0.196",
+              "id": "serde 1.0.197",
               "target": "serde"
             }
           ],
@@ -8178,7 +8196,7 @@
       "version": "0.5.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/sevenz-rust/0.5.4/download",
+          "url": "https://static.crates.io/crates/sevenz-rust/0.5.4/download",
           "sha256": "233a1e86d0c5f6c8c29808a563f1e504ca0497368251ce59dc013807f43a4659"
         }
       },
@@ -8259,7 +8277,7 @@
       "version": "0.10.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/sha1/0.10.5/download",
+          "url": "https://static.crates.io/crates/sha1/0.10.5/download",
           "sha256": "f04293dc80c3993519f2d7f6f511707ee7094fe0c6d3406feb330cdb3540eba3"
         }
       },
@@ -8316,7 +8334,7 @@
       "version": "0.10.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/sha2/0.10.6/download",
+          "url": "https://static.crates.io/crates/sha2/0.10.6/download",
           "sha256": "82e6b795fe2e3b1e845bafcb27aa35405c4d47cdfc92af5fc8d3002f76cebdc0"
         }
       },
@@ -8373,7 +8391,7 @@
       "version": "0.4.8",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/slab/0.4.8/download",
+          "url": "https://static.crates.io/crates/slab/0.4.8/download",
           "sha256": "6528351c9bc8ab22353f9d776db39a20288e8d6c37ef8cfe3317cf875eecfc2d"
         }
       },
@@ -8442,7 +8460,7 @@
       "version": "0.4.9",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/socket2/0.4.9/download",
+          "url": "https://static.crates.io/crates/socket2/0.4.9/download",
           "sha256": "64a4a911eed85daf18834cfaa86a79b7d266ff93ff5ba14005426219480ed662"
         }
       },
@@ -8495,7 +8513,7 @@
       "version": "0.5.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/socket2/0.5.5/download",
+          "url": "https://static.crates.io/crates/socket2/0.5.5/download",
           "sha256": "7b5fac59a5cb5dd637972e5fca70daf0523c9067fcdc4842f053dae04a18f8e9"
         }
       },
@@ -8548,7 +8566,7 @@
       "version": "0.5.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/spin/0.5.2/download",
+          "url": "https://static.crates.io/crates/spin/0.5.2/download",
           "sha256": "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"
         }
       },
@@ -8578,7 +8596,7 @@
       "version": "0.10.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/strsim/0.10.0/download",
+          "url": "https://static.crates.io/crates/strsim/0.10.0/download",
           "sha256": "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
         }
       },
@@ -8608,7 +8626,7 @@
       "version": "2.4.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/subtle/2.4.1/download",
+          "url": "https://static.crates.io/crates/subtle/2.4.1/download",
           "sha256": "6bdef32e8150c2a081110b42772ffe7d7c9032b606bc226c8260fd97e0976601"
         }
       },
@@ -8638,7 +8656,7 @@
       "version": "1.0.109",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/syn/1.0.109/download",
+          "url": "https://static.crates.io/crates/syn/1.0.109/download",
           "sha256": "72b64191b275b66ffe2469e8af2c1cfe3bafa67b529ead792a6d0160888b4237"
         }
       },
@@ -8716,7 +8734,7 @@
       "version": "2.0.48",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/syn/2.0.48/download",
+          "url": "https://static.crates.io/crates/syn/2.0.48/download",
           "sha256": "0f3531638e407dfc0814761abb7c00a5b54992b849452a0646b7f65c9f770f3f"
         }
       },
@@ -8779,7 +8797,7 @@
       "version": "0.1.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/sync_wrapper/0.1.2/download",
+          "url": "https://static.crates.io/crates/sync_wrapper/0.1.2/download",
           "sha256": "2047c6ded9c721764247e62cd3b03c09ffc529b2ba5b10ec482ae507a4a70160"
         }
       },
@@ -8809,7 +8827,7 @@
       "version": "0.5.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/system-configuration/0.5.1/download",
+          "url": "https://static.crates.io/crates/system-configuration/0.5.1/download",
           "sha256": "ba3a3adc5c275d719af8cb4272ea1c4a6d668a777f37e115f6d11ddbc1c8e0e7"
         }
       },
@@ -8856,7 +8874,7 @@
       "version": "0.5.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/system-configuration-sys/0.5.0/download",
+          "url": "https://static.crates.io/crates/system-configuration-sys/0.5.0/download",
           "sha256": "a75fb188eb626b924683e3b95e3a48e63551fcfb51949de2f06a9d91dbee93c9"
         }
       },
@@ -8917,7 +8935,7 @@
       "version": "0.4.40",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tar/0.4.40/download",
+          "url": "https://static.crates.io/crates/tar/0.4.40/download",
           "sha256": "b16afcea1f22891c49a00c751c7b63b2233284064f11a200fc624137c51e2ddb"
         }
       },
@@ -8969,13 +8987,13 @@
       },
       "license": "MIT/Apache-2.0"
     },
-    "tempfile 3.10.0": {
+    "tempfile 3.10.1": {
       "name": "tempfile",
-      "version": "3.10.0",
+      "version": "3.10.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tempfile/3.10.0/download",
-          "sha256": "a365e8cd18e44762ef95d87f284f4b5cd04107fec2ff3052bd6a3e6069669e67"
+          "url": "https://static.crates.io/crates/tempfile/3.10.1/download",
+          "sha256": "85b77fafb263dd9d05cbeac119526425676db3784113aa9295c88498cbf8bff1"
         }
       },
       "targets": [
@@ -9020,8 +9038,8 @@
             ]
           }
         },
-        "edition": "2018",
-        "version": "3.10.0"
+        "edition": "2021",
+        "version": "3.10.1"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -9030,7 +9048,7 @@
       "version": "1.4.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/termcolor/1.4.1/download",
+          "url": "https://static.crates.io/crates/termcolor/1.4.1/download",
           "sha256": "06794f8f6c5c898b3275aebefa6b8a1cb24cd2c6c79397ab15774837a0bc5755"
         }
       },
@@ -9071,7 +9089,7 @@
       "version": "0.4.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/termtree/0.4.1/download",
+          "url": "https://static.crates.io/crates/termtree/0.4.1/download",
           "sha256": "3369f5ac52d5eb6ab48c6b4ffdc8efbcad6b89c765749064ba298f2c68a16a76"
         }
       },
@@ -9101,7 +9119,7 @@
       "version": "1.0.40",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/thiserror/1.0.40/download",
+          "url": "https://static.crates.io/crates/thiserror/1.0.40/download",
           "sha256": "978c9a314bd8dc99be594bc3c175faaa9794be04a5a5e153caba6915336cebac"
         }
       },
@@ -9163,7 +9181,7 @@
       "version": "1.0.40",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/thiserror-impl/1.0.40/download",
+          "url": "https://static.crates.io/crates/thiserror-impl/1.0.40/download",
           "sha256": "f9456a42c5b0d803c8cd86e73dd7cc9edd429499f37a3550d286d5e86720569f"
         }
       },
@@ -9210,7 +9228,7 @@
       "version": "0.3.31",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/time/0.3.31/download",
+          "url": "https://static.crates.io/crates/time/0.3.31/download",
           "sha256": "f657ba42c3f86e7680e53c8cd3af8abbe56b5491790b46e22e19c0d57463583e"
         }
       },
@@ -9274,7 +9292,7 @@
       "version": "0.1.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/time-core/0.1.2/download",
+          "url": "https://static.crates.io/crates/time-core/0.1.2/download",
           "sha256": "ef927ca75afb808a4d64dd374f00a2adf8d0fcff8e7b184af886c3c87ec4a3f3"
         }
       },
@@ -9304,7 +9322,7 @@
       "version": "0.2.16",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/time-macros/0.2.16/download",
+          "url": "https://static.crates.io/crates/time-macros/0.2.16/download",
           "sha256": "26197e33420244aeb70c3e8c78376ca46571bc4e701e4791c2cd9f57dcb3a43f"
         }
       },
@@ -9343,7 +9361,7 @@
       "version": "1.6.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tinyvec/1.6.0/download",
+          "url": "https://static.crates.io/crates/tinyvec/1.6.0/download",
           "sha256": "87cc5ceb3875bb20c2890005a4e226a4651264a5c75edb2421b52861a0a0cb50"
         }
       },
@@ -9390,7 +9408,7 @@
       "version": "0.1.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tinyvec_macros/0.1.1/download",
+          "url": "https://static.crates.io/crates/tinyvec_macros/0.1.1/download",
           "sha256": "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
         }
       },
@@ -9420,7 +9438,7 @@
       "version": "1.36.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tokio/1.36.0/download",
+          "url": "https://static.crates.io/crates/tokio/1.36.0/download",
           "sha256": "61285f6515fa018fb2d1e46eb21223fff441ee8db5d0f1435e8ab4f5cdb80931"
         }
       },
@@ -9525,7 +9543,7 @@
       "version": "2.2.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tokio-macros/2.2.0/download",
+          "url": "https://static.crates.io/crates/tokio-macros/2.2.0/download",
           "sha256": "5b8a1e28f2deaa14e508979454cb3a223b10b938b45af148bc0986de36f1923b"
         }
       },
@@ -9572,7 +9590,7 @@
       "version": "0.24.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tokio-rustls/0.24.1/download",
+          "url": "https://static.crates.io/crates/tokio-rustls/0.24.1/download",
           "sha256": "c28327cf380ac148141087fbfb9de9d7bd4e84ab5d2c28fbc911d753de8a7081"
         }
       },
@@ -9623,7 +9641,7 @@
       "version": "0.7.7",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tokio-util/0.7.7/download",
+          "url": "https://static.crates.io/crates/tokio-util/0.7.7/download",
           "sha256": "5427d89453009325de0d8f342c9490009f76e999cb7672d77e46267448f7e6b2"
         }
       },
@@ -9685,13 +9703,13 @@
       },
       "license": "MIT"
     },
-    "toml 0.8.10": {
+    "toml 0.8.11": {
       "name": "toml",
-      "version": "0.8.10",
+      "version": "0.8.11",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/toml/0.8.10/download",
-          "sha256": "9a9aad4a3066010876e8dcf5a8a06e70a558751117a145c6ce2b82c2e2054290"
+          "url": "https://static.crates.io/crates/toml/0.8.11/download",
+          "sha256": "af06656561d28735e9c1cd63dfd57132c8155426aa6af24f36a00a351f88c48e"
         }
       },
       "targets": [
@@ -9721,7 +9739,7 @@
         "deps": {
           "common": [
             {
-              "id": "serde 1.0.196",
+              "id": "serde 1.0.197",
               "target": "serde"
             },
             {
@@ -9733,14 +9751,14 @@
               "target": "toml_datetime"
             },
             {
-              "id": "toml_edit 0.22.4",
+              "id": "toml_edit 0.22.7",
               "target": "toml_edit"
             }
           ],
           "selects": {}
         },
         "edition": "2021",
-        "version": "0.8.10"
+        "version": "0.8.11"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -9749,7 +9767,7 @@
       "version": "0.6.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/toml_datetime/0.6.5/download",
+          "url": "https://static.crates.io/crates/toml_datetime/0.6.5/download",
           "sha256": "3550f4e9685620ac18a50ed434eb3aec30db8ba93b0287467bca5826ea25baf1"
         }
       },
@@ -9778,7 +9796,7 @@
         "deps": {
           "common": [
             {
-              "id": "serde 1.0.196",
+              "id": "serde 1.0.197",
               "target": "serde"
             }
           ],
@@ -9789,13 +9807,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "toml_edit 0.22.4": {
+    "toml_edit 0.22.7": {
       "name": "toml_edit",
-      "version": "0.22.4",
+      "version": "0.22.7",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/toml_edit/0.22.4/download",
-          "sha256": "0c9ffdf896f8daaabf9b66ba8e77ea1ed5ed0f72821b398aba62352e95062951"
+          "url": "https://static.crates.io/crates/toml_edit/0.22.7/download",
+          "sha256": "18769cd1cec395d70860ceb4d932812a0b4d06b1a4bb336745a4d21b9496e992"
         }
       },
       "targets": [
@@ -9829,7 +9847,7 @@
               "target": "indexmap"
             },
             {
-              "id": "serde 1.0.196",
+              "id": "serde 1.0.197",
               "target": "serde"
             },
             {
@@ -9841,14 +9859,14 @@
               "target": "toml_datetime"
             },
             {
-              "id": "winnow 0.5.0",
+              "id": "winnow 0.6.5",
               "target": "winnow"
             }
           ],
           "selects": {}
         },
         "edition": "2021",
-        "version": "0.22.4"
+        "version": "0.22.7"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -9857,7 +9875,7 @@
       "version": "0.3.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tower-service/0.3.2/download",
+          "url": "https://static.crates.io/crates/tower-service/0.3.2/download",
           "sha256": "b6bc1c9ce2b5135ac7f93c72918fc37feb872bdc6a5533a8b85eb4b86bfdae52"
         }
       },
@@ -9887,7 +9905,7 @@
       "version": "0.1.37",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tracing/0.1.37/download",
+          "url": "https://static.crates.io/crates/tracing/0.1.37/download",
           "sha256": "8ce8c33a8d48bd45d624a6e523445fd21ec13d3653cd51f681abf67418f54eb8"
         }
       },
@@ -9940,7 +9958,7 @@
       "version": "0.1.30",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tracing-core/0.1.30/download",
+          "url": "https://static.crates.io/crates/tracing-core/0.1.30/download",
           "sha256": "24eb03ba0eab1fd845050058ce5e616558e8f8d8fca633e6b163fe25c797213a"
         }
       },
@@ -9986,7 +10004,7 @@
       "version": "0.2.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/try-lock/0.2.4/download",
+          "url": "https://static.crates.io/crates/try-lock/0.2.4/download",
           "sha256": "3528ecfd12c466c6f163363caf2d02a71161dd5e1cc6ae7b34207ea2d42d81ed"
         }
       },
@@ -10016,7 +10034,7 @@
       "version": "1.16.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/typenum/1.16.0/download",
+          "url": "https://static.crates.io/crates/typenum/1.16.0/download",
           "sha256": "497961ef93d974e23eb6f433eb5fe1b7930b659f06d12dec6fc44a8f554c0bba"
         }
       },
@@ -10069,7 +10087,7 @@
       "version": "0.3.13",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/unicode-bidi/0.3.13/download",
+          "url": "https://static.crates.io/crates/unicode-bidi/0.3.13/download",
           "sha256": "92888ba5573ff080736b3648696b70cafad7d250551175acbaa4e0385b3e1460"
         }
       },
@@ -10107,7 +10125,7 @@
       "version": "1.0.8",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/unicode-ident/1.0.8/download",
+          "url": "https://static.crates.io/crates/unicode-ident/1.0.8/download",
           "sha256": "e5464a87b239f13a63a501f2701565754bae92d243d4bb7eb12f6d57d2269bf4"
         }
       },
@@ -10137,7 +10155,7 @@
       "version": "0.1.22",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/unicode-normalization/0.1.22/download",
+          "url": "https://static.crates.io/crates/unicode-normalization/0.1.22/download",
           "sha256": "5c5713f0fc4b5db668a2ac63cdb7bb4469d8c9fed047b1d0292cc7b0ce2ba921"
         }
       },
@@ -10183,7 +10201,7 @@
       "version": "0.7.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/untrusted/0.7.1/download",
+          "url": "https://static.crates.io/crates/untrusted/0.7.1/download",
           "sha256": "a156c684c91ea7d62626509bce3cb4e1d9ed5c4d978f7b4352658f96a4c26b4a"
         }
       },
@@ -10213,7 +10231,7 @@
       "version": "2.3.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/url/2.3.1/download",
+          "url": "https://static.crates.io/crates/url/2.3.1/download",
           "sha256": "0d68c799ae75762b8c3fe375feb6600ef5602c883c5d21eb51c09f22b83c4643"
         }
       },
@@ -10266,7 +10284,7 @@
       "version": "0.2.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/utf8parse/0.2.1/download",
+          "url": "https://static.crates.io/crates/utf8parse/0.2.1/download",
           "sha256": "711b9620af191e0cdc7468a8d14e709c3dcdb115b36f838e601583af800a370a"
         }
       },
@@ -10302,7 +10320,7 @@
       "version": "1.3.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/uuid/1.3.0/download",
+          "url": "https://static.crates.io/crates/uuid/1.3.0/download",
           "sha256": "1674845326ee10d37ca60470760d4288a6f80f304007d92e5c53bab78c9cfd79"
         }
       },
@@ -10339,7 +10357,7 @@
       "version": "0.9.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/version_check/0.9.4/download",
+          "url": "https://static.crates.io/crates/version_check/0.9.4/download",
           "sha256": "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
         }
       },
@@ -10369,7 +10387,7 @@
       "version": "0.2.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/wait-timeout/0.2.0/download",
+          "url": "https://static.crates.io/crates/wait-timeout/0.2.0/download",
           "sha256": "9f200f5b12eb75f8c1ed65abd4b2db8a6e1b138a20de009dacee265a2498f3f6"
         }
       },
@@ -10405,13 +10423,13 @@
       },
       "license": "MIT/Apache-2.0"
     },
-    "walkdir 2.4.0": {
+    "walkdir 2.5.0": {
       "name": "walkdir",
-      "version": "2.4.0",
+      "version": "2.5.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/walkdir/2.4.0/download",
-          "sha256": "d71d857dc86794ca4c280d616f7da00d2dbfd8cd788846559a6813e6aa4b54ee"
+          "url": "https://static.crates.io/crates/walkdir/2.5.0/download",
+          "sha256": "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b"
         }
       },
       "targets": [
@@ -10447,7 +10465,7 @@
           }
         },
         "edition": "2018",
-        "version": "2.4.0"
+        "version": "2.5.0"
       },
       "license": "Unlicense/MIT"
     },
@@ -10456,7 +10474,7 @@
       "version": "0.3.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/want/0.3.0/download",
+          "url": "https://static.crates.io/crates/want/0.3.0/download",
           "sha256": "1ce8a968cb1cd110d136ff8b819a556d6fb6d919363c61534f6860c7eb172ba0"
         }
       },
@@ -10479,7 +10497,7 @@
         "deps": {
           "common": [
             {
-              "id": "log 0.4.20",
+              "id": "log 0.4.21",
               "target": "log"
             },
             {
@@ -10499,7 +10517,7 @@
       "version": "0.11.0+wasi-snapshot-preview1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/wasi/0.11.0+wasi-snapshot-preview1/download",
+          "url": "https://static.crates.io/crates/wasi/0.11.0+wasi-snapshot-preview1/download",
           "sha256": "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
         }
       },
@@ -10536,7 +10554,7 @@
       "version": "0.2.89",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/wasm-bindgen/0.2.89/download",
+          "url": "https://static.crates.io/crates/wasm-bindgen/0.2.89/download",
           "sha256": "0ed0d4f68a3015cc185aff4db9506a015f4b96f95303897bfa23f846db54064e"
         }
       },
@@ -10610,7 +10628,7 @@
       "version": "0.2.89",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/wasm-bindgen-backend/0.2.89/download",
+          "url": "https://static.crates.io/crates/wasm-bindgen-backend/0.2.89/download",
           "sha256": "1b56f625e64f3a1084ded111c4d5f477df9f8c92df113852fa5a374dbda78826"
         }
       },
@@ -10643,7 +10661,7 @@
               "target": "bumpalo"
             },
             {
-              "id": "log 0.4.20",
+              "id": "log 0.4.21",
               "target": "log"
             },
             {
@@ -10679,7 +10697,7 @@
       "version": "0.4.34",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/wasm-bindgen-futures/0.4.34/download",
+          "url": "https://static.crates.io/crates/wasm-bindgen-futures/0.4.34/download",
           "sha256": "f219e0d211ba40266969f6dbdd90636da12f75bee4fc9d6c23d1260dadb51454"
         }
       },
@@ -10733,7 +10751,7 @@
       "version": "0.2.89",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/wasm-bindgen-macro/0.2.89/download",
+          "url": "https://static.crates.io/crates/wasm-bindgen-macro/0.2.89/download",
           "sha256": "0162dbf37223cd2afce98f3d0785506dcb8d266223983e4b5b525859e6e182b2"
         }
       },
@@ -10782,7 +10800,7 @@
       "version": "0.2.89",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/wasm-bindgen-macro-support/0.2.89/download",
+          "url": "https://static.crates.io/crates/wasm-bindgen-macro-support/0.2.89/download",
           "sha256": "f0eb82fcb7930ae6219a7ecfd55b217f5f0893484b7a13022ebb2b2bf20b5283"
         }
       },
@@ -10843,7 +10861,7 @@
       "version": "0.2.89",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/wasm-bindgen-shared/0.2.89/download",
+          "url": "https://static.crates.io/crates/wasm-bindgen-shared/0.2.89/download",
           "sha256": "7ab9b36309365056cd639da3134bf87fa8f3d86008abf99e612384a6eecd459f"
         }
       },
@@ -10897,7 +10915,7 @@
       "version": "0.3.61",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/web-sys/0.3.61/download",
+          "url": "https://static.crates.io/crates/web-sys/0.3.61/download",
           "sha256": "e33b99f4b23ba3eec1a53ac264e35a755f00e966e0065077d6027c0f575b0b97"
         }
       },
@@ -10966,7 +10984,7 @@
       "version": "0.25.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/webpki-roots/0.25.2/download",
+          "url": "https://static.crates.io/crates/webpki-roots/0.25.2/download",
           "sha256": "14247bb57be4f377dfb94c72830b8ce8fc6beac03cf4bf7b9732eadd414123fc"
         }
       },
@@ -10996,7 +11014,7 @@
       "version": "0.3.9",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/winapi/0.3.9/download",
+          "url": "https://static.crates.io/crates/winapi/0.3.9/download",
           "sha256": "5c839a674fcd7a98952e593242ea400abe93992746761e38641405d28b00f419"
         }
       },
@@ -11082,7 +11100,7 @@
       "version": "0.4.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/winapi-i686-pc-windows-gnu/0.4.0/download",
+          "url": "https://static.crates.io/crates/winapi-i686-pc-windows-gnu/0.4.0/download",
           "sha256": "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6"
         }
       },
@@ -11135,7 +11153,7 @@
       "version": "0.1.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/winapi-util/0.1.5/download",
+          "url": "https://static.crates.io/crates/winapi-util/0.1.5/download",
           "sha256": "70ec6ce85bb158151cae5e5c87f95a8e97d2c0c4b001223f33a334e3ce5de178"
         }
       },
@@ -11176,7 +11194,7 @@
       "version": "0.4.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/winapi-x86_64-pc-windows-gnu/0.4.0/download",
+          "url": "https://static.crates.io/crates/winapi-x86_64-pc-windows-gnu/0.4.0/download",
           "sha256": "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
         }
       },
@@ -11229,7 +11247,7 @@
       "version": "0.48.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows-sys/0.48.0/download",
+          "url": "https://static.crates.io/crates/windows-sys/0.48.0/download",
           "sha256": "677d2418bec65e3338edb076e806bc1ec15693c5d0104683f2efe857f61056a9"
         }
       },
@@ -11296,7 +11314,7 @@
       "version": "0.52.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows-sys/0.52.0/download",
+          "url": "https://static.crates.io/crates/windows-sys/0.52.0/download",
           "sha256": "282be5f36a8ce781fad8c8ae18fa3f9beff57ec1b52cb3de0789201425d9a33d"
         }
       },
@@ -11354,7 +11372,7 @@
       "version": "0.48.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows-targets/0.48.1/download",
+          "url": "https://static.crates.io/crates/windows-targets/0.48.1/download",
           "sha256": "05d4b17490f70499f20b9e791dcf6a299785ce8af4d709018206dc5b4953e95f"
         }
       },
@@ -11431,7 +11449,7 @@
       "version": "0.52.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows-targets/0.52.0/download",
+          "url": "https://static.crates.io/crates/windows-targets/0.52.0/download",
           "sha256": "8a18201040b24831fbb9e4eb208f8892e1f50a37feb53cc7ff887feb8f50e7cd"
         }
       },
@@ -11508,7 +11526,7 @@
       "version": "0.48.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_aarch64_gnullvm/0.48.0/download",
+          "url": "https://static.crates.io/crates/windows_aarch64_gnullvm/0.48.0/download",
           "sha256": "91ae572e1b79dba883e0d315474df7305d12f569b400fcf90581b06062f7e1bc"
         }
       },
@@ -11561,7 +11579,7 @@
       "version": "0.52.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_aarch64_gnullvm/0.52.0/download",
+          "url": "https://static.crates.io/crates/windows_aarch64_gnullvm/0.52.0/download",
           "sha256": "cb7764e35d4db8a7921e09562a0304bf2f93e0a51bfccee0bd0bb0b666b015ea"
         }
       },
@@ -11614,7 +11632,7 @@
       "version": "0.48.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_aarch64_msvc/0.48.0/download",
+          "url": "https://static.crates.io/crates/windows_aarch64_msvc/0.48.0/download",
           "sha256": "b2ef27e0d7bdfcfc7b868b317c1d32c641a6fe4629c171b8928c7b08d98d7cf3"
         }
       },
@@ -11667,7 +11685,7 @@
       "version": "0.52.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_aarch64_msvc/0.52.0/download",
+          "url": "https://static.crates.io/crates/windows_aarch64_msvc/0.52.0/download",
           "sha256": "bbaa0368d4f1d2aaefc55b6fcfee13f41544ddf36801e793edbbfd7d7df075ef"
         }
       },
@@ -11720,7 +11738,7 @@
       "version": "0.48.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_i686_gnu/0.48.0/download",
+          "url": "https://static.crates.io/crates/windows_i686_gnu/0.48.0/download",
           "sha256": "622a1962a7db830d6fd0a69683c80a18fda201879f0f447f065a3b7467daa241"
         }
       },
@@ -11773,7 +11791,7 @@
       "version": "0.52.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_i686_gnu/0.52.0/download",
+          "url": "https://static.crates.io/crates/windows_i686_gnu/0.52.0/download",
           "sha256": "a28637cb1fa3560a16915793afb20081aba2c92ee8af57b4d5f28e4b3e7df313"
         }
       },
@@ -11826,7 +11844,7 @@
       "version": "0.48.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_i686_msvc/0.48.0/download",
+          "url": "https://static.crates.io/crates/windows_i686_msvc/0.48.0/download",
           "sha256": "4542c6e364ce21bf45d69fdd2a8e455fa38d316158cfd43b3ac1c5b1b19f8e00"
         }
       },
@@ -11879,7 +11897,7 @@
       "version": "0.52.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_i686_msvc/0.52.0/download",
+          "url": "https://static.crates.io/crates/windows_i686_msvc/0.52.0/download",
           "sha256": "ffe5e8e31046ce6230cc7215707b816e339ff4d4d67c65dffa206fd0f7aa7b9a"
         }
       },
@@ -11932,7 +11950,7 @@
       "version": "0.48.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_x86_64_gnu/0.48.0/download",
+          "url": "https://static.crates.io/crates/windows_x86_64_gnu/0.48.0/download",
           "sha256": "ca2b8a661f7628cbd23440e50b05d705db3686f894fc9580820623656af974b1"
         }
       },
@@ -11985,7 +12003,7 @@
       "version": "0.52.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_x86_64_gnu/0.52.0/download",
+          "url": "https://static.crates.io/crates/windows_x86_64_gnu/0.52.0/download",
           "sha256": "3d6fa32db2bc4a2f5abeacf2b69f7992cd09dca97498da74a151a3132c26befd"
         }
       },
@@ -12038,7 +12056,7 @@
       "version": "0.48.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_x86_64_gnullvm/0.48.0/download",
+          "url": "https://static.crates.io/crates/windows_x86_64_gnullvm/0.48.0/download",
           "sha256": "7896dbc1f41e08872e9d5e8f8baa8fdd2677f29468c4e156210174edc7f7b953"
         }
       },
@@ -12091,7 +12109,7 @@
       "version": "0.52.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_x86_64_gnullvm/0.52.0/download",
+          "url": "https://static.crates.io/crates/windows_x86_64_gnullvm/0.52.0/download",
           "sha256": "1a657e1e9d3f514745a572a6846d3c7aa7dbe1658c056ed9c3344c4109a6949e"
         }
       },
@@ -12144,7 +12162,7 @@
       "version": "0.48.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_x86_64_msvc/0.48.0/download",
+          "url": "https://static.crates.io/crates/windows_x86_64_msvc/0.48.0/download",
           "sha256": "1a515f5799fe4961cb532f983ce2b23082366b898e52ffbce459c86f67c8378a"
         }
       },
@@ -12197,7 +12215,7 @@
       "version": "0.52.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/windows_x86_64_msvc/0.52.0/download",
+          "url": "https://static.crates.io/crates/windows_x86_64_msvc/0.52.0/download",
           "sha256": "dff9641d1cd4be8d1a070daf9e3773c5f67e78b4d9d42263020c057706765c04"
         }
       },
@@ -12245,13 +12263,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "winnow 0.5.0": {
+    "winnow 0.6.5": {
       "name": "winnow",
-      "version": "0.5.0",
+      "version": "0.6.5",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/winnow/0.5.0/download",
-          "sha256": "81fac9742fd1ad1bd9643b991319f72dd031016d44b77039a26977eb667141e7"
+          "url": "https://static.crates.io/crates/winnow/0.6.5/download",
+          "sha256": "dffa400e67ed5a4dd237983829e66475f0a4a26938c4b04c21baede6262215b8"
         }
       },
       "targets": [
@@ -12279,7 +12297,7 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "0.5.0"
+        "version": "0.6.5"
       },
       "license": "MIT"
     },
@@ -12288,7 +12306,7 @@
       "version": "0.50.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/winreg/0.50.0/download",
+          "url": "https://static.crates.io/crates/winreg/0.50.0/download",
           "sha256": "524e57b2c537c0f9b1e69f1965311ec12182b4122e45035b1508cd24d2adadb1"
         }
       },
@@ -12331,7 +12349,7 @@
       "version": "1.0.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/xattr/1.0.1/download",
+          "url": "https://static.crates.io/crates/xattr/1.0.1/download",
           "sha256": "f4686009f71ff3e5c4dbcf1a282d0a44db3f021ba69350cd42086b3e5f1c6985"
         }
       },
@@ -12377,7 +12395,7 @@
       "version": "0.1.7",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/xz2/0.1.7/download",
+          "url": "https://static.crates.io/crates/xz2/0.1.7/download",
           "sha256": "388c44dc09d76f1536602ead6d325eb532f5c122f17782bd57fb47baeeb767e2"
         }
       },
@@ -12416,7 +12434,7 @@
       "version": "0.6.6",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/zip/0.6.6/download",
+          "url": "https://static.crates.io/crates/zip/0.6.6/download",
           "sha256": "760394e246e4c28189f19d488c058bf16f564016aefac5d32bb1f3b51d5e9261"
         }
       },
@@ -12519,7 +12537,7 @@
       "version": "0.11.2+zstd.1.5.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/zstd/0.11.2+zstd.1.5.2/download",
+          "url": "https://static.crates.io/crates/zstd/0.11.2+zstd.1.5.2/download",
           "sha256": "20cc960326ece64f010d2d2107537f26dc589a6573a316bd5b1dba685fa5fde4"
         }
       },
@@ -12567,7 +12585,7 @@
       "version": "5.0.2+zstd.1.5.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/zstd-safe/5.0.2+zstd.1.5.2/download",
+          "url": "https://static.crates.io/crates/zstd-safe/5.0.2+zstd.1.5.2/download",
           "sha256": "1d2a5585e04f9eea4b2a3d1eca508c4dee9592a89ef6f450c11719da0726f4db"
         }
       },
@@ -12637,7 +12655,7 @@
       "version": "2.0.7+zstd.1.5.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/zstd-sys/2.0.7+zstd.1.5.4/download",
+          "url": "https://static.crates.io/crates/zstd-sys/2.0.7+zstd.1.5.4/download",
           "sha256": "94509c3ba2fe55294d752b79842c530ccfab760192521df74a081a78d2b3c7f5"
         }
       },
@@ -12714,7 +12732,7 @@
   },
   "binary_crates": [],
   "workspace_members": {
-    "selenium-manager 0.4.18": "rust"
+    "selenium-manager 0.4.19-nightly": "rust"
   },
   "conditions": {
     "aarch64-apple-darwin": [
