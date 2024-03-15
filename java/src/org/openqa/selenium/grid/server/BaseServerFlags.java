@@ -57,7 +57,7 @@ public class BaseServerFlags implements HasRoles {
               + " external IP or hostname (e.g. inside a Docker container).",
       arity = 1)
   @ConfigValue(section = SERVER_SECTION, name = "bind-host", example = "true")
-  private Boolean bindHost = true;
+  private final Boolean bindHost = true;
 
   @Parameter(
       description =
@@ -81,7 +81,7 @@ public class BaseServerFlags implements HasRoles {
           "Whether the Selenium server should allow web browser connections from any host",
       arity = 1)
   @ConfigValue(section = SERVER_SECTION, name = "allow-cors", example = "true")
-  private Boolean allowCORS = false;
+  private final Boolean allowCORS = false;
 
   @Parameter(
       description =
@@ -114,7 +114,7 @@ public class BaseServerFlags implements HasRoles {
       names = "--self-signed-https",
       hidden = true)
   @ConfigValue(section = SERVER_SECTION, name = "https-self-signed", example = "false")
-  private Boolean isSelfSigned = false;
+  private final Boolean isSelfSigned = false;
 
   @Override
   public Set<Role> getRoles() {
