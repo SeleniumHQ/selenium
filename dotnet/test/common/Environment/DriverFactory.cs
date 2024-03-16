@@ -70,8 +70,8 @@ namespace OpenQA.Selenium.Environment
                 options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);
                 options.UseWebSocketUrl = true;
 
-                var chromeOptions = (ChromeOptions)options;
-                chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
+                //var chromeOptions = (ChromeOptions)options;
+                //chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
 
                 service = CreateService<ChromeDriverService>();
                 if (!string.IsNullOrEmpty(this.browserBinaryLocation))
@@ -88,8 +88,8 @@ namespace OpenQA.Selenium.Environment
                 browser = Browser.Edge;
                 options = GetDriverOptions<EdgeOptions>(driverType, driverOptions);
 
-                var edgeOptions = (EdgeOptions)options;
-                edgeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
+                //var edgeOptions = (EdgeOptions)options;
+                //edgeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
 
                 service = CreateService<EdgeDriverService>();
                 if (!string.IsNullOrEmpty(this.browserBinaryLocation))
