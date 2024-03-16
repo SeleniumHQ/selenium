@@ -16,6 +16,10 @@ section "Java"
 echo "    google-java-format" >&2
 find "$PWD/java" -type f -name '*.java' | xargs "$GOOGLE_JAVA_FORMAT" --replace
 
+section "Ruby"
+echo "    rubocop" >&2
+bazel run //rb:lint
+
 section "Rust"
 echo "   rustfmt" >&2
 bazel run @rules_rust//:rustfmt
