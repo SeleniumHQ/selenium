@@ -4,7 +4,7 @@ module Selenium
       class Capabilities
         @capabilities: untyped
 
-        KNOWN: ::Array[:browser_name | :browser_version | :platform_name | :accept_insecure_certs | :page_load_strategy | :proxy | :set_window_rect | :timeouts | :unhandled_prompt_behavior | :strict_file_interactability | :web_socket_url | :remote_session_id]
+        KNOWN: Array[Symbol]
 
         def self.always_match: (untyped capabilities) -> untyped
 
@@ -16,7 +16,7 @@ module Selenium
 
         private
 
-        def self.process_timeouts: (untyped caps, untyped timeouts) -> (nil | untyped)
+        def self.process_timeouts: (untyped caps, untyped timeouts) -> untyped?
 
         public
 
@@ -52,7 +52,7 @@ module Selenium
 
         def to_json: (*untyped) -> untyped
 
-        def ==: (untyped other) -> (false | untyped)
+        def ==: (untyped other) -> (bool | untyped)
 
         alias eql? ==
 

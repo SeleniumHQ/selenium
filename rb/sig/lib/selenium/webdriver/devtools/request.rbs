@@ -28,7 +28,7 @@ module Selenium
 
         def ==: (untyped other) -> untyped
 
-        def inspect: () -> ::String
+        def inspect: () -> String
       end
     end
   end

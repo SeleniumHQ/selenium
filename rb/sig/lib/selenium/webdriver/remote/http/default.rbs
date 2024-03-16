@@ -18,11 +18,6 @@ module Selenium
 
           attr_accessor read_timeout: untyped
 
-          # Initializes object.
-          # Warning: Setting {#open_timeout} to non-nil values will cause a separate thread to spawn.
-          # Debuggers that freeze the process will not be able to evaluate any operations if that happens.
-          # @param [Numeric] open_timeout - Open timeout to apply to HTTP client.
-          # @param [Numeric] read_timeout - Read timeout (seconds) to apply to HTTP client.
           def initialize: (?open_timeout: untyped?, ?read_timeout: untyped?) -> void
 
           def close: () -> untyped
@@ -33,7 +28,7 @@ module Selenium
 
           def start: (untyped http) -> untyped
 
-          MAX_RETRIES: 3
+          MAX_RETRIES: Integer
 
           def request: (untyped verb, untyped url, untyped headers, untyped payload, ?::Integer redirects) -> untyped
 
@@ -45,7 +40,7 @@ module Selenium
 
           def proxy: () -> untyped
 
-          def use_proxy?: () -> (false | untyped)
+          def use_proxy?: () -> untyped
         end
       end
     end

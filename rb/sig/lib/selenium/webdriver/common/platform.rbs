@@ -14,7 +14,7 @@ module Selenium
 
       def self?.os: () -> untyped
 
-      def self?.ci: () -> (:travis | :jenkins | :appveyor | :github | nil)
+      def self?.ci: () -> Symbol?
 
       def self?.jruby?: () -> untyped
 
@@ -34,7 +34,7 @@ module Selenium
 
       def self?.null_device: () -> untyped
 
-      def self?.wrap_in_quotes_if_necessary: (untyped str) -> (::String | untyped)
+      def self?.wrap_in_quotes_if_necessary: (untyped str) -> (String | untyped)
 
       def self?.cygwin_path: (untyped path, **untyped opts) -> untyped
 
@@ -44,9 +44,9 @@ module Selenium
 
       def self?.make_writable: (untyped file) -> untyped
 
-      def self?.assert_file: (untyped path) -> (nil | untyped)
+      def self?.assert_file: (untyped path) -> untyped?
 
-      def self?.assert_executable: (untyped path) -> (nil | untyped)
+      def self?.assert_executable: (untyped path) -> untyped?
 
       def self?.exit_hook: () { () -> untyped } -> untyped
 

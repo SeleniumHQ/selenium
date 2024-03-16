@@ -3,17 +3,17 @@ module Selenium
     module Remote
       module Http
         class Common
-          MAX_REDIRECTS: 20
+          MAX_REDIRECTS: Integer
 
-          CONTENT_TYPE: "application/json"
+          CONTENT_TYPE: String
 
-          DEFAULT_HEADERS: ::Hash[::String, untyped | ::String]
+          DEFAULT_HEADERS: Hash[String, untyped]
 
           attr_writer server_url: untyped
 
-          def quit_errors: () -> ::Array[untyped]
+          def quit_errors: () -> Array[untyped]
 
-          def close: () -> nil
+          def close: () -> untyped
 
           def call: (untyped verb, untyped url, untyped command_hash) -> untyped
 

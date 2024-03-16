@@ -6,9 +6,6 @@ module Selenium
 
         include SharedWebStorage
 
-        #
-        # @api private
-        #
         def initialize: (untyped bridge) -> void
 
         def []: (untyped key) -> untyped

@@ -2,11 +2,11 @@ module Selenium
   module WebDriver
     module Safari
       class Service < WebDriver::Service
-        DEFAULT_PORT: 7050
+        DEFAULT_PORT: Integer
 
-        EXECUTABLE: "safaridriver"
+        EXECUTABLE: String
 
-        SHUTDOWN_SUPPORTED: false
+        SHUTDOWN_SUPPORTED: bool
 
         def initialize: (?path: untyped?, ?port: untyped?, ?log: untyped?, ?args: untyped?) -> void
 

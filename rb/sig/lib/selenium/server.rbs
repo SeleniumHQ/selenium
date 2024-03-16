@@ -31,9 +31,9 @@ module Selenium
 
     CL_RESET: untyped
 
-    def self.get: (?::Symbol required_version, ?::Hash[untyped, untyped] opts) -> untyped
+    def self.get: (?Symbol required_version, ?Hash[untyped, untyped] opts) -> untyped
 
-    def self.download: (?::Symbol required_version) -> untyped
+    def self.download: (?Symbol required_version) -> untyped
 
     def self.latest: () -> untyped
 
@@ -55,13 +55,13 @@ module Selenium
 
     attr_accessor log: untyped
 
-    def initialize: (untyped jar, ?::Hash[untyped, untyped] opts) -> void
+    def initialize: (untyped jar, ?Hash[untyped, untyped] opts) -> void
 
     def start: () -> untyped
 
     def stop: () -> untyped
 
-    def webdriver_url: () -> ::String
+    def webdriver_url: () -> String
 
     def <<: (untyped arg) -> untyped
 
@@ -71,9 +71,9 @@ module Selenium
 
     def process: () -> untyped
 
-    def poll_for_service: () -> (nil | untyped)
+    def poll_for_service: () -> nil?
 
-    def poll_for_shutdown: () -> (nil | untyped)
+    def poll_for_shutdown: () -> nil?
 
     def socket: () -> untyped
   end

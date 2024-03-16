@@ -1,11 +1,5 @@
 module Selenium
   module WebDriver
-    #
-    # Base class implementing default behavior of service_manager object,
-    # responsible for starting and stopping driver implementations.
-    #
-    # @api private
-    #
     class ServiceManager
       @executable_path: untyped
 
@@ -25,11 +19,11 @@ module Selenium
 
       @socket_lock: untyped
 
-      START_TIMEOUT: 20
+      START_TIMEOUT: Integer
 
-      SOCKET_LOCK_TIMEOUT: 45
+      SOCKET_LOCK_TIMEOUT: Integer
 
-      STOP_TIMEOUT: 20
+      STOP_TIMEOUT: Integer
 
       def initialize: (untyped config) -> void
 
@@ -57,9 +51,9 @@ module Selenium
 
       def process_exited?: () -> untyped
 
-      def connect_until_stable: () -> (nil | untyped)
+      def connect_until_stable: () -> untyped?
 
-      def cannot_connect_error_text: () -> ::String
+      def cannot_connect_error_text: () -> String
 
       def socket_lock: () -> untyped
     end

@@ -8,11 +8,11 @@ module Selenium
 
         attr_accessor debugger_address: untyped
 
-        KEY: "moz:firefoxOptions"
+        KEY: String
 
         CAPABILITIES: Hash[Symbol, String]
 
-        BROWSER: "firefox"
+        BROWSER: String
 
         attr_reader profile: untyped
 

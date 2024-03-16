@@ -16,7 +16,7 @@ module Selenium
 
       def send_cmd: (untyped method, **untyped params) -> untyped
 
-      def method_missing: (untyped method, *untyped _args) -> (nil | untyped)
+      def method_missing: (untyped method, *untyped _args) -> untyped?
 
       def respond_to_missing?: (untyped method, *untyped _args) -> untyped
 

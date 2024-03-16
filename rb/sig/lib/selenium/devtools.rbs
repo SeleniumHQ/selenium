@@ -6,7 +6,6 @@ module Selenium
 
     private
 
-    # Try to load up to 2 versions back
     def self.load_older_version: () -> untyped
 
     def self.load_old_version: (untyped version) -> untyped

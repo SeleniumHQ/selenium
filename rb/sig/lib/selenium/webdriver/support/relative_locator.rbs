@@ -6,11 +6,11 @@ module Selenium
 
         @root: untyped
 
-        KEYS: ::Array["above" | "below" | "left" | "right" | "near" | "distance"]
+        KEYS: Array[String]
 
         def initialize: (untyped locator) -> void
 
-        def as_json: () -> { relative: { root: untyped, filters: untyped } }
+        def as_json: () -> Hash[Symbol, untyped]
       end
     end
   end

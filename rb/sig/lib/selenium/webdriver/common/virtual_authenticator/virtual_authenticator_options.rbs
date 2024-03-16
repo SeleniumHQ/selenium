@@ -13,9 +13,9 @@ module Selenium
 
       @user_verified: untyped
 
-      PROTOCOL: { ctap2: "ctap2", u2f: "ctap1/u2f" }
+      PROTOCOL: Hash[Symbol, String]
 
-      TRANSPORT: { ble: "ble", usb: "usb", nfc: "nfc", internal: "internal" }
+      TRANSPORT: Hash[Symbol, String]
 
       attr_accessor protocol: untyped
 
@@ -39,7 +39,7 @@ module Selenium
 
       def initialize: (**untyped opts) -> void
 
-      def as_json: (*untyped) -> ::Hash[::String, untyped]
+      def as_json: (*untyped) -> Hash[String, untyped]
     end
   end
 end

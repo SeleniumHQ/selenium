@@ -25,11 +25,11 @@ module Selenium
 
       @type: untyped
 
-      TYPES: { direct: "DIRECT", manual: "MANUAL", pac: "PAC", auto_detect: "AUTODETECT", system: "SYSTEM" }
+      TYPES: Hash[Symbol, String]
 
-      ALLOWED: { type: "proxyType", ftp: "ftpProxy", http: "httpProxy", no_proxy: "noProxy", pac: "proxyAutoconfigUrl", ssl: "sslProxy", auto_detect: "autodetect", socks: "socksProxy", socks_username: "socksUsername", socks_password: "socksPassword", socks_version: "socksVersion" }
+      ALLOWED: Hash[Symbol, String]
 
-      def self.json_create: (untyped data) -> (nil | untyped)
+      def self.json_create: (untyped data) -> untyped?
 
       def initialize: (?::Hash[untyped, untyped] opts) -> void
 

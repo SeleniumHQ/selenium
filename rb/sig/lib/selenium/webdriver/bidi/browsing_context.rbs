@@ -8,7 +8,7 @@ module Selenium
 
         attr_accessor id: untyped
 
-        READINESS_STATE: { none: "none", interactive: "interactive", complete: "complete" }
+        READINESS_STATE: Hash[Symbol, String]
 
         def initialize: (driver: untyped, ?browsing_context_id: untyped?, ?type: untyped?, ?reference_context: untyped?) -> void
 

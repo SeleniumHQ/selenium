@@ -36,9 +36,9 @@ module Selenium
 
         def add_emulation: (**untyped opts) -> untyped
 
-        def enable_android: (?package: ::String, ?serial_number: untyped?, ?use_running_app: untyped?, ?activity: untyped?) -> untyped
+        def enable_android: (?package: String, ?serial_number: untyped?, ?use_running_app: untyped?, ?activity: untyped?) -> untyped
 
-        def process_browser_options: (untyped browser_options) -> (nil | untyped)
+        def process_browser_options: (untyped browser_options) -> untyped?
 
         def binary_path: () -> untyped
 

@@ -16,11 +16,11 @@ module Selenium
 
         include ProfileHelper
 
-        VALID_PREFERENCE_TYPES: ::Array[untyped]
+        VALID_PREFERENCE_TYPES: Array[untyped]
 
-        DEFAULT_PREFERENCES: ::Hash[::String, false | "about:blank"]
+        DEFAULT_PREFERENCES: Hash[String, bool | String]
 
-        LOCK_FILES: ::Array[".parentlock" | "parent.lock" | "lock"]
+        LOCK_FILES: Array[String]
 
         attr_reader name: untyped
 
@@ -54,11 +54,11 @@ module Selenium
 
         private
 
-        def set_manual_proxy_preference: (untyped key, untyped value) -> (nil | untyped)
+        def set_manual_proxy_preference: (untyped key, untyped value) -> untyped?
 
         def install_extensions: (untyped directory) -> untyped
 
-        def read_model_prefs: () -> (::Hash[untyped, untyped] | untyped)
+        def read_model_prefs: () -> (Hash[untyped, untyped] | untyped)
 
         def delete_extensions_cache: (untyped directory) -> untyped
 

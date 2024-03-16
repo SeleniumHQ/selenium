@@ -36,7 +36,7 @@ module Selenium
 
         def prefs: () -> untyped
 
-        def read_model_prefs: () -> (::Hash[untyped, untyped] | untyped)
+        def read_model_prefs: () -> (Hash[untyped, untyped] | untyped)
 
         def prefs_file_for: (untyped dir) -> untyped
       end

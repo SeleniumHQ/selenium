@@ -6,9 +6,9 @@ module Selenium
 
         def initialize: (untyped source) -> void
 
-        def assert_source: (untyped source) -> (untyped | nil)
+        def assert_source: (untyped source) -> untyped?
 
-        def encode: () -> { type: untyped }
+        def encode: () -> Hash[Symbol, untyped]
       end
     end
   end

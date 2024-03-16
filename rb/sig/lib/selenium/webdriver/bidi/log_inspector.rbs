@@ -6,7 +6,7 @@ module Selenium
 
         EVENTS: Hash[Symbol, String]
 
-        LOG_LEVEL: { DEBUG: "debug", ERROR: "error", INFO: "info", WARNING: "warning" }
+        LOG_LEVEL: Hash[Symbol, String]
 
         def initialize: (untyped driver, ?untyped? browsing_context_ids) -> void
 
@@ -16,7 +16,7 @@ module Selenium
 
         def on_javascript_exception: () { () -> untyped } -> untyped
 
-        def on_log: (?untyped? filter_by) { (untyped) -> untyped } -> (nil | untyped)
+        def on_log: (?untyped? filter_by) { (untyped) -> untyped } -> untyped?
 
         private
 
@@ -24,9 +24,9 @@ module Selenium
 
         def check_valid_filter: (untyped filter_by) -> (nil | untyped)
 
-        def console_log_events: (untyped params, untyped filter_by) { (untyped) -> untyped } -> (nil | untyped)
+        def console_log_events: (untyped params, untyped filter_by) { (untyped) -> untyped } -> untyped?
 
-        def javascript_log_events: (untyped params, untyped filter_by) { (untyped) -> untyped } -> (nil | untyped)
+        def javascript_log_events: (untyped params, untyped filter_by) { (untyped) -> untyped } -> untyped?
       end
     end
   end

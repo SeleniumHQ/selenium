@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module Support
       module Escaper
-        def self.escape: (untyped str) -> ::String
+        def self.escape: (untyped str) -> String
       end
     end
   end

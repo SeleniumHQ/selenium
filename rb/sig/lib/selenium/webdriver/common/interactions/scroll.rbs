@@ -18,7 +18,7 @@ module Selenium
 
         def initialize: (source: untyped, ?origin: Symbol, ?duration: Float, **untyped opts) -> void
 
-        def assert_source: (untyped source) -> (untyped | nil)
+        def assert_source: (untyped source) -> untyped?
 
         def encode: () -> Hash[String, untyped]
       end

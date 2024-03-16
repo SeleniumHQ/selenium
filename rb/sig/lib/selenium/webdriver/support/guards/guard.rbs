@@ -25,17 +25,12 @@ module Selenium
 
           def message: () -> untyped
 
-          # Bug is present on all configurations specified
           def except?: () -> untyped
 
-          # Bug is present on all configurations not specified
           def only?: () -> untyped
 
-          # Bug is present on all configurations specified, but test can not be run because it breaks other tests,
-          # or it is flaky and unreliable
           def exclude?: () -> untyped
 
-          # Test only applies to configurations specified
           def exclusive?: () -> untyped
         end
       end

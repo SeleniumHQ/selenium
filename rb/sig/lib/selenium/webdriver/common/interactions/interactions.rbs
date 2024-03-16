@@ -1,17 +1,17 @@
 module Selenium
   module WebDriver
     module Interactions
-      KEY: :key
+      KEY: Symbol
 
-      POINTER: :pointer
+      POINTER: Symbol
 
-      NONE: :none
+      NONE: Symbol
 
-      WHEEL: :wheel
+      WHEEL: Symbol
 
       def self.key: (?untyped? name) -> untyped
 
-      def self.pointer: (?::Symbol kind, ?name: untyped?) -> untyped
+      def self.pointer: (?Symbol kind, ?name: untyped?) -> untyped
 
       def self.mouse: (?name: untyped?) -> untyped
 

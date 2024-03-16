@@ -16,11 +16,11 @@ module Selenium
 
         include PointerEventProperties
 
-        VIEWPORT: :viewport
+        VIEWPORT: Symbol
 
-        POINTER: :pointer
+        POINTER: Symbol
 
-        ORIGINS: ::Array[untyped]
+        ORIGINS: Array[untyped]
 
         def initialize: (untyped source, untyped duration, untyped x, untyped y, **untyped opts) -> void
 

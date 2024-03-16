@@ -10,7 +10,7 @@ module Selenium
 
         private
 
-        def devtools_address: () -> ::String
+        def devtools_address: () -> String
       end
     end
   end

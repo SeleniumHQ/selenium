@@ -2,9 +2,9 @@ module Selenium
   module WebDriver
     module Edge
       class Options < Chromium::Options
-        KEY: "ms:edgeOptions"
+        KEY: String
 
-        BROWSER: "MicrosoftEdge"
+        BROWSER: String
 
         def webview2!: () -> untyped
 

@@ -13,9 +13,9 @@ module Selenium
 
       def self.<<: (untyped file) -> untyped
 
-      def self.reap: (untyped file) -> (nil | untyped)
+      def self.reap: (untyped file) -> untyped?
 
-      def self.reap!: () -> (true | false)
+      def self.reap!: () -> bool
     end
   end
 end

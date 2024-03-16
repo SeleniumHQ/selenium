@@ -12,19 +12,19 @@ module Selenium
 
         @messages: untyped
 
-        GUARD_TYPES: ::Array[:except | :only | :exclude | :exclusive | :flaky]
+        GUARD_TYPES: Array[Symbol]
 
         attr_reader messages: untyped
 
         attr_accessor bug_tracker: untyped
 
-        def initialize: (untyped example, ?bug_tracker: ::String, ?conditions: untyped?) -> void
+        def initialize: (untyped example, ?bug_tracker: String, ?conditions: untyped?) -> void
 
         def add_condition: (untyped name, ?untyped? condition) { () -> untyped } -> untyped
 
         def add_message: (untyped name, untyped message) -> untyped
 
-        def disposition: () -> (::Array[:skip | untyped] | ::Array[:skip | untyped] | ::Array[:pending | untyped] | nil)
+        def disposition: () -> Array[untyped]?
 
         def satisfied?: (untyped guard) -> untyped
 

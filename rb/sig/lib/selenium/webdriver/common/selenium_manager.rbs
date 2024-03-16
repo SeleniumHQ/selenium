@@ -1,10 +1,5 @@
 module Selenium
   module WebDriver
-    #
-    # Wrapper for getting information from the Selenium Manager binaries.
-    # This implementation is still in beta, and may change.
-    # @api private
-    #
     class SeleniumManager
       include _Platform
       include Open3
@@ -17,15 +12,12 @@ module Selenium
 
       def self.bin_path: () -> untyped
 
-      # @param [Options] options browser options.
-      # @return [String] the path to the correct driver.
       def self.driver_path: (untyped options) -> untyped
 
       private
 
       def self.generate_command: (untyped binary, untyped options) -> untyped
 
-      # @return [String] the path to the correct selenium manager
       def self.binary: () -> untyped
 
       def self.validate_location: (untyped location) -> untyped

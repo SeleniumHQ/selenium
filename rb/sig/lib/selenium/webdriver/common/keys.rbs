@@ -1,7 +1,7 @@
 module Selenium
   module WebDriver
     module Keys
-      KEYS: { null: ::String, cancel: ::String, help: ::String, backspace: ::String, tab: ::String, clear: ::String, return: ::String, enter: ::String, shift: ::String, left_shift: ::String, control: ::String, left_control: ::String, alt: ::String, left_alt: ::String, pause: ::String, escape: ::String, space: ::String, page_up: ::String, page_down: ::String, end: ::String, home: ::String, left: ::String, arrow_left: ::String, up: ::String, arrow_up: ::String, right: ::String, arrow_right: ::String, down: ::String, arrow_down: ::String, insert: ::String, delete: ::String, semicolon: ::String, equals: ::String, numpad0: ::String, numpad1: ::String, numpad2: ::String, numpad3: ::String, numpad4: ::String, numpad5: ::String, numpad6: ::String, numpad7: ::String, numpad8: ::String, numpad9: ::String, multiply: ::String, add: ::String, separator: ::String, subtract: ::String, decimal: ::String, divide: ::String, f1: ::String, f2: ::String, f3: ::String, f4: ::String, f5: ::String, f6: ::String, f7: ::String, f8: ::String, f9: ::String, f10: ::String, f11: ::String, f12: ::String, meta: ::String, command: ::String, left_meta: ::String, zenkaku_hankaku: ::String, right_shift: ::String, right_control: ::String, right_alt: ::String, right_meta: ::String, numpad_page_up: ::String, numpad_page_down: ::String, numpad_end: ::String, numpad_home: ::String, numpad_left: ::String, numpad_up: ::String, numpad_right: ::String, numpad_down: ::String, numpad_insert: ::String, numpad_delete: ::String }
+      KEYS: Hash[Symbol, String]
 
       def self.[]: (untyped key) -> untyped
 

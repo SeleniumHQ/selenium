@@ -4,15 +4,15 @@ module Selenium
       class Options < WebDriver::Options
         @args: untyped
 
-        KEY: "se:ieOptions"
+        KEY: String
 
-        SCROLL_TOP: 0
+        SCROLL_TOP: Integer
 
-        SCROLL_BOTTOM: 1
+        SCROLL_BOTTOM: Integer
 
         CAPABILITIES: Hash[Symbol, String]
 
-        BROWSER: "internet explorer"
+        BROWSER: String
 
         attr_reader args: untyped
 

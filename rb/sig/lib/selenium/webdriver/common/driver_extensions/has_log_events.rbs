@@ -12,7 +12,7 @@ module Selenium
 
         include Atoms
 
-        KINDS: ::Array[:console | :exception | :mutation]
+        KINDS: Array[Symbol]
 
         def on_log_event: (untyped kind) { () -> untyped } -> (nil | untyped)
 

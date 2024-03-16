@@ -28,7 +28,7 @@ module Selenium
 
         def cancelled_requests: () -> untyped
 
-        def track_cancelled_request: (untyped data) -> (nil | untyped)
+        def track_cancelled_request: (untyped data) -> untyped?
 
         def request_paused: (untyped data) { () -> untyped } -> untyped
 

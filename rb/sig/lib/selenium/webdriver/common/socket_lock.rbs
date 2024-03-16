@@ -13,7 +13,7 @@ module Selenium
 
       private
 
-      def lock: () -> (nil | untyped)
+      def lock: () -> untyped?
 
       def current_time: () -> untyped
 

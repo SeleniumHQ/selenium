@@ -2,13 +2,13 @@ module Selenium
   module WebDriver
     module IE
       class Driver < WebDriver::Driver
-        EXTENSIONS: ::Array[untyped]
+        EXTENSIONS: Array[untyped]
 
         include LocalDriver
 
         def initialize: (?options: untyped?, ?service: untyped?, ?url: untyped?, **untyped opts) -> void
 
-        def browser: () -> :internet_explorer
+        def browser: () -> Symbol
       end
     end
   end

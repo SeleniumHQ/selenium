@@ -13,11 +13,11 @@ module Selenium
 
       TimeoutError: untyped
 
-      SIGTERM: "TERM"
+      SIGTERM: String
 
-      SIGKILL: "KILL"
+      SIGKILL: String
 
-      POLL_INTERVAL: ::Float
+      POLL_INTERVAL: Float
 
       attr_accessor detach: untyped
 
@@ -31,7 +31,7 @@ module Selenium
 
       def start: () -> untyped
 
-      def stop: (?::Integer timeout) -> untyped
+      def stop: (?Integer timeout) -> untyped
 
       def alive?: () -> untyped
 

@@ -40,7 +40,7 @@ module Selenium
 
         def select_option: (untyped option) -> untyped
 
-        def deselect_option: (untyped option) -> (untyped | nil)
+        def deselect_option: (untyped option) -> untyped?
 
         def select_options: (untyped opts) -> untyped
 

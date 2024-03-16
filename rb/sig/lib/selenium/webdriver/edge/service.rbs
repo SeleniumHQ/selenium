@@ -4,11 +4,11 @@ module Selenium
       class Service < WebDriver::Service
         @log: untyped
 
-        DEFAULT_PORT: 9515
+        DEFAULT_PORT: Integer
 
-        EXECUTABLE: "msedgedriver"
+        EXECUTABLE: String
 
-        SHUTDOWN_SUPPORTED: true
+        SHUTDOWN_SUPPORTED: bool
 
         def log: () -> untyped
       end

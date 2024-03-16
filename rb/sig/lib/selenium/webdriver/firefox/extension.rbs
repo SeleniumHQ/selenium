@@ -6,7 +6,7 @@ module Selenium
 
         @should_reap_root: untyped
 
-        NAMESPACE: "http://www.mozilla.org/2004/em-rdf#"
+        NAMESPACE: String
 
         def initialize: (untyped path) -> void
 
@@ -18,9 +18,9 @@ module Selenium
 
         def read_id: (untyped directory) -> untyped
 
-        def read_id_from_install_rdf: (untyped directory) -> (nil | untyped)
+        def read_id_from_install_rdf: (untyped directory) -> untyped?
 
-        def read_id_from_manifest_json: (untyped directory) -> (nil | untyped)
+        def read_id_from_manifest_json: (untyped directory) -> untyped?
 
         def applications_gecko_id: (untyped manifest) -> untyped
 

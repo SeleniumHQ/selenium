@@ -14,7 +14,7 @@ module Selenium
 
         BUTTONS: untyped
 
-        DIRECTIONS: { down: :pointerDown, up: :pointerUp }
+        DIRECTIONS: Hash[Symbol, Symbol]
 
         def initialize: (untyped source, untyped direction, untyped button, **untyped opts) -> void
 
@@ -22,7 +22,7 @@ module Selenium
 
         private
 
-        def assert_source: (untyped source) -> (untyped | nil)
+        def assert_source: (untyped source) -> untyped?
 
         def assert_button: (untyped button) -> untyped
 

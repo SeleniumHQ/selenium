@@ -2,9 +2,9 @@ module Selenium
   module WebDriver
     module Chrome
       class Options < Chromium::Options
-        KEY: "goog:chromeOptions"
+        KEY: String
 
-        BROWSER: "chrome"
+        BROWSER: String
 
         private
 

@@ -14,12 +14,11 @@ module Selenium
 
         @version: untyped
 
-        # Input JSON files are generated from PDL tasks.
         DOMAIN_TEMPLATE_PATH: untyped
 
         LOADER_TEMPLATE_PATH: untyped
 
-        RESERVED_KEYWORDS: ::Array["end"]
+        RESERVED_KEYWORDS: Array[String]
 
         def call: (output_dir: untyped, version: untyped, **untyped opts) -> untyped
 

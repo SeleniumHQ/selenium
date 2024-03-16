@@ -9,7 +9,7 @@ module Selenium
 
       def encoded: () -> untyped
 
-      def as_json: (*untyped) -> ::Hash[::String, untyped]
+      def as_json: (*untyped) -> Hash[String, untyped]
 
       def to_json: (*untyped) -> untyped
 
@@ -17,7 +17,7 @@ module Selenium
 
       def create_tmp_copy: (untyped directory) -> untyped
 
-      def verify_model: (untyped model) -> (nil | untyped)
+      def verify_model: (untyped model) -> untyped?
 
       module ClassMethods
         def from_json: (untyped json) -> untyped

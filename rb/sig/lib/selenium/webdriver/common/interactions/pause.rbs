@@ -8,7 +8,7 @@ module Selenium
 
         def initialize: (untyped source, ?untyped? duration) -> void
 
-        def assert_source: (untyped source) -> (untyped | nil)
+        def assert_source: (untyped source) -> untyped?
 
         def encode: () -> untyped
       end

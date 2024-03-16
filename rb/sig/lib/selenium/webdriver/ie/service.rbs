@@ -2,11 +2,11 @@ module Selenium
   module WebDriver
     module IE
       class Service < WebDriver::Service
-        DEFAULT_PORT: 5555
+        DEFAULT_PORT: Integer
 
-        EXECUTABLE: "IEDriverServer"
+        EXECUTABLE: String
 
-        SHUTDOWN_SUPPORTED: true
+        SHUTDOWN_SUPPORTED: bool
       end
     end
   end

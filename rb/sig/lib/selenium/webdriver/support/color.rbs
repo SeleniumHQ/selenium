@@ -10,21 +10,21 @@ module Selenium
 
         @alpha: untyped
 
-        RGB_PATTERN: ::Regexp
+        RGB_PATTERN: Regexp
 
-        RGB_PCT_PATTERN: ::Regexp
+        RGB_PCT_PATTERN: Regexp
 
-        RGBA_PATTERN: ::Regexp
+        RGBA_PATTERN: Regexp
 
-        RGBA_PCT_PATTERN: ::Regexp
+        RGBA_PCT_PATTERN: Regexp
 
-        HEX_PATTERN: ::Regexp
+        HEX_PATTERN: Regexp
 
-        HEX3_PATTERN: ::Regexp
+        HEX3_PATTERN: Regexp
 
-        HSL_PATTERN: ::Regexp
+        HSL_PATTERN: Regexp
 
-        HSLA_PATTERN: ::Regexp
+        HSLA_PATTERN: Regexp
 
         attr_reader red: untyped
 
@@ -42,7 +42,7 @@ module Selenium
 
         def initialize: (String red, String green, String blue, Float | Integer | String ?alpha, *untyped args) -> void
 
-        def ==: (untyped other) -> (bool | untyped)
+        def ==: (untyped other) -> untyped
 
         alias eql? ==
 
