@@ -97,7 +97,7 @@ module Selenium
               WebDriver.logger.debug("Redirect to #{response['Location']}; times: #{redirects}")
               raise Error::WebDriverError, 'too many redirects' if redirects >= MAX_REDIRECTS
 
-              request(:get, URI.parse(response['Location'].to_s), DEFAULT_HEADERS.dup, nil, redirects + 1)
+              request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
             else
               WebDriver.logger.debug("   <<<  #{response.instance_variable_get(:@header).inspect}", id: :header)
               create_response response.code, response.body, response.content_type

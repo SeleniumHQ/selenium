@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/BlockLength -- Disable due to the steep configuration not matching rubocop expectations
 target :lib do
   signature 'sig', '.gem_rbs_collection/rubyzip' # Signature directory
   check 'lib' # Directory name
-  # Total amount of errors ignore 63 in 29 files
+  # Total amount of errors ignore 66 in 31 files
   ignore(
     # Ignore line 166 due to UDP RBS issue
     'lib/selenium/webdriver/common/platform.rb',
@@ -61,7 +62,11 @@ target :lib do
     # Kwargs issue on line 74
     'lib/selenium/webdriver/common/driver.rb',
     # issue with the Zipper RBS library on line 54
-    'lib/selenium/webdriver/firefox/extension.rb'
+    'lib/selenium/webdriver/firefox/extension.rb',
+    # Ignored due to return of last match in line 57 and 59
+    'lib/selenium/webdriver/firefox/profiles_ini.rb',
+    # Ignored due to error on line 100 of response being nillable
+    'lib/selenium/webdriver/remote/http/default.rb'
   )
 
   # Standard libraries used in the project
@@ -80,3 +85,4 @@ target :lib do
     'zlib'
   )
 end
+# rubocop:enable Metrics/BlockLength

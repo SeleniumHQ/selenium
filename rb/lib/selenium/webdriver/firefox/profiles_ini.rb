@@ -54,9 +54,9 @@ module Selenium
             when /^Name=(.+)$/
               name = Regexp.last_match(1)&.strip
             when /^IsRelative=(.+)$/
-              is_relative = Regexp.last_match(1)&.strip == '1'
+              is_relative = Regexp.last_match(1).strip == '1'
             when /^Path=(.+)$/
-              path = Regexp.last_match(1)&.strip
+              path = Regexp.last_match(1).strip
               p = path_for(name, is_relative, path)
               @profile_paths[name] = p if p
             end
