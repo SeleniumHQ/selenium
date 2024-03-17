@@ -1,10 +1,9 @@
+using Moq;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
 using System.Collections.ObjectModel;
-using OpenQA.Selenium.Internal;
-using Moq;
+using System.Text;
 
 namespace OpenQA.Selenium.Support.Events
 {

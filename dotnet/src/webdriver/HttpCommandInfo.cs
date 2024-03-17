@@ -18,7 +18,6 @@
 
 using System;
 using System.Globalization;
-using System.Net;
 
 namespace OpenQA.Selenium
 {

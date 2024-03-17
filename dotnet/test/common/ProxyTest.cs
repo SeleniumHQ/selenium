@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using OpenQA.Selenium.Internal;
+using System.Collections.Generic;
 
 namespace OpenQA.Selenium
 {

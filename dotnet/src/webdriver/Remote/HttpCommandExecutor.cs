@@ -16,6 +16,8 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -25,8 +27,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Remote
 {

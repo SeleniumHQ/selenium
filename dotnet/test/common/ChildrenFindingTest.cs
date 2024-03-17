@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using System.Collections.ObjectModel;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {

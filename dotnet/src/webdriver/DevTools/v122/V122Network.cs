@@ -16,12 +16,12 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.DevTools.V122.Fetch;
+using OpenQA.Selenium.DevTools.V122.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V122.Fetch;
-using OpenQA.Selenium.DevTools.V122.Network;
 
 namespace OpenQA.Selenium.DevTools.V122
 {

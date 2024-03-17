@@ -1,10 +1,9 @@
 using Bazel;
-using System;
-using System.Reflection;
-using System.IO;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OpenQA.Selenium.Internal;
+using System;
+using System.IO;
 using System.Linq;
 
 namespace OpenQA.Selenium.Environment

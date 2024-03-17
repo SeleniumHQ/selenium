@@ -1,7 +1,7 @@
+using Moq;
+using NUnit.Framework;
 using System;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
-using Moq;
 
 namespace OpenQA.Selenium.Support.UI
 {

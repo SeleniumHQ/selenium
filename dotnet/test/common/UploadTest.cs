@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
-using System;
 
 namespace OpenQA.Selenium
 {
@@ -36,7 +35,8 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame("upload_target");
 
             IWebElement body = null;
-            WaitFor(() => {
+            WaitFor(() =>
+            {
                 body = driver.FindElement(By.CssSelector("body"));
                 return body.Text.Contains(LoremIpsumText);
             }, "Page source is: " + driver.PageSource);
@@ -97,7 +97,8 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame("upload_target");
 
             IWebElement body = null;
-            WaitFor(() => {
+            WaitFor(() =>
+            {
                 body = driver.FindElement(By.XPath("//body"));
                 return body.Text.Contains(LoremIpsumText);
             }, "Page source is: " + driver.PageSource);

@@ -16,11 +16,10 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace OpenQA.Selenium
 {

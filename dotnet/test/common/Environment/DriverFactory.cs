@@ -1,4 +1,5 @@
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
@@ -7,8 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using NUnit.Framework;
-using OpenQA.Selenium.Chromium;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -186,7 +185,7 @@ namespace OpenQA.Selenium.Environment
         }
 
 
-        private T MergeOptions<T>(object baseOptions, DriverOptions overriddenOptions) where T:DriverOptions, new()
+        private T MergeOptions<T>(object baseOptions, DriverOptions overriddenOptions) where T : DriverOptions, new()
         {
             // If the driver type has a static DefaultOptions property,
             // get the value of that property, which should be a valid
@@ -208,7 +207,7 @@ namespace OpenQA.Selenium.Environment
             return mergedOptions;
         }
 
-        private T CreateService<T>() where T:DriverService
+        private T CreateService<T>() where T : DriverService
         {
             T service = default(T);
             Type serviceType = typeof(T);
@@ -216,7 +215,7 @@ namespace OpenQA.Selenium.Environment
             MethodInfo createDefaultServiceMethod = serviceType.GetMethod("CreateDefaultService", BindingFlags.Public | BindingFlags.Static, null, new Type[] { }, null);
             if (createDefaultServiceMethod != null && createDefaultServiceMethod.ReturnType == serviceType)
             {
-                service = (T)createDefaultServiceMethod.Invoke(null, new object[] {});
+                service = (T)createDefaultServiceMethod.Invoke(null, new object[] { });
             }
 
             return service;
