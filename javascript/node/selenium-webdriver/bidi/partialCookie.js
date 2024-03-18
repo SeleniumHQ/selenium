@@ -15,11 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
+const { BytesValue } = require('./networkTypes')
+
 class PartialCookie {
   #map = new Map()
 
   constructor(name, value, domain) {
     this.#map.set('name', name)
+    if (!(value instanceof BytesValue)) {
+      throw new Error(`Value must be an instance of BytesValue. Received:'${value}'`)
+    }
     this.#map.set('value', Object.fromEntries(value.asMap()))
     this.#map.set('domain', domain)
   }
