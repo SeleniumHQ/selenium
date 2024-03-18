@@ -54,7 +54,7 @@ class ContinueRequestParameters {
       headerList.push(Object.fromEntries(header.asMap()))
     })
 
-    this.#map.set('cookies', headerList)
+    this.#map.set('headers', headerList)
     return this
   }
 
