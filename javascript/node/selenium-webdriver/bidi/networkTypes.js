@@ -59,10 +59,9 @@ class BytesValue {
 }
 
 class Header {
-  constructor(name, value, binaryValue) {
+  constructor(name, value) {
     this._name = name
     this._value = value
-    this._binaryValue = binaryValue
   }
 
   get name() {
@@ -71,10 +70,6 @@ class Header {
 
   get value() {
     return this._value
-  }
-
-  get binaryValue() {
-    return this._binaryValue
   }
 }
 
@@ -222,9 +217,8 @@ class RequestData {
     headers.forEach((header) => {
       let name = header.name
       let value = 'value' in header ? header.value : null
-      let binaryValue = 'binaryValue' in header ? header.binaryValue : null
 
-      this._headers.push(new Header(name, value, binaryValue))
+      this._headers.push(new Header(name, new BytesValue(value.type, value.value)))
     })
 
     this._cookies = []
@@ -488,4 +482,4 @@ class ResponseStarted extends BaseParameters {
   }
 }
 
-module.exports = { BytesValue, Cookie, SameSite, BeforeRequestSent, ResponseStarted, FetchError }
+module.exports = { Header, BytesValue, Cookie, SameSite, BeforeRequestSent, ResponseStarted, FetchError }

@@ -25,6 +25,8 @@ const Network = require('../../bidi/network')
 const { AddInterceptParameters } = require('../../bidi/addInterceptParameters')
 const { InterceptPhase } = require('../../bidi/interceptPhase')
 const { until } = require('../../index')
+const { ContinueRequestParameters } = require('../../bidi/continueRequestParameters')
+const { ContinueResponseParameters } = require('../../bidi/continueResponseParameters')
 
 suite(
   function (env) {
@@ -114,6 +116,36 @@ suite(
         } catch (e) {
           assert.strictEqual(e.name, 'TimeoutError')
         }
+      })
+
+      xit('can continue request', async function () {
+        await network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT))
+
+        let counter = 0
+
+        await network.beforeRequestSent(async (event) => {
+          await network.continueRequest(new ContinueRequestParameters(event.request.request))
+          counter = counter + 1
+        })
+
+        await driver.get(Pages.logEntryAdded)
+
+        assert.strictEqual(counter, 1)
+      })
+
+      xit('can continue response', async function () {
+        await network.addIntercept(new AddInterceptParameters(InterceptPhase.RESPONSE_STARTED))
+
+        let counter = 0
+
+        await network.responseStarted(async (event) => {
+          await network.continueResponse(new ContinueResponseParameters(event.request.request))
+          counter = counter + 1
+        })
+
+        await driver.get(Pages.logEntryAdded)
+
+        assert.strictEqual(counter, 1)
       })
     })
   },
