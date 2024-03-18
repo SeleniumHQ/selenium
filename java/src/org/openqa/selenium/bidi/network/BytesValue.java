@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.bidi.network;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.openqa.selenium.json.JsonInput;
 
 public class BytesValue {
@@ -76,5 +78,13 @@ public class BytesValue {
 
   public String getValue() {
     return value;
+  }
+
+  public Map<String, String> toMap() {
+    Map<String, String> map = new HashMap<>();
+    map.put("type", type.toString());
+    map.put("value", value);
+
+    return map;
   }
 }

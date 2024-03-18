@@ -27,6 +27,8 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,6 +64,71 @@ class NetworkCommandsTest extends JupiterTestBase {
       String intercept =
           network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT));
       assertThat(intercept).isNotNull();
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canContinueRequest() throws InterruptedException {
+    try (Network network = new Network(driver)) {
+      String intercept =
+          network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT));
+
+      CountDownLatch latch = new CountDownLatch(1);
+
+      // String alternatePage = server.whereIs("printPage.html");
+      // TODO: Test sending request to alternate page once it is supported by browsers
+      network.onBeforeRequestSent(
+          beforeRequestSent -> {
+            network.continueRequest(
+                new ContinueRequestParameters(beforeRequestSent.getRequest().getRequestId()));
+
+            // network.continueRequest(
+            // new
+            // ContinueRequestParameters(beforeRequestSent.getRequest().getRequestId()).method("get").url(alternatePage));
+
+            latch.countDown();
+          });
+
+      assertThat(intercept).isNotNull();
+
+      driver.get(server.whereIs("/bidi/logEntryAdded.html"));
+
+      boolean countdown = latch.await(5, TimeUnit.SECONDS);
+      assertThat(countdown).isTrue();
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canContinueResponse() throws InterruptedException {
+    try (Network network = new Network(driver)) {
+      String intercept =
+          network.addIntercept(new AddInterceptParameters(InterceptPhase.RESPONSE_STARTED));
+
+      CountDownLatch latch = new CountDownLatch(1);
+
+      // TODO: Test sending response with a different status code once it is supported by the
+      // browsers
+      network.onResponseStarted(
+          responseDetails -> {
+            network.continueResponse(
+                new ContinueResponseParameters(responseDetails.getRequest().getRequestId()));
+            latch.countDown();
+          });
+
+      assertThat(intercept).isNotNull();
+
+      driver.get(server.whereIs("/bidi/logEntryAdded.html"));
+
+      boolean countdown = latch.await(5, TimeUnit.SECONDS);
+      assertThat(countdown).isTrue();
     }
   }
 
