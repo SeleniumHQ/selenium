@@ -16,7 +16,7 @@ module Selenium
 
         def assert_kind: (untyped pointer) -> untyped
 
-        def create_pointer_move: (?duration: ::Integer, ?x: ::Integer, ?y: ::Integer, ?origin: untyped?, **untyped opts) -> untyped
+        def create_pointer_move: (?duration: Symbol | String | Integer, ?x: Integer, ?y: Integer, ?origin: untyped?, **untyped opts) -> untyped
 
         def create_pointer_down: (untyped button, **untyped opts) -> untyped
 

@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      class Pause < Interaction
+        @duration: untyped
+
+        @type: untyped
+
+        def initialize: (untyped source, ?untyped? duration) -> void
+
+        def assert_source: (untyped source) -> untyped?
+
+        def encode: () -> untyped
+      end
+    end
+  end
+end

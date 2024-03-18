@@ -1,0 +1,27 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      class Scroll < Interaction
+        @type: untyped
+
+        @duration: untyped
+
+        @origin: untyped
+
+        @x_offset: untyped
+
+        @y_offset: untyped
+
+        @delta_x: untyped
+
+        @delta_y: untyped
+
+        def initialize: (source: untyped, ?origin: Symbol, ?duration: Float, **untyped opts) -> void
+
+        def assert_source: (untyped source) -> untyped?
+
+        def encode: () -> Hash[String, untyped]
+      end
+    end
+  end
+end

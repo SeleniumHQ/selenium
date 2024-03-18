@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    module Support
+      class RelativeLocator
+        @filters: untyped
+
+        @root: untyped
+
+        KEYS: Array[String]
+
+        def initialize: (untyped locator) -> void
+
+        def as_json: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

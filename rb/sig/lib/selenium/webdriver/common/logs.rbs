@@ -1,0 +1,13 @@
+module Selenium
+  module WebDriver
+    class Logs
+      @bridge: untyped
+
+      def initialize: (untyped bridge) -> void
+
+      def get: (untyped type) -> untyped
+
+      def available_types: () -> untyped
+    end
+  end
+end

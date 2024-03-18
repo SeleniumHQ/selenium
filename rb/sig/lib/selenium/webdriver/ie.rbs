@@ -1,0 +1,6 @@
+module Selenium
+  module WebDriver
+    module IE
+    end
+  end
+end

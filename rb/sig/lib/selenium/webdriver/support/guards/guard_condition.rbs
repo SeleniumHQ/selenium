@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    module Support
+      class Guards
+        class GuardCondition
+          @name: untyped
+
+          @execution: untyped
+
+          attr_accessor name: untyped
+
+          attr_accessor execution: untyped
+
+          def initialize: (untyped name, ?untyped? condition) ?{ () -> untyped } -> void
+
+          def satisfied?: (untyped guard) -> untyped
+        end
+      end
+    end
+  end
+end

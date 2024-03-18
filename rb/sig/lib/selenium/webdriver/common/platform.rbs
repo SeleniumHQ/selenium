@@ -1,0 +1,62 @@
+module Selenium
+  module WebDriver
+    # @api private
+    module Platform
+      @home: untyped
+
+      @engine: untyped
+
+      @os: untyped
+
+      def self?.home: () -> untyped
+
+      def self?.engine: () -> untyped
+
+      def self?.os: () -> untyped
+
+      def self?.ci: () -> Symbol?
+
+      def self?.jruby?: () -> untyped
+
+      def self?.truffleruby?: () -> untyped
+
+      def self?.ruby_version: () -> untyped
+
+      def self?.windows?: () -> untyped
+
+      def self?.mac?: () -> untyped
+
+      def self?.linux?: () -> untyped
+
+      def self?.wsl?: () -> untyped
+
+      def self?.cygwin?: () -> untyped
+
+      def self?.null_device: () -> untyped
+
+      def self?.wrap_in_quotes_if_necessary: (untyped str) -> (String | untyped)
+
+      def self?.cygwin_path: (untyped path, **untyped opts) -> untyped
+
+      def self?.unix_path: (untyped path) -> untyped
+
+      def self?.windows_path: (untyped path) -> untyped
+
+      def self?.make_writable: (untyped file) -> untyped
+
+      def self?.assert_file: (untyped path) -> untyped?
+
+      def self?.assert_executable: (untyped path) -> untyped?
+
+      def self?.exit_hook: () { () -> untyped } -> untyped
+
+      def self?.localhost: () -> untyped
+
+      def self?.ip: () -> untyped
+
+      def self?.interfaces: () -> untyped
+
+      def unix?: -> untyped
+    end
+  end
+end

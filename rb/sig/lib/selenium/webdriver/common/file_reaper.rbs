@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    module FileReaper
+      self.@reap: untyped
+
+      self.@tmp_files: untyped
+
+      attr_writer self.reap: untyped
+
+      def self.reap?: () -> untyped
+
+      def self.tmp_files: () -> untyped
+
+      def self.<<: (untyped file) -> untyped
+
+      def self.reap: (untyped file) -> untyped?
+
+      def self.reap!: () -> bool
+    end
+  end
+end

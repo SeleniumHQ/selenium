@@ -1,0 +1,9 @@
+module Selenium
+  module Support
+    class NightlyVersionGenerator
+      REGEXP: Regexp
+
+      def self.call: (untyped version_file, untyped version_suffix) -> untyped
+    end
+  end
+end

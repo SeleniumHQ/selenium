@@ -1,0 +1,19 @@
+module Selenium
+  module WebDriver
+    module Edge
+      class Options < Chromium::Options
+        KEY: String
+
+        BROWSER: String
+
+        def webview2!: () -> untyped
+
+        private
+
+        def enable_logging: (untyped browser_options) -> untyped
+
+        def binary_path: () -> untyped
+      end
+    end
+  end
+end

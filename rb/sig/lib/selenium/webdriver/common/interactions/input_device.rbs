@@ -16,11 +16,11 @@ module Selenium
 
         def add_action: (Interaction action) ->  Array[Interaction]
 
-        def clear_actions: () -> []
+        def clear_actions: () -> Array[untyped]
 
-        def create_pause: (Integer duration) -> Array[Interaction]
+        def create_pause: (Float duration) -> Array[Interaction]
 
-        def encode: () -> ({ type: String, id: String, actions: Array[untyped] } | nil)
+        def encode: () -> untyped
       end
     end
   end

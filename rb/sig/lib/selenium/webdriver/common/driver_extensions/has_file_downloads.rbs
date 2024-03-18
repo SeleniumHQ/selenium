@@ -1,0 +1,19 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasFileDownloads
+        include _Driver
+
+        def downloadable_files: () -> untyped
+
+        def download_file: (untyped file_name, untyped target_directory) -> untyped
+
+        def delete_downloadable_files: () -> untyped
+
+        private
+
+        def verify_enabled: () -> (nil | untyped)
+      end
+    end
+  end
+end

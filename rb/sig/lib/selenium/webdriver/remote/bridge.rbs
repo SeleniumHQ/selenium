@@ -2,6 +2,9 @@ module Selenium
   module WebDriver
     module Remote
       class Bridge
+        include _CommandList
+        include _Features
+
         @http: untyped
 
         @file_detector: untyped
@@ -226,7 +229,7 @@ module Selenium
 
         private
 
-        def execute: (untyped command, ?::Hash[untyped, untyped] opts, ?untyped? command_hash) -> untyped
+        def execute: (untyped command, ?::Hash[untyped, untyped] opts, ?untyped? command_hash) -> WebDriver::Remote::Response
 
         def escaper: () -> untyped
 

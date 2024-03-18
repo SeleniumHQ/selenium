@@ -1,0 +1,25 @@
+module Selenium
+  module WebDriver
+    class Wait
+      @timeout: Numeric
+
+      @interval: Numeric
+
+      @message: String
+
+      @ignored: Array[Exception]
+
+      DEFAULT_TIMEOUT: Integer
+
+      DEFAULT_INTERVAL: Float
+
+      def initialize: (Hash[untyped, untyped] opts) -> void
+
+      def until: () { () -> untyped } -> untyped
+
+      private
+
+      def current_time: () -> untyped
+    end
+  end
+end
