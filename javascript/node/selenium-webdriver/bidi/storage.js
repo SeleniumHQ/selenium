@@ -19,7 +19,7 @@ const { CookieFilter } = require('./cookieFilter')
 const { BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor } = require('./partitionDescriptor')
 const { PartitionKey } = require('./partitionKey')
 const { PartialCookie } = require('./partialCookie')
-const { Cookie } = require('./networkTypes')
+const { Cookie, BytesValue } = require('./networkTypes')
 
 class Storage {
   constructor(driver) {
@@ -61,7 +61,7 @@ class Storage {
       cookies.push(
         new Cookie(
           cookie.name,
-          cookie.value,
+          new BytesValue(cookie.value.type, cookie.value.value),
           cookie.domain,
           cookie.path,
           cookie.size,

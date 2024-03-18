@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.bidi.network;
 
-import org.openqa.selenium.remote.http.HttpMethod;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.openqa.selenium.remote.http.HttpMethod;
 
 public class ContinueRequestParameters {
   private final Map<String, Object> map = new HashMap<>();

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { SameSite } = require('./networkTypes')
+const { SameSite, BytesValue } = require('./networkTypes')
 
 class CookieFilter {
   #map = new Map()
@@ -26,6 +26,9 @@ class CookieFilter {
   }
 
   value(value) {
+    if (!(value instanceof BytesValue)) {
+      throw new Error(`Value must be an instance of BytesValue. Received:'${value}'`)
+    }
     this.#map.set('value', Object.fromEntries(value.asMap()))
     return this
   }

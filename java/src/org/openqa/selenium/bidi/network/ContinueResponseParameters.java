@@ -39,7 +39,14 @@ public class ContinueResponseParameters {
 
   public ContinueResponseParameters credentials(UsernameAndPassword credentials) {
     map.put(
-        "credentials", Map.of("type", "password", credentials.password(), credentials.username()));
+        "credentials",
+        Map.of(
+            "type",
+            "password",
+            "username",
+            credentials.username(),
+            "password",
+            credentials.password()));
     return this;
   }
 
