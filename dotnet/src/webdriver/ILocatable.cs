@@ -16,8 +16,8 @@
 // limitations under the License.
 // </copyright>
 
-using System.Drawing;
 using OpenQA.Selenium.Interactions.Internal;
+using System.Drawing;
 
 namespace OpenQA.Selenium
 {

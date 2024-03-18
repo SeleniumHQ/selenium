@@ -1,9 +1,9 @@
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -386,7 +386,7 @@ namespace OpenQA.Selenium
                     IWebElement frameElement = driver.FindElement(By.Id(frameId));
                     driver.SwitchTo().Frame(frameElement);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return false;
                 }
@@ -404,7 +404,7 @@ namespace OpenQA.Selenium
                     IWebElement element = driver.FindElement(By.Id(elementId));
                     return element.Displayed;
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return false;
                 }

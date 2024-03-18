@@ -14,58 +14,56 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 package org.openqa.selenium.bidi.network;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.openqa.selenium.json.JsonInput;
 
-public class Header {
-  private final String name;
-  private final BytesValue value;
+public class SetCookieHeader {
 
-  private Header(String name, BytesValue value) {
-    this.name = name;
-    this.value = value;
+  private final Map<String, Object> map = new HashMap<>();
+
+  public SetCookieHeader(String name, BytesValue value) {
+    map.put("name", name);
+    map.put("value", value);
   }
 
-  public static Header fromJson(JsonInput input) {
-    String name = null;
-    BytesValue value = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "name":
-          name = input.read(String.class);
-          break;
-        case "value":
-          value = input.read(BytesValue.class);
-          break;
-        default:
-          input.skipValue();
-      }
-    }
-
-    input.endObject();
-
-    return new Header(name, value);
+  public SetCookieHeader domain(String domain) {
+    map.put("domain", domain);
+    return this;
   }
 
-  public String getName() {
-    return name;
+  public SetCookieHeader path(String path) {
+    map.put("path", path);
+    return this;
   }
 
-  public BytesValue getValue() {
-    return value;
+  public SetCookieHeader maxAge(long maxAge) {
+    map.put("maxAge", maxAge);
+    return this;
+  }
+
+  public SetCookieHeader httpOnly(boolean httpOnly) {
+    map.put("httpOnly", httpOnly);
+    return this;
+  }
+
+  public SetCookieHeader secure(boolean secure) {
+    map.put("secure", secure);
+    return this;
+  }
+
+  public SetCookieHeader sameSite(Cookie.SameSite sameSite) {
+    map.put("sameSite", sameSite.toString());
+    return this;
+  }
+
+  public SetCookieHeader expiry(long expiry) {
+    map.put("expiry", expiry);
+    return this;
   }
 
   public Map<String, Object> toMap() {
-    Map<String, Object> map = new HashMap<>();
-    map.put("name", this.name);
-    map.put("value", this.value.toMap());
-
     return map;
   }
 }

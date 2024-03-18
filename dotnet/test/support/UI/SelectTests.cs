@@ -1,9 +1,9 @@
+using Moq;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using NUnit.Framework;
 using System.Reflection;
-using System;
-using Moq;
 
 namespace OpenQA.Selenium.Support.UI
 {

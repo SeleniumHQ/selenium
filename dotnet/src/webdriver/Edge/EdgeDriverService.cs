@@ -16,10 +16,10 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.IO;
 using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Internal;
+using System;
+using System.IO;
 
 namespace OpenQA.Selenium.Edge
 {

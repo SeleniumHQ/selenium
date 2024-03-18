@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
-using System.Collections.ObjectModel;
 using OpenQA.Selenium.Environment;
 using OpenQA.Selenium.Interactions;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Text;
 
 namespace OpenQA.Selenium
 {

@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.DevTools;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,7 +24,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -453,7 +453,7 @@ namespace OpenQA.Selenium.Remote
                     {
                         throw new WebDriverException("Cannot find " + RemoteDevToolsVersionCapabilityName + " capability for driver");
                     }
-                    
+
                     string version = this.Capabilities.GetCapability(RemoteDevToolsVersionCapabilityName).ToString();
 
                     bool versionParsed = int.TryParse(version.Substring(0, version.IndexOf(".")), out int devToolsProtocolVersion);

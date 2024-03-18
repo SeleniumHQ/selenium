@@ -15,11 +15,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using OpenQA.Selenium.DevTools.V122.Page;
+using OpenQA.Selenium.DevTools.V122.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V122.Page;
-using OpenQA.Selenium.DevTools.V122.Runtime;
 
 namespace OpenQA.Selenium.DevTools.V122
 {

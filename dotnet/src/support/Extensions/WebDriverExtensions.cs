@@ -18,7 +18,6 @@
 
 using System;
 using System.Reflection;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Support.Extensions
 {
