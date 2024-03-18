@@ -61,6 +61,9 @@ class BytesValue {
 class Header {
   constructor(name, value) {
     this._name = name
+    if (!(value instanceof BytesValue)) {
+      throw new Error(`Value must be an instance of BytesValue. Received:'${value}'`)
+    }
     this._value = value
   }
 

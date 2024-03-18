@@ -59,8 +59,8 @@ class ContinueRequestParameters {
   }
 
   method(method) {
-    if (!(method instanceof String)) {
-      throw new Error(`Http method must be an instance of String. Received: '${method})'`)
+    if (typeof method !== 'string') {
+      throw new Error(`Http method must be a string. Received: '${method})'`)
     }
     this.#map.set('method', method)
     return this

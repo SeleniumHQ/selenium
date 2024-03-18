@@ -38,12 +38,12 @@ class ContinueResponseParameters {
   }
 
   credentials(username, password) {
-    if (!(username instanceof String)) {
-      throw new Error(`Username must be an instance of String. Received:'${username}'`)
+    if (typeof username !== 'string') {
+      throw new Error(`Username must be a string. Received:'${username}'`)
     }
 
-    if (!(password instanceof String)) {
-      throw new Error(`Password must be an instance of String. Received:'${password}'`)
+    if (typeof password !== 'string') {
+      throw new Error(`Password must be a string. Received:'${password}'`)
     }
 
     this.#map.set('credentials', { type: 'password', username: username, password: password })
@@ -73,7 +73,7 @@ class ContinueResponseParameters {
   }
 
   statusCode(statusCode) {
-    if (!statusCode.isInteger()) {
+    if (!Number.isInteger(statusCode)) {
       throw new Error(`Status must be an integer. Received:'${statusCode}'`)
     }
 
