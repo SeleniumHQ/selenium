@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.remote.http.HttpMethod;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +50,8 @@ public class ContinueRequestParameters {
     return this;
   }
 
-  public ContinueRequestParameters method(String method) {
-    map.put("method", method);
+  public ContinueRequestParameters method(HttpMethod method) {
+    map.put("method", method.toString());
     return this;
   }
 
