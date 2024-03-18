@@ -65,8 +65,8 @@ class ContinueResponseParameters {
   }
 
   reasonPhrase(reasonPhrase) {
-    if (!(reasonPhrase instanceof String)) {
-      throw new Error(`Reason phrase must be an instance of String. Received: '${reasonPhrase})'`)
+    if (typeof reasonPhrase !== 'string') {
+      throw new Error(`Reason phrase must be a string. Received: '${reasonPhrase})'`)
     }
     this.#map.set('reasonPhrase', reasonPhrase)
     return this

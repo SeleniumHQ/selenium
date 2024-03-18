@@ -67,8 +67,8 @@ class ContinueRequestParameters {
   }
 
   url(url) {
-    if (!(url instanceof String)) {
-      throw new Error(`Url must be an instance of String. Received:'${url}'`)
+    if (typeof url !== 'string') {
+      throw new Error(`Url must be a string. Received:'${url}'`)
     }
 
     this.#map.set('url', url)
