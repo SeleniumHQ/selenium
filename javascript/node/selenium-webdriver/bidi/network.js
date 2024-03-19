@@ -17,6 +17,8 @@
 
 const { BeforeRequestSent, ResponseStarted, FetchError } = require('./networkTypes')
 const { AddInterceptParameters } = require('./addInterceptParameters')
+const { ContinueResponseParameters } = require('./continueResponseParameters')
+const { ContinueRequestParameters } = require('./continueRequestParameters')
 
 class Network {
   constructor(driver, browsingContextIds) {
@@ -98,7 +100,7 @@ class Network {
 
   async addIntercept(params) {
     if (!(params instanceof AddInterceptParameters)) {
-      throw new Error(`Params must be an instance of AddInterceptParamenters. Received:'${params}'`)
+      throw new Error(`Params must be an instance of AddInterceptParameters. Received:'${params}'`)
     }
 
     const command = {
@@ -165,6 +167,32 @@ class Network {
         action: 'cancel',
       },
     }
+    await this.bidi.send(command)
+  }
+
+  async continueRequest(params) {
+    if (!(params instanceof ContinueRequestParameters)) {
+      throw new Error(`Params must be an instance of ContinueRequestParameters. Received:'${params}'`)
+    }
+
+    const command = {
+      method: 'network.continueRequest',
+      params: Object.fromEntries(params.asMap()),
+    }
+
+    let response = await this.bidi.send(command)
+  }
+
+  async continueResponse(params) {
+    if (!(params instanceof ContinueResponseParameters)) {
+      throw new Error(`Params must be an instance of ContinueResponseParameters. Received:'${params}'`)
+    }
+
+    const command = {
+      method: 'network.continueResponse',
+      params: Object.fromEntries(params.asMap()),
+    }
+
     await this.bidi.send(command)
   }
 
