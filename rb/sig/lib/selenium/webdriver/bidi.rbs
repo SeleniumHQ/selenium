@@ -15,7 +15,7 @@ module Selenium
 
       def send_cmd: (untyped method, **untyped params) -> untyped
 
-      def error_message: (untyped message) -> ::String
+      def error_message: (untyped message) -> String
     end
   end
 end
