@@ -19,6 +19,7 @@ const { BeforeRequestSent, ResponseStarted, FetchError } = require('./networkTyp
 const { AddInterceptParameters } = require('./addInterceptParameters')
 const { ContinueResponseParameters } = require('./continueResponseParameters')
 const { ContinueRequestParameters } = require('./continueRequestParameters')
+const { ProvideResponseParameters } = require('./provideResponseParameters')
 
 class Network {
   constructor(driver, browsingContextIds) {
@@ -190,6 +191,19 @@ class Network {
 
     const command = {
       method: 'network.continueResponse',
+      params: Object.fromEntries(params.asMap()),
+    }
+
+    await this.bidi.send(command)
+  }
+
+  async provideResponse(params) {
+    if (!(params instanceof ProvideResponseParameters)) {
+      throw new Error(`Params must be an instance of ProvideResponseParameters. Received:'${params}'`)
+    }
+
+    const command = {
+      method: 'network.provideResponse',
       params: Object.fromEntries(params.asMap()),
     }
 

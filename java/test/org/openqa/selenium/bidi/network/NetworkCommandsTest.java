@@ -31,6 +31,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -129,6 +130,71 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       boolean countdown = latch.await(5, TimeUnit.SECONDS);
       assertThat(countdown).isTrue();
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canProvideResponse() throws InterruptedException {
+    try (Network network = new Network(driver)) {
+      String intercept =
+          network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT));
+
+      CountDownLatch latch = new CountDownLatch(1);
+
+      network.onBeforeRequestSent(
+          beforeRequestSent -> {
+            network.provideResponse(
+                new ProvideResponseParameters(beforeRequestSent.getRequest().getRequestId()));
+
+            latch.countDown();
+          });
+
+      assertThat(intercept).isNotNull();
+
+      driver.get(server.whereIs("/bidi/logEntryAdded.html"));
+
+      boolean countdown = latch.await(5, TimeUnit.SECONDS);
+      assertThat(countdown).isTrue();
+    }
+  }
+
+  @Disabled
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  // TODO: Browsers are yet to implement all parameters. Once implemented, add exhaustive tests.
+  void canProvideResponseWithAllParameters() throws InterruptedException {
+    try (Network network = new Network(driver)) {
+      String intercept =
+          network.addIntercept(new AddInterceptParameters(InterceptPhase.RESPONSE_STARTED));
+
+      CountDownLatch latch = new CountDownLatch(1);
+
+      network.onResponseStarted(
+          responseDetails -> {
+            network.provideResponse(
+                new ProvideResponseParameters(responseDetails.getRequest().getRequestId())
+                    .body(
+                        new BytesValue(
+                            BytesValue.Type.STRING,
+                            "<html><head><title>Hello," + " World!</title></head><body/></html>")));
+
+            latch.countDown();
+          });
+
+      assertThat(intercept).isNotNull();
+
+      driver.get(server.whereIs("/bidi/logEntryAdded.html"));
+
+      boolean countdown = latch.await(5, TimeUnit.SECONDS);
+      assertThat(countdown).isTrue();
+
+      assertThat(driver.getPageSource()).contains("Hello");
     }
   }
 

@@ -27,6 +27,7 @@ const { InterceptPhase } = require('../../bidi/interceptPhase')
 const { until } = require('../../index')
 const { ContinueRequestParameters } = require('../../bidi/continueRequestParameters')
 const { ContinueResponseParameters } = require('../../bidi/continueResponseParameters')
+const { ProvideResponseParameters } = require('../../bidi/provideResponseParameters')
 
 suite(
   function (env) {
@@ -140,6 +141,21 @@ suite(
 
         await network.responseStarted(async (event) => {
           await network.continueResponse(new ContinueResponseParameters(event.request.request))
+          counter = counter + 1
+        })
+
+        await driver.get(Pages.logEntryAdded)
+
+        assert.strictEqual(counter, 1)
+      })
+
+      xit('can provide response', async function () {
+        await network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT))
+
+        let counter = 0
+
+        await network.beforeRequestSent(async (event) => {
+          await network.provideResponse(new ProvideResponseParameters(event.request.request))
           counter = counter + 1
         })
 
