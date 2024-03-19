@@ -55,7 +55,7 @@ class ContinueResponseParameters {
     const headerList = []
     headers.forEach((header) => {
       if (!(header instanceof Header)) {
-        throw new Error(`Header must be an instance of Header. Received:'${header}'`)
+        throw new Error(`Header value must be an instance of Header. Received:'${header}'`)
       }
       headerList.push(Object.fromEntries(header.asMap()))
     })
