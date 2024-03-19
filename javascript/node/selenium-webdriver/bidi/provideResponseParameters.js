@@ -26,7 +26,7 @@ class ProvideResponseParameters {
 
   body(value) {
     if (!(value instanceof BytesValue)) {
-      throw new Error(`Value must be an instance of BytesValue. Received: '${value})'`)
+      throw new Error(`Value must be an instance of BytesValue. Received: ${typeof value} with value: ${value}`)
     }
     this.#map.set('body', Object.fromEntries(value.asMap()))
     return this
