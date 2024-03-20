@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-Type = {
+const Type = {
   CONTEXT: 'context',
   STORAGE_KEY: 'storageKey',
 }
