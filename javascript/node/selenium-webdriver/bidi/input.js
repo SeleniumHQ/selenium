@@ -18,6 +18,7 @@
 // type: module added to package.json
 // import { WebElement } from '../lib/webdriver'
 const { WebElement } = require('../lib/webdriver')
+const { RemoteValue, RemoteReferenceType, ReferenceValue } = require('./protocolValue')
 
 class Input {
   constructor(driver) {
@@ -56,6 +57,30 @@ class Input {
       },
     }
     return await this.bidi.send(command)
+  }
+
+  async setFiles(browsingContextId, element, files) {
+    if (!Array.isArray(files)) {
+      throw Error(`Pass in an array of file paths. Received: ${files}`)
+    }
+
+    if (typeof element !== 'string' && !(element instanceof ReferenceValue)) {
+      throw Error(`Pass in a WebElement id as a string or a ReferenceValue. Received: ${element}`)
+    }
+
+    const command = {
+      method: 'input.setFiles',
+      params: {
+        context: browsingContextId,
+        element:
+          typeof element === 'string'
+            ? new ReferenceValue(RemoteReferenceType.SHARED_ID, element).asMap()
+            : element.asMap(),
+        files: files,
+      },
+    }
+    const response = await this.bidi.send(command)
+    console.log(response)
   }
 }
 
