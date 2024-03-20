@@ -181,7 +181,7 @@ class Network {
       params: Object.fromEntries(params.asMap()),
     }
 
-    let response = await this.bidi.send(command)
+    await this.bidi.send(command)
   }
 
   async continueResponse(params) {

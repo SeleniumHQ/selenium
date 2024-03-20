@@ -73,10 +73,10 @@ class Storage {
       )
     })
 
-    if (response.result.hasOwnProperty('partitionKey')) {
+    if (Object.prototype.hasOwnProperty.call(response.result, 'partitionKey')) {
       if (
-        response.result.partitionKey.hasOwnProperty('userContext') &&
-        response.result.partitionKey.hasOwnProperty('sourceOrigin')
+        Object.prototype.hasOwnProperty.call(response.result.partitionKey, 'userContext') &&
+        Object.prototype.hasOwnProperty.call(response.result.partitionKey, 'sourceOrigin')
       ) {
         let partitionKey = new PartitionKey(
           response.result.partitionKey.userContext,
@@ -111,10 +111,10 @@ class Storage {
 
     let response = await this.bidi.send(command)
 
-    if (response.result.hasOwnProperty('partitionKey')) {
+    if (Object.prototype.hasOwnProperty.call(response.result, 'partitionKey')) {
       if (
-        response.result.partitionKey.hasOwnProperty('userContext') &&
-        response.result.partitionKey.hasOwnProperty('sourceOrigin')
+        Object.prototype.hasOwnProperty.call(response.result.partitionKey, 'userContext') &&
+        Object.prototype.hasOwnProperty.call(response.result.partitionKey, 'sourceOrigin')
       ) {
         let partitionKey = new PartitionKey(
           response.result.partitionKey.userContext,
@@ -147,10 +147,10 @@ class Storage {
 
     let response = await this.bidi.send(command)
 
-    if (response.result.hasOwnProperty('partitionKey')) {
+    if (Object.prototype.hasOwnProperty.call(response.result, 'partitionKey')) {
       if (
-        response.result.partitionKey.hasOwnProperty('userContext') &&
-        response.result.partitionKey.hasOwnProperty('sourceOrigin')
+        Object.prototype.hasOwnProperty.call(response.result.partitionKey, 'userContext') &&
+        Object.prototype.hasOwnProperty.call(response.result.partitionKey, 'sourceOrigin')
       ) {
         let partitionKey = new PartitionKey(
           response.result.partitionKey.userContext,
