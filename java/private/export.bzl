@@ -90,9 +90,11 @@ def java_export(
         name = "%s.publish" % name,
         coordinates = maven_coordinates,
         pom = "%s-pom" % name,
-        javadocs = "%s-docs" % name,
-        artifact_jar = ":%s-maven-module" % name,
-        source_jar = ":%s-maven-source" % name,
+        artifact = ":%s-maven-module" % name,
+        classifier_artifacts = {
+            "javadoc": ":%s-maven-source" % name,
+            "sources": ":%s-maven-source" % name,
+        },
         visibility = visibility,
     )
 
