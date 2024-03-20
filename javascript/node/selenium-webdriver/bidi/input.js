@@ -60,7 +60,6 @@ class Input {
   }
 
   async setFiles(browsingContextId, element, files) {
-
     if (typeof element !== 'string' && !(element instanceof ReferenceValue)) {
       throw Error(`Pass in a WebElement id as a string or a ReferenceValue. Received: ${element}`)
     }
