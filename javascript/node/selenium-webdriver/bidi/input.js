@@ -18,7 +18,7 @@
 // type: module added to package.json
 // import { WebElement } from '../lib/webdriver'
 const { WebElement } = require('../lib/webdriver')
-const { RemoteValue, RemoteReferenceType, ReferenceValue } = require('./protocolValue')
+const { RemoteReferenceType, ReferenceValue } = require('./protocolValue')
 
 class Input {
   constructor(driver) {
