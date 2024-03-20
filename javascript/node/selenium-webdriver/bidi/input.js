@@ -76,7 +76,7 @@ class Input {
         files: typeof files === 'string' ? [files] : files,
       },
     }
-    const response = await this.bidi.send(command)
+    await this.bidi.send(command)
   }
 }
 
