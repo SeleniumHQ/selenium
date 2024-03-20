@@ -60,9 +60,6 @@ class Input {
   }
 
   async setFiles(browsingContextId, element, files) {
-    if (!Array.isArray(files)) {
-      throw Error(`Pass in an array of file paths. Received: ${files}`)
-    }
 
     if (typeof element !== 'string' && !(element instanceof ReferenceValue)) {
       throw Error(`Pass in a WebElement id as a string or a ReferenceValue. Received: ${element}`)
@@ -76,11 +73,10 @@ class Input {
           typeof element === 'string'
             ? new ReferenceValue(RemoteReferenceType.SHARED_ID, element).asMap()
             : element.asMap(),
-        files: files,
+        files: typeof files === 'string' ? [files] : files,
       },
     }
     const response = await this.bidi.send(command)
-    console.log(response)
   }
 }
 

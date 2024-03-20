@@ -59,7 +59,7 @@ public class SetFilesCommandTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(FIREFOX)
-  public void canSetFiles() throws IOException {
+  void canSetFiles() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
     assertThat(uploadElement.getAttribute("value")).isEmpty();
@@ -95,10 +95,48 @@ public class SetFilesCommandTest extends JupiterTestBase {
     List<String> paths = new ArrayList<>();
     paths.add(file.getAbsolutePath());
 
+    input.setFiles(windowHandle, ((RemoteWebElement) uploadElement).getId(), paths);
+
+    assertThat(uploadElement.getAttribute("value")).endsWith(file.getName());
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canSetFile() throws IOException {
+    driver.get(pages.formPage);
+    WebElement uploadElement = driver.findElement(By.id("upload"));
+    assertThat(uploadElement.getAttribute("value")).isEmpty();
+
+    File file = File.createTempFile("test", "txt");
+    file.deleteOnExit();
+
     input.setFiles(
-      windowHandle,
-      ((RemoteWebElement) uploadElement).getId(),
-      paths);
+        windowHandle,
+        new RemoteReference(
+            RemoteReference.Type.SHARED_ID, ((RemoteWebElement) uploadElement).getId()),
+        file.getAbsolutePath());
+
+    assertThat(uploadElement.getAttribute("value")).endsWith(file.getName());
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  void canSetFileWithElementId() throws IOException {
+    driver.get(pages.formPage);
+    WebElement uploadElement = driver.findElement(By.id("upload"));
+    assertThat(uploadElement.getAttribute("value")).isEmpty();
+
+    File file = File.createTempFile("test", "txt");
+    file.deleteOnExit();
+
+    input.setFiles(
+        windowHandle, ((RemoteWebElement) uploadElement).getId(), file.getAbsolutePath());
 
     assertThat(uploadElement.getAttribute("value")).endsWith(file.getName());
   }
