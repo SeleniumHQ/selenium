@@ -29,7 +29,7 @@ function GetBrowserForTests() {
   let browser = process.env.SELENIUM_BROWSER
 
   // If we have no browser set, fail the build
-  if (!!!browser) {
+  if (!browser) {
     throw new Error('SELENIUM_BROWSER env var not set')
   }
 
@@ -44,8 +44,8 @@ function GetBrowserForTests() {
   let binary = process.env.BROWSER_BINARY
   let driverBinary = process.env.DRIVER_BINARY
 
-  let resolvedBinary = !!binary ? runfiles.resolve(driverBinary) : undefined
-  let resolvedDriver = !!driverBinary ? runfiles.resolve(binary) : undefined
+  let resolvedBinary = binary ? runfiles.resolve(driverBinary) : undefined
+  let resolvedDriver = driverBinary ? runfiles.resolve(binary) : undefined
 
   // Create a temporary directory we can use as a home dir
   // process.env["USER"] = "nobody"

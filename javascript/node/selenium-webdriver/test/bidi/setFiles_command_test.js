@@ -54,7 +54,7 @@ suite(
         const input = await Input(driver)
         await driver.get(Pages.formPage)
 
-        const filePath = await io.tmpFile().then(function(fp) {
+        const filePath = await io.tmpFile().then(function (fp) {
           fs.writeFileSync(fp, FILE_HTML)
           return fp
         })
@@ -65,7 +65,9 @@ suite(
 
         const webElementId = await webElement.getId()
 
-        await input.setFiles(browsingContextId, new ReferenceValue(RemoteReferenceType.SHARED_ID, webElementId), [filePath])
+        await input.setFiles(browsingContextId, new ReferenceValue(RemoteReferenceType.SHARED_ID, webElementId), [
+          filePath,
+        ])
 
         assert.notEqual(await webElement.getAttribute('value'), '')
       })
@@ -75,7 +77,7 @@ suite(
         const input = await Input(driver)
         await driver.get(Pages.formPage)
 
-        const filePath = await io.tmpFile().then(function(fp) {
+        const filePath = await io.tmpFile().then(function (fp) {
           fs.writeFileSync(fp, FILE_HTML)
           return fp
         })
