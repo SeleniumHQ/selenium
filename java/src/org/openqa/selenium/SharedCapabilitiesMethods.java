@@ -20,8 +20,10 @@ package org.openqa.selenium;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.openqa.selenium.logging.LogLevelMapping;
@@ -30,6 +32,16 @@ import org.openqa.selenium.logging.LoggingPreferences;
 class SharedCapabilitiesMethods {
 
   private static final String[] EMPTY_ARRAY = new String[0];
+
+  private static Boolean PRIVACY_MODE = true;
+
+  private static final Set<String> PRIVACY_KEYS;
+
+  static {
+    PRIVACY_KEYS = new HashSet<>();
+    PRIVACY_KEYS.add("se:vnc");
+    PRIVACY_KEYS.add("se:cdp");
+  }
 
   private SharedCapabilitiesMethods() {
     // Utility class
@@ -57,6 +69,10 @@ class SharedCapabilitiesMethods {
   }
 
   static void setCapability(Map<String, Object> caps, String key, Object value) {
+    if ("privacyMode".equals(key) && value instanceof Boolean) {
+      PRIVACY_MODE = (Boolean) value;
+    }
+
     if ("loggingPrefs".equals(key) && value instanceof Map) {
       LoggingPreferences prefs = new LoggingPreferences();
       @SuppressWarnings("unchecked")
@@ -111,9 +127,13 @@ class SharedCapabilitiesMethods {
               .entrySet().stream()
                   .sorted(Comparator.comparing(entry -> String.valueOf(entry.getKey())))
                   .map(
-                      entry ->
-                          String.format(
-                              "%s: %s", entry.getKey(), abbreviate(seen, entry.getValue())))
+                      entry -> {
+                        if (PRIVACY_MODE && PRIVACY_KEYS.contains(String.valueOf(entry.getKey()))) {
+                          return String.format("%s: %s", entry.getKey(), "********");
+                        }
+                        return String.format(
+                          "%s: %s", entry.getKey(), abbreviate(seen, entry.getValue()));
+                      })
                   .collect(Collectors.joining(", ")));
       value.append("}");
     } else {
