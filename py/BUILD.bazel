@@ -10,24 +10,24 @@ load("//py:defs.bzl", "generate_devtools", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:import.bzl", "py_import")
 
-alias(
-    name = "twine",
-    actual = requirement("twine"),
-)
-
-genrule(
+py_binary(
     name = "selenium-release",
     srcs = [
-        ":selenium-wheel",
-        ":selenium-sdist",
+        "release-selenium.py",
     ],
-    outs = ["pypi_upload_complete.txt"],
-    cmd = "(twine upload $(location :selenium-wheel) $(location :selenium-sdist) && touch $@)",
-    tools = [":twine"],
-    tags = [
-      "manual",
-      "requires-network",
-    ]
+    args = [
+        "upload",
+        "$(location :selenium-wheel)",
+        "$(location :selenium-sdist)",
+    ],
+    data = [
+        ":selenium-sdist",
+        ":selenium-wheel",
+    ],
+    main = "release-selenium.py",
+    deps = [
+        requirement("twine"),
+    ],
 )
 
 compile_pip_requirements(
