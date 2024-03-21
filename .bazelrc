@@ -1,6 +1,9 @@
 try-import .bazelrc.local
 try-import .bazelrc.windows.local
 
+# Disable bzlmod until we're ready to use it
+common --noenable_bzlmod
+
 # Ensure Windows support is accurate.
 
 startup --windows_enable_symlinks
@@ -147,8 +150,8 @@ build:remote --//common:pin_browsers
 # The remote build machines are pretty small, and 50 threads may leave them
 # thrashing, but our dev machines are a lot larger. Scale the workload so we
 # make reasonable usage of everything, everywhere, all at once.
-build:remote --local_cpu_resources='HOST_CPUS*10'
-build:remote --local_ram_resources='HOST_RAM*4.0'
+build:remote --local_resources=cpu='HOST_CPUS*10'
+build:remote --local_resources=memory='HOST_RAM*4.0'
 
 # A small hint that we're running our tests remotely
 test:remote --test_env=REMOTE_BUILD=1

@@ -156,9 +156,9 @@ http_archive(
     patches = [
         "//java:rules_jvm_external_javadoc.patch",
     ],
-    sha256 = "f86fd42a809e1871ca0aabe89db0d440451219c3ce46c58da240c7dcdc00125f",
-    strip_prefix = "rules_jvm_external-5.2",
-    url = "https://github.com/bazelbuild/rules_jvm_external/releases/download/5.2/rules_jvm_external-5.2.tar.gz",
+    sha256 = "85fd6bad58ac76cc3a27c8e051e4255ff9ccd8c92ba879670d195622e7c0a9b7",
+    strip_prefix = "rules_jvm_external-6.0",
+    url = "https://github.com/bazelbuild/rules_jvm_external/releases/download/6.0/rules_jvm_external-6.0.tar.gz",
 )
 
 load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
