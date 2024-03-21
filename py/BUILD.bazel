@@ -24,6 +24,10 @@ genrule(
     outs = ["pypi_upload_complete.txt"],
     cmd = "(twine upload $(location :selenium-wheel) $(location :selenium-sdist) && touch $@)",
     tools = [":twine"],
+    tags = [
+      "manual",
+      "requires-network",
+    ]
 )
 
 compile_pip_requirements(
