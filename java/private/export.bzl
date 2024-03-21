@@ -92,8 +92,8 @@ def java_export(
         pom = "%s-pom" % name,
         artifact = ":%s-maven-module" % name,
         classifier_artifacts = {
-            "javadoc": ":%s-maven-source" % name,
-            "sources": ":%s-maven-source" % name,
+            ":%s-docs" % name: "javadoc",
+            ":%s-maven-source" % name: "sources",
         },
         visibility = visibility,
     )
