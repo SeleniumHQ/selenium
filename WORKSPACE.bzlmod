@@ -5,20 +5,6 @@ workspace(
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
-    name = "rules_java",
-    sha256 = "16bc94b1a3c64f2c36ceecddc9e09a643e80937076b97e934b96a8f715ed1eaa",
-    urls = [
-        "https://github.com/bazelbuild/rules_java/releases/download/6.5.2/rules_java-6.5.2.tar.gz",
-    ],
-)
-
-load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
-
-rules_java_dependencies()
-
-rules_java_toolchains()
-
-http_archive(
     name = "apple_rules_lint",
     sha256 = "7c3cc45a95e3ef6fbc484a4234789a027e11519f454df63cbb963ac499f103f9",
     strip_prefix = "apple_rules_lint-0.3.2",
@@ -95,50 +81,6 @@ load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_depe
 go_rules_dependencies()
 
 go_register_toolchains(version = "1.19.3")
-
-http_archive(
-    name = "rules_jvm_external",
-    patch_args = [
-        "-p1",
-    ],
-    patches = [
-        "//java:rules_jvm_external_javadoc.patch",
-    ],
-    sha256 = "85fd6bad58ac76cc3a27c8e051e4255ff9ccd8c92ba879670d195622e7c0a9b7",
-    strip_prefix = "rules_jvm_external-6.0",
-    url = "https://github.com/bazelbuild/rules_jvm_external/releases/download/6.0/rules_jvm_external-6.0.tar.gz",
-)
-
-load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
-
-rules_jvm_external_deps()
-
-load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
-
-rules_jvm_external_setup()
-
-http_archive(
-    name = "contrib_rules_jvm",
-    sha256 = "4d62589dc6a55e74bbe33930b826d593367fc777449a410604b2ad7c6c625ef7",
-    strip_prefix = "rules_jvm-0.19.0",
-    url = "https://github.com/bazel-contrib/rules_jvm/releases/download/v0.19.0/rules_jvm-v0.19.0.tar.gz",
-)
-
-load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
-
-contrib_rules_jvm_deps()
-
-load("@contrib_rules_jvm//:setup.bzl", "contrib_rules_jvm_setup")
-
-contrib_rules_jvm_setup()
-
-load("//java:maven_deps.bzl", "selenium_java_deps")
-
-selenium_java_deps()
-
-load("@maven//:defs.bzl", "pinned_maven_install")
-
-pinned_maven_install()
 
 # Stop `aspect_rules_js` and `rules_dotnet` from fighting over `aspect_bazel_lib`
 http_archive(
