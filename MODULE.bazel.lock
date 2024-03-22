@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 6,
-  "moduleFileHash": "350c3f1a73bf582c646ad72db044dc650df18d520ac67e21838961e115248ac2",
+  "moduleFileHash": "3d47da0b7af8fc4cf9261f382a83800b2e00b8b7e323cf19f510fe76c5c5ac94",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -30,12 +30,66 @@
       ],
       "extensionUsages": [
         {
+          "extensionBzlFile": "@apple_rules_lint//lint:extensions.bzl",
+          "extensionName": "linter",
+          "usingModule": "<root>",
+          "location": {
+            "file": "@@//:MODULE.bazel",
+            "line": 13,
+            "column": 23
+          },
+          "imports": {},
+          "devImports": [],
+          "tags": [
+            {
+              "tagName": "configure",
+              "attributeValues": {
+                "name": "java-spotbugs",
+                "config": "//java:spotbugs-config"
+              },
+              "devDependency": false,
+              "location": {
+                "file": "@@//:MODULE.bazel",
+                "line": 14,
+                "column": 17
+              }
+            },
+            {
+              "tagName": "configure",
+              "attributeValues": {
+                "name": "rust-rustfmt",
+                "config": "//rust:enable-rustfmt"
+              },
+              "devDependency": false,
+              "location": {
+                "file": "@@//:MODULE.bazel",
+                "line": 18,
+                "column": 17
+              }
+            },
+            {
+              "tagName": "register",
+              "attributeValues": {
+                "name": "rust-rustfmt"
+              },
+              "devDependency": false,
+              "location": {
+                "file": "@@//:MODULE.bazel",
+                "line": 22,
+                "column": 16
+              }
+            }
+          ],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
           "extensionBzlFile": "@rules_dotnet//dotnet:extensions.bzl",
           "extensionName": "dotnet",
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 12,
+            "line": 24,
             "column": 23
           },
           "imports": {
@@ -51,7 +105,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 13,
+                "line": 25,
                 "column": 17
               }
             }
@@ -65,7 +119,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 16,
+            "line": 28,
             "column": 31
           },
           "imports": {
@@ -82,7 +136,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 21,
+            "line": 33,
             "column": 23
           },
           "imports": {
@@ -99,7 +153,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 22,
+                "line": 34,
                 "column": 17
               }
             },
@@ -111,7 +165,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 26,
+                "line": 38,
                 "column": 17
               }
             },
@@ -123,7 +177,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 27,
+                "line": 39,
                 "column": 17
               }
             },
@@ -135,7 +189,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 28,
+                "line": 40,
                 "column": 17
               }
             }
@@ -149,7 +203,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 31,
+            "line": 43,
             "column": 20
           },
           "imports": {
@@ -167,7 +221,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 34,
+                "line": 46,
                 "column": 14
               }
             },
@@ -181,7 +235,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 34,
+                "line": 46,
                 "column": 14
               }
             },
@@ -195,7 +249,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 34,
+                "line": 46,
                 "column": 14
               }
             },
@@ -209,7 +263,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 34,
+                "line": 46,
                 "column": 14
               }
             }
@@ -223,7 +277,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 51,
+            "line": 63,
             "column": 32
           },
           "imports": {
@@ -250,7 +304,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 67,
+            "line": 79,
             "column": 22
           },
           "imports": {
@@ -336,7 +390,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 68,
+                "line": 80,
                 "column": 14
               }
             }
@@ -350,7 +404,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 143,
+            "line": 155,
             "column": 21
           },
           "imports": {
@@ -369,7 +423,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 144,
+                "line": 156,
                 "column": 15
               }
             },
@@ -466,7 +520,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 148,
+                "line": 160,
                 "column": 18
               }
             }
@@ -480,7 +534,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 240,
+            "line": 252,
             "column": 21
           },
           "imports": {
@@ -499,7 +553,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 241,
+                "line": 253,
                 "column": 15
               }
             }
@@ -513,7 +567,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 247,
+            "line": 259,
             "column": 22
           },
           "imports": {
@@ -533,7 +587,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 248,
+                "line": 260,
                 "column": 17
               }
             }
@@ -543,6 +597,7 @@
         }
       ],
       "deps": {
+        "apple_rules_lint": "apple_rules_lint@0.3.2",
         "contrib_rules_jvm": "contrib_rules_jvm@0.24.0",
         "platforms": "platforms@0.0.8",
         "rules_dotnet": "rules_dotnet@0.14.0",
@@ -553,6 +608,52 @@
         "rules_rust": "rules_rust@0.40.0",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
+      }
+    },
+    "apple_rules_lint@0.3.2": {
+      "name": "apple_rules_lint",
+      "version": "0.3.2",
+      "key": "apple_rules_lint@0.3.2",
+      "repoName": "apple_rules_lint",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [
+        {
+          "extensionBzlFile": "@apple_rules_lint//lint:extensions.bzl",
+          "extensionName": "linter",
+          "usingModule": "apple_rules_lint@0.3.2",
+          "location": {
+            "file": "https://bcr.bazel.build/modules/apple_rules_lint/0.3.2/MODULE.bazel",
+            "line": 9,
+            "column": 23
+          },
+          "imports": {
+            "apple_linters": "apple_linters"
+          },
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        }
+      ],
+      "deps": {
+        "bazel_skylib": "bazel_skylib@1.5.0",
+        "io_bazel_stardoc": "stardoc@0.5.6",
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_"
+      },
+      "repoSpec": {
+        "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {
+          "urls": [
+            "https://github.com/apple/apple_rules_lint/archive/refs/tags/0.3.2.tar.gz"
+          ],
+          "integrity": "sha256-fDzEWpXj72+8SEpCNHiaAn4RUZ9FTfY8u5Y6xJnxA/k=",
+          "strip_prefix": "apple_rules_lint-0.3.2",
+          "remote_patches": {},
+          "remote_patch_strip": 0
+        }
       }
     },
     "contrib_rules_jvm@0.24.0": {
@@ -1928,52 +2029,6 @@
         "bazel_tools": "bazel_tools@_"
       }
     },
-    "apple_rules_lint@0.3.2": {
-      "name": "apple_rules_lint",
-      "version": "0.3.2",
-      "key": "apple_rules_lint@0.3.2",
-      "repoName": "apple_rules_lint",
-      "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [],
-      "extensionUsages": [
-        {
-          "extensionBzlFile": "@apple_rules_lint//lint:extensions.bzl",
-          "extensionName": "linter",
-          "usingModule": "apple_rules_lint@0.3.2",
-          "location": {
-            "file": "https://bcr.bazel.build/modules/apple_rules_lint/0.3.2/MODULE.bazel",
-            "line": 9,
-            "column": 23
-          },
-          "imports": {
-            "apple_linters": "apple_linters"
-          },
-          "devImports": [],
-          "tags": [],
-          "hasDevUseExtension": false,
-          "hasNonDevUseExtension": true
-        }
-      ],
-      "deps": {
-        "bazel_skylib": "bazel_skylib@1.5.0",
-        "io_bazel_stardoc": "stardoc@0.5.6",
-        "bazel_tools": "bazel_tools@_",
-        "local_config_platform": "local_config_platform@_"
-      },
-      "repoSpec": {
-        "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-        "ruleClassName": "http_archive",
-        "attributes": {
-          "urls": [
-            "https://github.com/apple/apple_rules_lint/archive/refs/tags/0.3.2.tar.gz"
-          ],
-          "integrity": "sha256-fDzEWpXj72+8SEpCNHiaAn4RUZ9FTfY8u5Y6xJnxA/k=",
-          "strip_prefix": "apple_rules_lint-0.3.2",
-          "remote_patches": {},
-          "remote_patch_strip": 0
-        }
-      }
-    },
     "bazel_skylib@1.5.0": {
       "name": "bazel_skylib",
       "version": "1.5.0",
@@ -1998,6 +2053,35 @@
             "https://github.com/bazelbuild/bazel-skylib/releases/download/1.5.0/bazel-skylib-1.5.0.tar.gz"
           ],
           "integrity": "sha256-zVWgYudjuTSZIfD124w5MyiNyLpPdt2UFqrGis7jy5Q=",
+          "strip_prefix": "",
+          "remote_patches": {},
+          "remote_patch_strip": 0
+        }
+      }
+    },
+    "stardoc@0.5.6": {
+      "name": "stardoc",
+      "version": "0.5.6",
+      "key": "stardoc@0.5.6",
+      "repoName": "stardoc",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [],
+      "deps": {
+        "bazel_skylib": "bazel_skylib@1.5.0",
+        "rules_java": "rules_java@7.4.0",
+        "rules_license": "rules_license@0.0.8",
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_"
+      },
+      "repoSpec": {
+        "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+        "ruleClassName": "http_archive",
+        "attributes": {
+          "urls": [
+            "https://github.com/bazelbuild/stardoc/releases/download/0.5.6/stardoc-0.5.6.tar.gz"
+          ],
+          "integrity": "sha256-37w2Sq7BQ99ebFL68fEWZ3WltECCQ/RF9EtmHP3DE08=",
           "strip_prefix": "",
           "remote_patches": {},
           "remote_patch_strip": 0
@@ -2625,35 +2709,6 @@
             "https://bcr.bazel.build/modules/rules_kotlin/1.9.0/patches/module_dot_bazel_version.patch": "sha256-nDFDlp2ujd74k9mEF0Bh7pZqBt+CUCF2bZHIaFgM25g="
           },
           "remote_patch_strip": 1
-        }
-      }
-    },
-    "stardoc@0.5.6": {
-      "name": "stardoc",
-      "version": "0.5.6",
-      "key": "stardoc@0.5.6",
-      "repoName": "stardoc",
-      "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [],
-      "extensionUsages": [],
-      "deps": {
-        "bazel_skylib": "bazel_skylib@1.5.0",
-        "rules_java": "rules_java@7.4.0",
-        "rules_license": "rules_license@0.0.8",
-        "bazel_tools": "bazel_tools@_",
-        "local_config_platform": "local_config_platform@_"
-      },
-      "repoSpec": {
-        "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-        "ruleClassName": "http_archive",
-        "attributes": {
-          "urls": [
-            "https://github.com/bazelbuild/stardoc/releases/download/0.5.6/stardoc-0.5.6.tar.gz"
-          ],
-          "integrity": "sha256-37w2Sq7BQ99ebFL68fEWZ3WltECCQ/RF9EtmHP3DE08=",
-          "strip_prefix": "",
-          "remote_patches": {},
-          "remote_patch_strip": 0
         }
       }
     },
@@ -4258,7 +4313,10 @@
             "bzlFile": "@@apple_rules_lint~//lint/private:register_linters.bzl",
             "ruleClassName": "register_linters",
             "attributes": {
-              "linters": {}
+              "linters": {
+                "java-spotbugs": "'@@//java:spotbugs-config'",
+                "rust-rustfmt": "'@@//rust:enable-rustfmt'"
+              }
             }
           }
         },
