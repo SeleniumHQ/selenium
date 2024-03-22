@@ -201,36 +201,6 @@ http_archive(
 )
 
 http_archive(
-    name = "rules_rust",
-    sha256 = "50ec4b84a7ec5370f5882d52f4a1e6b8a75de2f8dcc0a4403747b69b2c4ef5b1",
-    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.23.0/rules_rust-v0.23.0.tar.gz"],
-)
-
-load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
-
-rules_rust_dependencies()
-
-rust_register_toolchains(
-    edition = "2021",
-    versions = [
-        "1.76.0",
-    ],
-)
-
-load("@rules_rust//crate_universe:defs.bzl", "crates_repository")
-
-crates_repository(
-    name = "crates",
-    cargo_lockfile = "//rust:Cargo.lock",
-    lockfile = "//rust:Cargo.Bazel.lock",
-    manifests = ["//rust:Cargo.toml"],
-)
-
-load("@crates//:defs.bzl", "crate_repositories")
-
-crate_repositories()
-
-http_archive(
     name = "aspect_rules_js",
     sha256 = "a2f941e27f02e84521c2d47fd530c66d57dd6d6e44b4a4f1496fe304851d8e48",
     strip_prefix = "rules_js-1.35.0",
