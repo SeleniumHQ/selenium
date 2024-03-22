@@ -14,6 +14,8 @@ namespace OpenQA.Selenium
         [OneTimeSetUp]
         public void RunBeforeAnyTest()
         {
+            Internal.Logging.Log.SetLevel(Internal.Logging.LogEventLevel.Trace);
+
             EnvironmentManager.Instance.WebServer.Start();
             if (EnvironmentManager.Instance.Browser == Browser.Remote)
             {
