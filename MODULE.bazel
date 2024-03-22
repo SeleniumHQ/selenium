@@ -1,6 +1,8 @@
 module(name = "selenium")
 
+bazel_dep(name = "platforms", version = "0.0.8")
 bazel_dep(name = "rules_dotnet", version = "0.14.0")
+bazel_dep(name = "rules_python", version = "0.31.0")
 bazel_dep(name = "rules_ruby", version = "0.8.1")
 bazel_dep(name = "rules_rust", version = "0.40.0")
 
@@ -12,6 +14,34 @@ selenium_paket = use_extension("//dotnet:paket.nuget_extension.bzl", "nuget_exte
 use_repo(selenium_paket, "paket.nuget")
 
 register_toolchains("@dotnet_toolchains//:all")
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(
+    is_default = True,
+    python_version = "3.8",
+)
+python.toolchain(python_version = "3.9")
+python.toolchain(python_version = "3.10")
+python.toolchain(python_version = "3.11")
+use_repo(python, "pythons_hub")
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+[
+    pip.parse(
+        hub_name = "py_dev_requirements",
+        python_version = version,
+        requirements_lock = "//py:requirements_lock.txt",
+    )
+    for version in [
+        "3.8",
+        "3.9",
+        "3.10",
+        "3.11",
+    ]
+]
+use_repo(pip, "py_dev_requirements")
+
+register_toolchains("@pythons_hub//:all")
 
 ruby = use_extension("@rules_ruby//ruby:extensions.bzl", "ruby")
 ruby.toolchain(
