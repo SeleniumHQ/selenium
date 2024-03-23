@@ -5,6 +5,7 @@ bazel_dep(name = "aspect_rules_esbuild", version = "0.18.0")
 bazel_dep(name = "aspect_rules_js", version = "1.35.0")
 bazel_dep(name = "aspect_rules_ts", version = "2.1.0")
 bazel_dep(name = "bazel_features", version = "1.9.0")
+bazel_dep(name = "bazel_skylib", version = "1.5.0")
 bazel_dep(name = "buildifier_prebuilt", version = "6.4.0")
 bazel_dep(name = "contrib_rules_jvm", version = "0.24.0")
 bazel_dep(name = "platforms", version = "0.0.8")
@@ -327,4 +328,31 @@ crate.from_cargo(
 use_repo(crate, "crates")
 
 selenium_manager_artifacts = use_extension("//common:selenium_manager.bzl", "selenium_manager_artifacts")
-use_repo(selenium_manager_artifacts, "download_sm_linux", "download_sm_macos", "download_sm_windows")
+use_repo(
+    selenium_manager_artifacts,
+    "download_sm_linux",
+    "download_sm_macos",
+    "download_sm_windows",
+)
+
+pin_browsers_extension = use_extension("//common:repositories.bzl", "pin_browsers_extension")
+use_repo(
+    pin_browsers_extension,
+    "linux_firefox",
+    "mac_firefox",
+    "linux_beta_firefox",
+    "mac_beta_firefox",
+    "linux_geckodriver",
+    "mac_geckodriver",
+    "linux_edge",
+    "mac_edge",
+    "linux_edgedriver",
+    "mac_edgedriver",
+    "linux_chrome",
+    "mac_chrome",
+    "linux_chromedriver",
+    "mac_chromedriver",
+)
+
+local_drivers = use_repo_rule("//common/private:drivers.bzl", "local_drivers")
+local_drivers(name = "local_drivers")

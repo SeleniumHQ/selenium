@@ -28,9 +28,6 @@ def _local_drivers_impl(repository_ctx):
 
     repository_ctx.file("BUILD.bazel", "\n".join(contents))
 
-_local_drivers = repository_rule(
+local_drivers = repository_rule(
     _local_drivers_impl,
 )
-
-def local_drivers():
-    _local_drivers(name = "local_drivers")
