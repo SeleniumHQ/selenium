@@ -28,12 +28,3 @@ rules_closure_toolchains()
 load("//common:repositories.bzl", "pin_browsers")
 
 pin_browsers()
-
-http_archive(
-    name = "com_github_bazelbuild_buildtools",
-    sha256 = "65391537d1ef528bf772ae25d2c163bd5cee6a929b06cad985e0734f1a12610b",
-    strip_prefix = "buildtools-6.1.2",
-    urls = [
-        "https://github.com/bazelbuild/buildtools/archive/refs/tags/v6.1.2.zip",
-    ],
-)
