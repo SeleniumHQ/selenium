@@ -179,6 +179,10 @@ namespace OpenQA.Selenium.Environment
                 options.PageLoadStrategy = overriddenOptions.PageLoadStrategy;
                 options.UnhandledPromptBehavior = overriddenOptions.UnhandledPromptBehavior;
                 options.Proxy = overriddenOptions.Proxy;
+
+                options.ScriptTimeout = overriddenOptions.ScriptTimeout;
+                options.PageLoadTimeout = overriddenOptions.PageLoadTimeout;
+                options.ImplicitWaitTimeout = overriddenOptions.ImplicitWaitTimeout;
             }
 
             return options;
