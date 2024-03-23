@@ -74,6 +74,14 @@ def selenium_manager():
     content = content + print_linux(base_url, sha_dict['linux'])
     content = content + print_macos(base_url, sha_dict['macos'])
     content = content + print_windows(base_url, sha_dict['windows'])
+    content += """
+def _selenium_manager_artifacts_impl(_ctx):
+    selenium_manager()
+
+selenium_manager_artifacts = module_extension(
+    implementation = _selenium_manager_artifacts_impl,
+)
+"""
 
     current_script_dir = Path(os.path.realpath(__file__)).parent
     target_file_path = current_script_dir.parent / "common/selenium_manager.bzl"

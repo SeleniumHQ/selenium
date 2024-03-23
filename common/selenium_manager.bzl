@@ -23,3 +23,10 @@ def selenium_manager():
         sha256 = "13bd63fa51a75bbf1b98beb221edceed3f33bacf2e3b25cd39ef4e6ac84371eb",
         url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-6a15586/selenium-manager-windows.exe",
     )
+
+def _selenium_manager_artifacts_impl(_ctx):
+    selenium_manager()
+
+selenium_manager_artifacts = module_extension(
+    implementation = _selenium_manager_artifacts_impl,
+)
