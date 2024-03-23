@@ -1,11 +1,16 @@
 module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.3.2")
+bazel_dep(name = "aspect_rules_esbuild", version = "0.18.0")
+bazel_dep(name = "aspect_rules_js", version = "1.35.0")
+bazel_dep(name = "aspect_rules_ts", version = "2.1.0")
+bazel_dep(name = "bazel_features", version = "1.9.0")
 bazel_dep(name = "contrib_rules_jvm", version = "0.24.0")
 bazel_dep(name = "platforms", version = "0.0.8")
 bazel_dep(name = "rules_dotnet", version = "0.14.0")
 bazel_dep(name = "rules_java", version = "7.4.0")
 bazel_dep(name = "rules_jvm_external", version = "6.0")
+bazel_dep(name = "rules_nodejs", version = "5.8.3")
 bazel_dep(name = "rules_python", version = "0.31.0")
 bazel_dep(name = "rules_ruby", version = "0.8.1")
 bazel_dep(name = "rules_rust", version = "0.40.0")
@@ -20,6 +25,42 @@ linter.configure(
     config = "//rust:enable-rustfmt",
 )
 linter.register(name = "rust-rustfmt")
+
+node = use_extension("@aspect_rules_js//node:extensions.bzl", "node")
+node.toolchain(node_version = "18.17.0")
+
+npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
+npm.npm_translate_lock(
+    name = "npm",
+    data = [
+        "@//:package.json",
+        "@//:pnpm-workspace.yaml",
+        "@//javascript/grid-ui:package.json",
+        "@//javascript/node/selenium-webdriver:package.json",
+    ],
+    generate_bzl_library_targets = True,
+    npmrc = "//:.npmrc",
+    pnpm_lock = "//:pnpm-lock.yaml",
+    update_pnpm_lock = True,
+    verify_node_modules_ignored = "//:.bazelignore",
+)
+use_repo(npm, "npm")
+
+rules_ts_ext = use_extension(
+    "@aspect_rules_ts//ts:extensions.bzl",
+    "ext",
+    dev_dependency = True,
+)
+rules_ts_ext.deps(
+    ts_version = "4.9.5",
+)
+use_repo(rules_ts_ext, "npm_typescript")
+
+esbuild = use_extension("@aspect_rules_esbuild//esbuild:extensions.bzl", "esbuild")
+esbuild.toolchain(esbuild_version = "0.19.9")
+use_repo(esbuild, "esbuild_toolchains")
+
+register_toolchains("@esbuild_toolchains//:all")
 
 dotnet = use_extension("@rules_dotnet//dotnet:extensions.bzl", "dotnet")
 dotnet.toolchain(dotnet_version = "7.0.400")
