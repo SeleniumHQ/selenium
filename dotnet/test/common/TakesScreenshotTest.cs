@@ -69,6 +69,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         [IgnoreBrowser(Browser.Chrome, "Color comparisons fail on Chrome")]
         [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
+        [IgnoreBrowser(Browser.Firefox, "Not working properly in RBE, works locally with pinned browsers")]
         public void ShouldCaptureScreenshotOfCurrentViewport()
         {
 #if NET6_0
