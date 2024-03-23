@@ -1,13 +1,13 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
     [SetUpFixture]
     // Outside a namespace to affect the entire assembly
-    public class AssemblyTeardown
+    public class AssemblyFixture
     {
-        public AssemblyTeardown()
+        public AssemblyFixture()
         {
         }
 

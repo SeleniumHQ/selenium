@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <style>
   body {
     margin: 0;
@@ -17,6 +17,5 @@
 <div></div>
 <script>
   var clicks = []
-  document.querySelector('div')
-    .addEventListener('click', e => clicks.push([e.clientX, e.clientY]))
+  document.querySelector('div').addEventListener('click', (e) => clicks.push([e.clientX, e.clientY]))
 </script>
