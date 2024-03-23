@@ -325,4 +325,5 @@ crate.from_cargo(
 )
 use_repo(crate, "crates")
 
-register_toolchains("@rust_toolchains//:all")
+selenium_manager_artifacts = use_extension("//common:selenium_manager.bzl", "selenium_manager_artifacts")
+use_repo(selenium_manager_artifacts, "download_sm_linux", "download_sm_macos", "download_sm_windows")
