@@ -24,7 +24,3 @@ load("@io_bazel_rules_closure//closure:repositories.bzl", "rules_closure_depende
 rules_closure_dependencies()
 
 rules_closure_toolchains()
-
-load("//common:repositories.bzl", "pin_browsers")
-
-pin_browsers()
