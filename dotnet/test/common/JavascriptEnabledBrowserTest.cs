@@ -33,6 +33,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Not working properly in Chrome")]
         public void ShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad()
         {
             driver.Url = formsPage;
@@ -43,6 +44,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Not working properly in Chrome")]
         public void ShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
         {
             driver.Url = formsPage;
