@@ -502,7 +502,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
   void canNavigateBackInTheBrowserHistory() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     browsingContext.navigate(pages.formPage, ReadinessState.COMPLETE);
@@ -518,7 +517,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
   void canNavigateForwardInTheBrowserHistory() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     browsingContext.navigate(pages.formPage, ReadinessState.COMPLETE);
