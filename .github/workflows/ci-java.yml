@@ -22,7 +22,6 @@ jobs:
         bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest `
             //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest `
             //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest `
-            //java/test/org/openqa/selenium/grid/gridui:OverallGridTest `
             //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest `
             //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest `
             //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
@@ -44,7 +43,6 @@ jobs:
         bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote \
             //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest \
             //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest \
-            //java/test/org/openqa/selenium/grid/gridui:OverallGridTest \
             //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest \
             //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest \
             //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
