@@ -20,7 +20,7 @@ jobs:
       browser: chrome
       cache-key: java-${{ matrix.os }}-tests
       run: |
-        if [[ "${{ runner.os }}" == "windows" ]]; then
+        if [[ "${{ matrix.os }}" == "windows" ]]; then
           bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest ^
               //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest ^
               //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest ^
@@ -53,7 +53,7 @@ jobs:
       browser: chrome
       cache-key: java-${{ matrix.os }}-remote-tests
       run: |
-        if [[ "${{ runner.os }}" == "windows" ]]; then
+        if [[ "${{ matrix.os }}" == "windows" ]]; then
           bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote ^
               //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-remote
         else
