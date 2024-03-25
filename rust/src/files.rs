@@ -280,17 +280,18 @@ pub fn uncompress_deb(
 
     let zip_parent_str = path_to_string(zip_parent);
     let target_str = path_to_string(target);
-    let opt_edge_str = format!(
-        "mv {}/opt/microsoft/{} {}",
-        zip_parent_str, label, target_str
-    );
-    let command = Command::new_single(opt_edge_str.clone());
+    let opt_edge_str = format!("{}/opt/microsoft/{}", zip_parent_str, label);
+    let opt_edge_mv = format!("mv {} {}", opt_edge_str, target_str);
+    let command = Command::new_single(opt_edge_mv.clone());
     log.trace(format!(
         "Moving extracted files and folders from {} to {}",
         opt_edge_str, target_str
     ));
     create_parent_path_if_not_exists(target)?;
-    run_shell_command_by_os(os, command)?;
+    let output = run_shell_command_by_os(os, command)?;
+    if output.is_empty() {
+        fs::rename(&opt_edge_str, &target_str)?;
+    }
 
     Ok(())
 }
