@@ -18,6 +18,7 @@
 
 using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
