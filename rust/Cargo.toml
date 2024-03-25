@@ -12,13 +12,13 @@ Selenium Manager is a CLI tool that automatically manages the browser/driver inf
 """
 
 [dependencies]
-clap = { version = "4.5.2", features = ["derive", "cargo"] }
+clap = { version = "4.5.4", features = ["derive", "cargo"] }
 log = "0.4.21"
-env_logger = "0.10.2"
-regex = "1.10.3"
+env_logger = "0.11.3"
+regex = "1.10.4"
 tokio = { version = "1.36.0", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
 tempfile = "3.10.1"
-reqwest = { version = "0.11.26", default-features = false, features = [ "rustls-tls" ] }
+reqwest = { version = "0.12.2", default-features = false, features = [ "rustls-tls" ] }
 zip = "0.6.6"
 directories = "5.0.1"
 serde = { version = "1.0.197", features = ["derive"] }
@@ -28,7 +28,7 @@ tar = "0.4.40"
 infer = "0.15.0"
 exitcode = "1.1.2"
 is_executable = "1.0.1"
-toml = "0.8.11"
+toml = "0.8.12"
 bzip2 = "0.4.4"
 sevenz-rust = "0.5.4"
 walkdir = "2.5.0"
