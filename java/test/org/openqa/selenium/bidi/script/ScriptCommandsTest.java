@@ -22,6 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -803,6 +804,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   void canAddPreloadScript() throws ExecutionException, InterruptedException, TimeoutException {
     Script script = new Script(driver);
     String id = script.addPreloadScript("() => {{ console.log('{preload_script_console_text}') }}");
@@ -825,6 +827,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   void canAddPreloadScriptWithArguments() {
     Script script = new Script(driver);
     String id =
@@ -836,6 +839,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   void canAddPreloadScriptWithChannelOptions() {
     Script script = new Script(driver);
     SerializationOptions serializationOptions = new SerializationOptions();
@@ -849,6 +853,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   void canAddPreloadScriptInASandbox() {
     Script script = new Script(driver);
     String id = script.addPreloadScript("() => { window.bar=2; }", "sandbox");

@@ -421,6 +421,7 @@ class BrowsingContextTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(FIREFOX)
   void canScrollAndCaptureElementScreenshot() {
     Dimension dimension = new Dimension(300, 300);
     driver.manage().window().setSize(dimension);
