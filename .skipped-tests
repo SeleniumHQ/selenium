@@ -1,5 +1,3 @@
--//java/test/org/openqa/selenium/bidi/browsingcontext:BrowsingContextTest
--//java/test/org/openqa/selenium/bidi/browsingcontext:BrowsingContextTest-remote
 -//java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
 -//java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
 -//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest
@@ -14,8 +12,6 @@
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-edge
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-edge-remote
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-remote
--//java/test/org/openqa/selenium/interactions:DefaultMouseTest
--//java/test/org/openqa/selenium/interactions:DefaultMouseTest-remote
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverScreenshotTest-remote
 -//javascript/atoms:test-chrome
