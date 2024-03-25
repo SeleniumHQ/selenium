@@ -42,6 +42,7 @@ GEM
     drb (2.2.0)
       ruby2_keywords
     ffi (1.16.3)
+    ffi (1.16.3-java)
     ffi (1.16.3-x64-mingw32)
     fileutils (1.7.2)
     git (1.19.1)
@@ -76,7 +77,7 @@ GEM
     public_suffix (5.0.4)
     racc (1.7.3)
     racc (1.7.3-java)
-    rack (2.2.8)
+    rack (2.2.8.1)
     rainbow (3.1.1)
     rake (13.1.0)
     rb-fsevent (0.11.2)
