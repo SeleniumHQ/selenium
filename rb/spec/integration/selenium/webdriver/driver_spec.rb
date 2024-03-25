@@ -148,7 +148,8 @@ module Selenium
         end
 
         it 'raises if invalid locator',
-           exclude: {browser: %i[safari safari_preview], reason: 'Safari raises TimeoutError'} do
+           exclude: {browser: %i[safari safari_preview, chrome],
+            reason: 'Safari raises TimeoutError and https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743'} do
           driver.navigate.to url_for('xhtmlTest.html')
           expect {
             driver.find_element(xpath: '*?//-')
