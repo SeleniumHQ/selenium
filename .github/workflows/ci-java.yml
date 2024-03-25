@@ -19,8 +19,24 @@ jobs:
       os: ${{ matrix.os }}
       browser: chrome
       cache-key: java-${{ matrix.os }}-tests
-      run: >
-        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
+      run: |
+        if [[ "${{ runner.os }}" == "windows" ]]; then
+          bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest ^
+              //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest ^
+              //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest ^
+              //java/test/org/openqa/selenium/grid/gridui:OverallGridTest ^
+              //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest ^
+              //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest ^
+              //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
+        else
+          bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote \
+              //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest \
+              //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest \
+              //java/test/org/openqa/selenium/grid/gridui:OverallGridTest \
+              //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest \
+              //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest \
+              //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
+        fi
 
   remote-tests:
     name: Remote Tests
@@ -36,5 +52,11 @@ jobs:
       os: ${{ matrix.os }}
       browser: chrome
       cache-key: java-${{ matrix.os }}-remote-tests
-      run: >
-        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+      run: |
+        if [[ "${{ runner.os }}" == "windows" ]]; then
+          bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote ^
+              //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-remote
+        else
+          bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote \
+              //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-remote
+        fi
