@@ -1,6 +1,7 @@
 module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.3.2")
+bazel_dep(name = "aspect_bazel_lib", version = "2.5.3")
 bazel_dep(name = "aspect_rules_esbuild", version = "0.18.0")
 bazel_dep(name = "aspect_rules_js", version = "1.35.0")
 bazel_dep(name = "aspect_rules_ts", version = "2.1.0")
@@ -16,6 +17,7 @@ bazel_dep(name = "rules_nodejs", version = "5.8.3")
 bazel_dep(name = "rules_oci", version = "1.0.0")
 bazel_dep(name = "rules_pkg", version = "0.9.1")
 bazel_dep(name = "rules_python", version = "0.31.0")
+bazel_dep(name = "rules_proto", version = "5.3.0-21.7")
 bazel_dep(name = "rules_ruby", version = "0.8.1")
 bazel_dep(name = "rules_rust", version = "0.40.0")
 
