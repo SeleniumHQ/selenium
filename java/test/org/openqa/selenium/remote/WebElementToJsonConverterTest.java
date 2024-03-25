@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.internal;
+package org.openqa.selenium.remote;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,10 +27,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.RemoteWebElement;
 
 class WebElementToJsonConverterTest {
 
@@ -218,6 +218,15 @@ class WebElementToJsonConverterTest {
         ImmutableMap.of(Dialect.W3C.getEncodedElementKey(), "abc123"));
   }
 
+  @Test
+  void shouldConvertShadowRoots() {
+    ShadowRoot context = new ShadowRoot(createIdleDriver(), "abc123");
+    Object value = CONVERTER.apply(new Object[] {context});
+    assertContentsInOrder(
+        new ArrayList<>((Collection<?>) value),
+        ImmutableMap.of(Dialect.W3C.getShadowRootElementKey(), "abc123"));
+  }
+
   private static WrappedWebElement wrapElement(WebElement element) {
     return new WrappedWebElement(element);
   }
@@ -234,5 +243,14 @@ class WebElementToJsonConverterTest {
   private static void assertContentsInOrder(List<?> list, Object... expectedContents) {
     List<Object> expected = asList(expectedContents);
     assertThat(list).isEqualTo(expected);
+  }
+
+  private static RemoteWebDriver createIdleDriver() {
+    return new RemoteWebDriver(cmd -> new Response(), new ImmutableCapabilities()) {
+      @Override
+      protected void startSession(Capabilities capabilities) {
+        // Do nothing
+      }
+    };
   }
 }
