@@ -59,7 +59,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canAddIntercept() {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -72,7 +71,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canContinueRequest() throws InterruptedException {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -107,7 +105,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canContinueResponse() throws InterruptedException {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -137,7 +134,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canProvideResponse() throws InterruptedException {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -202,7 +198,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canRemoveIntercept() {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -217,7 +212,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canContinueWithAuthCredentials() {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
@@ -237,7 +231,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canContinueWithoutAuthCredentials() {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
@@ -257,7 +250,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canCancelAuth() {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
@@ -276,7 +268,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canFailRequest() {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT));
