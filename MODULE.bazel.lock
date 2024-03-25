@@ -4095,7 +4095,6 @@
         ]
       }
     },
-<<<<<<< HEAD
     "//dotnet:paket.nuget_extension.bzl%nuget_extension": {
       "general": {
         "bzlTransitiveDigest": "cUw6jmT9cCbJdO4xf5FiJOraLjX/q1lLN84X4xtwdGE=",
@@ -5411,8 +5410,6 @@
         ]
       }
     },
-=======
->>>>>>> 4b5723572a ([bazel] Add missing dependencies)
     "@@apple_rules_lint~//lint:extensions.bzl%linter": {
       "general": {
         "bzlTransitiveDigest": "g7izj5kLCmsajh8IospHh4ZQ35dyM0FIrA8D4HapAsM=",
@@ -6043,7 +6040,7 @@
       "general": {
         "bzlTransitiveDigest": "ms4wt1ySxRAuQ214hJabSPW5swxFSeV2QEB8T1yrejg=",
         "recordedFileInputs": {
-          "@@//pnpm-lock.yaml": "5df93481cb37be2797fafb72c863f79ae5e5ea952c6711c985dc4cf5f213c32a",
+          "@@//pnpm-lock.yaml": "57dafa3cb1a8bf9e2ea209541fc85508c70027c8d9882640ee01f4ca1b0429f6",
           "@@//.npmrc": "25afec638a4a1dc4a7277d8babd30464e9d942cf93d3e47505a4677adad1a901"
         },
         "recordedDirentsInputs": {},
@@ -6072,30 +6069,6 @@
               "package_visibility": [
                 "//visibility:public"
               ]
-            }
-          },
-          "npm__at_mui_private-theming__5.15.8__28312804": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_rule",
-            "attributes": {
-              "package": "@mui/private-theming",
-              "version": "5.15.8_28312804",
-              "root_package": "",
-              "link_workspace": "",
-              "link_packages": {},
-              "integrity": "sha512-HMDPO416iMZPqs8nGUL3GJMDNpJtE1Uefw/Aw+zTKJHX5JnT+Bms41e2065BUT/zR5dYcKjFP4gQMwW5QX7nvA==",
-              "url": "https://registry.npmjs.org/@mui/private-theming/-/private-theming-5.15.8.tgz",
-              "commit": "",
-              "patch_args": [],
-              "patches": [],
-              "custom_postinstall": "",
-              "npm_auth": "",
-              "npm_auth_basic": "",
-              "npm_auth_username": "",
-              "npm_auth_password": "",
-              "lifecycle_hooks": [],
-              "extra_build_content": "",
-              "generate_bzl_library_targets": true
             }
           },
           "npm__to-fast-properties__2.0.0": {
@@ -7259,7 +7232,7 @@
               },
               "deps": {
                 "@types/history": "4.7.11",
-                "@types/react": "18.2.48",
+                "@types/react": "18.2.70",
                 "@types/react-router": "5.1.19"
               },
               "transitive_closure": {
@@ -7270,7 +7243,7 @@
                   "15.7.11"
                 ],
                 "@types/react": [
-                  "18.2.48"
+                  "18.2.70"
                 ],
                 "@types/react-router": [
                   "5.1.19"
@@ -7562,30 +7535,6 @@
               ]
             }
           },
-          "npm__at_mui_utils__5.15.8__28312804": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_rule",
-            "attributes": {
-              "package": "@mui/utils",
-              "version": "5.15.8_28312804",
-              "root_package": "",
-              "link_workspace": "",
-              "link_packages": {},
-              "integrity": "sha512-Q6Z/xSxi1Z6xQ5Qj9p4ZTHudwfrrwFALtU6H1O222pXudg9Qm0zHdiwJQiHT9L6jMIN78ZujEfGHserMoHUrQw==",
-              "url": "https://registry.npmjs.org/@mui/utils/-/utils-5.15.8.tgz",
-              "commit": "",
-              "patch_args": [],
-              "patches": [],
-              "custom_postinstall": "",
-              "npm_auth": "",
-              "npm_auth_basic": "",
-              "npm_auth_username": "",
-              "npm_auth_password": "",
-              "lifecycle_hooks": [],
-              "extra_build_content": "",
-              "generate_bzl_library_targets": true
-            }
-          },
           "npm__is-number-object__1.0.7": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_rule",
@@ -7659,6 +7608,77 @@
               "lifecycle_hooks": [],
               "extra_build_content": "",
               "generate_bzl_library_targets": true
+            }
+          },
+          "npm__at_mui_private-theming__5.15.8__-417419281__links": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_links",
+            "attributes": {
+              "package": "@mui/private-theming",
+              "version": "5.15.8_-417419281",
+              "dev": false,
+              "root_package": "",
+              "link_packages": {},
+              "deps": {
+                "@babel/runtime": "7.23.9",
+                "@mui/utils": "5.15.8_-417419281",
+                "@types/react": "18.2.70",
+                "prop-types": "15.8.1",
+                "react": "18.2.0"
+              },
+              "transitive_closure": {
+                "@babel/runtime": [
+                  "7.23.9"
+                ],
+                "@mui/private-theming": [
+                  "5.15.8_-417419281"
+                ],
+                "@mui/utils": [
+                  "5.15.8_-417419281"
+                ],
+                "@types/prop-types": [
+                  "15.7.11"
+                ],
+                "@types/react": [
+                  "18.2.70"
+                ],
+                "@types/scheduler": [
+                  "0.16.2"
+                ],
+                "csstype": [
+                  "3.1.2"
+                ],
+                "js-tokens": [
+                  "4.0.0"
+                ],
+                "loose-envify": [
+                  "1.4.0"
+                ],
+                "object-assign": [
+                  "4.1.1"
+                ],
+                "prop-types": [
+                  "15.8.1"
+                ],
+                "react": [
+                  "18.2.0"
+                ],
+                "react-is": [
+                  "16.13.1",
+                  "18.2.0"
+                ],
+                "regenerator-runtime": [
+                  "0.14.0"
+                ]
+              },
+              "lifecycle_build_target": false,
+              "lifecycle_hooks_env": [],
+              "lifecycle_hooks_execution_requirements": [],
+              "bins": {},
+              "npm_translate_lock_repo": "npm",
+              "package_visibility": [
+                "//visibility:public"
+              ]
             }
           },
           "npm__js-tokens__4.0.0": {
@@ -11239,34 +11259,6 @@
               ]
             }
           },
-          "npm__at_emotion_react__11.11.3__28312804": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_rule",
-            "attributes": {
-              "package": "@emotion/react",
-              "version": "11.11.3_28312804",
-              "root_package": "",
-              "link_workspace": "",
-              "link_packages": {
-                "javascript/grid-ui": [
-                  "@emotion/react"
-                ]
-              },
-              "integrity": "sha512-Cnn0kuq4DoONOMcnoVsTOR8E+AdnKFf//6kUWc4LCdnxj31pZWn7rIULd6Y7/Js1PiPHzn7SKCM9vB/jBni8eA==",
-              "url": "https://registry.npmjs.org/@emotion/react/-/react-11.11.3.tgz",
-              "commit": "",
-              "patch_args": [],
-              "patches": [],
-              "custom_postinstall": "",
-              "npm_auth": "",
-              "npm_auth_basic": "",
-              "npm_auth_username": "",
-              "npm_auth_password": "",
-              "lifecycle_hooks": [],
-              "extra_build_content": "",
-              "generate_bzl_library_targets": true
-            }
-          },
           "npm__eslint-scope__5.1.1": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_rule",
@@ -11337,6 +11329,291 @@
               "lifecycle_hooks": [],
               "extra_build_content": "",
               "generate_bzl_library_targets": true
+            }
+          },
+          "npm__at_mui_icons-material__5.15.8__-554584225__links": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_links",
+            "attributes": {
+              "package": "@mui/icons-material",
+              "version": "5.15.8_-554584225",
+              "dev": false,
+              "root_package": "",
+              "link_packages": {
+                "javascript/grid-ui": [
+                  "@mui/icons-material"
+                ]
+              },
+              "deps": {
+                "@babel/runtime": "7.23.9",
+                "@mui/material": "5.15.7_1946909678",
+                "@types/react": "18.2.70",
+                "react": "18.2.0"
+              },
+              "transitive_closure": {
+                "@babel/code-frame": [
+                  "7.23.5"
+                ],
+                "@babel/helper-module-imports": [
+                  "7.22.15"
+                ],
+                "@babel/helper-string-parser": [
+                  "7.23.4"
+                ],
+                "@babel/helper-validator-identifier": [
+                  "7.22.20"
+                ],
+                "@babel/highlight": [
+                  "7.23.4"
+                ],
+                "@babel/runtime": [
+                  "7.23.9"
+                ],
+                "@babel/types": [
+                  "7.23.6"
+                ],
+                "@emotion/babel-plugin": [
+                  "11.11.0"
+                ],
+                "@emotion/cache": [
+                  "11.11.0"
+                ],
+                "@emotion/hash": [
+                  "0.9.1"
+                ],
+                "@emotion/is-prop-valid": [
+                  "1.2.1"
+                ],
+                "@emotion/memoize": [
+                  "0.8.1"
+                ],
+                "@emotion/react": [
+                  "11.11.3_-417419281"
+                ],
+                "@emotion/serialize": [
+                  "1.1.3"
+                ],
+                "@emotion/sheet": [
+                  "1.2.2"
+                ],
+                "@emotion/styled": [
+                  "11.11.0_602490610"
+                ],
+                "@emotion/unitless": [
+                  "0.8.1"
+                ],
+                "@emotion/use-insertion-effect-with-fallbacks": [
+                  "1.0.1_react_18.2.0"
+                ],
+                "@emotion/utils": [
+                  "1.2.1"
+                ],
+                "@emotion/weak-memoize": [
+                  "0.3.1"
+                ],
+                "@floating-ui/core": [
+                  "1.6.0"
+                ],
+                "@floating-ui/dom": [
+                  "1.6.1"
+                ],
+                "@floating-ui/react-dom": [
+                  "2.0.8_react-dom_18.2.0__react_18.2.0"
+                ],
+                "@floating-ui/utils": [
+                  "0.2.1"
+                ],
+                "@mui/base": [
+                  "5.0.0-beta.34_456992791"
+                ],
+                "@mui/core-downloads-tracker": [
+                  "5.15.8"
+                ],
+                "@mui/icons-material": [
+                  "5.15.8_-554584225"
+                ],
+                "@mui/material": [
+                  "5.15.7_1946909678"
+                ],
+                "@mui/private-theming": [
+                  "5.15.8_-417419281"
+                ],
+                "@mui/styled-engine": [
+                  "5.15.8_602618506"
+                ],
+                "@mui/system": [
+                  "5.15.8_-2142102650"
+                ],
+                "@mui/types": [
+                  "7.2.13_at_types_react_18.2.70"
+                ],
+                "@mui/utils": [
+                  "5.15.8_-417419281"
+                ],
+                "@popperjs/core": [
+                  "2.11.8"
+                ],
+                "@types/parse-json": [
+                  "4.0.0"
+                ],
+                "@types/prop-types": [
+                  "15.7.11"
+                ],
+                "@types/react": [
+                  "18.2.70"
+                ],
+                "@types/react-transition-group": [
+                  "4.4.10"
+                ],
+                "@types/scheduler": [
+                  "0.16.2"
+                ],
+                "ansi-styles": [
+                  "3.2.1"
+                ],
+                "babel-plugin-macros": [
+                  "3.1.0"
+                ],
+                "callsites": [
+                  "3.1.0"
+                ],
+                "chalk": [
+                  "2.4.2"
+                ],
+                "clsx": [
+                  "2.1.0"
+                ],
+                "color-convert": [
+                  "1.9.3"
+                ],
+                "color-name": [
+                  "1.1.3"
+                ],
+                "convert-source-map": [
+                  "1.9.0"
+                ],
+                "cosmiconfig": [
+                  "7.1.0"
+                ],
+                "csstype": [
+                  "3.1.2"
+                ],
+                "dom-helpers": [
+                  "5.2.1"
+                ],
+                "error-ex": [
+                  "1.3.2"
+                ],
+                "escape-string-regexp": [
+                  "1.0.5",
+                  "4.0.0"
+                ],
+                "find-root": [
+                  "1.1.0"
+                ],
+                "function-bind": [
+                  "1.1.1"
+                ],
+                "has": [
+                  "1.0.3"
+                ],
+                "has-flag": [
+                  "3.0.0"
+                ],
+                "hoist-non-react-statics": [
+                  "3.3.2"
+                ],
+                "import-fresh": [
+                  "3.3.0"
+                ],
+                "is-arrayish": [
+                  "0.2.1"
+                ],
+                "is-core-module": [
+                  "2.11.0"
+                ],
+                "js-tokens": [
+                  "4.0.0"
+                ],
+                "json-parse-even-better-errors": [
+                  "2.3.1"
+                ],
+                "lines-and-columns": [
+                  "1.2.4"
+                ],
+                "loose-envify": [
+                  "1.4.0"
+                ],
+                "object-assign": [
+                  "4.1.1"
+                ],
+                "parent-module": [
+                  "1.0.1"
+                ],
+                "parse-json": [
+                  "5.2.0"
+                ],
+                "path-parse": [
+                  "1.0.7"
+                ],
+                "path-type": [
+                  "4.0.0"
+                ],
+                "prop-types": [
+                  "15.8.1"
+                ],
+                "react": [
+                  "18.2.0"
+                ],
+                "react-dom": [
+                  "18.2.0_react_18.2.0"
+                ],
+                "react-is": [
+                  "16.13.1",
+                  "18.2.0"
+                ],
+                "react-transition-group": [
+                  "4.4.5_react-dom_18.2.0__react_18.2.0"
+                ],
+                "regenerator-runtime": [
+                  "0.14.0"
+                ],
+                "resolve": [
+                  "1.22.1"
+                ],
+                "resolve-from": [
+                  "4.0.0"
+                ],
+                "scheduler": [
+                  "0.23.0"
+                ],
+                "source-map": [
+                  "0.5.7"
+                ],
+                "stylis": [
+                  "4.2.0"
+                ],
+                "supports-color": [
+                  "5.5.0"
+                ],
+                "supports-preserve-symlinks-flag": [
+                  "1.0.0"
+                ],
+                "to-fast-properties": [
+                  "2.0.0"
+                ],
+                "yaml": [
+                  "1.10.2"
+                ]
+              },
+              "lifecycle_build_target": false,
+              "lifecycle_hooks_env": [],
+              "lifecycle_hooks_execution_requirements": [],
+              "bins": {},
+              "npm_translate_lock_repo": "npm",
+              "package_visibility": [
+                "//visibility:public"
+              ]
             }
           },
           "npm__side-channel__1.0.4__links": {
@@ -11447,6 +11724,30 @@
               "link_packages": {},
               "integrity": "sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==",
               "url": "https://registry.npmjs.org/@types/parse-json/-/parse-json-4.0.0.tgz",
+              "commit": "",
+              "patch_args": [],
+              "patches": [],
+              "custom_postinstall": "",
+              "npm_auth": "",
+              "npm_auth_basic": "",
+              "npm_auth_username": "",
+              "npm_auth_password": "",
+              "lifecycle_hooks": [],
+              "extra_build_content": "",
+              "generate_bzl_library_targets": true
+            }
+          },
+          "npm__at_mui_private-theming__5.15.8__-417419281": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_rule",
+            "attributes": {
+              "package": "@mui/private-theming",
+              "version": "5.15.8_-417419281",
+              "root_package": "",
+              "link_workspace": "",
+              "link_packages": {},
+              "integrity": "sha512-HMDPO416iMZPqs8nGUL3GJMDNpJtE1Uefw/Aw+zTKJHX5JnT+Bms41e2065BUT/zR5dYcKjFP4gQMwW5QX7nvA==",
+              "url": "https://registry.npmjs.org/@mui/private-theming/-/private-theming-5.15.8.tgz",
               "commit": "",
               "patch_args": [],
               "patches": [],
@@ -11618,6 +11919,34 @@
               "link_packages": {},
               "integrity": "sha512-FVVTkD1vENCsAcwNs9k6jea2uHC/X0+JcjG8YA60FN5CMaJmG95wT9jek/xX9nornqGRrBkKtzuAu2wuHpKqvw==",
               "url": "https://registry.npmjs.org/object.values/-/object.values-1.1.6.tgz",
+              "commit": "",
+              "patch_args": [],
+              "patches": [],
+              "custom_postinstall": "",
+              "npm_auth": "",
+              "npm_auth_basic": "",
+              "npm_auth_username": "",
+              "npm_auth_password": "",
+              "lifecycle_hooks": [],
+              "extra_build_content": "",
+              "generate_bzl_library_targets": true
+            }
+          },
+          "npm__at_emotion_react__11.11.3__-417419281": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_rule",
+            "attributes": {
+              "package": "@emotion/react",
+              "version": "11.11.3_-417419281",
+              "root_package": "",
+              "link_workspace": "",
+              "link_packages": {
+                "javascript/grid-ui": [
+                  "@emotion/react"
+                ]
+              },
+              "integrity": "sha512-Cnn0kuq4DoONOMcnoVsTOR8E+AdnKFf//6kUWc4LCdnxj31pZWn7rIULd6Y7/Js1PiPHzn7SKCM9vB/jBni8eA==",
+              "url": "https://registry.npmjs.org/@emotion/react/-/react-11.11.3.tgz",
               "commit": "",
               "patch_args": [],
               "patches": [],
@@ -13338,109 +13667,6 @@
               "lifecycle_hooks": [],
               "extra_build_content": "",
               "generate_bzl_library_targets": true
-            }
-          },
-          "npm__at_mui_base__5.0.0-beta.34__-810481204__links": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_links",
-            "attributes": {
-              "package": "@mui/base",
-              "version": "5.0.0-beta.34_-810481204",
-              "dev": false,
-              "root_package": "",
-              "link_packages": {},
-              "deps": {
-                "@babel/runtime": "7.23.9",
-                "@floating-ui/react-dom": "2.0.8_react-dom_18.2.0__react_18.2.0",
-                "@mui/types": "7.2.13_at_types_react_18.2.48",
-                "@mui/utils": "5.15.8_28312804",
-                "@popperjs/core": "2.11.8",
-                "@types/react": "18.2.48",
-                "clsx": "2.1.0",
-                "prop-types": "15.8.1",
-                "react": "18.2.0",
-                "react-dom": "18.2.0_react_18.2.0"
-              },
-              "transitive_closure": {
-                "@babel/runtime": [
-                  "7.23.9"
-                ],
-                "@floating-ui/core": [
-                  "1.6.0"
-                ],
-                "@floating-ui/dom": [
-                  "1.6.1"
-                ],
-                "@floating-ui/react-dom": [
-                  "2.0.8_react-dom_18.2.0__react_18.2.0"
-                ],
-                "@floating-ui/utils": [
-                  "0.2.1"
-                ],
-                "@mui/base": [
-                  "5.0.0-beta.34_-810481204"
-                ],
-                "@mui/types": [
-                  "7.2.13_at_types_react_18.2.48"
-                ],
-                "@mui/utils": [
-                  "5.15.8_28312804"
-                ],
-                "@popperjs/core": [
-                  "2.11.8"
-                ],
-                "@types/prop-types": [
-                  "15.7.11"
-                ],
-                "@types/react": [
-                  "18.2.48"
-                ],
-                "@types/scheduler": [
-                  "0.16.2"
-                ],
-                "clsx": [
-                  "2.1.0"
-                ],
-                "csstype": [
-                  "3.1.2"
-                ],
-                "js-tokens": [
-                  "4.0.0"
-                ],
-                "loose-envify": [
-                  "1.4.0"
-                ],
-                "object-assign": [
-                  "4.1.1"
-                ],
-                "prop-types": [
-                  "15.8.1"
-                ],
-                "react": [
-                  "18.2.0"
-                ],
-                "react-dom": [
-                  "18.2.0_react_18.2.0"
-                ],
-                "react-is": [
-                  "16.13.1",
-                  "18.2.0"
-                ],
-                "regenerator-runtime": [
-                  "0.14.0"
-                ],
-                "scheduler": [
-                  "0.23.0"
-                ]
-              },
-              "lifecycle_build_target": false,
-              "lifecycle_hooks_env": [],
-              "lifecycle_hooks_execution_requirements": [],
-              "bins": {},
-              "npm_translate_lock_repo": "npm",
-              "package_visibility": [
-                "//visibility:public"
-              ]
             }
           },
           "npm__eslint-config-prettier__9.1.0__eslint_8.57.0": {
@@ -18328,6 +18554,109 @@
               ]
             }
           },
+          "npm__at_mui_base__5.0.0-beta.34__456992791__links": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_links",
+            "attributes": {
+              "package": "@mui/base",
+              "version": "5.0.0-beta.34_456992791",
+              "dev": false,
+              "root_package": "",
+              "link_packages": {},
+              "deps": {
+                "@babel/runtime": "7.23.9",
+                "@floating-ui/react-dom": "2.0.8_react-dom_18.2.0__react_18.2.0",
+                "@mui/types": "7.2.13_at_types_react_18.2.70",
+                "@mui/utils": "5.15.8_-417419281",
+                "@popperjs/core": "2.11.8",
+                "@types/react": "18.2.70",
+                "clsx": "2.1.0",
+                "prop-types": "15.8.1",
+                "react": "18.2.0",
+                "react-dom": "18.2.0_react_18.2.0"
+              },
+              "transitive_closure": {
+                "@babel/runtime": [
+                  "7.23.9"
+                ],
+                "@floating-ui/core": [
+                  "1.6.0"
+                ],
+                "@floating-ui/dom": [
+                  "1.6.1"
+                ],
+                "@floating-ui/react-dom": [
+                  "2.0.8_react-dom_18.2.0__react_18.2.0"
+                ],
+                "@floating-ui/utils": [
+                  "0.2.1"
+                ],
+                "@mui/base": [
+                  "5.0.0-beta.34_456992791"
+                ],
+                "@mui/types": [
+                  "7.2.13_at_types_react_18.2.70"
+                ],
+                "@mui/utils": [
+                  "5.15.8_-417419281"
+                ],
+                "@popperjs/core": [
+                  "2.11.8"
+                ],
+                "@types/prop-types": [
+                  "15.7.11"
+                ],
+                "@types/react": [
+                  "18.2.70"
+                ],
+                "@types/scheduler": [
+                  "0.16.2"
+                ],
+                "clsx": [
+                  "2.1.0"
+                ],
+                "csstype": [
+                  "3.1.2"
+                ],
+                "js-tokens": [
+                  "4.0.0"
+                ],
+                "loose-envify": [
+                  "1.4.0"
+                ],
+                "object-assign": [
+                  "4.1.1"
+                ],
+                "prop-types": [
+                  "15.8.1"
+                ],
+                "react": [
+                  "18.2.0"
+                ],
+                "react-dom": [
+                  "18.2.0_react_18.2.0"
+                ],
+                "react-is": [
+                  "16.13.1",
+                  "18.2.0"
+                ],
+                "regenerator-runtime": [
+                  "0.14.0"
+                ],
+                "scheduler": [
+                  "0.23.0"
+                ]
+              },
+              "lifecycle_build_target": false,
+              "lifecycle_hooks_env": [],
+              "lifecycle_hooks_execution_requirements": [],
+              "bins": {},
+              "npm_translate_lock_repo": "npm",
+              "package_visibility": [
+                "//visibility:public"
+              ]
+            }
+          },
           "npm__at_esbuild_linux-arm64__0.19.12__links": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_links",
@@ -18704,301 +19033,6 @@
               "lifecycle_hooks": [],
               "extra_build_content": "",
               "generate_bzl_library_targets": true
-            }
-          },
-          "npm__at_mui_material__5.15.7__679435683__links": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_links",
-            "attributes": {
-              "package": "@mui/material",
-              "version": "5.15.7_679435683",
-              "dev": false,
-              "root_package": "",
-              "link_packages": {
-                "javascript/grid-ui": [
-                  "@mui/material"
-                ]
-              },
-              "deps": {
-                "@babel/runtime": "7.23.9",
-                "@emotion/react": "11.11.3_28312804",
-                "@emotion/styled": "11.11.0_1048222695",
-                "@mui/base": "5.0.0-beta.34_-810481204",
-                "@mui/core-downloads-tracker": "5.15.8",
-                "@mui/system": "5.15.8_-1696370565",
-                "@mui/types": "7.2.13_at_types_react_18.2.48",
-                "@mui/utils": "5.15.8_28312804",
-                "@types/react": "18.2.48",
-                "@types/react-transition-group": "4.4.10",
-                "clsx": "2.1.0",
-                "csstype": "3.1.2",
-                "prop-types": "15.8.1",
-                "react": "18.2.0",
-                "react-dom": "18.2.0_react_18.2.0",
-                "react-is": "18.2.0",
-                "react-transition-group": "4.4.5_react-dom_18.2.0__react_18.2.0"
-              },
-              "transitive_closure": {
-                "@babel/code-frame": [
-                  "7.23.5"
-                ],
-                "@babel/helper-module-imports": [
-                  "7.22.15"
-                ],
-                "@babel/helper-string-parser": [
-                  "7.23.4"
-                ],
-                "@babel/helper-validator-identifier": [
-                  "7.22.20"
-                ],
-                "@babel/highlight": [
-                  "7.23.4"
-                ],
-                "@babel/runtime": [
-                  "7.23.9"
-                ],
-                "@babel/types": [
-                  "7.23.6"
-                ],
-                "@emotion/babel-plugin": [
-                  "11.11.0"
-                ],
-                "@emotion/cache": [
-                  "11.11.0"
-                ],
-                "@emotion/hash": [
-                  "0.9.1"
-                ],
-                "@emotion/is-prop-valid": [
-                  "1.2.1"
-                ],
-                "@emotion/memoize": [
-                  "0.8.1"
-                ],
-                "@emotion/react": [
-                  "11.11.3_28312804"
-                ],
-                "@emotion/serialize": [
-                  "1.1.3"
-                ],
-                "@emotion/sheet": [
-                  "1.2.2"
-                ],
-                "@emotion/styled": [
-                  "11.11.0_1048222695"
-                ],
-                "@emotion/unitless": [
-                  "0.8.1"
-                ],
-                "@emotion/use-insertion-effect-with-fallbacks": [
-                  "1.0.1_react_18.2.0"
-                ],
-                "@emotion/utils": [
-                  "1.2.1"
-                ],
-                "@emotion/weak-memoize": [
-                  "0.3.1"
-                ],
-                "@floating-ui/core": [
-                  "1.6.0"
-                ],
-                "@floating-ui/dom": [
-                  "1.6.1"
-                ],
-                "@floating-ui/react-dom": [
-                  "2.0.8_react-dom_18.2.0__react_18.2.0"
-                ],
-                "@floating-ui/utils": [
-                  "0.2.1"
-                ],
-                "@mui/base": [
-                  "5.0.0-beta.34_-810481204"
-                ],
-                "@mui/core-downloads-tracker": [
-                  "5.15.8"
-                ],
-                "@mui/material": [
-                  "5.15.7_679435683"
-                ],
-                "@mui/private-theming": [
-                  "5.15.8_28312804"
-                ],
-                "@mui/styled-engine": [
-                  "5.15.8_602618506"
-                ],
-                "@mui/system": [
-                  "5.15.8_-1696370565"
-                ],
-                "@mui/types": [
-                  "7.2.13_at_types_react_18.2.48"
-                ],
-                "@mui/utils": [
-                  "5.15.8_28312804"
-                ],
-                "@popperjs/core": [
-                  "2.11.8"
-                ],
-                "@types/parse-json": [
-                  "4.0.0"
-                ],
-                "@types/prop-types": [
-                  "15.7.11"
-                ],
-                "@types/react": [
-                  "18.2.48"
-                ],
-                "@types/react-transition-group": [
-                  "4.4.10"
-                ],
-                "@types/scheduler": [
-                  "0.16.2"
-                ],
-                "ansi-styles": [
-                  "3.2.1"
-                ],
-                "babel-plugin-macros": [
-                  "3.1.0"
-                ],
-                "callsites": [
-                  "3.1.0"
-                ],
-                "chalk": [
-                  "2.4.2"
-                ],
-                "clsx": [
-                  "2.1.0"
-                ],
-                "color-convert": [
-                  "1.9.3"
-                ],
-                "color-name": [
-                  "1.1.3"
-                ],
-                "convert-source-map": [
-                  "1.9.0"
-                ],
-                "cosmiconfig": [
-                  "7.1.0"
-                ],
-                "csstype": [
-                  "3.1.2"
-                ],
-                "dom-helpers": [
-                  "5.2.1"
-                ],
-                "error-ex": [
-                  "1.3.2"
-                ],
-                "escape-string-regexp": [
-                  "1.0.5",
-                  "4.0.0"
-                ],
-                "find-root": [
-                  "1.1.0"
-                ],
-                "function-bind": [
-                  "1.1.1"
-                ],
-                "has": [
-                  "1.0.3"
-                ],
-                "has-flag": [
-                  "3.0.0"
-                ],
-                "hoist-non-react-statics": [
-                  "3.3.2"
-                ],
-                "import-fresh": [
-                  "3.3.0"
-                ],
-                "is-arrayish": [
-                  "0.2.1"
-                ],
-                "is-core-module": [
-                  "2.11.0"
-                ],
-                "js-tokens": [
-                  "4.0.0"
-                ],
-                "json-parse-even-better-errors": [
-                  "2.3.1"
-                ],
-                "lines-and-columns": [
-                  "1.2.4"
-                ],
-                "loose-envify": [
-                  "1.4.0"
-                ],
-                "object-assign": [
-                  "4.1.1"
-                ],
-                "parent-module": [
-                  "1.0.1"
-                ],
-                "parse-json": [
-                  "5.2.0"
-                ],
-                "path-parse": [
-                  "1.0.7"
-                ],
-                "path-type": [
-                  "4.0.0"
-                ],
-                "prop-types": [
-                  "15.8.1"
-                ],
-                "react": [
-                  "18.2.0"
-                ],
-                "react-dom": [
-                  "18.2.0_react_18.2.0"
-                ],
-                "react-is": [
-                  "16.13.1",
-                  "18.2.0"
-                ],
-                "react-transition-group": [
-                  "4.4.5_react-dom_18.2.0__react_18.2.0"
-                ],
-                "regenerator-runtime": [
-                  "0.14.0"
-                ],
-                "resolve": [
-                  "1.22.1"
-                ],
-                "resolve-from": [
-                  "4.0.0"
-                ],
-                "scheduler": [
-                  "0.23.0"
-                ],
-                "source-map": [
-                  "0.5.7"
-                ],
-                "stylis": [
-                  "4.2.0"
-                ],
-                "supports-color": [
-                  "5.5.0"
-                ],
-                "supports-preserve-symlinks-flag": [
-                  "1.0.0"
-                ],
-                "to-fast-properties": [
-                  "2.0.0"
-                ],
-                "yaml": [
-                  "1.10.2"
-                ]
-              },
-              "lifecycle_build_target": false,
-              "lifecycle_hooks_env": [],
-              "lifecycle_hooks_execution_requirements": [],
-              "bins": {},
-              "npm_translate_lock_repo": "npm",
-              "package_visibility": [
-                "//visibility:public"
-              ]
             }
           },
           "npm__at_esbuild_linux-riscv64__0.19.12": {
@@ -20100,34 +20134,6 @@
               "package_visibility": [
                 "//visibility:public"
               ]
-            }
-          },
-          "npm__at_mui_material__5.15.7__679435683": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_rule",
-            "attributes": {
-              "package": "@mui/material",
-              "version": "5.15.7_679435683",
-              "root_package": "",
-              "link_workspace": "",
-              "link_packages": {
-                "javascript/grid-ui": [
-                  "@mui/material"
-                ]
-              },
-              "integrity": "sha512-l6+AiKZH3iOJmZCnlpel8ghYQe9Lq0BEuKP8fGj3g5xz4arO9GydqYAtLPMvuHKtArj8lJGNuT2yHYxmejincA==",
-              "url": "https://registry.npmjs.org/@mui/material/-/material-5.15.7.tgz",
-              "commit": "",
-              "patch_args": [],
-              "patches": [],
-              "custom_postinstall": "",
-              "npm_auth": "",
-              "npm_auth_basic": "",
-              "npm_auth_username": "",
-              "npm_auth_password": "",
-              "lifecycle_hooks": [],
-              "extra_build_content": "",
-              "generate_bzl_library_targets": true
             }
           },
           "npm__fast-json-stable-stringify__2.1.0__links": {
@@ -21607,7 +21613,7 @@
               "link_packages": {},
               "deps": {
                 "@types/history": "4.7.11",
-                "@types/react": "18.2.48"
+                "@types/react": "18.2.70"
               },
               "transitive_closure": {
                 "@types/history": [
@@ -21617,7 +21623,7 @@
                   "15.7.11"
                 ],
                 "@types/react": [
-                  "18.2.48"
+                  "18.2.70"
                 ],
                 "@types/react-router": [
                   "5.1.19"
@@ -21959,253 +21965,6 @@
               ]
             }
           },
-          "npm__at_mui_system__5.15.8__-1696370565__links": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_links",
-            "attributes": {
-              "package": "@mui/system",
-              "version": "5.15.8_-1696370565",
-              "dev": false,
-              "root_package": "",
-              "link_packages": {},
-              "deps": {
-                "@babel/runtime": "7.23.9",
-                "@emotion/react": "11.11.3_28312804",
-                "@emotion/styled": "11.11.0_1048222695",
-                "@mui/private-theming": "5.15.8_28312804",
-                "@mui/styled-engine": "5.15.8_602618506",
-                "@mui/types": "7.2.13_at_types_react_18.2.48",
-                "@mui/utils": "5.15.8_28312804",
-                "@types/react": "18.2.48",
-                "clsx": "2.1.0",
-                "csstype": "3.1.2",
-                "prop-types": "15.8.1",
-                "react": "18.2.0"
-              },
-              "transitive_closure": {
-                "@babel/code-frame": [
-                  "7.23.5"
-                ],
-                "@babel/helper-module-imports": [
-                  "7.22.15"
-                ],
-                "@babel/helper-string-parser": [
-                  "7.23.4"
-                ],
-                "@babel/helper-validator-identifier": [
-                  "7.22.20"
-                ],
-                "@babel/highlight": [
-                  "7.23.4"
-                ],
-                "@babel/runtime": [
-                  "7.23.9"
-                ],
-                "@babel/types": [
-                  "7.23.6"
-                ],
-                "@emotion/babel-plugin": [
-                  "11.11.0"
-                ],
-                "@emotion/cache": [
-                  "11.11.0"
-                ],
-                "@emotion/hash": [
-                  "0.9.1"
-                ],
-                "@emotion/is-prop-valid": [
-                  "1.2.1"
-                ],
-                "@emotion/memoize": [
-                  "0.8.1"
-                ],
-                "@emotion/react": [
-                  "11.11.3_28312804"
-                ],
-                "@emotion/serialize": [
-                  "1.1.3"
-                ],
-                "@emotion/sheet": [
-                  "1.2.2"
-                ],
-                "@emotion/styled": [
-                  "11.11.0_1048222695"
-                ],
-                "@emotion/unitless": [
-                  "0.8.1"
-                ],
-                "@emotion/use-insertion-effect-with-fallbacks": [
-                  "1.0.1_react_18.2.0"
-                ],
-                "@emotion/utils": [
-                  "1.2.1"
-                ],
-                "@emotion/weak-memoize": [
-                  "0.3.1"
-                ],
-                "@mui/private-theming": [
-                  "5.15.8_28312804"
-                ],
-                "@mui/styled-engine": [
-                  "5.15.8_602618506"
-                ],
-                "@mui/system": [
-                  "5.15.8_-1696370565"
-                ],
-                "@mui/types": [
-                  "7.2.13_at_types_react_18.2.48"
-                ],
-                "@mui/utils": [
-                  "5.15.8_28312804"
-                ],
-                "@types/parse-json": [
-                  "4.0.0"
-                ],
-                "@types/prop-types": [
-                  "15.7.11"
-                ],
-                "@types/react": [
-                  "18.2.48"
-                ],
-                "@types/scheduler": [
-                  "0.16.2"
-                ],
-                "ansi-styles": [
-                  "3.2.1"
-                ],
-                "babel-plugin-macros": [
-                  "3.1.0"
-                ],
-                "callsites": [
-                  "3.1.0"
-                ],
-                "chalk": [
-                  "2.4.2"
-                ],
-                "clsx": [
-                  "2.1.0"
-                ],
-                "color-convert": [
-                  "1.9.3"
-                ],
-                "color-name": [
-                  "1.1.3"
-                ],
-                "convert-source-map": [
-                  "1.9.0"
-                ],
-                "cosmiconfig": [
-                  "7.1.0"
-                ],
-                "csstype": [
-                  "3.1.2"
-                ],
-                "error-ex": [
-                  "1.3.2"
-                ],
-                "escape-string-regexp": [
-                  "1.0.5",
-                  "4.0.0"
-                ],
-                "find-root": [
-                  "1.1.0"
-                ],
-                "function-bind": [
-                  "1.1.1"
-                ],
-                "has": [
-                  "1.0.3"
-                ],
-                "has-flag": [
-                  "3.0.0"
-                ],
-                "hoist-non-react-statics": [
-                  "3.3.2"
-                ],
-                "import-fresh": [
-                  "3.3.0"
-                ],
-                "is-arrayish": [
-                  "0.2.1"
-                ],
-                "is-core-module": [
-                  "2.11.0"
-                ],
-                "js-tokens": [
-                  "4.0.0"
-                ],
-                "json-parse-even-better-errors": [
-                  "2.3.1"
-                ],
-                "lines-and-columns": [
-                  "1.2.4"
-                ],
-                "loose-envify": [
-                  "1.4.0"
-                ],
-                "object-assign": [
-                  "4.1.1"
-                ],
-                "parent-module": [
-                  "1.0.1"
-                ],
-                "parse-json": [
-                  "5.2.0"
-                ],
-                "path-parse": [
-                  "1.0.7"
-                ],
-                "path-type": [
-                  "4.0.0"
-                ],
-                "prop-types": [
-                  "15.8.1"
-                ],
-                "react": [
-                  "18.2.0"
-                ],
-                "react-is": [
-                  "16.13.1",
-                  "18.2.0"
-                ],
-                "regenerator-runtime": [
-                  "0.14.0"
-                ],
-                "resolve": [
-                  "1.22.1"
-                ],
-                "resolve-from": [
-                  "4.0.0"
-                ],
-                "source-map": [
-                  "0.5.7"
-                ],
-                "stylis": [
-                  "4.2.0"
-                ],
-                "supports-color": [
-                  "5.5.0"
-                ],
-                "supports-preserve-symlinks-flag": [
-                  "1.0.0"
-                ],
-                "to-fast-properties": [
-                  "2.0.0"
-                ],
-                "yaml": [
-                  "1.10.2"
-                ]
-              },
-              "lifecycle_build_target": false,
-              "lifecycle_hooks_env": [],
-              "lifecycle_hooks_execution_requirements": [],
-              "bins": {},
-              "npm_translate_lock_repo": "npm",
-              "package_visibility": [
-                "//visibility:public"
-              ]
-            }
-          },
           "npm__babel-plugin-macros__3.1.0__links": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_links",
@@ -22386,291 +22145,6 @@
                 ],
                 "is-core-module": [
                   "2.11.0"
-                ]
-              },
-              "lifecycle_build_target": false,
-              "lifecycle_hooks_env": [],
-              "lifecycle_hooks_execution_requirements": [],
-              "bins": {},
-              "npm_translate_lock_repo": "npm",
-              "package_visibility": [
-                "//visibility:public"
-              ]
-            }
-          },
-          "npm__at_mui_icons-material__5.15.8__-108852140__links": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_links",
-            "attributes": {
-              "package": "@mui/icons-material",
-              "version": "5.15.8_-108852140",
-              "dev": false,
-              "root_package": "",
-              "link_packages": {
-                "javascript/grid-ui": [
-                  "@mui/icons-material"
-                ]
-              },
-              "deps": {
-                "@babel/runtime": "7.23.9",
-                "@mui/material": "5.15.7_679435683",
-                "@types/react": "18.2.48",
-                "react": "18.2.0"
-              },
-              "transitive_closure": {
-                "@babel/code-frame": [
-                  "7.23.5"
-                ],
-                "@babel/helper-module-imports": [
-                  "7.22.15"
-                ],
-                "@babel/helper-string-parser": [
-                  "7.23.4"
-                ],
-                "@babel/helper-validator-identifier": [
-                  "7.22.20"
-                ],
-                "@babel/highlight": [
-                  "7.23.4"
-                ],
-                "@babel/runtime": [
-                  "7.23.9"
-                ],
-                "@babel/types": [
-                  "7.23.6"
-                ],
-                "@emotion/babel-plugin": [
-                  "11.11.0"
-                ],
-                "@emotion/cache": [
-                  "11.11.0"
-                ],
-                "@emotion/hash": [
-                  "0.9.1"
-                ],
-                "@emotion/is-prop-valid": [
-                  "1.2.1"
-                ],
-                "@emotion/memoize": [
-                  "0.8.1"
-                ],
-                "@emotion/react": [
-                  "11.11.3_28312804"
-                ],
-                "@emotion/serialize": [
-                  "1.1.3"
-                ],
-                "@emotion/sheet": [
-                  "1.2.2"
-                ],
-                "@emotion/styled": [
-                  "11.11.0_1048222695"
-                ],
-                "@emotion/unitless": [
-                  "0.8.1"
-                ],
-                "@emotion/use-insertion-effect-with-fallbacks": [
-                  "1.0.1_react_18.2.0"
-                ],
-                "@emotion/utils": [
-                  "1.2.1"
-                ],
-                "@emotion/weak-memoize": [
-                  "0.3.1"
-                ],
-                "@floating-ui/core": [
-                  "1.6.0"
-                ],
-                "@floating-ui/dom": [
-                  "1.6.1"
-                ],
-                "@floating-ui/react-dom": [
-                  "2.0.8_react-dom_18.2.0__react_18.2.0"
-                ],
-                "@floating-ui/utils": [
-                  "0.2.1"
-                ],
-                "@mui/base": [
-                  "5.0.0-beta.34_-810481204"
-                ],
-                "@mui/core-downloads-tracker": [
-                  "5.15.8"
-                ],
-                "@mui/icons-material": [
-                  "5.15.8_-108852140"
-                ],
-                "@mui/material": [
-                  "5.15.7_679435683"
-                ],
-                "@mui/private-theming": [
-                  "5.15.8_28312804"
-                ],
-                "@mui/styled-engine": [
-                  "5.15.8_602618506"
-                ],
-                "@mui/system": [
-                  "5.15.8_-1696370565"
-                ],
-                "@mui/types": [
-                  "7.2.13_at_types_react_18.2.48"
-                ],
-                "@mui/utils": [
-                  "5.15.8_28312804"
-                ],
-                "@popperjs/core": [
-                  "2.11.8"
-                ],
-                "@types/parse-json": [
-                  "4.0.0"
-                ],
-                "@types/prop-types": [
-                  "15.7.11"
-                ],
-                "@types/react": [
-                  "18.2.48"
-                ],
-                "@types/react-transition-group": [
-                  "4.4.10"
-                ],
-                "@types/scheduler": [
-                  "0.16.2"
-                ],
-                "ansi-styles": [
-                  "3.2.1"
-                ],
-                "babel-plugin-macros": [
-                  "3.1.0"
-                ],
-                "callsites": [
-                  "3.1.0"
-                ],
-                "chalk": [
-                  "2.4.2"
-                ],
-                "clsx": [
-                  "2.1.0"
-                ],
-                "color-convert": [
-                  "1.9.3"
-                ],
-                "color-name": [
-                  "1.1.3"
-                ],
-                "convert-source-map": [
-                  "1.9.0"
-                ],
-                "cosmiconfig": [
-                  "7.1.0"
-                ],
-                "csstype": [
-                  "3.1.2"
-                ],
-                "dom-helpers": [
-                  "5.2.1"
-                ],
-                "error-ex": [
-                  "1.3.2"
-                ],
-                "escape-string-regexp": [
-                  "1.0.5",
-                  "4.0.0"
-                ],
-                "find-root": [
-                  "1.1.0"
-                ],
-                "function-bind": [
-                  "1.1.1"
-                ],
-                "has": [
-                  "1.0.3"
-                ],
-                "has-flag": [
-                  "3.0.0"
-                ],
-                "hoist-non-react-statics": [
-                  "3.3.2"
-                ],
-                "import-fresh": [
-                  "3.3.0"
-                ],
-                "is-arrayish": [
-                  "0.2.1"
-                ],
-                "is-core-module": [
-                  "2.11.0"
-                ],
-                "js-tokens": [
-                  "4.0.0"
-                ],
-                "json-parse-even-better-errors": [
-                  "2.3.1"
-                ],
-                "lines-and-columns": [
-                  "1.2.4"
-                ],
-                "loose-envify": [
-                  "1.4.0"
-                ],
-                "object-assign": [
-                  "4.1.1"
-                ],
-                "parent-module": [
-                  "1.0.1"
-                ],
-                "parse-json": [
-                  "5.2.0"
-                ],
-                "path-parse": [
-                  "1.0.7"
-                ],
-                "path-type": [
-                  "4.0.0"
-                ],
-                "prop-types": [
-                  "15.8.1"
-                ],
-                "react": [
-                  "18.2.0"
-                ],
-                "react-dom": [
-                  "18.2.0_react_18.2.0"
-                ],
-                "react-is": [
-                  "16.13.1",
-                  "18.2.0"
-                ],
-                "react-transition-group": [
-                  "4.4.5_react-dom_18.2.0__react_18.2.0"
-                ],
-                "regenerator-runtime": [
-                  "0.14.0"
-                ],
-                "resolve": [
-                  "1.22.1"
-                ],
-                "resolve-from": [
-                  "4.0.0"
-                ],
-                "scheduler": [
-                  "0.23.0"
-                ],
-                "source-map": [
-                  "0.5.7"
-                ],
-                "stylis": [
-                  "4.2.0"
-                ],
-                "supports-color": [
-                  "5.5.0"
-                ],
-                "supports-preserve-symlinks-flag": [
-                  "1.0.0"
-                ],
-                "to-fast-properties": [
-                  "2.0.0"
-                ],
-                "yaml": [
-                  "1.10.2"
                 ]
               },
               "lifecycle_build_target": false,
@@ -23677,6 +23151,30 @@
               ]
             }
           },
+          "npm__at_mui_utils__5.15.8__-417419281": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_rule",
+            "attributes": {
+              "package": "@mui/utils",
+              "version": "5.15.8_-417419281",
+              "root_package": "",
+              "link_workspace": "",
+              "link_packages": {},
+              "integrity": "sha512-Q6Z/xSxi1Z6xQ5Qj9p4ZTHudwfrrwFALtU6H1O222pXudg9Qm0zHdiwJQiHT9L6jMIN78ZujEfGHserMoHUrQw==",
+              "url": "https://registry.npmjs.org/@mui/utils/-/utils-5.15.8.tgz",
+              "commit": "",
+              "patch_args": [],
+              "patches": [],
+              "custom_postinstall": "",
+              "npm_auth": "",
+              "npm_auth_basic": "",
+              "npm_auth_username": "",
+              "npm_auth_password": "",
+              "lifecycle_hooks": [],
+              "extra_build_content": "",
+              "generate_bzl_library_targets": true
+            }
+          },
           "npm__is-negative-zero__2.0.2__links": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_links",
@@ -23876,7 +23374,7 @@
                   "15.7.11"
                 ],
                 "@types/react": [
-                  "18.2.48"
+                  "18.2.70"
                 ],
                 "@types/react-dom": [
                   "18.2.18"
@@ -25348,6 +24846,45 @@
               ]
             }
           },
+          "npm__at_mui_types__7.2.13__at_types_react_18.2.70__links": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_links",
+            "attributes": {
+              "package": "@mui/types",
+              "version": "7.2.13_at_types_react_18.2.70",
+              "dev": false,
+              "root_package": "",
+              "link_packages": {},
+              "deps": {
+                "@types/react": "18.2.70"
+              },
+              "transitive_closure": {
+                "@mui/types": [
+                  "7.2.13_at_types_react_18.2.70"
+                ],
+                "@types/prop-types": [
+                  "15.7.11"
+                ],
+                "@types/react": [
+                  "18.2.70"
+                ],
+                "@types/scheduler": [
+                  "0.16.2"
+                ],
+                "csstype": [
+                  "3.1.2"
+                ]
+              },
+              "lifecycle_build_target": false,
+              "lifecycle_hooks_env": [],
+              "lifecycle_hooks_execution_requirements": [],
+              "bins": {},
+              "npm_translate_lock_repo": "npm",
+              "package_visibility": [
+                "//visibility:public"
+              ]
+            }
+          },
           "npm__supports-color__8.1.1__links": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_links",
@@ -25401,6 +24938,34 @@
               "package_visibility": [
                 "//visibility:public"
               ]
+            }
+          },
+          "npm__at_mui_icons-material__5.15.8__-554584225": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_rule",
+            "attributes": {
+              "package": "@mui/icons-material",
+              "version": "5.15.8_-554584225",
+              "root_package": "",
+              "link_workspace": "",
+              "link_packages": {
+                "javascript/grid-ui": [
+                  "@mui/icons-material"
+                ]
+              },
+              "integrity": "sha512-3Ikivf+BOJ7jT1/71HrbKeicgF9ENM4qo+J1050HMJLtLiJEVXbicnsg2oWJZL+0AsrOMaKnTmx1URBpkctLWg==",
+              "url": "https://registry.npmjs.org/@mui/icons-material/-/icons-material-5.15.8.tgz",
+              "commit": "",
+              "patch_args": [],
+              "patches": [],
+              "custom_postinstall": "",
+              "npm_auth": "",
+              "npm_auth_basic": "",
+              "npm_auth_username": "",
+              "npm_auth_password": "",
+              "lifecycle_hooks": [],
+              "extra_build_content": "",
+              "generate_bzl_library_targets": true
             }
           },
           "npm__at_eslint_js__8.52.0__links": {
@@ -27867,8 +27432,8 @@
               "deps": {
                 "@babel/runtime": "7.23.9",
                 "@emotion/cache": "11.11.0",
-                "@emotion/react": "11.11.3_28312804",
-                "@emotion/styled": "11.11.0_1048222695",
+                "@emotion/react": "11.11.3_-417419281",
+                "@emotion/styled": "11.11.0_602490610",
                 "csstype": "3.1.2",
                 "prop-types": "15.8.1",
                 "react": "18.2.0"
@@ -27911,7 +27476,7 @@
                   "0.8.1"
                 ],
                 "@emotion/react": [
-                  "11.11.3_28312804"
+                  "11.11.3_-417419281"
                 ],
                 "@emotion/serialize": [
                   "1.1.3"
@@ -27920,7 +27485,7 @@
                   "1.2.2"
                 ],
                 "@emotion/styled": [
-                  "11.11.0_1048222695"
+                  "11.11.0_602490610"
                 ],
                 "@emotion/unitless": [
                   "0.8.1"
@@ -27944,7 +27509,7 @@
                   "15.7.11"
                 ],
                 "@types/react": [
-                  "18.2.48"
+                  "18.2.70"
                 ],
                 "@types/scheduler": [
                   "0.16.2"
@@ -28141,6 +27706,34 @@
               "package_visibility": [
                 "//visibility:public"
               ]
+            }
+          },
+          "npm__at_emotion_styled__11.11.0__602490610": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_rule",
+            "attributes": {
+              "package": "@emotion/styled",
+              "version": "11.11.0_602490610",
+              "root_package": "",
+              "link_workspace": "",
+              "link_packages": {
+                "javascript/grid-ui": [
+                  "@emotion/styled"
+                ]
+              },
+              "integrity": "sha512-hM5Nnvu9P3midq5aaXj4I+lnSfNi7Pmd4EWk1fOZ3pxookaQTNew6bp4JaCBYM4HVFZF9g7UjJmsUmC2JlxOng==",
+              "url": "https://registry.npmjs.org/@emotion/styled/-/styled-11.11.0.tgz",
+              "commit": "",
+              "patch_args": [],
+              "patches": [],
+              "custom_postinstall": "",
+              "npm_auth": "",
+              "npm_auth_basic": "",
+              "npm_auth_username": "",
+              "npm_auth_password": "",
+              "lifecycle_hooks": [],
+              "extra_build_content": "",
+              "generate_bzl_library_targets": true
             }
           },
           "npm__he__1.2.0__links": {
@@ -28343,34 +27936,6 @@
               ]
             }
           },
-          "npm__at_mui_icons-material__5.15.8__-108852140": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_rule",
-            "attributes": {
-              "package": "@mui/icons-material",
-              "version": "5.15.8_-108852140",
-              "root_package": "",
-              "link_workspace": "",
-              "link_packages": {
-                "javascript/grid-ui": [
-                  "@mui/icons-material"
-                ]
-              },
-              "integrity": "sha512-3Ikivf+BOJ7jT1/71HrbKeicgF9ENM4qo+J1050HMJLtLiJEVXbicnsg2oWJZL+0AsrOMaKnTmx1URBpkctLWg==",
-              "url": "https://registry.npmjs.org/@mui/icons-material/-/icons-material-5.15.8.tgz",
-              "commit": "",
-              "patch_args": [],
-              "patches": [],
-              "custom_postinstall": "",
-              "npm_auth": "",
-              "npm_auth_basic": "",
-              "npm_auth_username": "",
-              "npm_auth_password": "",
-              "lifecycle_hooks": [],
-              "extra_build_content": "",
-              "generate_bzl_library_targets": true
-            }
-          },
           "npm__glob-parent__6.0.2": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_rule",
@@ -28393,6 +27958,229 @@
               "lifecycle_hooks": [],
               "extra_build_content": "",
               "generate_bzl_library_targets": true
+            }
+          },
+          "npm__at_emotion_styled__11.11.0__602490610__links": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_links",
+            "attributes": {
+              "package": "@emotion/styled",
+              "version": "11.11.0_602490610",
+              "dev": false,
+              "root_package": "",
+              "link_packages": {
+                "javascript/grid-ui": [
+                  "@emotion/styled"
+                ]
+              },
+              "deps": {
+                "@babel/runtime": "7.23.9",
+                "@emotion/babel-plugin": "11.11.0",
+                "@emotion/is-prop-valid": "1.2.1",
+                "@emotion/react": "11.11.3_-417419281",
+                "@emotion/serialize": "1.1.3",
+                "@emotion/use-insertion-effect-with-fallbacks": "1.0.1_react_18.2.0",
+                "@emotion/utils": "1.2.1",
+                "@types/react": "18.2.70",
+                "react": "18.2.0"
+              },
+              "transitive_closure": {
+                "@babel/code-frame": [
+                  "7.23.5"
+                ],
+                "@babel/helper-module-imports": [
+                  "7.22.15"
+                ],
+                "@babel/helper-string-parser": [
+                  "7.23.4"
+                ],
+                "@babel/helper-validator-identifier": [
+                  "7.22.20"
+                ],
+                "@babel/highlight": [
+                  "7.23.4"
+                ],
+                "@babel/runtime": [
+                  "7.23.9"
+                ],
+                "@babel/types": [
+                  "7.23.6"
+                ],
+                "@emotion/babel-plugin": [
+                  "11.11.0"
+                ],
+                "@emotion/cache": [
+                  "11.11.0"
+                ],
+                "@emotion/hash": [
+                  "0.9.1"
+                ],
+                "@emotion/is-prop-valid": [
+                  "1.2.1"
+                ],
+                "@emotion/memoize": [
+                  "0.8.1"
+                ],
+                "@emotion/react": [
+                  "11.11.3_-417419281"
+                ],
+                "@emotion/serialize": [
+                  "1.1.3"
+                ],
+                "@emotion/sheet": [
+                  "1.2.2"
+                ],
+                "@emotion/styled": [
+                  "11.11.0_602490610"
+                ],
+                "@emotion/unitless": [
+                  "0.8.1"
+                ],
+                "@emotion/use-insertion-effect-with-fallbacks": [
+                  "1.0.1_react_18.2.0"
+                ],
+                "@emotion/utils": [
+                  "1.2.1"
+                ],
+                "@emotion/weak-memoize": [
+                  "0.3.1"
+                ],
+                "@types/parse-json": [
+                  "4.0.0"
+                ],
+                "@types/prop-types": [
+                  "15.7.11"
+                ],
+                "@types/react": [
+                  "18.2.70"
+                ],
+                "@types/scheduler": [
+                  "0.16.2"
+                ],
+                "ansi-styles": [
+                  "3.2.1"
+                ],
+                "babel-plugin-macros": [
+                  "3.1.0"
+                ],
+                "callsites": [
+                  "3.1.0"
+                ],
+                "chalk": [
+                  "2.4.2"
+                ],
+                "color-convert": [
+                  "1.9.3"
+                ],
+                "color-name": [
+                  "1.1.3"
+                ],
+                "convert-source-map": [
+                  "1.9.0"
+                ],
+                "cosmiconfig": [
+                  "7.1.0"
+                ],
+                "csstype": [
+                  "3.1.2"
+                ],
+                "error-ex": [
+                  "1.3.2"
+                ],
+                "escape-string-regexp": [
+                  "1.0.5",
+                  "4.0.0"
+                ],
+                "find-root": [
+                  "1.1.0"
+                ],
+                "function-bind": [
+                  "1.1.1"
+                ],
+                "has": [
+                  "1.0.3"
+                ],
+                "has-flag": [
+                  "3.0.0"
+                ],
+                "hoist-non-react-statics": [
+                  "3.3.2"
+                ],
+                "import-fresh": [
+                  "3.3.0"
+                ],
+                "is-arrayish": [
+                  "0.2.1"
+                ],
+                "is-core-module": [
+                  "2.11.0"
+                ],
+                "js-tokens": [
+                  "4.0.0"
+                ],
+                "json-parse-even-better-errors": [
+                  "2.3.1"
+                ],
+                "lines-and-columns": [
+                  "1.2.4"
+                ],
+                "loose-envify": [
+                  "1.4.0"
+                ],
+                "parent-module": [
+                  "1.0.1"
+                ],
+                "parse-json": [
+                  "5.2.0"
+                ],
+                "path-parse": [
+                  "1.0.7"
+                ],
+                "path-type": [
+                  "4.0.0"
+                ],
+                "react": [
+                  "18.2.0"
+                ],
+                "react-is": [
+                  "16.13.1"
+                ],
+                "regenerator-runtime": [
+                  "0.14.0"
+                ],
+                "resolve": [
+                  "1.22.1"
+                ],
+                "resolve-from": [
+                  "4.0.0"
+                ],
+                "source-map": [
+                  "0.5.7"
+                ],
+                "stylis": [
+                  "4.2.0"
+                ],
+                "supports-color": [
+                  "5.5.0"
+                ],
+                "supports-preserve-symlinks-flag": [
+                  "1.0.0"
+                ],
+                "to-fast-properties": [
+                  "2.0.0"
+                ],
+                "yaml": [
+                  "1.10.2"
+                ]
+              },
+              "lifecycle_build_target": false,
+              "lifecycle_hooks_env": [],
+              "lifecycle_hooks_execution_requirements": [],
+              "bins": {},
+              "npm_translate_lock_repo": "npm",
+              "package_visibility": [
+                "//visibility:public"
+              ]
             }
           },
           "npm__at_typescript-eslint_typescript-estree__5.44.0__typescript_5.3.3__links": {
@@ -29357,6 +29145,30 @@
               "package_visibility": [
                 "//visibility:public"
               ]
+            }
+          },
+          "npm__at_mui_base__5.0.0-beta.34__456992791": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_rule",
+            "attributes": {
+              "package": "@mui/base",
+              "version": "5.0.0-beta.34_456992791",
+              "root_package": "",
+              "link_workspace": "",
+              "link_packages": {},
+              "integrity": "sha512-e2mbTGTtReD/y5RFwnhkl1Tgl3XwgJhY040IlfkTVaU9f5LWrVhEnpRsYXu3B1CtLrwiWs4cu7aMHV9yRd4jpw==",
+              "url": "https://registry.npmjs.org/@mui/base/-/base-5.0.0-beta.34.tgz",
+              "commit": "",
+              "patch_args": [],
+              "patches": [],
+              "custom_postinstall": "",
+              "npm_auth": "",
+              "npm_auth_basic": "",
+              "npm_auth_username": "",
+              "npm_auth_password": "",
+              "lifecycle_hooks": [],
+              "extra_build_content": "",
+              "generate_bzl_library_targets": true
             }
           },
           "npm__at_typescript-eslint_type-utils__5.44.0__-679725046__links": {
@@ -31335,75 +31147,6 @@
               "generate_bzl_library_targets": true
             }
           },
-          "npm__at_mui_utils__5.15.8__28312804__links": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_links",
-            "attributes": {
-              "package": "@mui/utils",
-              "version": "5.15.8_28312804",
-              "dev": false,
-              "root_package": "",
-              "link_packages": {},
-              "deps": {
-                "@babel/runtime": "7.23.9",
-                "@types/prop-types": "15.7.11",
-                "@types/react": "18.2.48",
-                "prop-types": "15.8.1",
-                "react": "18.2.0",
-                "react-is": "18.2.0"
-              },
-              "transitive_closure": {
-                "@babel/runtime": [
-                  "7.23.9"
-                ],
-                "@mui/utils": [
-                  "5.15.8_28312804"
-                ],
-                "@types/prop-types": [
-                  "15.7.11"
-                ],
-                "@types/react": [
-                  "18.2.48"
-                ],
-                "@types/scheduler": [
-                  "0.16.2"
-                ],
-                "csstype": [
-                  "3.1.2"
-                ],
-                "js-tokens": [
-                  "4.0.0"
-                ],
-                "loose-envify": [
-                  "1.4.0"
-                ],
-                "object-assign": [
-                  "4.1.1"
-                ],
-                "prop-types": [
-                  "15.8.1"
-                ],
-                "react": [
-                  "18.2.0"
-                ],
-                "react-is": [
-                  "16.13.1",
-                  "18.2.0"
-                ],
-                "regenerator-runtime": [
-                  "0.14.0"
-                ]
-              },
-              "lifecycle_build_target": false,
-              "lifecycle_hooks_env": [],
-              "lifecycle_hooks_execution_requirements": [],
-              "bins": {},
-              "npm_translate_lock_repo": "npm",
-              "package_visibility": [
-                "//visibility:public"
-              ]
-            }
-          },
           "npm__buffer-from__1.1.2": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_rule",
@@ -32146,48 +31889,6 @@
               "generate_bzl_library_targets": true
             }
           },
-          "npm__at_types_react__18.2.48__links": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_links",
-            "attributes": {
-              "package": "@types/react",
-              "version": "18.2.48",
-              "dev": false,
-              "root_package": "",
-              "link_packages": {
-                "javascript/grid-ui": [
-                  "@types/react"
-                ]
-              },
-              "deps": {
-                "@types/prop-types": "15.7.11",
-                "@types/scheduler": "0.16.2",
-                "csstype": "3.1.2"
-              },
-              "transitive_closure": {
-                "@types/prop-types": [
-                  "15.7.11"
-                ],
-                "@types/react": [
-                  "18.2.48"
-                ],
-                "@types/scheduler": [
-                  "0.16.2"
-                ],
-                "csstype": [
-                  "3.1.2"
-                ]
-              },
-              "lifecycle_build_target": false,
-              "lifecycle_hooks_env": [],
-              "lifecycle_hooks_execution_requirements": [],
-              "bins": {},
-              "npm_translate_lock_repo": "npm",
-              "package_visibility": [
-                "//visibility:public"
-              ]
-            }
-          },
           "npm__warning__4.0.3__links": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_links",
@@ -32376,6 +32077,30 @@
               "package_visibility": [
                 "//visibility:public"
               ]
+            }
+          },
+          "npm__at_mui_system__5.15.8__-2142102650": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_rule",
+            "attributes": {
+              "package": "@mui/system",
+              "version": "5.15.8_-2142102650",
+              "root_package": "",
+              "link_workspace": "",
+              "link_packages": {},
+              "integrity": "sha512-BUMJvlz1UqIqDPyrvc+MwjOUkWKskUPAOUuRh2KMAworiXuuUmtIivxSfdGll2ex6RHSylu4yc5dJZByOI8EcQ==",
+              "url": "https://registry.npmjs.org/@mui/system/-/system-5.15.8.tgz",
+              "commit": "",
+              "patch_args": [],
+              "patches": [],
+              "custom_postinstall": "",
+              "npm_auth": "",
+              "npm_auth_basic": "",
+              "npm_auth_username": "",
+              "npm_auth_password": "",
+              "lifecycle_hooks": [],
+              "extra_build_content": "",
+              "generate_bzl_library_targets": true
             }
           },
           "npm__eslint__8.52.0__links": {
@@ -33403,6 +33128,34 @@
               "link_packages": {},
               "integrity": "sha512-QPErUVm4uyJa60rkI73qneDacvdvzxshT3kksGqlGWYdOTIUOwJ7RDUL8sGqslY1uXWSL6xMFKEXDS3ox2uF0w==",
               "url": "https://registry.npmjs.org/@babel/template/-/template-7.22.15.tgz",
+              "commit": "",
+              "patch_args": [],
+              "patches": [],
+              "custom_postinstall": "",
+              "npm_auth": "",
+              "npm_auth_basic": "",
+              "npm_auth_username": "",
+              "npm_auth_password": "",
+              "lifecycle_hooks": [],
+              "extra_build_content": "",
+              "generate_bzl_library_targets": true
+            }
+          },
+          "npm__at_mui_material__5.15.7__1946909678": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_rule",
+            "attributes": {
+              "package": "@mui/material",
+              "version": "5.15.7_1946909678",
+              "root_package": "",
+              "link_workspace": "",
+              "link_packages": {
+                "javascript/grid-ui": [
+                  "@mui/material"
+                ]
+              },
+              "integrity": "sha512-l6+AiKZH3iOJmZCnlpel8ghYQe9Lq0BEuKP8fGj3g5xz4arO9GydqYAtLPMvuHKtArj8lJGNuT2yHYxmejincA==",
+              "url": "https://registry.npmjs.org/@mui/material/-/material-5.15.7.tgz",
               "commit": "",
               "patch_args": [],
               "patches": [],
@@ -34745,14 +34498,14 @@
                 ]
               },
               "deps": {
-                "@types/react": "18.2.48"
+                "@types/react": "18.2.70"
               },
               "transitive_closure": {
                 "@types/prop-types": [
                   "15.7.11"
                 ],
                 "@types/react": [
-                  "18.2.48"
+                  "18.2.70"
                 ],
                 "@types/react-modal": [
                   "3.16.3"
@@ -35116,14 +34869,14 @@
               "root_package": "",
               "link_packages": {},
               "deps": {
-                "@types/react": "18.2.48"
+                "@types/react": "18.2.70"
               },
               "transitive_closure": {
                 "@types/prop-types": [
                   "15.7.11"
                 ],
                 "@types/react": [
-                  "18.2.48"
+                  "18.2.70"
                 ],
                 "@types/react-transition-group": [
                   "4.4.10"
@@ -35808,14 +35561,14 @@
                 ]
               },
               "deps": {
-                "@types/react": "18.2.48"
+                "@types/react": "18.2.70"
               },
               "transitive_closure": {
                 "@types/prop-types": [
                   "15.7.11"
                 ],
                 "@types/react": [
-                  "18.2.48"
+                  "18.2.70"
                 ],
                 "@types/react-dom": [
                   "18.2.18"
@@ -36273,6 +36026,48 @@
               "transitive_closure": {
                 "electron-to-chromium": [
                   "1.4.284"
+                ]
+              },
+              "lifecycle_build_target": false,
+              "lifecycle_hooks_env": [],
+              "lifecycle_hooks_execution_requirements": [],
+              "bins": {},
+              "npm_translate_lock_repo": "npm",
+              "package_visibility": [
+                "//visibility:public"
+              ]
+            }
+          },
+          "npm__at_types_react__18.2.70__links": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_links",
+            "attributes": {
+              "package": "@types/react",
+              "version": "18.2.70",
+              "dev": false,
+              "root_package": "",
+              "link_packages": {
+                "javascript/grid-ui": [
+                  "@types/react"
+                ]
+              },
+              "deps": {
+                "@types/prop-types": "15.7.11",
+                "@types/scheduler": "0.16.2",
+                "csstype": "3.1.2"
+              },
+              "transitive_closure": {
+                "@types/prop-types": [
+                  "15.7.11"
+                ],
+                "@types/react": [
+                  "18.2.70"
+                ],
+                "@types/scheduler": [
+                  "0.16.2"
+                ],
+                "csstype": [
+                  "3.1.2"
                 ]
               },
               "lifecycle_build_target": false,
@@ -37306,30 +37101,6 @@
               },
               "integrity": "sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==",
               "url": "https://registry.npmjs.org/eslint/-/eslint-8.57.0.tgz",
-              "commit": "",
-              "patch_args": [],
-              "patches": [],
-              "custom_postinstall": "",
-              "npm_auth": "",
-              "npm_auth_basic": "",
-              "npm_auth_username": "",
-              "npm_auth_password": "",
-              "lifecycle_hooks": [],
-              "extra_build_content": "",
-              "generate_bzl_library_targets": true
-            }
-          },
-          "npm__at_mui_system__5.15.8__-1696370565": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_rule",
-            "attributes": {
-              "package": "@mui/system",
-              "version": "5.15.8_-1696370565",
-              "root_package": "",
-              "link_workspace": "",
-              "link_packages": {},
-              "integrity": "sha512-BUMJvlz1UqIqDPyrvc+MwjOUkWKskUPAOUuRh2KMAworiXuuUmtIivxSfdGll2ex6RHSylu4yc5dJZByOI8EcQ==",
-              "url": "https://registry.npmjs.org/@mui/system/-/system-5.15.8.tgz",
               "commit": "",
               "patch_args": [],
               "patches": [],
@@ -42352,6 +42123,224 @@
               "generate_bzl_library_targets": true
             }
           },
+          "npm__at_emotion_react__11.11.3__-417419281__links": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_links",
+            "attributes": {
+              "package": "@emotion/react",
+              "version": "11.11.3_-417419281",
+              "dev": false,
+              "root_package": "",
+              "link_packages": {
+                "javascript/grid-ui": [
+                  "@emotion/react"
+                ]
+              },
+              "deps": {
+                "@babel/runtime": "7.23.9",
+                "@emotion/babel-plugin": "11.11.0",
+                "@emotion/cache": "11.11.0",
+                "@emotion/serialize": "1.1.3",
+                "@emotion/use-insertion-effect-with-fallbacks": "1.0.1_react_18.2.0",
+                "@emotion/utils": "1.2.1",
+                "@emotion/weak-memoize": "0.3.1",
+                "@types/react": "18.2.70",
+                "hoist-non-react-statics": "3.3.2",
+                "react": "18.2.0"
+              },
+              "transitive_closure": {
+                "@babel/code-frame": [
+                  "7.23.5"
+                ],
+                "@babel/helper-module-imports": [
+                  "7.22.15"
+                ],
+                "@babel/helper-string-parser": [
+                  "7.23.4"
+                ],
+                "@babel/helper-validator-identifier": [
+                  "7.22.20"
+                ],
+                "@babel/highlight": [
+                  "7.23.4"
+                ],
+                "@babel/runtime": [
+                  "7.23.9"
+                ],
+                "@babel/types": [
+                  "7.23.6"
+                ],
+                "@emotion/babel-plugin": [
+                  "11.11.0"
+                ],
+                "@emotion/cache": [
+                  "11.11.0"
+                ],
+                "@emotion/hash": [
+                  "0.9.1"
+                ],
+                "@emotion/memoize": [
+                  "0.8.1"
+                ],
+                "@emotion/react": [
+                  "11.11.3_-417419281"
+                ],
+                "@emotion/serialize": [
+                  "1.1.3"
+                ],
+                "@emotion/sheet": [
+                  "1.2.2"
+                ],
+                "@emotion/unitless": [
+                  "0.8.1"
+                ],
+                "@emotion/use-insertion-effect-with-fallbacks": [
+                  "1.0.1_react_18.2.0"
+                ],
+                "@emotion/utils": [
+                  "1.2.1"
+                ],
+                "@emotion/weak-memoize": [
+                  "0.3.1"
+                ],
+                "@types/parse-json": [
+                  "4.0.0"
+                ],
+                "@types/prop-types": [
+                  "15.7.11"
+                ],
+                "@types/react": [
+                  "18.2.70"
+                ],
+                "@types/scheduler": [
+                  "0.16.2"
+                ],
+                "ansi-styles": [
+                  "3.2.1"
+                ],
+                "babel-plugin-macros": [
+                  "3.1.0"
+                ],
+                "callsites": [
+                  "3.1.0"
+                ],
+                "chalk": [
+                  "2.4.2"
+                ],
+                "color-convert": [
+                  "1.9.3"
+                ],
+                "color-name": [
+                  "1.1.3"
+                ],
+                "convert-source-map": [
+                  "1.9.0"
+                ],
+                "cosmiconfig": [
+                  "7.1.0"
+                ],
+                "csstype": [
+                  "3.1.2"
+                ],
+                "error-ex": [
+                  "1.3.2"
+                ],
+                "escape-string-regexp": [
+                  "1.0.5",
+                  "4.0.0"
+                ],
+                "find-root": [
+                  "1.1.0"
+                ],
+                "function-bind": [
+                  "1.1.1"
+                ],
+                "has": [
+                  "1.0.3"
+                ],
+                "has-flag": [
+                  "3.0.0"
+                ],
+                "hoist-non-react-statics": [
+                  "3.3.2"
+                ],
+                "import-fresh": [
+                  "3.3.0"
+                ],
+                "is-arrayish": [
+                  "0.2.1"
+                ],
+                "is-core-module": [
+                  "2.11.0"
+                ],
+                "js-tokens": [
+                  "4.0.0"
+                ],
+                "json-parse-even-better-errors": [
+                  "2.3.1"
+                ],
+                "lines-and-columns": [
+                  "1.2.4"
+                ],
+                "loose-envify": [
+                  "1.4.0"
+                ],
+                "parent-module": [
+                  "1.0.1"
+                ],
+                "parse-json": [
+                  "5.2.0"
+                ],
+                "path-parse": [
+                  "1.0.7"
+                ],
+                "path-type": [
+                  "4.0.0"
+                ],
+                "react": [
+                  "18.2.0"
+                ],
+                "react-is": [
+                  "16.13.1"
+                ],
+                "regenerator-runtime": [
+                  "0.14.0"
+                ],
+                "resolve": [
+                  "1.22.1"
+                ],
+                "resolve-from": [
+                  "4.0.0"
+                ],
+                "source-map": [
+                  "0.5.7"
+                ],
+                "stylis": [
+                  "4.2.0"
+                ],
+                "supports-color": [
+                  "5.5.0"
+                ],
+                "supports-preserve-symlinks-flag": [
+                  "1.0.0"
+                ],
+                "to-fast-properties": [
+                  "2.0.0"
+                ],
+                "yaml": [
+                  "1.10.2"
+                ]
+              },
+              "lifecycle_build_target": false,
+              "lifecycle_hooks_env": [],
+              "lifecycle_hooks_execution_requirements": [],
+              "bins": {},
+              "npm_translate_lock_repo": "npm",
+              "package_visibility": [
+                "//visibility:public"
+              ]
+            }
+          },
           "npm__forwarded__0.2.0__links": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_links",
@@ -45067,34 +45056,6 @@
               "package_visibility": [
                 "//visibility:public"
               ]
-            }
-          },
-          "npm__at_emotion_styled__11.11.0__1048222695": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_rule",
-            "attributes": {
-              "package": "@emotion/styled",
-              "version": "11.11.0_1048222695",
-              "root_package": "",
-              "link_workspace": "",
-              "link_packages": {
-                "javascript/grid-ui": [
-                  "@emotion/styled"
-                ]
-              },
-              "integrity": "sha512-hM5Nnvu9P3midq5aaXj4I+lnSfNi7Pmd4EWk1fOZ3pxookaQTNew6bp4JaCBYM4HVFZF9g7UjJmsUmC2JlxOng==",
-              "url": "https://registry.npmjs.org/@emotion/styled/-/styled-11.11.0.tgz",
-              "commit": "",
-              "patch_args": [],
-              "patches": [],
-              "custom_postinstall": "",
-              "npm_auth": "",
-              "npm_auth_basic": "",
-              "npm_auth_username": "",
-              "npm_auth_password": "",
-              "lifecycle_hooks": [],
-              "extra_build_content": "",
-              "generate_bzl_library_targets": true
             }
           },
           "npm__is-regex__1.1.4": {
@@ -48118,77 +48079,6 @@
               "generate_bzl_library_targets": true
             }
           },
-          "npm__at_mui_private-theming__5.15.8__28312804__links": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_links",
-            "attributes": {
-              "package": "@mui/private-theming",
-              "version": "5.15.8_28312804",
-              "dev": false,
-              "root_package": "",
-              "link_packages": {},
-              "deps": {
-                "@babel/runtime": "7.23.9",
-                "@mui/utils": "5.15.8_28312804",
-                "@types/react": "18.2.48",
-                "prop-types": "15.8.1",
-                "react": "18.2.0"
-              },
-              "transitive_closure": {
-                "@babel/runtime": [
-                  "7.23.9"
-                ],
-                "@mui/private-theming": [
-                  "5.15.8_28312804"
-                ],
-                "@mui/utils": [
-                  "5.15.8_28312804"
-                ],
-                "@types/prop-types": [
-                  "15.7.11"
-                ],
-                "@types/react": [
-                  "18.2.48"
-                ],
-                "@types/scheduler": [
-                  "0.16.2"
-                ],
-                "csstype": [
-                  "3.1.2"
-                ],
-                "js-tokens": [
-                  "4.0.0"
-                ],
-                "loose-envify": [
-                  "1.4.0"
-                ],
-                "object-assign": [
-                  "4.1.1"
-                ],
-                "prop-types": [
-                  "15.8.1"
-                ],
-                "react": [
-                  "18.2.0"
-                ],
-                "react-is": [
-                  "16.13.1",
-                  "18.2.0"
-                ],
-                "regenerator-runtime": [
-                  "0.14.0"
-                ]
-              },
-              "lifecycle_build_target": false,
-              "lifecycle_hooks_env": [],
-              "lifecycle_hooks_execution_requirements": [],
-              "bins": {},
-              "npm_translate_lock_repo": "npm",
-              "package_visibility": [
-                "//visibility:public"
-              ]
-            }
-          },
           "npm__convert-source-map__1.9.0": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_rule",
@@ -49150,45 +49040,6 @@
               ]
             }
           },
-          "npm__at_mui_types__7.2.13__at_types_react_18.2.48__links": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_links",
-            "attributes": {
-              "package": "@mui/types",
-              "version": "7.2.13_at_types_react_18.2.48",
-              "dev": false,
-              "root_package": "",
-              "link_packages": {},
-              "deps": {
-                "@types/react": "18.2.48"
-              },
-              "transitive_closure": {
-                "@mui/types": [
-                  "7.2.13_at_types_react_18.2.48"
-                ],
-                "@types/prop-types": [
-                  "15.7.11"
-                ],
-                "@types/react": [
-                  "18.2.48"
-                ],
-                "@types/scheduler": [
-                  "0.16.2"
-                ],
-                "csstype": [
-                  "3.1.2"
-                ]
-              },
-              "lifecycle_build_target": false,
-              "lifecycle_hooks_env": [],
-              "lifecycle_hooks_execution_requirements": [],
-              "bins": {},
-              "npm_translate_lock_repo": "npm",
-              "package_visibility": [
-                "//visibility:public"
-              ]
-            }
-          },
           "npm__estraverse__4.3.0__links": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_links",
@@ -49348,6 +49199,75 @@
               "transitive_closure": {
                 "streamsearch": [
                   "1.1.0"
+                ]
+              },
+              "lifecycle_build_target": false,
+              "lifecycle_hooks_env": [],
+              "lifecycle_hooks_execution_requirements": [],
+              "bins": {},
+              "npm_translate_lock_repo": "npm",
+              "package_visibility": [
+                "//visibility:public"
+              ]
+            }
+          },
+          "npm__at_mui_utils__5.15.8__-417419281__links": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_links",
+            "attributes": {
+              "package": "@mui/utils",
+              "version": "5.15.8_-417419281",
+              "dev": false,
+              "root_package": "",
+              "link_packages": {},
+              "deps": {
+                "@babel/runtime": "7.23.9",
+                "@types/prop-types": "15.7.11",
+                "@types/react": "18.2.70",
+                "prop-types": "15.8.1",
+                "react": "18.2.0",
+                "react-is": "18.2.0"
+              },
+              "transitive_closure": {
+                "@babel/runtime": [
+                  "7.23.9"
+                ],
+                "@mui/utils": [
+                  "5.15.8_-417419281"
+                ],
+                "@types/prop-types": [
+                  "15.7.11"
+                ],
+                "@types/react": [
+                  "18.2.70"
+                ],
+                "@types/scheduler": [
+                  "0.16.2"
+                ],
+                "csstype": [
+                  "3.1.2"
+                ],
+                "js-tokens": [
+                  "4.0.0"
+                ],
+                "loose-envify": [
+                  "1.4.0"
+                ],
+                "object-assign": [
+                  "4.1.1"
+                ],
+                "prop-types": [
+                  "15.8.1"
+                ],
+                "react": [
+                  "18.2.0"
+                ],
+                "react-is": [
+                  "16.13.1",
+                  "18.2.0"
+                ],
+                "regenerator-runtime": [
+                  "0.14.0"
                 ]
               },
               "lifecycle_build_target": false,
@@ -49980,6 +49900,30 @@
               "package_visibility": [
                 "//visibility:public"
               ]
+            }
+          },
+          "npm__at_mui_types__7.2.13__at_types_react_18.2.70": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_rule",
+            "attributes": {
+              "package": "@mui/types",
+              "version": "7.2.13_at_types_react_18.2.70",
+              "root_package": "",
+              "link_workspace": "",
+              "link_packages": {},
+              "integrity": "sha512-qP9OgacN62s+l8rdDhSFRe05HWtLLJ5TGclC9I1+tQngbssu0m2dmFZs+Px53AcOs9fD7TbYd4gc9AXzVqO/+g==",
+              "url": "https://registry.npmjs.org/@mui/types/-/types-7.2.13.tgz",
+              "commit": "",
+              "patch_args": [],
+              "patches": [],
+              "custom_postinstall": "",
+              "npm_auth": "",
+              "npm_auth_basic": "",
+              "npm_auth_username": "",
+              "npm_auth_password": "",
+              "lifecycle_hooks": [],
+              "extra_build_content": "",
+              "generate_bzl_library_targets": true
             }
           },
           "npm__at_babel_helper-hoist-variables__7.22.5": {
@@ -51146,6 +51090,253 @@
               "generate_bzl_library_targets": true
             }
           },
+          "npm__at_mui_system__5.15.8__-2142102650__links": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_links",
+            "attributes": {
+              "package": "@mui/system",
+              "version": "5.15.8_-2142102650",
+              "dev": false,
+              "root_package": "",
+              "link_packages": {},
+              "deps": {
+                "@babel/runtime": "7.23.9",
+                "@emotion/react": "11.11.3_-417419281",
+                "@emotion/styled": "11.11.0_602490610",
+                "@mui/private-theming": "5.15.8_-417419281",
+                "@mui/styled-engine": "5.15.8_602618506",
+                "@mui/types": "7.2.13_at_types_react_18.2.70",
+                "@mui/utils": "5.15.8_-417419281",
+                "@types/react": "18.2.70",
+                "clsx": "2.1.0",
+                "csstype": "3.1.2",
+                "prop-types": "15.8.1",
+                "react": "18.2.0"
+              },
+              "transitive_closure": {
+                "@babel/code-frame": [
+                  "7.23.5"
+                ],
+                "@babel/helper-module-imports": [
+                  "7.22.15"
+                ],
+                "@babel/helper-string-parser": [
+                  "7.23.4"
+                ],
+                "@babel/helper-validator-identifier": [
+                  "7.22.20"
+                ],
+                "@babel/highlight": [
+                  "7.23.4"
+                ],
+                "@babel/runtime": [
+                  "7.23.9"
+                ],
+                "@babel/types": [
+                  "7.23.6"
+                ],
+                "@emotion/babel-plugin": [
+                  "11.11.0"
+                ],
+                "@emotion/cache": [
+                  "11.11.0"
+                ],
+                "@emotion/hash": [
+                  "0.9.1"
+                ],
+                "@emotion/is-prop-valid": [
+                  "1.2.1"
+                ],
+                "@emotion/memoize": [
+                  "0.8.1"
+                ],
+                "@emotion/react": [
+                  "11.11.3_-417419281"
+                ],
+                "@emotion/serialize": [
+                  "1.1.3"
+                ],
+                "@emotion/sheet": [
+                  "1.2.2"
+                ],
+                "@emotion/styled": [
+                  "11.11.0_602490610"
+                ],
+                "@emotion/unitless": [
+                  "0.8.1"
+                ],
+                "@emotion/use-insertion-effect-with-fallbacks": [
+                  "1.0.1_react_18.2.0"
+                ],
+                "@emotion/utils": [
+                  "1.2.1"
+                ],
+                "@emotion/weak-memoize": [
+                  "0.3.1"
+                ],
+                "@mui/private-theming": [
+                  "5.15.8_-417419281"
+                ],
+                "@mui/styled-engine": [
+                  "5.15.8_602618506"
+                ],
+                "@mui/system": [
+                  "5.15.8_-2142102650"
+                ],
+                "@mui/types": [
+                  "7.2.13_at_types_react_18.2.70"
+                ],
+                "@mui/utils": [
+                  "5.15.8_-417419281"
+                ],
+                "@types/parse-json": [
+                  "4.0.0"
+                ],
+                "@types/prop-types": [
+                  "15.7.11"
+                ],
+                "@types/react": [
+                  "18.2.70"
+                ],
+                "@types/scheduler": [
+                  "0.16.2"
+                ],
+                "ansi-styles": [
+                  "3.2.1"
+                ],
+                "babel-plugin-macros": [
+                  "3.1.0"
+                ],
+                "callsites": [
+                  "3.1.0"
+                ],
+                "chalk": [
+                  "2.4.2"
+                ],
+                "clsx": [
+                  "2.1.0"
+                ],
+                "color-convert": [
+                  "1.9.3"
+                ],
+                "color-name": [
+                  "1.1.3"
+                ],
+                "convert-source-map": [
+                  "1.9.0"
+                ],
+                "cosmiconfig": [
+                  "7.1.0"
+                ],
+                "csstype": [
+                  "3.1.2"
+                ],
+                "error-ex": [
+                  "1.3.2"
+                ],
+                "escape-string-regexp": [
+                  "1.0.5",
+                  "4.0.0"
+                ],
+                "find-root": [
+                  "1.1.0"
+                ],
+                "function-bind": [
+                  "1.1.1"
+                ],
+                "has": [
+                  "1.0.3"
+                ],
+                "has-flag": [
+                  "3.0.0"
+                ],
+                "hoist-non-react-statics": [
+                  "3.3.2"
+                ],
+                "import-fresh": [
+                  "3.3.0"
+                ],
+                "is-arrayish": [
+                  "0.2.1"
+                ],
+                "is-core-module": [
+                  "2.11.0"
+                ],
+                "js-tokens": [
+                  "4.0.0"
+                ],
+                "json-parse-even-better-errors": [
+                  "2.3.1"
+                ],
+                "lines-and-columns": [
+                  "1.2.4"
+                ],
+                "loose-envify": [
+                  "1.4.0"
+                ],
+                "object-assign": [
+                  "4.1.1"
+                ],
+                "parent-module": [
+                  "1.0.1"
+                ],
+                "parse-json": [
+                  "5.2.0"
+                ],
+                "path-parse": [
+                  "1.0.7"
+                ],
+                "path-type": [
+                  "4.0.0"
+                ],
+                "prop-types": [
+                  "15.8.1"
+                ],
+                "react": [
+                  "18.2.0"
+                ],
+                "react-is": [
+                  "16.13.1",
+                  "18.2.0"
+                ],
+                "regenerator-runtime": [
+                  "0.14.0"
+                ],
+                "resolve": [
+                  "1.22.1"
+                ],
+                "resolve-from": [
+                  "4.0.0"
+                ],
+                "source-map": [
+                  "0.5.7"
+                ],
+                "stylis": [
+                  "4.2.0"
+                ],
+                "supports-color": [
+                  "5.5.0"
+                ],
+                "supports-preserve-symlinks-flag": [
+                  "1.0.0"
+                ],
+                "to-fast-properties": [
+                  "2.0.0"
+                ],
+                "yaml": [
+                  "1.10.2"
+                ]
+              },
+              "lifecycle_build_target": false,
+              "lifecycle_hooks_env": [],
+              "lifecycle_hooks_execution_requirements": [],
+              "bins": {},
+              "npm_translate_lock_repo": "npm",
+              "package_visibility": [
+                "//visibility:public"
+              ]
+            }
+          },
           "npm__eslint-plugin-es__3.0.1__eslint_8.57.0__links": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_links",
@@ -51586,54 +51777,6 @@
               ]
             }
           },
-          "npm__at_mui_base__5.0.0-beta.34__-810481204": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_rule",
-            "attributes": {
-              "package": "@mui/base",
-              "version": "5.0.0-beta.34_-810481204",
-              "root_package": "",
-              "link_workspace": "",
-              "link_packages": {},
-              "integrity": "sha512-e2mbTGTtReD/y5RFwnhkl1Tgl3XwgJhY040IlfkTVaU9f5LWrVhEnpRsYXu3B1CtLrwiWs4cu7aMHV9yRd4jpw==",
-              "url": "https://registry.npmjs.org/@mui/base/-/base-5.0.0-beta.34.tgz",
-              "commit": "",
-              "patch_args": [],
-              "patches": [],
-              "custom_postinstall": "",
-              "npm_auth": "",
-              "npm_auth_basic": "",
-              "npm_auth_username": "",
-              "npm_auth_password": "",
-              "lifecycle_hooks": [],
-              "extra_build_content": "",
-              "generate_bzl_library_targets": true
-            }
-          },
-          "npm__at_mui_types__7.2.13__at_types_react_18.2.48": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_rule",
-            "attributes": {
-              "package": "@mui/types",
-              "version": "7.2.13_at_types_react_18.2.48",
-              "root_package": "",
-              "link_workspace": "",
-              "link_packages": {},
-              "integrity": "sha512-qP9OgacN62s+l8rdDhSFRe05HWtLLJ5TGclC9I1+tQngbssu0m2dmFZs+Px53AcOs9fD7TbYd4gc9AXzVqO/+g==",
-              "url": "https://registry.npmjs.org/@mui/types/-/types-7.2.13.tgz",
-              "commit": "",
-              "patch_args": [],
-              "patches": [],
-              "custom_postinstall": "",
-              "npm_auth": "",
-              "npm_auth_basic": "",
-              "npm_auth_username": "",
-              "npm_auth_password": "",
-              "lifecycle_hooks": [],
-              "extra_build_content": "",
-              "generate_bzl_library_targets": true
-            }
-          },
           "npm__serve-index__1.9.1": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_rule",
@@ -51703,229 +51846,6 @@
               "transitive_closure": {
                 "semver": [
                   "6.3.1"
-                ]
-              },
-              "lifecycle_build_target": false,
-              "lifecycle_hooks_env": [],
-              "lifecycle_hooks_execution_requirements": [],
-              "bins": {},
-              "npm_translate_lock_repo": "npm",
-              "package_visibility": [
-                "//visibility:public"
-              ]
-            }
-          },
-          "npm__at_emotion_styled__11.11.0__1048222695__links": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_links",
-            "attributes": {
-              "package": "@emotion/styled",
-              "version": "11.11.0_1048222695",
-              "dev": false,
-              "root_package": "",
-              "link_packages": {
-                "javascript/grid-ui": [
-                  "@emotion/styled"
-                ]
-              },
-              "deps": {
-                "@babel/runtime": "7.23.9",
-                "@emotion/babel-plugin": "11.11.0",
-                "@emotion/is-prop-valid": "1.2.1",
-                "@emotion/react": "11.11.3_28312804",
-                "@emotion/serialize": "1.1.3",
-                "@emotion/use-insertion-effect-with-fallbacks": "1.0.1_react_18.2.0",
-                "@emotion/utils": "1.2.1",
-                "@types/react": "18.2.48",
-                "react": "18.2.0"
-              },
-              "transitive_closure": {
-                "@babel/code-frame": [
-                  "7.23.5"
-                ],
-                "@babel/helper-module-imports": [
-                  "7.22.15"
-                ],
-                "@babel/helper-string-parser": [
-                  "7.23.4"
-                ],
-                "@babel/helper-validator-identifier": [
-                  "7.22.20"
-                ],
-                "@babel/highlight": [
-                  "7.23.4"
-                ],
-                "@babel/runtime": [
-                  "7.23.9"
-                ],
-                "@babel/types": [
-                  "7.23.6"
-                ],
-                "@emotion/babel-plugin": [
-                  "11.11.0"
-                ],
-                "@emotion/cache": [
-                  "11.11.0"
-                ],
-                "@emotion/hash": [
-                  "0.9.1"
-                ],
-                "@emotion/is-prop-valid": [
-                  "1.2.1"
-                ],
-                "@emotion/memoize": [
-                  "0.8.1"
-                ],
-                "@emotion/react": [
-                  "11.11.3_28312804"
-                ],
-                "@emotion/serialize": [
-                  "1.1.3"
-                ],
-                "@emotion/sheet": [
-                  "1.2.2"
-                ],
-                "@emotion/styled": [
-                  "11.11.0_1048222695"
-                ],
-                "@emotion/unitless": [
-                  "0.8.1"
-                ],
-                "@emotion/use-insertion-effect-with-fallbacks": [
-                  "1.0.1_react_18.2.0"
-                ],
-                "@emotion/utils": [
-                  "1.2.1"
-                ],
-                "@emotion/weak-memoize": [
-                  "0.3.1"
-                ],
-                "@types/parse-json": [
-                  "4.0.0"
-                ],
-                "@types/prop-types": [
-                  "15.7.11"
-                ],
-                "@types/react": [
-                  "18.2.48"
-                ],
-                "@types/scheduler": [
-                  "0.16.2"
-                ],
-                "ansi-styles": [
-                  "3.2.1"
-                ],
-                "babel-plugin-macros": [
-                  "3.1.0"
-                ],
-                "callsites": [
-                  "3.1.0"
-                ],
-                "chalk": [
-                  "2.4.2"
-                ],
-                "color-convert": [
-                  "1.9.3"
-                ],
-                "color-name": [
-                  "1.1.3"
-                ],
-                "convert-source-map": [
-                  "1.9.0"
-                ],
-                "cosmiconfig": [
-                  "7.1.0"
-                ],
-                "csstype": [
-                  "3.1.2"
-                ],
-                "error-ex": [
-                  "1.3.2"
-                ],
-                "escape-string-regexp": [
-                  "1.0.5",
-                  "4.0.0"
-                ],
-                "find-root": [
-                  "1.1.0"
-                ],
-                "function-bind": [
-                  "1.1.1"
-                ],
-                "has": [
-                  "1.0.3"
-                ],
-                "has-flag": [
-                  "3.0.0"
-                ],
-                "hoist-non-react-statics": [
-                  "3.3.2"
-                ],
-                "import-fresh": [
-                  "3.3.0"
-                ],
-                "is-arrayish": [
-                  "0.2.1"
-                ],
-                "is-core-module": [
-                  "2.11.0"
-                ],
-                "js-tokens": [
-                  "4.0.0"
-                ],
-                "json-parse-even-better-errors": [
-                  "2.3.1"
-                ],
-                "lines-and-columns": [
-                  "1.2.4"
-                ],
-                "loose-envify": [
-                  "1.4.0"
-                ],
-                "parent-module": [
-                  "1.0.1"
-                ],
-                "parse-json": [
-                  "5.2.0"
-                ],
-                "path-parse": [
-                  "1.0.7"
-                ],
-                "path-type": [
-                  "4.0.0"
-                ],
-                "react": [
-                  "18.2.0"
-                ],
-                "react-is": [
-                  "16.13.1"
-                ],
-                "regenerator-runtime": [
-                  "0.14.0"
-                ],
-                "resolve": [
-                  "1.22.1"
-                ],
-                "resolve-from": [
-                  "4.0.0"
-                ],
-                "source-map": [
-                  "0.5.7"
-                ],
-                "stylis": [
-                  "4.2.0"
-                ],
-                "supports-color": [
-                  "5.5.0"
-                ],
-                "supports-preserve-symlinks-flag": [
-                  "1.0.0"
-                ],
-                "to-fast-properties": [
-                  "2.0.0"
-                ],
-                "yaml": [
-                  "1.10.2"
                 ]
               },
               "lifecycle_build_target": false,
@@ -54676,6 +54596,301 @@
               "generate_bzl_library_targets": true
             }
           },
+          "npm__at_mui_material__5.15.7__1946909678__links": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_links",
+            "attributes": {
+              "package": "@mui/material",
+              "version": "5.15.7_1946909678",
+              "dev": false,
+              "root_package": "",
+              "link_packages": {
+                "javascript/grid-ui": [
+                  "@mui/material"
+                ]
+              },
+              "deps": {
+                "@babel/runtime": "7.23.9",
+                "@emotion/react": "11.11.3_-417419281",
+                "@emotion/styled": "11.11.0_602490610",
+                "@mui/base": "5.0.0-beta.34_456992791",
+                "@mui/core-downloads-tracker": "5.15.8",
+                "@mui/system": "5.15.8_-2142102650",
+                "@mui/types": "7.2.13_at_types_react_18.2.70",
+                "@mui/utils": "5.15.8_-417419281",
+                "@types/react": "18.2.70",
+                "@types/react-transition-group": "4.4.10",
+                "clsx": "2.1.0",
+                "csstype": "3.1.2",
+                "prop-types": "15.8.1",
+                "react": "18.2.0",
+                "react-dom": "18.2.0_react_18.2.0",
+                "react-is": "18.2.0",
+                "react-transition-group": "4.4.5_react-dom_18.2.0__react_18.2.0"
+              },
+              "transitive_closure": {
+                "@babel/code-frame": [
+                  "7.23.5"
+                ],
+                "@babel/helper-module-imports": [
+                  "7.22.15"
+                ],
+                "@babel/helper-string-parser": [
+                  "7.23.4"
+                ],
+                "@babel/helper-validator-identifier": [
+                  "7.22.20"
+                ],
+                "@babel/highlight": [
+                  "7.23.4"
+                ],
+                "@babel/runtime": [
+                  "7.23.9"
+                ],
+                "@babel/types": [
+                  "7.23.6"
+                ],
+                "@emotion/babel-plugin": [
+                  "11.11.0"
+                ],
+                "@emotion/cache": [
+                  "11.11.0"
+                ],
+                "@emotion/hash": [
+                  "0.9.1"
+                ],
+                "@emotion/is-prop-valid": [
+                  "1.2.1"
+                ],
+                "@emotion/memoize": [
+                  "0.8.1"
+                ],
+                "@emotion/react": [
+                  "11.11.3_-417419281"
+                ],
+                "@emotion/serialize": [
+                  "1.1.3"
+                ],
+                "@emotion/sheet": [
+                  "1.2.2"
+                ],
+                "@emotion/styled": [
+                  "11.11.0_602490610"
+                ],
+                "@emotion/unitless": [
+                  "0.8.1"
+                ],
+                "@emotion/use-insertion-effect-with-fallbacks": [
+                  "1.0.1_react_18.2.0"
+                ],
+                "@emotion/utils": [
+                  "1.2.1"
+                ],
+                "@emotion/weak-memoize": [
+                  "0.3.1"
+                ],
+                "@floating-ui/core": [
+                  "1.6.0"
+                ],
+                "@floating-ui/dom": [
+                  "1.6.1"
+                ],
+                "@floating-ui/react-dom": [
+                  "2.0.8_react-dom_18.2.0__react_18.2.0"
+                ],
+                "@floating-ui/utils": [
+                  "0.2.1"
+                ],
+                "@mui/base": [
+                  "5.0.0-beta.34_456992791"
+                ],
+                "@mui/core-downloads-tracker": [
+                  "5.15.8"
+                ],
+                "@mui/material": [
+                  "5.15.7_1946909678"
+                ],
+                "@mui/private-theming": [
+                  "5.15.8_-417419281"
+                ],
+                "@mui/styled-engine": [
+                  "5.15.8_602618506"
+                ],
+                "@mui/system": [
+                  "5.15.8_-2142102650"
+                ],
+                "@mui/types": [
+                  "7.2.13_at_types_react_18.2.70"
+                ],
+                "@mui/utils": [
+                  "5.15.8_-417419281"
+                ],
+                "@popperjs/core": [
+                  "2.11.8"
+                ],
+                "@types/parse-json": [
+                  "4.0.0"
+                ],
+                "@types/prop-types": [
+                  "15.7.11"
+                ],
+                "@types/react": [
+                  "18.2.70"
+                ],
+                "@types/react-transition-group": [
+                  "4.4.10"
+                ],
+                "@types/scheduler": [
+                  "0.16.2"
+                ],
+                "ansi-styles": [
+                  "3.2.1"
+                ],
+                "babel-plugin-macros": [
+                  "3.1.0"
+                ],
+                "callsites": [
+                  "3.1.0"
+                ],
+                "chalk": [
+                  "2.4.2"
+                ],
+                "clsx": [
+                  "2.1.0"
+                ],
+                "color-convert": [
+                  "1.9.3"
+                ],
+                "color-name": [
+                  "1.1.3"
+                ],
+                "convert-source-map": [
+                  "1.9.0"
+                ],
+                "cosmiconfig": [
+                  "7.1.0"
+                ],
+                "csstype": [
+                  "3.1.2"
+                ],
+                "dom-helpers": [
+                  "5.2.1"
+                ],
+                "error-ex": [
+                  "1.3.2"
+                ],
+                "escape-string-regexp": [
+                  "1.0.5",
+                  "4.0.0"
+                ],
+                "find-root": [
+                  "1.1.0"
+                ],
+                "function-bind": [
+                  "1.1.1"
+                ],
+                "has": [
+                  "1.0.3"
+                ],
+                "has-flag": [
+                  "3.0.0"
+                ],
+                "hoist-non-react-statics": [
+                  "3.3.2"
+                ],
+                "import-fresh": [
+                  "3.3.0"
+                ],
+                "is-arrayish": [
+                  "0.2.1"
+                ],
+                "is-core-module": [
+                  "2.11.0"
+                ],
+                "js-tokens": [
+                  "4.0.0"
+                ],
+                "json-parse-even-better-errors": [
+                  "2.3.1"
+                ],
+                "lines-and-columns": [
+                  "1.2.4"
+                ],
+                "loose-envify": [
+                  "1.4.0"
+                ],
+                "object-assign": [
+                  "4.1.1"
+                ],
+                "parent-module": [
+                  "1.0.1"
+                ],
+                "parse-json": [
+                  "5.2.0"
+                ],
+                "path-parse": [
+                  "1.0.7"
+                ],
+                "path-type": [
+                  "4.0.0"
+                ],
+                "prop-types": [
+                  "15.8.1"
+                ],
+                "react": [
+                  "18.2.0"
+                ],
+                "react-dom": [
+                  "18.2.0_react_18.2.0"
+                ],
+                "react-is": [
+                  "16.13.1",
+                  "18.2.0"
+                ],
+                "react-transition-group": [
+                  "4.4.5_react-dom_18.2.0__react_18.2.0"
+                ],
+                "regenerator-runtime": [
+                  "0.14.0"
+                ],
+                "resolve": [
+                  "1.22.1"
+                ],
+                "resolve-from": [
+                  "4.0.0"
+                ],
+                "scheduler": [
+                  "0.23.0"
+                ],
+                "source-map": [
+                  "0.5.7"
+                ],
+                "stylis": [
+                  "4.2.0"
+                ],
+                "supports-color": [
+                  "5.5.0"
+                ],
+                "supports-preserve-symlinks-flag": [
+                  "1.0.0"
+                ],
+                "to-fast-properties": [
+                  "2.0.0"
+                ],
+                "yaml": [
+                  "1.10.2"
+                ]
+              },
+              "lifecycle_build_target": false,
+              "lifecycle_hooks_env": [],
+              "lifecycle_hooks_execution_requirements": [],
+              "bins": {},
+              "npm_translate_lock_repo": "npm",
+              "package_visibility": [
+                "//visibility:public"
+              ]
+            }
+          },
           "npm__jest-message-util__29.7.0__links": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_links",
@@ -55535,6 +55750,34 @@
               "generate_bzl_library_targets": true
             }
           },
+          "npm__at_types_react__18.2.70": {
+            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
+            "ruleClassName": "npm_import_rule",
+            "attributes": {
+              "package": "@types/react",
+              "version": "18.2.70",
+              "root_package": "",
+              "link_workspace": "",
+              "link_packages": {
+                "javascript/grid-ui": [
+                  "@types/react"
+                ]
+              },
+              "integrity": "sha512-hjlM2hho2vqklPhopNkXkdkeq6Lv8WSZTpr7956zY+3WS5cfYUewtCzsJLsbW5dEv3lfSeQ4W14ZFeKC437JRQ==",
+              "url": "https://registry.npmjs.org/@types/react/-/react-18.2.70.tgz",
+              "commit": "",
+              "patch_args": [],
+              "patches": [],
+              "custom_postinstall": "",
+              "npm_auth": "",
+              "npm_auth_basic": "",
+              "npm_auth_username": "",
+              "npm_auth_password": "",
+              "lifecycle_hooks": [],
+              "extra_build_content": "",
+              "generate_bzl_library_targets": true
+            }
+          },
           "npm__ejs__3.1.8": {
             "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
             "ruleClassName": "npm_import_rule",
@@ -55923,34 +56166,6 @@
               "package_visibility": [
                 "//visibility:public"
               ]
-            }
-          },
-          "npm__at_types_react__18.2.48": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_rule",
-            "attributes": {
-              "package": "@types/react",
-              "version": "18.2.48",
-              "root_package": "",
-              "link_workspace": "",
-              "link_packages": {
-                "javascript/grid-ui": [
-                  "@types/react"
-                ]
-              },
-              "integrity": "sha512-qboRCl6Ie70DQQG9hhNREz81jqC1cs9EVNcjQ1AU+jH6NFfSAhVVbrrY/+nSF+Bsk4AOwm9Qa61InvMCyV+H3w==",
-              "url": "https://registry.npmjs.org/@types/react/-/react-18.2.48.tgz",
-              "commit": "",
-              "patch_args": [],
-              "patches": [],
-              "custom_postinstall": "",
-              "npm_auth": "",
-              "npm_auth_basic": "",
-              "npm_auth_username": "",
-              "npm_auth_password": "",
-              "lifecycle_hooks": [],
-              "extra_build_content": "",
-              "generate_bzl_library_targets": true
             }
           },
           "npm__stack-utils__2.0.6__links": {
@@ -56372,224 +56587,6 @@
               "lifecycle_hooks": [],
               "extra_build_content": "",
               "generate_bzl_library_targets": true
-            }
-          },
-          "npm__at_emotion_react__11.11.3__28312804__links": {
-            "bzlFile": "@@aspect_rules_js~//npm/private:npm_import.bzl",
-            "ruleClassName": "npm_import_links",
-            "attributes": {
-              "package": "@emotion/react",
-              "version": "11.11.3_28312804",
-              "dev": false,
-              "root_package": "",
-              "link_packages": {
-                "javascript/grid-ui": [
-                  "@emotion/react"
-                ]
-              },
-              "deps": {
-                "@babel/runtime": "7.23.9",
-                "@emotion/babel-plugin": "11.11.0",
-                "@emotion/cache": "11.11.0",
-                "@emotion/serialize": "1.1.3",
-                "@emotion/use-insertion-effect-with-fallbacks": "1.0.1_react_18.2.0",
-                "@emotion/utils": "1.2.1",
-                "@emotion/weak-memoize": "0.3.1",
-                "@types/react": "18.2.48",
-                "hoist-non-react-statics": "3.3.2",
-                "react": "18.2.0"
-              },
-              "transitive_closure": {
-                "@babel/code-frame": [
-                  "7.23.5"
-                ],
-                "@babel/helper-module-imports": [
-                  "7.22.15"
-                ],
-                "@babel/helper-string-parser": [
-                  "7.23.4"
-                ],
-                "@babel/helper-validator-identifier": [
-                  "7.22.20"
-                ],
-                "@babel/highlight": [
-                  "7.23.4"
-                ],
-                "@babel/runtime": [
-                  "7.23.9"
-                ],
-                "@babel/types": [
-                  "7.23.6"
-                ],
-                "@emotion/babel-plugin": [
-                  "11.11.0"
-                ],
-                "@emotion/cache": [
-                  "11.11.0"
-                ],
-                "@emotion/hash": [
-                  "0.9.1"
-                ],
-                "@emotion/memoize": [
-                  "0.8.1"
-                ],
-                "@emotion/react": [
-                  "11.11.3_28312804"
-                ],
-                "@emotion/serialize": [
-                  "1.1.3"
-                ],
-                "@emotion/sheet": [
-                  "1.2.2"
-                ],
-                "@emotion/unitless": [
-                  "0.8.1"
-                ],
-                "@emotion/use-insertion-effect-with-fallbacks": [
-                  "1.0.1_react_18.2.0"
-                ],
-                "@emotion/utils": [
-                  "1.2.1"
-                ],
-                "@emotion/weak-memoize": [
-                  "0.3.1"
-                ],
-                "@types/parse-json": [
-                  "4.0.0"
-                ],
-                "@types/prop-types": [
-                  "15.7.11"
-                ],
-                "@types/react": [
-                  "18.2.48"
-                ],
-                "@types/scheduler": [
-                  "0.16.2"
-                ],
-                "ansi-styles": [
-                  "3.2.1"
-                ],
-                "babel-plugin-macros": [
-                  "3.1.0"
-                ],
-                "callsites": [
-                  "3.1.0"
-                ],
-                "chalk": [
-                  "2.4.2"
-                ],
-                "color-convert": [
-                  "1.9.3"
-                ],
-                "color-name": [
-                  "1.1.3"
-                ],
-                "convert-source-map": [
-                  "1.9.0"
-                ],
-                "cosmiconfig": [
-                  "7.1.0"
-                ],
-                "csstype": [
-                  "3.1.2"
-                ],
-                "error-ex": [
-                  "1.3.2"
-                ],
-                "escape-string-regexp": [
-                  "1.0.5",
-                  "4.0.0"
-                ],
-                "find-root": [
-                  "1.1.0"
-                ],
-                "function-bind": [
-                  "1.1.1"
-                ],
-                "has": [
-                  "1.0.3"
-                ],
-                "has-flag": [
-                  "3.0.0"
-                ],
-                "hoist-non-react-statics": [
-                  "3.3.2"
-                ],
-                "import-fresh": [
-                  "3.3.0"
-                ],
-                "is-arrayish": [
-                  "0.2.1"
-                ],
-                "is-core-module": [
-                  "2.11.0"
-                ],
-                "js-tokens": [
-                  "4.0.0"
-                ],
-                "json-parse-even-better-errors": [
-                  "2.3.1"
-                ],
-                "lines-and-columns": [
-                  "1.2.4"
-                ],
-                "loose-envify": [
-                  "1.4.0"
-                ],
-                "parent-module": [
-                  "1.0.1"
-                ],
-                "parse-json": [
-                  "5.2.0"
-                ],
-                "path-parse": [
-                  "1.0.7"
-                ],
-                "path-type": [
-                  "4.0.0"
-                ],
-                "react": [
-                  "18.2.0"
-                ],
-                "react-is": [
-                  "16.13.1"
-                ],
-                "regenerator-runtime": [
-                  "0.14.0"
-                ],
-                "resolve": [
-                  "1.22.1"
-                ],
-                "resolve-from": [
-                  "4.0.0"
-                ],
-                "source-map": [
-                  "0.5.7"
-                ],
-                "stylis": [
-                  "4.2.0"
-                ],
-                "supports-color": [
-                  "5.5.0"
-                ],
-                "supports-preserve-symlinks-flag": [
-                  "1.0.0"
-                ],
-                "to-fast-properties": [
-                  "2.0.0"
-                ],
-                "yaml": [
-                  "1.10.2"
-                ]
-              },
-              "lifecycle_build_target": false,
-              "lifecycle_hooks_env": [],
-              "lifecycle_hooks_execution_requirements": [],
-              "bins": {},
-              "npm_translate_lock_repo": "npm",
-              "package_visibility": [
-                "//visibility:public"
-              ]
             }
           },
           "npm__at_testing-library_jest-dom__6.3.0__at_types_jest_29.5.11__links": {
@@ -60015,7 +60012,6 @@
         ]
       }
     },
-<<<<<<< HEAD
     "@@rules_dotnet~//dotnet:paket.rules_dotnet_nuget_packages_extension.bzl%rules_dotnet_nuget_packages_extension": {
       "general": {
         "bzlTransitiveDigest": "+qbXxyLh2dDGHnLxcLRHGeGnqxz81aN2gVvqRRSrlTE=",
@@ -61034,8 +61030,6 @@
         ]
       }
     },
-=======
->>>>>>> 4b5723572a ([bazel] Add missing dependencies)
     "@@rules_go~//go:extensions.bzl%go_sdk": {
       "os:osx,arch:aarch64": {
         "bzlTransitiveDigest": "oz98E/5hVKiH3qDlSg7R1FASClwMtv1eMWxG+3B6AY0=",
