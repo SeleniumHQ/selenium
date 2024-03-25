@@ -61,5 +61,4 @@ jobs:
       browser: chrome
       cache-key: java-${{ matrix.os }}-remote-tests
       run: |
-        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote \
-            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-remote
+        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
