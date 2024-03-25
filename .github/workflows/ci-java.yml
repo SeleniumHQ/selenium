@@ -19,12 +19,12 @@ jobs:
       browser: chrome
       cache-key: java-${{ matrix.os }}-tests
       run: |
-        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest ^
-            //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest ^
-            //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest ^
-            //java/test/org/openqa/selenium/grid/gridui:OverallGridTest ^
-            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest ^
-            //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest ^
+        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest `
+            //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest `
+            //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest `
+            //java/test/org/openqa/selenium/grid/gridui:OverallGridTest `
+            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest `
+            //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest `
             //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
 
   browser-tests-macos:
