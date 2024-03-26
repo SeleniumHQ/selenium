@@ -72,7 +72,7 @@ class TestFileLocator {
     Path testDir;
     if (runfiles != null) {
       // Running with bazel.
-      testDir = runfiles.resolve("selenium").resolve(testDirName);
+      testDir = runfiles.resolve("_main").resolve(testDirName);
     } else {
       // Legacy.
       testDir = InProject.locate(testDirName);
