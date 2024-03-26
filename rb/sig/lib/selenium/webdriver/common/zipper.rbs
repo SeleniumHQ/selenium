@@ -1,0 +1,19 @@
+module Selenium
+  module WebDriver
+    module Zipper
+      EXTENSIONS: Array[String]
+
+      def self.unzip: (untyped path) -> untyped
+
+      def self.zip: (untyped path) -> untyped
+
+      def self.zip_file: (untyped path) -> untyped
+
+      private
+
+      def self.with_tmp_zip: () { () -> untyped } -> untyped
+
+      def self.add_zip_entry: (untyped zip, untyped file, untyped entry_name) -> untyped
+    end
+  end
+end

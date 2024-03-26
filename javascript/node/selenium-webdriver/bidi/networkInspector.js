@@ -17,6 +17,12 @@
 
 const { BeforeRequestSent, ResponseStarted } = require('./networkTypes')
 
+/**
+ * @deprecated
+ * in favor of using the `Network` class from `bidi/network.js`
+ *  Inspector is specific to listening to events.
+ *  Goal is to club commands and events under one class called Network.
+ */
 class NetworkInspector {
   constructor(driver, browsingContextIds) {
     this._driver = driver
@@ -65,7 +71,7 @@ class NetworkInspector {
             params.redirectCount,
             params.request,
             params.timestamp,
-            params.initiator
+            params.initiator,
           )
         } else if ('response' in params) {
           response = new ResponseStarted(
@@ -74,7 +80,7 @@ class NetworkInspector {
             params.redirectCount,
             params.request,
             params.timestamp,
-            params.response
+            params.response,
           )
         }
         callback(response)

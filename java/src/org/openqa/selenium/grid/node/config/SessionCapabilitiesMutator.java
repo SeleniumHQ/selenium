@@ -171,6 +171,8 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       Map<String, Object> stereotypeOptions, Map<String, Object> capsOptions) {
     Map<String, Object> toReturn = new HashMap<>(stereotypeOptions);
 
+    List<String> handledOptions = List.of("args", "prefs", "profile", "log", "binary");
+
     for (Map.Entry<String, Object> entry : capsOptions.entrySet()) {
       String name = entry.getKey();
       Object value = entry.getValue();
@@ -214,6 +216,14 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
         @SuppressWarnings("unchecked")
         Map<String, Object> logLevelMap = (Map<String, Object>) value;
         toReturn.put("log", logLevelMap);
+      }
+
+      if (name.equals("binary") && !stereotypeOptions.containsKey("binary")) {
+        toReturn.put(name, value);
+      }
+
+      if (!handledOptions.contains(name)) {
+        toReturn.put(name, value);
       }
     }
 

@@ -1,0 +1,27 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class BrowsingContext
+        @bidi: untyped
+
+        @id: untyped
+
+        attr_accessor id: untyped
+
+        READINESS_STATE: Hash[Symbol, String]
+
+        def initialize: (driver: untyped, ?browsing_context_id: untyped?, ?type: untyped?, ?reference_context: untyped?) -> void
+
+        def navigate: (url: untyped, ?readiness_state: untyped?) -> untyped
+
+        def get_tree: (?max_depth: untyped?) -> untyped
+
+        def close: () -> untyped
+
+        private
+
+        def create: (untyped type, untyped reference_context) -> untyped
+      end
+    end
+  end
+end

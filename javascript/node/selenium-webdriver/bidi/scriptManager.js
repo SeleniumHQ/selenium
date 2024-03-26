@@ -32,13 +32,13 @@ class ScriptManager {
     this._driver = driver
   }
 
-  async init(browsingContextId) {
+  async init(browsingContextIds) {
     if (!(await this._driver.getCapabilities()).get('webSocketUrl')) {
       throw Error('WebDriver instance must support BiDi protocol')
     }
 
     this.bidi = await this._driver.getBidi()
-    this._browsingContextId = browsingContextId
+    this._browsingContextIds = browsingContextIds
   }
 
   async disownRealmScript(realmId, handles) {
@@ -55,11 +55,7 @@ class ScriptManager {
     await this.bidi.send(params)
   }
 
-  async disownBrowsingContextScript(
-    browsingContextId,
-    handles,
-    sandbox = null
-  ) {
+  async disownBrowsingContextScript(browsingContextId, handles, sandbox = null) {
     const params = {
       method: 'script.disown',
       params: {
@@ -83,7 +79,7 @@ class ScriptManager {
     awaitPromise,
     argumentValueList = null,
     thisParameter = null,
-    resultOwnership = null
+    resultOwnership = null,
   ) {
     const params = this.getCallFunctionParams(
       'realm',
@@ -93,7 +89,7 @@ class ScriptManager {
       awaitPromise,
       argumentValueList,
       thisParameter,
-      resultOwnership
+      resultOwnership,
     )
 
     const command = {
@@ -112,7 +108,7 @@ class ScriptManager {
     argumentValueList = null,
     thisParameter = null,
     resultOwnership = null,
-    sandbox = null
+    sandbox = null,
   ) {
     const params = this.getCallFunctionParams(
       'contextTarget',
@@ -122,7 +118,7 @@ class ScriptManager {
       awaitPromise,
       argumentValueList,
       thisParameter,
-      resultOwnership
+      resultOwnership,
     )
 
     const command = {
@@ -133,20 +129,8 @@ class ScriptManager {
     return this.createEvaluateResult(response)
   }
 
-  async evaluateFunctionInRealm(
-    realmId,
-    expression,
-    awaitPromise,
-    resultOwnership = null
-  ) {
-    const params = this.getEvaluateParams(
-      'realm',
-      realmId,
-      null,
-      expression,
-      awaitPromise,
-      resultOwnership
-    )
+  async evaluateFunctionInRealm(realmId, expression, awaitPromise, resultOwnership = null) {
+    const params = this.getEvaluateParams('realm', realmId, null, expression, awaitPromise, resultOwnership)
 
     const command = {
       method: 'script.evaluate',
@@ -162,7 +146,7 @@ class ScriptManager {
     expression,
     awaitPromise,
     resultOwnership = null,
-    sandbox = null
+    sandbox = null,
   ) {
     const params = this.getEvaluateParams(
       'contextTarget',
@@ -170,7 +154,7 @@ class ScriptManager {
       sandbox,
       expression,
       awaitPromise,
-      resultOwnership
+      resultOwnership,
     )
 
     const command = {
@@ -182,15 +166,19 @@ class ScriptManager {
     return this.createEvaluateResult(response)
   }
 
-  async addPreloadScript(
-    functionDeclaration,
-    argumentValueList = [],
-    sandbox = null
-  ) {
+  async addPreloadScript(functionDeclaration, argumentValueList = [], sandbox = null) {
     const params = {
       functionDeclaration: functionDeclaration,
       arguments: argumentValueList,
       sandbox: sandbox,
+    }
+
+    if (Array.isArray(this._browsingContextIds) && this._browsingContextIds.length > 0) {
+      params.contexts = this._browsingContextIds
+    }
+
+    if (typeof this._browsingContextIds === 'string') {
+      params.contexts = new Array(this._browsingContextIds)
     }
 
     const command = {
@@ -223,7 +211,7 @@ class ScriptManager {
     awaitPromise,
     argumentValueList = null,
     thisParameter = null,
-    resultOwnership = null
+    resultOwnership = null,
   ) {
     const params = {
       functionDeclaration: functionDeclaration,
@@ -258,14 +246,7 @@ class ScriptManager {
     return params
   }
 
-  getEvaluateParams(
-    targetType,
-    id,
-    sandbox,
-    expression,
-    awaitPromise,
-    resultOwnership = null
-  ) {
+  getEvaluateParams(targetType, id, sandbox, expression, awaitPromise, resultOwnership = null) {
     const params = {
       expression: expression,
       awaitPromise: awaitPromise,
@@ -293,16 +274,10 @@ class ScriptManager {
 
     if (type === EvaluateResultType.SUCCESS) {
       const result = response.result.result
-      evaluateResult = new EvaluateResultSuccess(
-        realmId,
-        new RemoteValue(result)
-      )
+      evaluateResult = new EvaluateResultSuccess(realmId, new RemoteValue(result))
     } else {
       const exceptionDetails = response.result.exceptionDetails
-      evaluateResult = new EvaluateResultException(
-        realmId,
-        new ExceptionDetails(exceptionDetails)
-      )
+      evaluateResult = new EvaluateResultException(realmId, new ExceptionDetails(exceptionDetails))
     }
     return evaluateResult
   }
@@ -359,9 +334,13 @@ class ScriptManager {
     await this.subscribeAndHandleEvent('script.realmCreated', callback)
   }
 
+  async onRealmDestroyed(callback) {
+    await this.subscribeAndHandleEvent('script.realmDestroyed', callback)
+  }
+
   async subscribeAndHandleEvent(eventType, callback) {
-    if (this._browsingContextIds != null) {
-      await this.bidi.subscribe(eventType, this._browsingContextIds)
+    if (this.browsingContextIds != null) {
+      await this.bidi.subscribe(eventType, this.browsingContextIds)
     } else {
       await this.bidi.subscribe(eventType)
     }
@@ -375,20 +354,10 @@ class ScriptManager {
       if (params) {
         let response = null
         if ('channel' in params) {
-          response = new Message(
-            params.channel,
-            new RemoteValue(params.data),
-            new Source(params.source)
-          )
+          response = new Message(params.channel, new RemoteValue(params.data), new Source(params.source))
         } else if ('realm' in params) {
           if (params.type === RealmType.WINDOW) {
-            response = new WindowRealmInfo(
-              params.realm,
-              params.origin,
-              params.type,
-              params.context,
-              params.sandbox
-            )
+            response = new WindowRealmInfo(params.realm, params.origin, params.type, params.context, params.sandbox)
           } else if (params.realm !== null && params.type !== null) {
             response = new RealmInfo(params.realm, params.origin, params.type)
           } else if (params.realm !== null) {

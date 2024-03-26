@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.SessionFactory;
@@ -149,18 +150,19 @@ public class RelayOptions {
     LOG.info(String.format("Adding relay configs for %s", getServiceUri()));
     parsedConfigs.forEach(
         (maxSessions, stereotype) -> {
+          ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
           for (int i = 0; i < maxSessions; i++) {
             factories.put(
-                stereotype,
+                immutable,
                 new RelaySessionFactory(
                     tracer,
                     clientFactory,
                     sessionTimeout,
                     getServiceUri(),
                     getServiceStatusUri(),
-                    stereotype));
+                    immutable));
           }
-          LOG.info(String.format("Mapping %s, %d times", stereotype, maxSessions));
+          LOG.info(String.format("Mapping %s, %d times", immutable, maxSessions));
         });
     return factories.build().asMap();
   }

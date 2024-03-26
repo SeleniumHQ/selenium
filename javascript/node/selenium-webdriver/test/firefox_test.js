@@ -29,21 +29,12 @@ const { locate } = require('../lib/test/resources')
 const { until, By } = require('../index')
 
 const EXT_XPI = locate('common/extensions/webextensions-selenium-example.xpi')
-const EXT_UNSIGNED_ZIP = locate(
-  'common/extensions/webextensions-selenium-example-unsigned.zip'
-)
-const EXT_SIGNED_ZIP = locate(
-  'common/extensions/webextensions-selenium-example.zip'
-)
-const EXT_UNSIGNED_DIR = locate(
-  'common/extensions/webextensions-selenium-example'
-)
-const EXT_SIGNED_DIR = locate(
-  'common/extensions/webextensions-selenium-example'
-)
+const EXT_UNSIGNED_ZIP = locate('common/extensions/webextensions-selenium-example-unsigned.zip')
+const EXT_SIGNED_ZIP = locate('common/extensions/webextensions-selenium-example.zip')
+const EXT_UNSIGNED_DIR = locate('common/extensions/webextensions-selenium-example')
+const EXT_SIGNED_DIR = locate('common/extensions/webextensions-selenium-example')
 
-const WEBEXTENSION_EXTENSION_ID =
-  'webextensions-selenium-example@example.com.xpi'
+const WEBEXTENSION_EXTENSION_ID = 'webextensions-selenium-example@example.com.xpi'
 
 suite(
   function (env) {
@@ -66,17 +57,14 @@ suite(
           profileWithWebExtension = await io.tmpDir()
           let extensionsDir = path.join(profileWithWebExtension, 'extensions')
           await io.mkdir(extensionsDir)
-          await io.write(
-            path.join(extensionsDir, WEBEXTENSION_EXTENSION_ID),
-            await io.read(EXT_XPI)
-          )
+          await io.write(path.join(extensionsDir, WEBEXTENSION_EXTENSION_ID), await io.read(EXT_XPI))
         })
 
         before(async function createProfileWithUserPrefs() {
           profileWithUserPrefs = await io.tmpDir()
           await io.write(
             path.join(profileWithUserPrefs, 'user.js'),
-            'user_pref("general.useragent.override", "foo;bar");\n'
+            'user_pref("general.useragent.override", "foo;bar");\n',
           )
         })
 
@@ -106,10 +94,7 @@ suite(
           it('allows setting android activity', function () {
             let options = new firefox.Options().enableMobile()
             let firefoxOptions = options.firefoxOptions_()
-            assert.deepStrictEqual(
-              { androidPackage: 'org.mozilla.firefox' },
-              firefoxOptions
-            )
+            assert.deepStrictEqual({ androidPackage: 'org.mozilla.firefox' }, firefoxOptions)
           })
         })
 
@@ -127,10 +112,7 @@ suite(
             options.setPreference('c', true)
 
             assert.throws(() => options.setPreference('d', null), TypeError)
-            assert.throws(
-              () => options.setPreference('d', undefined),
-              TypeError
-            )
+            assert.throws(() => options.setPreference('d', undefined), TypeError)
             assert.throws(() => options.setPreference('d', {}), TypeError)
           })
 
@@ -169,9 +151,7 @@ suite(
           })
 
           it('can add extension to custom profile', async function () {
-            let options = new firefox.Options()
-              .addExtensions(EXT_XPI)
-              .setProfile(profileWithUserPrefs)
+            let options = new firefox.Options().addExtensions(EXT_XPI).setProfile(profileWithUserPrefs)
 
             driver = env.builder().setFirefoxOptions(options).build()
 
@@ -307,9 +287,7 @@ suite(
       })
 
       async function verifyUserAgentWasChanged() {
-        let userAgent = await driver.executeScript(
-          'return window.navigator.userAgent'
-        )
+        let userAgent = await driver.executeScript('return window.navigator.userAgent')
         assert.strictEqual(userAgent, 'foo;bar')
       }
 
@@ -321,18 +299,12 @@ suite(
       }
 
       async function verifyWebExtensionWasInstalled() {
-        let footer = await driver.wait(
-          until.elementLocated(By.id('webextensions-selenium-example')),
-          5000
-        )
+        let footer = await driver.wait(until.elementLocated(By.id('webextensions-selenium-example')), 5000)
 
         let text = await footer.getText()
-        assert.strictEqual(
-          text,
-          'Content injected by webextensions-selenium-example'
-        )
+        assert.strictEqual(text, 'Content injected by webextensions-selenium-example')
       }
     })
   },
-  { browsers: [Browser.FIREFOX] }
+  { browsers: [Browser.FIREFOX] },
 )

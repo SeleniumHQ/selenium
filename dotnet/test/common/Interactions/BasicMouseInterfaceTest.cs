@@ -1,9 +1,7 @@
-using System;
 using NUnit.Framework;
-using System.Text.RegularExpressions;
-using System.Drawing;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Environment;
+using System;
+using System.Drawing;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -146,6 +144,9 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Not working properly in RBE, works locally with pinned browsers")]
+        [IgnoreBrowser(Browser.Edge, "Not working properly in RBE, works locally with pinned browsers")]
+        [IgnoreBrowser(Browser.Firefox, "Not working properly in RBE, works locally with pinned browsers")]
         public void ShouldMoveToLocation()
         {
             driver.Url = mouseInteractionPage;

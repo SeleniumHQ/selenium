@@ -1,5 +1,5 @@
-﻿using System;
-using OpenQA.Selenium.Firefox;
+﻿using OpenQA.Selenium.Firefox;
+using System;
 
 namespace OpenQA.Selenium.Remote
 {

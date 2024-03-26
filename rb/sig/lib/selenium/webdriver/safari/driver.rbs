@@ -1,0 +1,15 @@
+module Selenium
+  module WebDriver
+    module Safari
+      class Driver < WebDriver::Driver
+        EXTENSIONS: Array[untyped]
+
+        include LocalDriver
+
+        def initialize: (?options: untyped?, ?service: untyped?, ?url: untyped?, **untyped opts) -> void
+
+        def browser: () -> Symbol
+      end
+    end
+  end
+end

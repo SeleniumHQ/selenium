@@ -25,8 +25,7 @@ import NoData from '../../components/NoData/NoData'
 import Loading from '../../components/Loading/Loading'
 import Error from '../../components/Error/Error'
 import { GridConfig } from '../../config'
-
-const GRID_SESSIONS_QUERY = loader('../../graphql/sessions.gql')
+import {GRID_SESSIONS_QUERY} from "../../graphql/sessions";
 
 function Sessions (): JSX.Element {
   const { loading, error, data } = useQuery(GRID_SESSIONS_QUERY, {

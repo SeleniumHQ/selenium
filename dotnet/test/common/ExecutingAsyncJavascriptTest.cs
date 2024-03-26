@@ -1,5 +1,5 @@
-using System;
 using NUnit.Framework;
+using System;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium
@@ -275,7 +275,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-		public void ThrowsIfScriptTriggersAlert()
+        public void ThrowsIfScriptTriggersAlert()
         {
             driver.Url = simpleTestPage;
             driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(5);

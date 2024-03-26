@@ -1,0 +1,31 @@
+module Selenium
+  module WebDriver
+    module Firefox
+      class Extension
+        @path: untyped
+
+        @should_reap_root: untyped
+
+        NAMESPACE: String
+
+        def initialize: (untyped path) -> void
+
+        def write_to: (untyped extensions_dir) -> untyped
+
+        private
+
+        def create_root: () -> untyped
+
+        def read_id: (untyped directory) -> untyped
+
+        def read_id_from_install_rdf: (untyped directory) -> untyped?
+
+        def read_id_from_manifest_json: (untyped directory) -> untyped?
+
+        def applications_gecko_id: (untyped manifest) -> untyped
+
+        def name_and_version: (untyped manifest) -> untyped
+      end
+    end
+  end
+end

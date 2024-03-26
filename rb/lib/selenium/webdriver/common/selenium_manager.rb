@@ -63,7 +63,7 @@ module Selenium
           end
           if options.respond_to?(:binary) && !options.binary.nil?
             command << '--browser-path'
-            command << options.binary.gsub('\\', '\\\\\\')
+            command << options.binary.squeeze('\\').gsub('\\', '\\\\\\')
           end
           if options.proxy
             command << '--proxy'

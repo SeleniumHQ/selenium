@@ -2,7 +2,11 @@ module Selenium
   module WebDriver
     module Firefox
       module Features
+        include _Bridge
+        COMMANDS: Hash[Symbol, Array[Symbol | String]]
         FIREFOX_COMMANDS: Hash[Symbol, Array[Symbol | String]]
+
+        def command_list: -> untyped
 
         def commands: (untyped command) -> untyped
 

@@ -1,6 +1,6 @@
-using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using System;
 
 namespace OpenQA.Selenium
 {

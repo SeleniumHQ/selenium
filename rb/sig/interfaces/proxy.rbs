@@ -1,0 +1,23 @@
+interface _Proxy
+  def auto_detect: -> untyped
+
+  def type: -> untyped
+
+  def ftp: -> untyped
+
+  def pac: -> untyped
+
+  def http: -> untyped
+
+  def ssl: -> untyped
+
+  def socks: -> untyped
+
+  def no_proxy: -> untyped
+
+  def socks_password: -> untyped
+
+  def socks_username: -> untyped
+
+  def socks_version: -> untyped
+end

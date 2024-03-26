@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class NavigateResult
+        @url: untyped
+
+        @navigation_id: untyped
+
+        attr_accessor url: untyped
+
+        attr_accessor navigation_id: untyped
+
+        def initialize: (url: untyped, navigation_id: untyped) -> void
+      end
+    end
+  end
+end

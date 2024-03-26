@@ -16,6 +16,8 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -25,8 +27,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -309,14 +309,21 @@ namespace OpenQA.Selenium.Remote
         {
             Response response = new Response();
             string body = responseInfo.Body;
-            if (responseInfo.ContentType != null && responseInfo.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
+            if ((int)responseInfo.StatusCode < 200 || (int)responseInfo.StatusCode > 299)
+            {
+                if (responseInfo.ContentType != null && responseInfo.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
+                {
+                    response = Response.FromErrorJson(body);
+                }
+                else
+                {
+                    response.Status = WebDriverResult.UnhandledError;
+                    response.Value = body;
+                }
+            }
+            else if (responseInfo.ContentType != null && responseInfo.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
             {
                 response = Response.FromJson(body);
-            }
-            else if (responseInfo.StatusCode.ToString().First() != '2')
-            {
-                response.Status = WebDriverResult.UnhandledError;
-                response.Value = body;
             }
             else
             {

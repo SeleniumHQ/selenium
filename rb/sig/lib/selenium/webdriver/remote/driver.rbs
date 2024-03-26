@@ -1,0 +1,25 @@
+module Selenium
+  module WebDriver
+    module Remote
+      class Driver < WebDriver::Driver
+        include DriverExtensions::UploadsFiles
+
+        include DriverExtensions::HasSessionId
+
+        include DriverExtensions::HasFileDownloads
+
+        def initialize: (?capabilities: untyped?, ?options: untyped?, ?service: untyped?, ?url: untyped?, **untyped opts) -> void
+
+        private
+
+        def devtools_url: () -> untyped
+
+        def devtools_version: () -> untyped
+
+        def process_options: (untyped options, untyped capabilities) -> untyped
+
+        def generate_capabilities: (untyped capabilities) -> untyped
+      end
+    end
+  end
+end

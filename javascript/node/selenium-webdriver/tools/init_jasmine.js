@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+// eslint-disable-next-line node/no-missing-require
 require('@bazel/jasmine').boot() // eslint-disable-line node/no-extraneous-require
 
 global.after = global.afterAll

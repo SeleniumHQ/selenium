@@ -16,11 +16,10 @@
 // limitations under the License.
 // </copyright>
 
-using System;
+using OpenQA.Selenium.Internal;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.IE
 {
@@ -161,16 +160,22 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// Creates a default instance of the InternetExplorerDriverService using a specified path to the IEDriverServer executable.
         /// </summary>
-        /// <param name="driverPath">The directory containing the IEDriverServer executable.</param>
+        /// <param name="driverPath">The path to the executable or the directory containing the IEDriverServer executable.</param>
         /// <returns>A InternetExplorerDriverService using a random port.</returns>
         public static InternetExplorerDriverService CreateDefaultService(string driverPath)
         {
+            string fileName;
             if (File.Exists(driverPath))
             {
+                fileName = Path.GetFileName(driverPath);
                 driverPath = Path.GetDirectoryName(driverPath);
             }
+            else
+            {
+                fileName = InternetExplorerDriverServiceFileName;
+            }
 
-            return CreateDefaultService(driverPath, InternetExplorerDriverServiceFileName);
+            return CreateDefaultService(driverPath, fileName);
         }
 
         /// <summary>

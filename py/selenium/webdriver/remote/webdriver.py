@@ -1046,7 +1046,7 @@ class WebDriver(BaseWebDriver):
         _firefox = False
         if self.caps.get("browserName") == "chrome":
             debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
-        elif self.caps.get("browserName") == "msedge":
+        elif self.caps.get("browserName") == "MicrosoftEdge":
             debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
         else:
             _firefox = True

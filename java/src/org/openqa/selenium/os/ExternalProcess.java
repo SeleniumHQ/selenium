@@ -265,7 +265,21 @@ public class ExternalProcess {
     boolean exited = process.waitFor(duration.toMillis(), TimeUnit.MILLISECONDS);
 
     if (exited) {
-      worker.join();
+      try {
+        // the worker might not stop even when process.destroyForcibly is called
+        worker.join(8000);
+      } catch (InterruptedException ex) {
+        Thread.interrupted();
+      } finally {
+        // if already stopped interrupt is ignored, otherwise raises I/O exceptions in the worker
+        worker.interrupt();
+        try {
+          // now we might be able to join
+          worker.join(2000);
+        } catch (InterruptedException ex) {
+          Thread.interrupted();
+        }
+      }
     }
 
     return exited;

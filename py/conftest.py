@@ -36,7 +36,6 @@ drivers = (
     "remote",
     "safari",
     "webkitgtk",
-    "chromiumedge",
     "wpewebkit",
 )
 
@@ -169,16 +168,13 @@ def get_options(driver_class, config):
     headless = bool(config.option.headless)
     options = None
 
-    if driver_class == "ChromiumEdge":
-        options = getattr(webdriver, "EdgeOptions")()
-
     if browser_path or browser_args:
         if not options:
             options = getattr(webdriver, f"{driver_class}Options")()
         if driver_class == "WebKitGTK":
             options.overlay_scrollbars_enabled = False
         if browser_path is not None:
-            options.binary_location = browser_path
+            options.binary_location = browser_path.strip("'")
         if browser_args is not None:
             for arg in browser_args.split():
                 options.add_argument(arg)

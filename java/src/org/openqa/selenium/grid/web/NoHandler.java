@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.web;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.ErrorCodes.UNKNOWN_COMMAND;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import com.google.common.collect.ImmutableMap;
@@ -47,7 +46,6 @@ public class NoHandler implements HttpHandler {
     // We're not using ImmutableMap for the outer map because it disallows null values.
     Map<String, Object> responseMap = new HashMap<>();
     responseMap.put("sessionId", null);
-    responseMap.put("status", UNKNOWN_COMMAND);
     responseMap.put(
         "value",
         ImmutableMap.of(

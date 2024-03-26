@@ -15,5 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from .select import Select  # noqa
-from .wait import WebDriverWait  # noqa
+from .select import Select
+from .wait import WebDriverWait
+
+__all__ = ["Select", "WebDriverWait"]

@@ -1,0 +1,7 @@
+module Selenium
+  module WebDriver
+    class DriverFinder
+      def self.path: (untyped options, untyped klass) -> untyped
+    end
+  end
+end

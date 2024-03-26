@@ -26,6 +26,11 @@ on:
         required: false
         type: string
         default: ''
+      caching:
+        description: Toggle caching of Bazel
+        required: false
+        type: boolean
+        default: true
       cache-key:
         description: Bazel disk cache key
         required: false
@@ -46,6 +51,11 @@ on:
         required: false
         type: string
         default: ''
+      artifact-name:
+        description: Name of artifact to upload
+        required: false
+        type: string
+        default: 'ignore-artifacts'
 
 jobs:
   bazel:
@@ -55,6 +65,8 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
+      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       SE_AVOID_STATS: true
     steps:
       - name: Checkout source tree
@@ -81,8 +93,9 @@ jobs:
         with:
           java-version: ${{ inputs.java-version }}
           distribution: 'temurin'
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.4.0
+      - name: Setup Bazel with caching
+        if: inputs.caching
+        uses: bazel-contrib/setup-bazel@0.8.1
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
@@ -95,6 +108,11 @@ jobs:
               pypi__pip: py/requirements_lock.txt
               ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
           repository-cache: true
+      - name: Setup Bazel without caching
+        if: inputs.caching == false
+        uses: bazel-contrib/setup-bazel@0.8.1
+        with:
+          bazelrc: common --color=yes
       - name: Setup Fluxbox and Xvfb
         if: inputs.os == 'ubuntu' && inputs.browser != ''
         run: |
@@ -140,3 +158,14 @@ jobs:
           title: "Nightly"
           prerelease: true
           files: ${{ inputs.nightly-release-files }}
+      - name: Save changes
+        if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
+        run: |
+          git diff > changes.patch
+      - name: "Upload changes"
+        if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: changes.patch
+          retention-days: 6

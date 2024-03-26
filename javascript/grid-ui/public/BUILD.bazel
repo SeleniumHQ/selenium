@@ -1,0 +1,20 @@
+load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
+
+pkg_zip(
+    name = "build-zip",
+    srcs = glob([
+        "*.html",
+        "*.json",
+        "*.png",
+        "*.svg",
+        "*.txt",
+    ]),
+    out = "build-zip.jar",
+    package_dir = "grid-ui",
+)
+
+java_import(
+    name = "public",
+    jars = [":build-zip"],
+    visibility = ["//javascript/grid-ui:__pkg__"],
+)

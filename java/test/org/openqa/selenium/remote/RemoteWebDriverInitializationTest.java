@@ -167,6 +167,7 @@ class RemoteWebDriverInitializationTest {
   void canHandleNonStandardCapabilitiesReturnedByRemoteEnd() throws IOException {
     Response resp = new Response();
     resp.setSessionId(UUID.randomUUID().toString());
+    resp.setState("success");
     resp.setValue(ImmutableMap.of("platformName", "xxx"));
     CommandExecutor executor = mock(CommandExecutor.class);
     when(executor.execute(any())).thenReturn(resp);

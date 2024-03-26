@@ -16,10 +16,9 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
+using System;
 
 namespace OpenQA.Selenium
 {

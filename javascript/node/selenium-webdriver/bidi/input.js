@@ -18,6 +18,7 @@
 // type: module added to package.json
 // import { WebElement } from '../lib/webdriver'
 const { WebElement } = require('../lib/webdriver')
+const { RemoteReferenceType, ReferenceValue } = require('./protocolValue')
 
 class Input {
   constructor(driver) {
@@ -57,6 +58,25 @@ class Input {
     }
     return await this.bidi.send(command)
   }
+
+  async setFiles(browsingContextId, element, files) {
+    if (typeof element !== 'string' && !(element instanceof ReferenceValue)) {
+      throw Error(`Pass in a WebElement id as a string or a ReferenceValue. Received: ${element}`)
+    }
+
+    const command = {
+      method: 'input.setFiles',
+      params: {
+        context: browsingContextId,
+        element:
+          typeof element === 'string'
+            ? new ReferenceValue(RemoteReferenceType.SHARED_ID, element).asMap()
+            : element.asMap(),
+        files: typeof files === 'string' ? [files] : files,
+      },
+    }
+    await this.bidi.send(command)
+  }
 }
 
 async function updateActions(actions) {
@@ -67,10 +87,7 @@ async function updateActions(actions) {
 
     if (action.type === 'pointer' || action.type === 'wheel') {
       for (const sequence of sequenceList) {
-        if (
-          (sequence.type === 'pointerMove' || sequence.type === 'scroll') &&
-          sequence.origin instanceof WebElement
-        ) {
+        if ((sequence.type === 'pointerMove' || sequence.type === 'scroll') && sequence.origin instanceof WebElement) {
           const element = sequence.origin
           const elementId = await element.getId()
           sequence.origin = {
