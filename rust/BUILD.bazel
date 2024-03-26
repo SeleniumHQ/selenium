@@ -99,6 +99,7 @@ rust_test(
     name = "unit",
     size = "small",
     crate = ":selenium_manager",
+    edition = "2021",
     tags = ["no-sandbox"],
 )
 
