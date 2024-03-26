@@ -29,7 +29,6 @@ from typing import List
 
 from selenium.common.exceptions import JavascriptException
 from selenium.common.exceptions import WebDriverException
-from selenium.types import AnyKey
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 
@@ -192,7 +191,7 @@ class WebElement(BaseWebElement):
         """Returns whether the element is enabled."""
         return self._execute(Command.IS_ELEMENT_ENABLED)["value"]
 
-    def send_keys(self, *value: AnyKey) -> None:
+    def send_keys(self, *value: str) -> None:
         """Simulates typing into the element.
 
         :Args:
