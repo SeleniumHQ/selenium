@@ -17,32 +17,7 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.PersistentCapabilities;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
@@ -53,21 +28,27 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.ProtocolHandshake;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.*;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
-import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.AttributeMap;
-import org.openqa.selenium.remote.tracing.Span;
-import org.openqa.selenium.remote.tracing.Status;
-import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.remote.tracing.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
+
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DriverServiceSessionFactory implements SessionFactory {
 
@@ -79,7 +60,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
   private final Predicate<Capabilities> predicate;
   private final DriverService.Builder<?, ?> builder;
   private final Capabilities stereotype;
-  private final SessionCapabilitiesMutator sessionCapabilitiesMutator;
+  private final CapabilitiesMutatorService capabilitiesMutatorService;
 
   public DriverServiceSessionFactory(
       Tracer tracer,
@@ -94,7 +75,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
     this.builder = Require.nonNull("Driver service builder", builder);
-    this.sessionCapabilitiesMutator = new SessionCapabilitiesMutator(this.stereotype);
+    this.capabilitiesMutatorService = new CapabilitiesMutatorService(this.stereotype);
   }
 
   @Override
@@ -124,7 +105,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
     try {
 
       Capabilities capabilities =
-          sessionCapabilitiesMutator.apply(sessionRequest.getDesiredCapabilities());
+        capabilitiesMutatorService.getMutatedCapabilities(sessionRequest.getDesiredCapabilities());
 
       CAPABILITIES.accept(span, capabilities);
       CAPABILITIES_EVENT.accept(attributeMap, capabilities);
