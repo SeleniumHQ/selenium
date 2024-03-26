@@ -18,10 +18,9 @@
 use crate::config::OS;
 use crate::config::OS::WINDOWS;
 use crate::{
-    format_one_arg, format_three_args, format_two_args, run_shell_command_by_os,
-    run_shell_command_with_log, Command, Logger, CP_VOLUME_COMMAND, HDIUTIL_ATTACH_COMMAND,
-    HDIUTIL_DETACH_COMMAND, MACOS, MSIEXEC_INSTALL_COMMAND, MV_PAYLOAD_COMMAND,
-    MV_PAYLOAD_OLD_VERSIONS_COMMAND, PKGUTIL_COMMAND,
+    format_one_arg, format_three_args, format_two_args, run_shell_command_by_os, Command, Logger,
+    CP_VOLUME_COMMAND, HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, MACOS,
+    MSIEXEC_INSTALL_COMMAND, MV_PAYLOAD_COMMAND, MV_PAYLOAD_OLD_VERSIONS_COMMAND, PKGUTIL_COMMAND,
 };
 use anyhow::anyhow;
 use anyhow::Error;
@@ -200,7 +199,7 @@ pub fn uncompress_pkg(
         &out_folder,
     ));
     log.trace(format!("Running command: {}", command.display()));
-    run_shell_command_with_log(&log, os, command)?;
+    run_shell_command_by_os(os, command)?;
 
     fs::create_dir_all(target)?;
     let target_folder = path_to_string(target);
