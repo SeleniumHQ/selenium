@@ -34,6 +34,7 @@ sevenz-rust = "0.5.4"
 walkdir = "2.5.0"
 debpkg = "0.6.0"
 anyhow = { version = "1.0.81", features = ["backtrace"] }
+apple-flat-package = "0.18.0"
 
 [dev-dependencies]
 assert_cmd = "2.0.14"
