@@ -98,8 +98,8 @@ rust_library(
 rust_test(
     name = "unit",
     size = "small",
-    srcs = glob(["src/**/*.rs"]),
     crate = ":selenium_manager",
+    edition = "2021",
     tags = ["no-sandbox"],
 )
 

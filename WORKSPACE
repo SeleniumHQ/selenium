@@ -231,20 +231,15 @@ paket()
 
 http_archive(
     name = "rules_rust",
-    sha256 = "50ec4b84a7ec5370f5882d52f4a1e6b8a75de2f8dcc0a4403747b69b2c4ef5b1",
-    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.23.0/rules_rust-v0.23.0.tar.gz"],
+    integrity = "sha256-ww398ehv1QZQp26mRbOkXy8AZnsGGHpoXpVU4WfKl+4=",
+    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.40.0/rules_rust-v0.40.0.tar.gz"],
 )
 
 load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
 
 rules_rust_dependencies()
 
-rust_register_toolchains(
-    edition = "2021",
-    versions = [
-        "1.77.0",
-    ],
-)
+rust_register_toolchains()
 
 load("@rules_rust//crate_universe:defs.bzl", "crates_repository")
 
