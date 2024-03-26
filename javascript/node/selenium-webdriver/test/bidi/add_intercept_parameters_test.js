@@ -19,22 +19,19 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const {Browser, By, WebElement} = require('../../')
+const { Browser } = require('../../')
 const { suite } = require('../../lib/test')
 const Network = require('../../bidi/network')
-const {AddInterceptParameters} = require("../../bidi/addInterceptParameters");
-const {InterceptPhase} = require("../../bidi/interceptPhase");
-const {UrlPattern} = require("../../bidi/urlPattern");
+const { AddInterceptParameters } = require('../../bidi/addInterceptParameters')
+const { InterceptPhase } = require('../../bidi/interceptPhase')
+const { UrlPattern } = require('../../bidi/urlPattern')
 
 suite(
   function (env) {
     let driver
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .setFirefoxOptions(new firefox.Options().enableBidi())
-        .build()
+      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
     })
 
     afterEach(async function () {
@@ -51,35 +48,38 @@ suite(
       xit('can add intercept phases', async function () {
         const network = await Network(driver)
         const intercept = await network.addIntercept(
-          new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED, InterceptPhase.BEFORE_REQUEST_SENT))
+          new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED, InterceptPhase.BEFORE_REQUEST_SENT),
+        )
         assert.notEqual(intercept, null)
       })
 
       xit('can add string url pattern', async function () {
         const network = await Network(driver)
         const intercept = await network.addIntercept(
-          new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT).urlStringPattern('http://localhost:4444/basicAuth'))
+          new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT).urlStringPattern(
+            'http://localhost:4444/basicAuth',
+          ),
+        )
         assert.notEqual(intercept, null)
       })
 
       xit('can add string url patterns', async function () {
         const network = await Network(driver)
         const intercept = await network.addIntercept(
-          new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT)
-            .urlStringPatterns(['http://localhost:4444/basicAuth',  'http://localhost:4445/logEntryAdded']))
+          new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT).urlStringPatterns([
+            'http://localhost:4444/basicAuth',
+            'http://localhost:4445/logEntryAdded',
+          ]),
+        )
         assert.notEqual(intercept, null)
       })
 
       xit('can add url pattern', async function () {
         const network = await Network(driver)
-        const urlPattern = new UrlPattern()
-          .protocol('http')
-          .hostname('localhost')
-          .port(4444)
-          .pathname('basicAuth')
+        const urlPattern = new UrlPattern().protocol('http').hostname('localhost').port(4444).pathname('basicAuth')
         const intercept = await network.addIntercept(
-          new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT)
-            .urlPattern(urlPattern))
+          new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT).urlPattern(urlPattern),
+        )
         assert.notEqual(intercept, null)
       })
 
@@ -100,12 +100,11 @@ suite(
           .search('auth')
 
         const intercept = await network.addIntercept(
-          new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT)
-            .urlPatterns([urlPattern1, urlPattern2]))
+          new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT).urlPatterns([urlPattern1, urlPattern2]),
+        )
         assert.notEqual(intercept, null)
       })
-
     })
   },
-  {browsers: [Browser.FIREFOX]}
+  { browsers: [Browser.FIREFOX] },
 )

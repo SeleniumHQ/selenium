@@ -56,7 +56,7 @@ module Selenium
         opts[:httpOnly] = http_only if http_only
 
         obj = opts.delete(:expires)
-        opts[:expiry] = seconds_from(obj).to_i if obj
+        opts[:expiry] = seconds_from(obj).to_int if obj
 
         @bridge.add_cookie opts
       end

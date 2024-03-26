@@ -143,6 +143,7 @@ public class GraphqlHandler implements HttpHandler {
       }
 
       String query = (String) inputs.get("query");
+
       @SuppressWarnings("unchecked")
       Map<String, Object> variables =
           inputs.get("variables") instanceof Map

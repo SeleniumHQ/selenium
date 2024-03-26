@@ -50,6 +50,7 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "Default to 5s")
+  @NotYetImplemented(value = EDGE, reason = "Default to 5s")
   @NotYetImplemented(value = FIREFOX, reason = "Default to 5s")
   @NotYetImplemented(value = SAFARI, reason = "Default to 5s")
   public void shouldSetAndGetScriptTimeout() {

@@ -1,8 +1,7 @@
-using System;
 using NUnit.Framework;
-using System.Collections.ObjectModel;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Environment;
+using System;
+using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium
 {
@@ -439,6 +438,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement()
         {
             driver.Url = formsPage;
@@ -446,6 +446,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements()
         {
             if (TestUtilities.IsIE6(driver))
@@ -459,6 +460,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement()
         {
             driver.Url = formsPage;
@@ -467,6 +469,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements()
         {
             driver.Url = formsPage;
@@ -475,6 +478,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement()
         {
             driver.Url = formsPage;
@@ -482,6 +486,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements()
         {
             if (TestUtilities.IsIE6(driver))
@@ -495,6 +500,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement()
         {
             driver.Url = formsPage;
@@ -504,6 +510,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements()
         {
             if (TestUtilities.IsIE6(driver))
@@ -807,7 +814,7 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame("inner");
             IWebElement element = driver.FindElement(By.Id("oneline"));
             driver.SwitchTo().DefaultContent();
-            Assert.That(() => { string foo = element.Text; }, Throws.InstanceOf<StaleElementReferenceException>());
+            Assert.That(() => { string foo = element.Text; }, Throws.InstanceOf<NoSuchElementException>());
         }
 
         /////////////////////////////////////////////////

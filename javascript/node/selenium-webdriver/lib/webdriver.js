@@ -461,7 +461,7 @@ class IWebDriver {
     condition, // eslint-disable-line
     timeout = undefined, // eslint-disable-line
     message = undefined, // eslint-disable-line
-    pollTimeout = undefined // eslint-disable-line
+    pollTimeout = undefined, // eslint-disable-line
   ) {}
 
   /**
@@ -887,6 +887,7 @@ class WebDriver {
     }
 
     const driver = this
+
     function evaluateCondition() {
       return new Promise((resolve, reject) => {
         try {
@@ -1379,6 +1380,7 @@ class WebDriver {
       null,
     )
   }
+
   /**
    *
    * @param connection
@@ -1966,6 +1968,7 @@ class Options {
     let cmd = new command.Command(command.Name.SET_TIMEOUT)
 
     let valid = false
+
     function setParam(key, value) {
       if (value === null || typeof value === 'number') {
         valid = true
@@ -1974,6 +1977,7 @@ class Options {
         throw TypeError('invalid timeouts configuration:' + ` expected "${key}" to be a number, got ${typeof value}`)
       }
     }
+
     setParam('implicit', implicit)
     setParam('pageLoad', pageLoad)
     setParam('script', script)
@@ -2854,6 +2858,7 @@ class WebElement {
   getAccessibleName() {
     return this.execute_(new command.Command(command.Name.GET_COMPUTED_LABEL))
   }
+
   /**
    * Returns an object describing an element's location, in pixels relative to
    * the document element, and the element's size in pixels.

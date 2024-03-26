@@ -1,0 +1,45 @@
+module Selenium
+  module WebDriver
+    module Chromium
+      class Profile
+        @model: untyped
+
+        @extensions: untyped
+
+        @encoded_extensions: untyped
+
+        @directory: untyped
+
+        @prefs: untyped
+
+        include ProfileHelper
+
+        def initialize: (?untyped? model) -> void
+
+        def add_extension: (untyped path) -> untyped
+
+        def add_encoded_extension: (untyped encoded) -> untyped
+
+        def directory: () -> untyped
+
+        def []=: (untyped key, untyped value) -> untyped
+
+        def []: (untyped key) -> untyped
+
+        def layout_on_disk: () -> untyped
+
+        def as_json: (*untyped) -> untyped
+
+        private
+
+        def write_prefs_to: (untyped dir) -> untyped
+
+        def prefs: () -> untyped
+
+        def read_model_prefs: () -> (Hash[untyped, untyped] | untyped)
+
+        def prefs_file_for: (untyped dir) -> untyped
+      end
+    end
+  end
+end

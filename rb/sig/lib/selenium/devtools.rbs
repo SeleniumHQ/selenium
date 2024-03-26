@@ -1,0 +1,13 @@
+module Selenium
+  module DevTools
+    attr_accessor self.version: untyped
+
+    def self.load_version: () -> untyped
+
+    private
+
+    def self.load_older_version: () -> untyped
+
+    def self.load_old_version: (untyped version) -> untyped
+  end
+end

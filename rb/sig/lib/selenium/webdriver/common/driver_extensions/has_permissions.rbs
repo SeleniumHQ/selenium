@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasPermissions
+        def add_permission: (untyped name, untyped value) -> untyped
+
+        def add_permissions: (untyped opt) -> untyped
+      end
+    end
+  end
+end

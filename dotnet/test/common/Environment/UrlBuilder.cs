@@ -1,10 +1,10 @@
-using System.Net.Sockets;
-using System.Net;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using System.Text;
+using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
+using System.Text;
 
 namespace OpenQA.Selenium.Environment
 {

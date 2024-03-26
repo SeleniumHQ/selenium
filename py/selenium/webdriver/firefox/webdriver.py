@@ -125,7 +125,10 @@ class WebDriver(RemoteWebDriver):
 
         if os.path.isdir(path):
             fp = BytesIO()
-            path_root = len(path) + 1  # account for trailing slash
+            # filter all trailing slash found in path
+            path = os.path.normpath(path)
+            # account for trailing slash that will be added by os.walk()
+            path_root = len(path) + 1
             with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED) as zipped:
                 for base, _, files in os.walk(path):
                     for fyle in files:

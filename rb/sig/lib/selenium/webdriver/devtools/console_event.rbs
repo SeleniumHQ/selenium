@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    class DevTools
+      class ConsoleEvent
+        @type: untyped
+
+        @timestamp: untyped
+
+        @args: untyped
+
+        attr_accessor type: untyped
+
+        attr_accessor timestamp: untyped
+
+        attr_accessor args: untyped
+
+        def initialize: (type: untyped, timestamp: untyped, args: untyped) -> void
+      end
+    end
+  end
+end

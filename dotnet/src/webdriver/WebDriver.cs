@@ -16,14 +16,14 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.VirtualAuth;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.VirtualAuth;
 
 namespace OpenQA.Selenium
 {
@@ -54,7 +54,18 @@ namespace OpenQA.Selenium
         protected WebDriver(ICommandExecutor executor, ICapabilities capabilities)
         {
             this.executor = executor;
-            this.StartSession(capabilities);
+
+            try
+            {
+                this.StartSession(capabilities);
+            }
+            catch (Exception)
+            {
+                // Failed to start driver session, disposing of driver
+                this.Quit();
+                throw;
+            }
+
             this.elementFactory = new WebElementFactory(this);
             this.network = new NetworkManager(this);
             this.registeredCommands.AddRange(DriverCommand.KnownCommands);
@@ -692,7 +703,6 @@ namespace OpenQA.Selenium
             {
                 this.sessionId = null;
             }
-
             this.executor.Dispose();
         }
 

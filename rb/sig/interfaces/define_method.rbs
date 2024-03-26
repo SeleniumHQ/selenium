@@ -1,0 +1,3 @@
+interface _DefineMethod
+  def define_method: (untyped) { (untyped) -> untyped } -> untyped
+end

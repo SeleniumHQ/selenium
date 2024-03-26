@@ -1,0 +1,105 @@
+module Selenium
+  module WebDriver
+    module Error
+      def self.for_error: (untyped error) -> untyped
+
+      SUPPORT_MSG: String
+
+      ERROR_URL: String
+
+      class WebDriverError < StandardError
+      end
+
+      class NoSuchElementError < WebDriverError
+        def initialize: (?String msg) -> void
+      end
+
+      class NoSuchFrameError < WebDriverError
+      end
+
+      class UnknownCommandError < WebDriverError
+      end
+
+      class StaleElementReferenceError < WebDriverError
+        def initialize: (?String msg) -> void
+      end
+
+      class DetachedShadowRootError < WebDriverError
+      end
+
+      class InvalidElementStateError < WebDriverError
+      end
+
+      class UnknownError < WebDriverError
+      end
+
+      class JavascriptError < WebDriverError
+      end
+
+      class TimeoutError < WebDriverError
+      end
+
+      class NoSuchWindowError < WebDriverError
+      end
+
+      class NoSuchShadowRootError < WebDriverError
+      end
+
+      class InvalidCookieDomainError < WebDriverError
+      end
+
+      class UnableToSetCookieError < WebDriverError
+      end
+
+      class NoSuchAlertError < WebDriverError
+      end
+
+      class ScriptTimeoutError < WebDriverError
+      end
+
+      class InvalidSelectorError < WebDriverError
+        def initialize: (?::String msg) -> void
+      end
+
+      class SessionNotCreatedError < WebDriverError
+      end
+
+      class MoveTargetOutOfBoundsError < WebDriverError
+      end
+
+      class ElementNotInteractableError < WebDriverError
+      end
+
+      class InsecureCertificateError < WebDriverError
+      end
+
+      class InvalidArgumentError < WebDriverError
+      end
+
+      class NoSuchCookieError < WebDriverError
+      end
+
+      class UnableToCaptureScreenError < WebDriverError
+      end
+
+      class InvalidSessionIdError < WebDriverError
+      end
+
+      class UnexpectedAlertOpenError < WebDriverError
+      end
+
+      class UnknownMethodError < WebDriverError
+      end
+
+      class ElementClickInterceptedError < WebDriverError
+      end
+
+      class UnsupportedOperationError < WebDriverError
+      end
+
+      class NoSuchDriverError < WebDriverError
+        def initialize: (?String msg) -> void
+      end
+    end
+  end
+end

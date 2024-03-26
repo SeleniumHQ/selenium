@@ -93,7 +93,7 @@ class WebElement(BaseWebElement):
         """Clicks the element."""
         self._execute(Command.CLICK_ELEMENT)
 
-    def submit(self):
+    def submit(self) -> None:
         """Submits a form."""
         script = (
             "/* submitForm */var form = arguments[0];\n"

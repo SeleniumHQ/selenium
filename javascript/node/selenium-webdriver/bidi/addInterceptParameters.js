@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const {UrlPattern} = require("./urlPattern");
+const { UrlPattern } = require('./urlPattern')
 
 class AddInterceptParameters {
   #phases = []
@@ -23,64 +23,58 @@ class AddInterceptParameters {
 
   constructor(phases) {
     if (phases instanceof Array) {
-      phases.forEach(phase => this.#phases.push(phase))
+      phases.forEach((phase) => this.#phases.push(phase))
     } else {
       this.#phases.push(phases)
     }
   }
 
-    urlPattern(pattern)
-    {
-      if (!pattern instanceof UrlPattern) {
-        throw new Error(`Pattern must be an instance of UrlPattern. Received: '${pattern})'`)
-      }
-      this.#urlPatterns.push(Object.fromEntries(pattern.asMap()))
-      return this
+  urlPattern(pattern) {
+    if (!(pattern instanceof UrlPattern)) {
+      throw new Error(`Pattern must be an instance of UrlPattern. Received: '${pattern})'`)
     }
-
-    urlPatterns(patterns)
-    {
-      patterns.forEach(pattern => {
-        if (!pattern instanceof UrlPattern) {
-          throw new Error(`Pattern must be an instance of UrlPattern. Received:'${pattern}'`)
-        }
-        this.#urlPatterns.push(Object.fromEntries(pattern.asMap()))
-      })
-      return this
-    }
-
-    urlStringPattern(pattern)
-    {
-      if (!pattern instanceof String) {
-        throw new Error(`Pattern must be an instance of String. Received:'${pattern}'`)
-      }
-
-      this.#urlPatterns.push({'type': 'string', 'pattern': pattern})
-      return this
-    }
-
-    urlStringPatterns(patterns)
-    {
-      patterns.forEach(pattern => {
-        if (!pattern instanceof String) {
-          throw new Error(`Pattern must be an instance of String. Received:'${pattern}'`)
-        }
-        this.#urlPatterns.push({'type': 'string', 'pattern': pattern})
-      })
-      return this
-    }
-
-
-    asMap()
-    {
-      const map = new Map()
-      map.set('phases', this.#phases)
-      if (this.#urlPatterns.length > 0) {
-        map.set('urlPatterns', this.#urlPatterns)
-      }
-
-      return map
-    }
+    this.#urlPatterns.push(Object.fromEntries(pattern.asMap()))
+    return this
   }
 
-  module.exports = {AddInterceptParameters}
+  urlPatterns(patterns) {
+    patterns.forEach((pattern) => {
+      if (!(pattern instanceof UrlPattern)) {
+        throw new Error(`Pattern must be an instance of UrlPattern. Received:'${pattern}'`)
+      }
+      this.#urlPatterns.push(Object.fromEntries(pattern.asMap()))
+    })
+    return this
+  }
+
+  urlStringPattern(pattern) {
+    if (!(pattern instanceof String)) {
+      throw new Error(`Pattern must be an instance of String. Received:'${pattern}'`)
+    }
+
+    this.#urlPatterns.push({ type: 'string', pattern: pattern })
+    return this
+  }
+
+  urlStringPatterns(patterns) {
+    patterns.forEach((pattern) => {
+      if (!(pattern instanceof String)) {
+        throw new Error(`Pattern must be an instance of String. Received:'${pattern}'`)
+      }
+      this.#urlPatterns.push({ type: 'string', pattern: pattern })
+    })
+    return this
+  }
+
+  asMap() {
+    const map = new Map()
+    map.set('phases', this.#phases)
+    if (this.#urlPatterns.length > 0) {
+      map.set('urlPatterns', this.#urlPatterns)
+    }
+
+    return map
+  }
+}
+
+module.exports = { AddInterceptParameters }

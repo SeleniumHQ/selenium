@@ -19,13 +19,13 @@ module Selenium
 
       def initialize: (Remote::Bridge bridge, ?devices: Array[Interactions::InputDevice], ?async: bool, ?duration: ::Integer) -> void
 
-      def add_pointer_input: (Symbol kind, String name) -> Interactions::PointerInput
+      def add_pointer_input: (Symbol kind, String name) -> Interactions::InputDevice
 
-      def add_key_input: (String name) -> Interactions::KeyInput
+      def add_key_input: (String name) -> Interactions::InputDevice
 
-      def add_wheel_input: (String name) -> Interactions::WheelInput
+      def add_wheel_input: (String name) -> Interactions::InputDevice
 
-      def device: (?name: String?, ?type: String?) -> Selenium::WebDriver::Interactions::InputDevice?
+      def device: (?name: String?, ?type: String?) -> Interactions::InputDevice?
 
       def pointer_inputs: () -> Array[Interactions::InputDevice]
 
@@ -39,15 +39,15 @@ module Selenium
 
       def perform: () -> nil
 
-      def clear_all_actions: () -> []
+      def clear_all_actions: () -> Array[Selenium::WebDriver::Interactions::InputDevice]
 
       def release_actions: () -> untyped
 
       private
 
-      def tick: (*Interactions::InputDevice action_devices) -> (nil | Array[Interactions::InputDevice])
+      def tick: (*Interactions::InputDevice action_devices) -> Array[Interactions::InputDevice]?
 
-      def add_input: (Interactions::InputDevice | Symbol device) -> Interactions::InputDevice
+      def add_input: (Interactions::InputDevice | Symbol | interned device) -> Interactions::InputDevice
     end
   end
 end

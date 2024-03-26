@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    class Alert
+      @bridge: untyped
+
+      def initialize: (untyped bridge) -> void
+
+      def accept: () -> untyped
+
+      def dismiss: () -> untyped
+
+      def send_keys: (untyped keys) -> untyped
+
+      def text: () -> untyped
+    end
+  end
+end

@@ -1,0 +1,5 @@
+module Selenium
+  module WebDriver
+    VERSION: String
+  end
+end

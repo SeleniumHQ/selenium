@@ -1,0 +1,35 @@
+module Selenium
+  module WebDriver
+    class DevTools
+      class Request
+        @id: untyped
+
+        @url: untyped
+
+        @method: untyped
+
+        @headers: untyped
+
+        @post_data: untyped
+
+        attr_accessor url: untyped
+
+        attr_accessor method: untyped
+
+        attr_accessor headers: untyped
+
+        attr_accessor post_data: untyped
+
+        attr_reader id: untyped
+
+        def self.from: (untyped id, untyped params) -> untyped
+
+        def initialize: (id: untyped, url: untyped, method: untyped, headers: untyped, post_data: untyped) -> void
+
+        def ==: (untyped other) -> untyped
+
+        def inspect: () -> String
+      end
+    end
+  end
+end

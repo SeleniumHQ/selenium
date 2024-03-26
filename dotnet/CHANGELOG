@@ -1,3 +1,22 @@
+v4.18.1
+======
+
+* Add CDP for Chrome 122 and remove 119
+
+v4.18.0
+======
+
+* update parameter name to allowedIpAddresses and make whitelistedIpAddresses obsolete
+* remove download url parameter from driver service constructor
+* mark UseVerboseLogging obsolete for Edge service in favor of EnableVerboseLogging
+* explicitly support passing the full path to driver in Service constructor
+* Fix protocol cdp version for remote webdriver (#13507)
+* Move initialization of error codes to static ctor
+* Add DetachedShadowRoot exception for error response handling
+* Add InsecureCertificate exception for error response handling
+* Fix network response data encoding (#13576)
+* Breaking change: `desiredCapabilities` was renamed to `capabilities` in RemoteWebDriver ctor
+
 v4.17.0
 ======
 

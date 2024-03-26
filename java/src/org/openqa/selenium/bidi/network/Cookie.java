@@ -16,6 +16,8 @@
 // under the License.
 package org.openqa.selenium.bidi.network;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.openqa.selenium.json.JsonInput;
 
@@ -111,7 +113,7 @@ public class Cookie {
         case "secure":
           isSecure = input.read(Boolean.class);
           break;
-        case "isHttpOnly":
+        case "httpOnly":
           isHttpOnly = input.read(Boolean.class);
           break;
         case "sameSite":
@@ -119,7 +121,7 @@ public class Cookie {
           sameSite = SameSite.findByName(sameSiteValue);
           break;
         case "expiry":
-          expiry = input.read(Long.class);
+          expiry = Optional.of(input.read(Long.class));
           break;
         default:
           input.skipValue();
@@ -165,5 +167,21 @@ public class Cookie {
 
   public Optional<Long> getExpiry() {
     return expiry;
+  }
+
+  public Map<String, Object> toMap() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("name", getName());
+    map.put("value", getValue().toMap());
+    map.put("domain", getDomain());
+    map.put("path", getPath());
+    map.put("size", getSize());
+    map.put("secure", isSecure());
+    map.put("httpOnly", isHttpOnly());
+    map.put("sameSite", getSameSite().toString());
+
+    getExpiry().ifPresent(expiryValue -> map.put("expiry", expiryValue));
+
+    return map;
   }
 }

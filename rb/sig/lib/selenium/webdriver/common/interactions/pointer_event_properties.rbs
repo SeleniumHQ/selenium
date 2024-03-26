@@ -1,0 +1,15 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      module PointerEventProperties
+        VALID: untyped
+
+        def process_opts: () -> untyped
+
+        private
+
+        def assert_number: (untyped, untyped, ?untyped) -> untyped
+      end
+    end
+  end
+end

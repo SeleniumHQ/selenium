@@ -1,9 +1,9 @@
+using Moq;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using NUnit.Framework;
 using System.Reflection;
-using System;
-using Moq;
 
 namespace OpenQA.Selenium.Support.UI
 {
@@ -109,6 +109,7 @@ namespace OpenQA.Selenium.Support.UI
             webElement.SetupGet<string>(_ => _.TagName).Returns("select");
             webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
             option1.SetupGet<bool>(_ => _.Selected).Returns(false);
+            option1.SetupGet<bool>(_ => _.Enabled).Returns(true);
             option1.Setup(_ => _.Click());
             webElement.Setup(_ => _.FindElements(It.IsAny<By>())).Returns(new ReadOnlyCollection<IWebElement>(options)).Verifiable();
 
@@ -128,6 +129,7 @@ namespace OpenQA.Selenium.Support.UI
             webElement.SetupGet<string>(_ => _.TagName).Returns("select");
             webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns((string)null);
             option1.SetupGet<bool>(_ => _.Selected).Returns(false);
+            option1.SetupGet<bool>(_ => _.Enabled).Returns(true);
             option1.Setup(_ => _.Click());
             webElement.Setup(_ => _.FindElements(It.IsAny<By>())).Returns(new ReadOnlyCollection<IWebElement>(options)).Verifiable();
 
@@ -148,6 +150,7 @@ namespace OpenQA.Selenium.Support.UI
             webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns((string)null);
             option1.Setup<string>(_ => _.GetAttribute(It.IsAny<string>())).Returns("2");
             option1.SetupGet<bool>(_ => _.Selected).Returns(false);
+            option1.SetupGet<bool>(_ => _.Enabled).Returns(true);
             option1.Setup(_ => _.Click());
             webElement.Setup(_ => _.FindElements(It.IsAny<By>())).Returns(new ReadOnlyCollection<IWebElement>(options)).Verifiable();
 
@@ -170,8 +173,10 @@ namespace OpenQA.Selenium.Support.UI
             webElement.SetupGet<string>(_ => _.TagName).Returns("select");
             webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
             option1.SetupGet<bool>(_ => _.Selected).Returns(false);
+            option1.SetupGet<bool>(_ => _.Enabled).Returns(true);
             option1.Setup(_ => _.Click());
             option2.SetupGet<bool>(_ => _.Selected).Returns(false);
+            option2.SetupGet<bool>(_ => _.Enabled).Returns(true);
             option2.Setup(_ => _.Click());
             webElement.Setup(_ => _.FindElements(It.IsAny<By>())).Returns(new ReadOnlyCollection<IWebElement>(options)).Verifiable();
 
@@ -195,8 +200,10 @@ namespace OpenQA.Selenium.Support.UI
             webElement.SetupGet<string>(_ => _.TagName).Returns("select");
             webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
             option1.SetupGet<bool>(_ => _.Selected).Returns(false);
+            option1.SetupGet<bool>(_ => _.Enabled).Returns(true);
             option1.Setup(_ => _.Click());
             option2.SetupGet<bool>(_ => _.Selected).Returns(false);
+            option2.SetupGet<bool>(_ => _.Enabled).Returns(true);
             option2.Setup(_ => _.Click());
             webElement.Setup(_ => _.FindElements(It.IsAny<By>())).Returns(new ReadOnlyCollection<IWebElement>(options)).Verifiable();
 
@@ -219,17 +226,19 @@ namespace OpenQA.Selenium.Support.UI
 
             webElement.SetupGet<string>(_ => _.TagName).Returns("select");
             webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
-            option1.Setup<string>(_ => _.GetAttribute(It.IsAny<string>())).Returns("2");
+            option1.Setup<string>(_ => _.GetAttribute(It.IsAny<string>())).Returns("1");
             option1.SetupGet<bool>(_ => _.Selected).Returns(false);
+            option1.SetupGet<bool>(_ => _.Enabled).Returns(true);
             option1.Setup(_ => _.Click());
             option2.Setup<string>(_ => _.GetAttribute(It.IsAny<string>())).Returns("2");
             option2.SetupGet<bool>(_ => _.Selected).Returns(false);
+            option2.SetupGet<bool>(_ => _.Enabled).Returns(true);
             option2.Setup(_ => _.Click());
             webElement.Setup(_ => _.FindElements(It.IsAny<By>())).Returns(new ReadOnlyCollection<IWebElement>(options)).Verifiable();
 
             new SelectElement(webElement.Object).SelectByIndex(2);
-            option1.Verify(_ => _.Selected, Times.Once);
-            option1.Verify(_ => _.Click(), Times.Once);
+            option1.Verify(_ => _.Selected, Times.Never);
+            option1.Verify(_ => _.Click(), Times.Never);
             option1.Verify(_ => _.GetAttribute(It.IsAny<string>()), Times.Once);
             option2.Verify(_ => _.Selected, Times.Once);
             option2.Verify(_ => _.Click(), Times.Once);
@@ -352,7 +361,7 @@ namespace OpenQA.Selenium.Support.UI
 
             webElement.SetupGet<string>(_ => _.TagName).Returns("select");
             webElement.Setup(_ => _.GetAttribute(It.Is<string>(x => x == "multiple"))).Returns("true");
-            option1.Setup<string>(_ => _.GetAttribute(It.IsAny<string>())).Returns("2");
+            option1.Setup<string>(_ => _.GetAttribute(It.IsAny<string>())).Returns("1");
             option1.SetupGet<bool>(_ => _.Selected).Returns(true);
             option1.Setup(_ => _.Click());
             option2.Setup<string>(_ => _.GetAttribute(It.IsAny<string>())).Returns("2");
@@ -362,8 +371,8 @@ namespace OpenQA.Selenium.Support.UI
 
             new SelectElement(webElement.Object).DeselectByIndex(2);
             option1.Verify(_ => _.GetAttribute(It.IsAny<string>()), Times.Once);
-            option1.Verify(_ => _.Selected, Times.Once);
-            option1.Verify(_ => _.Click(), Times.Once);
+            option1.Verify(_ => _.Selected, Times.Never);
+            option1.Verify(_ => _.Click(), Times.Never);
             option2.Verify(_ => _.GetAttribute(It.IsAny<string>()), Times.Once);
             option2.Verify(_ => _.Selected, Times.Once);
             option2.Verify(_ => _.Click(), Times.Once);
