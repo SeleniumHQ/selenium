@@ -21,15 +21,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.common.io.FileBackedOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.UncheckedIOException;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,6 +45,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.http.Contents;
 
 public class NewSessionPayload implements Closeable {
 
@@ -57,25 +53,11 @@ public class NewSessionPayload implements Closeable {
   private static final Predicate<String> ACCEPTED_W3C_PATTERNS = new AcceptedW3CCapabilityKeys();
 
   private final Json json = new Json();
-  private final FileBackedOutputStream backingStore;
+  private final Contents.Supplier supplier;
   private final Set<Dialect> dialects;
 
-  private NewSessionPayload(Reader source) {
-    // Dedicate up to 10% of all RAM or 20% of available RAM (whichever is smaller) to storing this
-    // payload.
-    int threshold =
-        (int)
-            Math.min(
-                Integer.MAX_VALUE,
-                Math.min(
-                    Runtime.getRuntime().freeMemory() / 5, Runtime.getRuntime().maxMemory() / 10));
-
-    backingStore = new FileBackedOutputStream(threshold);
-    try (Writer writer = new OutputStreamWriter(backingStore, UTF_8)) {
-      source.transferTo(writer);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+  private NewSessionPayload(Contents.Supplier supplier) {
+    this.supplier = supplier;
 
     Set<Dialect> dialects = new LinkedHashSet<>();
     try {
@@ -88,12 +70,6 @@ public class NewSessionPayload implements Closeable {
       validate();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
-    }
-
-    try {
-      source.close();
-    } catch (IOException e) {
-      // Ignore
     }
   }
 
@@ -120,12 +96,15 @@ public class NewSessionPayload implements Closeable {
     Require.precondition(
         source.containsKey("capabilities"), "New session payload must contain capabilities");
 
-    String json = new Json().toJson(Require.nonNull("Payload", source));
-    return new NewSessionPayload(new StringReader(json));
+    return new NewSessionPayload(Contents.asJson(Require.nonNull("Payload", source)));
   }
 
-  public static NewSessionPayload create(Reader source) {
-    return new NewSessionPayload(source);
+  public static NewSessionPayload create(Contents.Supplier supplier) {
+    return new NewSessionPayload(supplier);
+  }
+
+  public Contents.Supplier getSupplier() {
+    return supplier;
   }
 
   private void validate() throws IOException {
@@ -213,8 +192,7 @@ public class NewSessionPayload implements Closeable {
   }
 
   private void writeMetaData(JsonOutput out) throws IOException {
-    try (Reader reader =
-            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
+    try (Reader reader = Contents.reader(supplier, UTF_8);
         JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
@@ -253,8 +231,7 @@ public class NewSessionPayload implements Closeable {
   public Map<String, Object> getMetadata() {
     Set<String> ignoredMetadataKeys = Set.of("capabilities");
 
-    try (Reader reader =
-            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
+    try (Reader reader = Contents.reader(supplier, UTF_8);
         JsonInput input = json.newInput(reader)) {
       Map<String, Object> toReturn = new LinkedHashMap<>();
 
@@ -284,7 +261,7 @@ public class NewSessionPayload implements Closeable {
   @Override
   public void close() {
     try {
-      backingStore.reset();
+      supplier.close();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -324,8 +301,7 @@ public class NewSessionPayload implements Closeable {
   }
 
   private boolean isW3C() throws IOException {
-    try (Reader reader =
-            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
+    try (Reader reader = Contents.reader(supplier, UTF_8);
         JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
@@ -341,8 +317,7 @@ public class NewSessionPayload implements Closeable {
   }
 
   private Map<String, Object> getAlwaysMatch() throws IOException {
-    try (Reader reader =
-            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
+    try (Reader reader = Contents.reader(supplier, UTF_8);
         JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
@@ -367,8 +342,7 @@ public class NewSessionPayload implements Closeable {
   }
 
   private Collection<Map<String, Object>> getFirstMatches() throws IOException {
-    try (Reader reader =
-            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
+    try (Reader reader = Contents.reader(supplier, UTF_8);
         JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
