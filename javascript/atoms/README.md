@@ -17,7 +17,7 @@ browser. You can do this by starting a debug server:
 bazel run javascript/atoms:test_debug_server
 ```
 
-And then navigating to: <http://localhost:2310/filez/selenium/javascript/atoms/>
+And then navigating to: <http://localhost:2310/filez/_main/javascript/atoms/>
 
 You'll be able to browse around the filesystem until you find the test
 you want to work on.
