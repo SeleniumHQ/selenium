@@ -35,8 +35,8 @@ exports_files(
 
     http_archive(
         name = "linux_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/125.0b3/linux-x86_64/en-US/firefox-125.0b3.tar.bz2",
-        sha256 = "6cdebd362dbfbf207bad3d82e529f570d7785e5889420f1645c47773107c299f",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/125.0b4/linux-x86_64/en-US/firefox-125.0b4.tar.bz2",
+        sha256 = "41657b5a23eb472b938218237959d2ee1aeb0165e8b46fc846bf2d797e30b84e",
         build_file_content = """
 filegroup(
     name = "files",
@@ -52,8 +52,8 @@ exports_files(
 
     dmg_archive(
         name = "mac_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/125.0b3/mac/en-US/Firefox%20125.0b3.dmg",
-        sha256 = "16f3f7e66fd46fede4545312b8c776576cc4935e4a41ce27527252ec5ab0a18c",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/125.0b4/mac/en-US/Firefox%20125.0b4.dmg",
+        sha256 = "df9ba1d6f5e4a98ffd9c5060c01451d133f73efa60376faa07e497ef72bb98ee",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
@@ -73,10 +73,10 @@ exports_files(
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/cb3060ca-0635-4d36-b315-e2a0539f4889/MicrosoftEdge-123.0.2420.53.pkg",
-        sha256 = "0b8dc79dcf1415f7559a7dd927f4a1ef5055155ea1d924b863d570debdb68408",
+        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/61b13da3-c921-482a-9166-743689310b71/MicrosoftEdge-122.0.2365.92.pkg",
+        sha256 = "304243a7ef631781b707c0d9cb8fd35e718cebad91c29078e389bb4e813afef9",
         move = {
-            "MicrosoftEdge-123.0.2420.53.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-122.0.2365.92.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )
