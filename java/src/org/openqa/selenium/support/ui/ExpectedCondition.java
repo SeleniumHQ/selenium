@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
@@ -37,5 +37,4 @@ import org.openqa.selenium.WebDriver;
 // such as "com.google.common.base.Function condition = ExpectedConditions.elementFound(By);"
 // breaking at compile time, we continue to extend Guava's Function interface.
 @NullMarked
-public interface ExpectedCondition<T extends @Nullable Object>
-    extends Function<WebDriver, T>, java.util.function.Function<WebDriver, T> {}
+public interface ExpectedCondition<T extends @Nullable Object> extends Function<WebDriver, T> {}
