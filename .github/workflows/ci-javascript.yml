@@ -28,22 +28,4 @@ jobs:
       cache-key: node
       run: |
         export SELENIUM_BROWSER=${{ matrix.browser }}
-        bazel test --flaky_test_attempts 3 //javascript/node/selenium-webdriver:tests
-
-  # As soon as this gets merged https://github.com/facebook/jest/pull/9351, we should upgrade Jest and
-  # run bazel test javascript/grid-ui:test for these tests
-  grid-ui:
-    name: Grid UI Tests
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-      - name: NPM install
-        run: cd javascript/grid-ui && npm install
-      - name: Run unit tests
-        run: cd javascript/grid-ui && npm test
+        bazel test --flaky_test_attempts 3 //javascript/node/selenium-webdriver:${{matrix.browser}}-browser-tests

@@ -19,17 +19,15 @@ const fs = require('fs')
 const path = require('path')
 
 if (process.argv.length < 3) {
-  process.stderr.write(
-    `Usage: node ${path.basename(__filename)} <src file> <dst file>\n`
-  )
+  process.stderr.write(`Usage: node ${path.basename(__filename)} <src file> <dst file>\n`)
   // eslint-disable-next-line no-process-exit
   process.exit(-1)
 }
 
 const buffer = fs.readFileSync(process.argv[2])
-fs.writeFileSync(
-  process.argv[3],
+
+process.stdout.write(
   `// GENERATED CODE - DO NOT EDIT
 module.exports = ${buffer.toString('utf8').trim()};
-`
+`,
 )

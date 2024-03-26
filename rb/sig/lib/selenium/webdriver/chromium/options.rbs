@@ -1,0 +1,53 @@
+module Selenium
+  module WebDriver
+    module Chromium
+      class Options < WebDriver::Options
+        include _Options
+
+        @profile: untyped
+
+        @options: untyped
+
+        @logging_prefs: untyped
+
+        @encoded_extensions: untyped
+
+        @extensions: untyped
+
+        attr_accessor profile: untyped
+
+        attr_accessor logging_prefs: untyped
+
+        CAPABILITIES: Hash[Symbol, String]
+
+        attr_reader extensions: untyped
+
+        def initialize: (?profile: untyped?, **untyped opts) -> void
+
+        def add_extension: (untyped path) -> untyped
+
+        def extensions=: (untyped extensions) -> untyped
+
+        def add_encoded_extension: (untyped encoded) -> untyped
+
+        def add_argument: (untyped arg) -> untyped
+
+        def add_preference: (untyped name, untyped value) -> untyped
+
+        def add_emulation: (**untyped opts) -> untyped
+
+        def enable_android: (?package: String, ?serial_number: untyped?, ?use_running_app: untyped?, ?activity: untyped?) -> untyped
+
+        def process_browser_options: (untyped browser_options) -> untyped?
+
+        def binary_path: () -> untyped
+
+        def encode_extension: (untyped path) -> untyped
+
+        def validate_extension: (untyped path) -> untyped
+
+        def camelize?: (untyped key) -> untyped
+      end
+    end
+  end
+end

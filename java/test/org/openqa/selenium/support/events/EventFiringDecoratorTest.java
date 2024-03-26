@@ -48,6 +48,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -779,6 +780,200 @@ class EventFiringDecoratorTest {
   }
 
   @Test
+  void shouldFireTargetLocatorEvents() {
+    WebDriver driver = mock();
+    WebDriver.TargetLocator targetLocator = mock();
+    when(driver.switchTo()).thenReturn(targetLocator);
+
+    CollectorListener listener =
+        new CollectorListener() {
+          @Override
+          public void beforeAnyTargetLocatorCall(
+              WebDriver.TargetLocator targetLocator, Method method, Object[] args) {
+            acc.append("beforeAnyTargetLocatorCall ").append(method.getName()).append("\n");
+          }
+
+          @Override
+          public void afterAnyTargetLocatorCall(
+              WebDriver.TargetLocator targetLocator, Method method, Object[] args, Object result) {
+            acc.append("afterAnyTargetLocatorCall ").append(method.getName()).append("\n");
+          }
+
+          @Override
+          public void beforeFrame(WebDriver.TargetLocator targetLocator, int index) {
+            acc.append("beforeFrame ").append(index).append("\n");
+          }
+
+          @Override
+          public void afterFrame(
+              WebDriver.TargetLocator targetLocator, int index, WebDriver driver) {
+            acc.append("afterFrame ").append(index).append("\n");
+          }
+
+          @Override
+          public void beforeFrame(WebDriver.TargetLocator targetLocator, String nameOrId) {
+            acc.append("beforeFrame ").append(nameOrId).append("\n");
+          }
+
+          @Override
+          public void afterFrame(
+              WebDriver.TargetLocator targetLocator, String nameOrId, WebDriver driver) {
+            acc.append("afterFrame ").append(nameOrId).append("\n");
+          }
+
+          @Override
+          public void beforeFrame(WebDriver.TargetLocator targetLocator, WebElement frameElement) {
+            acc.append("beforeFrame ").append(frameElement).append("\n");
+          }
+
+          @Override
+          public void afterFrame(
+              WebDriver.TargetLocator targetLocator, WebElement frameElement, WebDriver driver) {
+            acc.append("afterFrame ").append(frameElement).append("\n");
+          }
+
+          @Override
+          public void beforeParentFrame(WebDriver.TargetLocator targetLocator) {
+            acc.append("beforeParentFrame").append("\n");
+          }
+
+          @Override
+          public void afterParentFrame(WebDriver.TargetLocator targetLocator, WebDriver driver) {
+            acc.append("afterParentFrame").append("\n");
+          }
+
+          @Override
+          public void beforeWindow(WebDriver.TargetLocator targetLocator, String windowName) {
+            acc.append("beforeWindow ").append(windowName).append("\n");
+          }
+
+          @Override
+          public void afterWindow(
+              WebDriver.TargetLocator targetLocator, String windowName, WebDriver driver) {
+            acc.append("afterWindow ").append(windowName).append("\n");
+          }
+
+          @Override
+          public void beforeNewWindow(WebDriver.TargetLocator targetLocator, WindowType typeHint) {
+            acc.append("beforeNewWindow ").append(typeHint).append("\n");
+          }
+
+          @Override
+          public void afterNewWindow(
+              WebDriver.TargetLocator targetLocator, WindowType typeHint, WebDriver driver) {
+            acc.append("afterNewWindow ").append(typeHint).append("\n");
+          }
+
+          @Override
+          public void beforeDefaultContent(WebDriver.TargetLocator targetLocator) {
+            acc.append("beforeDefaultContent").append("\n");
+          }
+
+          @Override
+          public void afterDefaultContent(WebDriver.TargetLocator targetLocator, WebDriver driver) {
+            acc.append("afterDefaultContent").append("\n");
+          }
+
+          @Override
+          public void beforeActiveElement(WebDriver.TargetLocator targetLocator) {
+            acc.append("beforeActiveElement").append("\n");
+          }
+
+          @Override
+          public void afterActiveElement(WebDriver.TargetLocator targetLocator, WebDriver driver) {
+            acc.append("afterActiveElement").append("\n");
+          }
+
+          @Override
+          public void beforeAlert(WebDriver.TargetLocator targetLocator) {
+            acc.append("beforeAlert").append("\n");
+          }
+
+          @Override
+          public void afterAlert(WebDriver.TargetLocator targetLocator, Alert alert) {
+            acc.append("afterAlert").append("\n");
+          }
+        };
+
+    WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
+    WebDriver.TargetLocator decoratedTargetLocator = decorated.switchTo();
+
+    decoratedTargetLocator.frame(3);
+    decoratedTargetLocator.frame("frame-id");
+    WebElement frameElement = mock();
+    decoratedTargetLocator.frame(frameElement);
+    decoratedTargetLocator.parentFrame();
+    decoratedTargetLocator.window("windowName");
+    decoratedTargetLocator.newWindow(WindowType.TAB);
+    decoratedTargetLocator.defaultContent();
+    decoratedTargetLocator.activeElement();
+    decoratedTargetLocator.alert();
+
+    assertThat(listener.acc.toString().trim())
+        .isEqualTo(
+            String.join(
+                "\n",
+                "beforeAnyCall switchTo",
+                "beforeAnyWebDriverCall switchTo",
+                "afterAnyWebDriverCall switchTo",
+                "afterAnyCall switchTo",
+                "beforeAnyCall frame",
+                "beforeAnyTargetLocatorCall frame",
+                "beforeFrame 3",
+                "afterFrame 3",
+                "afterAnyTargetLocatorCall frame",
+                "afterAnyCall frame",
+                "beforeAnyCall frame",
+                "beforeAnyTargetLocatorCall frame",
+                "beforeFrame frame-id",
+                "afterFrame frame-id",
+                "afterAnyTargetLocatorCall frame",
+                "afterAnyCall frame",
+                "beforeAnyCall frame",
+                "beforeAnyTargetLocatorCall frame",
+                "beforeFrame " + frameElement,
+                "afterFrame " + frameElement,
+                "afterAnyTargetLocatorCall frame",
+                "afterAnyCall frame",
+                "beforeAnyCall parentFrame",
+                "beforeAnyTargetLocatorCall parentFrame",
+                "beforeParentFrame",
+                "afterParentFrame",
+                "afterAnyTargetLocatorCall parentFrame",
+                "afterAnyCall parentFrame",
+                "beforeAnyCall window",
+                "beforeAnyTargetLocatorCall window",
+                "beforeWindow windowName",
+                "afterWindow windowName",
+                "afterAnyTargetLocatorCall window",
+                "afterAnyCall window",
+                "beforeAnyCall newWindow",
+                "beforeAnyTargetLocatorCall newWindow",
+                "beforeNewWindow tab",
+                "afterNewWindow tab",
+                "afterAnyTargetLocatorCall newWindow",
+                "afterAnyCall newWindow",
+                "beforeAnyCall defaultContent",
+                "beforeAnyTargetLocatorCall defaultContent",
+                "beforeDefaultContent",
+                "afterDefaultContent",
+                "afterAnyTargetLocatorCall defaultContent",
+                "afterAnyCall defaultContent",
+                "beforeAnyCall activeElement",
+                "beforeAnyTargetLocatorCall activeElement",
+                "beforeActiveElement",
+                "afterActiveElement",
+                "afterAnyTargetLocatorCall activeElement",
+                "afterAnyCall activeElement",
+                "beforeAnyCall alert",
+                "beforeAnyTargetLocatorCall alert",
+                "beforeAlert",
+                "afterAlert",
+                "afterAnyTargetLocatorCall alert",
+                "afterAnyCall alert"));
+  }
+
+  @Test
   void shouldSuppressExceptionInBeforeAnyCall() {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener =
@@ -805,7 +1000,7 @@ class EventFiringDecoratorTest {
           }
         };
 
-    WebDriver decorated = new EventFiringDecorator(listener).decorate(driver);
+    WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
 
     assertThatNoException().isThrownBy(decorated::getWindowHandle);
   }

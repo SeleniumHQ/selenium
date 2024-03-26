@@ -1,0 +1,67 @@
+module Selenium
+  module WebDriver
+    class WebSocketConnection
+      include WebSocket
+
+      @callback_threads: untyped
+
+      @session_id: untyped
+
+      @url: untyped
+
+      @socket_thread: untyped
+
+      @callbacks: untyped
+
+      @messages: untyped
+
+      @incoming_frame: untyped
+
+      @wait: untyped
+
+      @socket: untyped
+
+      @ws: untyped
+
+      @id: untyped
+
+      CONNECTION_ERRORS: Array[untyped]
+
+      RESPONSE_WAIT_TIMEOUT: Integer
+
+      RESPONSE_WAIT_INTERVAL: Float
+
+      MAX_LOG_MESSAGE_SIZE: Integer
+
+      def initialize: (url: untyped) -> void
+
+      def close: () -> untyped
+
+      def callbacks: () -> untyped
+
+      def send_cmd: (**untyped payload) -> untyped
+
+      private
+
+      def messages: () -> untyped
+
+      def process_handshake: () -> untyped
+
+      def attach_socket_listener: () -> untyped
+
+      def incoming_frame: () -> untyped
+
+      def process_frame: (untyped frame) -> (Hash[untyped, untyped] | untyped)
+
+      def callback_thread: (untyped params) { (untyped) -> untyped } -> untyped
+
+      def wait: () -> untyped
+
+      def socket: () -> untyped
+
+      def ws: () -> untyped
+
+      def next_id: () -> untyped
+    end
+  end
+end

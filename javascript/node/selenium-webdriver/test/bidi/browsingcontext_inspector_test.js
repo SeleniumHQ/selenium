@@ -19,8 +19,8 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const {Browser, By, WebElement} = require('../../')
-const {Pages, suite} = require('../../lib/test')
+const { Browser, By } = require('../../')
+const { Pages, suite } = require('../../lib/test')
 const BrowsingContext = require('../../bidi/browsingContext')
 const BrowsingContextInspector = require('../../bidi/browsingContextInspector')
 const until = require('../../lib/until')
@@ -30,10 +30,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .setFirefoxOptions(new firefox.Options().enableBidi())
-        .build()
+      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
     })
 
     afterEach(async function () {
@@ -50,6 +47,24 @@ suite(
 
         await driver.switchTo().newWindow('window')
         const windowHandle = await driver.getWindowHandle()
+        assert.equal(contextInfo.id, windowHandle)
+        assert.equal(contextInfo.url, 'about:blank')
+        assert.equal(contextInfo.children, null)
+        assert.equal(contextInfo.parentBrowsingContext, null)
+      })
+
+      it('can listen to browsing context destroyed event', async function () {
+        let contextInfo = null
+        const browsingcontextInspector = await BrowsingContextInspector(driver)
+        await browsingcontextInspector.onBrowsingContextDestroyed((entry) => {
+          contextInfo = entry
+        })
+
+        await driver.switchTo().newWindow('window')
+
+        const windowHandle = await driver.getWindowHandle()
+        await driver.close()
+
         assert.equal(contextInfo.id, windowHandle)
         assert.equal(contextInfo.url, 'about:blank')
         assert.equal(contextInfo.children, null)
@@ -135,10 +150,7 @@ suite(
           navigationInfo = entry
         })
 
-        await browsingContext.navigate(
-          Pages.linkedImage + '#linkToAnchorOnThisPage',
-          'complete'
-        )
+        await browsingContext.navigate(Pages.linkedImage + '#linkToAnchorOnThisPage', 'complete')
 
         assert.equal(navigationInfo.browsingContextId, browsingContext.id)
         assert(navigationInfo.url.includes('linkToAnchorOnThisPage'))
@@ -192,5 +204,5 @@ suite(
       })
     })
   },
-  {browsers: [Browser.FIREFOX]}
+  { browsers: [Browser.FIREFOX] },
 )

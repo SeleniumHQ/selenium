@@ -30,8 +30,7 @@ import StereotypeInfo from '../../models/stereotype-info'
 import browserVersion from '../../util/browser-version'
 import Capabilities from '../../models/capabilities'
 import { GridConfig } from '../../config'
-
-const NODES_QUERY = loader('../../graphql/nodes.gql')
+import {NODES_QUERY} from "../../graphql/nodes";
 
 function Overview (): JSX.Element {
   const { loading, error, data } = useQuery(NODES_QUERY, {

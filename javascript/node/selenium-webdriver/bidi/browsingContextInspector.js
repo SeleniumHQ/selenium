@@ -15,10 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const {
-  BrowsingContextInfo,
-  NavigationInfo,
-} = require('./browsingContextTypes')
+const { BrowsingContextInfo, NavigationInfo } = require('./browsingContextTypes')
 
 class BrowsingContextInspector {
   constructor(driver, browsingContextIds) {
@@ -31,45 +28,31 @@ class BrowsingContextInspector {
   }
 
   async onBrowsingContextCreated(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.contextCreated',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.contextCreated', callback)
+  }
+
+  async onBrowsingContextDestroyed(callback) {
+    await this.subscribeAndHandleEvent('browsingContext.contextDestroyed', callback)
   }
 
   async onNavigationStarted(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.navigationStarted',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.navigationStarted', callback)
   }
 
   async onFragmentNavigated(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.fragmentNavigated',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.fragmentNavigated', callback)
   }
 
   async onUserPromptClosed(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.userPromptClosed',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.userPromptClosed', callback)
   }
 
   async onUserPromptOpened(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.userPromptOpened',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.userPromptOpened', callback)
   }
 
   async onDomContentLoaded(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.domContentLoaded',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.domContentLoaded', callback)
   }
 
   async onBrowsingContextLoaded(callback) {
@@ -92,21 +75,11 @@ class BrowsingContextInspector {
       if (params) {
         let response = null
         if ('navigation' in params) {
-          response = new NavigationInfo(
-            params.context,
-            params.navigation,
-            params.timestamp,
-            params.url
-          )
+          response = new NavigationInfo(params.context, params.navigation, params.timestamp, params.url)
         } else if ('accepted' in params) {
           /* Needs to be updated when browsers implement other events */
         } else {
-          response = new BrowsingContextInfo(
-            params.context,
-            params.url,
-            params.children,
-            params.parent
-          )
+          response = new BrowsingContextInfo(params.context, params.url, params.children, params.parent)
         }
         callback(response)
       }

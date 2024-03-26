@@ -16,10 +16,10 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.IO;
 using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Internal;
+using System;
+using System.IO;
 
 namespace OpenQA.Selenium.Edge
 {
@@ -50,6 +50,7 @@ namespace OpenQA.Selenium.Edge
         /// <summary>
         /// Gets or sets a value indicating whether the service should use verbose logging.
         /// </summary>
+        [Obsolete("Use EnableVerboseLogging")]
         public bool UseVerboseLogging
         {
             get { return this.EnableVerboseLogging; }
@@ -72,12 +73,18 @@ namespace OpenQA.Selenium.Edge
         /// <returns>An EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath)
         {
+            string fileName;
             if (File.Exists(driverPath))
             {
+                fileName = Path.GetFileName(driverPath);
                 driverPath = Path.GetDirectoryName(driverPath);
             }
+            else
+            {
+                fileName = ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName);
+            }
 
-            return CreateDefaultService(driverPath, ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName));
+            return CreateDefaultService(driverPath, fileName);
         }
 
         /// <summary>

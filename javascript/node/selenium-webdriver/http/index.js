@@ -54,16 +54,14 @@ function getRequestOptions(aUrl) {
   options.search = null
   options.hash = null
   options.path = options.pathname
-  options.hostname =
-    options.hostname === 'localhost' ? '127.0.0.1' : options.hostname // To support Node 17 and above. Refer https://github.com/nodejs/node/issues/40702 for details.
+  options.hostname = options.hostname === 'localhost' ? '127.0.0.1' : options.hostname // To support Node 17 and above. Refer https://github.com/nodejs/node/issues/40702 for details.
   return options
 }
 
 /** @const {string} */
 const USER_AGENT = (function () {
   const version = require('../package.json').version
-  const platform =
-    { darwin: 'mac', win32: 'windows' }[process.platform] || 'linux'
+  const platform = { darwin: 'mac', win32: 'windows' }[process.platform] || 'linux'
   return `selenium/${version} (js ${platform})`
 })()
 
@@ -211,8 +209,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
     options.protocol = opt_proxy.protocol
 
     if (proxy.auth) {
-      options.headers['Proxy-Authorization'] =
-        'Basic ' + Buffer.from(proxy.auth).toString('base64')
+      options.headers['Proxy-Authorization'] = 'Basic ' + Buffer.from(proxy.auth).toString('base64')
     }
   }
 
@@ -229,8 +226,8 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
             'Failed to parse "Location" header for server redirect: ' +
               ex.message +
               '\nResponse was: \n' +
-              new httpLib.Response(response.statusCode, response.headers, '')
-          )
+              new httpLib.Response(response.statusCode, response.headers, ''),
+          ),
         )
         return
       }
@@ -261,7 +258,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
         onOk,
         onError,
         undefined,
-        opt_proxy
+        opt_proxy,
       )
       return
     }
@@ -272,7 +269,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
       const resp = new httpLib.Response(
         /** @type {number} */ (response.statusCode),
         /** @type {!Object<string>} */ (response.headers),
-        Buffer.concat(body).toString('utf8').replace(/\0/g, '')
+        Buffer.concat(body).toString('utf8').replace(/\0/g, ''),
       )
       onOk(resp)
     })

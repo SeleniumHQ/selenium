@@ -1,0 +1,29 @@
+module Selenium
+  module WebDriver
+    module IE
+      class Options < WebDriver::Options
+        @args: untyped
+
+        KEY: String
+
+        SCROLL_TOP: Integer
+
+        SCROLL_BOTTOM: Integer
+
+        CAPABILITIES: Hash[Symbol, String]
+
+        BROWSER: String
+
+        attr_reader args: untyped
+
+        def initialize: (**untyped opts) -> void
+
+        def add_argument: (untyped arg) -> untyped
+
+        private
+
+        def process_browser_options: (untyped browser_options) -> untyped
+      end
+    end
+  end
+end

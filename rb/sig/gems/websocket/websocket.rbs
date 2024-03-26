@@ -1,0 +1,22 @@
+module WebSocket
+  DEFAULT_VERSION: Integer
+  ROOT: String
+
+  # Defining autoloaded classes as interface or class is dependent on their implementation,
+  # which is not provided. Here, we'll declare them as modules, but they might need to be
+  # updated according to their actual definitions.
+  module Error
+  end
+
+  module ExceptionHandler
+  end
+
+  module Frame
+  end
+
+  module Handshake
+  end
+
+  module NiceInspect
+  end
+end

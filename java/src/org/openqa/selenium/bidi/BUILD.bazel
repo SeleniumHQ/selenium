@@ -28,6 +28,7 @@ java_library(
             "browsingcontext/*.java",
             "network/*.java",
             "script/*.java",
+            "storage/*.java",
         ],
         exclude = AUGMENTER_SRCS,
     ),

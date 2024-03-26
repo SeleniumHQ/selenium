@@ -16,10 +16,9 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 using OpenQA.Selenium.Chromium;
+using System;
+using System.Globalization;
 
 namespace OpenQA.Selenium.Edge
 {

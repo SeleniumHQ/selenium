@@ -1,0 +1,13 @@
+module Selenium
+  module WebDriver
+    module Support
+      class BlockEventListener
+        @callback: untyped
+
+        def initialize: (untyped callback) -> void
+
+        def method_missing: (untyped meth, *untyped args) -> untyped
+      end
+    end
+  end
+end

@@ -1,6 +1,6 @@
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium
@@ -165,7 +165,7 @@ namespace OpenQA.Selenium
             Assert.That(map["foo"], Is.EqualTo("bar"));
             Assert.That((ReadOnlyCollection<object>)map["baz"], Is.EqualTo((ReadOnlyCollection<object>)expectedResult["baz"]));
 
-            Dictionary<string, object> person = (Dictionary<string, object>) map["person"];
+            Dictionary<string, object> person = (Dictionary<string, object>)map["person"];
             Assert.That(person, Has.Count.EqualTo(2));
             Assert.That(person["first"], Is.EqualTo("John"));
             Assert.That(person["last"], Is.EqualTo("Doe"));

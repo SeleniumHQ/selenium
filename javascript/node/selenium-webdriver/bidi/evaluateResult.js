@@ -38,16 +38,10 @@ class EvaluateResultException {
 
 class ExceptionDetails {
   constructor(exceptionDetails) {
-    this.columnNumber =
-      'columnNumber' in exceptionDetails
-        ? exceptionDetails['columnNumber']
-        : null
-    this.exception =
-      'exception' in exceptionDetails ? exceptionDetails['exception'] : null
-    this.lineNumber =
-      'lineNumber' in exceptionDetails ? exceptionDetails['lineNumber'] : null
-    this.stackTrace =
-      'stackTrace' in exceptionDetails ? exceptionDetails['stackTrace'] : null
+    this.columnNumber = 'columnNumber' in exceptionDetails ? exceptionDetails['columnNumber'] : null
+    this.exception = 'exception' in exceptionDetails ? exceptionDetails['exception'] : null
+    this.lineNumber = 'lineNumber' in exceptionDetails ? exceptionDetails['lineNumber'] : null
+    this.stackTrace = 'stackTrace' in exceptionDetails ? exceptionDetails['stackTrace'] : null
     this.text = 'text' in exceptionDetails ? exceptionDetails['text'] : null
   }
 }

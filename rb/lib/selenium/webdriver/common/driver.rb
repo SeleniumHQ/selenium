@@ -292,7 +292,7 @@ module Selenium
       end
 
       def browser
-        bridge&.browser
+        bridge.browser
       end
 
       def capabilities

@@ -113,19 +113,12 @@ test.suite(function (env) {
       newHandle = await driver.switchTo().newWindow()
     } catch (ex) {
       if (ex instanceof UnknownCommandError) {
-        console.warn(
-          Error(
-            `${env.browser.name}: aborting test due to unsupported command: ${ex}`
-          ).stack
-        )
+        console.warn(Error(`${env.browser.name}: aborting test due to unsupported command: ${ex}`).stack)
         return
       }
     }
 
-    assert.strictEqual(
-      (await driver.getAllWindowHandles()).length,
-      originalHandles.length + 1
-    )
+    assert.strictEqual((await driver.getAllWindowHandles()).length, originalHandles.length + 1)
     assert.notEqual(originalHandle, newHandle)
   })
 

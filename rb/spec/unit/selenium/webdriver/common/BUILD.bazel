@@ -1,19 +1,12 @@
-load("@rules_ruby//ruby:defs.bzl", "rb_test")
-
-package(default_visibility = ["//rb:__subpackages__"])
+load("//rb/spec:tests.bzl", "rb_unit_test")
 
 [
-    rb_test(
+    rb_unit_test(
         name = file[:-8],
-        size = "small",
         srcs = [file],
-        args = ["rb/spec/"],
-        main = "@bundle//bin:rspec",
-        tags = ["no-sandbox"],
         deps = [
             "//rb/lib/selenium/webdriver:common",
             "//rb/lib/selenium/webdriver:remote",
-            "//rb/spec/unit/selenium/webdriver:spec_helper",
         ],
     )
     for file in glob(
@@ -26,13 +19,9 @@ package(default_visibility = ["//rb:__subpackages__"])
     )
 ]
 
-rb_test(
+rb_unit_test(
     name = "driver_finder",
-    size = "small",
     srcs = ["driver_finder_spec.rb"],
-    args = ["rb/spec/"],
-    main = "@bundle//bin:rspec",
-    tags = ["no-sandbox"],
     deps = [
         "//rb/lib/selenium/webdriver:chrome",
         "//rb/lib/selenium/webdriver:common",
@@ -41,32 +30,22 @@ rb_test(
         "//rb/lib/selenium/webdriver:ie",
         "//rb/lib/selenium/webdriver:remote",
         "//rb/lib/selenium/webdriver:safari",
-        "//rb/spec/unit/selenium/webdriver:spec_helper",
     ],
 )
 
-rb_test(
+rb_unit_test(
     name = "selenium_manager",
-    size = "small",
     srcs = ["selenium_manager_spec.rb"],
-    args = ["rb/spec/"],
-    main = "@bundle//bin:rspec",
-    tags = ["no-sandbox"],
     deps = [
         "//rb/lib/selenium/webdriver:chrome",
         "//rb/lib/selenium/webdriver:common",
         "//rb/lib/selenium/webdriver:remote",
-        "//rb/spec/unit/selenium/webdriver:spec_helper",
     ],
 )
 
-rb_test(
+rb_unit_test(
     name = "service",
-    size = "small",
     srcs = ["service_spec.rb"],
-    args = ["rb/spec/"],
-    main = "@bundle//bin:rspec",
-    tags = ["no-sandbox"],
     deps = [
         "//rb/lib/selenium/webdriver:chrome",
         "//rb/lib/selenium/webdriver:common",
@@ -75,6 +54,5 @@ rb_test(
         "//rb/lib/selenium/webdriver:ie",
         "//rb/lib/selenium/webdriver:remote",
         "//rb/lib/selenium/webdriver:safari",
-        "//rb/spec/unit/selenium/webdriver:spec_helper",
     ],
 )

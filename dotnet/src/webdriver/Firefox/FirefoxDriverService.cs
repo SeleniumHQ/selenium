@@ -16,11 +16,11 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -221,16 +221,22 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Creates a default instance of the FirefoxDriverService using a specified path to the Firefox driver executable.
         /// </summary>
-        /// <param name="driverPath">The directory containing the Firefox driver executable.</param>
+        /// <param name="driverPath">The path to the executable or the directory containing the Firefox driver executable.</param>
         /// <returns>A FirefoxDriverService using a random port.</returns>
         public static FirefoxDriverService CreateDefaultService(string driverPath)
         {
+            string fileName;
             if (File.Exists(driverPath))
             {
+                fileName = Path.GetFileName(driverPath);
                 driverPath = Path.GetDirectoryName(driverPath);
             }
+            else
+            {
+                fileName = FirefoxDriverServiceFileName();
+            }
 
-            return CreateDefaultService(driverPath, FirefoxDriverServiceFileName());
+            return CreateDefaultService(driverPath, fileName);
         }
 
         /// <summary>

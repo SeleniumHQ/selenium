@@ -18,9 +18,6 @@ module SeleniumRake
       'chrome' => {
         driver: 'Chrome',
       },
-      'chromiumedge' => {
-        driver: 'ChromiumEdge',
-      },
       'remote_firefox' => {
         driver: 'Remote',
         deps: [

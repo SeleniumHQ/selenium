@@ -16,12 +16,11 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.DevTools.V121.Target;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V121.Target;
 
 namespace OpenQA.Selenium.DevTools.V121
 {

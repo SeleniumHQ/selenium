@@ -36,6 +36,7 @@ import org.openqa.selenium.bidi.browsingcontext.NavigationResult;
 import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.log.JavascriptLogEntry;
 import org.openqa.selenium.bidi.log.LogLevel;
+import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -58,7 +59,7 @@ class BiDiTest extends JupiterTestBase {
   @NotYetImplemented(EDGE)
   void canNavigateAndListenToErrors()
       throws ExecutionException, InterruptedException, TimeoutException {
-    try (LogInspector logInspector = new LogInspector(driver)) {
+    try (org.openqa.selenium.bidi.module.LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
       logInspector.onJavaScriptException(future::complete);
 

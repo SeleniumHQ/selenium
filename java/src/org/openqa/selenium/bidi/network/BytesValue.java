@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.bidi.network;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.openqa.selenium.json.JsonInput;
 
 public class BytesValue {
 
-  enum Type {
+  public enum Type {
     STRING("string"),
     BASE64("base64");
 
@@ -41,7 +43,7 @@ public class BytesValue {
 
   private final String value;
 
-  private BytesValue(Type type, String value) {
+  public BytesValue(Type type, String value) {
     this.type = type;
     this.value = value;
   }
@@ -76,5 +78,13 @@ public class BytesValue {
 
   public String getValue() {
     return value;
+  }
+
+  public Map<String, String> toMap() {
+    Map<String, String> map = new HashMap<>();
+    map.put("type", type.toString());
+    map.put("value", value);
+
+    return map;
   }
 }

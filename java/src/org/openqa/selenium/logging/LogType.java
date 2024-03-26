@@ -32,7 +32,7 @@ public class LogType {
   /** This log type pertains to logs relating to performance timings. */
   public static final String PERFORMANCE = "performance";
 
-  /** This log type pertains to logs relating to performance timings. */
+  /** This log type pertains to logs relating to profiler timings. */
   public static final String PROFILER = "profiler";
 
   /** This log type pertains to logs from the remote server. */

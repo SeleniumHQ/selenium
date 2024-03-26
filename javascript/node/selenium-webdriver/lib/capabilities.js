@@ -210,8 +210,7 @@ const Capability = {
    */
   STRICT_FILE_INTERACTABILITY: 'strictFileInteractability',
 
-
-  ENABLE_DOWNLOADS: "se:downloadsEnabled",
+  ENABLE_DOWNLOADS: 'se:downloadsEnabled',
 }
 
 /**
@@ -247,6 +246,11 @@ class Capabilities {
     this.map_ = new Map(other)
   }
 
+  /** @return {number} The number of capabilities set. */
+  get size() {
+    return this.map_.size
+  }
+
   /**
    * @return {!Capabilities} A basic set of capabilities for Chrome.
    */
@@ -265,9 +269,7 @@ class Capabilities {
    * @return {!Capabilities} A basic set of capabilities for Firefox.
    */
   static firefox() {
-    return new Capabilities()
-      .setBrowserName(Browser.FIREFOX)
-      .set('moz:debuggerAddress', true)
+    return new Capabilities().setBrowserName(Browser.FIREFOX).set('moz:debuggerAddress', true)
   }
 
   /**
@@ -316,11 +318,6 @@ class Capabilities {
    */
   keys() {
     return this.map_.keys()
-  }
-
-  /** @return {number} The number of capabilities set. */
-  get size() {
-    return this.map_.size
   }
 
   /**
@@ -517,10 +514,7 @@ class Capabilities {
    * Sets the boolean flag configuration for this instance.
    */
   setStrictFileInteractability(strictFileInteractability) {
-    return this.set(
-      Capability.STRICT_FILE_INTERACTABILITY,
-      strictFileInteractability
-    )
+    return this.set(Capability.STRICT_FILE_INTERACTABILITY, strictFileInteractability)
   }
 
   enableDownloads() {

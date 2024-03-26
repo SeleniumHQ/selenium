@@ -151,9 +151,10 @@ public class NodeFlags implements HasRoles {
               + "file to improve readability. Command line example: "
               + "--driver-configuration display-name=\"Firefox Nightly\" max-sessions=2 "
               + "webdriver-path=\"/usr/local/bin/geckodriver\" "
-              + "stereotype='{\"browserName\": \"firefox\", \"browserVersion\": \"86\", "
-              + "\"moz:firefoxOptions\": "
-              + "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox\"}}'",
+              + "stereotype=\"{\\\"browserName\\\": \\\"firefox\\\", "
+              + "\\\"browserVersion\\\": \\\"86\\\", "
+              + "\\\"moz:firefoxOptions\\\": "
+              + "{\\\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox\\\"}}\"",
       arity = 4,
       variableArity = true,
       splitter = NonSplittingSplitter.class)

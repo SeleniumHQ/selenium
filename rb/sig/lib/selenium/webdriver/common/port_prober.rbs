@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    class PortProber
+      def self.above: (untyped port) -> untyped
+
+      IGNORED_ERRORS: untyped
+
+      def self.free?: (untyped port) -> untyped
+    end
+  end
+end

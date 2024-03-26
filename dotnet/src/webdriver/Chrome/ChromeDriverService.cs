@@ -16,10 +16,9 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.IO;
 using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Internal;
+using System.IO;
 
 namespace OpenQA.Selenium.Chrome
 {
@@ -59,16 +58,22 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Creates a default instance of the ChromeDriverService using a specified path to the ChromeDriver executable.
         /// </summary>
-        /// <param name="driverPath">The directory containing the ChromeDriver executable.</param>
+        /// <param name="driverPath">The path to the executable or the directory containing the ChromeDriver executable.</param>
         /// <returns>A ChromeDriverService using a random port.</returns>
         public static ChromeDriverService CreateDefaultService(string driverPath)
         {
+            string fileName;
             if (File.Exists(driverPath))
             {
+                fileName = Path.GetFileName(driverPath);
                 driverPath = Path.GetDirectoryName(driverPath);
             }
+            else
+            {
+                fileName = ChromiumDriverServiceFileName(DefaultChromeDriverServiceExecutableName);
+            }
 
-            return CreateDefaultService(driverPath, ChromiumDriverServiceFileName(DefaultChromeDriverServiceExecutableName));
+            return CreateDefaultService(driverPath, fileName);
         }
 
         /// <summary>

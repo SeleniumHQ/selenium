@@ -20,7 +20,6 @@ package org.openqa.selenium.bidi.network;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -32,7 +31,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.bidi.Network;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -148,7 +148,6 @@ class NetworkEventsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX) // Implemented in Firefox Nightly version 123
   void canListenToOnAuthRequiredEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
@@ -166,6 +165,32 @@ class NetworkEventsTest extends JupiterTestBase {
       assertThat(response.getResponseData().getHeaders().size()).isGreaterThanOrEqualTo(1);
       assertThat(response.getResponseData().getUrl()).contains("basicAuth");
       assertThat(response.getResponseData().getStatus()).isEqualTo(401L);
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  void canListenToFetchError() throws ExecutionException, InterruptedException, TimeoutException {
+    try (Network network = new Network(driver)) {
+      CompletableFuture<FetchError> future = new CompletableFuture<>();
+      network.onFetchError(future::complete);
+      page = server.whereIs("error");
+      try {
+        driver.get("https://not_a_valid_url.test/");
+      } catch (WebDriverException ignored) {
+      }
+
+      FetchError fetchError = future.get(5, TimeUnit.SECONDS);
+      String windowHandle = driver.getWindowHandle();
+      assertThat(fetchError.getBrowsingContextId()).isEqualTo(windowHandle);
+      assertThat(fetchError.getRequest().getRequestId()).isNotNull();
+      assertThat(fetchError.getRequest().getMethod()).isEqualToIgnoringCase("get");
+      assertThat(fetchError.getRequest().getUrl()).contains("https://not_a_valid_url.test/");
+      assertThat(fetchError.getRequest().getHeaders().size()).isGreaterThanOrEqualTo(1);
+      assertThat(fetchError.getNavigationId()).isNotNull();
+      assertThat(fetchError.getErrorText()).contains("UNKNOWN_HOST");
     }
   }
 

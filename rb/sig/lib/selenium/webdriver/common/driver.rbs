@@ -5,9 +5,15 @@ module Selenium
 
       include TakesScreenshot
 
-      def self.for: (Symbol browser, ?::Hash[Symbol, untyped] opts) -> Driver
+      @bidi: untyped
+      @devtools: untyped
+      @navigate: untyped
 
-      def initialize: (?bridge: Remote::Bridge? bridge, ?listener: Support::AbstractEventListener? listener, **untyped opts) -> void
+      @service_manager: untyped
+
+      def self.for: (untyped browser, Hash[untyped, untyped] opts) -> untyped
+
+      def initialize: (?bridge: Support::EventFiringBridge? bridge, ?listener: Support::AbstractEventListener? listener, **untyped opts) -> void
 
       def inspect: () -> String
 
@@ -59,15 +65,15 @@ module Selenium
 
       private
 
-      attr_reader bridge: Remote::Bridge
+      attr_reader bridge: untyped
 
-      def create_bridge: (caps: untyped caps, url: String url, ?http_client: untyped? http_client) -> untyped
+      def create_bridge: (caps: untyped, url: untyped, ?http_client: untyped) -> untyped
 
       def service_url: (untyped service) -> untyped
 
       def screenshot: () -> untyped
 
-      def add_extensions: (Symbol browser) -> untyped
+      def add_extensions: (String browser) -> void
     end
   end
 end

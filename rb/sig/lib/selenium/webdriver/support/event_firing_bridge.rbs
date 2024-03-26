@@ -1,0 +1,47 @@
+module Selenium
+  module WebDriver
+    module Support
+      class EventFiringBridge
+        @delegate: untyped
+
+        @listener: untyped
+
+        @driver: untyped
+
+        def initialize: (untyped delegate, untyped listener) -> void
+
+        def get: (untyped url) -> untyped
+
+        def go_forward: () -> untyped
+
+        def go_back: () -> untyped
+
+        def click_element: (untyped ref) -> untyped
+
+        def clear_element: (untyped ref) -> untyped
+
+        def send_keys_to_element: (untyped ref, untyped keys) -> untyped
+
+        def find_element_by: (untyped how, untyped what, ?untyped? parent) -> untyped
+
+        def find_elements_by: (untyped how, untyped what, ?untyped? parent) -> untyped
+
+        def execute_script: (untyped script, *untyped args) -> untyped
+
+        def quit: () -> untyped
+
+        def close: () -> untyped
+
+        private
+
+        def create_element: (untyped ref) -> untyped
+
+        def driver: () -> untyped
+
+        def dispatch: (untyped name, *untyped args) { () -> untyped } -> untyped
+
+        def method_missing: (untyped meth, *untyped args) { () -> untyped } -> untyped
+      end
+    end
+  end
+end

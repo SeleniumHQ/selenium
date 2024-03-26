@@ -194,4 +194,14 @@
     <Class name="org.openqa.selenium.testing.StaticResources"/>
     <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
   </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.remote.WebElementToJsonConverter" />
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE" />
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.remote.internal.WebElementToJsonConverter" />
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
 </FindBugsFilter>

@@ -1,0 +1,3 @@
+interface _LocalStorage
+  def keys: () -> untyped
+end

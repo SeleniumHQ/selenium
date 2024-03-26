@@ -28,7 +28,7 @@ const SM_USER_AGENT: &str = "Selenium Manager {}";
 const APP_JSON: &str = "application/json";
 const PAGE_VIEW: &str = "pageview";
 const SELENIUM_DOMAIN: &str = "manager.selenium.dev";
-const SM_STATS_URL: &str = "https://{}/sm-stats";
+const SM_STATS_URL: &str = "https://{}/sm-usage";
 const REQUEST_TIMEOUT_SEC: u64 = 3;
 
 #[derive(Default, Serialize, Deserialize)]
@@ -39,7 +39,7 @@ pub struct Data {
     pub props: Props,
 }
 
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Props {
     pub browser: String,
     pub browser_version: String,

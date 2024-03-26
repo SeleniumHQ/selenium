@@ -38,6 +38,7 @@ const jsDirectory = resources.locate('javascript')
 
 const Pages = (function () {
   let pages = {}
+
   function addPage(page, path) {
     pages.__defineGetter__(page, function () {
       return exports.whereIs(path)
@@ -152,11 +153,7 @@ app
 
 if (isDevMode()) {
   var closureDir = resources.locate('third_party/closure/goog')
-  app.use(
-    '/third_party/closure/goog',
-    serveIndex(closureDir),
-    express.static(closureDir)
-  )
+  app.use('/third_party/closure/goog', serveIndex(closureDir), express.static(closureDir))
 }
 var server = new Server(app)
 
@@ -171,8 +168,7 @@ function sendInifinitePage(request, response) {
   // eslint-disable-next-line node/no-deprecated-api
   var pathname = url.parse(request.url).pathname
   var lastIndex = pathname.lastIndexOf('/')
-  var pageNumber =
-    lastIndex == -1 ? 'Unknown' : pathname.substring(lastIndex + 1)
+  var pageNumber = lastIndex == -1 ? 'Unknown' : pathname.substring(lastIndex + 1)
   var body = [
     '<!DOCTYPE html>',
     '<title>Page',
@@ -206,7 +202,7 @@ function sendBasicAuth(request, response) {
 
   const userNameAndPass = Buffer.from(match[1], 'base64').toString()
   const parts = userNameAndPass.split(':', 2)
-  if (parts[0] !== 'genie' && parts[1] !== 'bottle') {
+  if (parts[0] !== 'genie' || parts[1] !== 'bottle') {
     denyAccess()
     return
   }
@@ -225,13 +221,7 @@ function sendDelayedResponse(request, response) {
   }
 
   setTimeout(function () {
-    var body = [
-      '<!DOCTYPE html>',
-      '<title>Done</title>',
-      '<body>Slept for ',
-      duration,
-      's</body>',
-    ].join('')
+    var body = ['<!DOCTYPE html>', '<title>Done</title>', '<body>Slept for ', duration, 's</body>'].join('')
     response.writeHead(200, {
       'Content-Length': Buffer.byteLength(body, 'utf8'),
       'Content-Type': 'text/html; charset=utf-8',
@@ -264,10 +254,7 @@ function handleUpload(request, response) {
       response
         .status(200)
         .contentType('html')
-        .send(
-          files.join('\n') +
-            '\n<script>window.top.window.onUploadDone();</script>'
-        )
+        .send(files.join('\n') + '\n<script>window.top.window.onUploadDone();</script>')
     }
   })
 }
@@ -298,15 +285,7 @@ function sendEcho(request, response) {
     '</div>',
   ]
   for (var name in request.headers) {
-    body.push(
-      '<div class="header ',
-      name,
-      '">',
-      name,
-      ': ',
-      request.headers[name],
-      '</div>'
-    )
+    body.push('<div class="header ', name, '">', name, ': ', request.headers[name], '</div>')
   }
   body = body.join('')
   response.writeHead(200, {
@@ -337,11 +316,7 @@ function sendIndex(request, response) {
     return ['<li><a href="', url, '">', path, '</a>'].join('')
   }
 
-  var data = [
-    '<!DOCTYPE html><h1>/</h1><hr/><ul>',
-    createListEntry('common'),
-    createListEntry('data'),
-  ]
+  var data = ['<!DOCTYPE html><h1>/</h1><hr/><ul>', createListEntry('common'), createListEntry('data')]
   if (isDevMode()) {
     data.push(createListEntry('javascript'))
   }

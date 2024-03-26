@@ -177,7 +177,7 @@ module Selenium
       end
 
       def camel_case(str)
-        str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
+        str.gsub(/_([a-z])/) { Regexp.last_match(1)&.upcase }
       end
     end # Options
   end # WebDriver

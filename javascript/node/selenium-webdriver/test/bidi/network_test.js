@@ -19,9 +19,9 @@
 
 const assert = require('assert')
 const firefox = require('../../firefox')
-const { Browser, By, WebElement } = require('../../')
+const { Browser } = require('../../')
 const { Pages, suite } = require('../../lib/test')
-const NetworkInspector = require('../../bidi/networkInspector')
+const Network = require('../../bidi/network')
 const until = require('../../lib/until')
 
 suite(
@@ -29,21 +29,18 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .setFirefoxOptions(new firefox.Options().enableBidi())
-        .build()
+      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
     })
 
     afterEach(async function () {
       await driver.quit()
     })
 
-    describe('Network Inspector', function () {
+    describe('Network network', function () {
       it('can listen to event before request is sent', async function () {
         let beforeRequestEvent = null
-        const inspector = await NetworkInspector(driver)
-        await inspector.beforeRequestSent(function (event) {
+        const network = await Network(driver)
+        await network.beforeRequestSent(function (event) {
           beforeRequestEvent = event
         })
 
@@ -55,9 +52,9 @@ suite(
       })
 
       it('can request cookies', async function () {
-        const inspector = await NetworkInspector(driver)
+        const network = await Network(driver)
         let beforeRequestEvent = null
-        await inspector.beforeRequestSent(function (event) {
+        await network.beforeRequestSent(function (event) {
           beforeRequestEvent = event
         })
 
@@ -70,10 +67,7 @@ suite(
 
         assert.equal(beforeRequestEvent.request.method, 'GET')
         assert.equal(beforeRequestEvent.request.cookies[0].name, 'north')
-        assert.equal(
-          beforeRequestEvent.request.cookies[0].value.value,
-          'biryani'
-        )
+        assert.equal(beforeRequestEvent.request.cookies[0].value.value, 'biryani')
         const url = beforeRequestEvent.request.url
         assert.equal(url, await driver.getCurrentUrl())
 
@@ -89,8 +83,8 @@ suite(
 
       it('can redirect http equiv', async function () {
         let beforeRequestEvent = []
-        const inspector = await NetworkInspector(driver)
-        await inspector.beforeRequestSent(function (event) {
+        const network = await Network(driver)
+        await network.beforeRequestSent(function (event) {
           beforeRequestEvent.push(event)
         })
 
@@ -98,33 +92,23 @@ suite(
         await driver.wait(until.urlContains('redirected.html'), 1000)
 
         assert.equal(beforeRequestEvent[0].request.method, 'GET')
-        assert(
-          beforeRequestEvent[0].request.url.includes(
-            'redirected_http_equiv.html'
-          )
-        )
+        assert(beforeRequestEvent[0].request.url.includes('redirected_http_equiv.html'))
         assert.equal(beforeRequestEvent[2].request.method, 'GET')
         assert(beforeRequestEvent[2].request.url.includes('redirected.html'))
       })
 
       it('can subscribe to response started', async function () {
         let onResponseStarted = []
-        const inspector = await NetworkInspector(driver)
-        await inspector.responseStarted(function (event) {
+        const network = await Network(driver)
+        await network.responseStarted(function (event) {
           onResponseStarted.push(event)
         })
 
         await driver.get(Pages.emptyText)
 
         assert.equal(onResponseStarted[0].request.method, 'GET')
-        assert.equal(
-          onResponseStarted[0].request.url,
-          await driver.getCurrentUrl()
-        )
-        assert.equal(
-          onResponseStarted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseStarted[0].request.url, await driver.getCurrentUrl())
+        assert.equal(onResponseStarted[0].response.url, await driver.getCurrentUrl())
         assert.equal(onResponseStarted[0].response.fromCache, false)
         assert(onResponseStarted[0].response.mimeType.includes('text/plain'))
         assert.equal(onResponseStarted[0].response.status, 200)
@@ -133,52 +117,37 @@ suite(
 
       it('test response started mime type', async function () {
         let onResponseStarted = []
-        const inspector = await NetworkInspector(driver)
-        await inspector.responseStarted(function (event) {
+        const network = await Network(driver)
+        await network.responseStarted(function (event) {
           onResponseStarted.push(event)
         })
 
         // Checking mime type for 'html' text
         await driver.get(Pages.emptyPage)
         assert.equal(onResponseStarted[0].request.method, 'GET')
-        assert.equal(
-          onResponseStarted[0].request.url,
-          await driver.getCurrentUrl()
-        )
-        assert.equal(
-          onResponseStarted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseStarted[0].request.url, await driver.getCurrentUrl())
+        assert.equal(onResponseStarted[0].response.url, await driver.getCurrentUrl())
         assert(onResponseStarted[0].response.mimeType.includes('text/html'))
 
         // Checking mime type for 'plain' text
         onResponseStarted = []
         await driver.get(Pages.emptyText)
-        assert.equal(
-          onResponseStarted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseStarted[0].response.url, await driver.getCurrentUrl())
         assert(onResponseStarted[0].response.mimeType.includes('text/plain'))
       })
 
       it('can subscribe to response completed', async function () {
         let onResponseCompleted = []
-        const inspector = await NetworkInspector(driver)
-        await inspector.responseCompleted(function (event) {
+        const network = await Network(driver)
+        await network.responseCompleted(function (event) {
           onResponseCompleted.push(event)
         })
 
         await driver.get(Pages.emptyPage)
 
         assert.equal(onResponseCompleted[0].request.method, 'GET')
-        assert.equal(
-          onResponseCompleted[0].request.url,
-          await driver.getCurrentUrl()
-        )
-        assert.equal(
-          onResponseCompleted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseCompleted[0].request.url, await driver.getCurrentUrl())
+        assert.equal(onResponseCompleted[0].response.url, await driver.getCurrentUrl())
         assert.equal(onResponseCompleted[0].response.fromCache, false)
         assert(onResponseCompleted[0].response.mimeType.includes('text/html'))
         assert.equal(onResponseCompleted[0].response.status, 200)
@@ -186,37 +155,67 @@ suite(
         assert.equal(onResponseCompleted[0].redirectCount, 0)
       })
 
+      xit('can listen to auth required event', async function () {
+        let authRequiredEvent = null
+        const network = await Network(driver)
+        await network.authRequired(function (event) {
+          authRequiredEvent = event
+        })
+
+        await driver.get(Pages.basicAuth)
+
+        const url = authRequiredEvent.request.url
+        assert.equal(authRequiredEvent.id, await driver.getWindowHandle())
+        assert.equal(authRequiredEvent.request.method, 'GET')
+        assert.equal(url.includes('basicAuth'), true)
+
+        assert.equal(authRequiredEvent.response.status, 401)
+        assert.equal(authRequiredEvent.response.headers.length > 1, true)
+        assert.equal(authRequiredEvent.response.url.includes('basicAuth'), true)
+      })
+
+      xit('can listen to fetch error event', async function () {
+        let fetchErrorEvent = null
+        const network = await Network(driver)
+        await network.fetchError(function (event) {
+          fetchErrorEvent = event
+        })
+
+        try {
+          await driver.get('https://not_a_valid_url.test/')
+        } catch (e) {
+          // ignore
+        }
+
+        const url = fetchErrorEvent.request.url
+        assert.equal(fetchErrorEvent.id, await driver.getWindowHandle())
+        assert.equal(fetchErrorEvent.request.method, 'GET')
+        assert.equal(url.includes('valid_url'), true)
+        assert.equal(fetchErrorEvent.request.headers.length > 1, true)
+        assert.equal(fetchErrorEvent.errorText, 'NS_ERROR_UNKNOWN_HOST')
+      })
+
       it('test response completed mime type', async function () {
         let onResponseCompleted = []
-        const inspector = await NetworkInspector(driver)
-        await inspector.responseCompleted(function (event) {
+        const network = await Network(driver)
+        await network.responseCompleted(function (event) {
           onResponseCompleted.push(event)
         })
 
         // Checking mime type for 'html' text
         await driver.get(Pages.emptyPage)
         assert.equal(onResponseCompleted[0].request.method, 'GET')
-        assert.equal(
-          onResponseCompleted[0].request.url,
-          await driver.getCurrentUrl()
-        )
-        assert.equal(
-          onResponseCompleted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseCompleted[0].request.url, await driver.getCurrentUrl())
+        assert.equal(onResponseCompleted[0].response.url, await driver.getCurrentUrl())
         assert(onResponseCompleted[0].response.mimeType.includes('text/html'))
 
         // Checking mime type for 'plain' text
         onResponseCompleted = []
         await driver.get(Pages.emptyText)
-        assert.equal(
-          onResponseCompleted[0].response.url,
-          await driver.getCurrentUrl()
-        )
+        assert.equal(onResponseCompleted[0].response.url, await driver.getCurrentUrl())
         assert(onResponseCompleted[0].response.mimeType.includes('text/plain'))
       })
     })
-
   },
-  { browsers: [Browser.FIREFOX] }
+  { browsers: [Browser.FIREFOX] },
 )

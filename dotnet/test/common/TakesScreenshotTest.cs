@@ -1,9 +1,9 @@
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -69,6 +69,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         [IgnoreBrowser(Browser.Chrome, "Color comparisons fail on Chrome")]
         [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
+        [IgnoreBrowser(Browser.Firefox, "Not working properly in RBE, works locally with pinned browsers")]
         public void ShouldCaptureScreenshotOfCurrentViewport()
         {
 #if NET6_0
@@ -386,7 +387,7 @@ namespace OpenQA.Selenium
                     IWebElement frameElement = driver.FindElement(By.Id(frameId));
                     driver.SwitchTo().Frame(frameElement);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return false;
                 }
@@ -404,7 +405,7 @@ namespace OpenQA.Selenium
                     IWebElement element = driver.FindElement(By.Id(elementId));
                     return element.Displayed;
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return false;
                 }

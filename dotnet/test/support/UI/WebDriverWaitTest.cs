@@ -1,6 +1,6 @@
-using System;
 using Moq;
 using NUnit.Framework;
+using System;
 
 namespace OpenQA.Selenium.Support.UI
 {
@@ -20,7 +20,7 @@ namespace OpenQA.Selenium.Support.UI
         {
             executed = false;
         }
-        
+
         [Test]
         public void CanGetListOfOptions()
         {
@@ -59,7 +59,7 @@ namespace OpenQA.Selenium.Support.UI
             var intCondition = GetCondition(() => 1, () => 2);
 
             var wait = new WebDriverWait(new TickingClock(), mockDriver.Object, FIVE_SECONDS, ZERO_SECONDS);
-            
+
             Assert.Throws(typeof(ArgumentException), () => wait.Until(nullableBooleanCondition));
             Assert.Throws(typeof(ArgumentException), () => wait.Until(intCondition));
         }
@@ -94,9 +94,9 @@ namespace OpenQA.Selenium.Support.UI
             Func<IWebDriver, string> condition = driver => driver.CurrentWindowHandle;
 
             var wait = new WebDriverWait(new TickingClock(), mockDriver.Object, FIVE_SECONDS, ZERO_SECONDS);
-            
+
             Assert.AreEqual(SOME_STRING, wait.Until(condition));
-            
+
             mockDriver.Verify(_ => _.CurrentWindowHandle, Times.Once);
         }
 
@@ -115,7 +115,7 @@ namespace OpenQA.Selenium.Support.UI
             }
             catch (WebDriverTimeoutException e)
             {
-                Assert.IsInstanceOf(typeof (NoSuchElementException), e.InnerException);
+                Assert.IsInstanceOf(typeof(NoSuchElementException), e.InnerException);
             }
         }
 
@@ -131,7 +131,7 @@ namespace OpenQA.Selenium.Support.UI
                 return first();
             };
         }
-        
+
         private static IClock GetClock()
         {
             return new TickingClock(TimeSpan.FromMilliseconds(500));
@@ -144,7 +144,7 @@ namespace OpenQA.Selenium.Support.UI
 
         public TickingClock() : this(TimeSpan.FromSeconds(0))
         {
-            
+
         }
 
         public TickingClock(TimeSpan increment)

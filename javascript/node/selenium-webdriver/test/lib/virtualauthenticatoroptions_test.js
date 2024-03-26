@@ -18,8 +18,7 @@
 'use strict'
 
 const assert = require('assert')
-const virtualAuthenticatorOptions =
-  require('../../lib/virtual_authenticator').VirtualAuthenticatorOptions
+const virtualAuthenticatorOptions = require('../../lib/virtual_authenticator').VirtualAuthenticatorOptions
 const Transport = require('../../lib/virtual_authenticator').Transport
 const Protocol = require('../../lib/virtual_authenticator').Protocol
 

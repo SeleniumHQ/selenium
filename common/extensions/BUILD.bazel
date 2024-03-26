@@ -1,3 +1,5 @@
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+
 filegroup(
     name = "extensions",
     srcs = glob([
@@ -9,9 +11,19 @@ filegroup(
         "//java/test/org/openqa/selenium/edge:__pkg__",
         "//java/test/org/openqa/selenium/environment:__pkg__",
         "//java/test/org/openqa/selenium/firefox:__pkg__",
-        "//javascript/node/selenium-webdriver:__pkg__",
+        "//javascript/node/selenium-webdriver:__subpackages__",
         "//py:__pkg__",
-        "//rb:__pkg__",
+        "//rb/spec:__subpackages__",
+    ],
+)
+
+js_library(
+    name = "js-lib",
+    data = [
+        ":extensions",
+    ],
+    visibility = [
+        "//javascript/node/selenium-webdriver:__subpackages__",
     ],
 )
 
@@ -23,6 +35,7 @@ exports_files(
     ],
     visibility = [
         "//java/test/org/openqa/selenium/firefox:__pkg__",
+        "//javascript/node/selenium-webdriver:__subpackages__",
         "//py:__pkg__",
     ],
 )
