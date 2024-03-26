@@ -32,13 +32,13 @@ class ScriptManager {
     this._driver = driver
   }
 
-  async init(browsingContextId) {
+  async init(browsingContextIds) {
     if (!(await this._driver.getCapabilities()).get('webSocketUrl')) {
       throw Error('WebDriver instance must support BiDi protocol')
     }
 
     this.bidi = await this._driver.getBidi()
-    this._browsingContextId = browsingContextId
+    this._browsingContextIds = browsingContextIds
   }
 
   async disownRealmScript(realmId, handles) {
@@ -171,6 +171,14 @@ class ScriptManager {
       functionDeclaration: functionDeclaration,
       arguments: argumentValueList,
       sandbox: sandbox,
+    }
+
+    if (Array.isArray(this._browsingContextIds) && this._browsingContextIds.length > 0) {
+      params.contexts = this._browsingContextIds
+    }
+
+    if (typeof this._browsingContextIds === 'string') {
+      params.contexts = new Array(this._browsingContextIds)
     }
 
     const command = {
@@ -331,8 +339,8 @@ class ScriptManager {
   }
 
   async subscribeAndHandleEvent(eventType, callback) {
-    if (this._browsingContextIds != null) {
-      await this.bidi.subscribe(eventType, this._browsingContextIds)
+    if (this.browsingContextIds != null) {
+      await this.bidi.subscribe(eventType, this.browsingContextIds)
     } else {
       await this.bidi.subscribe(eventType)
     }
