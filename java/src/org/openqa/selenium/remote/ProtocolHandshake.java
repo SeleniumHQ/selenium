@@ -17,23 +17,16 @@
 
 package org.openqa.selenium.remote;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singleton;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.io.CountingOutputStream;
-import com.google.common.io.FileBackedOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -45,6 +38,7 @@ import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpHeader;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -78,36 +72,17 @@ public class ProtocolHandshake {
 
   public Either<SessionNotCreatedException, Result> createSession(
       HttpHandler client, NewSessionPayload payload) throws IOException {
-    int threshold = (int) Math.min(Runtime.getRuntime().freeMemory() / 10, Integer.MAX_VALUE);
-    FileBackedOutputStream os = new FileBackedOutputStream(threshold, true);
-
-    try (CountingOutputStream counter = new CountingOutputStream(os);
-        Writer writer = new OutputStreamWriter(counter, UTF_8)) {
-      payload.writeTo(writer);
-      Supplier<InputStream> contentSupplier =
-          () -> {
-            try {
-              return os.asByteSource().openBufferedStream();
-            } catch (IOException e) {
-              throw new RuntimeException(e);
-            }
-          };
-      return createSession(client, contentSupplier, counter.getCount());
-    }
+    return createSession(client, payload.getSupplier());
   }
 
   private Either<SessionNotCreatedException, Result> createSession(
-      HttpHandler client, Supplier<InputStream> contentSupplier, long size) {
+      HttpHandler client, Contents.Supplier contentSupplier) {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
 
     HttpResponse response;
     long start = System.currentTimeMillis();
 
-    // Setting the CONTENT_LENGTH will allow a http client implementation not to read the data in
-    // memory. Usually the payload is small and buffering it to memory is okay, except for a new
-    // session e.g. with profiles.
-    request.setHeader(HttpHeader.ContentLength.getName(), String.valueOf(size));
     request.setHeader(HttpHeader.ContentType.getName(), JSON_UTF_8);
     request.setContent(contentSupplier);
 

@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import org.openqa.selenium.internal.Debug;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -55,6 +56,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
   private static final List<io.netty.handler.codec.http.HttpMethod> SUPPORTED_METHODS =
       Arrays.asList(DELETE, GET, POST, OPTIONS);
   private volatile FileBackedOutputStream buffer;
+  private volatile int length;
   private volatile HttpRequest request;
 
   @Override
@@ -91,6 +93,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
           AttributeKey.HTTP_FLAVOR.getKey(), nettyRequest.protocolVersion().majorVersion());
 
       buffer = null;
+      length = -1;
     }
 
     if (msg instanceof HttpContent) {
@@ -100,10 +103,12 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       if (nBytes > 0) {
         if (buffer == null) {
           buffer = new FileBackedOutputStream(3 * 1024 * 1024, true);
+          length = 0;
         }
 
         try {
           buf.readBytes(buffer, nBytes);
+          length += nBytes;
         } finally {
           buf.release();
         }
@@ -114,29 +119,31 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
         if (buffer != null) {
           ByteSource source = buffer.asByteSource();
+          int len = length;
 
           request.setContent(
-              () -> {
-                try {
-                  return source.openBufferedStream();
-                } catch (IOException e) {
-                  throw new UncheckedIOException(e);
+              new Contents.Supplier() {
+                @Override
+                public InputStream get() {
+                  try {
+                    return source.openBufferedStream();
+                  } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                  }
+                }
+
+                @Override
+                public int length() {
+                  return len;
+                }
+
+                @Override
+                public void close() throws IOException {
+                  buffer.reset();
                 }
               });
         } else {
-          request.setContent(
-              () ->
-                  new InputStream() {
-                    @Override
-                    public int read() throws IOException {
-                      return -1;
-                    }
-
-                    @Override
-                    public int read(byte[] b, int off, int len) throws IOException {
-                      return -1;
-                    }
-                  });
+          request.setContent(Contents.empty());
         }
 
         ctx.fireChannelRead(request);

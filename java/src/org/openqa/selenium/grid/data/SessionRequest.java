@@ -41,7 +41,6 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.NewSessionPayload;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 public class SessionRequest {
@@ -61,7 +60,7 @@ public class SessionRequest {
     this.enqueued = Require.nonNull("Enqueued time", enqueued);
     Require.nonNull("Request", request);
 
-    try (NewSessionPayload payload = NewSessionPayload.create(Contents.reader(request))) {
+    try (NewSessionPayload payload = NewSessionPayload.create(request.getContent())) {
       desiredCapabilities =
           payload.stream()
               .filter(capabilities -> !capabilities.asMap().isEmpty())

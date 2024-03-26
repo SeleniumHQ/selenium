@@ -20,7 +20,6 @@ package org.openqa.selenium.bidi.network;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -48,7 +47,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canAddInterceptPhase() {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -61,7 +59,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canAddInterceptPhases() {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -76,7 +73,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canAddStringUrlPattern() {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -91,7 +87,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canAddStringUrlPatterns() {
     try (Network network = new Network(driver)) {
       String intercept =
@@ -109,7 +104,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canAddUrlPattern() {
     try (Network network = new Network(driver)) {
       UrlPattern pattern =
@@ -131,7 +125,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canAddUrlPatterns() {
     try (Network network = new Network(driver)) {
       UrlPattern pattern1 =

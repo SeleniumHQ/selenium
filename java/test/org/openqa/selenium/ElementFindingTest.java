@@ -99,6 +99,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testFindingASingleElementByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -106,6 +107,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   public void testFindingMultipleElementsByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -315,6 +317,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testFindingASingleElementByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -322,6 +325,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -434,6 +438,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -441,6 +446,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void
       testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     driver.get(pages.formPage);
@@ -449,6 +455,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void
       testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
     driver.get(pages.formPage);
@@ -458,6 +465,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void
       testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
     driver.get(pages.formPage);
@@ -467,6 +475,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -474,6 +483,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -481,6 +491,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
     driver.get(pages.formPage);
 
@@ -490,6 +501,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
@@ -569,6 +581,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testFindingASingleElementByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -576,6 +589,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -583,6 +597,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testFindingASingleElementByInvalidCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -590,6 +605,7 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
   void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -753,10 +769,6 @@ class ElementFindingTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(
-      value = CHROME,
-      reason = "Element in different browsing context can not evaluate stale",
-      issue = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3742")
   public void testAnElementFoundInADifferentFrameIsNotFound() {
     driver.get(pages.missedJsReferencePage);
     driver.switchTo().frame("inner");

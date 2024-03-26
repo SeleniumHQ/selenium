@@ -1,13 +1,11 @@
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
+load("//common:defs.bzl", "copy_file")
 
 js_binary(
     name = "make_atoms_module",
     data = ["make-atoms-module.js"],
     entry_point = ":make-atoms-module.js",
 )
-
-# genrules used to copy closure_js_binary outputs to locations
-# that will be picked up by the npm_package rule.
 
 js_run_binary(
     name = "is_displayed",
@@ -36,11 +34,9 @@ js_run_binary(
     visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
 )
 
-genrule(
+copy_file(
     name = "mutation-listener",
-    srcs = ["//javascript/cdp-support:mutation-listener.js"],
-    outs = ["mutation-listener.js"],
-    cmd = "mv $(location //javascript/cdp-support:mutation-listener.js) $@",
-    tools = [],
+    src = "//javascript/cdp-support:mutation-listener.js",
+    out = "mutation-listener.js",
     visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
 )
