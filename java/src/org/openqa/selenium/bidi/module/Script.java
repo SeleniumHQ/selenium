@@ -262,10 +262,17 @@ public class Script implements Closeable {
   }
 
   public String addPreloadScript(String functionDeclaration) {
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put("functionDeclaration", functionDeclaration);
+
+    if (!browsingContextIds.isEmpty()) {
+      parameters.put("contexts", this.browsingContextIds);
+    }
+
     return this.bidi.send(
         new Command<>(
             "script.addPreloadScript",
-            Map.of("functionDeclaration", functionDeclaration, "contexts", this.browsingContextIds),
+            parameters,
             jsonInput -> {
               Map<String, Object> result = jsonInput.read(Map.class);
               return result.get("script").toString();
@@ -273,16 +280,18 @@ public class Script implements Closeable {
   }
 
   public String addPreloadScript(String functionDeclaration, List<ChannelValue> arguments) {
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put("functionDeclaration", functionDeclaration);
+    parameters.put("arguments", arguments);
+
+    if (!browsingContextIds.isEmpty()) {
+      parameters.put("contexts", this.browsingContextIds);
+    }
+
     return this.bidi.send(
         new Command<>(
             "script.addPreloadScript",
-            Map.of(
-                "functionDeclaration",
-                functionDeclaration,
-                "contexts",
-                this.browsingContextIds,
-                "arguments",
-                arguments),
+            parameters,
             jsonInput -> {
               Map<String, Object> result = jsonInput.read(Map.class);
               return result.get("script").toString();
@@ -290,16 +299,19 @@ public class Script implements Closeable {
   }
 
   public String addPreloadScript(String functionDeclaration, String sandbox) {
+
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put("functionDeclaration", functionDeclaration);
+    parameters.put("sandbox", sandbox);
+
+    if (!browsingContextIds.isEmpty()) {
+      parameters.put("contexts", this.browsingContextIds);
+    }
+
     return this.bidi.send(
         new Command<>(
             "script.addPreloadScript",
-            Map.of(
-                "functionDeclaration",
-                functionDeclaration,
-                "contexts",
-                this.browsingContextIds,
-                "sandbox",
-                sandbox),
+            parameters,
             jsonInput -> {
               Map<String, Object> result = jsonInput.read(Map.class);
               return result.get("script").toString();
@@ -308,18 +320,19 @@ public class Script implements Closeable {
 
   public String addPreloadScript(
       String functionDeclaration, List<ChannelValue> arguments, String sandbox) {
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put("functionDeclaration", functionDeclaration);
+    parameters.put("arguments", arguments);
+    parameters.put("sandbox", sandbox);
+
+    if (!browsingContextIds.isEmpty()) {
+      parameters.put("contexts", this.browsingContextIds);
+    }
+
     return this.bidi.send(
         new Command<>(
             "script.addPreloadScript",
-            Map.of(
-                "functionDeclaration",
-                functionDeclaration,
-                "contexts",
-                this.browsingContextIds,
-                "arguments",
-                arguments,
-                "sandbox",
-                sandbox),
+            parameters,
             jsonInput -> {
               Map<String, Object> result = jsonInput.read(Map.class);
               return result.get("script").toString();
