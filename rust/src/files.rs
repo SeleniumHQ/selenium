@@ -131,7 +131,7 @@ pub fn uncompress(
     } else if extension.eq_ignore_ascii_case(EXE) {
         uncompress_sfx(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(DEB) {
-        uncompress_deb(compressed_file, target, log, volume.unwrap_or_default())?
+        uncompress_deb(compressed_file, target, log, os, volume.unwrap_or_default())?
     } else if extension.eq_ignore_ascii_case(MSI) {
         install_msi(compressed_file, log, os)?
     } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
@@ -249,6 +249,7 @@ pub fn uncompress_deb(
     compressed_file: &str,
     target: &Path,
     log: &Logger,
+    os: &str,
     label: &str,
 ) -> Result<(), Error> {
     let zip_parent = Path::new(compressed_file).parent().unwrap();
@@ -265,12 +266,17 @@ pub fn uncompress_deb(
     let zip_parent_str = path_to_string(zip_parent);
     let target_str = path_to_string(target);
     let opt_edge_str = format!("{}/opt/microsoft/{}", zip_parent_str, label);
+    let opt_edge_mv = format!("mv {} {}", opt_edge_str, target_str);
+    let command = Command::new_single(opt_edge_mv.clone());
     log.trace(format!(
         "Moving extracted files and folders from {} to {}",
         opt_edge_str, target_str
     ));
     create_parent_path_if_not_exists(target)?;
-    fs::rename(&opt_edge_str, &target_str)?;
+    let output = run_shell_command_by_os(os, command)?;
+    if output.is_empty() {
+        fs::rename(&opt_edge_str, &target_str)?;
+    }
 
     Ok(())
 }
