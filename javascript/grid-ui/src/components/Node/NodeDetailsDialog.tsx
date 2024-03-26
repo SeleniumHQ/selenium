@@ -26,7 +26,7 @@ import {
   Typography
 } from '@mui/material'
 import React, { useState } from 'react'
-import InfoIcon from '@mui/icons-material/Info'
+import {Info as InfoIcon } from '@mui/icons-material'
 import OsLogo from '../common/OsLogo'
 import NodeInfo from '../../models/node-info'
 

@@ -1,0 +1,48 @@
+module Selenium
+  module WebDriver
+    module Remote
+      module Http
+        # @api private
+        class Default < Common
+          @open_timeout: untyped
+
+          @read_timeout: untyped
+
+          @http: untyped
+
+          @proxy: untyped
+
+          attr_writer proxy: untyped
+
+          attr_accessor open_timeout: untyped
+
+          attr_accessor read_timeout: untyped
+
+          def initialize: (?open_timeout: untyped?, ?read_timeout: untyped?) -> void
+
+          def close: () -> untyped
+
+          private
+
+          def http: () -> untyped
+
+          def start: (untyped http) -> untyped
+
+          MAX_RETRIES: Integer
+
+          def request: (untyped verb, untyped url, untyped headers, untyped payload, ?::Integer redirects) -> untyped
+
+          def new_request_for: (untyped verb, untyped url, untyped headers, untyped payload) -> untyped
+
+          def response_for: (untyped request) -> untyped
+
+          def new_http_client: () -> untyped
+
+          def proxy: () -> untyped
+
+          def use_proxy?: () -> untyped
+        end
+      end
+    end
+  end
+end

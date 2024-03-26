@@ -1,3 +1,5 @@
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+
 filegroup(
     name = "web",
     srcs = glob([
@@ -9,5 +11,16 @@ filegroup(
         "//java/test/org/openqa/selenium/environment:__pkg__",
         "//javascript/node/selenium-webdriver:__pkg__",
         "//py:__pkg__",
+        "//rb/spec:__subpackages__",
+    ],
+)
+
+js_library(
+    name = "js-lib",
+    data = [
+        ":web",
+    ],
+    visibility = [
+        "//javascript/node/selenium-webdriver:__subpackages__",
     ],
 )

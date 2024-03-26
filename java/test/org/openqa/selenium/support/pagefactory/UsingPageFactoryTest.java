@@ -27,7 +27,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+import org.openqa.selenium.remote.WebElementToJsonConverter;
 import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;

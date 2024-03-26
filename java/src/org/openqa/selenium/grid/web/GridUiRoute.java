@@ -39,7 +39,7 @@ public class GridUiRoute implements Routable {
 
   private static final Logger LOG = Logger.getLogger("selenium");
 
-  private static final String GRID_RESOURCE = "javascript/grid-ui/build";
+  private static final String GRID_RESOURCE = "grid-ui";
   private static final String GRID_RESOURCE_WITH_PREFIX = String.format("/%s", GRID_RESOURCE);
 
   private final Route routes;
@@ -50,7 +50,9 @@ public class GridUiRoute implements Routable {
     if (uiRoot != null) {
       ResourceHandler uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, GRID_RESOURCE));
       HttpResponse uiRedirect =
-          new HttpResponse().setStatus(HTTP_MOVED_TEMP).addHeader("Location", prefix.concat("/ui"));
+          new HttpResponse()
+              .setStatus(HTTP_MOVED_TEMP)
+              .addHeader("Location", prefix.concat("/ui/"));
 
       Supplier<HttpHandler> redirectHandler = () -> req -> uiRedirect;
 

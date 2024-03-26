@@ -1,0 +1,13 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class GenericLogEntry < BaseLogEntry
+        @type: untyped
+
+        attr_accessor type: untyped
+
+        def initialize: (level: untyped, text: untyped, timestamp: untyped, type: untyped, stack_trace: untyped) -> void
+      end
+    end
+  end
+end

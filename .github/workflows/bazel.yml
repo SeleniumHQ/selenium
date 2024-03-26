@@ -30,7 +30,7 @@ on:
         description: Toggle caching of Bazel
         required: false
         type: boolean
-        default: true 
+        default: true
       cache-key:
         description: Bazel disk cache key
         required: false
@@ -65,6 +65,8 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
+      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       SE_AVOID_STATS: true
     steps:
       - name: Checkout source tree
@@ -93,7 +95,7 @@ jobs:
           distribution: 'temurin'
       - name: Setup Bazel with caching
         if: inputs.caching
-        uses: p0deje/setup-bazel@0.6.0
+        uses: bazel-contrib/setup-bazel@0.8.1
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
@@ -108,7 +110,7 @@ jobs:
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: p0deje/setup-bazel@0.6.0
+        uses: bazel-contrib/setup-bazel@0.8.1
         with:
           bazelrc: common --color=yes
       - name: Setup Fluxbox and Xvfb

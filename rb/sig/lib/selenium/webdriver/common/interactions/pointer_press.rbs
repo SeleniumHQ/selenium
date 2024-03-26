@@ -1,0 +1,33 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      class PointerPress < Interaction
+        @direction: untyped
+
+        @button: untyped
+
+        @type: untyped
+
+        @opts: untyped
+
+        include PointerEventProperties
+
+        BUTTONS: untyped
+
+        DIRECTIONS: Hash[Symbol, Symbol]
+
+        def initialize: (untyped source, untyped direction, untyped button, **untyped opts) -> void
+
+        def encode: () -> untyped
+
+        private
+
+        def assert_source: (untyped source) -> untyped?
+
+        def assert_button: (untyped button) -> untyped
+
+        def assert_direction: (untyped direction) -> untyped
+      end
+    end
+  end
+end

@@ -1,0 +1,8 @@
+module Selenium
+  module WebDriver
+    module Edge
+      class Profile < Chromium::Profile
+      end
+    end
+  end
+end

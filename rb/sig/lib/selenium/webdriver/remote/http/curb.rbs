@@ -1,0 +1,19 @@
+module Selenium
+  module WebDriver
+    module Remote
+      module Http
+        class Curb < Common
+          @client: untyped
+
+          def quit_errors: () -> untyped
+
+          private
+
+          def request: (untyped verb, untyped url, untyped headers, untyped payload) -> untyped
+
+          def client: () -> untyped
+        end
+      end
+    end
+  end
+end

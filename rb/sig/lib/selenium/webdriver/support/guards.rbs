@@ -1,0 +1,41 @@
+module Selenium
+  module WebDriver
+    module Support
+      class Guards
+        @example: untyped
+
+        @bug_tracker: untyped
+
+        @guard_conditions: untyped
+
+        @guards: untyped
+
+        @messages: untyped
+
+        GUARD_TYPES: Array[Symbol]
+
+        attr_reader messages: untyped
+
+        attr_accessor bug_tracker: untyped
+
+        def initialize: (untyped example, ?bug_tracker: String, ?conditions: untyped?) -> void
+
+        def add_condition: (untyped name, ?untyped? condition) { () -> untyped } -> untyped
+
+        def add_message: (untyped name, untyped message) -> untyped
+
+        def disposition: () -> Array[untyped]?
+
+        def satisfied?: (untyped guard) -> untyped
+
+        private
+
+        def collect_example_guards: () -> untyped
+
+        def skipping_guard: () -> untyped
+
+        def pending_guard: () -> untyped
+      end
+    end
+  end
+end

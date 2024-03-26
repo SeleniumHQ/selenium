@@ -9,5 +9,5 @@ export const GridConfig = {
   serverUri:
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:4444/graphql'
-      : document.location.protocol + '//' + document.location.host + document.location.pathname.replace("/ui", "") + '/graphql'
+      : document.location.protocol + '//' + document.location.host + document.location.pathname.replace("/ui/", "") + '/graphql'
 }

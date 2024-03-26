@@ -22,9 +22,9 @@ module Selenium
 
         def add_backtrace: (untyped ex, untyped server_trace) -> (nil | untyped)
 
-        def backtrace_from_remote: (untyped server_trace) -> Array[untyped]
+        def backtrace_from_remote: (untyped server_trace) -> String
 
-        def process_error: () -> (nil | ::Array[untyped])
+        def process_error: () -> (nil | untyped)
       end
     end
   end

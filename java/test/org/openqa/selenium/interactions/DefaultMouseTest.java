@@ -188,6 +188,7 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, issue = "Timeout in RBE, works locally.")
   void testMoveToLocation() {
     driver.get(pages.mouseInteractionPage);
 

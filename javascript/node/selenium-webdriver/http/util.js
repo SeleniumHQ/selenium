@@ -72,6 +72,7 @@ function waitForServer(url, timeout, opt_cancelToken) {
     }
 
     checkServerStatus()
+
     function checkServerStatus() {
       return getStatus(url).then((status) => resolve(status), onError)
     }

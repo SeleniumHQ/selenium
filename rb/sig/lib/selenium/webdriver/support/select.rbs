@@ -1,0 +1,57 @@
+module Selenium
+  module WebDriver
+    module Support
+      class Select
+        @element: untyped
+
+        @multi: untyped
+
+        def initialize: (untyped element) -> void
+
+        def multiple?: () -> untyped
+
+        def options: () -> untyped
+
+        def selected_options: () -> untyped
+
+        def first_selected_option: () -> untyped
+
+        def select_by: (untyped how, untyped what) -> untyped
+
+        def deselect_by: (untyped how, untyped what) -> untyped
+
+        def select_all: () -> untyped
+
+        def deselect_all: () -> untyped
+
+        private
+
+        def select_by_text: (untyped text) -> untyped
+
+        def select_by_index: (untyped index) -> untyped
+
+        def select_by_value: (untyped value) -> untyped
+
+        def deselect_by_text: (untyped text) -> untyped
+
+        def deselect_by_value: (untyped value) -> untyped
+
+        def deselect_by_index: (untyped index) -> untyped
+
+        def select_option: (untyped option) -> untyped
+
+        def deselect_option: (untyped option) -> untyped?
+
+        def select_options: (untyped opts) -> untyped
+
+        def deselect_options: (untyped opts) -> untyped
+
+        def find_by_text: (untyped text) -> untyped
+
+        def find_by_index: (untyped index) -> untyped
+
+        def find_by_value: (untyped value) -> untyped
+      end
+    end
+  end
+end

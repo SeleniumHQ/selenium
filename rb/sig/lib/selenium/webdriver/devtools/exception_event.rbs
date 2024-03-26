@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    class DevTools
+      class ExceptionEvent
+        @description: untyped
+
+        @timestamp: untyped
+
+        @stacktrace: untyped
+
+        attr_accessor description: untyped
+
+        attr_accessor timestamp: untyped
+
+        attr_accessor stacktrace: untyped
+
+        def initialize: (description: untyped, timestamp: untyped, stacktrace: untyped) -> void
+      end
+    end
+  end
+end

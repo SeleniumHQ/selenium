@@ -246,6 +246,11 @@ class Capabilities {
     this.map_ = new Map(other)
   }
 
+  /** @return {number} The number of capabilities set. */
+  get size() {
+    return this.map_.size
+  }
+
   /**
    * @return {!Capabilities} A basic set of capabilities for Chrome.
    */
@@ -313,11 +318,6 @@ class Capabilities {
    */
   keys() {
     return this.map_.keys()
-  }
-
-  /** @return {number} The number of capabilities set. */
-  get size() {
-    return this.map_.size
   }
 
   /**

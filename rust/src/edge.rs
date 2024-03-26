@@ -447,7 +447,15 @@ impl SeleniumManager for EdgeManager {
             return self.unavailable_discovery();
         }
 
-        let release = releases.first().unwrap();
+        let releases_with_artifacts: Vec<&Release> = releases
+            .into_iter()
+            .filter(|r| !r.artifacts.is_empty())
+            .collect();
+        if releases_with_artifacts.is_empty() {
+            return self.unavailable_discovery();
+        }
+
+        let release = releases_with_artifacts.first().unwrap();
         let artifacts: Vec<&Artifact> = release
             .artifacts
             .iter()

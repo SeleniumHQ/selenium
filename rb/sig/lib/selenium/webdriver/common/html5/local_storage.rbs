@@ -1,0 +1,25 @@
+module Selenium
+  module WebDriver
+    module HTML5
+      class LocalStorage
+        @bridge: untyped
+
+        include SharedWebStorage
+
+        def initialize: (untyped bridge) -> void
+
+        def []: (untyped key) -> untyped
+
+        def []=: (untyped key, untyped value) -> untyped
+
+        def delete: (untyped key) -> untyped
+
+        def clear: () -> untyped
+
+        def size: () -> untyped
+
+        def keys: () -> untyped
+      end
+    end
+  end
+end

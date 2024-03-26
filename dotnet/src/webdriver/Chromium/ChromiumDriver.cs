@@ -16,13 +16,13 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.DevTools;
+using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chromium
 {

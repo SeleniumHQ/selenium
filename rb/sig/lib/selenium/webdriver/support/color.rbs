@@ -1,0 +1,59 @@
+module Selenium
+  module WebDriver
+    module Support
+      class Color
+        @red: untyped
+
+        @green: untyped
+
+        @blue: untyped
+
+        @alpha: untyped
+
+        RGB_PATTERN: Regexp
+
+        RGB_PCT_PATTERN: Regexp
+
+        RGBA_PATTERN: Regexp
+
+        RGBA_PCT_PATTERN: Regexp
+
+        HEX_PATTERN: Regexp
+
+        HEX3_PATTERN: Regexp
+
+        HSL_PATTERN: Regexp
+
+        HSLA_PATTERN: Regexp
+
+        attr_reader red: untyped
+
+        attr_reader green: untyped
+
+        attr_reader blue: untyped
+
+        attr_reader alpha: untyped
+
+        def self.from_string: (String str) -> untyped
+
+        def self.from_hsl: (untyped h, untyped s, untyped l, untyped a) -> untyped
+
+        def self.hue_to_rgb: (untyped lum1, untyped lum2, untyped hue) -> untyped
+
+        def initialize: (String red, String green, String blue, Float | Integer | String ?alpha, *untyped args) -> void
+
+        def ==: (untyped other) -> untyped
+
+        alias eql? ==
+
+        def hash: () -> untyped
+
+        def rgb: () -> String
+
+        def rgba: () -> String
+
+        def hex: () -> untyped
+      end
+    end
+  end
+end

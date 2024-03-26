@@ -1,0 +1,39 @@
+module Selenium
+  module WebDriver
+    module Support
+      class Guards
+        class Guard
+          @guarded: untyped
+
+          @tracker: untyped
+
+          @messages: untyped
+
+          @type: untyped
+
+          @reason: untyped
+
+          attr_reader guarded: untyped
+
+          attr_reader type: untyped
+
+          attr_reader messages: untyped
+
+          attr_reader reason: untyped
+
+          def initialize: (untyped guarded, untyped type, ?untyped? guards) -> void
+
+          def message: () -> untyped
+
+          def except?: () -> untyped
+
+          def only?: () -> untyped
+
+          def exclude?: () -> untyped
+
+          def exclusive?: () -> untyped
+        end
+      end
+    end
+  end
+end

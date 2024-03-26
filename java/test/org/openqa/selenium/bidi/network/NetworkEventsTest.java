@@ -20,7 +20,6 @@ package org.openqa.selenium.bidi.network;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -33,7 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.bidi.Network;
+import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -173,7 +172,6 @@ class NetworkEventsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canListenToFetchError() throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
       CompletableFuture<FetchError> future = new CompletableFuture<>();

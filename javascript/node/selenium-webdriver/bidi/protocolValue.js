@@ -160,23 +160,27 @@ class RemoteValue {
 }
 
 class ReferenceValue {
+  #handle
+  #sharedId
   constructor(handle, sharedId) {
     if (handle === RemoteReferenceType.HANDLE) {
-      this.handle = sharedId
+      this.#handle = sharedId
+    } else if (handle === RemoteReferenceType.SHARED_ID) {
+      this.#sharedId = sharedId
     } else {
-      this.handle = handle
-      this.sharedId = sharedId
+      this.#handle = handle
+      this.#sharedId = sharedId
     }
   }
 
   asMap() {
     const toReturn = {}
-    if (this.handle != null) {
-      toReturn[RemoteReferenceType.HANDLE] = this.handle
+    if (this.#handle != null) {
+      toReturn[RemoteReferenceType.HANDLE] = this.#handle
     }
 
-    if (this.sharedId != null) {
-      toReturn[RemoteReferenceType.SHARED_ID] = this.sharedId
+    if (this.#sharedId != null) {
+      toReturn[RemoteReferenceType.SHARED_ID] = this.#sharedId
     }
 
     return toReturn

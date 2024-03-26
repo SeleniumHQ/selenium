@@ -287,6 +287,7 @@ class Options extends Capabilities {
         throw TypeError('Arguments must be {width, height} with numbers > 0')
       }
     }
+
     checkArg(width)
     checkArg(height)
     return this.addArguments(`window-size=${width},${height}`)

@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class ConsoleLogEntry < GenericLogEntry
+        @method: untyped
+
+        @realm: untyped
+
+        @args: untyped
+
+        attr_accessor method: untyped
+
+        attr_accessor realm: untyped
+
+        attr_accessor args: untyped
+
+        def initialize: (method: untyped, realm: untyped, args: untyped, **untyped opts) -> void
+      end
+    end
+  end
+end

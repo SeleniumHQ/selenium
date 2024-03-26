@@ -15,11 +15,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using OpenQA.Selenium.DevTools.V85.Page;
+using OpenQA.Selenium.DevTools.V85.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V85.Page;
-using OpenQA.Selenium.DevTools.V85.Runtime;
 
 namespace OpenQA.Selenium.DevTools.V85
 {
@@ -175,7 +175,7 @@ namespace OpenQA.Selenium.DevTools.V85
 
             var wrapped = new ConsoleApiCalledEventArgs()
             {
-                Timestamp = new DateTime(1979, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(e.Timestamp),
+                Timestamp = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(e.Timestamp),
                 Type = e.Type,
                 Arguments = args.AsReadOnly()
             };

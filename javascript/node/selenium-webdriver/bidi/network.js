@@ -15,8 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { BeforeRequestSent, ResponseStarted, FetchError} = require('./networkTypes')
-const {AddInterceptParameters} = require("./addInterceptParameters");
+const { BeforeRequestSent, ResponseStarted, FetchError } = require('./networkTypes')
+const { AddInterceptParameters } = require('./addInterceptParameters')
+const { ContinueResponseParameters } = require('./continueResponseParameters')
+const { ContinueRequestParameters } = require('./continueRequestParameters')
+const { ProvideResponseParameters } = require('./provideResponseParameters')
 
 class Network {
   constructor(driver, browsingContextIds) {
@@ -92,19 +95,18 @@ class Network {
           )
         }
         callback(response)
-        }
+      }
     })
   }
 
   async addIntercept(params) {
-
-    if (!params instanceof AddInterceptParameters) {
-      throw new Error(`Params must be an instance of AddInterceptParamenters. Received:'${params}'`)
+    if (!(params instanceof AddInterceptParameters)) {
+      throw new Error(`Params must be an instance of AddInterceptParameters. Received:'${params}'`)
     }
 
     const command = {
       method: 'network.addIntercept',
-      params: Object.fromEntries(params.asMap())
+      params: Object.fromEntries(params.asMap()),
     }
 
     let response = await this.bidi.send(command)
@@ -115,7 +117,7 @@ class Network {
   async removeIntercept(interceptId) {
     const command = {
       method: 'network.removeIntercept',
-      params: {intercept: interceptId},
+      params: { intercept: interceptId },
     }
 
     await this.bidi.send(command)
@@ -123,17 +125,27 @@ class Network {
 
   async continueWithAuth(requestId, username, password) {
     const command = {
-            method: 'network.continueWithAuth',
-            params: {
-              request: requestId.toString(),
-              action: 'provideCredentials',
-              credentials: {
-                type: 'password',
-                username: username,
-                password: password
-              },
-            },
-          }
+      method: 'network.continueWithAuth',
+      params: {
+        request: requestId.toString(),
+        action: 'provideCredentials',
+        credentials: {
+          type: 'password',
+          username: username,
+          password: password,
+        },
+      },
+    }
+    await this.bidi.send(command)
+  }
+
+  async failRequest(requestId) {
+    const command = {
+      method: 'network.failRequest',
+      params: {
+        request: requestId.toString(),
+      },
+    }
     await this.bidi.send(command)
   }
 
@@ -142,7 +154,7 @@ class Network {
       method: 'network.continueWithAuth',
       params: {
         request: requestId.toString(),
-        action: 'default'
+        action: 'default',
       },
     }
     await this.bidi.send(command)
@@ -153,9 +165,48 @@ class Network {
       method: 'network.continueWithAuth',
       params: {
         request: requestId.toString(),
-        action: 'cancel'
+        action: 'cancel',
       },
     }
+    await this.bidi.send(command)
+  }
+
+  async continueRequest(params) {
+    if (!(params instanceof ContinueRequestParameters)) {
+      throw new Error(`Params must be an instance of ContinueRequestParameters. Received:'${params}'`)
+    }
+
+    const command = {
+      method: 'network.continueRequest',
+      params: Object.fromEntries(params.asMap()),
+    }
+
+    await this.bidi.send(command)
+  }
+
+  async continueResponse(params) {
+    if (!(params instanceof ContinueResponseParameters)) {
+      throw new Error(`Params must be an instance of ContinueResponseParameters. Received:'${params}'`)
+    }
+
+    const command = {
+      method: 'network.continueResponse',
+      params: Object.fromEntries(params.asMap()),
+    }
+
+    await this.bidi.send(command)
+  }
+
+  async provideResponse(params) {
+    if (!(params instanceof ProvideResponseParameters)) {
+      throw new Error(`Params must be an instance of ProvideResponseParameters. Received:'${params}'`)
+    }
+
+    const command = {
+      method: 'network.provideResponse',
+      params: Object.fromEntries(params.asMap()),
+    }
+
     await this.bidi.send(command)
   }
 
@@ -164,9 +215,9 @@ class Network {
       'network.beforeRequestSent',
       'network.responseStarted',
       'network.responseCompleted',
-      'network.authRequired')
+      'network.authRequired',
+    )
   }
-
 }
 
 async function getNetworkInstance(driver, browsingContextIds = null) {

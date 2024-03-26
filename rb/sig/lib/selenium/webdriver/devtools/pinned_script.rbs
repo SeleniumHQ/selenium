@@ -1,0 +1,25 @@
+module Selenium
+  module WebDriver
+    class DevTools
+      class PinnedScript
+        @key: untyped
+
+        @script: untyped
+
+        attr_accessor key: untyped
+
+        attr_accessor devtools_identifier: untyped
+
+        attr_accessor script: untyped
+
+        def initialize: (untyped script) -> void
+
+        def callable: () -> String
+
+        def to_json: (*untyped) -> String
+
+        def remove: () -> String
+      end
+    end
+  end
+end

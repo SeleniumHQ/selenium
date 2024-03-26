@@ -1,5 +1,8 @@
 COMMON_TAGS = [
     "browser-test",
+    # We have to use no-sandbox at the moment because Firefox crashes
+    # when run under sandbox: https://bugzilla.mozilla.org/show_bug.cgi?id=1382498.
+    # For Chromium-based browser, we can just pass `--no-sandbox` flag.
     "no-sandbox",
     "requires-network",
 ]
@@ -27,6 +30,9 @@ chrome_data = select({
 }) + chromedriver_data
 
 edgedriver_data = select({
+    "@selenium//common:use_pinned_linux_edge": [
+        "@linux_edgedriver//:msedgedriver",
+    ],
     "@selenium//common:use_pinned_macos_edge": [
         "@mac_edgedriver//:msedgedriver",
     ],
@@ -35,6 +41,10 @@ edgedriver_data = select({
 })
 
 edge_data = select({
+    "@selenium//common:use_pinned_linux_edge": [
+        "@linux_edge//:files",
+        "@linux_edge//:opt/microsoft/msedge/microsoft-edge",
+    ],
     "@selenium//common:use_pinned_macos_edge": [
         "@mac_edge//:Edge.app",
     ],
@@ -70,17 +80,6 @@ firefox_beta_data = select({
     ],
     "@selenium//common:use_pinned_macos_firefox": [
         "@mac_beta_firefox//:Firefox.app",
-    ],
-    "//conditions:default": [],
-}) + geckodriver_data
-
-firefox_dev_data = select({
-    "@selenium//common:use_pinned_linux_firefox": [
-        "@linux_dev_firefox//:files",
-        "@linux_dev_firefox//:firefox/firefox",
-    ],
-    "@selenium//common:use_pinned_macos_firefox": [
-        "@mac_dev_firefox//:Firefox.app",
     ],
     "//conditions:default": [],
 }) + geckodriver_data

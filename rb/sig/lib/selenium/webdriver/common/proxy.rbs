@@ -1,0 +1,67 @@
+module Selenium
+  module WebDriver
+    class Proxy
+      include _Proxy
+
+      @ftp: untyped
+
+      @http: untyped
+
+      @no_proxy: untyped
+
+      @ssl: untyped
+
+      @pac: untyped
+
+      @auto_detect: untyped
+
+      @socks: untyped
+
+      @socks_username: untyped
+
+      @socks_password: untyped
+
+      @socks_version: untyped
+
+      @type: untyped
+
+      TYPES: Hash[Symbol, String]
+
+      ALLOWED: Hash[Symbol, String]
+
+      def self.json_create: (untyped data) -> untyped?
+
+      def initialize: (?::Hash[untyped, untyped] opts) -> void
+
+      def ==: (untyped other) -> untyped
+
+      alias eql? ==
+
+      def ftp=: (untyped value) -> untyped
+
+      def http=: (untyped value) -> untyped
+
+      def no_proxy=: (untyped value) -> untyped
+
+      def ssl=: (untyped value) -> untyped
+
+      def pac=: (untyped url) -> untyped
+
+      def auto_detect=: (untyped bool) -> untyped
+
+      def socks=: (untyped value) -> untyped
+
+      def socks_username=: (untyped value) -> untyped
+
+      def socks_password=: (untyped value) -> untyped
+
+      def socks_version=: (untyped value) -> untyped
+
+      def type=: (untyped type) -> untyped
+
+      def as_json: (*untyped) -> untyped
+
+      def to_json: (*untyped) -> untyped
+    end
+  end
+end
