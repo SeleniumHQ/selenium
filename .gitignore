@@ -10,6 +10,7 @@ junitvmwatcher*.properties
 test-output/
 .*.swp
 *~
+.aspect/
 common/build
 /build/
 cpp/iedriver/IEReturnTypes.h

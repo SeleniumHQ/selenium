@@ -19,6 +19,7 @@ package org.openqa.selenium.bidi.module;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.HasBiDi;
+import org.openqa.selenium.bidi.script.RemoteReference;
 import org.openqa.selenium.interactions.Sequence;
 
 public class Input {
@@ -86,5 +88,33 @@ public class Input {
 
   public void release(String browsingContext) {
     bidi.send(new Command<>("input.releaseActions", Map.of("context", browsingContext)));
+  }
+
+  public void setFiles(String browsingContext, RemoteReference element, List<String> files) {
+    bidi.send(
+        new Command<>(
+            "input.setFiles",
+            Map.of("context", browsingContext, "element", element.toJson(), "files", files)));
+  }
+
+  public void setFiles(String browsingContext, String elementId, List<String> files) {
+    bidi.send(
+        new Command<>(
+            "input.setFiles",
+            Map.of(
+                "context",
+                browsingContext,
+                "element",
+                new RemoteReference(RemoteReference.Type.SHARED_ID, elementId).toJson(),
+                "files",
+                files)));
+  }
+
+  public void setFiles(String browsingContext, RemoteReference element, String file) {
+    setFiles(browsingContext, element, Collections.singletonList(file));
+  }
+
+  public void setFiles(String browsingContext, String elementId, String file) {
+    setFiles(browsingContext, elementId, Collections.singletonList(file));
   }
 }

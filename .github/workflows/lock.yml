@@ -4,7 +4,7 @@ name: 'Lock Issues'
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '45 22 * * *'
 
 permissions:
   issues: write
@@ -22,5 +22,5 @@ jobs:
           issue-lock-reason: ''
           issue-comment: >
             This issue has been automatically locked since there
-            has not been any recent activity after it was closed.
+            has not been any recent activity since it was closed.
             Please open a new issue for related bugs.

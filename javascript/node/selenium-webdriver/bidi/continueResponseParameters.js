@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { BytesValue, Header } = require('./networkTypes')
+const { Header } = require('./networkTypes')
 
 class ContinueResponseParameters {
   #map = new Map()
