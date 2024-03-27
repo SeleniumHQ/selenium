@@ -729,7 +729,7 @@ namespace :rb do
     FileUtils.rm_rf('build/docs/api/rb/')
     Bazel.execute('run', [], '//rb:docs')
     FileUtils.mkdir_p('build/docs/api')
-    FileUtils.cp_r('bazel-bin/rb/docs.rb.sh.runfiles/selenium/docs/api/rb/.', 'build/docs/api/rb')
+    FileUtils.cp_r('bazel-bin/rb/docs.sh.runfiles/selenium/docs/api/rb/.', 'build/docs/api/rb')
 
     unless arguments[:skip_update]
       puts "Updating Ruby documentation"
