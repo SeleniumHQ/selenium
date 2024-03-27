@@ -1,3 +1,30 @@
+v4.19.0
+======
+
+>>> CDP 122 (#13603)
+* Update pinned browser versions
+* Update supported versions for Chrome DevTools
+* Reverting changes on Rakefile
+* Switching test to new behavior
+>>> [dotnet] Correct `ChromiumDriverService.AllowedIPAddresses` property name (#13626)
+>>> [dotnet] Fixed parsing of the year in ConsoleApiCalledEventArgs cdp event args
+Fixes #13654
+>>> [dotnet] Add dispose on constructor failure to ensure driver closes (#13673)
+* Forced Dispose of driver on chromedriver exception
+* Changed try-catch to only envelop StartSession and moved driver Quit command to own function
+* Remove extra spaces
+* Undo DriverDispose changes and instead call quit
+>>> [dotnet] Formatted source style globally
+Sorry guys if you see my face here
+>>> [dotnet] Support setting timeouts in capabilities (#13698)
+Setting timeout values in driver options
+>>> [dotnet] Treat unsuccessful http responses as errored commands (#13608)
+* Update HttpCommandExecutor.cs
+* Parse only if json
+* Added guards for NullRefException
+>>> [dotnet] Fix failed build via adding missing using statement
+>>> Update supported versions for Chrome DevTools
+
 v4.18.1
 ======
 

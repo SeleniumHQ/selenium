@@ -1,3 +1,48 @@
+## 4.19.0
+
+>>> CDP 122 (#13603)
+* Update pinned browser versions
+* Update supported versions for Chrome DevTools
+* Reverting changes on Rakefile
+* Switching test to new behavior
+>>> Bumping versions to 4.18.1
+>>> Run prettifier over the selenium-webdriver node code
+>>> Fix JS linting errors
+>>> [bidi] [java] [js] Add browser module (#13677)
+>>> [js] Fix linting
+>>> [JS]: Update npm deps to latest
+>>> [bidi] [js] Add storage module  (#13684)
+>>> [bidi][js] Add fail request command
+>>> [bidi][js] Add error handling to check Bytesvalue instance
+>>> [bidi][js] Add continueRequest and continueResponse command (#13704)
+>>> [bidi] Add provide response command (#13708)
+>>> [js] Update error message
+>>> [bidi][java][js] Add setFiles command of the Input Module (#13711)
+>>> Migrate to `aspect_rules_js`
+Also builds the Grid UI using `esbuild`.
+The weird imports in the Grid UI are due to an issue with the way that
+`esbuild` interacts with `@mui/material-icons`:
+https://github.com/mui/material-ui/issues/31835#issuecomment-1158660722
+>>> Regenerate lock file and fix linting errors
+>>> Fix lint errors
+>>> [js] Use copy_file for mutation listener
+This avoids genrule altogether
+>>> Bump express from 4.18.3 to 4.19.2 (#13734)
+Bumps [express](https://github.com/expressjs/express) from 4.18.3 to 4.19.2.
+- [Release notes](https://github.com/expressjs/express/releases)
+- [Changelog](https://github.com/expressjs/express/blob/master/History.md)
+- [Commits](https://github.com/expressjs/express/compare/4.18.3...4.19.2)
+---
+updated-dependencies:
+- dependency-name: express
+  dependency-type: direct:development
+...
+>>> Update script commands to fix the failing BiDi tests (#13737)
+* [bidi][java] Update Script command to add check for browsing context array
+* [java] Update tests
+* [js] Ensure script command uses the browsing contexts correctly
+>>> Update supported versions for Chrome DevTools
+
 ## 4.18.1
 
 - Add CDP for Chrome 122 and remove 119

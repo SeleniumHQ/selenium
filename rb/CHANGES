@@ -1,3 +1,19 @@
+4.19.0 (2024-03-27)
+=========================
+
+>>> CDP 122 (#13603)
+* Update pinned browser versions
+* Update supported versions for Chrome DevTools
+* Reverting changes on Rakefile
+* Switching test to new behavior
+>>> Bumping versions to 4.18.1
+>>> [build] Bumping versions for Nightly
+>>> [rb] Run all unit tests in RBE
+>>> [rb] Avoid overescaping browser path
+Related to #13632
+>>> [rb] Add full RBS support (#13234)
+>>> Update supported versions for Chrome DevTools
+
 4.18.1 (2024-02-19)
 =========================
 
