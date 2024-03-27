@@ -273,8 +273,10 @@ pub fn uncompress_deb(
         opt_edge_str, target_str
     ));
     create_parent_path_if_not_exists(target)?;
-    let output = run_shell_command_by_os(os, command)?;
-    if output.is_empty() {
+    run_shell_command_by_os(os, command)?;
+    let target_path = Path::new(target);
+    if target_path.parent().unwrap().read_dir()?.next().is_none() {
+        println!("IS EMPTY");
         fs::rename(&opt_edge_str, &target_str)?;
     }
 
