@@ -60825,6 +60825,107 @@
             "bazel_tools"
           ]
         ]
+      },
+      "os:linux,arch:amd64": {
+        "bzlTransitiveDigest": "oz98E/5hVKiH3qDlSg7R1FASClwMtv1eMWxG+3B6AY0=",
+        "recordedFileInputs": {},
+        "recordedDirentsInputs": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "go_default_sdk": {
+            "bzlFile": "@@rules_go~//go/private:sdk.bzl",
+            "ruleClassName": "go_download_sdk_rule",
+            "attributes": {
+              "goos": "",
+              "goarch": "",
+              "sdks": {},
+              "experiments": [],
+              "patches": [],
+              "patch_strip": 0,
+              "urls": [
+                "https://dl.google.com/go/{}"
+              ],
+              "version": "1.21.1",
+              "strip_prefix": "go"
+            }
+          },
+          "go_host_compatible_sdk_label": {
+            "bzlFile": "@@rules_go~//go/private:extensions.bzl",
+            "ruleClassName": "host_compatible_toolchain",
+            "attributes": {
+              "toolchain": "@contrib_rules_jvm__download_0//:ROOT"
+            }
+          },
+          "go_toolchains": {
+            "bzlFile": "@@rules_go~//go/private:sdk.bzl",
+            "ruleClassName": "go_multiple_toolchains",
+            "attributes": {
+              "prefixes": [
+                "_0000_contrib_rules_jvm__download_0_",
+                "_0001_go_default_sdk_"
+              ],
+              "geese": [
+                "",
+                ""
+              ],
+              "goarchs": [
+                "",
+                ""
+              ],
+              "sdk_repos": [
+                "contrib_rules_jvm__download_0",
+                "go_default_sdk"
+              ],
+              "sdk_types": [
+                "remote",
+                "remote"
+              ],
+              "sdk_versions": [
+                "1.21.5",
+                "1.21.1"
+              ]
+            }
+          },
+          "contrib_rules_jvm__download_0": {
+            "bzlFile": "@@rules_go~//go/private:sdk.bzl",
+            "ruleClassName": "go_download_sdk_rule",
+            "attributes": {
+              "goos": "",
+              "goarch": "",
+              "sdks": {},
+              "experiments": [],
+              "patches": [],
+              "patch_strip": 0,
+              "urls": [
+                "https://dl.google.com/go/{}"
+              ],
+              "version": "1.21.5",
+              "strip_prefix": "go"
+            }
+          }
+        },
+        "recordedRepoMappingEntries": [
+          [
+            "bazel_features~",
+            "bazel_features_globals",
+            "bazel_features~~version_extension~bazel_features_globals"
+          ],
+          [
+            "bazel_features~",
+            "bazel_features_version",
+            "bazel_features~~version_extension~bazel_features_version"
+          ],
+          [
+            "rules_go~",
+            "bazel_features",
+            "bazel_features~"
+          ],
+          [
+            "rules_go~",
+            "bazel_tools",
+            "bazel_tools"
+          ]
+        ]
       }
     },
     "@@rules_java~//java:extensions.bzl%toolchains": {
