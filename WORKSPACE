@@ -239,12 +239,7 @@ load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_regi
 
 rules_rust_dependencies()
 
-rust_register_toolchains(
-    edition = "2021",
-    versions = [
-        "1.77.0",
-    ],
-)
+rust_register_toolchains()
 
 load("@rules_rust//crate_universe:defs.bzl", "crates_repository")
 
