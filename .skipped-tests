@@ -1,3 +1,5 @@
+-//dotnet/test/common:NetworkInterceptionTests-chrome
+-//dotnet/test/common:NetworkInterceptionTests-edge
 -//java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
 -//java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
 -//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest
