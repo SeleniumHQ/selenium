@@ -34,7 +34,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
@@ -384,6 +383,33 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
+  void canCaptureScreenshotWithAllParameters() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(appServer.whereIs("coordinates_tests/simple_page.html"));
+    WebElement element = driver.findElement(By.id("box"));
+
+    Rectangle elementRectangle = element.getRect();
+
+    ClipRectangle clipRectangle =
+        new BoxClipRectangle(elementRectangle.getX(), elementRectangle.getY(), 5, 5);
+
+    CaptureScreenshotParameters parameters = new CaptureScreenshotParameters();
+    // TODO: Add test to test the type and quality
+    // parameters.imageFormat("image/png", 0.5);
+
+    String screenshot =
+        browsingContext.captureScreenshot(
+            parameters
+                .origin(CaptureScreenshotParameters.Origin.DOCUMENT)
+                .clipRectangle(clipRectangle));
+
+    assertThat(screenshot.length()).isPositive();
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   void canCaptureScreenshotOfViewport() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -413,26 +439,6 @@ class BrowsingContextTest extends JupiterTestBase {
 
     String screenshot =
         browsingContext.captureElementScreenshot(((RemoteWebElement) element).getId());
-
-    assertThat(screenshot.length()).isPositive();
-  }
-
-  @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
-  void canScrollAndCaptureElementScreenshot() {
-    Dimension dimension = new Dimension(300, 300);
-    driver.manage().window().setSize(dimension);
-    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
-
-    driver.get(appServer.whereIs("formPage.html"));
-
-    WebElement element = driver.findElement(By.id("checkbox-with-label"));
-
-    String screenshot =
-        browsingContext.captureElementScreenshot(((RemoteWebElement) element).getId(), true);
 
     assertThat(screenshot.length()).isPositive();
   }
