@@ -100,7 +100,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v122:v122.publish
-  //java/src/org/openqa/selenium/devtools/v120:v120.publish
+  //java/src/org/openqa/selenium/devtools/v123:v123.publish
   //java/src/org/openqa/selenium/devtools/v121:v121.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
