@@ -61438,11 +61438,22 @@
         "bzlTransitiveDigest": "WLH6tV/jGiZ73lPBSYWRhoilLeqSLs6vQqjK4ph6NG0=",
         "recordedFileInputs": {
           "@@rules_jvm_external~//rules_jvm_external_deps_install.json": "cafb5d2d8119391eb2b322ce3840d3352ea82d496bdb8cbd4b6779ec4d044dda",
-          "@@//java/maven_install.json": "d00b0b36af718a9318bd0ec4cc5ca7a1a6b0cfffe0ccca382ea483955821ff21"
+          "@@//java/maven_install.json": "0c7fd19933bb3d9e52efd0aff7a9fbc9509582503a455f6291e4577798d86437"
         },
         "recordedDirentsInputs": {},
         "envVariables": {},
         "generatedRepoSpecs": {
+          "io_opentelemetry_opentelemetry_context_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "a31b52203341dafae2d9b5502e3a11eb28a3297d3540be8262d6d9ed2a8d70ab",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-context/1.36.0/opentelemetry-context-1.36.0.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-context/1.36.0/opentelemetry-context-1.36.0.jar"
+            }
+          },
           "com_google_guava_guava_32_1_2_jre": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -61485,6 +61496,17 @@
                 "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/1.10.2/junit-platform-engine-1.10.2-sources.jar"
               ],
               "downloaded_file_path": "v1/org/junit/platform/junit-platform-engine/1.10.2/junit-platform-engine-1.10.2-sources.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_sdk_trace_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "0a699cd0e0b4956a85ed3389d930e341e95a18379d5d73de4dd49bf95635207b",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-trace/1.36.0/opentelemetry-sdk-trace-1.36.0.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-trace/1.36.0/opentelemetry-sdk-trace-1.36.0.jar"
             }
           },
           "org_xmlresolver_xmlresolver_jar_data_5_2_2": {
@@ -61558,17 +61580,6 @@
               "downloaded_file_path": "v1/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar"
             }
           },
-          "io_netty_netty_codec_http_jar_sources_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "0a3d015c1994070e87959832f0ebe3e1f742174b315d504bd508e79093c47715",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.107.Final/netty-codec-http-4.1.107.Final-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-codec-http/4.1.107.Final/netty-codec-http-4.1.107.Final-sources.jar"
-            }
-          },
           "io_netty_netty_codec_http_4_1_94_Final": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -61599,15 +61610,15 @@
               "downloaded_file_path": "v1/com/fasterxml/jackson/core/jackson-databind/2.16.1/jackson-databind-2.16.1-sources.jar"
             }
           },
-          "com_github_javaparser_javaparser_core_jar_sources_3_25_8": {
+          "com_github_javaparser_javaparser_core_jar_sources_3_25_9": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "b6eb63a106b16e0c2953b985d15c3126fa772e550d9f9be60c0cdd2d4d29880d",
+              "sha256": "17ceb95148911ae9c33ede5a34e3e7de2620bc01966eb0ebf6f222d2731c7ef2",
               "urls": [
-                "https://repo1.maven.org/maven2/com/github/javaparser/javaparser-core/3.25.8/javaparser-core-3.25.8-sources.jar"
+                "https://repo1.maven.org/maven2/com/github/javaparser/javaparser-core/3.25.9/javaparser-core-3.25.9-sources.jar"
               ],
-              "downloaded_file_path": "v1/com/github/javaparser/javaparser-core/3.25.8/javaparser-core-3.25.8-sources.jar"
+              "downloaded_file_path": "v1/com/github/javaparser/javaparser-core/3.25.9/javaparser-core-3.25.9-sources.jar"
             }
           },
           "com_google_auto_service_auto_service_jar_sources_1_1_1": {
@@ -61643,6 +61654,17 @@
               "downloaded_file_path": "v1/com/google/api/grpc/proto-google-iam-v1/1.18.0/proto-google-iam-v1-1.18.0.jar"
             }
           },
+          "io_netty_netty_codec_http2_jar_sources_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "4bac91d9d56373576eb5e02b94fba41e5a276448a4f31762e419a5d11710e9d3",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.108.Final/netty-codec-http2-4.1.108.Final-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-codec-http2/4.1.108.Final/netty-codec-http2-4.1.108.Final-sources.jar"
+            }
+          },
           "it_ozimov_embedded_redis_0_7_3": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -61652,17 +61674,6 @@
                 "https://repo1.maven.org/maven2/it/ozimov/embedded-redis/0.7.3/embedded-redis-0.7.3.jar"
               ],
               "downloaded_file_path": "v1/it/ozimov/embedded-redis/0.7.3/embedded-redis-0.7.3.jar"
-            }
-          },
-          "org_apache_logging_log4j_log4j_api_2_22_1": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "5d7beae7ff15d8516d6517121d7f12a79a6ac180df64b5fcec55d5be21056e53",
-              "urls": [
-                "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.22.1/log4j-api-2.22.1.jar"
-              ],
-              "downloaded_file_path": "v1/org/apache/logging/log4j/log4j-api/2.22.1/log4j-api-2.22.1.jar"
             }
           },
           "org_jboss_marshalling_jboss_marshalling_river_jar_sources_2_0_11_Final": {
@@ -61685,17 +61696,6 @@
                 "https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.6/asm-tree-9.6-sources.jar"
               ],
               "downloaded_file_path": "v1/org/ow2/asm/asm-tree/9.6/asm-tree-9.6-sources.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_context_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "6a11b6639e48515ae78e010292758cbcd2467023b564465aa5a96c1501731464",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-context/1.35.0/opentelemetry-context-1.35.0.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-context/1.35.0/opentelemetry-context-1.35.0.jar"
             }
           },
           "dev_failsafe_failsafe_jar_sources_3_3_2": {
@@ -61731,15 +61731,15 @@
               "downloaded_file_path": "v1/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar"
             }
           },
-          "io_netty_netty_codec_http_4_1_107_Final": {
+          "com_google_googlejavaformat_google_java_format_jar_sources_1_21_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "0f35f57ecc11e1227d0c65d65582adc1075474a30a8fd3cff0f6e9a66c9e2a74",
+              "sha256": "777290d865387f77b428817bd90330d52a42a0b9de49cddceda890c12b7d7c5d",
               "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.107.Final/netty-codec-http-4.1.107.Final.jar"
+                "https://repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/1.21.0/google-java-format-1.21.0-sources.jar"
               ],
-              "downloaded_file_path": "v1/io/netty/netty-codec-http/4.1.107.Final/netty-codec-http-4.1.107.Final.jar"
+              "downloaded_file_path": "v1/com/google/googlejavaformat/google-java-format/1.21.0/google-java-format-1.21.0-sources.jar"
             }
           },
           "io_netty_netty_codec": {
@@ -61748,17 +61748,6 @@
             "attributes": {
               "generating_repository": "contrib_rules_jvm_deps",
               "target_name": "io_netty_netty_codec"
-            }
-          },
-          "io_netty_netty_buffer_jar_sources_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "ae50a44004296e0481f9910b3778e01ed9f0b063dbc34a7baae59bf4c7ac7810",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-buffer/4.1.107.Final/netty-buffer-4.1.107.Final-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-buffer/4.1.107.Final/netty-buffer-4.1.107.Final-sources.jar"
             }
           },
           "org_ow2_asm_asm_9_6": {
@@ -61810,6 +61799,17 @@
               "target_name": "org_slf4j_slf4j_api"
             }
           },
+          "io_netty_netty_handler_jar_sources_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "85e3a994544dbd5c4eb5b8c7708fb47f66277afd4ee9855a7e931703fe034c2c",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-handler/4.1.108.Final/netty-handler-4.1.108.Final-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-handler/4.1.108.Final/netty-handler-4.1.108.Final-sources.jar"
+            }
+          },
           "com_google_guava_listenablefuture_9999_0_empty_to_avoid_conflict_with_guava": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -61819,6 +61819,17 @@
                 "https://repo1.maven.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"
               ],
               "downloaded_file_path": "v1/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"
+            }
+          },
+          "io_grpc_grpc_context_1_62_2": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "9959747df6a753119e1c1a3dff01aa766d2455f5e4860acaa305359e1d533a05",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.62.2/grpc-context-1.62.2.jar"
+              ],
+              "downloaded_file_path": "v1/io/grpc/grpc-context/1.62.2/grpc-context-1.62.2.jar"
             }
           },
           "com_google_code_gson_gson": {
@@ -61838,6 +61849,17 @@
                 "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3-sources.jar"
               ],
               "downloaded_file_path": "v1/org/apache/commons/commons-exec/1.3/commons-exec-1.3-sources.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_sdk_logs_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "ec47eb13d162a23a6a761ea13f8ad6bfd404539531e016f8a64f6ea0bfa569c9",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/1.36.0/opentelemetry-sdk-logs-1.36.0.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-logs/1.36.0/opentelemetry-sdk-logs-1.36.0.jar"
             }
           },
           "org_dom4j_dom4j_2_1_4": {
@@ -61893,6 +61915,17 @@
                 "https://repo1.maven.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1-sources.jar"
               ],
               "downloaded_file_path": "v1/com/google/code/gson/gson/2.10.1/gson-2.10.1-sources.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_sdk_metrics_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "d57a4cef030a95fc1666f6ab420a2c8cb3a5386124a2c7460154bced1f4c702c",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-metrics/1.36.0/opentelemetry-sdk-metrics-1.36.0.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-metrics/1.36.0/opentelemetry-sdk-metrics-1.36.0.jar"
             }
           },
           "com_google_auto_value_auto_value_annotations_1_10_2": {
@@ -61995,26 +62028,15 @@
               "repin_instructions": ""
             }
           },
-          "io_opentelemetry_opentelemetry_extension_incubator_jar_sources_1_35_0_alpha": {
+          "io_netty_netty_transport_native_unix_common_4_1_108_Final": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "2469ad678701e0871b39288de539915afa5d0f7c4c266d0f464677fec88fa3d1",
+              "sha256": "c3f324a6f526313e432235bf1a3a12e3db283e3b8669e02f26f569c421036bcb",
               "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-extension-incubator/1.35.0-alpha/opentelemetry-extension-incubator-1.35.0-alpha-sources.jar"
+                "https://repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.108.Final/netty-transport-native-unix-common-4.1.108.Final.jar"
               ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-extension-incubator/1.35.0-alpha/opentelemetry-extension-incubator-1.35.0-alpha-sources.jar"
-            }
-          },
-          "io_netty_netty_resolver_jar_sources_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "39f041fd6513ec00c49669dcb1177edc8db8eb0f60fed27f43bfa03149afc607",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-resolver/4.1.107.Final/netty-resolver-4.1.107.Final-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-resolver/4.1.107.Final/netty-resolver-4.1.107.Final-sources.jar"
+              "downloaded_file_path": "v1/io/netty/netty-transport-native-unix-common/4.1.108.Final/netty-transport-native-unix-common-4.1.108.Final.jar"
             }
           },
           "com_google_http_client_google_http_client_appengine_1_43_3": {
@@ -62050,6 +62072,17 @@
               "downloaded_file_path": "v1/com/github/spotbugs/spotbugs/4.8.3/spotbugs-4.8.3-sources.jar"
             }
           },
+          "io_netty_netty_transport_native_unix_common_jar_sources_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "b8f2463e6f7b135c9a89c8875fb4ffdbeece230b713c34a4aeb619081e9b18ff",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.108.Final/netty-transport-native-unix-common-4.1.108.Final-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-transport-native-unix-common/4.1.108.Final/netty-transport-native-unix-common-4.1.108.Final-sources.jar"
+            }
+          },
           "com_google_auto_value_auto_value_annotations_1_7_4": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -62072,6 +62105,17 @@
               "downloaded_file_path": "v1/junit/junit/4.13.2/junit-4.13.2.jar"
             }
           },
+          "io_netty_netty_common_jar_sources_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "4104a190511c03cfadefe6e05d0c13d5d297e087e0a2eca417ca265f2bb90c18",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-common/4.1.108.Final/netty-common-4.1.108.Final-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-common/4.1.108.Final/netty-common-4.1.108.Final-sources.jar"
+            }
+          },
           "org_apache_commons_commons_text_jar_sources_1_10_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -62081,28 +62125,6 @@
                 "https://repo1.maven.org/maven2/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0-sources.jar"
               ],
               "downloaded_file_path": "v1/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0-sources.jar"
-            }
-          },
-          "io_netty_netty_handler_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "ce135be15a4afe717db7c5a1d5bf1d10bdfdee50c8ce77a5a39e4694b97071db",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-handler/4.1.107.Final/netty-handler-4.1.107.Final.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-handler/4.1.107.Final/netty-handler-4.1.107.Final.jar"
-            }
-          },
-          "io_lettuce_lettuce_core_jar_sources_6_3_1_RELEASE": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "021f28d8ac9b1d125ce0407316440c032245a73b7bf0166489eb28d09c78b490",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/lettuce/lettuce-core/6.3.1.RELEASE/lettuce-core-6.3.1.RELEASE-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/lettuce/lettuce-core/6.3.1.RELEASE/lettuce-core-6.3.1.RELEASE-sources.jar"
             }
           },
           "com_google_api_grpc_proto_google_cloud_storage_v2_2_26_1_alpha": {
@@ -62138,17 +62160,6 @@
               "downloaded_file_path": "v1/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2.jar"
             }
           },
-          "io_opentelemetry_opentelemetry_sdk_testing_jar_sources_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "002b70421ebb5e53baf63d30e7f81fcc30e2ea6701fd739a2e6724de5ae5dd9d",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-testing/1.35.0/opentelemetry-sdk-testing-1.35.0-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-testing/1.35.0/opentelemetry-sdk-testing-1.35.0-sources.jar"
-            }
-          },
           "org_zeromq_jeromq_0_6_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -62158,17 +62169,6 @@
                 "https://repo1.maven.org/maven2/org/zeromq/jeromq/0.6.0/jeromq-0.6.0.jar"
               ],
               "downloaded_file_path": "v1/org/zeromq/jeromq/0.6.0/jeromq-0.6.0.jar"
-            }
-          },
-          "io_netty_netty_codec_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "3a1f361b405f9ea30fe6aabe1907d719c0c99fe30c03932fee558214dbd638cc",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-codec/4.1.107.Final/netty-codec-4.1.107.Final.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-codec/4.1.107.Final/netty-codec-4.1.107.Final.jar"
             }
           },
           "com_graphql_java_graphql_java_jar_sources_20_2": {
@@ -62193,23 +62193,23 @@
               "downloaded_file_path": "v1/org/jodd/jodd-bean/5.1.6/jodd-bean-5.1.6.jar"
             }
           },
+          "com_google_googlejavaformat_google_java_format_1_21_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "829e6aa5f6e6b9fb80ddbcfc368bfc9071843670c7505155c8db710051776f1c",
+              "urls": [
+                "https://repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/1.21.0/google-java-format-1.21.0.jar"
+              ],
+              "downloaded_file_path": "v1/com/google/googlejavaformat/google-java-format/1.21.0/google-java-format-1.21.0.jar"
+            }
+          },
           "io_grpc_grpc_stub": {
             "bzlFile": "@@rules_jvm_external~//private:compat_repository.bzl",
             "ruleClassName": "compat_repository",
             "attributes": {
               "generating_repository": "contrib_rules_jvm_deps",
               "target_name": "io_grpc_grpc_stub"
-            }
-          },
-          "io_netty_netty_handler_proxy_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "4dc4cddca45536cd2666a56976c3b4e6f54efce856fdb08de566b7a700bbead9",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.107.Final/netty-handler-proxy-4.1.107.Final.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-handler-proxy/4.1.107.Final/netty-handler-proxy-4.1.107.Final.jar"
             }
           },
           "io_netty_netty_transport_classes_epoll_4_1_94_Final": {
@@ -62253,17 +62253,6 @@
               "target_name": "commons_cli_commons_cli"
             }
           },
-          "io_opentelemetry_opentelemetry_sdk_trace_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "0c3715deed39924d0d4e67e74e43c25745b77ff27d3e15d548fa8729dab14ab6",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-trace/1.35.0/opentelemetry-sdk-trace-1.35.0.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-trace/1.35.0/opentelemetry-sdk-trace-1.35.0.jar"
-            }
-          },
           "io_grpc_grpc_alts_1_56_1": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -62286,28 +62275,6 @@
               "downloaded_file_path": "v1/org/jboss/marshalling/jboss-marshalling/2.0.11.Final/jboss-marshalling-2.0.11.Final.jar"
             }
           },
-          "com_google_guava_guava_jar_sources_33_0_0_jre": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "0c17d911785e8a606d091aa6740d6d520f307749c2bddf6e35066d52fe0036e5",
-              "urls": [
-                "https://repo1.maven.org/maven2/com/google/guava/guava/33.0.0-jre/guava-33.0.0-jre-sources.jar"
-              ],
-              "downloaded_file_path": "v1/com/google/guava/guava/33.0.0-jre/guava-33.0.0-jre-sources.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_sdk_metrics_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "1032f86dac2d44c1c32459356f6bd6428d89b2d62e369764ae1434665b571e40",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-metrics/1.35.0/opentelemetry-sdk-metrics-1.35.0.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-metrics/1.35.0/opentelemetry-sdk-metrics-1.35.0.jar"
-            }
-          },
           "com_google_truth_truth_1_1_2": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -62317,17 +62284,6 @@
                 "https://repo1.maven.org/maven2/com/google/truth/truth/1.1.2/truth-1.1.2.jar"
               ],
               "downloaded_file_path": "v1/com/google/truth/truth/1.1.2/truth-1.1.2.jar"
-            }
-          },
-          "com_google_j2objc_j2objc_annotations_2_8": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "f02a95fa1a5e95edb3ed859fd0fb7df709d121a35290eff8b74dce2ab7f4d6ed",
-              "urls": [
-                "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.jar"
-              ],
-              "downloaded_file_path": "v1/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.jar"
             }
           },
           "org_apache_bcel_bcel_jar_sources_6_8_0": {
@@ -62341,15 +62297,26 @@
               "downloaded_file_path": "v1/org/apache/bcel/bcel/6.8.0/bcel-6.8.0-sources.jar"
             }
           },
-          "io_netty_netty_common_4_1_107_Final": {
+          "com_google_j2objc_j2objc_annotations_2_8": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "1231e7bd5f523d97280b89adefb3521132d45c22791318b9e0d462bd3ba1b8e9",
+              "sha256": "f02a95fa1a5e95edb3ed859fd0fb7df709d121a35290eff8b74dce2ab7f4d6ed",
               "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-common/4.1.107.Final/netty-common-4.1.107.Final.jar"
+                "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.jar"
               ],
-              "downloaded_file_path": "v1/io/netty/netty-common/4.1.107.Final/netty-common-4.1.107.Final.jar"
+              "downloaded_file_path": "v1/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_sdk_extension_autoconfigure_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "3af5d325a1df60761e19a4c75e53dff5d185c1a5bfc0be68ca2c48b121c2becb",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.36.0/opentelemetry-sdk-extension-autoconfigure-1.36.0.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.36.0/opentelemetry-sdk-extension-autoconfigure-1.36.0.jar"
             }
           },
           "org_jboss_marshalling_jboss_marshalling_river_2_0_11_Final": {
@@ -62361,17 +62328,6 @@
                 "https://repo1.maven.org/maven2/org/jboss/marshalling/jboss-marshalling-river/2.0.11.Final/jboss-marshalling-river-2.0.11.Final.jar"
               ],
               "downloaded_file_path": "v1/org/jboss/marshalling/jboss-marshalling-river/2.0.11.Final/jboss-marshalling-river-2.0.11.Final.jar"
-            }
-          },
-          "com_google_errorprone_error_prone_annotations_jar_sources_2_23_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "5b4504609bb93d3c24b87cd839cf0bb7d878135d0a917a05081d0dc9b2a9973f",
-              "urls": [
-                "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.23.0/error_prone_annotations-2.23.0-sources.jar"
-              ],
-              "downloaded_file_path": "v1/com/google/errorprone/error_prone_annotations/2.23.0/error_prone_annotations-2.23.0-sources.jar"
             }
           },
           "io_grpc_grpc_xds_1_56_1": {
@@ -62434,6 +62390,72 @@
               "target_name": "net_sourceforge_pmd_pmd_dist"
             }
           },
+          "io_netty_netty_codec_jar_sources_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "0d08bc0933beba1d0fab7e39624b6c3e8c05b6458c7a82e7ea77d9d4d7277ef4",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-codec/4.1.108.Final/netty-codec-4.1.108.Final-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-codec/4.1.108.Final/netty-codec-4.1.108.Final-sources.jar"
+            }
+          },
+          "org_apache_logging_log4j_log4j_api_2_23_1": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "92ec1fd36ab3bc09de6198d2d7c0914685c0f7127ea931acc32fd2ecdd82ea89",
+              "urls": [
+                "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.23.1/log4j-api-2.23.1.jar"
+              ],
+              "downloaded_file_path": "v1/org/apache/logging/log4j/log4j-api/2.23.1/log4j-api-2.23.1.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_sdk_testing_jar_sources_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "3ce821e524f1aa48e992fef5d535fdf9d08ed8abe718dcd86cee7a73b70d2d7c",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-testing/1.36.0/opentelemetry-sdk-testing-1.36.0-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-testing/1.36.0/opentelemetry-sdk-testing-1.36.0-sources.jar"
+            }
+          },
+          "io_netty_netty_handler_proxy_jar_sources_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "f9b6ace4f1528610f5d1390588f405e3b1b89f4eef3a55226abfd4eeb7049e70",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.108.Final/netty-handler-proxy-4.1.108.Final-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-handler-proxy/4.1.108.Final/netty-handler-proxy-4.1.108.Final-sources.jar"
+            }
+          },
+          "com_google_guava_guava_33_1_0_jre": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "346aec0eb8c8987360c8a264e70ff10c2fba760446eb27e8ab07e78e787a75fe",
+              "urls": [
+                "https://repo1.maven.org/maven2/com/google/guava/guava/33.1.0-jre/guava-33.1.0-jre.jar"
+              ],
+              "downloaded_file_path": "v1/com/google/guava/guava/33.1.0-jre/guava-33.1.0-jre.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_exporter_logging_jar_sources_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "078267d3d79705535294849bfff6e05c6747d085346deea604e5d6cc79cda627",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/1.36.0/opentelemetry-exporter-logging-1.36.0-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-exporter-logging/1.36.0/opentelemetry-exporter-logging-1.36.0-sources.jar"
+            }
+          },
           "io_opencensus_opencensus_api_0_31_1": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -62443,17 +62465,6 @@
                 "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1.jar"
               ],
               "downloaded_file_path": "v1/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_exporter_logging_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "f790acd24ba63ea5ced5f6eccd491790ffdaabaf5b12d5ddcf4b36f3ba94f2be",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/1.35.0/opentelemetry-exporter-logging-1.35.0.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-exporter-logging/1.35.0/opentelemetry-exporter-logging-1.35.0.jar"
             }
           },
           "org_slf4j_slf4j_simple_jar_sources_1_7_21": {
@@ -62483,28 +62494,6 @@
               "target_name": "io_netty_netty_transport_native_unix_common"
             }
           },
-          "io_opentelemetry_opentelemetry_api_events_1_35_0_alpha": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "96872b1ee7527e223e7a387b4bec1649acf9e9a60e21099a020f76f31bfabe5d",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-events/1.35.0-alpha/opentelemetry-api-events-1.35.0-alpha.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-api-events/1.35.0-alpha/opentelemetry-api-events-1.35.0-alpha.jar"
-            }
-          },
-          "io_netty_netty_transport_native_unix_common_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "40eb2e471d88f9e7d09d59284297d1d46de37fb1441215b1b73e9b8691061e27",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.107.Final/netty-transport-native-unix-common-4.1.107.Final.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-transport-native-unix-common/4.1.107.Final/netty-transport-native-unix-common-4.1.107.Final.jar"
-            }
-          },
           "org_junit_platform_junit_platform_reporting_1_10_2": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -62527,26 +62516,15 @@
               "downloaded_file_path": "v1/org/apache/maven/maven-artifact/3.9.4/maven-artifact-3.9.4.jar"
             }
           },
-          "com_google_j2objc_j2objc_annotations_jar_sources_2_8": {
+          "org_redisson_redisson_3_27_2": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "7413eed41f111453a08837f5ac680edded7faed466cbd35745e402e13f4cc3f5",
+              "sha256": "11c5345b7ce90a822c65e184434e237f135d82537b379dcf1f9420363bf54d9a",
               "urls": [
-                "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8-sources.jar"
+                "https://repo1.maven.org/maven2/org/redisson/redisson/3.27.2/redisson-3.27.2.jar"
               ],
-              "downloaded_file_path": "v1/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8-sources.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_sdk_logs_jar_sources_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "ddb9421305bc45b3d07e5a6e503cb8048597491993a3e0adf41c596836e572d1",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/1.35.0/opentelemetry-sdk-logs-1.35.0-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-logs/1.35.0/opentelemetry-sdk-logs-1.35.0-sources.jar"
+              "downloaded_file_path": "v1/org/redisson/redisson/3.27.2/redisson-3.27.2.jar"
             }
           },
           "io_netty_netty_common": {
@@ -62576,17 +62554,6 @@
               "target_name": "com_google_googlejavaformat_google_java_format"
             }
           },
-          "io_netty_netty_resolver_dns_jar_sources_4_1_106_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "ea3648fd0208b0bf44520bc25d905377bf213603d1d1fd3c24512f8a586cb130",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-resolver-dns/4.1.106.Final/netty-resolver-dns-4.1.106.Final-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-resolver-dns/4.1.106.Final/netty-resolver-dns-4.1.106.Final-sources.jar"
-            }
-          },
           "software_amazon_eventstream_eventstream_1_0_1": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -62598,12 +62565,34 @@
               "downloaded_file_path": "v1/software/amazon/eventstream/eventstream/1.0.1/eventstream-1.0.1.jar"
             }
           },
+          "net_bytebuddy_byte_buddy_agent_1_14_12": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "2b309a9300092e0b696f7c471fd51d9969001df784c8ab9f07997437d757ad6d",
+              "urls": [
+                "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12.jar"
+              ],
+              "downloaded_file_path": "v1/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12.jar"
+            }
+          },
           "io_netty_netty_handler": {
             "bzlFile": "@@rules_jvm_external~//private:compat_repository.bzl",
             "ruleClassName": "compat_repository",
             "attributes": {
               "generating_repository": "contrib_rules_jvm_deps",
               "target_name": "io_netty_netty_handler"
+            }
+          },
+          "io_opentelemetry_opentelemetry_sdk_extension_autoconfigure_spi_jar_sources_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "811fd77447ece77c8ce5c1ed0a40f900b2d3eb7113a083cd7fd957fc1f0d647e",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.36.0/opentelemetry-sdk-extension-autoconfigure-spi-1.36.0-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.36.0/opentelemetry-sdk-extension-autoconfigure-spi-1.36.0-sources.jar"
             }
           },
           "org_xmlresolver_xmlresolver_jar_sources_5_2_2": {
@@ -62615,17 +62604,6 @@
                 "https://repo1.maven.org/maven2/org/xmlresolver/xmlresolver/5.2.2/xmlresolver-5.2.2-sources.jar"
               ],
               "downloaded_file_path": "v1/org/xmlresolver/xmlresolver/5.2.2/xmlresolver-5.2.2-sources.jar"
-            }
-          },
-          "net_bytebuddy_byte_buddy_agent_1_14_11": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "2f537a621a64fa7013d68c695a76a34ee8d79dad74e635caca16dd56257aeb80",
-              "urls": [
-                "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.14.11/byte-buddy-agent-1.14.11.jar"
-              ],
-              "downloaded_file_path": "v1/net/bytebuddy/byte-buddy-agent/1.14.11/byte-buddy-agent-1.14.11.jar"
             }
           },
           "org_assertj_assertj_core_3_25_3": {
@@ -62667,6 +62645,28 @@
                 "https://repo1.maven.org/maven2/io/grpc/grpc-protobuf/1.56.1/grpc-protobuf-1.56.1.jar"
               ],
               "downloaded_file_path": "v1/io/grpc/grpc-protobuf/1.56.1/grpc-protobuf-1.56.1.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_sdk_common_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "ed4a4697ce6a6746195726ef84c873ccfc0f42b6a54c81bafc5eac7d91dc129a",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-common/1.36.0/opentelemetry-sdk-common-1.36.0.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-common/1.36.0/opentelemetry-sdk-common-1.36.0.jar"
+            }
+          },
+          "io_netty_netty_codec_dns_jar_sources_4_1_107_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "81e9ac7458a639824ad2ac18002118a0356461c5c0d8e1958fdf1ab3e58ac879",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-codec-dns/4.1.107.Final/netty-codec-dns-4.1.107.Final-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-codec-dns/4.1.107.Final/netty-codec-dns-4.1.107.Final-sources.jar"
             }
           },
           "com_puppycrawl_tools_checkstyle": {
@@ -62830,17 +62830,6 @@
               "target_name": "io_grpc_grpc_netty"
             }
           },
-          "org_redisson_redisson_3_26_1": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "329bcc2f6cffd3d01c5537128932c8584db79e0e77f3aff5b9e64e56f6554b22",
-              "urls": [
-                "https://repo1.maven.org/maven2/org/redisson/redisson/3.26.1/redisson-3.26.1.jar"
-              ],
-              "downloaded_file_path": "v1/org/redisson/redisson/3.26.1/redisson-3.26.1.jar"
-            }
-          },
           "org_apache_commons_commons_lang3_jar_sources_3_14_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -62861,6 +62850,17 @@
                 "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.20.128/third-party-jackson-core-2.20.128.jar"
               ],
               "downloaded_file_path": "v1/software/amazon/awssdk/third-party-jackson-core/2.20.128/third-party-jackson-core-2.20.128.jar"
+            }
+          },
+          "io_netty_netty_codec_socks_jar_sources_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "96442ffa09c9b43151c7d932f5162772a2bb4774d7c85dcb366a8edaf0af3d62",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.108.Final/netty-codec-socks-4.1.108.Final-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-codec-socks/4.1.108.Final/netty-codec-socks-4.1.108.Final-sources.jar"
             }
           },
           "io_netty_netty_codec_http2": {
@@ -62891,6 +62891,17 @@
                 "https://repo1.maven.org/maven2/io/grpc/grpc-services/1.56.1/grpc-services-1.56.1.jar"
               ],
               "downloaded_file_path": "v1/io/grpc/grpc-services/1.56.1/grpc-services-1.56.1.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_sdk_common_jar_sources_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "7e5be9e13e318052a6e53a9b46a0292b69c9c5ab4af273785da39e5c11ee4503",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-common/1.36.0/opentelemetry-sdk-common-1.36.0-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-common/1.36.0/opentelemetry-sdk-common-1.36.0-sources.jar"
             }
           },
           "software_amazon_awssdk_regions_2_20_128": {
@@ -63051,17 +63062,6 @@
               "ignore_empty_files": false
             }
           },
-          "io_opentelemetry_opentelemetry_sdk_common_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "9290ccec42fe696ab0dba44d44996fcc3d978dbbb0d8f9f97e3778844a767c69",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-common/1.35.0/opentelemetry-sdk-common-1.35.0.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-common/1.35.0/opentelemetry-sdk-common-1.35.0.jar"
-            }
-          },
           "org_apache_httpcomponents_core5_httpcore5_h2_5_1_3": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -63082,6 +63082,17 @@
                 "https://repo1.maven.org/maven2/com/google/http-client/google-http-client/1.43.3/google-http-client-1.43.3.jar"
               ],
               "downloaded_file_path": "v1/com/google/http-client/google-http-client/1.43.3/google-http-client-1.43.3.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_extension_incubator_1_36_0_alpha": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "41192a43a0a210d6151f3eb4bc35ec297e5b7d6110f0db1a8d0bc94c88d34ff1",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-extension-incubator/1.36.0-alpha/opentelemetry-extension-incubator-1.36.0-alpha.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-extension-incubator/1.36.0-alpha/opentelemetry-extension-incubator-1.36.0-alpha.jar"
             }
           },
           "io_opencensus_opencensus_proto_0_2_0": {
@@ -63158,6 +63169,17 @@
               "downloaded_file_path": "v1/io/netty/netty-codec/4.1.94.Final/netty-codec-4.1.94.Final.jar"
             }
           },
+          "org_redisson_redisson_jar_sources_3_27_2": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "83dd2463d9fbf433cbe368e0d852617c249378f46d479aede953ce282315f9ab",
+              "urls": [
+                "https://repo1.maven.org/maven2/org/redisson/redisson/3.27.2/redisson-3.27.2-sources.jar"
+              ],
+              "downloaded_file_path": "v1/org/redisson/redisson/3.27.2/redisson-3.27.2-sources.jar"
+            }
+          },
           "com_graphql_java_java_dataloader_3_2_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -63199,17 +63221,6 @@
               "target_name": "com_google_errorprone_error_prone_annotations"
             }
           },
-          "org_checkerframework_checker_qual_3_41_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "2f9f245bf68e4259d610894f2406dc1f6363dc639302bd566e8272e4f4541172",
-              "urls": [
-                "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.41.0/checker-qual-3.41.0.jar"
-              ],
-              "downloaded_file_path": "v1/org/checkerframework/checker-qual/3.41.0/checker-qual-3.41.0.jar"
-            }
-          },
           "io_ous_jtoml_2_0_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -63221,6 +63232,17 @@
               "downloaded_file_path": "v1/io/ous/jtoml/2.0.0/jtoml-2.0.0.jar"
             }
           },
+          "io_netty_netty_resolver_dns_jar_sources_4_1_107_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "9e1657878bc6c5003b48df7ae70737944b976011d7b0bf905983cd362d53c9e3",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-resolver-dns/4.1.107.Final/netty-resolver-dns-4.1.107.Final-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-resolver-dns/4.1.107.Final/netty-resolver-dns-4.1.107.Final-sources.jar"
+            }
+          },
           "io_netty_netty_buffer_4_1_94_Final": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -63230,17 +63252,6 @@
                 "https://repo1.maven.org/maven2/io/netty/netty-buffer/4.1.94.Final/netty-buffer-4.1.94.Final.jar"
               ],
               "downloaded_file_path": "v1/io/netty/netty-buffer/4.1.94.Final/netty-buffer-4.1.94.Final.jar"
-            }
-          },
-          "io_grpc_grpc_context_1_61_1": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "3d717ab7b8872ab2c9356011efc96e86fbcbaf990231de42c2a6fcaa551510e9",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.61.1/grpc-context-1.61.1.jar"
-              ],
-              "downloaded_file_path": "v1/io/grpc/grpc-context/1.61.1/grpc-context-1.61.1.jar"
             }
           },
           "org_apiguardian_apiguardian_api_1_1_2": {
@@ -63342,6 +63353,17 @@
               "downloaded_file_path": "v1/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar"
             }
           },
+          "io_netty_netty_buffer_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "348e3ff64c7129ca661bc09d4bdda09c824474cfd1f5918368bdc56f5ee17f79",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-buffer/4.1.108.Final/netty-buffer-4.1.108.Final.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-buffer/4.1.108.Final/netty-buffer-4.1.108.Final.jar"
+            }
+          },
           "io_reactivex_rxjava3_rxjava_3_1_6": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -63364,17 +63386,6 @@
               "downloaded_file_path": "v1/jaxen/jaxen/2.0.0/jaxen-2.0.0.jar"
             }
           },
-          "io_netty_netty_buffer_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "04eb1231c86a7011c48cd443a25dc2f397137e5ee0aac2f12f1c503f11f09e2a",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-buffer/4.1.107.Final/netty-buffer-4.1.107.Final.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-buffer/4.1.107.Final/netty-buffer-4.1.107.Final.jar"
-            }
-          },
           "io_grpc_grpc_grpclb_1_56_1": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -63386,15 +63397,15 @@
               "downloaded_file_path": "v1/io/grpc/grpc-grpclb/1.56.1/grpc-grpclb-1.56.1.jar"
             }
           },
-          "io_netty_netty_codec_socks_jar_sources_4_1_107_Final": {
+          "io_opentelemetry_opentelemetry_exporter_logging_1_36_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "41a051af3d6310c82cf7f2a0f6f58746fafde36c2ebbcd3ebf8c778689d36381",
+              "sha256": "6f1acff2b065b5b8c067ec3b8d824ebd8cbfae375d5cbb6296728510d0833d60",
               "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.107.Final/netty-codec-socks-4.1.107.Final-sources.jar"
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/1.36.0/opentelemetry-exporter-logging-1.36.0.jar"
               ],
-              "downloaded_file_path": "v1/io/netty/netty-codec-socks/4.1.107.Final/netty-codec-socks-4.1.107.Final-sources.jar"
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-exporter-logging/1.36.0/opentelemetry-exporter-logging-1.36.0.jar"
             }
           },
           "com_google_auto_auto_common_1_2_2": {
@@ -63406,17 +63417,6 @@
                 "https://repo1.maven.org/maven2/com/google/auto/auto-common/1.2.2/auto-common-1.2.2.jar"
               ],
               "downloaded_file_path": "v1/com/google/auto/auto-common/1.2.2/auto-common-1.2.2.jar"
-            }
-          },
-          "io_netty_netty_codec_dns_jar_sources_4_1_106_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "edcacafb9b8c5d7341932b760237251f419c667f89c7c0714dd233e59d600f3d",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-codec-dns/4.1.106.Final/netty-codec-dns-4.1.106.Final-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-codec-dns/4.1.106.Final/netty-codec-dns-4.1.106.Final-sources.jar"
             }
           },
           "org_slf4j_slf4j_jdk14_2_0_12": {
@@ -63441,17 +63441,6 @@
               "downloaded_file_path": "v1/com/beust/jcommander/1.82/jcommander-1.82-sources.jar"
             }
           },
-          "io_netty_netty_codec_dns_4_1_106_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "9ca9e403a9bee24d53aa52704d23923c4c56b257c6ddce931bdbf19c3e7539f1",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-codec-dns/4.1.106.Final/netty-codec-dns-4.1.106.Final.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-codec-dns/4.1.106.Final/netty-codec-dns-4.1.106.Final.jar"
-            }
-          },
           "org_apache_tomcat_annotations_api": {
             "bzlFile": "@@rules_jvm_external~//private:compat_repository.bzl",
             "ruleClassName": "compat_repository",
@@ -63471,15 +63460,15 @@
               "downloaded_file_path": "v1/io/opentelemetry/semconv/opentelemetry-semconv/1.23.1-alpha/opentelemetry-semconv-1.23.1-alpha.jar"
             }
           },
-          "io_opentelemetry_opentelemetry_sdk_extension_autoconfigure_spi_jar_sources_1_35_0": {
+          "io_opentelemetry_opentelemetry_sdk_extension_autoconfigure_jar_sources_1_36_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "08e72524a80d979b45cf73359882a292bb24343c3ec51ddbbcabfd064bc9da78",
+              "sha256": "9dd70364b90576ac43549c79f49a2572ae1771c4b310831e2a39e5a079f49b03",
               "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.35.0/opentelemetry-sdk-extension-autoconfigure-spi-1.35.0-sources.jar"
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.36.0/opentelemetry-sdk-extension-autoconfigure-1.36.0-sources.jar"
               ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.35.0/opentelemetry-sdk-extension-autoconfigure-spi-1.35.0-sources.jar"
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.36.0/opentelemetry-sdk-extension-autoconfigure-1.36.0-sources.jar"
             }
           },
           "org_jodd_jodd_bean_jar_sources_5_1_6": {
@@ -63537,6 +63526,17 @@
               "downloaded_file_path": "v1/io/netty/netty-transport-native-unix-common/4.1.94.Final/netty-transport-native-unix-common-4.1.94.Final.jar"
             }
           },
+          "io_lettuce_lettuce_core_jar_sources_6_3_2_RELEASE": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "024dc38f282ad20212972ce350c41bd9d6adf87ae16671b30f29128c299e09f0",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/lettuce/lettuce-core/6.3.2.RELEASE/lettuce-core-6.3.2.RELEASE-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/lettuce/lettuce-core/6.3.2.RELEASE/lettuce-core-6.3.2.RELEASE-sources.jar"
+            }
+          },
           "org_apache_httpcomponents_core5_httpcore5_jar_sources_5_1_3": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -63567,15 +63567,15 @@
               "downloaded_file_path": "v1/commons-logging/commons-logging/1.2/commons-logging-1.2-sources.jar"
             }
           },
-          "net_bytebuddy_byte_buddy_agent_jar_sources_1_14_11": {
+          "net_bytebuddy_byte_buddy_agent_jar_sources_1_14_12": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "1e3618de3b0f81a43c7480aea392dd7905f9dce275e6665003ec331b4531ced4",
+              "sha256": "4973308b6309e6ce0e98223a38c1c123c8b2429d1f1b68dea286d3c06e50a73b",
               "urls": [
-                "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.14.11/byte-buddy-agent-1.14.11-sources.jar"
+                "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12-sources.jar"
               ],
-              "downloaded_file_path": "v1/net/bytebuddy/byte-buddy-agent/1.14.11/byte-buddy-agent-1.14.11-sources.jar"
+              "downloaded_file_path": "v1/net/bytebuddy/byte-buddy-agent/1.14.12/byte-buddy-agent-1.14.12-sources.jar"
             }
           },
           "software_amazon_awssdk_netty_nio_client_2_20_128": {
@@ -63589,15 +63589,15 @@
               "downloaded_file_path": "v1/software/amazon/awssdk/netty-nio-client/2.20.128/netty-nio-client-2.20.128.jar"
             }
           },
-          "com_github_javaparser_javaparser_core_3_25_8": {
+          "com_github_javaparser_javaparser_core_3_25_9": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "3ac2c42a234c1ee43a55bc22911934ddd537bba78931265d072ed34c22b06d96",
+              "sha256": "97bf378a54c5508adcf96a581ce904e8b165d5d091a872a5dde75a47b0c28126",
               "urls": [
-                "https://repo1.maven.org/maven2/com/github/javaparser/javaparser-core/3.25.8/javaparser-core-3.25.8.jar"
+                "https://repo1.maven.org/maven2/com/github/javaparser/javaparser-core/3.25.9/javaparser-core-3.25.9.jar"
               ],
-              "downloaded_file_path": "v1/com/github/javaparser/javaparser-core/3.25.8/javaparser-core-3.25.8.jar"
+              "downloaded_file_path": "v1/com/github/javaparser/javaparser-core/3.25.9/javaparser-core-3.25.9.jar"
             }
           },
           "org_junit_jupiter_junit_jupiter_engine": {
@@ -63606,6 +63606,17 @@
             "attributes": {
               "generating_repository": "contrib_rules_jvm_deps",
               "target_name": "org_junit_jupiter_junit_jupiter_engine"
+            }
+          },
+          "org_checkerframework_checker_qual_jar_sources_3_42_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "efb65eb479f61f53c6dcafbd42ed59dad09b0a0d5a7f44b7bc68df25c2dcf8fd",
+              "urls": [
+                "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0-sources.jar"
+              ],
+              "downloaded_file_path": "v1/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0-sources.jar"
             }
           },
           "software_amazon_awssdk_endpoints_spi_2_20_128": {
@@ -63636,6 +63647,17 @@
                 "https://repo1.maven.org/maven2/com/google/api/gax-grpc/2.32.0/gax-grpc-2.32.0.jar"
               ],
               "downloaded_file_path": "v1/com/google/api/gax-grpc/2.32.0/gax-grpc-2.32.0.jar"
+            }
+          },
+          "org_apache_logging_log4j_log4j_core_jar_sources_2_23_1": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "3da91ab04815b5506efa7b7ec3bca6f8dacc398a8f25329ff8e8c734e98d1678",
+              "urls": [
+                "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.23.1/log4j-core-2.23.1-sources.jar"
+              ],
+              "downloaded_file_path": "v1/org/apache/logging/log4j/log4j-core/2.23.1/log4j-core-2.23.1-sources.jar"
             }
           },
           "org_slf4j_slf4j_jdk14_jar_sources_2_0_12": {
@@ -63701,15 +63723,15 @@
               "downloaded_file_path": "v1/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar"
             }
           },
-          "com_google_googlejavaformat_google_java_format_jar_sources_1_19_2": {
+          "io_netty_netty_codec_http_4_1_108_Final": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "003cadae4d160a84e9ce62ffb375e5e13b4cd129c4581a93739f0209d289d80b",
+              "sha256": "2bdb276d40c2293014638a7e065bea977b574fb6a978e1197f514f2e13b695a6",
               "urls": [
-                "https://repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/1.19.2/google-java-format-1.19.2-sources.jar"
+                "https://repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.108.Final/netty-codec-http-4.1.108.Final.jar"
               ],
-              "downloaded_file_path": "v1/com/google/googlejavaformat/google-java-format/1.19.2/google-java-format-1.19.2-sources.jar"
+              "downloaded_file_path": "v1/io/netty/netty-codec-http/4.1.108.Final/netty-codec-http-4.1.108.Final.jar"
             }
           },
           "org_apache_httpcomponents_client5_httpclient5_jar_sources_5_1_3": {
@@ -63723,6 +63745,17 @@
               "downloaded_file_path": "v1/org/apache/httpcomponents/client5/httpclient5/5.1.3/httpclient5-5.1.3-sources.jar"
             }
           },
+          "io_opentelemetry_opentelemetry_extension_incubator_jar_sources_1_36_0_alpha": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "eb1ad75ee2752283b15e59237b29e231fef5bc696335b452828a9806ce62511a",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-extension-incubator/1.36.0-alpha/opentelemetry-extension-incubator-1.36.0-alpha-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-extension-incubator/1.36.0-alpha/opentelemetry-extension-incubator-1.36.0-alpha-sources.jar"
+            }
+          },
           "org_eclipse_mylyn_github_org_eclipse_egit_github_core_2_1_5": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -63732,17 +63765,6 @@
                 "https://repo1.maven.org/maven2/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5.jar"
               ],
               "downloaded_file_path": "v1/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_sdk_extension_autoconfigure_jar_sources_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "19928daf75e9aef485b1daa9fc350ef70b28993b9d02068cb850e3709b372be6",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.35.0/opentelemetry-sdk-extension-autoconfigure-1.35.0-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.35.0/opentelemetry-sdk-extension-autoconfigure-1.35.0-sources.jar"
             }
           },
           "com_fasterxml_jackson_core_jackson_core_2_15_2": {
@@ -63784,6 +63806,17 @@
             "attributes": {
               "generating_repository": "contrib_rules_jvm_deps",
               "target_name": "org_junit_platform_junit_platform_launcher"
+            }
+          },
+          "io_netty_netty_codec_dns_4_1_107_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "6014ce28b4cd32c23bd03b57823c3d682b83dc47c3fdaf4c5cef258b436accda",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-codec-dns/4.1.107.Final/netty-codec-dns-4.1.107.Final.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-codec-dns/4.1.107.Final/netty-codec-dns-4.1.107.Final.jar"
             }
           },
           "io_grpc_grpc_protobuf_lite_1_56_1": {
@@ -63889,15 +63922,15 @@
               "downloaded_file_path": "v1/org/htmlunit/htmlunit-core-js/3.11.0/htmlunit-core-js-3.11.0-sources.jar"
             }
           },
-          "io_netty_netty_resolver_dns_4_1_106_Final": {
+          "io_opentelemetry_opentelemetry_api_jar_sources_1_36_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "c2c1906c8134593b97c4920dce0ddddd3451cb4378c8d036b9e87420a53b7ee1",
+              "sha256": "3921744942d746fd4e6131dd4db1c37cb754af39d525e9196c077445a5071c85",
               "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-resolver-dns/4.1.106.Final/netty-resolver-dns-4.1.106.Final.jar"
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api/1.36.0/opentelemetry-api-1.36.0-sources.jar"
               ],
-              "downloaded_file_path": "v1/io/netty/netty-resolver-dns/4.1.106.Final/netty-resolver-dns-4.1.106.Final.jar"
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-api/1.36.0/opentelemetry-api-1.36.0-sources.jar"
             }
           },
           "org_slf4j_slf4j_jdk14": {
@@ -63906,6 +63939,17 @@
             "attributes": {
               "generating_repository": "contrib_rules_jvm_deps",
               "target_name": "org_slf4j_slf4j_jdk14"
+            }
+          },
+          "io_opentelemetry_opentelemetry_api_events_1_36_0_alpha": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "fba746fd9a3168b5669e107f38c0e50acec9a8bbda59fdae64a85690f5384fe6",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-events/1.36.0-alpha/opentelemetry-api-events-1.36.0-alpha.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-api-events/1.36.0-alpha/opentelemetry-api-events-1.36.0-alpha.jar"
             }
           },
           "io_grpc_grpc_netty_shaded_1_56_1": {
@@ -63927,15 +63971,15 @@
               "target_name": "com_google_protobuf_protobuf_java"
             }
           },
-          "org_redisson_redisson_jar_sources_3_26_1": {
+          "io_netty_netty_resolver_jar_sources_4_1_108_Final": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "c219b6fd5f8c891d3360c522494d8dfbddad80cada2489d8ec80c746a2448408",
+              "sha256": "60b7eab02a29079044bde0eb4129a8f039b746659bf387b5ca2b0d70c21854b5",
               "urls": [
-                "https://repo1.maven.org/maven2/org/redisson/redisson/3.26.1/redisson-3.26.1-sources.jar"
+                "https://repo1.maven.org/maven2/io/netty/netty-resolver/4.1.108.Final/netty-resolver-4.1.108.Final-sources.jar"
               ],
-              "downloaded_file_path": "v1/org/redisson/redisson/3.26.1/redisson-3.26.1-sources.jar"
+              "downloaded_file_path": "v1/io/netty/netty-resolver/4.1.108.Final/netty-resolver-4.1.108.Final-sources.jar"
             }
           },
           "kotlin_rules_maven": {
@@ -64116,6 +64160,28 @@
               "downloaded_file_path": "v1/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2-sources.jar"
             }
           },
+          "io_projectreactor_reactor_core_jar_sources_3_6_4": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "cce62c6ebf0ed34ffeb572b2736fd0a011413ac31e77f8d4f6162015b8cf4774",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/projectreactor/reactor-core/3.6.4/reactor-core-3.6.4-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/projectreactor/reactor-core/3.6.4/reactor-core-3.6.4-sources.jar"
+            }
+          },
+          "org_checkerframework_checker_qual_3_42_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "ccaedd33af0b7894d9f2f3b644f4d19e43928e32902e61ac4d10777830f5aac7",
+              "urls": [
+                "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0.jar"
+              ],
+              "downloaded_file_path": "v1/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0.jar"
+            }
+          },
           "org_apiguardian_apiguardian_api_jar_sources_1_1_2": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -64125,17 +64191,6 @@
                 "https://repo1.maven.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar"
               ],
               "downloaded_file_path": "v1/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar"
-            }
-          },
-          "io_projectreactor_reactor_core_jar_sources_3_6_2": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "57e48b121636923ec362aa337556150edc8bc29ccba686c21d36016e05207b23",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/projectreactor/reactor-core/3.6.2/reactor-core-3.6.2-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/projectreactor/reactor-core/3.6.2/reactor-core-3.6.2-sources.jar"
             }
           },
           "org_hsqldb_hsqldb_2_7_2": {
@@ -64158,17 +64213,6 @@
                 "https://repo1.maven.org/maven2/software/amazon/awssdk/apache-client/2.20.128/apache-client-2.20.128.jar"
               ],
               "downloaded_file_path": "v1/software/amazon/awssdk/apache-client/2.20.128/apache-client-2.20.128.jar"
-            }
-          },
-          "io_netty_netty_transport_native_unix_common_jar_sources_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "4e8e2f8ef27856f8ef502c739cd10c1c38a4de519eb5eaa01ead8e52a3c91151",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.107.Final/netty-transport-native-unix-common-4.1.107.Final-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-transport-native-unix-common/4.1.107.Final/netty-transport-native-unix-common-4.1.107.Final-sources.jar"
             }
           },
           "io_grpc_grpc_stub_1_56_1": {
@@ -64292,15 +64336,15 @@
               "downloaded_file_path": "v1/org/threeten/threetenbp/1.6.8/threetenbp-1.6.8.jar"
             }
           },
-          "io_netty_netty_codec_http2_4_1_107_Final": {
+          "org_apache_logging_log4j_log4j_api_jar_sources_2_23_1": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "5d83fe14a537ea6ddecc782df256da23ee49754044a4cacc2d8ec5225f338c72",
+              "sha256": "d5cf646b25ee4ee16b27aea90d919aa0b35846feae811abc8cb389331420a059",
               "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.107.Final/netty-codec-http2-4.1.107.Final.jar"
+                "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.23.1/log4j-api-2.23.1-sources.jar"
               ],
-              "downloaded_file_path": "v1/io/netty/netty-codec-http2/4.1.107.Final/netty-codec-http2-4.1.107.Final.jar"
+              "downloaded_file_path": "v1/org/apache/logging/log4j/log4j-api/2.23.1/log4j-api-2.23.1-sources.jar"
             }
           },
           "com_esotericsoftware_reflectasm_1_11_9": {
@@ -64320,17 +64364,6 @@
             "attributes": {
               "generating_repository": "contrib_rules_jvm_deps",
               "target_name": "io_netty_netty_handler_proxy"
-            }
-          },
-          "com_google_guava_guava_33_0_0_jre": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "f4d85c3e4d411694337cb873abea09b242b664bb013320be6105327c45991537",
-              "urls": [
-                "https://repo1.maven.org/maven2/com/google/guava/guava/33.0.0-jre/guava-33.0.0-jre.jar"
-              ],
-              "downloaded_file_path": "v1/com/google/guava/guava/33.0.0-jre/guava-33.0.0-jre.jar"
             }
           },
           "net_sf_saxon_Saxon_HE_12_4": {
@@ -64364,6 +64397,17 @@
                 "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2-sources.jar"
               ],
               "downloaded_file_path": "v1/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2-sources.jar"
+            }
+          },
+          "io_netty_netty_common_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "8e3649fc6bab84a88ad47af82e38f9c36ab3725de478632c8a59e4bd74d16e08",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-common/4.1.108.Final/netty-common-4.1.108.Final.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-common/4.1.108.Final/netty-common-4.1.108.Final.jar"
             }
           },
           "software_amazon_awssdk_profiles_2_20_128": {
@@ -64432,56 +64476,12 @@
               "downloaded_file_path": "v1/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-sources.jar"
             }
           },
-          "io_opentelemetry_opentelemetry_sdk_metrics_jar_sources_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "3fe382b3c5037bf63589ccb71006627e47c52c83474a9f96d7c7cdf7e3fe38a2",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-metrics/1.35.0/opentelemetry-sdk-metrics-1.35.0-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-metrics/1.35.0/opentelemetry-sdk-metrics-1.35.0-sources.jar"
-            }
-          },
           "com_google_auth_google_auth_library_credentials": {
             "bzlFile": "@@rules_jvm_external~//private:compat_repository.bzl",
             "ruleClassName": "compat_repository",
             "attributes": {
               "generating_repository": "contrib_rules_jvm_deps",
               "target_name": "com_google_auth_google_auth_library_credentials"
-            }
-          },
-          "io_netty_netty_handler_proxy_jar_sources_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "976a4d3a56d4e5159a481a6adea7dc6221f84d3cb9e68922281a46fc88df7603",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.107.Final/netty-handler-proxy-4.1.107.Final-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-handler-proxy/4.1.107.Final/netty-handler-proxy-4.1.107.Final-sources.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_api_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "829fb1414188d1b7ecccc6d3fb0f42629f76c6b5019f7f219c0ef31d5a7c540f",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api/1.35.0/opentelemetry-api-1.35.0.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-api/1.35.0/opentelemetry-api-1.35.0.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_sdk_jar_sources_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "7f3a5bcf8fd6a9d783ec21a062989825343239a2d06323ef28bbe2630b3dafdd",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk/1.35.0/opentelemetry-sdk-1.35.0-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk/1.35.0/opentelemetry-sdk-1.35.0-sources.jar"
             }
           },
           "org_apache_commons_commons_lang3_3_14_0": {
@@ -64506,6 +64506,28 @@
               "downloaded_file_path": "v1/net/sf/saxon/Saxon-HE/12.4/Saxon-HE-12.4-sources.jar"
             }
           },
+          "io_opentelemetry_opentelemetry_api_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "a5873dc1f6cf36a098dfdb50a11974527a9e253e2ae08b1b23975eb6c59b9837",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api/1.36.0/opentelemetry-api-1.36.0.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-api/1.36.0/opentelemetry-api-1.36.0.jar"
+            }
+          },
+          "org_mockito_mockito_core_jar_sources_5_11_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "83df46b0b44f232d76b40e46583334eaf2dfbe1699174bb8e76376b96cbac709",
+              "urls": [
+                "https://repo1.maven.org/maven2/org/mockito/mockito-core/5.11.0/mockito-core-5.11.0-sources.jar"
+              ],
+              "downloaded_file_path": "v1/org/mockito/mockito-core/5.11.0/mockito-core-5.11.0-sources.jar"
+            }
+          },
           "software_amazon_awssdk_crt_core_2_20_128": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -64528,17 +64550,6 @@
               "downloaded_file_path": "v1/org/dom4j/dom4j/2.1.4/dom4j-2.1.4-sources.jar"
             }
           },
-          "io_projectreactor_reactor_core_3_6_2": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "6e235f0be9732ebd6a42c585dfd53274065978bfbc28d721d7ecf487fde27b52",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/projectreactor/reactor-core/3.6.2/reactor-core-3.6.2.jar"
-              ],
-              "downloaded_file_path": "v1/io/projectreactor/reactor-core/3.6.2/reactor-core-3.6.2.jar"
-            }
-          },
           "com_github_spotbugs_spotbugs_annotations_4_8_3": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -64550,26 +64561,26 @@
               "downloaded_file_path": "v1/com/github/spotbugs/spotbugs-annotations/4.8.3/spotbugs-annotations-4.8.3.jar"
             }
           },
-          "io_opentelemetry_opentelemetry_sdk_common_jar_sources_1_35_0": {
+          "io_projectreactor_reactor_core_3_6_4": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "adad25c8d20580450ab1ba7f233b72a34797e7aeca22bdcc8a0dece5ba6ed285",
+              "sha256": "46ab18fce8c4834da85985bc01e6d37a52ec1c70d71946f1d66680abba304287",
               "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-common/1.35.0/opentelemetry-sdk-common-1.35.0-sources.jar"
+                "https://repo1.maven.org/maven2/io/projectreactor/reactor-core/3.6.4/reactor-core-3.6.4.jar"
               ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-common/1.35.0/opentelemetry-sdk-common-1.35.0-sources.jar"
+              "downloaded_file_path": "v1/io/projectreactor/reactor-core/3.6.4/reactor-core-3.6.4.jar"
             }
           },
-          "io_opentelemetry_opentelemetry_extension_incubator_1_35_0_alpha": {
+          "io_opentelemetry_opentelemetry_sdk_extension_autoconfigure_spi_1_36_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "5ca38a9ecdf2c93183069dae1d7d76ec12e9cf4feb3c2209d04566e82fc4df3c",
+              "sha256": "56f2449abde232311ff258d17956e82168fd178113e19ba197e7159b51ea09f2",
               "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-extension-incubator/1.35.0-alpha/opentelemetry-extension-incubator-1.35.0-alpha.jar"
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.36.0/opentelemetry-sdk-extension-autoconfigure-spi-1.36.0.jar"
               ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-extension-incubator/1.35.0-alpha/opentelemetry-extension-incubator-1.35.0-alpha.jar"
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.36.0/opentelemetry-sdk-extension-autoconfigure-spi-1.36.0.jar"
             }
           },
           "com_google_guava_guava_testlib_31_1_jre": {
@@ -64581,6 +64592,17 @@
                 "https://repo1.maven.org/maven2/com/google/guava/guava-testlib/31.1-jre/guava-testlib-31.1-jre.jar"
               ],
               "downloaded_file_path": "v1/com/google/guava/guava-testlib/31.1-jre/guava-testlib-31.1-jre.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_sdk_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "8caa440a9102e3aa2158f2ad6ab392be60e659e0ac0a81d729cf75222a3c1bf4",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk/1.36.0/opentelemetry-sdk-1.36.0.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk/1.36.0/opentelemetry-sdk-1.36.0.jar"
             }
           },
           "org_mockito_mockito_inline_jar_sources_5_2_0": {
@@ -64605,15 +64627,26 @@
               "downloaded_file_path": "v1/org/checkerframework/checker-qual/3.33.0/checker-qual-3.33.0.jar"
             }
           },
-          "org_mockito_mockito_core_5_10_0": {
+          "io_grpc_grpc_api_jar_sources_1_62_2": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "0323f591b04d3a0d7ca9ebeebb9e9f34a07c0ec9169b7444ee3951b71d4cad56",
+              "sha256": "aa2974982805cc998f79e7c4d5d536744fd5520b56eb15b0179f9331c1edb3b7",
               "urls": [
-                "https://repo1.maven.org/maven2/org/mockito/mockito-core/5.10.0/mockito-core-5.10.0.jar"
+                "https://repo1.maven.org/maven2/io/grpc/grpc-api/1.62.2/grpc-api-1.62.2-sources.jar"
               ],
-              "downloaded_file_path": "v1/org/mockito/mockito-core/5.10.0/mockito-core-5.10.0.jar"
+              "downloaded_file_path": "v1/io/grpc/grpc-api/1.62.2/grpc-api-1.62.2-sources.jar"
+            }
+          },
+          "com_google_guava_guava_jar_sources_33_1_0_jre": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "fe357db754046d94b79a0392c523c44671e71c1ac7b6e289bc0382a06bd5cd51",
+              "urls": [
+                "https://repo1.maven.org/maven2/com/google/guava/guava/33.1.0-jre/guava-33.1.0-jre-sources.jar"
+              ],
+              "downloaded_file_path": "v1/com/google/guava/guava/33.1.0-jre/guava-33.1.0-jre-sources.jar"
             }
           },
           "com_google_j2objc_j2objc_annotations": {
@@ -64622,17 +64655,6 @@
             "attributes": {
               "generating_repository": "contrib_rules_jvm_deps",
               "target_name": "com_google_j2objc_j2objc_annotations"
-            }
-          },
-          "io_opentelemetry_opentelemetry_exporter_logging_jar_sources_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "1433a601b901674f722b202375343055d40c7995a0ebd03e583fd4f2e0f43971",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/1.35.0/opentelemetry-exporter-logging-1.35.0-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-exporter-logging/1.35.0/opentelemetry-exporter-logging-1.35.0-sources.jar"
             }
           },
           "unpinned_rules_jvm_external_deps": {
@@ -64684,17 +64706,6 @@
               "downloaded_file_path": "v1/io/grpc/grpc-rls/1.56.1/grpc-rls-1.56.1.jar"
             }
           },
-          "io_opentelemetry_opentelemetry_sdk_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "e045c5f881a3f40d80ef336ce2e482609a7877109b480a97e755ab7ac711835c",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk/1.35.0/opentelemetry-sdk-1.35.0.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk/1.35.0/opentelemetry-sdk-1.35.0.jar"
-            }
-          },
           "org_bouncycastle_bcutil_jdk18on_1_77": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -64706,15 +64717,15 @@
               "downloaded_file_path": "v1/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77.jar"
             }
           },
-          "io_netty_netty_codec_jar_sources_4_1_107_Final": {
+          "io_opentelemetry_opentelemetry_api_events_jar_sources_1_36_0_alpha": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "41abc66c77a8595e0386a9da6f9d504a262fc093f789437e9a3ec995e8262db1",
+              "sha256": "6f01fb5022e63b2d72fb93cee32a4a619962bfb82cfca8487b0895820de0fa2c",
               "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-codec/4.1.107.Final/netty-codec-4.1.107.Final-sources.jar"
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-events/1.36.0-alpha/opentelemetry-api-events-1.36.0-alpha-sources.jar"
               ],
-              "downloaded_file_path": "v1/io/netty/netty-codec/4.1.107.Final/netty-codec-4.1.107.Final-sources.jar"
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-api-events/1.36.0-alpha/opentelemetry-api-events-1.36.0-alpha-sources.jar"
             }
           },
           "org_apache_commons_commons_exec_1_3": {
@@ -64739,28 +64750,6 @@
               "downloaded_file_path": "v1/io/opencensus/opencensus-contrib-http-util/0.31.1/opencensus-contrib-http-util-0.31.1.jar"
             }
           },
-          "org_checkerframework_checker_qual_jar_sources_3_41_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "8308220bbdd4e12b49fa06a91de685faf9cc1a376464478c80845be3e87b7d4f",
-              "urls": [
-                "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.41.0/checker-qual-3.41.0-sources.jar"
-              ],
-              "downloaded_file_path": "v1/org/checkerframework/checker-qual/3.41.0/checker-qual-3.41.0-sources.jar"
-            }
-          },
-          "org_apache_logging_log4j_log4j_core_jar_sources_2_22_1": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "07eaa7939a5940c7c99f5acfda3a06dbb04d74f083455b535e42811a45c1b07e",
-              "urls": [
-                "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.22.1/log4j-core-2.22.1-sources.jar"
-              ],
-              "downloaded_file_path": "v1/org/apache/logging/log4j/log4j-core/2.22.1/log4j-core-2.22.1-sources.jar"
-            }
-          },
           "org_assertj_assertj_core_jar_sources_3_25_3": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -64783,6 +64772,28 @@
               "downloaded_file_path": "v1/com/google/auth/google-auth-library-oauth2-http/1.19.0/google-auth-library-oauth2-http-1.19.0.jar"
             }
           },
+          "io_opentelemetry_opentelemetry_sdk_metrics_jar_sources_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "bd4e3c51c741d53a6aeebec649c7e9e93b1acbed08b90b46e1a49832bc8db9c3",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-metrics/1.36.0/opentelemetry-sdk-metrics-1.36.0-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-metrics/1.36.0/opentelemetry-sdk-metrics-1.36.0-sources.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_sdk_logs_jar_sources_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "183cd71d7e02d21e580ac5d624f2e7e9592d0035a80edf8b8f8c103469c256e3",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/1.36.0/opentelemetry-sdk-logs-1.36.0-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-logs/1.36.0/opentelemetry-sdk-logs-1.36.0-sources.jar"
+            }
+          },
           "com_google_cloud_google_cloud_core_http_2_22_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -64794,26 +64805,26 @@
               "downloaded_file_path": "v1/com/google/cloud/google-cloud-core-http/2.22.0/google-cloud-core-http-2.22.0.jar"
             }
           },
-          "io_netty_netty_common_jar_sources_4_1_107_Final": {
+          "io_opentelemetry_opentelemetry_sdk_jar_sources_1_36_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "9670d56708f14394201e1704ec4eb74ccf3fb1b0c5fd30f7bd346e6678b7b421",
+              "sha256": "42071d2a8249710dbeafe514e2cb696d6db495a521aa214a7253f6fbb4a4927b",
               "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-common/4.1.107.Final/netty-common-4.1.107.Final-sources.jar"
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk/1.36.0/opentelemetry-sdk-1.36.0-sources.jar"
               ],
-              "downloaded_file_path": "v1/io/netty/netty-common/4.1.107.Final/netty-common-4.1.107.Final-sources.jar"
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk/1.36.0/opentelemetry-sdk-1.36.0-sources.jar"
             }
           },
-          "org_mockito_mockito_core_jar_sources_5_10_0": {
+          "io_netty_netty_handler_proxy_4_1_108_Final": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "de416c7c3f519da04575bfc5587aada7cf8ad1c4ea40e00d5999273941fde309",
+              "sha256": "0e11683b57e75393d6ea710e0c6a8ebcb5c0913e7938ab2a8a8667ba740219da",
               "urls": [
-                "https://repo1.maven.org/maven2/org/mockito/mockito-core/5.10.0/mockito-core-5.10.0-sources.jar"
+                "https://repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.108.Final/netty-handler-proxy-4.1.108.Final.jar"
               ],
-              "downloaded_file_path": "v1/org/mockito/mockito-core/5.10.0/mockito-core-5.10.0-sources.jar"
+              "downloaded_file_path": "v1/io/netty/netty-handler-proxy/4.1.108.Final/netty-handler-proxy-4.1.108.Final.jar"
             }
           },
           "com_google_auth_google_auth_library_credentials_1_19_0": {
@@ -64838,17 +64849,6 @@
               "downloaded_file_path": "v1/com/google/auto/service/auto-service/1.1.1/auto-service-1.1.1.jar"
             }
           },
-          "io_opentelemetry_opentelemetry_sdk_extension_autoconfigure_spi_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "3309583cb0506f5f0f5b2df3ad903812c0abf55c92d48279414b57a9da2ba1d4",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.35.0/opentelemetry-sdk-extension-autoconfigure-spi-1.35.0.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.35.0/opentelemetry-sdk-extension-autoconfigure-spi-1.35.0.jar"
-            }
-          },
           "com_google_code_findbugs_jsr305_3_0_2": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -64858,6 +64858,28 @@
                 "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar"
               ],
               "downloaded_file_path": "v1/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar"
+            }
+          },
+          "com_google_errorprone_error_prone_annotations_2_26_1": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "de25f2d9a2156529bd765f51d8efdfc0dfa7301e04efb9cc75b7f10cf5d0e0fb",
+              "urls": [
+                "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.26.1/error_prone_annotations-2.26.1.jar"
+              ],
+              "downloaded_file_path": "v1/com/google/errorprone/error_prone_annotations/2.26.1/error_prone_annotations-2.26.1.jar"
+            }
+          },
+          "io_netty_netty_handler_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "55b2458011527d94abc868086afd039cd00cc3a547e7322569e0fb4f906d9d80",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-handler/4.1.108.Final/netty-handler-4.1.108.Final.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-handler/4.1.108.Final/netty-handler-4.1.108.Final.jar"
             }
           },
           "io_grpc_grpc_api": {
@@ -64887,15 +64909,15 @@
               "downloaded_file_path": "v1/it/ozimov/embedded-redis/0.7.3/embedded-redis-0.7.3-sources.jar"
             }
           },
-          "io_grpc_grpc_api_jar_sources_1_61_1": {
+          "org_mockito_mockito_core_5_11_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "43c67ac16cd7cebaa0d5f9f298d23f0c817c1d33d1052b3cbb96df99b3b6b4a7",
+              "sha256": "f076c96b1f49b8d9bc42e46b0969aaf5684c40c8b5b679d400e5d880073a0e00",
               "urls": [
-                "https://repo1.maven.org/maven2/io/grpc/grpc-api/1.61.1/grpc-api-1.61.1-sources.jar"
+                "https://repo1.maven.org/maven2/org/mockito/mockito-core/5.11.0/mockito-core-5.11.0.jar"
               ],
-              "downloaded_file_path": "v1/io/grpc/grpc-api/1.61.1/grpc-api-1.61.1-sources.jar"
+              "downloaded_file_path": "v1/org/mockito/mockito-core/5.11.0/mockito-core-5.11.0.jar"
             }
           },
           "com_google_googlejavaformat_google_java_format_1_17_0": {
@@ -64918,6 +64940,17 @@
                 "https://repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar"
               ],
               "downloaded_file_path": "v1/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar"
+            }
+          },
+          "com_google_j2objc_j2objc_annotations_3_0_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "88241573467ddca44ffd4d74aa04c2bbfd11bf7c17e0c342c94c9de7a70a7c64",
+              "urls": [
+                "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.jar"
+              ],
+              "downloaded_file_path": "v1/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.jar"
             }
           },
           "org_jboss_marshalling_jboss_marshalling_jar_sources_2_0_11_Final": {
@@ -64964,17 +64997,6 @@
               "downloaded_file_path": "v1/commons-codec/commons-codec/1.15/commons-codec-1.15-sources.jar"
             }
           },
-          "io_opentelemetry_opentelemetry_api_events_jar_sources_1_35_0_alpha": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "c7abd83e331215905958e162fe10dbae1c3ed15e0813c2f6444a14d5f3225df6",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-events/1.35.0-alpha/opentelemetry-api-events-1.35.0-alpha-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-api-events/1.35.0-alpha/opentelemetry-api-events-1.35.0-alpha-sources.jar"
-            }
-          },
           "io_grpc_grpc_context_1_56_1": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -64986,15 +65008,15 @@
               "downloaded_file_path": "v1/io/grpc/grpc-context/1.56.1/grpc-context-1.56.1.jar"
             }
           },
-          "io_netty_netty_resolver_4_1_107_Final": {
+          "io_netty_netty_transport_jar_sources_4_1_108_Final": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "303244791c040229315845e2236bb7b75249cffb308f99d48b0bab199bc6be63",
+              "sha256": "494f8ccdd2c892cfe590ff39c1c35822d50228657fd598890e7450d66994b0a4",
               "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-resolver/4.1.107.Final/netty-resolver-4.1.107.Final.jar"
+                "https://repo1.maven.org/maven2/io/netty/netty-transport/4.1.108.Final/netty-transport-4.1.108.Final-sources.jar"
               ],
-              "downloaded_file_path": "v1/io/netty/netty-resolver/4.1.107.Final/netty-resolver-4.1.107.Final.jar"
+              "downloaded_file_path": "v1/io/netty/netty-transport/4.1.108.Final/netty-transport-4.1.108.Final-sources.jar"
             }
           },
           "org_htmlunit_htmlunit_core_js_3_11_0": {
@@ -65041,6 +65063,17 @@
               "downloaded_file_path": "v1/com/beust/jcommander/1.82/jcommander-1.82.jar"
             }
           },
+          "io_netty_netty_codec_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "32c220dea93756fba28f9302481bc657738cc40d07440daa985a2ba21df226f1",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-codec/4.1.108.Final/netty-codec-4.1.108.Final.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-codec/4.1.108.Final/netty-codec-4.1.108.Final.jar"
+            }
+          },
           "software_amazon_awssdk_metrics_spi_2_20_128": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -65074,6 +65107,17 @@
               "downloaded_file_path": "v1/org/mockito/mockito-inline/5.2.0/mockito-inline-5.2.0.jar"
             }
           },
+          "com_google_errorprone_error_prone_annotations_jar_sources_2_26_1": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "32b1720fa97a3d7f24fc017014e285d812ff66a5b6c5c1819e165bfe6fdc2110",
+              "urls": [
+                "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.26.1/error_prone_annotations-2.26.1-sources.jar"
+              ],
+              "downloaded_file_path": "v1/com/google/errorprone/error_prone_annotations/2.26.1/error_prone_annotations-2.26.1-sources.jar"
+            }
+          },
           "org_codehaus_mojo_animal_sniffer_annotations_1_23": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -65083,28 +65127,6 @@
                 "https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23.jar"
               ],
               "downloaded_file_path": "v1/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23.jar"
-            }
-          },
-          "com_google_errorprone_error_prone_annotations_2_23_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "ec6f39f068b6ff9ac323c68e28b9299f8c0a80ca512dccb1d4a70f40ac3ec054",
-              "urls": [
-                "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.23.0/error_prone_annotations-2.23.0.jar"
-              ],
-              "downloaded_file_path": "v1/com/google/errorprone/error_prone_annotations/2.23.0/error_prone_annotations-2.23.0.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_sdk_extension_autoconfigure_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "a5e6b3aecafecd25c2363e0b7107d718eaa605853dc05e2fe8220f9323f0a3b3",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.35.0/opentelemetry-sdk-extension-autoconfigure-1.35.0.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.35.0/opentelemetry-sdk-extension-autoconfigure-1.35.0.jar"
             }
           },
           "software_amazon_awssdk_json_utils_2_20_128": {
@@ -65129,6 +65151,39 @@
               "downloaded_file_path": "v1/io/reactivex/rxjava3/rxjava/3.1.6/rxjava-3.1.6-sources.jar"
             }
           },
+          "com_google_j2objc_j2objc_annotations_jar_sources_3_0_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "bd60019a0423c3a025ef6ab24fe0761f5f45ffb48a8cca74a01b678de1105d38",
+              "urls": [
+                "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0-sources.jar"
+              ],
+              "downloaded_file_path": "v1/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0-sources.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_sdk_testing_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "a65587442ae17a0036f047977e57acfb3f656a29cf6e0b62f80308ce7a095097",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-testing/1.36.0/opentelemetry-sdk-testing-1.36.0.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-testing/1.36.0/opentelemetry-sdk-testing-1.36.0.jar"
+            }
+          },
+          "io_opentelemetry_opentelemetry_context_jar_sources_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "d126c982465b883e0c3898b915f056b44c76850cfc789630c25c843418678050",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-context/1.36.0/opentelemetry-context-1.36.0-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-context/1.36.0/opentelemetry-context-1.36.0-sources.jar"
+            }
+          },
           "com_google_api_grpc_proto_google_common_protos_2_23_0": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -65138,17 +65193,6 @@
                 "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-common-protos/2.23.0/proto-google-common-protos-2.23.0.jar"
               ],
               "downloaded_file_path": "v1/com/google/api/grpc/proto-google-common-protos/2.23.0/proto-google-common-protos-2.23.0.jar"
-            }
-          },
-          "io_netty_netty_handler_jar_sources_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "f6426e8a148e23559da871f21afac1e63f87977b7fac2e7e16c4561d203c06a5",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-handler/4.1.107.Final/netty-handler-4.1.107.Final-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-handler/4.1.107.Final/netty-handler-4.1.107.Final-sources.jar"
             }
           },
           "org_ow2_asm_asm_util_jar_sources_9_6": {
@@ -65203,6 +65247,17 @@
               "target_name": "io_netty_netty_buffer"
             }
           },
+          "io_netty_netty_resolver_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "55279fdcf6c0e1819b6561cc70b0eb2de1b1cf1ef5635fc46334d7e06faa9dd9",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-resolver/4.1.108.Final/netty-resolver-4.1.108.Final.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-resolver/4.1.108.Final/netty-resolver-4.1.108.Final.jar"
+            }
+          },
           "software_amazon_awssdk_arns_2_20_128": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -65231,28 +65286,6 @@
                 "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-launcher/1.10.2/junit-platform-launcher-1.10.2-sources.jar"
               ],
               "downloaded_file_path": "v1/org/junit/platform/junit-platform-launcher/1.10.2/junit-platform-launcher-1.10.2-sources.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_sdk_trace_jar_sources_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "78ce2fff445f29304ec874d5afef5e1181c1d4d6c9794a4fbf95e6a0b12da2d5",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-trace/1.35.0/opentelemetry-sdk-trace-1.35.0-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-trace/1.35.0/opentelemetry-sdk-trace-1.35.0-sources.jar"
-            }
-          },
-          "org_apache_logging_log4j_log4j_api_jar_sources_2_22_1": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "da73464bd4887421a2b0677f8e29158e5af8642f0a8523a99cec6064b637197d",
-              "urls": [
-                "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.22.1/log4j-api-2.22.1-sources.jar"
-              ],
-              "downloaded_file_path": "v1/org/apache/logging/log4j/log4j-api/2.22.1/log4j-api-2.22.1-sources.jar"
             }
           },
           "org_junit_jupiter_junit_jupiter_engine_jar_sources_5_10_2": {
@@ -65337,6 +65370,17 @@
               "downloaded_file_path": "v1/com/google/auto/service/auto-service-annotations/1.1.1/auto-service-annotations-1.1.1.jar"
             }
           },
+          "io_netty_netty_codec_http2_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "a813e1810f7c1959b90fc7f221e03ce15e66005ee56e29cd0d68312b9679c772",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.108.Final/netty-codec-http2-4.1.108.Final.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-codec-http2/4.1.108.Final/netty-codec-http2-4.1.108.Final.jar"
+            }
+          },
           "org_ow2_asm_asm_analysis_jar_sources_9_6": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -65346,17 +65390,6 @@
                 "https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.6/asm-analysis-9.6-sources.jar"
               ],
               "downloaded_file_path": "v1/org/ow2/asm/asm-analysis/9.6/asm-analysis-9.6-sources.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_sdk_testing_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "4d324fd497b5367c39914cc15ceed1ee431bcd4cafcc44abe22937fdc50b9646",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-testing/1.35.0/opentelemetry-sdk-testing-1.35.0.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-testing/1.35.0/opentelemetry-sdk-testing-1.35.0.jar"
             }
           },
           "javax_cache_cache_api_1_1_1": {
@@ -65381,37 +65414,15 @@
               "downloaded_file_path": "v1/io/netty/netty-handler/4.1.94.Final/netty-handler-4.1.94.Final.jar"
             }
           },
-          "io_lettuce_lettuce_core_6_3_1_RELEASE": {
+          "org_apache_logging_log4j_log4j_core_2_23_1": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "bc74138f8be5a2eac27a7a91fa076d012fc882a363d5b171e7f9d7fd481ae935",
+              "sha256": "7079368005fc34f56248f57f8a8a53361c3a53e9007d556dbc66fc669df081b5",
               "urls": [
-                "https://repo1.maven.org/maven2/io/lettuce/lettuce-core/6.3.1.RELEASE/lettuce-core-6.3.1.RELEASE.jar"
+                "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.23.1/log4j-core-2.23.1.jar"
               ],
-              "downloaded_file_path": "v1/io/lettuce/lettuce-core/6.3.1.RELEASE/lettuce-core-6.3.1.RELEASE.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_context_jar_sources_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "4439c4f1231178df94849f02a8b300440a041217be19c3ca4e94d5dad89e5c16",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-context/1.35.0/opentelemetry-context-1.35.0-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-context/1.35.0/opentelemetry-context-1.35.0-sources.jar"
-            }
-          },
-          "com_google_googlejavaformat_google_java_format_1_19_2": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "bac84458eb12499585f2fabb1ac13bbe5b455c120bf3d19db21597814a27c863",
-              "urls": [
-                "https://repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/1.19.2/google-java-format-1.19.2.jar"
-              ],
-              "downloaded_file_path": "v1/com/google/googlejavaformat/google-java-format/1.19.2/google-java-format-1.19.2.jar"
+              "downloaded_file_path": "v1/org/apache/logging/log4j/log4j-core/2.23.1/log4j-core-2.23.1.jar"
             }
           },
           "io_netty_netty_tcnative_classes": {
@@ -65420,17 +65431,6 @@
             "attributes": {
               "generating_repository": "contrib_rules_jvm_deps",
               "target_name": "io_netty_netty_tcnative_classes"
-            }
-          },
-          "io_grpc_grpc_context_jar_sources_1_61_1": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "dd338f353881b243e8394fc77cbc7dee21d6f21b36d290fd1c958f70efb9b07e",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.61.1/grpc-context-1.61.1-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/grpc/grpc-context/1.61.1/grpc-context-1.61.1-sources.jar"
             }
           },
           "com_google_code_findbugs_jsr305": {
@@ -65460,17 +65460,6 @@
               "downloaded_file_path": "v1/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"
             }
           },
-          "org_apache_logging_log4j_log4j_core_2_22_1": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "46dccecac556623d8e2ce8648496824a82951d139062a4e61148aff1a25ed18d",
-              "urls": [
-                "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.22.1/log4j-core-2.22.1.jar"
-              ],
-              "downloaded_file_path": "v1/org/apache/logging/log4j/log4j-core/2.22.1/log4j-core-2.22.1.jar"
-            }
-          },
           "commons_io_commons_io_2_5": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -65480,6 +65469,17 @@
                 "https://repo1.maven.org/maven2/commons-io/commons-io/2.5/commons-io-2.5.jar"
               ],
               "downloaded_file_path": "v1/commons-io/commons-io/2.5/commons-io-2.5.jar"
+            }
+          },
+          "io_lettuce_lettuce_core_6_3_2_RELEASE": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "96c28d1152bc6970904ce1e3eaa22e90f09aaadef52c79805da725135859406b",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/lettuce/lettuce-core/6.3.2.RELEASE/lettuce-core-6.3.2.RELEASE.jar"
+              ],
+              "downloaded_file_path": "v1/io/lettuce/lettuce-core/6.3.2.RELEASE/lettuce-core-6.3.2.RELEASE.jar"
             }
           },
           "com_fasterxml_jackson_dataformat_jackson_dataformat_yaml_2_16_1": {
@@ -65537,6 +65537,17 @@
               "downloaded_file_path": "v1/com/esotericsoftware/kryo/5.6.0/kryo-5.6.0-sources.jar"
             }
           },
+          "io_opentelemetry_opentelemetry_sdk_trace_jar_sources_1_36_0": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "4e45072b6d7acd4f93ac86fe90f606c86fbaa8bbffe04a31b8a4c1b88004cf74",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-trace/1.36.0/opentelemetry-sdk-trace-1.36.0-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-trace/1.36.0/opentelemetry-sdk-trace-1.36.0-sources.jar"
+            }
+          },
           "com_google_auto_service_auto_service_annotations_jar_sources_1_1_1": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -65548,6 +65559,28 @@
               "downloaded_file_path": "v1/com/google/auto/service/auto-service-annotations/1.1.1/auto-service-annotations-1.1.1-sources.jar"
             }
           },
+          "io_grpc_grpc_context_jar_sources_1_62_2": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "c656b874e58c84ca975c3708f2e001dba76233385b6a5b7cb098868bd6ce38b1",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.62.2/grpc-context-1.62.2-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/grpc/grpc-context/1.62.2/grpc-context-1.62.2-sources.jar"
+            }
+          },
+          "io_netty_netty_codec_http_jar_sources_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "c6afefd3666f4476f1ad042fcfe689be4fd25e6f8ff452234e8f53a8d2254a6c",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.108.Final/netty-codec-http-4.1.108.Final-sources.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-codec-http/4.1.108.Final/netty-codec-http-4.1.108.Final-sources.jar"
+            }
+          },
           "org_eclipse_mylyn_github_org_eclipse_egit_github_core_jar_sources_2_1_5": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -65557,17 +65590,6 @@
                 "https://repo1.maven.org/maven2/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5-sources.jar"
               ],
               "downloaded_file_path": "v1/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5-sources.jar"
-            }
-          },
-          "io_netty_netty_transport_jar_sources_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "4eddf82135f7ccfe287a22324e1556e9759e2b9ae4cbe086295115a24c341318",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-transport/4.1.107.Final/netty-transport-4.1.107.Final-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-transport/4.1.107.Final/netty-transport-4.1.107.Final-sources.jar"
             }
           },
           "maven": {
@@ -65677,17 +65699,6 @@
               "downloaded_file_path": "v1/com/google/cloud/google-cloud-core/2.22.0/google-cloud-core-2.22.0.jar"
             }
           },
-          "io_opentelemetry_opentelemetry_sdk_logs_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "1ac2e39563669095f2ef0269924c0df3bee76f143b3a577bc0559ca9a273aaab",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/1.35.0/opentelemetry-sdk-logs-1.35.0.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-sdk-logs/1.35.0/opentelemetry-sdk-logs-1.35.0.jar"
-            }
-          },
           "org_junit_platform_junit_platform_launcher_1_10_2": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -65699,23 +65710,23 @@
               "downloaded_file_path": "v1/org/junit/platform/junit-platform-launcher/1.10.2/junit-platform-launcher-1.10.2.jar"
             }
           },
-          "io_netty_netty_transport_4_1_107_Final": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "8b3107c684c5fcf53bc437e78db9f186008184210fdb96798efb835c073cfa86",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-transport/4.1.107.Final/netty-transport-4.1.107.Final.jar"
-              ],
-              "downloaded_file_path": "v1/io/netty/netty-transport/4.1.107.Final/netty-transport-4.1.107.Final.jar"
-            }
-          },
           "org_junit_platform_junit_platform_reporting": {
             "bzlFile": "@@rules_jvm_external~//private:compat_repository.bzl",
             "ruleClassName": "compat_repository",
             "attributes": {
               "generating_repository": "contrib_rules_jvm_deps",
               "target_name": "org_junit_platform_junit_platform_reporting"
+            }
+          },
+          "io_grpc_grpc_api_1_62_2": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "2e896944cf513e0e5cfd32bcd72c89601a27c6ca56916f84b20f3a13bacf1b1f",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/grpc/grpc-api/1.62.2/grpc-api-1.62.2.jar"
+              ],
+              "downloaded_file_path": "v1/io/grpc/grpc-api/1.62.2/grpc-api-1.62.2.jar"
             }
           },
           "io_grpc_grpc_googleapis_1_56_1": {
@@ -65727,6 +65738,17 @@
                 "https://repo1.maven.org/maven2/io/grpc/grpc-googleapis/1.56.1/grpc-googleapis-1.56.1.jar"
               ],
               "downloaded_file_path": "v1/io/grpc/grpc-googleapis/1.56.1/grpc-googleapis-1.56.1.jar"
+            }
+          },
+          "io_netty_netty_codec_socks_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "6a1340535f24ab997e1e5fec8bf2649108550a0816ee8e3728c14c2e55921bd8",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.108.Final/netty-codec-socks-4.1.108.Final.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-codec-socks/4.1.108.Final/netty-codec-socks-4.1.108.Final.jar"
             }
           },
           "com_github_stephenc_jcip_jcip_annotations_jar_sources_1_0_1": {
@@ -65749,6 +65771,17 @@
                 "https://repo1.maven.org/maven2/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar"
               ],
               "downloaded_file_path": "v1/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar"
+            }
+          },
+          "io_netty_netty_transport_4_1_108_Final": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_file",
+            "attributes": {
+              "sha256": "fef2ec66fe01aa89734db40f292676719da3985786512fc31a9efe1ca4d2e0ff",
+              "urls": [
+                "https://repo1.maven.org/maven2/io/netty/netty-transport/4.1.108.Final/netty-transport-4.1.108.Final.jar"
+              ],
+              "downloaded_file_path": "v1/io/netty/netty-transport/4.1.108.Final/netty-transport-4.1.108.Final.jar"
             }
           },
           "org_apache_bcel_bcel_6_8_0": {
@@ -65781,26 +65814,26 @@
               "downloaded_file_path": "v1/commons-io/commons-io/2.5/commons-io-2.5-sources.jar"
             }
           },
-          "io_netty_netty_codec_socks_4_1_107_Final": {
+          "io_netty_netty_buffer_jar_sources_4_1_108_Final": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "7974a03d949fcaf1996c83e5d58f76ec993a9a15b386a5c518114738ed209ab8",
+              "sha256": "d0d090b39bba11f5ceb61f00147a92fbe6785b89a9991f6e2f6eee7e1c2de386",
               "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.107.Final/netty-codec-socks-4.1.107.Final.jar"
+                "https://repo1.maven.org/maven2/io/netty/netty-buffer/4.1.108.Final/netty-buffer-4.1.108.Final-sources.jar"
               ],
-              "downloaded_file_path": "v1/io/netty/netty-codec-socks/4.1.107.Final/netty-codec-socks-4.1.107.Final.jar"
+              "downloaded_file_path": "v1/io/netty/netty-buffer/4.1.108.Final/netty-buffer-4.1.108.Final-sources.jar"
             }
           },
-          "io_netty_netty_codec_http2_jar_sources_4_1_107_Final": {
+          "io_netty_netty_resolver_dns_4_1_107_Final": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
             "attributes": {
-              "sha256": "9232a5d1e97d9630b84de9dabebd417f5b40990a6a426402293e311ca7fec911",
+              "sha256": "65a87e79b1966140947e6b020a455e823e967e47eec9ec90512c13cb17e98762",
               "urls": [
-                "https://repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.107.Final/netty-codec-http2-4.1.107.Final-sources.jar"
+                "https://repo1.maven.org/maven2/io/netty/netty-resolver-dns/4.1.107.Final/netty-resolver-dns-4.1.107.Final.jar"
               ],
-              "downloaded_file_path": "v1/io/netty/netty-codec-http2/4.1.107.Final/netty-codec-http2-4.1.107.Final-sources.jar"
+              "downloaded_file_path": "v1/io/netty/netty-resolver-dns/4.1.107.Final/netty-resolver-dns-4.1.107.Final.jar"
             }
           },
           "junit_junit": {
@@ -65915,17 +65948,6 @@
               "downloaded_file_path": "v1/org/yaml/snakeyaml/2.2/snakeyaml-2.2-sources.jar"
             }
           },
-          "io_grpc_grpc_api_1_61_1": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "98ef2ee2c3d7c6aba2fda2074afb307bbe7a64a2bc86258a07ec5fc0e99001f6",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/grpc/grpc-api/1.61.1/grpc-api-1.61.1.jar"
-              ],
-              "downloaded_file_path": "v1/io/grpc/grpc-api/1.61.1/grpc-api-1.61.1.jar"
-            }
-          },
           "commons_codec_commons_codec_1_15": {
             "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
             "ruleClassName": "http_file",
@@ -65984,17 +66006,6 @@
                 "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.20.128/annotations-2.20.128.jar"
               ],
               "downloaded_file_path": "v1/software/amazon/awssdk/annotations/2.20.128/annotations-2.20.128.jar"
-            }
-          },
-          "io_opentelemetry_opentelemetry_api_jar_sources_1_35_0": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_file",
-            "attributes": {
-              "sha256": "8e8030fb2fb21e475667d48eb10d248366400c659b6d2276ba48f69520e22871",
-              "urls": [
-                "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api/1.35.0/opentelemetry-api-1.35.0-sources.jar"
-              ],
-              "downloaded_file_path": "v1/io/opentelemetry/opentelemetry-api/1.35.0/opentelemetry-api-1.35.0-sources.jar"
             }
           }
         },
