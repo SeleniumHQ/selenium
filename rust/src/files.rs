@@ -276,7 +276,6 @@ pub fn uncompress_deb(
     run_shell_command_by_os(os, command)?;
     let target_path = Path::new(target);
     if target_path.parent().unwrap().read_dir()?.next().is_none() {
-        println!("IS EMPTY");
         fs::rename(&opt_edge_str, &target_str)?;
     }
 
