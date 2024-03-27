@@ -41,6 +41,7 @@ GEM
     diff-lcs (1.5.1)
     drb (2.2.1)
     ffi (1.16.3)
+    ffi (1.16.3-java)
     ffi (1.16.3-x64-mingw32)
     fileutils (1.7.2)
     git (1.19.1)
@@ -54,6 +55,7 @@ GEM
     irb (1.12.0)
       rdoc
       reline (>= 0.4.2)
+    jar-dependencies (0.4.1)
     json (2.7.1)
     json (2.7.1-java)
     language_server-protocol (3.17.0.3)
