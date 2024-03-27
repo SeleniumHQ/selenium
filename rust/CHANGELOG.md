@@ -1,26 +1,10 @@
 0.4.19
 ======
 
->>> [rust] Select release with artifact when filtering Edge response (#13735)
-* [rust] Select release with artifact when filtering Edge response
-* [rust] Run pkg util command with log
-* Revert "[rust] Run pkg util command with log"
-This reverts commit 4f74bc2b63d30684d8dc8e34bf3c934bde1135f2.
->>> [rust] Use apple-flat-package crate to extract PKG files (#13740)
-* [rust] Use apple-flat-package crate to extract PKG files
-* [rust] Bump rules_rust to v0.40.0
-* [rust] Remove version from toolchain register
-* [rust] Remove crate in unit test config
-* [rust] Remove srcs from run test setup
-* [rust] Include edition in rust test block
->>> [rust] Fix Edge management in RPM-based Linux (#13705)
-* [rust] Use shell command to move extracted Edge to cache
-* [rust] Enhance logic to move Edge from temporal folder to cache
->>> [rust] Enhance logic to uncompress DEB files and set toolchain version (#13741)
-* [rust] Enhance logic to uncompress DEB files and set toolchain version
-* [rust] Updata checksum in lock file
-* [rust] Remove toolchain version from WORKSPACE
-* [rust] Update again checksum in lock file
+* Select release with artifact when filtering Edge response (#13735)
+* Use apple-flat-package crate to extract PKG files (#13740)
+* Fix Edge management in RPM-based Linux (#13705)
+* Enhance logic to uncompress DEB files and set toolchain version (#13741)
 
 0.4.18
 ======

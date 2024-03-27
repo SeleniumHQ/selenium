@@ -1,3 +1,22 @@
+v4.19.0
+======
+
+* Add CDP for Chrome 123 and remove 120
+* Use daemon threads in JdkHttpClient #13601
+* Use a static class for ProxySelector #13622
+* Improve memory allocation of an idle relay node #13643
+* Close the httpclient after checking the service status #13643
+* [bidi] Add storage module (#13675)
+* [bidi] Add browser module (#13677)
+* [bidi] Add continueRequest and continueResponse command (#13692)
+* [bidi] Add provide response command (#13708)
+* [bidi] Add setFiles command of the Input Module (#13711)
+* Add JSON serialization for ShadowRoot (#13680)
+* [grid] Ensure the original RemoteNode stays DOWN #13646 (#13647)
+* Removed usage of FileBackedOutputStream in the client  (#13308)
+* [grid] Remove "se:bidi" (#13528)
+* [bidi] Update the capture screenshot APIs to include all parameters and remove scroll parameter (#13743)
+
 v4.18.1
 ======
 

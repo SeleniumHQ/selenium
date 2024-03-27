@@ -1,3 +1,15 @@
+## 4.19.0
+
+- Add CDP for Chrome 123 and remove 120
+- [bidi] Add browser module (#13677)
+- [bidi] Add storage module (#13684)
+- [bidi] Add fail request command
+- [bidi] Add error handling to check BytesValue instance
+- [bidi] Add continueRequest and continueResponse command (#13704)
+- [bidi] Add provide response command (#13708)
+- [bidi] Add setFiles command of the Input Module (#13711)
+- [atoms] use css locators in dom.js (#13430)
+
 ## 4.18.1
 
 - Add CDP for Chrome 122 and remove 119
