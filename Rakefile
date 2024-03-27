@@ -524,7 +524,7 @@ namespace :node do
     new_version = updated_version(old_version, arguments[:version])
 
     ['javascript/node/selenium-webdriver/package.json',
-     'javascript/node/selenium-webdriver/package-lock.json'].each do |file|
+     'package-lock.json'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
       File.open(file, "w") { |f| f.puts text }
     end
@@ -1097,7 +1097,7 @@ namespace :all do
              'java/version.bzl',
              'javascript/node/selenium-webdriver/CHANGES.md',
              'javascript/node/selenium-webdriver/package.json',
-             'javascript/node/selenium-webdriver/package-lock.json',
+             'package-lock.json',
              'py/docs/source/conf.py',
              'py/selenium/__init__.py',
              'py/selenium/webdriver/__init__.py',
