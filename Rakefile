@@ -640,7 +640,12 @@ namespace :py do
       # to start doing nightly builds.
       new_version = old_version + ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
     else
-      new_version = updated_version(old_version.gsub(/\.dev\d+$/, ''), arguments[:version])
+      if old_version.include?('.dev')
+        new_version = old_version.gsub(/\.dev\d+$/, '')
+      else
+        new_version = updated_version(old_version.gsub(/\.dev\d+$/, ''), arguments[:version])
+        new_version = new_version + ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
+      end
     end
 
     ['py/setup.py',
@@ -658,7 +663,7 @@ namespace :py do
     text = File.read('py/docs/source/conf.py').gsub(old_short_version, new_short_version)
     File.open('py/docs/source/conf.py', "w") { |f| f.puts text }
 
-    Rake::Task['py:changelog'].invoke unless new_version.include?('nightly') || bump_nightly
+    Rake::Task['py:changelog'].invoke unless new_version.include?('.dev') || bump_nightly
   end
 
   desc 'Update Python Syntax'
