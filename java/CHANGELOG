@@ -1,53 +1,21 @@
 v4.19.0
 ======
 
->>> CDP 122 (#13603)
-* Update pinned browser versions
-* Update supported versions for Chrome DevTools
-* Reverting changes on Rakefile
-* Switching test to new behavior
->>> [java] use daemon threads in JdkHttpClient #13601
->>> [java] use a static class for ProxySelector #13622
->>> [java] improve memory allocation of an idle relay node #13643
->>> [java] close the httpclient after checking the service status #13643
->>> [bidi][java] Add storage module (#13675)
->>> [bidi] [java] [js] Add browser module (#13677)
->>> [java] Remove circular dependency when using RemoteWebElement in BiDi classes (#13463)
->>> [bidi][java] Add continueRequest and continueResponse command (#13692)
->>> [bidi][java] Use enum for HttpMethod
->>> [java] Fix the parameters passed for credentials
->>> [java] Fix formatting
->>> [java] Add missing Http method names in the enum
->>> [bidi] Add provide response command (#13708)
->>> [bidi][java][js] Add setFiles command of the Input Module (#13711)
->>> Migrate to `aspect_rules_js`
-Also builds the Grid UI using `esbuild`.
-The weird imports in the Grid UI are due to an issue with the way that
-`esbuild` interacts with `@mui/material-icons`:
-https://github.com/mui/material-ui/issues/31835#issuecomment-1158660722
->>> Add JSON serialization for ShadowRoot (#13680)
-* Add JSON serialization for ShadowRoot
-* Run format script
-* Disable SpotBugs check for pass-thru subclass
-* Fix up spotbugs errors
->>> [java] ensure the original RemoteNode stays DOWN #13646 (#13647)
->>> Update script commands to fix the failing BiDi tests (#13737)
-* [bidi][java] Update Script command to add check for browsing context array
-* [java] Update tests
-* [js] Ensure script command uses the browsing contexts correctly
->>> [java] removed usage of FileBackedOutputStream in the client  (#13308)
-* [java] removed usage of FileBackedOutputStream in the client
-* [java] removed usage of FileBackedOutputStream in the client
->>> [java] Remove "se:bidi" (#13528)
-* [java] Remove "se:bidi"
-* Add comments
-* Format code
-* [java] Store "local" websocket url in a different namespace and use it
-* [java] Fix websocket url checks
-* [java] Keep /se/bidi intact
->>> [bidi][java] Fix a bug caused due to typo
->>> [bidi][java] Update the capture screenshot APIs to include all parameters and remove scroll parameter (#13743)
->>> Update supported versions for Chrome DevTools
+* Add CDP for Chrome 123 and remove 120
+* Use daemon threads in JdkHttpClient #13601
+* Use a static class for ProxySelector #13622
+* Improve memory allocation of an idle relay node #13643
+* Close the httpclient after checking the service status #13643
+* [bidi] Add storage module (#13675)
+* [bidi] Add browser module (#13677)
+* [bidi] Add continueRequest and continueResponse command (#13692)
+* [bidi] Add provide response command (#13708)
+* [bidi] Add setFiles command of the Input Module (#13711)
+* Add JSON serialization for ShadowRoot (#13680)
+* [grid] Ensure the original RemoteNode stays DOWN #13646 (#13647)
+* Removed usage of FileBackedOutputStream in the client  (#13308)
+* [grid] Remove "se:bidi" (#13528)
+* [bidi] Update the capture screenshot APIs to include all parameters and remove scroll parameter (#13743)
 
 v4.18.1
 ======

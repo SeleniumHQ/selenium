@@ -1,5 +1,11 @@
-Selenium 4.20.0
+Selenium 4.19.0
 
+* Add CDP for Chrome 123 and remove 120
+* Add more network interfaces to detect lan ip (#13663)
+* install_addon() didn't take into account dir paths with trailing slashes (#13694)
+* Explicitly export Select and WebDriverWait from selenium.webdriver.support.ui (#13491)
+* Add return type to webelement.submit (#13490)
+* Add type to parameter of webelement.WebElement.send_keys (#13492)
 
 Selenium 4.18.1
 

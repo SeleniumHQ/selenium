@@ -1,47 +1,14 @@
 ## 4.19.0
 
->>> CDP 122 (#13603)
-* Update pinned browser versions
-* Update supported versions for Chrome DevTools
-* Reverting changes on Rakefile
-* Switching test to new behavior
->>> Bumping versions to 4.18.1
->>> Run prettifier over the selenium-webdriver node code
->>> Fix JS linting errors
->>> [bidi] [java] [js] Add browser module (#13677)
->>> [js] Fix linting
->>> [JS]: Update npm deps to latest
->>> [bidi] [js] Add storage module  (#13684)
->>> [bidi][js] Add fail request command
->>> [bidi][js] Add error handling to check Bytesvalue instance
->>> [bidi][js] Add continueRequest and continueResponse command (#13704)
->>> [bidi] Add provide response command (#13708)
->>> [js] Update error message
->>> [bidi][java][js] Add setFiles command of the Input Module (#13711)
->>> Migrate to `aspect_rules_js`
-Also builds the Grid UI using `esbuild`.
-The weird imports in the Grid UI are due to an issue with the way that
-`esbuild` interacts with `@mui/material-icons`:
-https://github.com/mui/material-ui/issues/31835#issuecomment-1158660722
->>> Regenerate lock file and fix linting errors
->>> Fix lint errors
->>> [js] Use copy_file for mutation listener
-This avoids genrule altogether
->>> Bump express from 4.18.3 to 4.19.2 (#13734)
-Bumps [express](https://github.com/expressjs/express) from 4.18.3 to 4.19.2.
-- [Release notes](https://github.com/expressjs/express/releases)
-- [Changelog](https://github.com/expressjs/express/blob/master/History.md)
-- [Commits](https://github.com/expressjs/express/compare/4.18.3...4.19.2)
----
-updated-dependencies:
-- dependency-name: express
-  dependency-type: direct:development
-...
->>> Update script commands to fix the failing BiDi tests (#13737)
-* [bidi][java] Update Script command to add check for browsing context array
-* [java] Update tests
-* [js] Ensure script command uses the browsing contexts correctly
->>> Update supported versions for Chrome DevTools
+- Add CDP for Chrome 123 and remove 120
+- [bidi] Add browser module (#13677)
+- [bidi] Add storage module (#13684)
+- [bidi] Add fail request command
+- [bidi] Add error handling to check BytesValue instance
+- [bidi] Add continueRequest and continueResponse command (#13704)
+- [bidi] Add provide response command (#13708)
+- [bidi] Add setFiles command of the Input Module (#13711)
+- [atoms] use css locators in dom.js (#13430)
 
 ## 4.18.1
 
@@ -311,15 +278,15 @@ fix: iedriver download with selenium-manager #11579
 #### :rocket: New Feature
 
 - Adds 'Select' support package
-  - selectByIndex
-  - selectByValue
-  - selectByVisibleText
-  - getAllSelectedOptions
-  - getFirstSelectedOption
-  - deselectAll
-  - deselectByVisibleText
-  - deselectByIndex
-  - deselectByValue
+    - selectByIndex
+    - selectByValue
+    - selectByVisibleText
+    - getAllSelectedOptions
+    - getFirstSelectedOption
+    - deselectAll
+    - deselectByVisibleText
+    - deselectByIndex
+    - deselectByValue
 - Add support for Actions API sendKeys to designated element
 - Adds mouse button enum for forward and backward navigation
 
@@ -491,7 +458,7 @@ fix: iedriver download with selenium-manager #11579
 ## v4.0.0-beta.1
 
 - JS Binding support for WebDriver Bidi in Firefox
-  - This requires Firefox 87 and Geckodriver 0.29 to be able to work
+    - This requires Firefox 87 and Geckodriver 0.29 to be able to work
 - Update the supported CDP versions
 - Update tmp package version (#9155)
 - Adding support for /computedlabel (getAccessibleName) (#9073)
@@ -506,12 +473,12 @@ fix: iedriver download with selenium-manager #11579
 - Rolling back native support for Opera Browser
 - Added new ieOptions capabilities:
 
-  - fileUploadDialogTimeout
-  - setEdgePath
-  - setEdgeChromium
-  - setScrollBehavior
-  - For consistent naming, deprecating `addArguments(...args)` in favor
-    of `addBrowserCommandSwitches(...args)`
+    - fileUploadDialogTimeout
+    - setEdgePath
+    - setEdgeChromium
+    - setScrollBehavior
+    - For consistent naming, deprecating `addArguments(...args)` in favor
+      of `addBrowserCommandSwitches(...args)`
 
 - Added relative locators
 - Added Chrome DevTools Protocol (CDP) support
@@ -595,11 +562,11 @@ mode (see `example/headless.js`)
 ### API Changes
 
 - The core WebDriver API no longer uses promise manager
-  - Removed `index.Builder#setControlFlow()`
-  - The following thenable types no longer have a `cancel()` method:
-  - The dynamically generated thenable WebDrivers created by `index.Builder`
-  - `lib/webdriver.AlertPromise`
-  - `lib/webdriver.WebElementPromise`
+    - Removed `index.Builder#setControlFlow()`
+    - The following thenable types no longer have a `cancel()` method:
+    - The dynamically generated thenable WebDrivers created by `index.Builder`
+    - `lib/webdriver.AlertPromise`
+    - `lib/webdriver.WebElementPromise`
 - Removed `remote/index.DriverService.prototype.stop()` (use `#kill()` instead)
 - Removed the `lib/actions` module
 - Removed the `lib/events` module
@@ -608,137 +575,137 @@ mode (see `example/headless.js`)
 - Removed the promise manager from `lib/promise`, which includes the removal of
   the following
   exported names (replacements, if any, in parentheses):
-  - CancellableThenable
-  - CancellationError
-  - ControlFlow
-  - Deferred
-  - LONG_STACK_TRACES
-  - MultipleUnhandledRejectionError
-  - Promise (use native Promises)
-  - Resolver
-  - Scheduler
-  - Thenable
-  - USE_PROMISE_MANAGER
-  - all (use Promise.all)
-  - asap (use Promise.resolve)
-  - captureStackTrace (use Error.captureStackTrace)
-  - consume (use async functions)
-  - controlFlow
-  - createPromise (use new Promise)
-  - defer
-  - fulfilled (use Promise.resolve)
-  - isGenerator
-  - rejected (use Promise.reject)
-  - setDefaultFlow
-  - when (use Promise.resolve)
+    - CancellableThenable
+    - CancellationError
+    - ControlFlow
+    - Deferred
+    - LONG_STACK_TRACES
+    - MultipleUnhandledRejectionError
+    - Promise (use native Promises)
+    - Resolver
+    - Scheduler
+    - Thenable
+    - USE_PROMISE_MANAGER
+    - all (use Promise.all)
+    - asap (use Promise.resolve)
+    - captureStackTrace (use Error.captureStackTrace)
+    - consume (use async functions)
+    - controlFlow
+    - createPromise (use new Promise)
+    - defer
+    - fulfilled (use Promise.resolve)
+    - isGenerator
+    - rejected (use Promise.reject)
+    - setDefaultFlow
+    - when (use Promise.resolve)
 - Changes to the `Builder` class:
-  - Added setChromeService, setEdgeService, & setFirefoxService
-  - Removed setEnableNativeEvents
-  - Removed setScrollBehavior
+    - Added setChromeService, setEdgeService, & setFirefoxService
+    - Removed setEnableNativeEvents
+    - Removed setScrollBehavior
 - Changes to `chrome.Driver`
-  - Added sendDevToolsCommand
-  - Added setDownloadPath
+    - Added sendDevToolsCommand
+    - Added setDownloadPath
 - Changes to `chrome.Options`
-  - Now extends the `Capabilities` class
-  - Removed from/toCapabilities
+    - Now extends the `Capabilities` class
+    - Removed from/toCapabilities
 - Changes to `edge.Options`
-  - Now extends the `Capabilities` class
-  - Removed from/toCapabilities
+    - Now extends the `Capabilities` class
+    - Removed from/toCapabilities
 - Changes to `ie.Options`
-  - Now extends the `Capabilities` class
-  - Removed from/toCapabilities
+    - Now extends the `Capabilities` class
+    - Removed from/toCapabilities
 - Removed the `firefox.Binary` class. Custom binaries can still be selected
   using `firefox.Options#setBinary()`. Likewise, custom binary arguments can be
   specified
   with `firefox.Options#addArguments()`.
 - Changes to `firefox.Driver`
-  - Added installAddon(path)
-  - Added uninstallAddon(id)
+    - Added installAddon(path)
+    - Added uninstallAddon(id)
 - Changes to `firefox.Options`
-  - Now extends the `Capabilities` class
-  - Removed from/toCapabilities
-  - Removed setLoggingPreferences (was a no-op)
-  - setProfile now only accepts a path to an existing profile
-  - Added addExtensions
-  - Added setPreference
+    - Now extends the `Capabilities` class
+    - Removed from/toCapabilities
+    - Removed setLoggingPreferences (was a no-op)
+    - setProfile now only accepts a path to an existing profile
+    - Added addExtensions
+    - Added setPreference
 - Removed the `firefox.Profile` class. All of its functionality is now provided
   directly
   by `firefox.Options`
 - Removed the `firefox/binary` module
 - Removed the `firefox/profile` module
 - Changes to `safari.Options`
-  - Now extends the `Capabilities` class
-  - Removed from/toCapabilities
-  - Removed setCleanSession (was a no-op)
+    - Now extends the `Capabilities` class
+    - Removed from/toCapabilities
+    - Removed setCleanSession (was a no-op)
 - Changes to `lib/capabilities.Browser`:
-  - Removed several enum values.
-    - ANDROID (use Chrome for Android; see docs on the chrome module)
-    - IPAD (no support available)
-    - IPHONE (no support available)
-    - OPERA (use Chrome)
-    - PHANTOM_JS (use Chrome or Firefox in headless mode)
-    - HTMLUNIT (use Chrome or Firefox in headless mode)
+    - Removed several enum values.
+        - ANDROID (use Chrome for Android; see docs on the chrome module)
+        - IPAD (no support available)
+        - IPHONE (no support available)
+        - OPERA (use Chrome)
+        - PHANTOM_JS (use Chrome or Firefox in headless mode)
+        - HTMLUNIT (use Chrome or Firefox in headless mode)
 - Changes to `lib/capabilities.Capabilities`:
-  - Removed static factory methods android(), ipad(), iphone(), opera(),
-    phantomjs(), htmlunit(),
-    and htmlunitwithjs(). Users can still manually configure capabilities for
-    these, but their use
-    is not recommended and they will no longer be surfaced in the API.
+    - Removed static factory methods android(), ipad(), iphone(), opera(),
+      phantomjs(), htmlunit(),
+      and htmlunitwithjs(). Users can still manually configure capabilities for
+      these, but their use
+      is not recommended and they will no longer be surfaced in the API.
 - Changes to `lib/error`:
-  - Added
-    - ElementClickInterceptedError
-    - InsecureCertificateError
-    - InvalidCoordinatesError
-    - NoSuchCookieError
-  - Removed
-    - ElementNotVisibleError
-    - InvalidElementCoordinatesError
+    - Added
+        - ElementClickInterceptedError
+        - InsecureCertificateError
+        - InvalidCoordinatesError
+        - NoSuchCookieError
+    - Removed
+        - ElementNotVisibleError
+        - InvalidElementCoordinatesError
 - Changes to `lib/webdriver.WebDriver`:
-  - Dropped support for "requiredCapabilities" from WebDriver.createSession
-  - actions() now returns the new `lib/input.Actions` class
-  - Removed touchActions
-  - Renamed schedule to execute
-  - Removed the `WebDriver.attachToSession()` factory method. Users can just
-    the `WebDriver`
-    constructor directly instead.
-  - Removed the `call()` method. This was used to inject custom function calls
-    into the control
-    flow. Now that the promise manager is no longer used, this method is no
-    longer necessary.
-    Users are now responsible for coordinating actions (ideally with async
-    functions) and can just
-    call functions directly instead of through `driver.call()`.
+    - Dropped support for "requiredCapabilities" from WebDriver.createSession
+    - actions() now returns the new `lib/input.Actions` class
+    - Removed touchActions
+    - Renamed schedule to execute
+    - Removed the `WebDriver.attachToSession()` factory method. Users can just
+      the `WebDriver`
+      constructor directly instead.
+    - Removed the `call()` method. This was used to inject custom function calls
+      into the control
+      flow. Now that the promise manager is no longer used, this method is no
+      longer necessary.
+      Users are now responsible for coordinating actions (ideally with async
+      functions) and can just
+      call functions directly instead of through `driver.call()`.
 - Changes to `lib/webdriver.WebElement`:
-  - Replaced getSize & getLocation with getRect
+    - Replaced getSize & getLocation with getRect
 - Changes to `lib/webdriver.Alert`:
-  - Removed authenticateAs
+    - Removed authenticateAs
 - Changes to `lib/webdriver.Options` (`driver.manage()`):
-  - Removed timeouts (use get/setTimeouts)
+    - Removed timeouts (use get/setTimeouts)
 - Changes to `lib/webdriver.Window` (`driver.manage().window()`):
-  - Added
-    - getRect
-    - setRect
-    - fullscreen
-    - minimize
-  - Removed (use the getRect/setRect methods)
-    - getPosition
-    - setPosition
-    - getSize
-    - setSize
+    - Added
+        - getRect
+        - setRect
+        - fullscreen
+        - minimize
+    - Removed (use the getRect/setRect methods)
+        - getPosition
+        - setPosition
+        - getSize
+        - setSize
 - Removed the `testing/assert` module
 - Changes to `testing/index`
-  - Since the promise manager has been removed, it is no longer necessary to
-    wrap the Mocha test
-    hooks; instead, users can simply use async functions. The following have all
-    been removed:
-    - describe
-    - before
-    - beforeEach
-    - after
-    - afterEach
-    - it
-  - Added the `suite` function. For details, refer to the jsdoc or
-    `example/google_search_test.js`
+    - Since the promise manager has been removed, it is no longer necessary to
+      wrap the Mocha test
+      hooks; instead, users can simply use async functions. The following have all
+      been removed:
+        - describe
+        - before
+        - beforeEach
+        - after
+        - afterEach
+        - it
+    - Added the `suite` function. For details, refer to the jsdoc or
+      `example/google_search_test.js`
 
 ## v3.6.0
 
@@ -757,19 +724,19 @@ mode (see `example/headless.js`)
 ### API Changes
 
 - Added new methods to `selenium-webdriver/firefox.Options`:
-  - addArguments()
-  - headless()
-  - windowSize()
+    - addArguments()
+    - headless()
+    - windowSize()
 - Deprecated `selenium-webdriver/firefox/binary.Binary`
 - Removed `selenium-webdriver/firefox.Options#useGeckoDriver()`
 - Removed the unused `selenium-webdriver/firefox/profile.decode()`
 - Removed methods from `selenium-webdriver/firefox/profile.Profile` that had no
   effect since support
   for the legacy FirefoxDriver was dropped in 3.5.0:
-  - setNativeEventsEnabled
-  - nativeEventsEnabled
-  - getPort
-  - setPort
+    - setNativeEventsEnabled
+    - nativeEventsEnabled
+    - getPort
+    - setPort
 - Removed `selenium-webdriver/firefox.ServiceBuilder#setFirefoxBinary()`; custom
   binaries should be
   configured through the `firefox.Options` class.
@@ -793,10 +760,10 @@ to a remote Selenium server that supports Firefox 45.
 ### Changes
 
 - Removed native support for Firefox 46 and older.
-  - The `SELENIUM_MARIONETTE` enviornment variable no longer has an effect.
-  - `selenium-webdriver/firefox.Capability.MARIONETTE` is deprecated.
-  - `selenium-webdriver/firefox.Options#useGeckoDriver()` is deprecated and now
-    a no-op.
+    - The `SELENIUM_MARIONETTE` enviornment variable no longer has an effect.
+    - `selenium-webdriver/firefox.Capability.MARIONETTE` is deprecated.
+    - `selenium-webdriver/firefox.Options#useGeckoDriver()` is deprecated and now
+      a no-op.
 - `firefox.Options` will no longer discard the `"moz:firefoxOptions"` set in
   user provided
   capabilities (via `Builder.withCapabilities({})`). When both are used, the
@@ -887,8 +854,8 @@ or newer.
 ## v3.0.1
 
 - More API adjustments to align with native Promises
-  - Deprecated `promise.fulfilled(value)`, use `promise.Promise#resolve(value)`
-  - Deprecated `promise.rejected(reason)`, use `promise.Promise#reject(reason)`
+    - Deprecated `promise.fulfilled(value)`, use `promise.Promise#resolve(value)`
+    - Deprecated `promise.rejected(reason)`, use `promise.Promise#reject(reason)`
 - When a `wait()` condition times out, the returned promise will now be rejected
   with
   an `error.TimeoutError` instead of a generic `Error` object.
@@ -934,9 +901,9 @@ or newer.
 
 - Removed `safari.Options#useLegacyDriver()`
 - Reduced the API on `promise.Thenable` for compatibility with native promises:
-  - Removed `#isPending()`
-  - Removed `#cancel()`
-  - Removed `#finally()`
+    - Removed `#isPending()`
+    - Removed `#cancel()`
+    - Removed `#finally()`
 - Changed all subclasses of `webdriver.WebDriver` to overload the static
   function `WebDriver.createSession()` instead of doing work in the constructor.
   All constructors
@@ -1036,34 +1003,34 @@ or newer.
   returned in seconds.
 - Renamed `firefox.Options#useMarionette` to `firefox.Options#useGeckoDriver`
 - Removed deprecated modules:
-  - `selenium-webdriver/error` (use `selenium-webdriver/lib/error`,\
-    or the `error` property exported by `selenium-webdriver`)
-  - `selenium-webdriver/executors` — this was not previously deprecated, but is
-    no longer used.
+    - `selenium-webdriver/error` (use `selenium-webdriver/lib/error`,\
+      or the `error` property exported by `selenium-webdriver`)
+    - `selenium-webdriver/executors` — this was not previously deprecated, but is
+      no longer used.
 - Removed deprecated types:
-  - `command.DeferredExecutor` — this was not previously deprecated, but is no
-    longer used. It can
-    be trivially implemented by clients should it be needed.
-  - `error.InvalidSessionIdError` (use `error.NoSuchSessionError`)
-  - `executors.DeferredExecutor`
-  - `until.Condition` (use `webdriver.Condition`)
-  - `until.WebElementCondition` (use `webdriver.WebElementCondition`)
-  - `webdriver.UnhandledAlertError` (use `error.UnexpectedAlertOpenError`)
+    - `command.DeferredExecutor` — this was not previously deprecated, but is no
+      longer used. It can
+      be trivially implemented by clients should it be needed.
+    - `error.InvalidSessionIdError` (use `error.NoSuchSessionError`)
+    - `executors.DeferredExecutor`
+    - `until.Condition` (use `webdriver.Condition`)
+    - `until.WebElementCondition` (use `webdriver.WebElementCondition`)
+    - `webdriver.UnhandledAlertError` (use `error.UnexpectedAlertOpenError`)
 - Removed deprecated functions:
-  - `Deferred#cancel()`
-  - `Deferred#catch()`
-  - `Deferred#finally()`
-  - `Deferred#isPending()`
-  - `Deferred#then()`
-  - `Promise#thenCatch()`
-  - `Promise#thenFinally()`
-  - `WebDriver#isElementPresent()`
-  - `WebElement#getInnerHtml()`
-  - `WebElement#getOuterHtml()`
-  - `WebElement#getRawId()`
-  - `WebElement#isElementPresent()`
+    - `Deferred#cancel()`
+    - `Deferred#catch()`
+    - `Deferred#finally()`
+    - `Deferred#isPending()`
+    - `Deferred#then()`
+    - `Promise#thenCatch()`
+    - `Promise#thenFinally()`
+    - `WebDriver#isElementPresent()`
+    - `WebElement#getInnerHtml()`
+    - `WebElement#getOuterHtml()`
+    - `WebElement#getRawId()`
+    - `WebElement#isElementPresent()`
 - Removed deprecated properties:
-  - `WebDriverError#code`
+    - `WebDriverError#code`
 
 ## v2.53.2
 
@@ -1259,7 +1226,7 @@ continue to be supported, but will require setting the `--harmony` flag.
 ### Change Summary
 
 - Add support for [Node v4.0.0](https://nodejs.org/en/blog/release/v4.0.0/)
-  - Updated `ws` dependency from `0.7.1` to `0.8.0`
+    - Updated `ws` dependency from `0.7.1` to `0.8.0`
 - Bumped the minimum supported version of Node from `0.10.x` to `0.12.x`. This
   is in accordance with
   the Node support policy established in `v2.45.0`.
@@ -1278,14 +1245,14 @@ continue to be supported, but will require setting the `--harmony` flag.
   See `Builder#usingWebDriverProxy()`
   for more info.
 - Removed deprecated functions:
-  - Capabilities#toJSON()
-  - UnhandledAlertError#getAlert()
-  - chrome.createDriver()
-  - phantomjs.createDriver()
-  - promise.ControlFlow#annotateError()
-  - promise.ControlFlow#await()
-  - promise.ControlFlow#clearHistory()
-  - promise.ControlFlow#getHistory()
+    - Capabilities#toJSON()
+    - UnhandledAlertError#getAlert()
+    - chrome.createDriver()
+    - phantomjs.createDriver()
+    - promise.ControlFlow#annotateError()
+    - promise.ControlFlow#await()
+    - promise.ControlFlow#clearHistory()
+    - promise.ControlFlow#getHistory()
 - Removed deprecated enum values: `ErrorCode.NO_MODAL_DIALOG_OPEN` and
   `ErrorCode.MODAL_DIALOG_OPENED`. Use `ErrorCode.NO_SUCH_ALERT` and
   `ErrorCode.UNEXPECTED_ALERT_OPEN`, respectively.
@@ -1651,15 +1618,15 @@ major version release (i.e. 1.0.0).
   rejections were
   always Error objects. Rejection reasons are now left as is.
 - Removed deprecated functions originally scheduled for removal in 2.31.0
-  - promise.Application.getInstance()
-  - promise.ControlFlow#schedule()
-  - promise.ControlFlow#scheduleTimeout()
-  - promise.ControlFlow#scheduleWait()
+    - promise.Application.getInstance()
+    - promise.ControlFlow#schedule()
+    - promise.ControlFlow#scheduleTimeout()
+    - promise.ControlFlow#scheduleWait()
 - Renamed some functions for consistency with Promises/A+ terminology. The
   original functions have
   been deprecated and will be removed in 2.34.0:
-  - promise.resolved() -> promise.fulfilled()
-  - promise.Deferred#resolve() -> promise.Deferred#fulfill()
+    - promise.resolved() -> promise.fulfilled()
+    - promise.Deferred#resolve() -> promise.Deferred#fulfill()
 - FIXED: remote.SeleniumServer#stop now shuts down within the active control
   flow, allowing scripts
   to finish. Use #kill to shutdown immediately.
