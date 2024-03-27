@@ -246,6 +246,7 @@ ruby.bundle_fetch(
         "diff-lcs-1.5.1": "273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe",
         "drb-2.2.0": "e9e4af1cded3306cfe37e064a0086e302d5f40df9cb4d161d059a6bb3a75d40f",
         "ffi-1.16.3": "6d3242ff10c87271b0675c58d68d3f10148fabc2ad6da52a18123f06078871fb",
+        "ffi-1.16.3-java": "6f107fcd7c96f9c96f7e57db749b99502cc2f65665f7b2241d087a8f8c01d42c",
         "ffi-1.16.3-x64-mingw32": "6ec709011e3955e97033fa77907a8ab89a9150137d4c45c82c77399b909c9259",
         "fileutils-1.7.2": "36a0fb324218263e52b486ad7408e9a295378fe8edc9fd343709e523c0980631",
         "git-1.19.1": "b0a422d9f6517353c48a330d6114de4db9e0c82dbe7202964a1d9f1fbc827d70",
@@ -269,7 +270,7 @@ ruby.bundle_fetch(
         "public_suffix-5.0.4": "35cd648e0d21d06b8dce9331d19619538d1d898ba6d56a6f2258409d2526d1ae",
         "racc-1.7.3": "b785ab8a30ec43bce073c51dbbe791fd27000f68d1c996c95da98bf685316905",
         "racc-1.7.3-java": "b2ad737e788cfa083263ce7c9290644bb0f2c691908249eb4f6eb48ed2815dbf",
-        "rack-2.2.8": "7b83a1f1304a8f5554c67bc83632d29ecd2ed1daeb88d276b7898533fde22d97",
+        "rack-2.2.8.1": "a7121de625e86133e0cdd03ff281642a712b628dee86eb8818db42432198b782",
         "rainbow-3.1.1": "039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a",
         "rake-13.1.0": "be6a3e1aa7f66e6c65fa57555234eb75ce4cf4ada077658449207205474199c6",
         "rb-fsevent-0.11.2": "43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe",
@@ -340,21 +341,22 @@ use_repo(
 pin_browsers_extension = use_extension("//common:repositories.bzl", "pin_browsers_extension")
 use_repo(
     pin_browsers_extension,
-    "linux_firefox",
-    "mac_firefox",
     "linux_beta_firefox",
-    "mac_beta_firefox",
-    "linux_geckodriver",
-    "mac_geckodriver",
-    "linux_edge",
-    "mac_edge",
-    "linux_edgedriver",
-    "mac_edgedriver",
     "linux_chrome",
-    "mac_chrome",
     "linux_chromedriver",
+    "linux_edge",
+    "linux_edgedriver",
+    "linux_firefox",
+    "linux_geckodriver",
+    "mac_beta_firefox",
+    "mac_chrome",
     "mac_chromedriver",
+    "mac_edge",
+    "mac_edgedriver",
+    "mac_firefox",
+    "mac_geckodriver",
 )
 
 local_drivers = use_repo_rule("//common/private:drivers.bzl", "local_drivers")
+
 local_drivers(name = "local_drivers")
