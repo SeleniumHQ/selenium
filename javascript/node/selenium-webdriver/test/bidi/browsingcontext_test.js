@@ -23,6 +23,12 @@ const { Browser, By } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const BrowsingContext = require('../../bidi/browsingContext')
 const until = require('../../lib/until')
+const {
+  CaptureScreenshotParameter,
+  Origin,
+  CaptureScreenshotParameters,
+} = require('../../bidi/captureScreenshotParameters')
+const { BoxClipRectangle, ElementClipRectangle } = require('../../bidi/clipRectangle')
 
 suite(
   function (env) {
@@ -190,6 +196,40 @@ suite(
         assert.equal(base64code, pngMagicNumber)
       })
 
+      it('can take screenshot with all parameters for box screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        let captureScreenshotParams = new CaptureScreenshotParameters()
+        captureScreenshotParams.origin(Origin.VIEWPORT).clipRectangle(new BoxClipRectangle(5, 5, 10, 10))
+
+        const response = await browsingContext.captureScreenshot(captureScreenshotParams)
+
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
+      })
+
+      it('can take screenshot with all parameters for element screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.formPage)
+        const element = await driver.findElement(By.id('checky'))
+        const elementId = await element.getId()
+
+        let captureScreenshotParams = new CaptureScreenshotParameters()
+        captureScreenshotParams.origin(Origin.VIEWPORT).clipRectangle(new ElementClipRectangle(elementId))
+
+        const response = await browsingContext.captureScreenshot(captureScreenshotParams)
+
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
+      })
+
       it('can take box screenshot', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
@@ -212,21 +252,6 @@ suite(
         const element = await driver.findElement(By.id('checky'))
         const elementId = await element.getId()
         const response = await browsingContext.captureElementScreenshot(elementId)
-
-        const base64code = response.slice(startIndex, endIndex)
-        assert.equal(base64code, pngMagicNumber)
-      })
-
-      it('can scroll and take element screenshot', async function () {
-        const id = await driver.getWindowHandle()
-        const browsingContext = await BrowsingContext(driver, {
-          browsingContextId: id,
-        })
-
-        await driver.get(Pages.formPage)
-        const element = await driver.findElement(By.id('checkbox-with-label'))
-        const elementId = await element.getId()
-        const response = await browsingContext.captureElementScreenshot(elementId, undefined, true)
 
         const base64code = response.slice(startIndex, endIndex)
         assert.equal(base64code, pngMagicNumber)

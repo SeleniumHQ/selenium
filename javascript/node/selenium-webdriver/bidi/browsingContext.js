@@ -19,6 +19,7 @@ const { InvalidArgumentError, NoSuchFrameError } = require('../lib/error')
 const { BrowsingContextInfo } = require('./browsingContextTypes')
 const { SerializationOptions, ReferenceValue, RemoteValue } = require('./protocolValue')
 const { WebElement } = require('../lib/webdriver')
+const { CaptureScreenshotParameters } = require('./captureScreenshotParameters')
 
 class Locator {
   static Type = Object.freeze({
@@ -216,6 +217,23 @@ class BrowsingContext {
     return response['result']['data']
   }
 
+  async captureScreenshot(captureScreenshotParameters) {
+    if (!(captureScreenshotParameters instanceof CaptureScreenshotParameters)) {
+      throw new Error(`Pass in a CaptureScreenshotParameters object. Received: ${captureScreenshotParameters}`)
+    }
+
+    const screenshotParams = captureScreenshotParameters.asMap()
+    screenshotParams.set('context', this._id)
+    let params = {
+      method: 'browsingContext.captureScreenshot',
+      params: Object.fromEntries(screenshotParams),
+    }
+
+    const response = await this.bidi.send(params)
+    this.checkErrorInScreenshot(response)
+    return response['result']['data']
+  }
+
   async captureBoxScreenshot(x, y, width, height) {
     let params = {
       method: 'browsingContext.captureScreenshot',
@@ -231,15 +249,12 @@ class BrowsingContext {
       },
     }
 
-    console.log(JSON.stringify(params))
-
     const response = await this.bidi.send(params)
-    console.log(JSON.stringify(response))
     this.checkErrorInScreenshot(response)
     return response['result']['data']
   }
 
-  async captureElementScreenshot(sharedId, handle = undefined, scrollIntoView = undefined) {
+  async captureElementScreenshot(sharedId, handle = undefined) {
     let params = {
       method: 'browsingContext.captureScreenshot',
       params: {
@@ -250,7 +265,6 @@ class BrowsingContext {
             sharedId: sharedId,
             handle: handle,
           },
-          scrollIntoView: scrollIntoView,
         },
       },
     }
