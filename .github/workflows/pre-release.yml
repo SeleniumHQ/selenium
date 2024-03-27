@@ -68,7 +68,7 @@ jobs:
           fetch-tags: true
           ref: release-${{ github.event.inputs.version }}
       - name: Install Ruby
-        uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+        uses: ruby/setup-ruby@5f19ec79cedfadb78ab837f95b87734d0003c899
         with:
           ruby-version: '3.1'
       - name: "Prep git"
@@ -84,7 +84,7 @@ jobs:
         if: ${{ github.event.inputs.chrome_channel == 'stable' }}
         run: ./go "all:prepare[Stable]"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
