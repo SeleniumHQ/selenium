@@ -847,7 +847,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 101</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_camel_case'>camel_case</span><span class='lparen'>(</span><span class='id identifier rubyid_str_or_sym'>str_or_sym</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_str_or_sym'>str_or_sym</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>_([a-z])</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_upcase'>upcase</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_str_or_sym'>str_or_sym</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>_([a-z])</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='op'>&amp;.</span><span class='id identifier rubyid_upcase'>upcase</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1528,7 +1528,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Mar  1 07:17:10 2024 by
+  Generated on Wed Mar 27 13:39:41 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.36 (ruby-3.0.6).
 </div>

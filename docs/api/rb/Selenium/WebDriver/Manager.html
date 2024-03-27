@@ -563,7 +563,7 @@
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:httpOnly</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_http_only'>http_only</span> <span class='kw'>if</span> <span class='id identifier rubyid_http_only'>http_only</span>
 
   <span class='id identifier rubyid_obj'>obj</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:expires</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:expiry</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_seconds_from'>seconds_from</span><span class='lparen'>(</span><span class='id identifier rubyid_obj'>obj</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_obj'>obj</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:expiry</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_seconds_from'>seconds_from</span><span class='lparen'>(</span><span class='id identifier rubyid_obj'>obj</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_int'>to_int</span> <span class='kw'>if</span> <span class='id identifier rubyid_obj'>obj</span>
 
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_add_cookie'>add_cookie</span> <span class='id identifier rubyid_opts'>opts</span>
 <span class='kw'>end</span></pre>
@@ -877,7 +877,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Mar  1 07:17:09 2024 by
+  Generated on Wed Mar 27 13:39:40 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.36 (ruby-3.0.6).
 </div>
