@@ -15,6 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * Represents a URL pattern to intercept.
+ * Described in network.UrlPatternPattern https://w3c.github.io/webdriver-bidi/#type-network-UrlPattern
+ */
 class UrlPattern {
   #map = new Map()
 

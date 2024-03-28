@@ -21,6 +21,10 @@ const { SerializationOptions, ReferenceValue, RemoteValue } = require('./protoco
 const { WebElement } = require('../lib/webdriver')
 const { CaptureScreenshotParameters } = require('./captureScreenshotParameters')
 
+/**
+ * Represents the locator to locate nodes in the browsing context.
+ * Described in https://w3c.github.io/webdriver-bidi/#type-browsingContext-Locator.
+ */
 class Locator {
   static Type = Object.freeze({
     CSS: 'css',
@@ -42,14 +46,35 @@ class Locator {
     this.#maxDepth = maxDepth
   }
 
+  /**
+   * Creates a new Locator object with CSS selector type.
+   *
+   * @param {string} value - The CSS selector value.
+   * @returns {Locator} A new Locator object with CSS selector type.
+   */
   static css(value) {
     return new Locator(Locator.Type.CSS, value)
   }
 
+  /**
+   * Creates a new Locator object with the given XPath value.
+   *
+   * @param {string} value - The XPath value.
+   * @returns {Locator} A new Locator object.
+   */
   static xpath(value) {
     return new Locator(Locator.Type.XPATH, value)
   }
 
+  /**
+   * Creates a new Locator object with the specified inner text value.
+   *
+   * @param {string} value - The inner text value to locate.
+   * @param {boolean|undefined} [ignoreCase] - Whether to ignore the case when matching the inner text value.
+   * @param {string|undefined} [matchType] - The type of matching to perform (full or partial).
+   * @param {number|undefined} [maxDepth] - The maximum depth to search for the inner text value.
+   * @returns {Locator} A new Locator object with the specified inner text value.
+   */
   static innerText(value, ignoreCase = undefined, matchType = undefined, maxDepth = undefined) {
     return new Locator(Locator.Type.INNER_TEXT, value, ignoreCase, matchType, maxDepth)
   }
@@ -67,6 +92,12 @@ class Locator {
   }
 }
 
+/**
+ * Represents the contains under BrowsingContext module commands.
+ * Described in https://w3c.github.io/webdriver-bidi/#module-browsingContext
+ * Each browsing context command requires a browsing context id.
+ * Hence, this class represent browsing context lifecycle.
+ */
 class BrowsingContext {
   constructor(driver) {
     this._driver = driver
@@ -204,6 +235,13 @@ class BrowsingContext {
     return new PrintResult(response.result.data)
   }
 
+  /**
+   * Captures a screenshot of the browsing context.
+   *
+   * @param {CaptureScreenshotParameters|undefined} [captureScreenshotParameters] - Optional parameters for capturing the screenshot.
+   * @returns {Promise<string>} - A promise that resolves to the base64-encoded string representation of the captured screenshot.
+   * @throws {InvalidArgumentError} - If the provided captureScreenshotParameters is not an instance of CaptureScreenshotParameters.
+   */
   async captureScreenshot(captureScreenshotParameters = undefined) {
     if (
       captureScreenshotParameters !== undefined &&
@@ -252,6 +290,12 @@ class BrowsingContext {
     return response['result']['data']
   }
 
+  /**
+   * Captures a screenshot of a specific element within the browsing context.
+   * @param {string} sharedId - The shared ID of the element to capture.
+   * @param {string} [handle] - The handle of the element to capture (optional).
+   * @returns {Promise<string>} A promise that resolves to the base64-encoded screenshot data.
+   */
   async captureElementScreenshot(sharedId, handle = undefined) {
     let params = {
       method: 'browsingContext.captureScreenshot',
@@ -286,6 +330,11 @@ class BrowsingContext {
     }
   }
 
+  /**
+   * Activates and focuses the top-level browsing context.
+   * @returns {Promise<void>} A promise that resolves when the browsing context is activated.
+   * @throws {Error} If there is an error while activating the browsing context.
+   */
   async activate() {
     const params = {
       method: 'browsingContext.activate',
@@ -300,6 +349,13 @@ class BrowsingContext {
     }
   }
 
+  /**
+   * Handles a user prompt in the browsing context.
+   *
+   * @param {boolean} [accept] - Optional. Indicates whether to accept or dismiss the prompt.
+   * @param {string} [userText] - Optional. The text to enter.
+   * @throws {Error} If an error occurs while handling the user prompt.
+   */
   async handleUserPrompt(accept = undefined, userText = undefined) {
     const params = {
       method: 'browsingContext.handleUserPrompt',
@@ -316,6 +372,15 @@ class BrowsingContext {
     }
   }
 
+  /**
+   * Reloads the current browsing context.
+   *
+   * @param {boolean} [ignoreCache] - Whether to ignore the cache when reloading.
+   * @param {string} [readinessState] - The readiness state to wait for before returning.
+   *        Valid readiness states are 'none', 'interactive', and 'complete'.
+   * @returns {Promise<NavigateResult>} - A promise that resolves to the result of the reload operation.
+   * @throws {Error} - If an invalid readiness state is provided.
+   */
   async reload(ignoreCache = undefined, readinessState = undefined) {
     if (readinessState !== undefined && !['none', 'interactive', 'complete'].includes(readinessState)) {
       throw Error(`Valid readiness states are 'none', 'interactive' & 'complete'. Received: ${readinessState}`)
@@ -334,6 +399,13 @@ class BrowsingContext {
     return new NavigateResult(navigateResult['url'], navigateResult['navigation'])
   }
 
+  /**
+   * Sets the viewport size and device pixel ratio for the browsing context.
+   * @param {number} width - The width of the viewport.
+   * @param {number} height - The height of the viewport.
+   * @param {number} [devicePixelRatio] - The device pixel ratio (optional)
+   * @throws {Error} If an error occurs while setting the viewport.
+   */
   async setViewport(width, height, devicePixelRatio = undefined) {
     const params = {
       method: 'browsingContext.setViewport',
@@ -349,6 +421,12 @@ class BrowsingContext {
     }
   }
 
+  /**
+   * Traverses the browsing context history by a given delta.
+   *
+   * @param {number} delta - The delta value to traverse the history. A positive value moves forward, while a negative value moves backward.
+   * @returns {Promise<void>} - A promise that resolves when the history traversal is complete.
+   */
   async traverseHistory(delta) {
     const params = {
       method: 'browsingContext.traverseHistory',
@@ -360,14 +438,38 @@ class BrowsingContext {
     await this.bidi.send(params)
   }
 
+  /**
+   * Moves the browsing context forward by one step in the history.
+   * @returns {Promise<void>} A promise that resolves when the browsing context has moved forward.
+   */
   async forward() {
     await this.traverseHistory(1)
   }
 
+  /**
+   * Navigates the browsing context to the previous page in the history.
+   * @returns {Promise<void>} A promise that resolves when the navigation is complete.
+   */
   async back() {
     await this.traverseHistory(-1)
   }
 
+  /**
+   * Locates nodes in the browsing context.
+   *
+   * @param {Locator} locator - The locator object used to locate the nodes.
+   * @param {number} [maxNodeCount] - The maximum number of nodes to locate (optional).
+   * @param {string} [ownership] - The ownership type of the nodes (optional).
+   * @param {string} [sandbox] - The sandbox name for locating nodes (optional).
+   * @param {SerializationOptions} [serializationOptions] - The serialization options for locating nodes (optional).
+   * @param {ReferenceValue[]} [startNodes] - The array of start nodes for locating nodes (optional).
+   * @returns {Promise<RemoteValue[]>} - A promise that resolves to the arrays of located nodes.
+   * @throws {Error} - If the locator is not an instance of Locator.
+   * @throws {Error} - If the serializationOptions is provided but not an instance of SerializationOptions.
+   * @throws {Error} - If the ownership is provided but not 'root' or 'none'.
+   * @throws {Error} - If the startNodes is provided but not an array of ReferenceValue objects.
+   * @throws {Error} - If any of the startNodes is not an instance of ReferenceValue.
+   */
   async locateNodes(
     locator,
     maxNodeCount = undefined,
@@ -427,6 +529,16 @@ class BrowsingContext {
     return remoteValues
   }
 
+  /**
+   * Locates a single node in the browsing context.
+   *
+   * @param {Locator} locator - The locator used to find the node.
+   * @param {string} [ownership] - The ownership of the node (optional).
+   * @param {string} [sandbox] - The sandbox of the node (optional).
+   * @param {SerializationOptions} [serializationOptions] - The serialization options for the node (optional).
+   * @param {Array} [startNodes] - The starting nodes for the search (optional).
+   * @returns {Promise<RemoteValue>} - A promise that resolves to the located node.
+   */
   async locateNode(
     locator,
     ownership = undefined,
@@ -454,26 +566,44 @@ class BrowsingContext {
   }
 }
 
+/**
+ * Represents the result of a navigation operation.
+ */
 class NavigateResult {
   constructor(url, navigationId) {
     this._url = url
     this._navigationId = navigationId
   }
 
+  /**
+   * Gets the URL of the navigated page.
+   * @returns {string} The URL of the navigated page.
+   */
   get url() {
     return this._url
   }
 
+  /**
+   * Gets the ID of the navigation operation.
+   * @returns {number} The ID of the navigation operation.
+   */
   get navigationId() {
     return this._navigationId
   }
 }
 
+/**
+ * Represents a print result.
+ */
 class PrintResult {
   constructor(data) {
     this._data = data
   }
 
+  /**
+   * Gets the data associated with the print result.
+   * @returns {any} The data associated with the print result.
+   */
   get data() {
     return this._data
   }
@@ -493,9 +623,5 @@ async function getBrowsingContextInstance(driver, { browsingContextId, type, ref
   return instance
 }
 
-/**
- * API
- * @type {function(*, {*,*,*}): Promise<BrowsingContext>}
- */
 module.exports = getBrowsingContextInstance
 module.exports.Locator = Locator
