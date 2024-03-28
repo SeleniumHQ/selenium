@@ -187,7 +187,6 @@ copy_to_bin(
 
 eslint_bin.eslint_test(
     name = "eslint-test",
-    size = "small",
     args = [
         "--ignore-pattern",
         "node_modules",
@@ -222,7 +221,6 @@ copy_to_bin(
 
 prettier_bin.prettier_test(
     name = "prettier-test",
-    size = "small",
     args = [
         ".",
         "--check",
