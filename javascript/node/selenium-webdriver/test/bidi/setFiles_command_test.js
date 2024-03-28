@@ -24,8 +24,8 @@ const { Pages, suite } = require('../../lib/test')
 const { Browser, By } = require('../..')
 const Input = require('../../bidi/input')
 const io = require('../../io')
-const fs = require('node:fs')
 const { ReferenceValue, RemoteReferenceType } = require('../../bidi/protocolValue')
+const fs = require('fs')
 
 suite(
   function (env) {
