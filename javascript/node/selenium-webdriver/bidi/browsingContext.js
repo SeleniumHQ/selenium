@@ -209,7 +209,9 @@ class BrowsingContext {
       captureScreenshotParameters !== undefined &&
       !(captureScreenshotParameters instanceof CaptureScreenshotParameters)
     ) {
-      throw new InvalidArgumentError(`Pass in a CaptureScreenshotParameters object. Received: ${captureScreenshotParameters}`)
+      throw new InvalidArgumentError(
+        `Pass in a CaptureScreenshotParameters object. Received: ${captureScreenshotParameters}`,
+      )
     }
 
     const screenshotParams = new Map()
