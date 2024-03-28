@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import")
+load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "javadoc")
 load("//java:version.bzl", "SE_VERSION")
 load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
@@ -66,6 +66,18 @@ java_dist_zip(
         "@maven//",
         "//third_party",
     ],
+    deps = [
+        ":client-combined",
+    ],
+)
+
+javadoc(
+    name = "client-javadoc",
+    third_party_prefixes = [
+        "@",
+        "//third_party",
+    ] + CDP_DEPS,
+    transitive = True,
     deps = [
         ":client-combined",
     ],
