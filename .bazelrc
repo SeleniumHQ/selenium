@@ -2,7 +2,14 @@ import .bazelrc.remote
 try-import .bazelrc.local
 try-import .bazelrc.windows.local
 
-common --enable_bzlmod
+# Enable bzlmod but without lockfile for a moment.
+# Lockfile is a problem to check in at the moment
+# because of constant Git conflicts and platform-specific
+# pieces.
+# https://github.com/bazelbuild/bazel/issues/20369
+# https://github.com/bazelbuild/bazel/issues/21491
+
+common --enable_bzlmod --lockfile_mode=off
 
 # Ensure Windows support is accurate.
 
