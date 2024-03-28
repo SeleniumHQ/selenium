@@ -23,11 +23,7 @@ const { Browser, By } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const BrowsingContext = require('../../bidi/browsingContext')
 const until = require('../../lib/until')
-const {
-  CaptureScreenshotParameter,
-  Origin,
-  CaptureScreenshotParameters,
-} = require('../../bidi/captureScreenshotParameters')
+const { Origin, CaptureScreenshotParameters } = require('../../bidi/captureScreenshotParameters')
 const { BoxClipRectangle, ElementClipRectangle } = require('../../bidi/clipRectangle')
 
 suite(

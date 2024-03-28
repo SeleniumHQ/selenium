@@ -204,26 +204,22 @@ class BrowsingContext {
     return new PrintResult(response.result.data)
   }
 
-  async captureScreenshot() {
-    let params = {
-      method: 'browsingContext.captureScreenshot',
-      params: {
-        context: this._id,
-      },
-    }
-
-    const response = await this.bidi.send(params)
-    this.checkErrorInScreenshot(response)
-    return response['result']['data']
-  }
-
-  async captureScreenshot(captureScreenshotParameters) {
-    if (!(captureScreenshotParameters instanceof CaptureScreenshotParameters)) {
+  async captureScreenshot(captureScreenshotParameters = undefined) {
+    if (
+      captureScreenshotParameters !== undefined &&
+      !(captureScreenshotParameters instanceof CaptureScreenshotParameters)
+    ) {
       throw new Error(`Pass in a CaptureScreenshotParameters object. Received: ${captureScreenshotParameters}`)
     }
 
-    const screenshotParams = captureScreenshotParameters.asMap()
+    const screenshotParams = new Map()
     screenshotParams.set('context', this._id)
+    if (captureScreenshotParameters !== undefined) {
+      captureScreenshotParameters.asMap().forEach((value, key) => {
+        screenshotParams.set(key, value)
+      })
+    }
+
     let params = {
       method: 'browsingContext.captureScreenshot',
       params: Object.fromEntries(screenshotParams),

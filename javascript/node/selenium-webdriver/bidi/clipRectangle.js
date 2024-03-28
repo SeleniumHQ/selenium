@@ -16,14 +16,14 @@
 // under the License.
 
 class ClipRectangle {
-  type
+  clipType
 
   constructor(type) {
-    this.type = type
+    this.clipType = type
   }
 
   get type() {
-    return this.type
+    return this.clipType
   }
 
   asMap() {}
