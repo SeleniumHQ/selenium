@@ -51,4 +51,8 @@ public class TracedCommandExecutor implements CommandExecutor {
       return delegate.execute(command);
     }
   }
+
+  public CommandExecutor getDelegate() {
+    return delegate;
+  }
 }

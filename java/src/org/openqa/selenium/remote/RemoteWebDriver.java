@@ -24,6 +24,8 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -36,6 +38,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
@@ -101,6 +104,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 public class RemoteWebDriver
     implements WebDriver,
         JavascriptExecutor,
+        HasBiDi,
         HasCapabilities,
         HasDownloads,
         HasFederatedCredentialManagement,
@@ -123,6 +127,8 @@ public class RemoteWebDriver
 
   private Logs remoteLogs;
   private LocalLogs localLogs;
+
+  private Optional<BiDi> biDi = Optional.empty();
 
   // For cglib
   protected RemoteWebDriver() {
@@ -159,6 +165,24 @@ public class RemoteWebDriver
 
     try {
       startSession(capabilities);
+
+      Optional<String> webSocketUrl =
+          Optional.ofNullable((String) this.capabilities.getCapability("webSocketUrl"));
+
+      // Firefox returns the capability back as it is if it is not supported
+      // So we need to check before proceeding
+      if (webSocketUrl.isPresent()) {
+        this.biDi = createBiDi(webSocketUrl.get());
+        CommandExecutor commandExecutor = executor;
+
+        if (commandExecutor instanceof TracedCommandExecutor) {
+          commandExecutor = ((TracedCommandExecutor) executor).getDelegate();
+        }
+
+        if (commandExecutor instanceof BiDiDelegator) {
+          ((BiDiDelegator) (commandExecutor)).setBiDiCommandExecutor(new BiDiCommandExecutor(this));
+        }
+      }
     } catch (RuntimeException e) {
       try {
         quit();
@@ -183,13 +207,13 @@ public class RemoteWebDriver
     if (enableTracing) {
       Tracer tracer = OpenTelemetryTracer.getInstance();
       CommandExecutor executor =
-          new HttpCommandExecutor(
+          new BiDiDelegator(
               Collections.emptyMap(),
               config,
               new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
       return new TracedCommandExecutor(executor, tracer);
     } else {
-      return new HttpCommandExecutor(config);
+      return new BiDiDelegator(config);
     }
   }
 
@@ -818,6 +842,27 @@ public class RemoteWebDriver
     return String.format(
         "%s: %s on %s (%s)",
         getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId());
+  }
+
+  @Override
+  public Optional<BiDi> maybeGetBiDi() {
+    return this.biDi;
+  }
+
+  private Optional<BiDi> createBiDi(String biDiUri) {
+    try {
+      URI wsUri = new URI(biDiUri);
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+      ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+      HttpClient wsClient = clientFactory.createClient(wsConfig);
+
+      org.openqa.selenium.bidi.Connection biDiConnection =
+          new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
+
+      return Optional.of(new BiDi(biDiConnection));
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public enum When {

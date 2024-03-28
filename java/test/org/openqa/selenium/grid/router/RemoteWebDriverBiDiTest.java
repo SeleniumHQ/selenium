@@ -81,6 +81,33 @@ class RemoteWebDriverBiDiTest {
   }
 
   @Test
+  void canPortNavigateToBiDi() {
+    Browser browser = Browser.FIREFOX;
+
+    Deployment deployment =
+        DeploymentTypes.STANDALONE.start(
+            browser.getCapabilities(),
+            new TomlConfig(
+                new StringReader(
+                    "[node]\n"
+                        + "selenium-manager = false\n"
+                        + "driver-implementation = "
+                        + browser.displayName())));
+
+    AppServer server = new NettyAppServer();
+    server.start();
+
+    FirefoxOptions options = createFirefoxOptions();
+    // Enable BiDi
+    options.setCapability("webSocketUrl", true);
+    options.merge(Browser.FIREFOX.getCapabilities());
+
+    WebDriver driver = new RemoteWebDriver(deployment.getServer().getUrl(), options);
+    String page = server.whereIs("/bidi/logEntryAdded.html");
+    driver.get(page);
+  }
+
+  @Test
   void canListenToLogs() throws ExecutionException, InterruptedException, TimeoutException {
     Browser browser = Browser.FIREFOX;
 
