@@ -17,11 +17,12 @@
 
 package org.openqa.selenium.support.ui;
 
-import com.google.common.base.Joiner;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -1415,9 +1416,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        StringBuilder message = new StringBuilder("at least one condition to be valid: ");
-        Joiner.on(" || ").appendTo(message, conditions);
-        return message.toString();
+        return "at least one condition to be valid: "
+            + Arrays.stream(conditions).map(Objects::toString).collect(Collectors.joining(" || "));
       }
     };
   }
@@ -1452,9 +1452,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        StringBuilder message = new StringBuilder("all conditions to be valid: ");
-        Joiner.on(" && ").appendTo(message, conditions);
-        return message.toString();
+        return "all conditions to be valid: "
+            + Arrays.stream(conditions).map(Objects::toString).collect(Collectors.joining(" && "));
       }
     };
   }
