@@ -1,7 +1,7 @@
 module Selenium
   module WebDriver
     module Firefox
-      self.@path: untyped
+      @path: String?
 
       DEFAULT_PORT: Integer
 
@@ -13,9 +13,9 @@ module Selenium
 
       DEVTOOLS_VERSION: Integer
 
-      def self.path=: (untyped path) -> untyped
+      def self.path=: (String path) -> String
 
-      def self.path: () -> untyped
+      def self.path: () -> String?
     end
   end
 end
