@@ -19,6 +19,7 @@ const { InvalidArgumentError, NoSuchFrameError } = require('../lib/error')
 const { BrowsingContextInfo } = require('./browsingContextTypes')
 const { SerializationOptions, ReferenceValue, RemoteValue } = require('./protocolValue')
 const { WebElement } = require('../lib/webdriver')
+const { CaptureScreenshotParameters } = require('./captureScreenshotParameters')
 
 class Locator {
   static Type = Object.freeze({
@@ -203,12 +204,27 @@ class BrowsingContext {
     return new PrintResult(response.result.data)
   }
 
-  async captureScreenshot() {
+  async captureScreenshot(captureScreenshotParameters = undefined) {
+    if (
+      captureScreenshotParameters !== undefined &&
+      !(captureScreenshotParameters instanceof CaptureScreenshotParameters)
+    ) {
+      throw new InvalidArgumentError(
+        `Pass in a CaptureScreenshotParameters object. Received: ${captureScreenshotParameters}`,
+      )
+    }
+
+    const screenshotParams = new Map()
+    screenshotParams.set('context', this._id)
+    if (captureScreenshotParameters !== undefined) {
+      captureScreenshotParameters.asMap().forEach((value, key) => {
+        screenshotParams.set(key, value)
+      })
+    }
+
     let params = {
       method: 'browsingContext.captureScreenshot',
-      params: {
-        context: this._id,
-      },
+      params: Object.fromEntries(screenshotParams),
     }
 
     const response = await this.bidi.send(params)
@@ -231,15 +247,12 @@ class BrowsingContext {
       },
     }
 
-    console.log(JSON.stringify(params))
-
     const response = await this.bidi.send(params)
-    console.log(JSON.stringify(response))
     this.checkErrorInScreenshot(response)
     return response['result']['data']
   }
 
-  async captureElementScreenshot(sharedId, handle = undefined, scrollIntoView = undefined) {
+  async captureElementScreenshot(sharedId, handle = undefined) {
     let params = {
       method: 'browsingContext.captureScreenshot',
       params: {
@@ -250,7 +263,6 @@ class BrowsingContext {
             sharedId: sharedId,
             handle: handle,
           },
-          scrollIntoView: scrollIntoView,
         },
       },
     }
