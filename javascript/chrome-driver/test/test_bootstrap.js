@@ -60,11 +60,11 @@
     '../../deps.js'
   ];
 
-  if (location.pathname.lastIndexOf('/filez/selenium/javascript/', 0) === 0) {
+  if (location.pathname.lastIndexOf('/filez/_main/javascript/', 0) === 0) {
     directoryPath = '';
     files = [
       '/filez/com_google_javascript_closure_library/closure/goog/base.js',
-      '/filez/selenium/javascript/chrome-driver/deps.js',
+      '/filez/_main/javascript/chrome-driver/deps.js',
     ];
   }
 

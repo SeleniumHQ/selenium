@@ -83,7 +83,7 @@ class JavaScriptTestSuite {
           try {
             String url = "/" + s;
             if (isBazel() && !url.startsWith("/common/generated/")) {
-              url = "/filez/selenium" + url;
+              url = "/filez/_main" + url;
             }
             return new URL(appServer.whereIs(url));
           } catch (MalformedURLException e) {

@@ -24,13 +24,12 @@ jobs:
         uses: bazel-contrib/setup-bazel@0.8.1
         with:
           bazelisk-cache: true
+          cache-version: 2
           external-cache: |
             name: ci-check
             manifest:
               crates: rust/Cargo.Bazel.lock
-              npm: package-lock.json
-              pypi__pip: py/requirements_lock.txt
-              ruby: rb/.ruby-version
+              rules_ruby~~ruby~ruby: rb/.ruby-version
           repository-cache: true
       - name: Check Bazel targets
         id: check-targets

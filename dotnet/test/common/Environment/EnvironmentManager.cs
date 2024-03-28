@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Environment
             try
             {
                 var runfiles = Runfiles.Create();
-                dataFilePath = runfiles.Rlocation("selenium/dotnet/test/common/appconfig.json");
+                dataFilePath = runfiles.Rlocation("_main/dotnet/test/common/appconfig.json");
             }
             catch (FileNotFoundException)
             {
@@ -135,7 +135,7 @@ namespace OpenQA.Selenium.Environment
             }
             else
             {
-                projectRoot += "/selenium";
+                projectRoot += "/_main";
             }
 
             webServer = new TestWebServer(projectRoot, webServerConfig);

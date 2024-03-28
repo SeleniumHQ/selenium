@@ -169,9 +169,7 @@ class OutOfProcessSeleniumServer {
     try {
       Runfiles.Preloaded runfiles = Runfiles.preload();
       String location =
-          runfiles
-              .unmapped()
-              .rlocation("selenium/java/src/org/openqa/selenium/grid/selenium_server");
+          runfiles.unmapped().rlocation("_main/java/src/org/openqa/selenium/grid/selenium_server");
       System.err.println("Location found is: " + location);
       Path path = Paths.get(location);
       if (Files.exists(path)) {
