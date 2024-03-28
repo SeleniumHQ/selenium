@@ -24,6 +24,7 @@ jobs:
         uses: bazel-contrib/setup-bazel@0.8.1
         with:
           bazelisk-cache: true
+          cache-version: 2
           external-cache: |
             name: ci-check
             manifest:

@@ -99,6 +99,7 @@ jobs:
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
+          cache-version: 2
           disk-cache: ${{ inputs.cache-key }}
           external-cache: |
             name: ${{ inputs.cache-key }}
