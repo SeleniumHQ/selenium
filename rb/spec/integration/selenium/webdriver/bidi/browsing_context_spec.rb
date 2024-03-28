@@ -66,7 +66,7 @@ module Selenium
           browsing_context = described_class.new(driver: driver, type: :tab)
 
           info = browsing_context.navigate url: url_for('/bidi/logEntryAdded.html'),
-                                           readiness_state: :complete
+                                           readiness_state: :normal
 
           expect(browsing_context.id).not_to be_nil
           expect(info.url).to include('/bidi/logEntryAdded.html')
@@ -76,7 +76,7 @@ module Selenium
           browsing_context_id = driver.window_handle
           parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),
-                                 readiness_state: :complete)
+                                 readiness_state: :normal)
 
           context_info = parent_window.get_tree
           expect(context_info.children.size).to eq(1)
@@ -88,7 +88,7 @@ module Selenium
           browsing_context_id = driver.window_handle
           parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),
-                                 readiness_state: :complete)
+                                 readiness_state: :normal)
 
           context_info = parent_window.get_tree(max_depth: 0)
           expect(context_info.children).to be_nil

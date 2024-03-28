@@ -17,23 +17,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'uri'
-require 'selenium/webdriver/remote/server_error'
-
 module Selenium
   module WebDriver
     module Remote
-      autoload :Features,     'selenium/webdriver/remote/features'
-      autoload :BiDiBridge,   'selenium/webdriver/remote/bi_di_bridge'
-      autoload :Bridge,       'selenium/webdriver/remote/bridge'
-      autoload :Driver,       'selenium/webdriver/remote/driver'
-      autoload :Response,     'selenium/webdriver/remote/response'
-      autoload :Capabilities, 'selenium/webdriver/remote/capabilities'
+      module BiDiBridge
+        attr_accessor :bidi, :browsing_context
 
-      module Http
-        autoload :Common,  'selenium/webdriver/remote/http/common'
-        autoload :Default, 'selenium/webdriver/remote/http/default'
-      end
-    end
-  end
-end
+        def get(url)
+          @browsing_context ||= WebDriver::BiDi::BrowsingContext.new(driver: self,
+                                                                    browsing_context_id: window_handle,
+                                                                    type: :tab)
+          @browsing_context.navigate(url: url, readiness_state: capabilities[:page_load_strategy])
+        end
+      end # BiDiBridge
+    end # Remote
+  end # WebDriver
+end # Selenium

@@ -82,7 +82,7 @@ module Selenium
                                              class: described_class)
           end
           let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
-          let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
+          let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}, capabilities: {}) }
 
           before do
             allow(Remote::Bridge).to receive(:new).and_return(bridge)

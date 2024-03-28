@@ -28,8 +28,8 @@ module Selenium
 
         READINESS_STATE = {
           none: 'none',
-          interactive: 'interactive',
-          complete: 'complete'
+          eager: 'interactive',
+          normal: 'complete'
         }.freeze
 
         def initialize(driver:, browsing_context_id: nil, type: nil, reference_context: nil)
@@ -38,21 +38,11 @@ module Selenium
                   'WebDriver instance must support BiDi protocol'
           end
 
-          unless type.nil? || %i[window tab].include?(type)
-            raise ArgumentError,
-                  "Valid types are :window & :tab. Received: #{type.inspect}"
-          end
-
           @bidi = driver.bidi
           @id = browsing_context_id.nil? ? create(type, reference_context)['context'] : browsing_context_id
         end
 
         def navigate(url:, readiness_state: nil)
-          unless readiness_state.nil? || READINESS_STATE.key?(readiness_state)
-            raise ArgumentError,
-                  "Valid readiness states are :none, :interactive & :complete. Received: #{readiness_state.inspect}"
-          end
-
           navigate_result = @bidi.send_cmd('browsingContext.navigate', context: @id, url: url,
                                                                        wait: READINESS_STATE[readiness_state])
 
