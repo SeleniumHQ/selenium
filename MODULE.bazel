@@ -124,6 +124,12 @@ use_repo(pip, "py_dev_requirements")
 
 register_toolchains("@pythons_hub//:all")
 
+single_version_override(
+    module_name = "rules_jvm_external",
+    patches = ["//java:rules_jvm_external_javadoc.patch"],
+    patch_strip = 1,
+)
+
 java_toolchains = use_extension("@rules_java//java:extensions.bzl", "toolchains")
 use_repo(
     java_toolchains,

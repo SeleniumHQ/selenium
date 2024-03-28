@@ -6,9 +6,11 @@ load(
     "java_dist_zip",
     "java_export",
     "java_library",
+    "javadoc",
     "merge_jars",
 )
 load("//java:version.bzl", "SE_VERSION")
+load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
 genrule(
     name = "executable-grid",
@@ -206,5 +208,18 @@ java_dist_zip(
     ],
     deps = [
         ":grid",
+    ],
+)
+
+javadoc(
+    name = "all-javadocs",
+    third_party_prefixes = [
+        "@",
+        "//third_party",
+    ] + CDP_DEPS,
+    transitive = True,
+    deps = [
+        ":grid",
+        "//java/src/org/openqa/selenium:client-combined",
     ],
 )
