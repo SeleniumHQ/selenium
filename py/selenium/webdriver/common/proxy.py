@@ -17,28 +17,17 @@
 """The Proxy implementation."""
 
 
-class ProxyTypeFactory:
-    """Factory for proxy types."""
-
-    @staticmethod
-    def make(ff_value, string):
-        return {"ff_value": ff_value, "string": string}
-
-
 class ProxyType:
     """Set of possible types of proxy.
 
-    Each proxy type has 2 properties:    'ff_value' is value of Firefox
     profile preference,    'string' is id of proxy type.
     """
 
-    DIRECT = ProxyTypeFactory.make(0, "DIRECT")  # Direct connection, no proxy (default on Windows).
-    MANUAL = ProxyTypeFactory.make(1, "MANUAL")  # Manual proxy settings (e.g., for httpProxy).
-    PAC = ProxyTypeFactory.make(2, "PAC")  # Proxy autoconfiguration from URL.
-    RESERVED_1 = ProxyTypeFactory.make(3, "RESERVED1")  # Never used.
-    AUTODETECT = ProxyTypeFactory.make(4, "AUTODETECT")  # Proxy autodetection (presumably with WPAD).
-    SYSTEM = ProxyTypeFactory.make(5, "SYSTEM")  # Use system settings (default on Linux).
-    UNSPECIFIED = ProxyTypeFactory.make(6, "UNSPECIFIED")  # Not initialized (for internal use).
+    DIRECT = "DIRECT"  # Direct connection, no proxy
+    MANUAL = "MANUAL"  # Manual proxy settings (e.g., for httpProxy).
+    PAC = "PAC"  # Proxy autoconfiguration from URL.
+    AUTODETECT = "AUTODETECT"  # Proxy auto-detection (presumably with WPAD).
+    SYSTEM = "SYSTEM"  # Use system settings
 
     @classmethod
     def load(cls, value):
@@ -46,9 +35,8 @@ class ProxyType:
             value = value["string"]
         value = str(value).upper()
         for attr in dir(cls):
-            attr_value = getattr(cls, attr)
-            if isinstance(attr_value, dict) and "string" in attr_value and attr_value["string"] == value:
-                return attr_value
+            if getattr(cls, attr) == value:
+                return value
         raise Exception(f"No proxy type is found for {value}")
 
 
@@ -72,7 +60,7 @@ class Proxy:
     """Proxy contains information about proxy type and necessary proxy
     settings."""
 
-    proxyType = ProxyType.UNSPECIFIED
+    proxyType = None
     autodetect = False
     ftpProxy = ""
     httpProxy = ""
@@ -281,13 +269,15 @@ class Proxy:
         self.proxyType = value
 
     def _verify_proxy_type_compatibility(self, compatible_proxy):
-        if self.proxyType not in (ProxyType.UNSPECIFIED, compatible_proxy):
+        if self.proxyType not in (None, compatible_proxy):
             raise ValueError(
                 f"Specified proxy type ({compatible_proxy}) not compatible with current setting ({self.proxyType})"
             )
 
     def to_capabilities(self):
-        proxy_caps = {"proxyType": self.proxyType["string"].lower()}
+        if not self.proxyType:
+            raise ValueError("proxyType must be specified before use")
+        proxy_caps = {"proxyType": self.proxyType.lower()}
         proxies = [
             "autodetect",
             "ftpProxy",

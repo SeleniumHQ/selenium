@@ -120,9 +120,9 @@ def test_can_init_pacproxy():
     assert PAC_PROXY["proxyAutoconfigUrl"] == proxy.proxy_autoconfig_url
 
 
-def test_can_init_empty_proxy():
+def test_errors_on_empty_proxy():
     proxy = Proxy()
-    assert ProxyType.UNSPECIFIED == proxy.proxy_type
+    assert proxy.proxy_type is None
     assert "" == proxy.http_proxy
     assert "" == proxy.ftp_proxy
     assert "" == proxy.no_proxy
@@ -135,8 +135,6 @@ def test_can_init_empty_proxy():
     assert proxy.socks_version is None
 
     options = ArgOptions()
-    options.proxy = proxy
 
-    proxy_capabilities = {}
-    proxy_capabilities["proxyType"] = "unspecified"
-    assert proxy_capabilities == options.to_capabilities().get("proxy")
+    with pytest.raises(ValueError):
+        options.proxy = proxy
