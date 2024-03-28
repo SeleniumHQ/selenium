@@ -10,13 +10,13 @@ rules_proto_dependencies()
 
 rules_proto_toolchains()
 
-# Move to MODULES.bzl once a new release is out with
+# Move to MODULE.bazel once a new release is out with
 # https://github.com/bazelbuild/rules_rust/commit/fc601ba32f21ec034baebc487646dea92afbcd04.
 
 http_archive(
     name = "rules_rust",
-    sha256 = "50ec4b84a7ec5370f5882d52f4a1e6b8a75de2f8dcc0a4403747b69b2c4ef5b1",
-    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.23.0/rules_rust-v0.23.0.tar.gz"],
+    integrity = "sha256-Y4v6kjQQfXxh5tU6FQB6YXux/ODFGUq3IlpgBV4Bwj8=",
+    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.41.0/rules_rust-v0.41.0.tar.gz"],
 )
 
 load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
