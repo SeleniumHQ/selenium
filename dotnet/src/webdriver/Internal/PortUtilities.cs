@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Encapsulates methods for working with ports.
     /// </summary>
-    public static class PortUtilities
+    internal static class PortUtilities
     {
         /// <summary>
         /// Finds a random, free port to be listened on.
