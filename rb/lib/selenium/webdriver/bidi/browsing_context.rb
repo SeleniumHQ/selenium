@@ -73,6 +73,36 @@ module Selenium
           )
         end
 
+        # Organising margin and page parameters in a struct for print command
+        Margin = Struct.new(:bottom, :top, :left, :right, keyword_init: true) do
+          def initialize(bottom: 1.0, top: 1.0, left: 1.0, right: 1.0)
+            super
+          end
+        end
+
+        Page = Struct.new(:height, :width, keyword_init: true) do
+          def initialize(height: 27.94, width: 21.59)
+            super
+          end
+        end
+
+        def print_page(background: false, margin: Margin.new, orientation: 'portrait', page: Page.new, page_ranges: [],
+                       scale: 1.0, shrink_to_fit: true, path: nil)
+          print_result = @bidi.send_cmd('browsingContext.print',
+                                        context: @id,
+                                        background: background,
+                                        margin: margin.to_h,
+                                        orientation: orientation,
+                                        page: page.to_h,
+                                        pageRanges: page_ranges,
+                                        scale: scale,
+                                        shrinkToFit: shrink_to_fit)
+
+          return File.write(path, Base64.decode64(print_result['data']), mode: 'wb') unless path.nil?
+
+          print_result['data']
+        end
+
         def close
           @bidi.send_cmd('browsingContext.close', context: @id)
         end
