@@ -30,7 +30,6 @@ from selenium import __version__
 
 from . import utils
 from .command import Command
-from .errorhandler import ErrorCode
 
 LOGGER = logging.getLogger(__name__)
 
@@ -329,6 +328,9 @@ class RemoteConnection:
         data = response.data.decode("UTF-8")
         LOGGER.debug("Remote response: status=%s | data=%s | headers=%s", response.status, data, response.headers)
         try:
+            # FIXME: below "status" can be removed. Maybe the "value" as well
+            # because the `data` includes vanilla response fro the WebDriver. It also could include
+            # "value" key as the WebDriver spec, but it needs to test well.
             if 300 <= statuscode < 304:
                 return self._request("GET", response.headers.get("location", None))
             if 399 < statuscode <= 500:
@@ -341,9 +343,9 @@ class RemoteConnection:
                     data = utils.load_json(data.strip())
                 except ValueError:
                     if 199 < statuscode < 300:
-                        status = ErrorCode.SUCCESS
+                        status = 0
                     else:
-                        status = ErrorCode.UNKNOWN_ERROR
+                        status = 13
                     return {"status": status, "value": data.strip()}
 
                 # Some drivers incorrectly return a response
