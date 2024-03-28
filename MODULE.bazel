@@ -13,7 +13,7 @@ bazel_dep(name = "platforms", version = "0.0.8")
 bazel_dep(name = "rules_dotnet", version = "0.14.0")
 bazel_dep(name = "rules_java", version = "7.4.0")
 bazel_dep(name = "rules_jvm_external", version = "6.0")
-bazel_dep(name = "rules_nodejs", version = "5.8.3")
+bazel_dep(name = "rules_nodejs", version = "6.0.5")
 bazel_dep(name = "rules_oci", version = "1.0.0")
 bazel_dep(name = "rules_pkg", version = "0.9.1")
 bazel_dep(name = "rules_python", version = "0.31.0")
@@ -31,7 +31,7 @@ linter.configure(
 )
 linter.register(name = "rust-rustfmt")
 
-node = use_extension("@aspect_rules_js//node:extensions.bzl", "node")
+node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
 node.toolchain(node_version = "18.17.0")
 
 npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
