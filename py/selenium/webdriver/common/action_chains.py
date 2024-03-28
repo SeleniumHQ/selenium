@@ -111,8 +111,7 @@ class ActionChains:
             self.move_to_element(on_element)
 
         self.w3c_actions.pointer_action.click()
-        self.w3c_actions.key_action.pause()
-        self.w3c_actions.key_action.pause()
+        self.w3c_actions.fill_pause_except('pointer', 2)
 
         return self
 
@@ -127,7 +126,7 @@ class ActionChains:
             self.move_to_element(on_element)
 
         self.w3c_actions.pointer_action.click_and_hold()
-        self.w3c_actions.key_action.pause()
+        self.w3c_actions.fill_pause_except('pointer')
 
         return self
 
@@ -142,8 +141,7 @@ class ActionChains:
             self.move_to_element(on_element)
 
         self.w3c_actions.pointer_action.context_click()
-        self.w3c_actions.key_action.pause()
-        self.w3c_actions.key_action.pause()
+        self.w3c_actions.fill_pause_except('pointer', 2)
 
         return self
 
@@ -158,8 +156,7 @@ class ActionChains:
             self.move_to_element(on_element)
 
         self.w3c_actions.pointer_action.double_click()
-        for _ in range(4):
-            self.w3c_actions.key_action.pause()
+        self.w3c_actions.fill_pause_except('pointer', 4)
 
         return self
 
@@ -206,7 +203,7 @@ class ActionChains:
             self.click(element)
 
         self.w3c_actions.key_action.key_down(value)
-        self.w3c_actions.pointer_action.pause()
+        self.w3c_actions.fill_pause_except('key')
 
         return self
 
@@ -226,7 +223,7 @@ class ActionChains:
             self.click(element)
 
         self.w3c_actions.key_action.key_up(value)
-        self.w3c_actions.pointer_action.pause()
+        self.w3c_actions.fill_pause_except('key')
 
         return self
 
@@ -239,7 +236,7 @@ class ActionChains:
         """
 
         self.w3c_actions.pointer_action.move_by(xoffset, yoffset)
-        self.w3c_actions.key_action.pause()
+        self.w3c_actions.fill_pause_except('pointer')
 
         return self
 
@@ -251,7 +248,7 @@ class ActionChains:
         """
 
         self.w3c_actions.pointer_action.move_to(to_element)
-        self.w3c_actions.key_action.pause()
+        self.w3c_actions.fill_pause_except('pointer')
 
         return self
 
@@ -266,15 +263,16 @@ class ActionChains:
         """
 
         self.w3c_actions.pointer_action.move_to(to_element, int(xoffset), int(yoffset))
-        self.w3c_actions.key_action.pause()
+        self.w3c_actions.fill_pause_except('pointer')
 
         return self
 
     def pause(self, seconds: float | int) -> ActionChains:
         """Pause all inputs for the specified duration in seconds."""
 
-        self.w3c_actions.pointer_action.pause(seconds)
         self.w3c_actions.key_action.pause(seconds)
+        self.w3c_actions.pointer_action.pause(seconds)
+        self.w3c_actions.wheel_action.pause(seconds)
 
         return self
 
@@ -289,7 +287,7 @@ class ActionChains:
             self.move_to_element(on_element)
 
         self.w3c_actions.pointer_action.release()
-        self.w3c_actions.key_action.pause()
+        self.w3c_actions.fill_pause_except('pointer')
 
         return self
 
@@ -329,6 +327,8 @@ class ActionChains:
         """
 
         self.w3c_actions.wheel_action.scroll(origin=element)
+        self.w3c_actions.fill_pause_except('wheel')
+
         return self
 
     def scroll_by_amount(self, delta_x: int, delta_y: int) -> ActionChains:
@@ -341,6 +341,8 @@ class ActionChains:
         """
 
         self.w3c_actions.wheel_action.scroll(delta_x=delta_x, delta_y=delta_y)
+        self.w3c_actions.fill_pause_except('wheel')
+
         return self
 
     def scroll_from_origin(self, scroll_origin: ScrollOrigin, delta_x: int, delta_y: int) -> ActionChains:
@@ -369,6 +371,8 @@ class ActionChains:
             delta_x=delta_x,
             delta_y=delta_y,
         )
+        self.w3c_actions.fill_pause_except('wheel')
+    
         return self
 
     # Context manager so ActionChains can be used in a 'with .. as' statements.

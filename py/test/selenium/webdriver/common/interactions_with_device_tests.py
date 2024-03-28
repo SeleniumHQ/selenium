@@ -193,18 +193,21 @@ def test_sending_keys_to_element_with_keyboard(driver, pages):
     assert "abc" == e.get_attribute("value")
 
 
-def test_can_send_keys_between_clicks_with_keyboard(driver, pages):
+def test_can_perform_actions_with_multiple_input_devices(driver, pages):
     """
     For W3C, ensures that the correct number of pauses are given to the other
     input device.
     """
     pages.load("javascriptPage.html")
     keyup = driver.find_element(By.ID, "keyUp")
-    keydown = driver.find_element(By.ID, "keyDown")
 
+    mouse = PointerInput(interaction.POINTER_MOUSE, "test mouse")
     key_board = KeyInput("test keyboard")
+    wheel = WheelInput("test wheel")
 
-    ActionChains(driver, devices=[key_board]).click(keyup).send_keys("foobar").click(keydown).perform()
+    devices = [mouse, key_board, wheel]
+
+    ActionChains(driver, devices=devices).click(keyup).scroll_by_amount(0, 100).send_keys("foobar").perform()
 
     assert "foobar" == keyup.get_attribute("value")
 

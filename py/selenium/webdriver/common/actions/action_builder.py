@@ -15,7 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Dict
 from typing import List
+from typing import Literal
 from typing import Optional
 from typing import Union
 
@@ -85,6 +87,17 @@ class ActionBuilder:
         new_input = WheelInput(name)
         self._add_input(new_input)
         return new_input
+    
+    def fill_pause_except(self, type: Literal["key", "pointer", "wheel"], ticks: int = 1) -> None:
+        actions: Dict[Literal["key", "pointer", "wheel"], Union[KeyActions, PointerActions, WheelActions]] = {
+            "key": self.key_action,
+            "pointer": self.pointer_action,
+            "wheel": self.wheel_action
+        }
+        del actions[type]
+        for action in actions.values():
+            for _ in range(ticks):
+                action.pause()
 
     def perform(self) -> None:
         enc = {"actions": []}
