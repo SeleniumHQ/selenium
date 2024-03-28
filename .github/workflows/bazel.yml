@@ -104,9 +104,7 @@ jobs:
             name: ${{ inputs.cache-key }}
             manifest:
               crates: rust/Cargo.Bazel.lock
-              npm: package-lock.json
-              pypi__pip: py/requirements_lock.txt
-              ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
+              rules_ruby~~ruby~ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
