@@ -18,8 +18,15 @@
 package org.openqa.selenium.remote.service;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
@@ -28,51 +35,154 @@ import org.openqa.selenium.remote.NoSuchDriverException;
 public class DriverFinder {
 
   private static final Logger LOG = Logger.getLogger(DriverFinder.class.getName());
+  private final DriverService service;
+  private final Capabilities options;
+  private final SeleniumManager seleniumManager;
+  private boolean offline;
+  private Result result;
 
-  public static Result getPath(DriverService service, Capabilities options) {
-    return getPath(service, options, false);
+  public DriverFinder(DriverService service, Capabilities options) {
+    this(service, options, SeleniumManager.getInstance());
   }
 
-  public static Result getPath(DriverService service, Capabilities options, boolean offline) {
-    Require.nonNull("Browser options", options);
-    String driverName = service.getDriverName();
+  DriverFinder(DriverService service, Capabilities options, SeleniumManager seleniumManager) {
+    this.service = service;
+    this.options = options;
+    this.seleniumManager = seleniumManager;
+  }
 
-    Result result = new Result(service.getExecutable());
-    if (result.getDriverPath() == null) {
-      result = new Result(System.getProperty(service.getDriverProperty()));
-      if (result.getDriverPath() == null) {
-        try {
-          result = SeleniumManager.getInstance().getDriverPath(options, offline);
-        } catch (RuntimeException e) {
-          throw new NoSuchDriverException(
-              String.format("Unable to obtain: %s, error %s", options, e.getMessage()), e);
+  public String getDriverPath() {
+    return getBinaryPaths().getDriverPath();
+  }
+
+  public String getBrowserPath() {
+    return getBinaryPaths().getBrowserPath();
+  }
+
+  public boolean isAvailable() {
+    try {
+      offline = false;
+      getBinaryPaths();
+      return true;
+    } catch (NoSuchDriverException e) {
+      return false;
+    } catch (IllegalStateException | WebDriverException e) {
+      LOG.log(Level.WARNING, "failed to discover driver path", e);
+      return false;
+    }
+  }
+
+  public boolean isPresent() {
+    try {
+      offline = true;
+      getBinaryPaths();
+      return true;
+    } catch (NoSuchDriverException e) {
+      return false;
+    } catch (IllegalStateException | WebDriverException e) {
+      LOG.log(Level.WARNING, "failed to discover driver path", e);
+      return false;
+    }
+  }
+
+  public boolean hasBrowserPath() {
+    String browserPath = result.getBrowserPath();
+    return browserPath != null && !browserPath.isEmpty();
+  }
+
+  private Result getBinaryPaths() {
+    if (result == null) {
+      try {
+        String driverName = service.getDriverName();
+        result = new Result(service.getExecutable());
+        if (result.getDriverPath() == null) {
+          result = new Result(System.getProperty(service.getDriverProperty()));
+          if (result.getDriverPath() == null) {
+            List<String> arguments = toArguments();
+            result = seleniumManager.getBinaryPaths(arguments);
+            Require.state(options.getBrowserName(), new File(result.getBrowserPath()))
+                .isExecutable();
+          } else {
+            LOG.fine(
+                String.format(
+                    "Skipping Selenium Manager, path to %s found in system property: %s",
+                    driverName, result.getDriverPath()));
+          }
+        } else {
+          LOG.fine(
+              String.format(
+                  "Skipping Selenium Manager, path to %s specified in Service class: %s",
+                  driverName, result.getDriverPath()));
         }
-      } else {
-        LOG.fine(
+
+        Require.state(driverName, new File(result.getDriverPath())).isExecutable();
+      } catch (RuntimeException e) {
+        throw new NoSuchDriverException(
             String.format(
-                "Skipping Selenium Manager, path to %s found in system property: %s",
-                driverName, result.getDriverPath()));
+                "Unable to obtain: %s, error %s", service.getDriverName(), e.getMessage()),
+            e);
       }
-    } else {
-      LOG.fine(
-          String.format(
-              "Skipping Selenium Manager, path to %s specified in Service class: %s",
-              driverName, result.getDriverPath()));
     }
 
-    String message;
-    if (result.getDriverPath() == null) {
-      message = String.format("Unable to locate or obtain %s", driverName);
-    } else if (!new File(result.getDriverPath()).exists()) {
-      message =
-          String.format("%s at location %s, does not exist", driverName, result.getDriverPath());
-    } else if (!new File(result.getDriverPath()).canExecute()) {
-      message =
-          String.format("%s located at %s, cannot be executed", driverName, result.getDriverPath());
-    } else {
-      return result;
+    return result;
+  }
+
+  private List<String> toArguments() {
+    List<String> arguments = new ArrayList<>();
+    arguments.add("--browser");
+    arguments.add(options.getBrowserName());
+
+    if (!options.getBrowserVersion().isEmpty()) {
+      arguments.add("--browser-version");
+      arguments.add(options.getBrowserVersion());
     }
 
-    throw new NoSuchDriverException(message);
+    String browserBinary = getBrowserBinary(options);
+    if (browserBinary != null && !browserBinary.isEmpty()) {
+      arguments.add("--browser-path");
+      arguments.add(browserBinary);
+    }
+
+    if (offline) {
+      arguments.add("--offline");
+    }
+
+    Proxy proxy = Proxy.extractFrom(options);
+    if (proxy != null) {
+      arguments.add("--proxy");
+      if (proxy.getSslProxy() != null) {
+        arguments.add(proxy.getSslProxy());
+      } else if (proxy.getHttpProxy() != null) {
+        arguments.add(proxy.getHttpProxy());
+      }
+    }
+    return arguments;
+  }
+
+  /**
+   * Returns the browser binary path when present in the vendor options
+   *
+   * @param options browser options used to start the session
+   * @return the browser binary path when present, only Chrome/Firefox/Edge
+   */
+  private static String getBrowserBinary(Capabilities options) {
+    List<String> vendorOptionsCapabilities =
+        Arrays.asList("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");
+    for (String vendorOptionsCapability : vendorOptionsCapabilities) {
+      if (options.asMap().containsKey(vendorOptionsCapability)) {
+        try {
+          @SuppressWarnings("unchecked")
+          Map<String, Object> vendorOptions =
+              (Map<String, Object>) options.getCapability(vendorOptionsCapability);
+          return (String) vendorOptions.get("binary");
+        } catch (Exception e) {
+          LOG.warning(
+              String.format(
+                  "Exception while retrieving the browser binary path. %s: %s",
+                  options, e.getMessage()));
+        }
+      }
+    }
+    return null;
   }
 }

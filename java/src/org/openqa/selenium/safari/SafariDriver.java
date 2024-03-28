@@ -91,10 +91,8 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
     Require.nonNull("Driver clientConfig", clientConfig);
-    if (service.getExecutable() == null) {
-      String path = DriverFinder.getPath(service, options).getDriverPath();
-      service.setExecutable(path);
-    }
+    DriverFinder finder = new DriverFinder(service, options);
+    service.setExecutable(finder.getDriverPath());
     return new SafariDriverCommandExecutor(service, clientConfig);
   }
 

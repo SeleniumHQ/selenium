@@ -22,7 +22,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.service.DriverService;
 
 /**
- * Thrown by {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService,
+ * Thrown by {@link org.openqa.selenium.remote.service.DriverFinder#getResult(DriverService,
  * Capabilities)}.
  */
 public class NoSuchDriverException extends WebDriverException {

@@ -6,6 +6,7 @@ java_test_suite(
     size = "small",
     srcs = glob(["*.java"]),
     deps = [
+        "//java/src/org/openqa/selenium/manager",
         "//java/src/org/openqa/selenium/remote",
         "//java/test/org/openqa/selenium/testing:annotations",
         artifact("org.junit.jupiter:junit-jupiter-api"),

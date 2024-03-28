@@ -110,7 +110,7 @@ public class GeckoDriverService extends FirefoxDriverService {
   /**
    * Configures and returns a new {@link GeckoDriverService} using the default configuration. In
    * this configuration, the service will use the GeckoDriver executable identified by the {@link
-   * org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}. Each
+   * org.openqa.selenium.remote.service.DriverFinder#getResult(DriverService, Capabilities)}. Each
    * service created by this method will be configured to use a free port on the current system.
    *
    * @return A new GeckoDriverService using the default configuration.
