@@ -22,12 +22,33 @@ module Selenium
     module Remote
       class Bridge
         autoload :COMMANDS, 'selenium/webdriver/remote/bridge/commands'
+        autoload :LocatorConverter, 'selenium/webdriver/remote/bridge/locator_converter'
+
         include Atoms
 
         PORT = 4444
 
         attr_accessor :http, :file_detector
         attr_reader :capabilities
+
+        class << self
+          attr_reader :extra_commands
+          attr_writer :element_class, :locator_converter
+
+          def add_command(name, verb, url, &block)
+            @extra_commands ||= {}
+            @extra_commands[name] = [verb, url]
+            define_method(name, &block)
+          end
+
+          def locator_converter
+            @locator_converter ||= LocatorConverter.new
+          end
+
+          def element_class
+            @element_class ||= Element
+          end
+        end
 
         #
         # Initializes the bridge with the given server URL
@@ -43,6 +64,8 @@ module Selenium
           @http = http_client || Http::Default.new
           @http.server_url = uri
           @file_detector = nil
+
+          @locator_converter = self.class.locator_converter
         end
 
         #
@@ -413,7 +436,7 @@ module Selenium
                    "e.initEvent('submit', true, true);\n" \
                    "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
 
-          execute_script(script, Element::ELEMENT_KEY => element)
+          execute_script(script, Bridge.element_class::ELEMENT_KEY => element)
         rescue Error::JavascriptError
           raise Error::UnsupportedOperationError, 'To submit an element, it must be nested inside a form element'
         end
@@ -500,13 +523,13 @@ module Selenium
         #
 
         def active_element
-          Element.new self, element_id_from(execute(:get_active_element))
+          Bridge.element_class.new self, element_id_from(execute(:get_active_element))
         end
 
         alias switch_to_active_element active_element
 
         def find_element_by(how, what, parent_ref = [])
-          how, what = convert_locator(how, what)
+          how, what = @locator_converter.convert(how, what)
 
           return execute_atom(:findElements, Support::RelativeLocator.new(what).as_json).first if how == 'relative'
 
@@ -520,11 +543,11 @@ module Selenium
                  execute :find_element, {}, {using: how, value: what.to_s}
                end
 
-          Element.new self, element_id_from(id)
+          Bridge.element_class.new self, element_id_from(id)
         end
 
         def find_elements_by(how, what, parent_ref = [])
-          how, what = convert_locator(how, what)
+          how, what = @locator_converter.convert(how, what)
 
           return execute_atom :findElements, Support::RelativeLocator.new(what).as_json if how == 'relative'
 
@@ -538,7 +561,7 @@ module Selenium
                   execute :find_elements, {}, {using: how, value: what.to_s}
                 end
 
-          ids.map { |id| Element.new self, element_id_from(id) }
+          ids.map { |id| Bridge.element_class.new self, element_id_from(id) }
         end
 
         def shadow_root(element)
@@ -612,7 +635,7 @@ module Selenium
         end
 
         def commands(command)
-          command_list[command]
+          command_list[command] || Bridge.extra_commands[command]
         end
 
         def unwrap_script_result(arg)
@@ -621,7 +644,7 @@ module Selenium
             arg.map { |e| unwrap_script_result(e) }
           when Hash
             element_id = element_id_from(arg)
-            return Element.new(self, element_id) if element_id
+            return Bridge.element_class.new(self, element_id) if element_id
 
             shadow_root_id = shadow_root_id_from(arg)
             return ShadowRoot.new self, shadow_root_id if shadow_root_id
@@ -633,7 +656,7 @@ module Selenium
         end
 
         def element_id_from(id)
-          id['ELEMENT'] || id[Element::ELEMENT_KEY]
+          id['ELEMENT'] || id[Bridge.element_class::ELEMENT_KEY]
         end
 
         def shadow_root_id_from(id)
@@ -643,43 +666,6 @@ module Selenium
         def prepare_capabilities_payload(capabilities)
           capabilities = {alwaysMatch: capabilities} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
           {capabilities: capabilities}
-        end
-
-        def convert_locator(how, what)
-          how = SearchContext::FINDERS[how.to_sym] || how
-
-          case how
-          when 'class name'
-            how = 'css selector'
-            what = ".#{escape_css(what.to_s)}"
-          when 'id'
-            how = 'css selector'
-            what = "##{escape_css(what.to_s)}"
-          when 'name'
-            how = 'css selector'
-            what = "*[name='#{escape_css(what.to_s)}']"
-          end
-
-          if what.is_a?(Hash)
-            what = what.each_with_object({}) do |(h, w), hash|
-              h, w = convert_locator(h.to_s, w)
-              hash[h] = w
-            end
-          end
-
-          [how, what]
-        end
-
-        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]()])/
-        UNICODE_CODE_POINT = 30
-
-        # Escapes invalid characters in CSS selector.
-        # @see https://mathiasbynens.be/notes/css-escapes
-        def escape_css(string)
-          string = string.gsub(ESCAPE_CSS_REGEXP) { |match| "\\#{match}" }
-          string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..]}" if string[0]&.match?(/[[:digit:]]/)
-
-          string
         end
       end # Bridge
     end # Remote
