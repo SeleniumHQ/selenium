@@ -7,6 +7,7 @@ load(
     "java_export",
     "java_library",
     "javadoc",
+    "maven_bom",
     "merge_jars",
 )
 load("//java:version.bzl", "SE_VERSION")
@@ -90,33 +91,33 @@ java_library(
     ],
 )
 
-# # Generated from: bazel query 'kind(maven_publish, set(//java/... //third_party/...))' | sort
-# # with the selenium rc, bom dependencies (naturally), and CDP implementations removed.
-# maven_bom(
-#     name = "bom",
-#     bom_pom_template = "bom-pom-template.xml",
-#     dependencies_maven_coordinates = "org.seleniumhq.selenium:selenium-dependencies-bom:%s" % SE_VERSION,
-#     dependencies_pom_template = "bom-pom-template.xml",
-#     java_exports = [
-#         "//java/src/org/openqa/selenium/chrome:chrome",
-#         "//java/src/org/openqa/selenium/chromium:chromium",
-#         "//java/src/org/openqa/selenium/edge:edge",
-#         "//java/src/org/openqa/selenium/firefox:firefox",
-#         "//java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc",
-#         "//java/src/org/openqa/selenium/grid/sessionmap/redis:redis",
-#         "//java/src/org/openqa/selenium/grid:grid",
-#         "//java/src/org/openqa/selenium/ie:ie",
-#         "//java/src/org/openqa/selenium/json:json",
-#         "//java/src/org/openqa/selenium/manager:manager",
-#         "//java/src/org/openqa/selenium/remote/http:http",
-#         "//java/src/org/openqa/selenium/remote:remote",
-#         "//java/src/org/openqa/selenium/safari:safari",
-#         "//java/src/org/openqa/selenium/support:support",
-#         "//java/src/org/openqa/selenium:client-combined",
-#         "//java/src/org/openqa/selenium:core",
-#     ] + CDP_DEPS,
-#     maven_coordinates = "org.seleniumhq.selenium:selenium-bom:%s" % SE_VERSION,
-# )
+# Generated from: bazel query 'kind(maven_publish, set(//java/... //third_party/...))' | sort
+# with the selenium rc, bom dependencies (naturally), and CDP implementations removed.
+maven_bom(
+    name = "bom",
+    bom_pom_template = "bom-pom-template.xml",
+    dependencies_maven_coordinates = "org.seleniumhq.selenium:selenium-dependencies-bom:%s" % SE_VERSION,
+    dependencies_pom_template = "bom-pom-template.xml",
+    java_exports = [
+        "//java/src/org/openqa/selenium/chrome:chrome",
+        "//java/src/org/openqa/selenium/chromium:chromium",
+        "//java/src/org/openqa/selenium/edge:edge",
+        "//java/src/org/openqa/selenium/firefox:firefox",
+        "//java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc",
+        "//java/src/org/openqa/selenium/grid/sessionmap/redis:redis",
+        "//java/src/org/openqa/selenium/grid:grid",
+        "//java/src/org/openqa/selenium/ie:ie",
+        "//java/src/org/openqa/selenium/json:json",
+        "//java/src/org/openqa/selenium/manager:manager",
+        "//java/src/org/openqa/selenium/remote/http:http",
+        "//java/src/org/openqa/selenium/remote:remote",
+        "//java/src/org/openqa/selenium/safari:safari",
+        "//java/src/org/openqa/selenium/support:support",
+        "//java/src/org/openqa/selenium:client-combined",
+        "//java/src/org/openqa/selenium:core",
+    ] + CDP_DEPS,
+    maven_coordinates = "org.seleniumhq.selenium:selenium-bom:%s" % SE_VERSION,
+)
 
 java_export(
     name = "grid",
