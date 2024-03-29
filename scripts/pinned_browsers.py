@@ -221,7 +221,7 @@ js_library(
     name = "edge-js",
     data = glob(["Edge.app/**/*"]),
 )
-\"\"\"
+\"\"\",
     )
 """ % (
             mac,
