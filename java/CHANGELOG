@@ -1,6 +1,9 @@
+v4.19.1
+======
+* [bidi] Fix the bazel file after the BiDi breaking change
+
 v4.19.0
 ======
-
 * Add CDP for Chrome 123 and remove 120
 * Use daemon threads in JdkHttpClient #13601
 * Use a static class for ProxySelector #13622
