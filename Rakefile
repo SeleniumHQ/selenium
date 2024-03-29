@@ -100,7 +100,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v122:v122.publish
-  //java/src/org/openqa/selenium/devtools/v120:v120.publish
+  //java/src/org/openqa/selenium/devtools/v123:v123.publish
   //java/src/org/openqa/selenium/devtools/v121:v121.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
@@ -524,7 +524,7 @@ namespace :node do
     new_version = updated_version(old_version, arguments[:version])
 
     ['javascript/node/selenium-webdriver/package.json',
-     'javascript/node/selenium-webdriver/package-lock.json'].each do |file|
+     'package-lock.json'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
       File.open(file, "w") { |f| f.puts text }
     end
@@ -640,7 +640,12 @@ namespace :py do
       # to start doing nightly builds.
       new_version = old_version + ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
     else
-      new_version = updated_version(old_version.gsub(/\.dev\d+$/, ''), arguments[:version])
+      if old_version.include?('.dev')
+        new_version = old_version.gsub(/\.dev\d+$/, '')
+      else
+        new_version = updated_version(old_version.gsub(/\.dev\d+$/, ''), arguments[:version])
+        new_version = new_version + ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
+      end
     end
 
     ['py/setup.py',
@@ -658,7 +663,7 @@ namespace :py do
     text = File.read('py/docs/source/conf.py').gsub(old_short_version, new_short_version)
     File.open('py/docs/source/conf.py', "w") { |f| f.puts text }
 
-    Rake::Task['py:changelog'].invoke unless new_version.include?('nightly') || bump_nightly
+    Rake::Task['py:changelog'].invoke unless new_version.include?('.dev') || bump_nightly
   end
 
   desc 'Update Python Syntax'
@@ -724,7 +729,7 @@ namespace :rb do
     FileUtils.rm_rf('build/docs/api/rb/')
     Bazel.execute('run', [], '//rb:docs')
     FileUtils.mkdir_p('build/docs/api')
-    FileUtils.cp_r('bazel-bin/rb/docs.rb.sh.runfiles/selenium/docs/api/rb/.', 'build/docs/api/rb')
+    FileUtils.cp_r('bazel-bin/rb/docs.sh.runfiles/selenium/docs/api/rb/.', 'build/docs/api/rb')
 
     unless arguments[:skip_update]
       puts "Updating Ruby documentation"
@@ -1097,7 +1102,7 @@ namespace :all do
              'java/version.bzl',
              'javascript/node/selenium-webdriver/CHANGES.md',
              'javascript/node/selenium-webdriver/package.json',
-             'javascript/node/selenium-webdriver/package-lock.json',
+             'package-lock.json',
              'py/docs/source/conf.py',
              'py/selenium/__init__.py',
              'py/selenium/webdriver/__init__.py',

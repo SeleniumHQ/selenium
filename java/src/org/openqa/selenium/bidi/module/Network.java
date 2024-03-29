@@ -53,7 +53,7 @@ public class Network implements AutoCloseable {
       new Event<>("network.responseStarted", ResponseDetails::fromJsonMap);
 
   private final Event<ResponseDetails> responseCompleted =
-      new Event<>("network.responseStarted", ResponseDetails::fromJsonMap);
+      new Event<>("network.responseCompleted", ResponseDetails::fromJsonMap);
 
   private final Event<ResponseDetails> authRequired =
       new Event<>("network.authRequired", ResponseDetails::fromJsonMap);
