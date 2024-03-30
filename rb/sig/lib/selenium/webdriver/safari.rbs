@@ -4,13 +4,13 @@ module Selenium
       @use_technology_preview: bool?
       @path: String?
 
-      attr_accessor use_technology_preview: bool?
+      attr_accessor self.use_technology_preview: bool
 
       def self.technology_preview: () -> String
 
       def self.technology_preview!: () -> bool
 
-      def self.technology_preview?: () -> bool?
+      def self.technology_preview?: () -> bool
 
       def self.path=: (String) -> String
 
