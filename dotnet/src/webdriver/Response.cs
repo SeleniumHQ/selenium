@@ -158,24 +158,24 @@ namespace OpenQA.Selenium
 
             if (!deserializedResponse.TryGetValue("value", out var valueObject))
             {
-                throw new WebDriverException($"The 'value' property was not found in the response:{System.Environment.NewLine}{value}");
+                throw new WebDriverException($"The 'value' property was not found in the response:{Environment.NewLine}{value}");
             }
 
             if (valueObject is not Dictionary<string, object> valueDictionary)
             {
-                throw new WebDriverException($"The 'value' property is not a dictionary of <string, object>{System.Environment.NewLine}{value}");
+                throw new WebDriverException($"The 'value' property is not a dictionary of <string, object>{Environment.NewLine}{value}");
             }
 
             response.Value = valueDictionary;
 
             if (!valueDictionary.TryGetValue("error", out var errorObject))
             {
-                throw new WebDriverException($"The 'value > error' property was not found in the response:{System.Environment.NewLine}{value}");
+                throw new WebDriverException($"The 'value > error' property was not found in the response:{Environment.NewLine}{value}");
             }
 
             if (errorObject is not string)
             {
-                throw new WebDriverException($"The 'value > error' property is not a string{System.Environment.NewLine}{value}");
+                throw new WebDriverException($"The 'value > error' property is not a string{Environment.NewLine}{value}");
             }
 
             response.Status = WebDriverError.ResultFromError(errorObject.ToString());
