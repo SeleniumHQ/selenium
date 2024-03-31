@@ -31,9 +31,9 @@ module Selenium
 
     CL_RESET: untyped
 
-    def self.get: (?Symbol required_version, ?Hash[untyped, untyped] opts) -> untyped
+    def self.get: (Symbol | String required_version, ?Hash[untyped, untyped] opts) -> Server
 
-    def self.download: (?Symbol required_version) -> untyped
+    def self.download: (Symbol | String required_version) -> String
 
     def self.latest: () -> untyped
 
@@ -55,7 +55,7 @@ module Selenium
 
     attr_accessor log: untyped
 
-    def initialize: (untyped jar, ?Hash[untyped, untyped] opts) -> void
+    def initialize: (String jar, ?Hash[String | Symbol, Integer | bool] opts) -> void
 
     def start: () -> untyped
 
