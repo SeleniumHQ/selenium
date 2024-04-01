@@ -37,6 +37,7 @@ import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDiException;
+import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.environment.webserver.Page;
@@ -77,7 +78,10 @@ class BrowsingContextTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   void canCreateAWindowWithAReferenceContext() {
     BrowsingContext browsingContext =
-        new BrowsingContext(driver, WindowType.WINDOW, driver.getWindowHandle());
+        new BrowsingContext(
+            driver,
+            new CreateContextParameters(WindowType.WINDOW)
+                .referenceContext(driver.getWindowHandle()));
     assertThat(browsingContext.getId()).isNotEmpty();
   }
 
@@ -94,8 +98,30 @@ class BrowsingContextTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   void canCreateATabWithAReferenceContext() {
     BrowsingContext browsingContext =
-        new BrowsingContext(driver, WindowType.TAB, driver.getWindowHandle());
+        new BrowsingContext(
+            driver,
+            new CreateContextParameters(WindowType.TAB).referenceContext(driver.getWindowHandle()));
     assertThat(browsingContext.getId()).isNotEmpty();
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
+  void canCreateAContextWithAllParameters() {
+    Browser browser = new Browser(driver);
+    String userContextId = browser.createUserContext();
+
+    CreateContextParameters parameters = new CreateContextParameters(WindowType.WINDOW);
+    parameters
+        .referenceContext(driver.getWindowHandle())
+        .userContext(userContextId)
+        .background(true);
+
+    BrowsingContext browsingContext = new BrowsingContext(driver, parameters);
+    assertThat(browsingContext.getId()).isNotEmpty();
+    assertThat(browsingContext.getId()).isNotEqualTo(driver.getWindowHandle());
   }
 
   @Test
