@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { RemoteValue } = require("./protocolValue")
+const { RemoteValue } = require('./protocolValue')
 
 /**
  * Represents a message received through a channel.

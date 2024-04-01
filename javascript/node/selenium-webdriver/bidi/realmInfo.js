@@ -85,7 +85,7 @@ class RealmInfo {
     }
 
     if (realmType === RealmType.WINDOW) {
-      return new WindowRealmInfo(realmId, origin, realmType, browsingContext, sandbox);
+      return new WindowRealmInfo(realmId, origin, realmType, browsingContext, sandbox)
     }
 
     return new RealmInfo(realmId, origin, realmType)
