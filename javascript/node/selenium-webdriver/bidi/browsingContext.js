@@ -168,16 +168,11 @@ class BrowsingContext {
       throw Error(result['error'])
     }
 
-    const contexts = result['result']['contexts'];
-    const browsingContexts = contexts.map(context => {
-      return new BrowsingContextInfo(
-        context['id'],
-        context['url'],
-        context['children'],
-        context['parent']
-      );
-    });
-    return browsingContexts;
+    const contexts = result['result']['contexts']
+    const browsingContexts = contexts.map((context) => {
+      return new BrowsingContextInfo(context['id'], context['url'], context['children'], context['parent'])
+    })
+    return browsingContexts
   }
 
   /**
