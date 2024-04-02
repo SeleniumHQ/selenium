@@ -7,16 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="obj\**" />
-    <EmbeddedResource Remove="obj\**" />
-    <None Remove="obj\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Settings.StyleCop" />
   </ItemGroup>
 
@@ -38,21 +28,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="appconfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
-    <Exec Command="call &quot;$(ProjectDir)WebDriver.Common.Tests.csproj.prebuild.cmd&quot; &quot;$(ProjectDir)&quot;" />
-  </Target>
-
-  <Target Name="PreBuildNonWindows" BeforeTargets="PreBuildEvent" Condition="'$(OS)' != 'Windows_NT'">
-    <Exec Command="$(ProjectDir)WebDriver.Common.Tests.csproj.prebuild.sh $(ProjectDir)" />
+  <Target Name="BuildTestWebServer" AfterTargets="AfterBuild">
+    <Exec Command="bazel build //java/test/org/openqa/selenium/environment:appserver_deploy.jar" />
   </Target>
 
   <!-- It is automatically imported when Selenium.WebDriver consumed via nuget package -->
