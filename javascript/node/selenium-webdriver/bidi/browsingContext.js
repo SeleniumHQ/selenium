@@ -155,6 +155,32 @@ class BrowsingContext {
   }
 
   /**
+   * @returns {Promise<Array<BrowsingContextInfo>>} A Promise that resolves to an array of BrowsingContextInfo objects representing the top-level browsing contexts.
+   */
+  async getTopLevelContexts() {
+    const params = {
+      method: 'browsingContext.getTree',
+      params: {},
+    }
+
+    let result = await this.bidi.send(params)
+    if ('error' in result) {
+      throw Error(result['error'])
+    }
+
+    const contexts = result['result']['contexts'];
+    const browsingContexts = contexts.map(context => {
+      return new BrowsingContextInfo(
+        context['id'],
+        context['url'],
+        context['children'],
+        context['parent']
+      );
+    });
+    return browsingContexts;
+  }
+
+  /**
    * Closes the browsing context
    * @returns {Promise<void>}
    */
