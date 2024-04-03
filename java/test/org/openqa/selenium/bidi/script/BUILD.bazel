@@ -6,6 +6,7 @@ java_selenium_test_suite(
     size = "large",
     srcs = glob(["*Test.java"]),
     browsers = [
+        "chrome",
         "firefox",
     ],
     tags = [
