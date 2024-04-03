@@ -15,6 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * Enum representing the ownership types.
+ * @enum {string}
+ */
 const ResultOwnership = {
   ROOT: 'root',
   NONE: 'none',

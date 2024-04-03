@@ -15,19 +15,36 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * Represents a partition key of cookie storage.
+ * Described in https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey.
+ */
 class PartitionKey {
   #userContext
   #sourceOrigin
 
+  /**
+   * Constructs a new PartitionKey object.
+   * @param {string} userContext - The user context.
+   * @param {string} sourceOrigin - The source origin.
+   */
   constructor(userContext, sourceOrigin) {
     this.#userContext = userContext
     this.#sourceOrigin = sourceOrigin
   }
 
+  /**
+   * Gets the user context.
+   * @returns {string} The user context.
+   */
   get userContext() {
     return this.#userContext
   }
 
+  /**
+   * Gets the source origin.
+   * @returns {string} The source origin.
+   */
   get sourceOrigin() {
     return this.#sourceOrigin
   }

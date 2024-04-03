@@ -17,6 +17,11 @@
 
 const { BytesValue, Header } = require('./networkTypes')
 
+/**
+ * Represents parameters for providingResponse command.
+ * Described in https://w3c.github.io/webdriver-bidi/#command-network-provideResponse.
+ * @class
+ */
 class ProvideResponseParameters {
   #map = new Map()
 
@@ -24,6 +29,13 @@ class ProvideResponseParameters {
     this.#map.set('request', request)
   }
 
+  /**
+   * Sets the body value for the response parameters.
+   *
+   * @param {BytesValue} value - The value to set as the body. Must be an instance of BytesValue.
+   * @returns {ProvideResponseParameters} - Returns the ProvideResponseParameters object for chaining.
+   * @throws {Error} - Throws an error if the value is not an instance of BytesValue.
+   */
   body(value) {
     if (!(value instanceof BytesValue)) {
       throw new Error(`Value must be an instance of BytesValue. Received: ${typeof value} with value: ${value}`)
@@ -32,6 +44,13 @@ class ProvideResponseParameters {
     return this
   }
 
+  /**
+   * Sets the cookie headers for the response.
+   *
+   * @param {Header[]} cookieHeaders - An array of cookie headers.
+   * @returns {ProvideResponseParameters} - Returns the ProvideResponseParameters object for chaining.
+   * @throws {Error} - Throws an error if a cookie header is not an instance of Header.
+   */
   cookies(cookieHeaders) {
     const cookies = []
     cookieHeaders.forEach((header) => {
@@ -45,6 +64,13 @@ class ProvideResponseParameters {
     return this
   }
 
+  /**
+   * Sets the headers for the response.
+   *
+   * @param {Header[]} headers - The headers to be set.
+   * @returns {ProvideResponseParameters} - Returns the ProvideResponseParameters object for chaining.
+   * @throws {Error} - If the provided header is not an instance of Header.
+   */
   headers(headers) {
     const headerList = []
     headers.forEach((header) => {
@@ -58,6 +84,13 @@ class ProvideResponseParameters {
     return this
   }
 
+  /**
+   * Sets the reason phrase for the response.
+   *
+   * @param {string} reasonPhrase - The reason phrase to set.
+   * @returns {ProvideResponseParameters} - Returns the ProvideResponseParameters object for chaining.
+   * @throws {Error} - If the reason phrase is not a string.
+   */
   reasonPhrase(reasonPhrase) {
     if (typeof reasonPhrase !== 'string') {
       throw new Error(`Reason phrase must be a string. Received: '${reasonPhrase})'`)
@@ -66,6 +99,13 @@ class ProvideResponseParameters {
     return this
   }
 
+  /**
+   * Sets the status code for the response.
+   *
+   * @param {number} statusCode - The status code to set.
+   * @returns {ProvideResponseParameters} - Returns the ProvideResponseParameters object for chaining.
+   * @throws {Error} - If the status code is not an integer.
+   */
   statusCode(statusCode) {
     if (!Number.isInteger(statusCode)) {
       throw new Error(`Status must be an integer. Received:'${statusCode}'`)

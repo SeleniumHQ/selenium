@@ -16,14 +16,31 @@
 // under the License.
 
 const { BoxClipRectangle, ElementClipRectangle } = require('./clipRectangle')
+
+/**
+ * Defines the reference point from which to compute offsets for capturing screenshot.
+ *
+ * @enum {string}
+ */
 const Origin = {
   VIEWPORT: 'viewport',
   DOCUMENT: 'document',
 }
 
+/**
+ * Represents the optional parameters for capturing a screenshot.
+ * Described in https://w3c.github.io/webdriver-bidi/#command-browsingContext-captureScreenshot.
+ */
 class CaptureScreenshotParameters {
   #map = new Map()
 
+  /**
+   * Sets the origin for capturing the screenshot.
+   *
+   * @param {Origin} origin - The origin for capturing the screenshot. Must be one of `Origin.VIEWPORT` or `Origin.DOCUMENT`.
+   * @returns {CaptureScreenshotParameters} - The current instance of the CaptureScreenshotParameters for chaining.
+   * @throws {Error} - If the provided origin is not valid.
+   */
   origin(origin) {
     if (origin !== Origin.VIEWPORT && origin !== Origin.DOCUMENT) {
       throw new Error(`Origin must be one of ${Object.values(Origin)}. Received:'${origin}'`)
@@ -32,6 +49,14 @@ class CaptureScreenshotParameters {
     return this
   }
 
+  /**
+   * Sets the image format and quality for capturing a screenshot.
+   *
+   * @param {string} type - The image format type.
+   * @param {number} [quality] - The image quality (optional).
+   * @throws {Error} If the type is not a string or if the quality is not a number.
+   * @returns {CaptureScreenshotParameters} - The current instance of the CaptureScreenshotParameters for chaining.
+   */
   imageFormat(type, quality = undefined) {
     if (typeof type !== 'string') {
       throw new Error(`Type must be an instance of String. Received:'${type}'`)
@@ -48,6 +73,13 @@ class CaptureScreenshotParameters {
     return this
   }
 
+  /**
+   * Sets the clip rectangle for capturing a screenshot.
+   *
+   * @param {BoxClipRectangle|ElementClipRectangle} clipRectangle - The clip rectangle to set.
+   * @throws {Error} If the clipRectangle is not an instance of ClipRectangle.
+   * @returns {CaptureScreenshotParameters} - The current instance of the CaptureScreenshotParameters for chaining.
+   */
   clipRectangle(clipRectangle) {
     if (!(clipRectangle instanceof BoxClipRectangle || clipRectangle instanceof ElementClipRectangle)) {
       throw new Error(`ClipRectangle must be an instance of ClipRectangle. Received:'${clipRectangle}'`)
