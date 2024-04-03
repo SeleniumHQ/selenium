@@ -233,7 +233,7 @@ class BrowsingContextTest extends JupiterTestBase {
     browsingContext.navigate(url, ReadinessState.COMPLETE);
 
     NavigationResult reloadInfo = browsingContext.reload();
-    
+
     assertThat(reloadInfo.getUrl()).contains("/bidi/logEntryAdded.html");
   }
 
