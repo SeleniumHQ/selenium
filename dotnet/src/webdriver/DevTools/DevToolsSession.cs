@@ -239,9 +239,15 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
         /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
         //[DebuggerStepThrough]
-        public Task<JToken> SendCommand(string commandName, JToken commandParameters, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
+        public async Task<JToken> SendCommand(string commandName, JToken commandParameters, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         {
-            return SendCommand(commandName, ActiveSessionId, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
+            if (this.attachedTargetId == null)
+            {
+                LogTrace("Session not currently attached to a target; reattaching");
+                await this.InitializeSession().ConfigureAwait(false);
+            }
+
+            return await SendCommand(commandName, this.ActiveSessionId, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
         }
 
         /// <summary>
@@ -260,12 +266,6 @@ namespace OpenQA.Selenium.DevTools
             if (millisecondsTimeout.HasValue == false)
             {
                 millisecondsTimeout = Convert.ToInt32(CommandTimeout.TotalMilliseconds);
-            }
-
-            if (this.attachedTargetId == null)
-            {
-                LogTrace("Session not currently attached to a target; reattaching");
-                await this.InitializeSession().ConfigureAwait(false);
             }
 
             var message = new DevToolsCommandData(Interlocked.Increment(ref this.currentCommandId), sessionId, commandName, commandParameters);
