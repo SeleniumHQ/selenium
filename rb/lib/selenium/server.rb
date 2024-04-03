@@ -258,11 +258,11 @@ module Selenium
 
     def java_bin
       pp(ENV)
-      if ENV.key?('BAZEL_TEST') && ENV.key?('JAVA_HOME')
+      if ENV.key?('BAZEL_TEST') && (java_home = ENV.fetch('JAVA_HOME', nil))
         if WebDriver::Platform.windows?
-          "#{ENV['JAVA_HOME']}/bin/java.exe"
+          "#{java_home}/bin/java.exe"
         else
-          "#{ENV['JAVA_HOME']}/bin/java"
+          "#{java_home}/bin/java"
         end
       else
         'java'
