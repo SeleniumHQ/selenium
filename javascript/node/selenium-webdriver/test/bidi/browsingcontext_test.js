@@ -454,7 +454,8 @@ suite(
         const window1 = await BrowsingContext(driver, {
           browsingContextId: id,
         })
-        const window2 = await BrowsingContext(driver, { type: 'window' })
+
+        await BrowsingContext(driver, { type: 'window' })
 
         const res = await window1.getTopLevelContexts()
         assert.equal(res.length, 2)

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { BytesValue, SameSite } = require('./networkTypes')
+const { BytesValue } = require('./networkTypes')
 
 /**
  * Represents a partial cookie used to set cookies.

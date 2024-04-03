@@ -23,10 +23,9 @@ const {
 } = require('./evaluateResult')
 const { Message } = require('./scriptTypes')
 const { RealmInfo, RealmType, WindowRealmInfo } = require('./realmInfo')
-const { RemoteValue, LocalValue } = require('./protocolValue')
+const { RemoteValue } = require('./protocolValue')
 const { Source } = require('./scriptTypes')
 const { WebDriverError } = require('../lib/error')
-const { ResultOwnership } = require('./resultOwnership')
 
 /**
  * Represents class to run events and commands of Script module.

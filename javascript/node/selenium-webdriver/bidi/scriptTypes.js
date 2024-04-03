@@ -15,8 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { RemoteValue } = require('./protocolValue')
-
 /**
  * Represents a message received through a channel.
  * Described in https://w3c.github.io/webdriver-bidi/#event-script-message.
