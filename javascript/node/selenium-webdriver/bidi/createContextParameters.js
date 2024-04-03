@@ -15,9 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * Represents a set of parameters for creating a context.
+ * Described in https://w3c.github.io/webdriver-bidi/#command-browsingContext-create.
+ */
 class CreateContextParameters {
   #map = new Map()
 
+  /**
+   * Sets the reference context.
+   * @param {string} id - The ID of the reference context.
+   * @returns {CreateContextParameters} - The updated instance of CreateContextParameters for chaining.
+   * @throws {Error} - If the provided ID is not a string.
+   */
   referenceContext(id) {
     if (typeof id !== 'string') {
       throw new Error(`ReferenceContext must be string. Received:'${id}'`)
@@ -26,6 +36,13 @@ class CreateContextParameters {
     return this
   }
 
+  /**
+   * Sets the background parameter.
+   *
+   * @param {boolean} background - The background value to set.
+   * @returns {CreateContextParameters} - The updated instance of CreateContextParameters for chaining.
+   * @throws {Error} - If the background parameter is not a boolean.
+   */
   background(background) {
     if (typeof background !== 'boolean') {
       throw new Error(`Background must be boolean. Received:'${background}'`)
@@ -34,6 +51,12 @@ class CreateContextParameters {
     return this
   }
 
+  /**
+   * Sets the user context.
+   * @param {string} userContext - The user context to set.
+   * @returns {CreateContextParameters} - The updated instance of CreateContextParameters for chaining.
+   * @throws {Error} - If the userContext parameter is not a string.
+   */
   userContext(userContext) {
     if (typeof userContext !== 'string') {
       throw new Error(`UserContext must be string. Received:'${userContext}'`)
