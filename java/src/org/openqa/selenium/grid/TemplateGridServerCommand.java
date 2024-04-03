@@ -69,7 +69,10 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
   }
 
   protected static Routable baseRoute(String prefix, Route route) {
-    return Route.prefix(prefix).to(route);
+    if (prefix.isEmpty()) {
+      return route;
+    }
+    return Route.combine(route, Route.prefix(prefix).to(route));
   }
 
   protected abstract Handlers createHandlers(Config config);
