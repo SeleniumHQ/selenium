@@ -241,7 +241,7 @@ module Selenium
         # extract any additional_args that start with -D as options
         properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
         args = ['-jar', @jar, @role, '--port', @port.to_s]
-        server_command = ['java'] + properties + args + @additional_args
+        server_command = [java_bin] + properties + args + @additional_args
         cp = WebDriver::ChildProcess.build(*server_command)
 
         if @log.is_a?(String)
@@ -253,6 +253,18 @@ module Selenium
         cp.detach = @background
 
         cp
+      end
+    end
+
+    def java_bin
+      if ENV.key?('BAZEL_TEST') && ENV.key?('JAVA_HOME')
+        if WebDriver::Platform.windows?
+          "#{ENV['JAVA_HOME']}/bin/java.exe"
+        else
+          "#{ENV['JAVA_HOME']}/bin/java"
+        end
+      else
+        'java'
       end
     end
 
