@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public class Locator {
+  final Map<String, Object> map = new HashMap<>();
+
   private enum Type {
     CSS("css"),
     INNER("innerText"),
@@ -39,32 +41,22 @@ public class Locator {
     }
   }
 
-  private final Type type;
-
-  private final String value;
-
-  private Optional<Boolean> ignoreCase = Optional.empty();
-
-  private Optional<String> matchType = Optional.empty();
-
-  private Optional<Long> maxDepth = Optional.empty();
-
   private Locator(Type type, String value) {
-    this.type = type;
-    this.value = value;
+    map.put("type", type.toString());
+    map.put("value", value);
   }
 
-  public Locator(
+  private Locator(
       Type type,
       String value,
       Optional<Boolean> ignoreCase,
       Optional<String> matchType,
       Optional<Long> maxDepth) {
-    this.type = type;
-    this.value = value;
-    this.ignoreCase = ignoreCase;
-    this.matchType = matchType;
-    this.maxDepth = maxDepth;
+    map.put("type", type.toString());
+    map.put("value", value);
+    ignoreCase.ifPresent(val -> map.put("ignoreCase", val));
+    matchType.ifPresent(val -> map.put("matchType", val));
+    maxDepth.ifPresent(val -> map.put("maxDepth", val));
   }
 
   public static Locator css(String value) {
@@ -88,14 +80,6 @@ public class Locator {
   }
 
   public Map<String, Object> toMap() {
-    final Map<String, Object> map = new HashMap<>();
-    map.put("type", type.toString());
-    map.put("value", value);
-
-    ignoreCase.ifPresent(val -> map.put("ignoreCase", val));
-    matchType.ifPresent(val -> map.put("matchType", val));
-    maxDepth.ifPresent(val -> map.put("maxDepth", val));
-
     return map;
   }
 }
