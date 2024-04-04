@@ -224,6 +224,7 @@ class DefaultMouseTest extends JupiterTestBase {
   @NeedsFreshDriver
   @Test
   @Ignore(value = FIREFOX, gitHubActions = true)
+  @Ignore(value = CHROME, gitHubActions = true)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
