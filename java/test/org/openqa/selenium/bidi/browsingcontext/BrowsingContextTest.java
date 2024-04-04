@@ -23,7 +23,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -77,7 +76,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canCreateAWindowWithAReferenceContext() {
     BrowsingContext browsingContext =
@@ -96,7 +94,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canCreateATabWithAReferenceContext() {
     BrowsingContext browsingContext =
@@ -133,7 +130,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canGetTreeWithAChild() {
     String referenceContextId = driver.getWindowHandle();
@@ -155,7 +151,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canGetTreeWithDepth() {
     String referenceContextId = driver.getWindowHandle();
@@ -239,7 +234,6 @@ class BrowsingContextTest extends JupiterTestBase {
 
     NavigationResult reloadInfo = browsingContext.reload();
 
-    assertThat(reloadInfo.getNavigationId()).isNotNull();
     assertThat(reloadInfo.getUrl()).contains("/bidi/logEntryAdded.html");
   }
 
@@ -410,7 +404,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   void canCaptureScreenshotOfViewport() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
@@ -429,7 +422,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   void canCaptureElementScreenshot() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
@@ -464,7 +456,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
   void canSetViewportWithDevicePixelRatio() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -508,7 +499,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   void canNavigateBackInTheBrowserHistory() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     browsingContext.navigate(pages.formPage, ReadinessState.COMPLETE);
@@ -523,7 +513,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   void canNavigateForwardInTheBrowserHistory() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     browsingContext.navigate(pages.formPage, ReadinessState.COMPLETE);

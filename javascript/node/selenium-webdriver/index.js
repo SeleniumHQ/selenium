@@ -596,6 +596,17 @@ class Builder {
 
     browser = capabilities.get(Capability.BROWSER_NAME)
 
+    /**
+     * If browser is not defined in forBrowser, check if browserOptions are defined to pick the browserName
+     */
+    if (!browser) {
+      const options =
+        this.chromeOptions_ || this.firefoxOptions_ || this.ieOptions_ || this.safariOptions_ || this.edgeOptions_
+      if (options) {
+        browser = options['map_'].get(Capability.BROWSER_NAME)
+      }
+    }
+
     if (typeof browser !== 'string') {
       throw TypeError(
         `Target browser must be a string, but is <${typeof browser}>;` + ' did you forget to call forBrowser()?',
