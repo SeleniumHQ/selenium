@@ -10,39 +10,6 @@ rules_proto_dependencies()
 
 rules_proto_toolchains()
 
-# Move to MODULE.bazel once a new release is out with
-# https://github.com/bazelbuild/rules_rust/commit/fc601ba32f21ec034baebc487646dea92afbcd04.
-
-http_archive(
-    name = "rules_rust",
-    integrity = "sha256-XT1YVJ6FHJTXBr1v3px2fV37/OCS3dQk3ul+XvfIIf8=",
-    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.42.0/rules_rust-v0.42.0.tar.gz"],
-)
-
-load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
-
-rules_rust_dependencies()
-
-rust_register_toolchains(
-    edition = "2021",
-    versions = [
-        "1.77.0",
-    ],
-)
-
-load("@rules_rust//crate_universe:defs.bzl", "crates_repository")
-
-crates_repository(
-    name = "crates",
-    cargo_lockfile = "//rust:Cargo.lock",
-    lockfile = "//rust:Cargo.Bazel.lock",
-    manifests = ["//rust:Cargo.toml"],
-)
-
-load("@crates//:defs.bzl", "crate_repositories")
-
-crate_repositories()
-
 # rules_closure are not published to BCR.
 
 http_archive(
