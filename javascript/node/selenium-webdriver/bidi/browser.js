@@ -15,6 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * Represents the commands and events under Browser Module.
+ * Described in https://w3c.github.io/webdriver-bidi/#module-browser
+ */
 class Browser {
   constructor(driver) {
     this._driver = driver
@@ -28,6 +32,10 @@ class Browser {
     this.bidi = await this._driver.getBidi()
   }
 
+  /**
+   * Creates a new user context.
+   * @returns {Promise<string>} A promise that resolves to the user context id.
+   */
   async createUserContext() {
     const command = {
       method: 'browser.createUserContext',
@@ -39,6 +47,10 @@ class Browser {
     return response.result.userContext
   }
 
+  /**
+   * Gets the list of all user contexts.
+   * @returns {Promise<string[]>} A promise that resolves to an array of user context ids.
+   */
   async getUserContexts() {
     const command = {
       method: 'browser.getUserContexts',
@@ -58,6 +70,11 @@ class Browser {
     return userContexts
   }
 
+  /**
+   * Removes a user context.
+   * @param {string} userContext The user context id to be removed.
+   * @returns {Promise<void>}
+   */
   async removeUserContext(userContext) {
     const command = {
       method: 'browser.removeUserContext',

@@ -448,6 +448,18 @@ suite(
         const devicePixelRatio = await driver.executeScript('return window.devicePixelRatio;')
         assert.equal(devicePixelRatio, 5)
       })
+
+      it('Get All Top level browsing contexts', async () => {
+        const id = await driver.getWindowHandle()
+        const window1 = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await BrowsingContext(driver, { type: 'window' })
+
+        const res = await window1.getTopLevelContexts()
+        assert.equal(res.length, 2)
+      })
     })
   },
   { browsers: [Browser.FIREFOX] },

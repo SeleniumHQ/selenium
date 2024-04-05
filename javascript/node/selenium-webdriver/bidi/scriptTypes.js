@@ -15,26 +15,54 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * Represents a message received through a channel.
+ * Described in https://w3c.github.io/webdriver-bidi/#event-script-message.
+ * @class
+ */
 class Message {
+  /**
+   * Creates a new Message instance.
+   * @param {string} channel - The channel through which the message is received.
+   * @param {RemoteValue} data - The data contained in the message.
+   * @param {Source} source - The source of the message.
+   */
   constructor(channel, data, source) {
     this._channel = channel
     this._data = data
     this._source = source
   }
 
+  /**
+   * Gets the channel through which the message is received.
+   * @returns {string} The channel.
+   */
   get channel() {
     return this._channel
   }
 
+  /**
+   * Gets the data contained in the message.
+   * @returns {RemoteValue} The data.
+   */
   get data() {
     return this._data
   }
 
+  /**
+   * Gets the source of the message.
+   * @returns {Source} The source.
+   */
   get source() {
     return this._source
   }
 }
 
+/**
+ * Represents a source object.
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-Source.
+ * @class
+ */
 class Source {
   constructor(source) {
     this._browsingContextId = null
@@ -46,10 +74,18 @@ class Source {
     }
   }
 
+  /**
+   * Get the browsing context ID.
+   * @returns {string|null} The browsing context ID.
+   */
   get browsingContextId() {
     return this._browsingContextId
   }
 
+  /**
+   * Get the realm ID.
+   * @returns {string} The realm ID.
+   */
   get realmId() {
     return this._realmId
   }
