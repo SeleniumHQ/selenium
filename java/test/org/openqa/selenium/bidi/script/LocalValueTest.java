@@ -18,7 +18,6 @@
 package org.openqa.selenium.bidi.script;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -40,7 +39,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithUndefinedArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -73,7 +71,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithNullArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -106,7 +103,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithMinusZeroArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -141,7 +137,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithInfinityArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -176,7 +171,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithMinusInfinityArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -212,7 +206,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithNumberArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -247,7 +240,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithBooleanArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -282,7 +274,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithBigIntArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -317,7 +308,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithArrayArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -358,7 +348,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithSetArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -399,7 +388,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithDateArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -435,7 +423,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithMapArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -478,7 +465,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithObjectArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -521,7 +507,6 @@ class LocalValueTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithRegExpArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);

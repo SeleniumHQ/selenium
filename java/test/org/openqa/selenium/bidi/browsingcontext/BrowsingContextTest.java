@@ -23,7 +23,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -76,7 +75,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCreateAWindowWithAReferenceContext() {
     BrowsingContext browsingContext =
         new BrowsingContext(driver, WindowType.WINDOW, driver.getWindowHandle());
@@ -94,7 +92,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCreateATabWithAReferenceContext() {
     BrowsingContext browsingContext =
         new BrowsingContext(driver, WindowType.TAB, driver.getWindowHandle());
@@ -130,7 +127,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canGetTreeWithAChild() {
     String referenceContextId = driver.getWindowHandle();
     BrowsingContext parentWindow = new BrowsingContext(driver, referenceContextId);
@@ -151,7 +147,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canGetTreeWithDepth() {
     String referenceContextId = driver.getWindowHandle();
     BrowsingContext parentWindow = new BrowsingContext(driver, referenceContextId);
