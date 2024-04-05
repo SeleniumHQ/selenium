@@ -8,6 +8,9 @@ LARGE_TESTS = [
     "NewSessionCreationTest.java",
     "RemoteWebDriverDownloadTest.java",
     "StressTest.java",
+]
+
+FIREFOX_CHROME_ONLY_LARGE_TESTS = [
     "RemoteWebDriverBiDiTest.java",
 ]
 
@@ -53,10 +56,6 @@ java_selenium_test_suite(
     ],
     deps = [
         ":support",
-        "//java/src/org/openqa/selenium/bidi",
-        "//java/src/org/openqa/selenium/bidi/browsingcontext",
-        "//java/src/org/openqa/selenium/bidi/log",
-        "//java/src/org/openqa/selenium/bidi/module",
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/grid",
@@ -77,12 +76,37 @@ java_selenium_test_suite(
     ] + CDP_DEPS + JUNIT5_DEPS,
 )
 
+java_selenium_test_suite(
+    name = "firefox-chrome-only-large-tests",
+    size = "large",
+    srcs = FIREFOX_CHROME_ONLY_LARGE_TESTS,
+    browsers = [
+        "firefox",
+        "chrome",
+    ],
+    deps = [
+        ":support",
+        "//java/src/org/openqa/selenium/bidi",
+        "//java/src/org/openqa/selenium/bidi/browsingcontext",
+        "//java/src/org/openqa/selenium/bidi/log",
+        "//java/src/org/openqa/selenium/bidi/module",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+    ] + CDP_DEPS + JUNIT5_DEPS,
+)
+
 java_test_suite(
     name = "medium-tests",
     size = "medium",
     srcs = glob(
         ["*Test.java"],
-        exclude = LARGE_TESTS,
+        exclude = LARGE_TESTS + FIREFOX_CHROME_ONLY_LARGE_TESTS,
     ),
     tags = [
         "requires-network",
