@@ -15,11 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * Represents the type of script evaluation result.
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-EvaluateResult.
+ * @enum {string}
+ */
 const EvaluateResultType = {
   SUCCESS: 'success',
   EXCEPTION: 'exception',
 }
 
+/**
+ * Represents a successful evaluation result.
+ * @class
+ */
 class EvaluateResultSuccess {
   constructor(realmId, value) {
     this.resultType = EvaluateResultType.SUCCESS
@@ -28,6 +37,10 @@ class EvaluateResultSuccess {
   }
 }
 
+/**
+ * Represents an exception that occurred during evaluation of a result.
+ * @class
+ */
 class EvaluateResultException {
   constructor(realmId, exceptionDetails) {
     this.resultType = EvaluateResultType.EXCEPTION
@@ -36,6 +49,10 @@ class EvaluateResultException {
   }
 }
 
+/**
+ * Represents details of an exception.
+ * @class
+ */
 class ExceptionDetails {
   constructor(exceptionDetails) {
     this.columnNumber = 'columnNumber' in exceptionDetails ? exceptionDetails['columnNumber'] : null

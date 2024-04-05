@@ -29,11 +29,11 @@ import org.openqa.selenium.bidi.script.SerializationOptions;
 public class LocateNodeParameters {
 
   private final Locator locator;
-  private final Optional<Long> maxNodeCount;
-  private final Optional<ResultOwnership> ownership;
-  private final Optional<String> sandbox;
-  private final Optional<SerializationOptions> serializationOptions;
-  private final Optional<List<RemoteReference>> startNodes;
+  private Optional<Long> maxNodeCount = Optional.empty();
+  private Optional<ResultOwnership> ownership = Optional.empty();
+  private Optional<String> sandbox = Optional.empty();
+  private Optional<SerializationOptions> serializationOptions = Optional.empty();
+  private Optional<List<RemoteReference>> startNodes = Optional.empty();
 
   private LocateNodeParameters(Builder builder) {
     this.locator = builder.locator;
@@ -42,6 +42,35 @@ public class LocateNodeParameters {
     this.sandbox = Optional.ofNullable(builder.sandbox);
     this.serializationOptions = Optional.ofNullable(builder.serializationOptions);
     this.startNodes = Optional.ofNullable(builder.startNodes);
+  }
+
+  public LocateNodeParameters(Locator locator) {
+    this.locator = locator;
+  }
+
+  public LocateNodeParameters setMaxNodeCount(long maxNodeCount) {
+    this.maxNodeCount = Optional.of(maxNodeCount);
+    return this;
+  }
+
+  public LocateNodeParameters setOwnership(ResultOwnership ownership) {
+    this.ownership = Optional.of(ownership);
+    return this;
+  }
+
+  public LocateNodeParameters setSandbox(String sandbox) {
+    this.sandbox = Optional.of(sandbox);
+    return this;
+  }
+
+  public LocateNodeParameters setSerializationOptions(SerializationOptions options) {
+    this.serializationOptions = Optional.of(options);
+    return this;
+  }
+
+  public LocateNodeParameters setStartNodes(List<RemoteReference> startNodes) {
+    this.startNodes = Optional.of(startNodes);
+    return this;
   }
 
   public Map<String, Object> toMap() {
@@ -62,6 +91,12 @@ public class LocateNodeParameters {
     return map;
   }
 
+  /**
+   * @deprecated Use the chaining of LocateNodeParameters methods to add optional parameters. This
+   *     is in favor of keeping the usage pattern consistent for BiDi parameters. Use the {@link
+   *     LocateNodeParameters#LocateNodeParameters(Locator locator)} constructor and chain methods.
+   */
+  @Deprecated(since = "4.20", forRemoval = true)
   public static class Builder {
 
     private final Locator locator;
