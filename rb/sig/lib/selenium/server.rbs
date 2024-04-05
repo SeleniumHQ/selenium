@@ -4,27 +4,27 @@ module Selenium
 
     self.@available_assets: untyped
 
-    @jar: untyped
+    @jar: String
 
-    @host: untyped
+    @host: String
 
-    @role: untyped
+    @role: String
 
-    @port: untyped
+    @port: Integer
 
-    @timeout: untyped
+    @timeout: Integer
 
-    @background: untyped
+    @background: bool
 
-    @additional_args: untyped
+    @additional_args: Integer | bool | Array[untyped]
 
-    @log: untyped
+    @log: String | bool
 
     @log_file: untyped
 
     @process: untyped
 
-    @socket: untyped
+    @socket: WebDriver::SocketPoller
 
     class Error < StandardError
     end
