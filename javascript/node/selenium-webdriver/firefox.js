@@ -444,6 +444,7 @@ const ExtensionCommand = {
   SET_CONTEXT: 'setContext',
   INSTALL_ADDON: 'install addon',
   UNINSTALL_ADDON: 'uninstall addon',
+  FULL_PAGE_SCREENSHOT: 'fullPage screenshot',
 }
 
 /**
@@ -470,6 +471,8 @@ function configureExecutor(executor) {
   executor.defineCommand(ExtensionCommand.INSTALL_ADDON, 'POST', '/session/:sessionId/moz/addon/install')
 
   executor.defineCommand(ExtensionCommand.UNINSTALL_ADDON, 'POST', '/session/:sessionId/moz/addon/uninstall')
+
+  executor.defineCommand(ExtensionCommand.FULL_PAGE_SCREENSHOT, 'GET', '/session/:sessionId/moz/screenshot/full')
 }
 
 /**
@@ -644,6 +647,16 @@ class Driver extends webdriver.WebDriver {
   async uninstallAddon(id) {
     id = await Promise.resolve(id)
     return this.execute(new command.Command(ExtensionCommand.UNINSTALL_ADDON).setParameter('id', id))
+  }
+
+  /**
+   * Take full page screenshot of the visible region
+   *
+   * @return {!Promise<string>} A promise that will be
+   *     resolved to the screenshot as a base-64 encoded PNG.
+   */
+  takeFullPageScreenshot() {
+    return this.execute(new command.Command(ExtensionCommand.FULL_PAGE_SCREENSHOT))
   }
 }
 
