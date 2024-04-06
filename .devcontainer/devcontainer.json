@@ -6,4 +6,4 @@
     "dockerfile": "../scripts/dev-image/Dockerfile"
   },
   "runArgs": ["--name", "selenium_devcontainer"]
-}
+

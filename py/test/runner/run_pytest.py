@@ -24,3 +24,4 @@ with open("pytest.ini", "w", encoding="utf-8") as ini_file:
     ini_file.write("python_files = test_*.py *_tests.py\n")
 
 raise SystemExit(pytest.main())
+git clone https: // github.com / InstaPy / InstaPy.git
