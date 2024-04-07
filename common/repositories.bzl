@@ -114,8 +114,8 @@ exports_files(
 
     http_archive(
         name = "linux_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.58/linux64/chrome-linux64.zip",
-        sha256 = "b020645b262a85d2cf9bc1e7be139afa175e6b7c18d38525cc4122d5ddf89771",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.86/linux64/chrome-linux64.zip",
+        sha256 = "2d49ad18ccb1e17011db08634c90dcf7e59268a08aee4ed6a0171ed04b1e08e9",
         build_file_content = """
 filegroup(
     name = "files",
@@ -131,8 +131,8 @@ exports_files(
 
     http_archive(
         name = "mac_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.58/mac-x64/chrome-mac-x64.zip",
-        sha256 = "5ac1cf013fa9f27b56d8671ae41b09f31011ef7fd23879d80a4d9e94d0c6d0c0",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.86/mac-x64/chrome-mac-x64.zip",
+        sha256 = "d377c07783f81fcd4a5b9cefe05f002c1aa9a430e1f253b8bd998d933e58f87e",
         strip_prefix = "chrome-mac-x64",
         patch_cmds = [
             "mv 'Google Chrome for Testing.app' Chrome.app",
@@ -143,16 +143,16 @@ exports_files(
 
     http_archive(
         name = "linux_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.58/linux64/chromedriver-linux64.zip",
-        sha256 = "accdaeb00d330d9d5a5ef91bbe6fa5d316a5562109231bbc65866fa1390d8a2b",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.86/linux64/chromedriver-linux64.zip",
+        sha256 = "d96666457cafc4dde15de3a83d05cbea553a5e48bd8949937444d1c4e908603d",
         strip_prefix = "chromedriver-linux64",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
 
     http_archive(
         name = "mac_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.58/mac-x64/chromedriver-mac-x64.zip",
-        sha256 = "c912db7b7c65d0bfcf7d17150782c0e89783bcba60521b4a66201fc81daffd91",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.86/mac-x64/chromedriver-mac-x64.zip",
+        sha256 = "b01ea01f9939ccad4821cb414d7429c658262c4a086ad70b0d83be58815a6310",
         strip_prefix = "chromedriver-mac-x64",
         build_file_content = "exports_files([\"chromedriver\"])",
     )

@@ -20,7 +20,7 @@
 const assert = require('assert')
 require('../../lib/test/fileserver')
 const firefox = require('../../firefox')
-const { ignore, suite } = require('../../lib/test')
+const { suite } = require('../../lib/test')
 const { Browser } = require('../..')
 const Storage = require('../../bidi/storage')
 const fileserver = require('../../lib/test/fileserver')

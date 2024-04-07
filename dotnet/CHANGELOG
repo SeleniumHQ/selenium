@@ -1,3 +1,15 @@
+v4.19.0
+======
+
+* Add CDP for Chrome 123 and remove 120
+* Correct `ChromiumDriverService.AllowedIPAddresses` property name (#13626)
+* Fixed parsing of the year in ConsoleApiCalledEventArgs cdp event args (Fixes #13654)
+* Add dispose on constructor failure to ensure driver closes (#13673)
+* Rename assembly prerequisites to AssemblyFixture
+* Support setting timeouts in capabilities (#13698)
+* Treat unsuccessful http responses as errored commands (#13608)
+* Enable internal logging at trace level for unit tests (#13727)
+
 v4.18.1
 ======
 

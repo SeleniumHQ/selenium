@@ -224,6 +224,7 @@ class DefaultMouseTest extends JupiterTestBase {
   @NeedsFreshDriver
   @Test
   @Ignore(value = FIREFOX, gitHubActions = true)
+  @Ignore(value = CHROME, gitHubActions = true)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
@@ -263,6 +264,7 @@ class DefaultMouseTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);
     driver.switchTo().frame("source");

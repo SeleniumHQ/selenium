@@ -14,16 +14,25 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.bidi.browsingcontext;
 
-package org.openqa.selenium.devtools.v120;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+public class BoxClipRectangle extends ClipRectangle {
+  private final Map<String, Object> map = new HashMap<>();
 
-@AutoService(CdpInfo.class)
-public class v120CdpInfo extends CdpInfo {
+  public BoxClipRectangle(double x, double y, double width, double height) {
+    super(Type.BOX);
+    map.put("x", x);
+    map.put("y", y);
+    map.put("width", width);
+    map.put("height", height);
+  }
 
-  public v120CdpInfo() {
-    super(120, v120Domains::new);
+  public Map<String, Object> toMap() {
+    map.put("type", super.getType().toString());
+
+    return map;
   }
 }

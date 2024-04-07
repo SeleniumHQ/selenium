@@ -230,6 +230,21 @@ public class BrowsingContext {
             }));
   }
 
+  public String captureScreenshot(CaptureScreenshotParameters parameters) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(CONTEXT, id);
+    params.putAll(parameters.toMap());
+
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.captureScreenshot",
+            params,
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return (String) result.get("data");
+            }));
+  }
+
   public String captureBoxScreenshot(double x, double y, double width, double height) {
     return this.bidi.send(
         new Command<>(
@@ -258,20 +273,14 @@ public class BrowsingContext {
                 CONTEXT,
                 id,
                 "clip",
-                Map.of(
-                    "type",
-                    "element",
-                    "element",
-                    Map.of("sharedId", elementId),
-                    "scrollIntoView",
-                    false)),
+                Map.of("type", "element", "element", Map.of("sharedId", elementId))),
             jsonInput -> {
               Map<String, Object> result = jsonInput.read(Map.class);
               return (String) result.get("data");
             }));
   }
 
-  public String captureElementScreenshot(String elementId, boolean scrollIntoView) {
+  public String captureElementScreenshot(String elementId, String handle) {
     return this.bidi.send(
         new Command<>(
             "browsingContext.captureScreenshot",
@@ -280,12 +289,7 @@ public class BrowsingContext {
                 id,
                 "clip",
                 Map.of(
-                    "type",
-                    "element",
-                    "element",
-                    Map.of("sharedId", elementId),
-                    "scrollIntoView",
-                    scrollIntoView)),
+                    "type", "element", "element", Map.of("sharedId", elementId, "handle", handle))),
             jsonInput -> {
               Map<String, Object> result = jsonInput.read(Map.class);
               return (String) result.get("data");

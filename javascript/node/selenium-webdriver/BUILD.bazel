@@ -14,7 +14,7 @@ VERSION = "4.16.0"
 BROWSER_VERSIONS = [
     "v85",
     "v122",
-    "v120",
+    "v123",
     "v121",
 ]
 

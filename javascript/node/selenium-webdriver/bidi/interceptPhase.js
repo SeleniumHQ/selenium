@@ -15,6 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * Represents the different phases of intercepting network requests and responses.
+ * @enum {string}
+ */
 const InterceptPhase = {
   BEFORE_REQUEST_SENT: 'beforeRequestSent',
   RESPONSE_STARTED: 'responseStarted',

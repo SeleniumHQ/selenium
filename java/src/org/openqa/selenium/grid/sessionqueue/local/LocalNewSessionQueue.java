@@ -216,7 +216,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         boolean sessionCreated = data.latch.await(requestTimeout.toMillis(), MILLISECONDS);
 
         if (sessionCreated) {
-          result = data.result;
+          result = data.getResult();
         } else {
           result = Either.left(new SessionNotCreatedException("New session request timed out"));
         }
@@ -465,12 +465,16 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
     public final Instant endTime;
     private final CountDownLatch latch = new CountDownLatch(1);
-    public Either<SessionNotCreatedException, CreateSessionResponse> result;
+    private Either<SessionNotCreatedException, CreateSessionResponse> result;
     private boolean complete;
 
     public Data(Instant enqueued) {
       this.endTime = enqueued.plus(requestTimeout);
       this.result = Either.left(new SessionNotCreatedException("Session not created"));
+    }
+
+    public synchronized Either<SessionNotCreatedException, CreateSessionResponse> getResult() {
+      return result;
     }
 
     public synchronized void setResult(

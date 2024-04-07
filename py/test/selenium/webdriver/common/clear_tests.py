@@ -29,6 +29,7 @@ def test_writable_text_input_should_clear(driver, pages):
 
 
 @pytest.mark.xfail_chrome(reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
+@pytest.mark.xfail_edge(reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
 def test_text_input_should_not_clear_when_disabled(driver, pages):
     pages.load("readOnlyPage.html")
     element = driver.find_element(By.ID, "textInputNotEnabled")
@@ -52,6 +53,7 @@ def test_writable_text_area_should_clear(driver, pages):
 
 
 @pytest.mark.xfail_chrome(reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
+@pytest.mark.xfail_edge(reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
 def test_text_area_should_not_clear_when_disabled(driver, pages):
     pages.load("readOnlyPage.html")
     element = driver.find_element(By.ID, "textAreaNotEnabled")

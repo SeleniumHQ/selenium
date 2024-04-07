@@ -191,7 +191,7 @@ class WebElement(BaseWebElement):
         """Returns whether the element is enabled."""
         return self._execute(Command.IS_ELEMENT_ENABLED)["value"]
 
-    def send_keys(self, *value) -> None:
+    def send_keys(self, *value: str) -> None:
         """Simulates typing into the element.
 
         :Args:

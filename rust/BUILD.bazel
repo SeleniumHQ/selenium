@@ -77,7 +77,7 @@ rust_binary(
     name = "selenium-manager",
     srcs = ["src/main.rs"],
     edition = "2021",
-    version = "0.4.19-nightly",
+    version = "0.4.20-nightly",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",
@@ -98,8 +98,8 @@ rust_library(
 rust_test(
     name = "unit",
     size = "small",
-    srcs = glob(["src/**/*.rs"]),
     crate = ":selenium_manager",
+    edition = "2021",
     tags = ["no-sandbox"],
 )
 
