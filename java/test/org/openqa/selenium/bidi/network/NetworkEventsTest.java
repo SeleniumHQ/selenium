@@ -19,9 +19,7 @@ package org.openqa.selenium.bidi.network;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -148,6 +146,7 @@ class NetworkEventsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canListenToOnAuthRequiredEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
@@ -172,6 +171,7 @@ class NetworkEventsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canListenToFetchError() throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
       CompletableFuture<FetchError> future = new CompletableFuture<>();

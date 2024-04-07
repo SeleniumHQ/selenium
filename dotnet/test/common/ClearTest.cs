@@ -17,6 +17,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
+        [IgnoreBrowser(Browser.Edge, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
         public void TextInputShouldNotClearWhenDisabled()
         {
             driver.Url = readOnlyPage;
@@ -44,6 +45,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
+        [IgnoreBrowser(Browser.Edge, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")]
         public void TextAreaShouldNotClearWhenDisabled()
         {
             driver.Url = readOnlyPage;

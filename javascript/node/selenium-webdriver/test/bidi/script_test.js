@@ -586,7 +586,6 @@ suite(
       })
 
       it('can access preload script properties', async function () {
-        const id = await driver.getWindowHandle()
         const manager = await ScriptManager([], driver)
 
         await manager.addPreloadScript('() => { window.preloadScriptFunction = () => window.baz = 42; }')
@@ -602,7 +601,6 @@ suite(
       })
 
       it('can add preload script to sandbox', async function () {
-        const id = await driver.getWindowHandle()
         const manager = await ScriptManager([], driver)
 
         await manager.addPreloadScript('() => { window.foo = 1; }')
@@ -638,7 +636,6 @@ suite(
       })
 
       it('can remove properties set by preload script', async function () {
-        const id = await driver.getWindowHandle()
         const manager = await ScriptManager([], driver)
 
         await manager.addPreloadScript('() => { window.foo = 42; }')
@@ -657,7 +654,6 @@ suite(
       })
 
       it('can remove preload script', async function () {
-        const id = await driver.getWindowHandle()
         const manager = await ScriptManager([], driver)
 
         let script = await manager.addPreloadScript("() => { window.foo='bar'; }")
@@ -682,7 +678,6 @@ suite(
       })
 
       it('cannot remove same preload script twice', async function () {
-        const id = await driver.getWindowHandle()
         const manager = await ScriptManager([], driver)
 
         let script = await manager.addPreloadScript("() => { window.foo='bar'; }")
@@ -695,7 +690,6 @@ suite(
       })
 
       it('can remove one of preload script', async function () {
-        const id = await driver.getWindowHandle()
         const manager = await ScriptManager([], driver)
 
         let script_1 = await manager.addPreloadScript("() => { window.bar='foo'; }")

@@ -21,7 +21,17 @@ const { ContinueResponseParameters } = require('./continueResponseParameters')
 const { ContinueRequestParameters } = require('./continueRequestParameters')
 const { ProvideResponseParameters } = require('./provideResponseParameters')
 
+/**
+ * Represents all commands and events of Network module.
+ * Described in https://w3c.github.io/webdriver-bidi/#module-network.
+ */
 class Network {
+  /**
+   * Represents a Network object.
+   * @constructor
+   * @param {Driver} driver - The driver to fetch the BiDi connection.
+   * @param {Array} browsingContextIds - An array of browsing context IDs that the network events will be subscribed to.
+   */
   constructor(driver, browsingContextIds) {
     this._driver = driver
     this._browsingContextIds = browsingContextIds
@@ -31,22 +41,52 @@ class Network {
     this.bidi = await this._driver.getBidi()
   }
 
+  /**
+   * Subscribes to the 'network.beforeRequestSent' event and handles it with the provided callback.
+   *
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
+   */
   async beforeRequestSent(callback) {
     await this.subscribeAndHandleEvent('network.beforeRequestSent', callback)
   }
 
+  /**
+   * Subscribes to the 'network.responseStarted' event and handles it with the provided callback.
+   *
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
+   */
   async responseStarted(callback) {
     await this.subscribeAndHandleEvent('network.responseStarted', callback)
   }
 
+  /**
+   * Subscribes to the 'network.responseCompleted' event and handles it with the provided callback.
+   *
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
+   */
   async responseCompleted(callback) {
     await this.subscribeAndHandleEvent('network.responseCompleted', callback)
   }
 
+  /**
+   * Subscribes to the 'network.authRequired' event and handles it with the provided callback.
+   *
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
+   */
   async authRequired(callback) {
     await this.subscribeAndHandleEvent('network.authRequired', callback)
   }
 
+  /**
+   * Subscribes to the 'network.fetchError' event and handles it with the provided callback.
+   *
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
+   */
   async fetchError(callback) {
     await this.subscribeAndHandleEvent('network.fetchError', callback)
   }
@@ -99,6 +139,13 @@ class Network {
     })
   }
 
+  /**
+   * Adds a network intercept.
+   *
+   * @param {AddInterceptParameters} params - The parameters for the network intercept.
+   * @returns {Promise<string>} - A promise that resolves to the added intercept's id.
+   * @throws {Error} - If params is not an instance of AddInterceptParameters.
+   */
   async addIntercept(params) {
     if (!(params instanceof AddInterceptParameters)) {
       throw new Error(`Params must be an instance of AddInterceptParameters. Received:'${params}'`)
@@ -114,6 +161,12 @@ class Network {
     return response.result.intercept
   }
 
+  /**
+   * Removes an intercept.
+   *
+   * @param {string} interceptId - The ID of the intercept to be removed.
+   * @returns {Promise<void>} - A promise that resolves when the intercept is successfully removed.
+   */
   async removeIntercept(interceptId) {
     const command = {
       method: 'network.removeIntercept',
@@ -123,6 +176,13 @@ class Network {
     await this.bidi.send(command)
   }
 
+  /**
+   * Continues the network request with authentication credentials.
+   * @param {string} requestId - The ID of the request to continue.
+   * @param {string} username - The username for authentication.
+   * @param {string} password - The password for authentication.
+   * @returns {Promise<void>} - A promise that resolves when the command is sent.
+   */
   async continueWithAuth(requestId, username, password) {
     const command = {
       method: 'network.continueWithAuth',
@@ -139,6 +199,12 @@ class Network {
     await this.bidi.send(command)
   }
 
+  /**
+   * Fails a network request.
+   *
+   * @param {number} requestId - The ID of the request to fail.
+   * @returns {Promise<void>} - A promise that resolves when the command is sent.
+   */
   async failRequest(requestId) {
     const command = {
       method: 'network.failRequest',
@@ -149,6 +215,11 @@ class Network {
     await this.bidi.send(command)
   }
 
+  /**
+   * Continues the network request with authentication but without providing credentials.
+   * @param {string} requestId - The ID of the request to continue with authentication.
+   * @returns {Promise<void>} - A promise that resolves when the command is sent.
+   */
   async continueWithAuthNoCredentials(requestId) {
     const command = {
       method: 'network.continueWithAuth',
@@ -160,6 +231,12 @@ class Network {
     await this.bidi.send(command)
   }
 
+  /**
+   * Cancels the authentication for a specific request.
+   *
+   * @param {string} requestId - The ID of the request to cancel authentication for.
+   * @returns {Promise<void>} - A promise that resolves when the command is sent.
+   */
   async cancelAuth(requestId) {
     const command = {
       method: 'network.continueWithAuth',
@@ -171,6 +248,13 @@ class Network {
     await this.bidi.send(command)
   }
 
+  /**
+   * Continues the network request with the provided parameters.
+   *
+   * @param {ContinueRequestParameters} params - The parameters for continuing the request.
+   * @throws {Error} If params is not an instance of ContinueRequestParameters.
+   * @returns {Promise<void>} A promise that resolves when the command is sent.
+   */
   async continueRequest(params) {
     if (!(params instanceof ContinueRequestParameters)) {
       throw new Error(`Params must be an instance of ContinueRequestParameters. Received:'${params}'`)
@@ -184,6 +268,13 @@ class Network {
     await this.bidi.send(command)
   }
 
+  /**
+   * Continues the network response with the given parameters.
+   *
+   * @param {ContinueResponseParameters} params - The parameters for continuing the response.
+   * @throws {Error} If params is not an instance of ContinueResponseParameters.
+   * @returns {Promise<void>} A promise that resolves when the command is sent.
+   */
   async continueResponse(params) {
     if (!(params instanceof ContinueResponseParameters)) {
       throw new Error(`Params must be an instance of ContinueResponseParameters. Received:'${params}'`)
@@ -197,6 +288,13 @@ class Network {
     await this.bidi.send(command)
   }
 
+  /**
+   * Provides a response for the network.
+   *
+   * @param {ProvideResponseParameters} params - The parameters for providing the response.
+   * @throws {Error} If params is not an instance of ProvideResponseParameters.
+   * @returns {Promise<void>} A promise that resolves when the command is sent.
+   */
   async provideResponse(params) {
     if (!(params instanceof ProvideResponseParameters)) {
       throw new Error(`Params must be an instance of ProvideResponseParameters. Received:'${params}'`)
@@ -210,6 +308,10 @@ class Network {
     await this.bidi.send(command)
   }
 
+  /**
+   * Unsubscribes from network events for all browsing contexts.
+   * @returns {Promise<void>} A promise that resolves when the network connection is closed.
+   */
   async close() {
     await this.bidi.unsubscribe(
       'network.beforeRequestSent',

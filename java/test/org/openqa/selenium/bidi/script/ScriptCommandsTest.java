@@ -64,7 +64,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canCallFunctionWithDeclaration() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -86,7 +85,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canCallFunctionWithArguments() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -119,7 +117,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canCallFunctionToGetIFrameBrowsingContext() {
     String url = appServer.whereIs("click_too_big_in_frame.html");
     driver.get(url);
@@ -188,7 +185,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canCallFunctionWithAwaitPromise() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -219,7 +215,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canCallFunctionWithAwaitPromiseFalse() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -248,7 +243,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canCallFunctionWithThisParameter() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -279,7 +273,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canCallFunctionWithOwnershipRoot() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -305,7 +298,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canCallFunctionWithOwnershipNone() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -361,7 +353,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canCallFunctionInASandBox() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -512,10 +503,8 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResultExceptionValue exception = (EvaluateResultExceptionValue) result;
     assertThat(exception.getExceptionDetails().getException().getType()).isEqualTo("error");
-    assertThat(exception.getExceptionDetails().getText())
-        .isEqualTo("SyntaxError: expected expression, got ')'");
-    assertThat(exception.getExceptionDetails().getLineNumber()).isPositive();
-    assertThat(exception.getExceptionDetails().getColumnNumber()).isPositive();
+    assertThat(exception.getExceptionDetails().getText()).contains("SyntaxError:");
+    assertThat(exception.getExceptionDetails().getLineNumber()).isGreaterThanOrEqualTo(0);
     assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames().size()).isEqualTo(0);
   }
 

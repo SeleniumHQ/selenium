@@ -24,11 +24,6 @@ java_library(
     srcs = glob(
         [
             "*.java",
-            "log/*.java",
-            "browsingcontext/*.java",
-            "network/*.java",
-            "script/*.java",
-            "storage/*.java",
         ],
         exclude = AUGMENTER_SRCS,
     ),

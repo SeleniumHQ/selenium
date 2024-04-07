@@ -21,6 +21,11 @@ const { PartitionKey } = require('./partitionKey')
 const { PartialCookie } = require('./partialCookie')
 const { Cookie, BytesValue } = require('./networkTypes')
 
+/**
+ * Represents commands of Storage module.
+ * Described in https://w3c.github.io/webdriver-bidi/#module-storage.
+ * @class
+ */
 class Storage {
   constructor(driver) {
     this._driver = driver
@@ -34,6 +39,15 @@ class Storage {
     this.bidi = await this._driver.getBidi()
   }
 
+  /**
+   * Retrieves cookies based on the provided filter and partition.
+   *
+   * @param {CookieFilter} [filter] - The filter to apply to the cookies.
+   * @param {(BrowsingContextPartitionDescriptor|StorageKeyPartitionDescriptor)} [partition] - The partition to retrieve cookies from.
+   * @returns {Promise<{ cookies: Cookie[], partitionKey?: PartitionKey }>} - A promise that resolves to an object containing the retrieved cookies and an optional partition key.
+   * @throws {Error} If the filter parameter is provided but is not an instance of CookieFilter.
+   * @throws {Error} If the partition parameter is provided but is not an instance of BrowsingContextPartitionDescriptor or StorageKeyPartitionDescriptor.
+   */
   async getCookies(filter = undefined, partition = undefined) {
     if (filter !== undefined && !(filter instanceof CookieFilter)) {
       throw new Error(`Params must be an instance of CookieFilter. Received:'${filter}'`)
@@ -89,6 +103,14 @@ class Storage {
     }
   }
 
+  /**
+   * Sets a cookie using the provided cookie object and partition.
+   *
+   * @param {PartialCookie} cookie - The cookie object to set.
+   * @param {(BrowsingContextPartitionDescriptor|StorageKeyPartitionDescriptor)} [partition] - The partition to use for the cookie.
+   * @returns {PartitionKey} The partition key of the set cookie.
+   * @throws {Error} If the cookie parameter is not an instance of PartialCookie or if the partition parameter is not an instance of PartitionDescriptor.
+   */
   async setCookie(cookie, partition = undefined) {
     if (!(cookie instanceof PartialCookie)) {
       throw new Error(`Params must be an instance of PartialCookie. Received:'${cookie}'`)
@@ -125,6 +147,14 @@ class Storage {
     }
   }
 
+  /**
+   * Deletes cookies based on the provided filter and partition.
+   *
+   * @param {CookieFilter} [cookieFilter] - The filter to apply to the cookies. Must be an instance of CookieFilter.
+   * @param {(BrowsingContextPartitionDescriptor|StorageKeyPartitionDescriptor)} [partition] - The partition to delete cookies from. Must be an instance of either BrowsingContextPartitionDescriptor or StorageKeyPartitionDescriptor.
+   * @returns {PartitionKey} - The partition key of the deleted cookies, if available.
+   * @throws {Error} - If the provided parameters are not of the correct type.
+   */
   async deleteCookies(cookieFilter = undefined, partition = undefined) {
     if (cookieFilter !== undefined && !(cookieFilter instanceof CookieFilter)) {
       throw new Error(`Params must be an instance of CookieFilter. Received:'${cookieFilter}'`)

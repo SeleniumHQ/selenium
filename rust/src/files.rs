@@ -18,12 +18,12 @@
 use crate::config::OS;
 use crate::config::OS::WINDOWS;
 use crate::{
-    format_one_arg, format_three_args, format_two_args, run_shell_command_by_os, Command, Logger,
-    CP_VOLUME_COMMAND, HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, MACOS,
-    MSIEXEC_INSTALL_COMMAND, MV_PAYLOAD_COMMAND, MV_PAYLOAD_OLD_VERSIONS_COMMAND, PKGUTIL_COMMAND,
+    format_one_arg, format_three_args, run_shell_command_by_os, Command, Logger, CP_VOLUME_COMMAND,
+    HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, MACOS, MSIEXEC_INSTALL_COMMAND,
 };
 use anyhow::anyhow;
 use anyhow::Error;
+use apple_flat_package::PkgReader;
 use bzip2::read::BzDecoder;
 use directories::BaseDirs;
 use flate2::read::GzDecoder;
@@ -34,7 +34,6 @@ use std::io;
 use std::io::{BufReader, Cursor, Read};
 use std::path::{Path, PathBuf};
 use tar::Archive;
-use tempfile::Builder;
 use walkdir::{DirEntry, WalkDir};
 use zip::ZipArchive;
 
@@ -89,7 +88,6 @@ pub fn uncompress(
     os: &str,
     single_file: Option<String>,
     volume: Option<&str>,
-    major_browser_version: Option<i32>,
 ) -> Result<(), Error> {
     let mut extension = match infer::get_from_path(compressed_file)? {
         Some(kind) => kind.extension(),
@@ -127,19 +125,13 @@ pub fn uncompress(
     } else if extension.eq_ignore_ascii_case(BZ2) {
         uncompress_bz2(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(PKG) {
-        uncompress_pkg(
-            compressed_file,
-            target,
-            log,
-            os,
-            major_browser_version.unwrap_or_default(),
-        )?
+        uncompress_pkg(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(DMG) {
         uncompress_dmg(compressed_file, target, log, os, volume.unwrap_or_default())?
     } else if extension.eq_ignore_ascii_case(EXE) {
         uncompress_sfx(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(DEB) {
-        uncompress_deb(compressed_file, target, log, volume.unwrap_or_default())?
+        uncompress_deb(compressed_file, target, log, os, volume.unwrap_or_default())?
     } else if extension.eq_ignore_ascii_case(MSI) {
         install_msi(compressed_file, log, os)?
     } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
@@ -184,42 +176,35 @@ pub fn uncompress_sfx(compressed_file: &str, target: &Path, log: &Logger) -> Res
     Ok(())
 }
 
-pub fn uncompress_pkg(
-    compressed_file: &str,
-    target: &Path,
-    log: &Logger,
-    os: &str,
-    major_browser_version: i32,
-) -> Result<(), Error> {
-    let tmp_dir = Builder::new().prefix(PKG).tempdir()?;
-    let out_folder = format!("{}/{}", path_to_string(tmp_dir.path()), PKG);
-    let mut command = Command::new_single(format_two_args(
-        PKGUTIL_COMMAND,
-        compressed_file,
-        &out_folder,
-    ));
-    log.trace(format!("Running command: {}", command.display()));
-    run_shell_command_by_os(os, command)?;
+pub fn uncompress_pkg(compressed_file: &str, target: &Path, log: &Logger) -> Result<(), Error> {
+    let target_path = Path::new(target);
+    let mut reader = PkgReader::new(File::open(compressed_file)?)?;
+    let packages = reader.component_packages()?;
+    let package = packages.first().ok_or(anyhow!("Unable to extract PKG"))?;
+    if let Some(mut cpio_reader) = package.payload_reader()? {
+        while let Some(next) = cpio_reader.next() {
+            let entry = next?;
+            let name = entry.name();
+            let mut file = Vec::new();
+            cpio_reader.read_to_end(&mut file)?;
+            let target_path_buf = target_path.join(name);
+            log.trace(format!("Extracting {}", target_path_buf.display()));
+            if entry.file_size() != 0 {
+                let target_path = target_path_buf.as_path();
+                fs::create_dir_all(target_path.parent().unwrap())?;
+                fs::write(&target_path_buf, file)?;
 
-    fs::create_dir_all(target)?;
-    let target_folder = path_to_string(target);
-    command = if major_browser_version == 0 || major_browser_version > 84 {
-        Command::new_single(format_three_args(
-            MV_PAYLOAD_COMMAND,
-            &out_folder,
-            PKG,
-            &target_folder,
-        ))
-    } else {
-        Command::new_single(format_two_args(
-            MV_PAYLOAD_OLD_VERSIONS_COMMAND,
-            &out_folder,
-            &target_folder,
-        ))
-    };
-    log.trace(format!("Running command: {}", command.display()));
-    run_shell_command_by_os(os, command)?;
+                // Set permissions
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt;
 
+                    let mode = entry.mode();
+                    fs::set_permissions(target_path, fs::Permissions::from_mode(mode))?;
+                }
+            }
+        }
+    }
     Ok(())
 }
 
@@ -264,6 +249,7 @@ pub fn uncompress_deb(
     compressed_file: &str,
     target: &Path,
     log: &Logger,
+    os: &str,
     label: &str,
 ) -> Result<(), Error> {
     let zip_parent = Path::new(compressed_file).parent().unwrap();
@@ -280,12 +266,18 @@ pub fn uncompress_deb(
     let zip_parent_str = path_to_string(zip_parent);
     let target_str = path_to_string(target);
     let opt_edge_str = format!("{}/opt/microsoft/{}", zip_parent_str, label);
+    let opt_edge_mv = format!("mv {} {}", opt_edge_str, target_str);
+    let command = Command::new_single(opt_edge_mv.clone());
     log.trace(format!(
         "Moving extracted files and folders from {} to {}",
         opt_edge_str, target_str
     ));
     create_parent_path_if_not_exists(target)?;
-    fs::rename(&opt_edge_str, &target_str)?;
+    run_shell_command_by_os(os, command)?;
+    let target_path = Path::new(target);
+    if target_path.parent().unwrap().read_dir()?.next().is_none() {
+        fs::rename(&opt_edge_str, &target_str)?;
+    }
 
     Ok(())
 }

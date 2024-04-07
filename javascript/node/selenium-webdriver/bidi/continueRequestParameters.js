@@ -17,6 +17,10 @@
 
 const { BytesValue, Header } = require('./networkTypes')
 
+/**
+ * Represents the parameters for a continue request command.
+ * Described in https://w3c.github.io/webdriver-bidi/#command-network-continueRequest.
+ */
 class ContinueRequestParameters {
   #map = new Map()
 
@@ -24,6 +28,13 @@ class ContinueRequestParameters {
     this.#map.set('request', request)
   }
 
+  /**
+   * Sets the body value for the request.
+   *
+   * @param {BytesValue} value - The value to set as the body. Must be an instance of BytesValue.
+   * @returns {ContinueRequestParameters} - The current instance of the ContinueRequestParameters for chaining.
+   * @throws {Error} - If the value is not an instance of BytesValue.
+   */
   body(value) {
     if (!(value instanceof BytesValue)) {
       throw new Error(`Value must be an instance of BytesValue. Received: '${value})'`)
@@ -32,6 +43,13 @@ class ContinueRequestParameters {
     return this
   }
 
+  /**
+   * Sets the cookies for the request.
+   *
+   * @param {Header[]} cookieHeaders - An array of cookie headers.
+   * @returns {continueRequestParameters} - The current instance of the ContinueRequestParameters for chaining.
+   * @throws {Error} - If a cookie header is not an instance of Header.
+   */
   cookies(cookieHeaders) {
     const cookies = []
     cookieHeaders.forEach((header) => {
@@ -45,6 +63,13 @@ class ContinueRequestParameters {
     return this
   }
 
+  /**
+   * Sets the headers for the request.
+   *
+   * @param {Header[]} headers - An array of Header objects.
+   * @returns {ContinueRequestParameters} - The current instance of the ContinueRequestParameters for chaining.
+   * @throws {Error} - If the header value is not an instance of Header.
+   */
   headers(headers) {
     const headerList = []
     headers.forEach((header) => {
@@ -58,6 +83,13 @@ class ContinueRequestParameters {
     return this
   }
 
+  /**
+   * Sets the HTTP method for the request.
+   *
+   * @param {string} method - The HTTP method to be set.
+   * @returns {ContinueRequestParameters} - The updated `continueRequestParameters` object.
+   * @throws {Error} - If the method parameter is not a string.
+   */
   method(method) {
     if (typeof method !== 'string') {
       throw new Error(`Http method must be a string. Received: '${method})'`)
@@ -66,6 +98,13 @@ class ContinueRequestParameters {
     return this
   }
 
+  /**
+   * Sets the URL for the request.
+   *
+   * @param {string} url - The URL to set for the request.
+   * @returns {ContinueRequestParameters} - The current instance of the ContinueRequestParameters for chaining.
+   * @throws {Error} - If the url parameter is not a string.
+   */
   url(url) {
     if (typeof url !== 'string') {
       throw new Error(`Url must be a string. Received:'${url}'`)
