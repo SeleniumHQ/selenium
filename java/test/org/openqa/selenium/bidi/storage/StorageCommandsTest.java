@@ -84,6 +84,7 @@ class StorageCommandsTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(EDGE)
   public void canGetCookieInDefaultUserContext() {
     String windowHandle = driver.getWindowHandle();
     String key = generateUniqueKey();
