@@ -279,7 +279,7 @@ public class RemoteNode extends Node implements Closeable {
       try {
         NodeStatus status = getStatus();
 
-        if (!Objects.equals(getId(), status.getNodeId())) {
+        if (status.getNodeId() != null && !Objects.equals(getId(), status.getNodeId())) {
           // ensure the original RemoteNode stays DOWN when it has been restarted and registered
           // again as another RemoteNode with the same externalUri
           return new Result(DOWN, externalUri + " has unexpected node id");
