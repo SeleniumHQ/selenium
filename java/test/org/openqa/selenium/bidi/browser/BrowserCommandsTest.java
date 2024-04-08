@@ -19,8 +19,7 @@ package org.openqa.selenium.bidi.browser;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -47,6 +46,7 @@ class BrowserCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   void canCreateAUserContext() {
     String userContext = browser.createUserContext();
 
@@ -58,6 +58,7 @@ class BrowserCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   void canGetUserContexts() {
     String userContext1 = browser.createUserContext();
     String userContext2 = browser.createUserContext();
@@ -72,6 +73,7 @@ class BrowserCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   void canRemoveUserContext() {
     String userContext1 = browser.createUserContext();
     String userContext2 = browser.createUserContext();
