@@ -312,7 +312,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionThatThrowsException() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
