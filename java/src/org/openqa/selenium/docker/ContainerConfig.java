@@ -21,6 +21,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ public class ContainerConfig {
   private final String networkName;
   private final boolean autoRemove;
   private final long shmSize;
+  private final Map<String, Object> hostConfig;
 
   public ContainerConfig(
       Image image,
@@ -51,6 +53,18 @@ public class ContainerConfig {
       List<Device> devices,
       String networkName,
       long shmSize) {
+    this(image, portBindings, envVars, volumeBinds, devices, networkName, shmSize, new HashMap<>());
+  }
+
+  public ContainerConfig(
+      Image image,
+      Multimap<String, Map<String, Object>> portBindings,
+      Map<String, String> envVars,
+      Map<String, String> volumeBinds,
+      List<Device> devices,
+      String networkName,
+      long shmSize,
+      Map<String, Object> hostConfig) {
     this.image = image;
     this.portBindings = portBindings;
     this.envVars = envVars;
@@ -59,6 +73,7 @@ public class ContainerConfig {
     this.networkName = networkName;
     this.autoRemove = true;
     this.shmSize = shmSize;
+    this.hostConfig = hostConfig;
   }
 
   public static ContainerConfig image(Image image) {
@@ -123,6 +138,17 @@ public class ContainerConfig {
         image, portBindings, envVars, volumeBinds, devices, networkName, shmSize);
   }
 
+  public ContainerConfig getHostConfig(Map<String, Object> hostConfig, List<String> configKeys) {
+    Map<String, Object> setHostConfig =
+        configKeys.stream()
+            .filter(hostConfig::containsKey)
+            .filter(key -> hostConfig.get(key) != null)
+            .collect(Collectors.toMap(key -> key, hostConfig::get));
+
+    return new ContainerConfig(
+        image, portBindings, envVars, volumeBinds, devices, networkName, shmSize, setHostConfig);
+  }
+
   @Override
   public String toString() {
     return "ContainerConfig{"
@@ -142,6 +168,8 @@ public class ContainerConfig {
         + autoRemove
         + ", shmSize="
         + shmSize
+        + ", hostConfig="
+        + hostConfig
         + '}';
   }
 
@@ -174,6 +202,12 @@ public class ContainerConfig {
             "ShmSize", shmSize,
             "Binds", volumeBinds,
             "Devices", devicesMapping);
+
+    if (this.hostConfig != null && !this.hostConfig.isEmpty()) {
+      Map<String, Object> copyMap = new HashMap<>(hostConfig);
+      copyMap.putAll(this.hostConfig);
+      hostConfig = ImmutableMap.copyOf(copyMap);
+    }
 
     return ImmutableMap.of(
         "Image", image.getId(),

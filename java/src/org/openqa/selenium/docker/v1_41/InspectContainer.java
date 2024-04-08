@@ -67,7 +67,8 @@ class InspectContainer {
     ArrayList<Object> mounts = (ArrayList<Object>) rawInspectInfo.get("Mounts");
     List<Map<String, Object>> mountedVolumes =
         mounts.stream().map(mount -> (Map<String, Object>) mount).collect(Collectors.toList());
+    Map<String, Object> hostConfig = (Map<String, Object>) rawInspectInfo.get("HostConfig");
 
-    return new ContainerInfo(id, ip, mountedVolumes, networkName);
+    return new ContainerInfo(id, ip, mountedVolumes, networkName, hostConfig);
   }
 }

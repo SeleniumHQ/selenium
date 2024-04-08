@@ -70,6 +70,18 @@ public class DockerFlags implements HasRoles {
   private List<String> images2Capabilities;
 
   @Parameter(
+      names = {"--docker-host-config-keys"},
+      description =
+          "Node container host config keys to be passed to the browsers container. Keys name can be"
+              + " found in the Docker API documentation, or by running `docker inspect` the"
+              + " node-docker container.")
+  @ConfigValue(
+      section = DockerOptions.DOCKER_SECTION,
+      name = "host-config-keys",
+      example = "[\"Dns\", \"DnsOptions\", \"DnsSearch\", \"ExtraHosts\"]")
+  private List<String> hostConfigKeys;
+
+  @Parameter(
       names = {"--docker-devices"},
       description =
           "Exposes devices to a container. Each device mapping declaration must have  at least the"
