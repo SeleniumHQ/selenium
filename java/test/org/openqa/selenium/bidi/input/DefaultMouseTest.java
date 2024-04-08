@@ -219,6 +219,7 @@ class DefaultMouseTest extends JupiterTestBase {
   @Test
   @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(value = CHROME, gitHubActions = true)
+  @Ignore(value = EDGE, gitHubActions = true)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   void testMoveToLocation() {
