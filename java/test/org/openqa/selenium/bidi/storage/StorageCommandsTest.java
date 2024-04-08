@@ -62,6 +62,7 @@ class StorageCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   public void canGetCookieByName() {
     String key = generateUniqueKey();
     String value = "set";
@@ -131,6 +132,7 @@ class StorageCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   public void canAddCookie() {
     String key = generateUniqueKey();
     String value = "foo";
@@ -219,6 +221,7 @@ class StorageCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   public void canGetAllCookies() {
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
@@ -292,6 +295,7 @@ class StorageCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   public void testAddCookiesWithDifferentPathsThatAreRelatedToOurs() {
     driver.get(appServer.whereIs("/common/animals"));
 
