@@ -371,6 +371,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   @NotYetImplemented(FIREFOX)
   public void testChordControlCutAndPaste() {
     assumeFalse(
@@ -451,7 +452,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
