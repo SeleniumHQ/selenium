@@ -20,7 +20,6 @@ package org.openqa.selenium.bidi.script;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -62,7 +61,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithDeclaration() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -83,7 +81,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithArguments() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -115,7 +112,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionToGetIFrameBrowsingContext() {
     String url = appServer.whereIs("click_too_big_in_frame.html");
     driver.get(url);
@@ -151,7 +147,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionToGetElement() {
     String url = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(url);
@@ -183,7 +178,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithAwaitPromise() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -213,7 +207,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithAwaitPromiseFalse() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -241,7 +234,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithThisParameter() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -271,7 +263,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithOwnershipRoot() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -296,7 +287,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionWithOwnershipNone() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -321,7 +311,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionThatThrowsException() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -349,7 +338,6 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCallFunctionInASandBox() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
