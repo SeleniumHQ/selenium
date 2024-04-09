@@ -18,7 +18,6 @@
 package org.openqa.selenium.bidi.input;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -54,7 +53,6 @@ public class ReleaseCommandTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   public void testReleaseInBrowsingContext() {
     driver.get(server.whereIs("/bidi/release_action.html"));
 

@@ -18,11 +18,7 @@
 package org.openqa.selenium.bidi.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.time.Instant;
 import java.util.Date;
@@ -87,9 +83,9 @@ class StorageCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(EDGE)
   public void canGetCookieInDefaultUserContext() {
     String windowHandle = driver.getWindowHandle();
     String key = generateUniqueKey();

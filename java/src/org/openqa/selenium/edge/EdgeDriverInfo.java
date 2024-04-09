@@ -63,7 +63,7 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public boolean isSupportingBiDi() {
-    return false;
+    return true;
   }
 
   @Override
