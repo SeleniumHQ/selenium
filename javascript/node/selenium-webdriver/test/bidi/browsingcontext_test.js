@@ -18,7 +18,6 @@
 'use strict'
 
 const assert = require('assert')
-const firefox = require('../../firefox')
 const { Browser, By } = require('../../')
 const { Pages, suite, ignore } = require('../../lib/test')
 const BrowsingContext = require('../../bidi/browsingContext')

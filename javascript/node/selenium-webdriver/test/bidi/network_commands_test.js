@@ -18,7 +18,6 @@
 'use strict'
 
 const assert = require('assert')
-const firefox = require('../../firefox')
 const { Browser, By } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const Network = require('../../bidi/network')
