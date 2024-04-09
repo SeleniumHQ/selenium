@@ -1173,7 +1173,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
 
   if (textTransform == 'capitalize') {
     // the unicode regex ending with /gu does not work in IE
-    var re = goog.userAgent.IE ? /(^|\s|\b)(\S)/g : /(^|[^\d\p{L}\p{S}])([\p{Ll}|\p{S}])/gu;
+    var re = goog.userAgent.IE ? /(^|\s|\b)(\S)/g : /(^|\s|\b)(\S)/gu;
     text = text.replace(re, function() {
       return arguments[1] + arguments[2].toUpperCase();
     });
