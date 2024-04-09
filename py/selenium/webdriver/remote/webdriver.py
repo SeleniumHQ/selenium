@@ -163,10 +163,10 @@ class WebDriver(BaseWebDriver):
 
     def __init__(
         self,
-        command_executor="http://127.0.0.1:4444",
-        keep_alive=True,
-        file_detector=None,
-        options: Union[BaseOptions, List[BaseOptions]] = None,
+        command_executor: Union[str, RemoteConnection] = "http://127.0.0.1:4444",
+        keep_alive: bool = True,
+        file_detector: Optional[FileDetector] = None,
+        options: Optional[Union[BaseOptions, List[BaseOptions]]] = None,
     ) -> None:
         """Create a new driver that will issue commands using the wire
         protocol.
