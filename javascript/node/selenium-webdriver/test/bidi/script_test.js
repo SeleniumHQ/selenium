@@ -35,7 +35,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+      driver = await env.builder().build()
     })
 
     afterEach(async function () {
@@ -215,7 +215,7 @@ suite(
         assert.notEqual(result.realmId, null)
 
         assert.equal(result.exceptionDetails.exception.type, 'error')
-        assert.equal(result.exceptionDetails.text, "SyntaxError: expected expression, got ')'")
+        assert.equal(result.exceptionDetails.text.includes('SyntaxError:'), true)
         assert.equal(result.exceptionDetails.columnNumber, 39)
         assert.equal(result.exceptionDetails.stackTrace.callFrames.length, 0)
       })
@@ -320,7 +320,7 @@ suite(
         assert.notEqual(result.realmId, null)
 
         assert.equal(result.exceptionDetails.exception.type, 'error')
-        assert.equal(result.exceptionDetails.text, "SyntaxError: expected expression, got ')'")
+        assert.equal(result.exceptionDetails.text.includes('SyntaxError:'), true)
         assert.equal(result.exceptionDetails.columnNumber, 39)
         assert.equal(result.exceptionDetails.stackTrace.callFrames.length, 0)
       })
@@ -797,7 +797,7 @@ suite(
         assert.equal(realmInfo.realmType, RealmType.WINDOW)
       })
 
-      xit('can listen to realm destroyed message', async function () {
+      it('can listen to realm destroyed message', async function () {
         const manager = await ScriptManager(undefined, driver)
 
         let realmInfo = null
@@ -819,5 +819,5 @@ suite(
       })
     })
   },
-  { browsers: [Browser.FIREFOX] },
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )

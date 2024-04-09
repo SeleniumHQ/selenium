@@ -19,13 +19,13 @@
 
 const assert = require('assert')
 require('../../lib/test/fileserver')
-const firefox = require('../../firefox')
 const { Pages, suite } = require('../../lib/test')
 const { Browser, By } = require('../..')
 const Input = require('../../bidi/input')
 const io = require('../../io')
 const { ReferenceValue, RemoteReferenceType } = require('../../bidi/protocolValue')
 const fs = require('fs')
+const { ignore } = require('../../testing')
 
 suite(
   function (env) {
@@ -42,14 +42,14 @@ suite(
       })
 
       beforeEach(async function () {
-        driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+        driver = await env.builder().build()
       })
 
       afterEach(function () {
         return driver.quit()
       })
 
-      xit('can set files', async function () {
+      ignore(env.browsers(Browser.FIREFOX)).it('can set files', async function () {
         const browsingContextId = await driver.getWindowHandle()
         const input = await Input(driver)
         await driver.get(Pages.formPage)
@@ -72,7 +72,7 @@ suite(
         assert.notEqual(await webElement.getAttribute('value'), '')
       })
 
-      xit('can set files with element id', async function () {
+      ignore(env.browsers(Browser.FIREFOX)).it('can set files with element id', async function () {
         const browsingContextId = await driver.getWindowHandle()
         const input = await Input(driver)
         await driver.get(Pages.formPage)
@@ -94,5 +94,5 @@ suite(
       })
     })
   },
-  { browsers: [Browser.FIREFOX] },
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )

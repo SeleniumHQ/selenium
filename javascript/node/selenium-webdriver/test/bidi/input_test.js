@@ -31,7 +31,7 @@ suite(
       let driver
 
       beforeEach(async function () {
-        driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+        driver = await env.builder().build()
       })
 
       afterEach(function () {
@@ -168,7 +168,7 @@ suite(
         assert.strictEqual(await slide.getCssValue('left'), '101px')
       })
 
-      ignore(env.browsers(Browser.FIREFOX)).it('can move to and click element in an iframe', async function () {
+      xit('can move to and click element in an iframe', async function () {
         const browsingContextId = await driver.getWindowHandle()
         const input = await Input(driver)
         await driver.get(fileServer.whereIs('click_tests/click_in_iframe.html'))
@@ -275,7 +275,7 @@ suite(
         assert.strictEqual(await el.getAttribute('value'), 'foobar')
       })
 
-      ignore(env.browsers(Browser.SAFARI)).it('can scroll with the wheel input', async function () {
+      it('can scroll with the wheel input', async function () {
         const browsingContextId = await driver.getWindowHandle()
         const input = await Input(driver)
         await driver.get(Pages.scrollingPage)
@@ -323,5 +323,5 @@ suite(
       }
     })
   },
-  { browsers: [Browser.FIREFOX] },
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )
