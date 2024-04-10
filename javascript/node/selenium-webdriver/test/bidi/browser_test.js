@@ -18,7 +18,6 @@
 'use strict'
 
 const assert = require('assert')
-const firefox = require('../../firefox')
 const { suite } = require('../../lib/test')
 const { Browser } = require('../..')
 const BrowserBiDi = require('../../bidi/browser')
@@ -29,14 +28,14 @@ suite(
       let driver
 
       beforeEach(async function () {
-        driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+        driver = await env.builder().build()
       })
 
       afterEach(function () {
         return driver.quit()
       })
 
-      xit('can create a user context', async function () {
+      it('can create a user context', async function () {
         const browser = await BrowserBiDi(driver)
 
         const userContext = await browser.createUserContext()
@@ -46,7 +45,7 @@ suite(
         await browser.removeUserContext(userContext)
       })
 
-      xit('can get user contexts', async function () {
+      it('can get user contexts', async function () {
         const browser = await BrowserBiDi(driver)
 
         const userContext1 = await browser.createUserContext()
@@ -60,7 +59,7 @@ suite(
         await browser.removeUserContext(userContext2)
       })
 
-      xit('can remove user context', async function () {
+      it('can remove user context', async function () {
         const browser = await BrowserBiDi(driver)
 
         const userContext1 = await browser.createUserContext()
@@ -81,5 +80,5 @@ suite(
       })
     })
   },
-  { browsers: [Browser.FIREFOX] },
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )

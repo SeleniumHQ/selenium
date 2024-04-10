@@ -41,7 +41,7 @@ suite(
     })
 
     describe('Locate Nodes', function () {
-      xit('can locate nodes', async function () {
+      it('can locate nodes', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -53,7 +53,7 @@ suite(
         assert.strictEqual(element.length, 13)
       })
 
-      xit('can locate node', async function () {
+      it('can locate node', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -65,7 +65,7 @@ suite(
         assert.strictEqual(element.type, 'node')
       })
 
-      xit('can locate node with css locator', async function () {
+      it('can locate node with css locator', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -128,7 +128,7 @@ suite(
         assert.strictEqual(elements.length, 4)
       })
 
-      xit('can locate node with none ownership value', async function () {
+      it('can locate node with none ownership value', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -141,7 +141,7 @@ suite(
         assert.strictEqual(elements[0].handle, null)
       })
 
-      xit('can locate node with root ownership value', async function () {
+      it('can locate node with root ownership value', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -195,7 +195,7 @@ suite(
         assert.strictEqual(elements.length, 35)
       })
 
-      xit('can locate nodes in a given sandbox', async function () {
+      it('can locate nodes in a given sandbox', async function () {
         const sandbox = 'sandbox'
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
@@ -234,7 +234,7 @@ suite(
         assert.strictEqual(sharedId.value, nodeId)
       })
 
-      xit('can find element', async function () {
+      it('can find element', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -247,7 +247,7 @@ suite(
         assert.strictEqual(elementText, 'Open new window')
       })
 
-      xit('can find elements', async function () {
+      it('can find elements', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,

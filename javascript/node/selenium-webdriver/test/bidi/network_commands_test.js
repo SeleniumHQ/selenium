@@ -18,7 +18,6 @@
 'use strict'
 
 const assert = require('assert')
-const firefox = require('../../firefox')
 const { Browser, By } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const Network = require('../../bidi/network')
@@ -35,7 +34,7 @@ suite(
     let network
 
     beforeEach(async function () {
-      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+      driver = await env.builder().build()
 
       network = await Network(driver)
     })
@@ -46,12 +45,12 @@ suite(
     })
 
     describe('Network commands', function () {
-      xit('can add intercept', async function () {
+      it('can add intercept', async function () {
         const intercept = await network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT))
         assert.notEqual(intercept, null)
       })
 
-      xit('can remove intercept', async function () {
+      it('can remove intercept', async function () {
         const network = await Network(driver)
         const intercept = await network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT))
         assert.notEqual(intercept, null)
@@ -59,7 +58,7 @@ suite(
         await network.removeIntercept(intercept)
       })
 
-      xit('can continue with auth credentials ', async function () {
+      it('can continue with auth credentials ', async function () {
         await network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED))
 
         await network.authRequired(async (event) => {
@@ -72,7 +71,7 @@ suite(
         assert.equal(source.includes('Access granted'), true)
       })
 
-      xit('can continue without auth credentials ', async function () {
+      it('can continue without auth credentials ', async function () {
         await network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED))
 
         await network.authRequired(async (event) => {
@@ -88,7 +87,7 @@ suite(
         assert.equal(source.includes('Access denied'), true)
       })
 
-      xit('can cancel auth ', async function () {
+      it('can cancel auth ', async function () {
         await network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED))
 
         await network.authRequired(async (event) => {
@@ -102,7 +101,7 @@ suite(
         }
       })
 
-      xit('can fail request', async function () {
+      it('can fail request', async function () {
         await network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT))
 
         await network.beforeRequestSent(async (event) => {
@@ -119,7 +118,7 @@ suite(
         }
       })
 
-      xit('can continue request', async function () {
+      it('can continue request', async function () {
         await network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT))
 
         let counter = 0
@@ -134,7 +133,7 @@ suite(
         assert.strictEqual(counter, 1)
       })
 
-      xit('can continue response', async function () {
+      it('can continue response', async function () {
         await network.addIntercept(new AddInterceptParameters(InterceptPhase.RESPONSE_STARTED))
 
         let counter = 0
@@ -149,7 +148,7 @@ suite(
         assert.strictEqual(counter, 1)
       })
 
-      xit('can provide response', async function () {
+      it('can provide response', async function () {
         await network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT))
 
         let counter = 0

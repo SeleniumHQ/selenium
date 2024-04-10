@@ -237,7 +237,10 @@ class ScriptManager {
     const params = {
       functionDeclaration: functionDeclaration,
       arguments: argumentValueList,
-      sandbox: sandbox,
+    }
+
+    if (sandbox !== null) {
+      params.sandbox = sandbox
     }
 
     if (Array.isArray(this._browsingContextIds) && this._browsingContextIds.length > 0) {

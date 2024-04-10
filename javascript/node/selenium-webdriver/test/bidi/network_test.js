@@ -18,9 +18,8 @@
 'use strict'
 
 const assert = require('assert')
-const firefox = require('../../firefox')
 const { Browser } = require('../../')
-const { Pages, suite } = require('../../lib/test')
+const { Pages, suite, ignore } = require('../../lib/test')
 const Network = require('../../bidi/network')
 const until = require('../../lib/until')
 
@@ -29,7 +28,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+      driver = await env.builder().build()
     })
 
     afterEach(async function () {
@@ -81,7 +80,7 @@ suite(
         assert.equal(beforeRequestEvent.request.cookies[1].value.value, 'dosa')
       })
 
-      it('can redirect http equiv', async function () {
+      ignore(env.browsers(Browser.CHROME, Browser.EDGE)).it('can redirect http equiv', async function () {
         let beforeRequestEvent = []
         const network = await Network(driver)
         await network.beforeRequestSent(function (event) {
@@ -155,7 +154,7 @@ suite(
         assert.equal(onResponseCompleted[0].redirectCount, 0)
       })
 
-      xit('can listen to auth required event', async function () {
+      ignore(env.browsers(Browser.CHROME, Browser.EDGE)).it('can listen to auth required event', async function () {
         let authRequiredEvent = null
         const network = await Network(driver)
         await network.authRequired(function (event) {
@@ -174,7 +173,7 @@ suite(
         assert.equal(authRequiredEvent.response.url.includes('basicAuth'), true)
       })
 
-      xit('can listen to fetch error event', async function () {
+      it('can listen to fetch error event', async function () {
         let fetchErrorEvent = null
         const network = await Network(driver)
         await network.fetchError(function (event) {
@@ -192,7 +191,7 @@ suite(
         assert.equal(fetchErrorEvent.request.method, 'GET')
         assert.equal(url.includes('valid_url'), true)
         assert.equal(fetchErrorEvent.request.headers.length > 1, true)
-        assert.equal(fetchErrorEvent.errorText, 'NS_ERROR_UNKNOWN_HOST')
+        assert.notEqual(fetchErrorEvent.errorText, null)
       })
 
       it('test response completed mime type', async function () {
@@ -217,5 +216,5 @@ suite(
       })
     })
   },
-  { browsers: [Browser.FIREFOX] },
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )
