@@ -280,6 +280,8 @@ limitations under the License.
       assertEquals('(This) “Is” [A] –Short– -Test- «For» *The* _Css_ ¿Capitalize? ?¡Transfor', text);
       text = getVisibleTextByElementId("capitalized-8");
       assertEquals('The Dutch Word: "Ijsland" Starts With A Digraph', text);
+      text = getVisibleTextByElementId("capitalized-9");
+      assertEquals('Test_text', text);
     }
 
     function getVisibleTextByElementId(id) {
@@ -430,6 +432,7 @@ limitations under the License.
     <a id="capitalized-6" style="text-transform: capitalize">ⓐⓑⓒ (ⓓⓔⓕ) —ⓖⓗⓘ— ⓙkl</a><br/>
     <a id="capitalized-7" style="text-transform: capitalize">(this) “is” [a] –short– -test- «for» *the* _css_ ¿capitalize? ?¡transfor</a><br/>
     <a id="capitalized-8" style="text-transform: capitalize">The Dutch word: "ijsland" starts with a digraph</a><br/>
+    <a id="capitalized-9" style="text-transform: capitalize">test_text</a><br/>
   </div>
 
 </body>
