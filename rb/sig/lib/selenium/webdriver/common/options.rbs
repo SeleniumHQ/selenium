@@ -7,27 +7,27 @@ module Selenium
 
       GRID_OPTIONS: Array[Symbol]
 
-      BROWSER: untyped
+      BROWSER: Symbol
 
       KEY: untyped
 
       CAPABILITIES: Hash[Symbol, String]
 
-      attr_reader self.driver_path: untyped
+      attr_reader self.driver_path: String
 
-      def self.chrome: (**untyped opts) -> untyped
+      def self.chrome: (**String | Symbol | Integer | bool opts) -> Chrome::Options
 
-      def self.firefox: (**untyped opts) -> untyped
+      def self.firefox: (**String | Symbol | Integer | bool  opts) -> Firefox::Options
 
-      def self.ie: (**untyped opts) -> untyped
+      def self.ie: (**String | Symbol | Integer | bool  opts) -> IE::Options
 
       alias self.internet_explorer self.ie
 
-      def self.edge: (**untyped opts) -> untyped
+      def self.edge: (**String | Symbol | Integer | bool  opts) -> Edge::Options
 
       alias self.microsoftedge self.edge
 
-      def self.safari: (**untyped opts) -> untyped
+      def self.safari: (**String | Symbol | Integer | bool  opts) -> Safari::Options
 
       def self.set_capabilities: () -> untyped
 
