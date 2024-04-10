@@ -874,7 +874,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: size[k] for k in ("width", "height")}
 
-    def set_window_position(self, x, y, windowHandle: str = "current") -> dict:
+    def set_window_position(self, x: float, y: float, windowHandle: str = "current") -> dict:
         """Sets the x,y position of the current window. (window.moveTo)
 
         :Args:
