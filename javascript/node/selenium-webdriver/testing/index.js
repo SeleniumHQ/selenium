@@ -302,6 +302,11 @@ class Environment {
         builder.setCapability('moz:debuggerAddress', true)
       }
 
+      // Enable BiDi for supporting browsers.
+      if (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE) {
+        builder.setCapability('webSocketUrl', true)
+      }
+
       if (typeof urlOrServer === 'string') {
         builder.usingServer(urlOrServer)
       } else if (urlOrServer) {
