@@ -18,7 +18,6 @@
 'use strict'
 
 const assert = require('assert')
-const firefox = require('../../firefox')
 const { Browser } = require('../../')
 const { suite } = require('../../lib/test')
 const Network = require('../../bidi/network')
@@ -31,7 +30,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+      driver = await env.builder().build()
     })
 
     afterEach(async function () {
@@ -39,13 +38,13 @@ suite(
     })
 
     describe('Add Intercept parameters test', function () {
-      xit('can add intercept phase', async function () {
+      it('can add intercept phase', async function () {
         const network = await Network(driver)
         const intercept = await network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT))
         assert.notEqual(intercept, null)
       })
 
-      xit('can add intercept phases', async function () {
+      it('can add intercept phases', async function () {
         const network = await Network(driver)
         const intercept = await network.addIntercept(
           new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED, InterceptPhase.BEFORE_REQUEST_SENT),
@@ -53,7 +52,7 @@ suite(
         assert.notEqual(intercept, null)
       })
 
-      xit('can add string url pattern', async function () {
+      it('can add string url pattern', async function () {
         const network = await Network(driver)
         const intercept = await network.addIntercept(
           new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT).urlStringPattern(
@@ -63,7 +62,7 @@ suite(
         assert.notEqual(intercept, null)
       })
 
-      xit('can add string url patterns', async function () {
+      it('can add string url patterns', async function () {
         const network = await Network(driver)
         const intercept = await network.addIntercept(
           new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT).urlStringPatterns([
@@ -74,7 +73,7 @@ suite(
         assert.notEqual(intercept, null)
       })
 
-      xit('can add url pattern', async function () {
+      it('can add url pattern', async function () {
         const network = await Network(driver)
         const urlPattern = new UrlPattern().protocol('http').hostname('localhost').port(4444).pathname('basicAuth')
         const intercept = await network.addIntercept(
@@ -83,7 +82,7 @@ suite(
         assert.notEqual(intercept, null)
       })
 
-      xit('can add url patterns', async function () {
+      it('can add url patterns', async function () {
         const network = await Network(driver)
         const urlPattern1 = new UrlPattern()
           .protocol('http')
@@ -106,5 +105,5 @@ suite(
       })
     })
   },
-  { browsers: [Browser.FIREFOX] },
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )

@@ -69,7 +69,7 @@ class AddInterceptParameters {
    * @throws {Error} - If the pattern is not an instance of String.
    */
   urlStringPattern(pattern) {
-    if (!(pattern instanceof String)) {
+    if (typeof pattern !== 'string') {
       throw new Error(`Pattern must be an instance of String. Received:'${pattern}'`)
     }
 
@@ -84,7 +84,7 @@ class AddInterceptParameters {
    */
   urlStringPatterns(patterns) {
     patterns.forEach((pattern) => {
-      if (!(pattern instanceof String)) {
+      if (typeof pattern !== 'string') {
         throw new Error(`Pattern must be an instance of String. Received:'${pattern}'`)
       }
       this.#urlPatterns.push({ type: 'string', pattern: pattern })

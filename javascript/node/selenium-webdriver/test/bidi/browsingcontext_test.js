@@ -18,9 +18,8 @@
 'use strict'
 
 const assert = require('assert')
-const firefox = require('../../firefox')
 const { Browser, By } = require('../../')
-const { Pages, suite } = require('../../lib/test')
+const { Pages, suite, ignore } = require('../../lib/test')
 const BrowsingContext = require('../../bidi/browsingContext')
 const until = require('../../lib/until')
 const { Origin, CaptureScreenshotParameters } = require('../../bidi/captureScreenshotParameters')
@@ -31,7 +30,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+      driver = await env.builder().build()
     })
 
     afterEach(async function () {
@@ -403,7 +402,7 @@ suite(
         assert(result.url.includes('/bidi/logEntryAdded.html'))
       })
 
-      xit('can reload with readiness state', async function () {
+      it('can reload with readiness state', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -431,7 +430,7 @@ suite(
         assert.equal(result[1], 300)
       })
 
-      xit('can set viewport with device pixel ratio', async function () {
+      ignore(env.browsers(Browser.FIREFOX)).it('can set viewport with device pixel ratio', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -462,5 +461,5 @@ suite(
       })
     })
   },
-  { browsers: [Browser.FIREFOX] },
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )
