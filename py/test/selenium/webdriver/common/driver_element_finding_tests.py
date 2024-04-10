@@ -291,6 +291,7 @@ def test_finding_asingle_element_by_empty_class_name_should_throw(driver, pages)
 
 @pytest.mark.xfail_safari(reason="unlike chrome, safari raises TimeoutException")
 @pytest.mark.xfail_chrome(reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
+@pytest.mark.xfail_edge(reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
 def test_finding_multiple_elements_by_empty_class_name_should_throw(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(InvalidSelectorException):

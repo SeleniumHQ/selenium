@@ -46,7 +46,6 @@ class BrowserCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canCreateAUserContext() {
     String userContext = browser.createUserContext();
 
@@ -58,7 +57,6 @@ class BrowserCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canGetUserContexts() {
     String userContext1 = browser.createUserContext();
     String userContext2 = browser.createUserContext();
@@ -73,7 +71,6 @@ class BrowserCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canRemoveUserContext() {
     String userContext1 = browser.createUserContext();
     String userContext2 = browser.createUserContext();
