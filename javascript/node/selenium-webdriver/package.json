@@ -45,7 +45,7 @@
   "scripts": {
     "lint": "eslint --ignore-pattern node_modules --ignore-pattern generator --ext js lib/http.js \"**/*.js\"",
     "lint:fix": "eslint --ignore-pattern node_modules --ignore-pattern generator --ext js lib/http.js \"**/*.js\" --fix",
-    "test": "mocha -t 600000 --recursive test",
+    "test": "npm run lint && mocha -t 600000 --recursive test",
     "test-jasmine": "bazel test //javascript/node/selenium-webdriver:tests"
   },
   "mocha": {
