@@ -72,13 +72,13 @@ public class DockerFlags implements HasRoles {
   @Parameter(
       names = {"--docker-host-config-keys"},
       description =
-          "Node container host config keys to be passed to the browsers container. Keys name can be"
-              + " found in the Docker API documentation, or by running `docker inspect` the"
-              + " node-docker container.")
+          "Specify which docker host configuration keys should be passed to browser containers."
+              + " Keys name can be found in the Docker API documentation, or by running `docker"
+              + " inspect` the node-docker container.")
   @ConfigValue(
       section = DockerOptions.DOCKER_SECTION,
       name = "host-config-keys",
-      example = "[\"Dns\", \"DnsOptions\", \"DnsSearch\", \"ExtraHosts\"]")
+      example = "[\"Dns\", \"DnsOptions\", \"DnsSearch\", \"ExtraHosts\", \"Binds\"]")
   private List<String> hostConfigKeys;
 
   @Parameter(

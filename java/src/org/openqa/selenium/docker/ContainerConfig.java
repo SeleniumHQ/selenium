@@ -53,7 +53,15 @@ public class ContainerConfig {
       List<Device> devices,
       String networkName,
       long shmSize) {
-    this(image, portBindings, envVars, volumeBinds, devices, networkName, shmSize, new HashMap<>());
+    this(
+        image,
+        portBindings,
+        envVars,
+        volumeBinds,
+        devices,
+        networkName,
+        shmSize,
+        ImmutableMap.of());
   }
 
   public ContainerConfig(
@@ -138,7 +146,7 @@ public class ContainerConfig {
         image, portBindings, envVars, volumeBinds, devices, networkName, shmSize);
   }
 
-  public ContainerConfig getHostConfig(Map<String, Object> hostConfig, List<String> configKeys) {
+  public ContainerConfig applyHostConfig(Map<String, Object> hostConfig, List<String> configKeys) {
     Map<String, Object> setHostConfig =
         configKeys.stream()
             .filter(hostConfig::containsKey)
@@ -203,7 +211,7 @@ public class ContainerConfig {
             "Binds", volumeBinds,
             "Devices", devicesMapping);
 
-    if (this.hostConfig != null && !this.hostConfig.isEmpty()) {
+    if (!this.hostConfig.isEmpty()) {
       Map<String, Object> copyMap = new HashMap<>(hostConfig);
       copyMap.putAll(this.hostConfig);
       hostConfig = ImmutableMap.copyOf(copyMap);

@@ -160,8 +160,7 @@ public class DockerSessionFactory implements SessionFactory {
               ? "Creating container..."
               : "Creating container, mapping container port 4444 to " + port;
       LOG.info(logMessage);
-      Container container =
-          createBrowserContainer(port, sessionRequest.getDesiredCapabilities(), this.hostConfig);
+      Container container = createBrowserContainer(port, sessionRequest.getDesiredCapabilities());
       container.start();
       ContainerInfo containerInfo = container.inspect();
 
@@ -284,8 +283,7 @@ public class DockerSessionFactory implements SessionFactory {
         .setCapability("se:forwardCdp", forwardCdpPath);
   }
 
-  private Container createBrowserContainer(
-      int port, Capabilities sessionCapabilities, Map<String, Object> hostConfig) {
+  private Container createBrowserContainer(int port, Capabilities sessionCapabilities) {
     Map<String, String> browserContainerEnvVars = getBrowserContainerEnvVars(sessionCapabilities);
     long browserContainerShmMemorySize = 2147483648L; // 2GB
     ContainerConfig containerConfig =
@@ -294,7 +292,7 @@ public class DockerSessionFactory implements SessionFactory {
             .shmMemorySize(browserContainerShmMemorySize)
             .network(networkName)
             .devices(devices)
-            .getHostConfig(hostConfig, hostConfigKeys);
+            .applyHostConfig(hostConfig, hostConfigKeys);
     if (!runningInDocker) {
       containerConfig = containerConfig.map(Port.tcp(4444), Port.tcp(port));
     }

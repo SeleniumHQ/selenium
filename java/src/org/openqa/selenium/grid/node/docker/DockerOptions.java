@@ -237,7 +237,7 @@ public class DockerOptions {
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   private Map<String, Object> getDockerHostConfig(Optional<ContainerInfo> info) {
-    return info.map(ContainerInfo::getHostConfig).orElse(null);
+    return info.map(ContainerInfo::getHostConfig).orElse(Collections.emptyMap());
   }
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
