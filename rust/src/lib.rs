@@ -938,10 +938,13 @@ pub trait SeleniumManager {
                 .unwrap_or_default()
                 .unwrap_or_default();
             if best_browser_from_cache.exists() {
-                self.get_logger().warn(format!(
-                    "There was an error managing {}; using browser found in the cache",
-                    self.get_browser_name()
-                ));
+                self.get_logger().debug_or_warn(
+                    format!(
+                        "There was an error managing {}; using browser found in the cache",
+                        self.get_browser_name()
+                    ),
+                    self.is_offline(),
+                );
                 browser_path = path_to_string(best_browser_from_cache);
             }
         }
