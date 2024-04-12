@@ -328,7 +328,7 @@ pub trait SeleniumManager {
             Ok(Some(browser_binary_path))
         } else {
             self.get_logger().warn(format!(
-                "Expected {} path does not exists: {}",
+                "Expected {} path does not exist: {}",
                 self.get_browser_name(),
                 browser_binary_path.display()
             ));
