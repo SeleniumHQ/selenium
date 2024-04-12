@@ -150,6 +150,11 @@ impl Logger {
         self.logger(message.to_string(), Level::Debug);
     }
 
+    pub fn debug_or_warn<T: Display>(&self, message: T, is_debug: bool) {
+        let level = if is_debug { Level::Debug } else { Level::Warn };
+        self.logger(message.to_string(), level);
+    }
+
     pub fn trace<T: Display>(&self, message: T) {
         self.logger(message.to_string(), Level::Trace);
     }

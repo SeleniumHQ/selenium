@@ -245,11 +245,14 @@ fn main() {
             if let Some(best_driver_from_cache) =
                 selenium_manager.find_best_driver_from_cache().unwrap()
             {
-                log.warn(format!(
-                    "There was an error managing {} ({}); using driver found in the cache",
-                    selenium_manager.get_driver_name(),
-                    err
-                ));
+                log.debug_or_warn(
+                    format!(
+                        "There was an error managing {} ({}); using driver found in the cache",
+                        selenium_manager.get_driver_name(),
+                        err
+                    ),
+                    selenium_manager.is_offline(),
+                );
                 log_driver_and_browser_path(
                     log,
                     &best_driver_from_cache,
