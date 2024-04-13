@@ -101,6 +101,8 @@ public class DockerSessionFactory implements SessionFactory {
   private final String networkName;
   private final boolean runningInDocker;
   private final Predicate<Capabilities> predicate;
+  private final Map<String, Object> hostConfig;
+  private final List<String> hostConfigKeys;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -115,7 +117,9 @@ public class DockerSessionFactory implements SessionFactory {
       DockerAssetsPath assetsPath,
       String networkName,
       boolean runningInDocker,
-      Predicate<Capabilities> predicate) {
+      Predicate<Capabilities> predicate,
+      Map<String, Object> hostConfig,
+      List<String> hostConfigKeys) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
@@ -129,6 +133,8 @@ public class DockerSessionFactory implements SessionFactory {
     this.assetsPath = assetsPath;
     this.runningInDocker = runningInDocker;
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
+    this.hostConfig = Require.nonNull("Container host config", hostConfig);
+    this.hostConfigKeys = Require.nonNull("Browser container host config keys", hostConfigKeys);
   }
 
   @Override
@@ -285,10 +291,12 @@ public class DockerSessionFactory implements SessionFactory {
             .env(browserContainerEnvVars)
             .shmMemorySize(browserContainerShmMemorySize)
             .network(networkName)
-            .devices(devices);
+            .devices(devices)
+            .applyHostConfig(hostConfig, hostConfigKeys);
     if (!runningInDocker) {
       containerConfig = containerConfig.map(Port.tcp(4444), Port.tcp(port));
     }
+    LOG.fine("Container config: " + containerConfig);
     return docker.create(containerConfig);
   }
 

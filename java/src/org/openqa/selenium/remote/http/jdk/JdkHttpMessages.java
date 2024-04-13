@@ -118,10 +118,15 @@ class JdkHttpMessages {
   private BodyPublisher notChunkingBodyPublisher(HttpRequest req) {
     Contents.Supplier content = req.getContent();
 
-    // we know the length of the request and use it
-    BodyPublisher chunking = BodyPublishers.ofInputStream(content);
-
-    return BodyPublishers.fromPublisher(chunking, content.length());
+    // Check if the content length is greater than 0
+    if (content.length() > 0) {
+      // we know the length of the request and use it
+      BodyPublisher chunking = BodyPublishers.ofInputStream(content);
+      return BodyPublishers.fromPublisher(chunking, content.length());
+    } else {
+      // If the content length is 0, return a BodyPublisher without body
+      return BodyPublishers.noBody();
+    }
   }
 
   public URI getRawUri(HttpRequest req) {
