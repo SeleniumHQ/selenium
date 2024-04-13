@@ -35,9 +35,9 @@ module Selenium
 
       def initialize: (**untyped opts) -> void
 
-      def add_option: (untyped name, ?untyped? value) -> untyped
+      def add_option: (String | Symbol name, bool | String | Integer? value) -> untyped
 
-      def ==: (untyped other) -> (false | untyped)
+      def ==: (untyped other) -> bool
 
       alias eql? ==
 
