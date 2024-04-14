@@ -73,18 +73,18 @@ exports_files(
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/6d6b8a3e-0a7d-43fa-ae4b-cf5307e7f9d5/MicrosoftEdge-123.0.2420.81.pkg",
-        sha256 = "207f6f9a5ebf7f4697c2e7388a046a92b9ec3c08a76cbd3556bc010a446cb3e8",
+        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/43311c31-f395-4a1b-92de-eac0daf193d9/MicrosoftEdge-123.0.2420.97.pkg",
+        sha256 = "dbe96437fbb602006c82dd52ae0ed406b2254c55e21cb119002b6da8b80f0d23",
         move = {
-            "MicrosoftEdge-123.0.2420.81.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-123.0.2420.97.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )
 
     deb_archive(
         name = "linux_edge",
-        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_123.0.2420.81-1_amd64.deb",
-        sha256 = "ddce031ecd29d980d6d7b9f309707e3ba3d1f704cc6fd87df04bcdd758a6bec3",
+        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_123.0.2420.97-1_amd64.deb",
+        sha256 = "abb3dc6e2d0942bff0bca22b82e783f5fd99eafd433280f66dc449286a83623b",
         build_file_content = """
 filegroup(
     name = "files",
@@ -100,15 +100,15 @@ exports_files(
 
     http_archive(
         name = "linux_edgedriver",
-        url = "https://msedgedriver.azureedge.net/123.0.2420.81/edgedriver_linux64.zip",
-        sha256 = "0de1a4d7f00804bbf60be54dbd7b3720f9c5802664415c65ceb555fbb8e32458",
+        url = "https://msedgedriver.azureedge.net/123.0.2420.97/edgedriver_linux64.zip",
+        sha256 = "5256f95f54e0f3024d4531ce421951396b035dec8473336c830fa299f31384c9",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
 
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.azureedge.net/123.0.2420.81/edgedriver_mac64.zip",
-        sha256 = "bb4c5258c41c34fb98dbe1b4aa4b76b47b45d587bc6e71c5f7765ca524b843a2",
+        url = "https://msedgedriver.azureedge.net/123.0.2420.97/edgedriver_mac64.zip",
+        sha256 = "f1e118edb4100ae542a96d1db840cb3bb5cf41f4fb0aa6af3f66b5431b99f983",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
 
