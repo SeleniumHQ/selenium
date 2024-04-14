@@ -19,10 +19,11 @@
 const fs = require('fs')
 const os = require('os')
 const path = require('path')
-const { Builder, Browser } = require('../index')
+const { Browser } = require('../index')
 const { Environment } = require('../testing')
 const chrome = require('../chrome')
 const firefox = require('../firefox')
+// eslint-disable-next-line node/no-missing-require
 const { runfiles } = require('@bazel/runfiles')
 
 function GetBrowserForTests() {
@@ -90,7 +91,7 @@ function GetBrowserForTests() {
       break
 
     case 'safari':
-      builder.forBrowser(webdriver.Browser.SAFARI)
+      builder.forBrowser(Browser.SAFARI)
       break
 
     default:

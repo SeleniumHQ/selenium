@@ -19,20 +19,19 @@ package org.openqa.selenium.remote.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.google.common.io.FileBackedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Base64;
-import java.util.function.Supplier;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -42,34 +41,76 @@ public class Contents {
 
   private static final Json JSON = new Json();
 
+  /**
+   * A supplier that can be called multiple times, each invocation must return a new InputStream
+   * ready to read. The number of bytes that can be read from the InputStream must be identical to
+   * the number returned by the length method.
+   */
+  public interface Supplier extends java.util.function.Supplier<InputStream>, AutoCloseable {
+
+    /**
+     * @return the number of bytes that can be read from the InputStream returned by calling the get
+     *     method.
+     */
+    int length();
+
+    /**
+     * Release the related resources, if any.
+     *
+     * @throws IOException on I/O failure
+     */
+    @Override
+    void close() throws IOException;
+  }
+
   private Contents() {
     // Utility class
   }
 
-  public static Supplier<InputStream> empty() {
+  public static Supplier empty() {
     return bytes(new byte[0]);
   }
 
-  public static Supplier<InputStream> utf8String(CharSequence value) {
+  public static Supplier utf8String(CharSequence value) {
     Require.nonNull("Value to return", value);
 
     return string(value, UTF_8);
   }
 
-  public static Supplier<InputStream> string(CharSequence value, Charset charset) {
+  public static Supplier string(CharSequence value, Charset charset) {
     Require.nonNull("Value to return", value);
     Require.nonNull("Character set", charset);
 
     return bytes(value.toString().getBytes(charset));
   }
 
-  public static Supplier<InputStream> bytes(byte[] bytes) {
+  public static Supplier bytes(byte[] bytes) {
     Require.nonNull("Bytes to return", bytes, "may be empty");
 
-    return () -> new ByteArrayInputStream(bytes);
+    return new Supplier() {
+      private boolean closed;
+
+      @Override
+      public InputStream get() {
+        if (closed) throw new IllegalStateException("Contents.Supplier has been closed before");
+
+        return new ByteArrayInputStream(bytes);
+      }
+
+      @Override
+      public int length() {
+        if (closed) throw new IllegalStateException("Contents.Supplier has been closed before");
+
+        return bytes.length;
+      }
+
+      public void close() {
+        closed = true;
+      }
+    };
   }
 
-  public static byte[] bytes(Supplier<InputStream> supplier) {
+  public static byte[] bytes(Supplier supplier) {
     Require.nonNull("Supplier of input", supplier);
 
     try (InputStream is = supplier.get();
@@ -81,11 +122,11 @@ public class Contents {
     }
   }
 
-  public static String utf8String(Supplier<InputStream> supplier) {
+  public static String utf8String(Supplier supplier) {
     return string(supplier, UTF_8);
   }
 
-  public static String string(Supplier<InputStream> supplier, Charset charset) {
+  public static String string(Supplier supplier, Charset charset) {
     Require.nonNull("Supplier of input", supplier);
     Require.nonNull("Character set", charset);
 
@@ -96,13 +137,13 @@ public class Contents {
     return string(message.getContent(), message.getContentEncoding());
   }
 
-  public static Reader utf8Reader(Supplier<InputStream> supplier) {
+  public static Reader utf8Reader(Supplier supplier) {
     Require.nonNull("Supplier", supplier);
 
     return reader(supplier, UTF_8);
   }
 
-  public static Reader reader(Supplier<InputStream> supplier, Charset charset) {
+  public static Reader reader(Supplier supplier, Charset charset) {
     Require.nonNull("Supplier of input", supplier);
     Require.nonNull("Character set", charset);
 
@@ -114,15 +155,15 @@ public class Contents {
   }
 
   /**
-   * @return an {@link InputStream} containing the object converted to a UTF-8 JSON string.
+   * @return an {@link Supplier} containing the object converted to a UTF-8 JSON string.
    */
-  public static Supplier<InputStream> asJson(Object obj) {
-    StringBuilder builder = new StringBuilder();
-    try (JsonOutput out = JSON.newOutput(builder)) {
+  public static Supplier asJson(Object obj) {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    try (JsonOutput out = JSON.newOutput(new OutputStreamWriter(output, UTF_8))) {
       out.writeClassName(false);
       out.write(obj);
     }
-    return utf8String(builder);
+    return bytes(output.toByteArray());
   }
 
   public static <T> T fromJson(HttpMessage<?> message, Type typeOfT) {
@@ -134,13 +175,6 @@ public class Contents {
     }
   }
 
-  public static Supplier<InputStream> memoize(Supplier<InputStream> delegate) {
-    if (delegate instanceof MemoizedSupplier) {
-      return delegate;
-    }
-    return new MemoizedSupplier(delegate);
-  }
-
   public static String string(File input) throws IOException {
     try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
         InputStream isr = Files.newInputStream(input.toPath())) {
@@ -150,45 +184,6 @@ public class Contents {
         bos.write(buffer, 0, len);
       }
       return Base64.getEncoder().encodeToString(bos.toByteArray());
-    }
-  }
-
-  private static final class MemoizedSupplier implements Supplier<InputStream> {
-
-    private volatile boolean initialized;
-    private volatile FileBackedOutputStream fos;
-    private final Supplier<InputStream> delegate;
-
-    private MemoizedSupplier(Supplier<InputStream> delegate) {
-      this.delegate = delegate;
-    }
-
-    @Override
-    public InputStream get() {
-      if (!initialized) {
-        synchronized (this) {
-          if (!initialized) {
-            try (InputStream is = delegate.get()) {
-              this.fos = new FileBackedOutputStream(3 * 1024 * 1024, true);
-              is.transferTo(fos);
-              initialized = true;
-            } catch (IOException e) {
-              throw new UncheckedIOException(e);
-            } finally {
-              try {
-                this.fos.close();
-              } catch (IOException ignore) {
-              }
-            }
-          }
-        }
-      }
-
-      try {
-        return Require.state("Source", fos.asByteSource()).nonNull().openBufferedStream();
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
     }
   }
 }

@@ -88,8 +88,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.WebElementToJsonConverter;
 import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
-import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
 /**
  * A command codec that adheres to the W3C's WebDriver wire protocol.

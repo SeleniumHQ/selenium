@@ -19,21 +19,14 @@
 
 const assert = require('assert')
 const path = require('path')
-const error = require('../lib/error')
-const firefox = require('../firefox')
-const io = require('../io')
-const { Browser } = require('../')
-const { Context } = require('../firefox')
-const { Pages, suite } = require('../lib/test')
-const { locate } = require('../lib/test/resources')
-const { until, By } = require('../index')
+const firefox = require('../../firefox')
+const io = require('../../io')
+const { Browser } = require('../../index')
+const { Pages, suite } = require('../../lib/test')
+const { locate } = require('../../lib/test/resources')
+const { until, By } = require('../../index')
 
 const EXT_XPI = locate('common/extensions/webextensions-selenium-example.xpi')
-const EXT_UNSIGNED_ZIP = locate('common/extensions/webextensions-selenium-example-unsigned.zip')
-const EXT_SIGNED_ZIP = locate('common/extensions/webextensions-selenium-example.zip')
-const EXT_UNSIGNED_DIR = locate('common/extensions/webextensions-selenium-example')
-const EXT_SIGNED_DIR = locate('common/extensions/webextensions-selenium-example')
-
 const WEBEXTENSION_EXTENSION_ID = 'webextensions-selenium-example@example.com.xpi'
 
 suite(
@@ -184,118 +177,9 @@ suite(
         })
       })
 
-      describe('context switching', function () {
-        beforeEach(async function () {
-          driver = await env.builder().build()
-        })
-
-        it('can get context', async function () {
-          assert.strictEqual(await driver.getContext(), Context.CONTENT)
-        })
-
-        it('can set context', async function () {
-          await driver.setContext(Context.CHROME)
-          let ctxt = await driver.getContext()
-          assert.strictEqual(ctxt, Context.CHROME)
-
-          await driver.setContext(Context.CONTENT)
-          ctxt = await driver.getContext()
-          assert.strictEqual(ctxt, Context.CONTENT)
-        })
-
-        it('throws on unknown context', function () {
-          return driver.setContext('foo').then(assert.fail, function (e) {
-            assert(e instanceof error.InvalidArgumentError)
-          })
-        })
-      })
-
-      describe('installAddon', function () {
-        beforeEach(function () {
-          driver = env.builder().build()
-        })
-
-        it('installs and uninstalls by xpi file', async function () {
-          await driver.get(Pages.blankPage)
-          await verifyWebExtensionNotInstalled()
-
-          let id = await driver.installAddon(EXT_XPI)
-
-          await driver.navigate().refresh()
-          await verifyWebExtensionWasInstalled()
-
-          await driver.uninstallAddon(id)
-          await driver.navigate().refresh()
-          await verifyWebExtensionNotInstalled()
-        })
-
-        it('installs and uninstalls by unsigned zip file', async function () {
-          await driver.get(Pages.blankPage)
-          await verifyWebExtensionNotInstalled()
-
-          let id = await driver.installAddon(EXT_UNSIGNED_ZIP, true)
-
-          await driver.navigate().refresh()
-          await verifyWebExtensionWasInstalled()
-
-          await driver.uninstallAddon(id)
-          await driver.navigate().refresh()
-          await verifyWebExtensionNotInstalled()
-        })
-
-        it('installs and uninstalls by signed zip file', async function () {
-          await driver.get(Pages.blankPage)
-          await verifyWebExtensionNotInstalled()
-
-          let id = await driver.installAddon(EXT_SIGNED_ZIP)
-
-          await driver.navigate().refresh()
-          await verifyWebExtensionWasInstalled()
-
-          await driver.uninstallAddon(id)
-          await driver.navigate().refresh()
-          await verifyWebExtensionNotInstalled()
-        })
-
-        it('installs and uninstalls by unsigned directory', async function () {
-          await driver.get(Pages.blankPage)
-          await verifyWebExtensionNotInstalled()
-
-          let id = await driver.installAddon(EXT_UNSIGNED_DIR, true)
-
-          await driver.navigate().refresh()
-          await verifyWebExtensionWasInstalled()
-
-          await driver.uninstallAddon(id)
-          await driver.navigate().refresh()
-          await verifyWebExtensionNotInstalled()
-        })
-
-        it('installs and uninstalls by signed directory', async function () {
-          await driver.get(Pages.blankPage)
-          await verifyWebExtensionNotInstalled()
-
-          let id = await driver.installAddon(EXT_SIGNED_DIR, true)
-
-          await driver.navigate().refresh()
-          await verifyWebExtensionWasInstalled()
-
-          await driver.uninstallAddon(id)
-          await driver.navigate().refresh()
-          await verifyWebExtensionNotInstalled()
-        })
-      })
-
       async function verifyUserAgentWasChanged() {
         let userAgent = await driver.executeScript('return window.navigator.userAgent')
         assert.strictEqual(userAgent, 'foo;bar')
-      }
-
-      async function verifyWebExtensionNotInstalled() {
-        let found = await driver.findElements({
-          id: 'webextensions-selenium-example',
-        })
-        assert.strictEqual(found.length, 0)
       }
 
       async function verifyWebExtensionWasInstalled() {

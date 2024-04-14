@@ -1,3 +1,11 @@
+0.4.19
+======
+
+* Select release with artifact when filtering Edge response (#13735)
+* Use apple-flat-package crate to extract PKG files (#13740)
+* Fix Edge management in RPM-based Linux (#13705)
+* Enhance logic to uncompress DEB files and set toolchain version (#13741)
+
 0.4.18
 ======
 

@@ -57,7 +57,7 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public boolean isSupportingBiDi() {
-    return false;
+    return true;
   }
 
   @Override

@@ -29,6 +29,13 @@ class AddInterceptParameters {
     }
   }
 
+  /**
+   * Adds a URL pattern to intercept.
+   *
+   * @param {UrlPattern} pattern - The URL pattern to add.
+   * @returns {AddInterceptParameters} - Returns the current instance of the class AddInterceptParameters for chaining.
+   * @throws {Error} - Throws an error if the pattern is not an instance of UrlPattern.
+   */
   urlPattern(pattern) {
     if (!(pattern instanceof UrlPattern)) {
       throw new Error(`Pattern must be an instance of UrlPattern. Received: '${pattern})'`)
@@ -37,6 +44,13 @@ class AddInterceptParameters {
     return this
   }
 
+  /**
+   * Adds array of URL patterns to intercept.
+   *
+   * @param {UrlPattern[]} patterns - An array of UrlPattern instances representing the URL patterns to intercept.
+   * @returns {AddInterceptParameters} - Returns the instance of AddInterceptParameters for chaining.
+   * @throws {Error} - Throws an error if the pattern is not an instance of UrlPattern.
+   */
   urlPatterns(patterns) {
     patterns.forEach((pattern) => {
       if (!(pattern instanceof UrlPattern)) {
@@ -47,8 +61,15 @@ class AddInterceptParameters {
     return this
   }
 
+  /**
+   * Adds string URL to intercept.
+   *
+   * @param {string} pattern - The URL pattern to be added.
+   * @returns {AddInterceptParameters} - Returns the instance of AddInterceptParameters for chaining..
+   * @throws {Error} - If the pattern is not an instance of String.
+   */
   urlStringPattern(pattern) {
-    if (!(pattern instanceof String)) {
+    if (typeof pattern !== 'string') {
       throw new Error(`Pattern must be an instance of String. Received:'${pattern}'`)
     }
 
@@ -56,9 +77,14 @@ class AddInterceptParameters {
     return this
   }
 
+  /**
+   * Adds array of string URLs to intercept.
+   * @param {string[]} patterns - An array of URL string patterns.
+   * @returns {this} - Returns the instance of AddInterceptParameters for chaining.
+   */
   urlStringPatterns(patterns) {
     patterns.forEach((pattern) => {
-      if (!(pattern instanceof String)) {
+      if (typeof pattern !== 'string') {
         throw new Error(`Pattern must be an instance of String. Received:'${pattern}'`)
       }
       this.#urlPatterns.push({ type: 'string', pattern: pattern })

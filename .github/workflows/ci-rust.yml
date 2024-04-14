@@ -230,7 +230,7 @@ jobs:
   release:
     name: "Release Binaries"
     runs-on: ubuntu-latest
-    needs: [macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug]
+    needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug ]
     if: github.event_name != 'schedule' && github.repository_owner == 'seleniumhq' && (github.ref == 'refs/heads/trunk' || inputs.release == 'true')
     steps:
       - name: "Checkout selenium_manager_artifacts"
@@ -257,7 +257,7 @@ jobs:
           git tag ${{ env.TAG_NAME }}
           git push && git push --tags
       - name: "Release"
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           repository: SeleniumHQ/selenium_manager_artifacts

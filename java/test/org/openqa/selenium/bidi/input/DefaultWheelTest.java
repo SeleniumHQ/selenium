@@ -144,7 +144,6 @@ class DefaultWheelTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void shouldScrollFromViewportByGivenAmount() {
     driver.get(
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
@@ -166,7 +165,6 @@ class DefaultWheelTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void shouldScrollFromViewportByGivenAmountFromOrigin() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(10, 10);
@@ -189,7 +187,6 @@ class DefaultWheelTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void throwErrorWhenOriginOffsetIsOutOfViewport() {
     assertThrows(
         BiDiException.class,

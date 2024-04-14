@@ -18,11 +18,7 @@ package org.openqa.selenium.bidi.script;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,8 +49,6 @@ public class ScriptEventsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canListenToChannelMessage()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Script script = new Script(driver)) {
@@ -84,8 +78,6 @@ public class ScriptEventsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canListenToRealmCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Script script = new Script(driver)) {

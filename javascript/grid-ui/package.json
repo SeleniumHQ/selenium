@@ -12,7 +12,7 @@
     "@novnc/novnc": "^1.4.0",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.11.6",
-    "@types/react": "^18.2.48",
+    "@types/react": "^18.2.70",
     "@types/react-dom": "^18.2.18",
     "@types/react-modal": "^3.16.3",
     "@types/react-router-dom": "^5.3.3",
