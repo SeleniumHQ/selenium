@@ -1,0 +1,5 @@
+module REXML
+  class XPath
+    def self.first: (untyped element, untyped path) -> untyped
+  end
+end

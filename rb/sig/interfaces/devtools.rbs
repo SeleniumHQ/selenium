@@ -1,0 +1,11 @@
+interface _DevTools
+  def devtools: () -> untyped
+end
+
+interface _ExecuteScript
+  def execute_script: (untyped, *untyped) -> untyped
+end
+
+interface _FindElements
+  def find_elements: (untyped) -> untyped
+end

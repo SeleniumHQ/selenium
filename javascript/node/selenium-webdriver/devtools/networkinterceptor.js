@@ -85,4 +85,5 @@ class HttpResponse {
     return this.returnMethod
   }
 }
+
 exports.HttpResponse = HttpResponse

@@ -9,7 +9,7 @@ module Selenium
 
       def new_window: (?::Symbol `type`) { (untyped) -> untyped } -> untyped
 
-      def window: (untyped id) { () -> untyped } -> untyped
+      def window: (untyped id) ?{ () -> untyped } -> untyped
 
       def active_element: () -> Element
 

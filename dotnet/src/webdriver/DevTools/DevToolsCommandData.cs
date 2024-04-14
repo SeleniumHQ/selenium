@@ -16,9 +16,9 @@
 // limitations under the License.
 // </copyright>
 
-using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 
 namespace OpenQA.Selenium.DevTools
 {

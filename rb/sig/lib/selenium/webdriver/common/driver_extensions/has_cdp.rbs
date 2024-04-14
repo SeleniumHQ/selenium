@@ -1,0 +1,9 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasCDP
+        def execute_cdp: (untyped cmd, **untyped params) -> untyped
+      end
+    end
+  end
+end

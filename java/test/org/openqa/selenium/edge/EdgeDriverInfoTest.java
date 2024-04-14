@@ -57,7 +57,7 @@ class EdgeDriverInfoTest {
     assertThat(new EdgeDriverInfo())
         .is(supporting(new ImmutableCapabilities(EdgeOptions.CAPABILITY, Collections.emptyMap())));
     assertThat(new EdgeDriverInfo())
-        .is(supporting(new ImmutableCapabilities("edgeOptions", Collections.emptyMap())));
+        .is(supporting(new ImmutableCapabilities("ms:edgeOptions", Collections.emptyMap())));
   }
 
   private Condition<EdgeDriverInfo> supporting(Capabilities capabilities) {

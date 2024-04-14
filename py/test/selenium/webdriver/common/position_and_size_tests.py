@@ -63,7 +63,7 @@ def test_should_scroll_page_and_get_coordinates_of_an_element_that_is_out_of_vie
 
 
 @pytest.mark.xfail_chrome
-@pytest.mark.xfail_chromiumedge
+@pytest.mark.xfail_edge
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_safari
@@ -76,7 +76,7 @@ def test_should_get_coordinates_of_an_element_in_aframe(driver, pages):
 
 
 @pytest.mark.xfail_chrome
-@pytest.mark.xfail_chromiumedge
+@pytest.mark.xfail_edge
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_safari

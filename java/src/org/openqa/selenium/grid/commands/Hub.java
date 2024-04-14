@@ -187,15 +187,11 @@ public class Hub extends TemplateGridServerCommand {
 
     Routable appendRoute =
         Stream.of(
-                routerWithSpecChecks,
+                baseRoute(subPath, combine(routerWithSpecChecks)),
                 hubRoute(subPath, combine(routerWithSpecChecks)),
                 graphqlRoute(subPath, () -> graphqlHandler))
             .reduce(Route::combine)
             .get();
-
-    if (!subPath.isEmpty()) {
-      appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(routerWithSpecChecks)));
-    }
 
     Routable httpHandler;
     if (routerOptions.disableUi()) {

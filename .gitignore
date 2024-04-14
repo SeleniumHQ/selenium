@@ -10,6 +10,7 @@ junitvmwatcher*.properties
 test-output/
 .*.swp
 *~
+.aspect/
 common/build
 /build/
 cpp/iedriver/IEReturnTypes.h
@@ -135,3 +136,4 @@ bazel-testlogs
 javascript/node/selenium-webdriver/.vscode/settings.json
 
 dotnet-bin
+.metadata/

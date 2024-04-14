@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      class NoneInput < InputDevice
+        @type: untyped
+
+        def initialize: (?untyped? name) -> void
+      end
+    end
+  end
+end

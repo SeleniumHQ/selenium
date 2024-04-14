@@ -1,0 +1,5 @@
+interface _Options
+  def enable_login: -> untyped
+
+  def enable_logging: (untyped browser_options) -> untyped
+end

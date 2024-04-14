@@ -1,0 +1,3 @@
+module Open3
+  def self.capture3: (*untyped) -> untyped
+end

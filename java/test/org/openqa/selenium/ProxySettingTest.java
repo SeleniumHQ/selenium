@@ -22,6 +22,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -111,6 +112,7 @@ class ProxySettingTest extends JupiterTestBase {
   @NoDriverAfterTest
   @Ignore(value = FIREFOX, travis = true)
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = EDGE, reason = "Flaky")
   public void canUsePACThatOnlyProxiesCertainHosts()
       throws URISyntaxException, InterruptedException {
     try (SimpleHttpServer helloServer =

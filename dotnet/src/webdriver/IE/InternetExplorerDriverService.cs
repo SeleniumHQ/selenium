@@ -16,11 +16,10 @@
 // limitations under the License.
 // </copyright>
 
-using System;
+using OpenQA.Selenium.Internal;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.IE
 {

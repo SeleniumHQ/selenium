@@ -1,5 +1,5 @@
-using System;
 using OpenQA.Selenium.IE;
+using System;
 
 namespace OpenQA.Selenium.Remote
 {

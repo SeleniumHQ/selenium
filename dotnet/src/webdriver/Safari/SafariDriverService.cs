@@ -16,14 +16,14 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Safari
 {

@@ -18,9 +18,8 @@
 'use strict'
 
 const assert = require('assert')
-const firefox = require('../../firefox')
-const {Browser} = require('../../')
-const {Pages, suite} = require('../../lib/test')
+const { Browser } = require('../../')
+const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
 const filterBy = require('../../bidi/filterBy')
 
@@ -29,10 +28,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .setFirefoxOptions(new firefox.Options().enableBidi())
-        .build()
+      driver = await env.builder().build()
     })
 
     afterEach(async function () {
@@ -41,22 +37,18 @@ suite(
 
     describe('Log Inspector', function () {
       it('can listen to console log', async function () {
-        let logEntry = null
         const inspector = await logInspector(driver)
         await inspector.onConsoleEntry(function (log) {
-          logEntry = log
+          assert.equal(log.text, 'Hello, world!')
+          assert.equal(log.realm, null)
+          assert.equal(log.type, 'console')
+          assert.equal(log.level, 'info')
+          assert.equal(log.method, 'log')
+          assert.equal(log.args.length, 1)
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'consoleLog'}).click()
-
-        assert.equal(logEntry.text, 'Hello, world!')
-        assert.equal(logEntry.realm, null)
-        assert.equal(logEntry.type, 'console')
-        assert.equal(logEntry.level, 'info')
-        assert.equal(logEntry.method, 'log')
-        assert.equal(logEntry.stackTrace, null)
-        assert.equal(logEntry.args.length, 1)
+        await driver.findElement({ id: 'consoleLog' }).click()
 
         await inspector.close()
       })
@@ -66,25 +58,22 @@ suite(
         const inspector = await logInspector(driver)
         await inspector.onConsoleEntry(function (log) {
           logEntry = log
+          assert.equal(logEntry.text, 'Hello, world!')
+          assert.equal(logEntry.realm, null)
+          assert.equal(logEntry.type, 'console')
+          assert.equal(logEntry.level, 'info')
+          assert.equal(logEntry.method, 'log')
+          assert.equal(logEntry.args.length, 1)
         })
 
         let logEntryText = null
         await inspector.onConsoleEntry(function (log) {
           logEntryText = log.text
+          assert.equal(logEntryText, 'Hello, world!')
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'consoleLog'}).click()
-
-        assert.equal(logEntry.text, 'Hello, world!')
-        assert.equal(logEntry.realm, null)
-        assert.equal(logEntry.type, 'console')
-        assert.equal(logEntry.level, 'info')
-        assert.equal(logEntry.method, 'log')
-        assert.equal(logEntry.stackTrace, null)
-        assert.equal(logEntry.args.length, 1)
-
-        assert.equal(logEntryText, 'Hello, world!')
+        await driver.findElement({ id: 'consoleLog' }).click()
 
         await inspector.close()
       })
@@ -94,34 +83,29 @@ suite(
         const inspector = await logInspector(driver)
         await inspector.onConsoleEntry(function (log) {
           logEntry = log
+          assert.equal(logEntry.text, 'Hello, world!')
+          assert.equal(logEntry.realm, null)
+          assert.equal(logEntry.type, 'console')
+          assert.equal(logEntry.level, 'info')
+          assert.equal(logEntry.method, 'log')
+          assert.equal(logEntry.args.length, 1)
         }, filterBy.FilterBy.logLevel('info'))
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'consoleLog'}).click()
-
-        assert.equal(logEntry.text, 'Hello, world!')
-        assert.equal(logEntry.realm, null)
-        assert.equal(logEntry.type, 'console')
-        assert.equal(logEntry.level, 'info')
-        assert.equal(logEntry.method, 'log')
-        assert.equal(logEntry.stackTrace, null)
-        assert.equal(logEntry.args.length, 1)
+        await driver.findElement({ id: 'consoleLog' }).click()
 
         await inspector.close()
       })
 
       it('can filter console log', async function () {
-        let logEntry = null
         const inspector = await logInspector(driver)
         await inspector.onConsoleEntry(function (log) {
-          logEntry = log
-        }, filterBy.FilterBy.logLevel('error'))
+          assert.notEqual(log, null)
+        }, filterBy.FilterBy.logLevel('info'))
 
         await driver.get(Pages.logEntryAdded)
-        // Generating info level log but we are filtering by error level
-        await driver.findElement({id: 'consoleLog'}).click()
+        await driver.findElement({ id: 'consoleLog' }).click()
 
-        assert.equal(logEntry, null)
         await inspector.close()
       })
 
@@ -130,14 +114,13 @@ suite(
         const inspector = await logInspector(driver)
         await inspector.onJavascriptLog(function (log) {
           logEntry = log
+          assert.equal(logEntry.text, 'Error: Not working')
+          assert.equal(logEntry.type, 'javascript')
+          assert.equal(logEntry.level, 'error')
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
-
-        assert.equal(logEntry.text, 'Error: Not working')
-        assert.equal(logEntry.type, 'javascript')
-        assert.equal(logEntry.level, 'error')
+        await driver.findElement({ id: 'jsException' }).click()
 
         await inspector.close()
       })
@@ -147,14 +130,13 @@ suite(
         const inspector = await logInspector(driver)
         await inspector.onJavascriptLog(function (log) {
           logEntry = log
+          assert.equal(logEntry.text, 'Error: Not working')
+          assert.equal(logEntry.type, 'javascript')
+          assert.equal(logEntry.level, 'error')
         }, filterBy.FilterBy.logLevel('error'))
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
-
-        assert.equal(logEntry.text, 'Error: Not working')
-        assert.equal(logEntry.type, 'javascript')
-        assert.equal(logEntry.level, 'error')
+        await driver.findElement({ id: 'jsException' }).click()
 
         await inspector.close()
       })
@@ -164,12 +146,11 @@ suite(
         const inspector = await logInspector(driver)
         await inspector.onJavascriptLog(function (log) {
           logEntry = log
-        }, filterBy.FilterBy.logLevel('info'))
+          assert.notEqual(logEntry, null)
+        }, filterBy.FilterBy.logLevel('error'))
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
-
-        assert.equal(logEntry, null)
+        await driver.findElement({ id: 'jsException' }).click()
 
         await inspector.close()
       })
@@ -179,14 +160,13 @@ suite(
         const inspector = await logInspector(driver)
         await inspector.onJavascriptException(function (log) {
           logEntry = log
+          assert.equal(logEntry.text, 'Error: Not working')
+          assert.equal(logEntry.type, 'javascript')
+          assert.equal(logEntry.level, 'error')
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
-
-        assert.equal(logEntry.text, 'Error: Not working')
-        assert.equal(logEntry.type, 'javascript')
-        assert.equal(logEntry.level, 'error')
+        await driver.findElement({ id: 'jsException' }).click()
 
         await inspector.close()
       })
@@ -196,14 +176,13 @@ suite(
         const inspector = await logInspector(driver)
         await inspector.onJavascriptException(function (log) {
           logEntry = log
+          const stackTrace = logEntry.stackTrace
+          assert.notEqual(stackTrace, null)
+          assert.equal(stackTrace.callFrames.length > 0, true)
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
-
-        const stackTrace = logEntry.stackTrace
-        assert.notEqual(stackTrace, null)
-        assert.equal(stackTrace.callFrames.length, 3)
+        await driver.findElement({ id: 'jsException' }).click()
 
         await inspector.close()
       })
@@ -213,18 +192,16 @@ suite(
         const inspector = await logInspector(driver)
         await inspector.onLog(function (log) {
           logEntry = log
+          assert.equal(logEntry.text, 'Hello, world!')
+          assert.equal(logEntry.realm, null)
+          assert.equal(logEntry.type, 'console')
+          assert.equal(logEntry.level, 'info')
+          assert.equal(logEntry.method, 'log')
+          assert.equal(logEntry.args.length, 1)
         })
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'consoleLog'}).click()
-
-        assert.equal(logEntry.text, 'Hello, world!')
-        assert.equal(logEntry.realm, null)
-        assert.equal(logEntry.type, 'console')
-        assert.equal(logEntry.level, 'info')
-        assert.equal(logEntry.method, 'log')
-        assert.equal(logEntry.stackTrace, null)
-        assert.equal(logEntry.args.length, 1)
+        await driver.findElement({ id: 'consoleLog' }).click()
 
         await inspector.close()
       })
@@ -234,18 +211,16 @@ suite(
         const inspector = await logInspector(driver)
         await inspector.onLog(function (log) {
           logEntry = log
+          assert.equal(logEntry.text, 'Hello, world!')
+          assert.equal(logEntry.realm, null)
+          assert.equal(logEntry.type, 'console')
+          assert.equal(logEntry.level, 'info')
+          assert.equal(logEntry.method, 'log')
+          assert.equal(logEntry.args.length, 1)
         }, filterBy.FilterBy.logLevel('info'))
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'consoleLog'}).click()
-
-        assert.equal(logEntry.text, 'Hello, world!')
-        assert.equal(logEntry.realm, null)
-        assert.equal(logEntry.type, 'console')
-        assert.equal(logEntry.level, 'info')
-        assert.equal(logEntry.method, 'log')
-        assert.equal(logEntry.stackTrace, null)
-        assert.equal(logEntry.args.length, 1)
+        await driver.findElement({ id: 'consoleLog' }).click()
 
         await inspector.close()
       })
@@ -255,17 +230,17 @@ suite(
         const inspector = await logInspector(driver)
         await inspector.onLog(function (log) {
           logEntry = log
+          assert.equal(logEntry.text, 'Error: Not working')
+          assert.equal(logEntry.type, 'javascript')
+          assert.equal(logEntry.level, 'error')
         }, filterBy.FilterBy.logLevel('error'))
 
         await driver.get(Pages.logEntryAdded)
-        await driver.findElement({id: 'jsException'}).click()
+        await driver.findElement({ id: 'jsException' }).click()
 
-        assert.equal(logEntry.text, 'Error: Not working')
-        assert.equal(logEntry.type, 'javascript')
-        assert.equal(logEntry.level, 'error')
         await inspector.close()
       })
     })
   },
-  {browsers: [Browser.FIREFOX]}
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )

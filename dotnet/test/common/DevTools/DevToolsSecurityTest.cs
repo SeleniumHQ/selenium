@@ -1,12 +1,12 @@
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V121;
+    using CurrentCdpVersion = V123;
 
     [TestFixture]
     public class DevToolsSecurityTest : DevToolsTestFixture

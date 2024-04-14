@@ -41,5 +41,5 @@ test.suite(
       })
     })
   },
-  { browsers: ['MicrosoftEdge'] }
+  { browsers: ['MicrosoftEdge'] },
 )

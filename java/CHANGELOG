@@ -1,3 +1,57 @@
+v4.19.1
+======
+* [bidi] Fix the bazel file after the BiDi breaking change
+
+v4.19.0
+======
+* Add CDP for Chrome 123 and remove 120
+* Use daemon threads in JdkHttpClient #13601
+* Use a static class for ProxySelector #13622
+* Improve memory allocation of an idle relay node #13643
+* Close the httpclient after checking the service status #13643
+* [bidi] Add storage module (#13675)
+* [bidi] Add browser module (#13677)
+* [bidi] Add continueRequest and continueResponse command (#13692)
+* [bidi] Add provide response command (#13708)
+* [bidi] Add setFiles command of the Input Module (#13711)
+* Add JSON serialization for ShadowRoot (#13680)
+* [grid] Ensure the original RemoteNode stays DOWN #13646 (#13647)
+* Removed usage of FileBackedOutputStream in the client  (#13308)
+* [grid] Remove "se:bidi" (#13528)
+* [bidi] Update the capture screenshot APIs to include all parameters and remove scroll parameter (#13743)
+
+v4.18.1
+======
+
+* Add CDP for Chrome 122 and remove 119
+
+v4.18.0
+======
+
+* Recommitting self-signed certificate should not require certificate file
+* [bidi] Add browsing context destroyed event
+* Add missing support events for Web Driver Listener  (#13210)
+* [bidi] Add network intercept commands
+* [bidi] Add command "continuewithAuth"
+* [bidi] Add failRequest command
+* use the W3C state to detect errors
+* [grid] Fixing driver configuration parsing (Fixes #13531)
+* [cdp] Ensure dom mutation listener calls to webdriver apis are thread safe (Fixes #13500)
+* Fix typo in comment (#13549)
+* Allow `null` input in `FluentWait` (#13558)
+* Add missing event handlers for `TargetLocator` interface (#13559)
+* shutdown the process of a failed driver server start
+* ensure ExternalProcess.waitFor will not block
+* fixed the format of DriverService
+* use message templates in logger calls
+* [bidi] Add 'fetchError' event
+* Fixing NPE when "se:downloadsEnabled" not set (#13583)
+* Make Rectangle fields final to enhance immutability (#13586)
+* Use all provided options while merging them for Firefox (#13582)
+* Fix access modifier for script module classes
+* use the ErrorCodec to build the WebDriverException #13580
+* give the driver some time to terminate graceful
+
 v4.17.0
 ======
 

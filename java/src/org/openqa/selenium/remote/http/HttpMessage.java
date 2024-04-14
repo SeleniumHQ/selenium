@@ -19,7 +19,9 @@ package org.openqa.selenium.remote.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +40,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
 
   private final Map<String, List<String>> headers = new HashMap<>();
   private final Map<String, Object> attributes = new HashMap<>();
-  private Supplier<InputStream> content = Contents.empty();
+  private Contents.Supplier content = Contents.empty();
 
   /**
    * Retrieves a user-defined attribute of this message. Attributes are stored as simple key-value
@@ -167,12 +169,21 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
     return charset;
   }
 
+  @Deprecated
   public M setContent(Supplier<InputStream> supplier) {
+    try {
+      return setContent(Contents.bytes(supplier.get().readAllBytes()));
+    } catch (IOException ex) {
+      throw new UncheckedIOException(ex);
+    }
+  }
+
+  public M setContent(Contents.Supplier supplier) {
     this.content = Require.nonNull("Supplier", supplier);
     return self();
   }
 
-  public Supplier<InputStream> getContent() {
+  public Contents.Supplier getContent() {
     return content;
   }
 

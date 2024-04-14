@@ -171,7 +171,7 @@ public class ProxyNodeWebsockets
       Consumer<SessionId> sessionConsumer,
       SessionId sessionId) {
     try {
-      URI uri = new URI(String.valueOf(caps.getCapability("webSocketUrl")));
+      URI uri = new URI(String.valueOf(caps.getCapability("se:gridWebSocketUrl")));
       return Optional.of(uri)
           .map(bidi -> createWsEndPoint(bidi, downstream, sessionConsumer, sessionId));
     } catch (URISyntaxException e) {

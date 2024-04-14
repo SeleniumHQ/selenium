@@ -1,0 +1,59 @@
+module Selenium
+  module WebDriver
+    class Service
+      SHUTDOWN_SUPPORTED: untyped
+
+      DEFAULT_PORT: untyped
+
+      self.@driver_path: untyped
+
+      @executable_path: untyped
+
+      @host: untyped
+
+      @port: untyped
+
+      @log: untyped
+
+      @args: untyped
+
+      attr_reader self.driver_path: untyped
+
+      def self.chrome: (**untyped opts) -> untyped
+
+      def self.firefox: (**untyped opts) -> untyped
+
+      def self.ie: (**untyped opts) -> untyped
+
+      alias self.internet_explorer self.ie
+
+      def self.edge: (**untyped opts) -> untyped
+
+      alias self.microsoftedge self.edge
+
+      alias self.msedge self.edge
+
+      def self.safari: (**untyped opts) -> untyped
+
+      def self.driver_path=: (untyped path) -> untyped
+
+      attr_accessor host: untyped
+
+      attr_accessor executable_path: untyped
+
+      attr_accessor port: untyped
+
+      attr_accessor log: untyped
+
+      attr_accessor args: untyped
+
+      alias extra_args args
+
+      def initialize: (?path: untyped?, ?port: untyped?, ?log: untyped?, ?args: untyped?) -> void
+
+      def launch: () -> untyped
+
+      def shutdown_supported: () -> untyped
+    end
+  end
+end

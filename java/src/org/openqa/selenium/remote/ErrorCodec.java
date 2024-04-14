@@ -85,7 +85,7 @@ public class ErrorCodec {
           new W3CError("unable to capture screen", ScreenshotException.class, 500),
           new W3CError("unable to set cookie", UnableToSetCookieException.class, 500),
           new W3CError("unexpected alert open", UnhandledAlertException.class, 500),
-          new W3CError("unsupported operation", UnsupportedCommandException.class, 404),
+          new W3CError("unsupported operation", UnsupportedCommandException.class, 500),
           new W3CError("unknown command", UnsupportedCommandException.class, 404),
           new W3CError("unknown method", UnsupportedCommandException.class, 405),
           new W3CError("unknown error", WebDriverException.class, 500));

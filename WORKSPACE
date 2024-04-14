@@ -5,6 +5,20 @@ workspace(
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
+    name = "rules_java",
+    sha256 = "16bc94b1a3c64f2c36ceecddc9e09a643e80937076b97e934b96a8f715ed1eaa",
+    urls = [
+        "https://github.com/bazelbuild/rules_java/releases/download/6.5.2/rules_java-6.5.2.tar.gz",
+    ],
+)
+
+load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
+
+rules_java_dependencies()
+
+rules_java_toolchains()
+
+http_archive(
     name = "apple_rules_lint",
     sha256 = "7c3cc45a95e3ef6fbc484a4234789a027e11519f454df63cbb963ac499f103f9",
     strip_prefix = "apple_rules_lint-0.3.2",
@@ -37,10 +51,23 @@ load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 bazel_skylib_workspace()
 
 http_archive(
+    name = "aspect_bazel_lib",
+    sha256 = "f75d03783588e054899eb0729a97fb5b8973c1a26f30373fafd485c90bf207d1",
+    strip_prefix = "bazel-lib-2.4.2",
+    url = "https://github.com/aspect-build/bazel-lib/releases/download/v2.4.2/bazel-lib-v2.4.2.tar.gz",
+)
+
+load("@aspect_bazel_lib//lib:repositories.bzl", "aspect_bazel_lib_dependencies", "aspect_bazel_lib_register_toolchains")
+
+aspect_bazel_lib_dependencies()
+
+aspect_bazel_lib_register_toolchains()
+
+http_archive(
     name = "rules_python",
-    sha256 = "5868e73107a8e85d8f323806e60cad7283f34b32163ea6ff1020cf27abef6036",
-    strip_prefix = "rules_python-0.25.0",
-    url = "https://github.com/bazelbuild/rules_python/releases/download/0.25.0/rules_python-0.25.0.tar.gz",
+    sha256 = "c68bdc4fbec25de5b5493b8819cfc877c4ea299c0dcb15c244c5a00208cde311",
+    strip_prefix = "rules_python-0.31.0",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.31.0/rules_python-0.31.0.tar.gz",
 )
 
 load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_multi_toolchains")
@@ -129,9 +156,9 @@ http_archive(
     patches = [
         "//java:rules_jvm_external_javadoc.patch",
     ],
-    sha256 = "f86fd42a809e1871ca0aabe89db0d440451219c3ce46c58da240c7dcdc00125f",
-    strip_prefix = "rules_jvm_external-5.2",
-    url = "https://github.com/bazelbuild/rules_jvm_external/releases/download/5.2/rules_jvm_external-5.2.tar.gz",
+    sha256 = "85fd6bad58ac76cc3a27c8e051e4255ff9ccd8c92ba879670d195622e7c0a9b7",
+    strip_prefix = "rules_jvm_external-6.0",
+    url = "https://github.com/bazelbuild/rules_jvm_external/releases/download/6.0/rules_jvm_external-6.0.tar.gz",
 )
 
 load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
@@ -165,11 +192,19 @@ load("@maven//:defs.bzl", "pinned_maven_install")
 
 pinned_maven_install()
 
+# Stop `aspect_rules_js` and `rules_dotnet` from fighting over `aspect_bazel_lib`
+http_archive(
+    name = "aspect_bazel_lib",
+    sha256 = "4d6010ca5e3bb4d7045b071205afa8db06ec11eb24de3f023d74d77cca765f66",
+    strip_prefix = "bazel-lib-1.39.0",
+    url = "https://github.com/aspect-build/bazel-lib/releases/download/v1.39.0/bazel-lib-v1.39.0.tar.gz",
+)
+
 http_archive(
     name = "rules_dotnet",
-    sha256 = "718cb2c3431523aaf3df7feed0e997e4ded002abbf56ac37d9c0536a812d6276",
-    strip_prefix = "rules_dotnet-0.12.0",
-    url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.12.0/rules_dotnet-v0.12.0.tar.gz",
+    sha256 = "d01b0f44e58224deeb8ac81afe8701385d41b16c8028709d3a4ed5b46f1c48a0",
+    strip_prefix = "rules_dotnet-0.14.0",
+    url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.14.0/rules_dotnet-v0.14.0.tar.gz",
 )
 
 load(
@@ -182,11 +217,11 @@ rules_dotnet_dependencies()
 
 dotnet_register_toolchains("dotnet", "7.0.400")
 
-load("@rules_dotnet//dotnet:rules_dotnet_nuget_packages.bzl", "rules_dotnet_nuget_packages")
+load("@rules_dotnet//dotnet:paket.rules_dotnet_nuget_packages.bzl", "rules_dotnet_nuget_packages")
 
 rules_dotnet_nuget_packages()
 
-load("@rules_dotnet//dotnet:paket2bazel_dependencies.bzl", "paket2bazel_dependencies")
+load("@rules_dotnet//dotnet:paket.paket2bazel_dependencies.bzl", "paket2bazel_dependencies")
 
 paket2bazel_dependencies()
 
@@ -196,8 +231,8 @@ paket()
 
 http_archive(
     name = "rules_rust",
-    sha256 = "50ec4b84a7ec5370f5882d52f4a1e6b8a75de2f8dcc0a4403747b69b2c4ef5b1",
-    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.23.0/rules_rust-v0.23.0.tar.gz"],
+    integrity = "sha256-XT1YVJ6FHJTXBr1v3px2fV37/OCS3dQk3ul+XvfIIf8=",
+    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.42.0/rules_rust-v0.42.0.tar.gz"],
 )
 
 load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
@@ -220,26 +255,78 @@ load("@crates//:defs.bzl", "crate_repositories")
 crate_repositories()
 
 http_archive(
-    name = "build_bazel_rules_nodejs",
-    sha256 = "709cc0dcb51cf9028dd57c268066e5bc8f03a119ded410a13b5c3925d6e43c48",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.8.4/rules_nodejs-5.8.4.tar.gz"],
+    name = "aspect_rules_js",
+    sha256 = "a2f941e27f02e84521c2d47fd530c66d57dd6d6e44b4a4f1496fe304851d8e48",
+    strip_prefix = "rules_js-1.35.0",
+    url = "https://github.com/aspect-build/rules_js/releases/download/v1.35.0/rules_js-v1.35.0.tar.gz",
 )
 
-load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
+load("@aspect_rules_js//js:repositories.bzl", "rules_js_dependencies")
 
-build_bazel_rules_nodejs_dependencies()
+rules_js_dependencies()
 
-load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
+load("@rules_nodejs//nodejs:repositories.bzl", "nodejs_register_toolchains")
 
-node_repositories(
+nodejs_register_toolchains(
+    name = "nodejs",
     node_version = "18.17.0",
 )
 
-npm_install(
+load("@aspect_rules_js//npm:repositories.bzl", "npm_translate_lock")
+
+npm_translate_lock(
     name = "npm",
-    package_json = "//:package.json",
-    package_lock_json = "//:package-lock.json",
-    symlink_node_modules = False,
+    data = [
+        "@//:package.json",
+        "@//:pnpm-workspace.yaml",
+        "@//javascript/grid-ui:package.json",
+        "@//javascript/node/selenium-webdriver:package.json",
+    ],
+    generate_bzl_library_targets = True,
+    npmrc = "//:.npmrc",
+    pnpm_lock = "//:pnpm-lock.yaml",
+    update_pnpm_lock = True,
+    verify_node_modules_ignored = "//:.bazelignore",
+)
+
+load("@npm//:repositories.bzl", "npm_repositories")
+
+npm_repositories()
+
+http_archive(
+    name = "aspect_rules_ts",
+    sha256 = "bd3e7b17e677d2b8ba1bac3862f0f238ab16edb3e43fb0f0b9308649ea58a2ad",
+    strip_prefix = "rules_ts-2.1.0",
+    url = "https://github.com/aspect-build/rules_ts/releases/download/v2.1.0/rules_ts-v2.1.0.tar.gz",
+)
+
+load("@aspect_rules_ts//ts:repositories.bzl", "rules_ts_dependencies")
+
+rules_ts_dependencies(
+    ts_version = "4.9.5",
+)
+
+load("@bazel_features//:deps.bzl", "bazel_features_deps")
+
+bazel_features_deps()
+
+http_archive(
+    name = "aspect_rules_esbuild",
+    sha256 = "999349afef62875301f45ec8515189ceaf2e85b1e67a17e2d28b95b30e1d6c0b",
+    strip_prefix = "rules_esbuild-0.18.0",
+    url = "https://github.com/aspect-build/rules_esbuild/releases/download/v0.18.0/rules_esbuild-v0.18.0.tar.gz",
+)
+
+load("@aspect_rules_esbuild//esbuild:dependencies.bzl", "rules_esbuild_dependencies")
+
+rules_esbuild_dependencies()
+
+# Register a toolchain containing esbuild npm package and native bindings
+load("@aspect_rules_esbuild//esbuild:repositories.bzl", "esbuild_register_toolchains")
+
+esbuild_register_toolchains(
+    name = "esbuild",
+    esbuild_version = "0.19.9",
 )
 
 http_archive(
@@ -331,9 +418,9 @@ pin_browsers()
 
 http_archive(
     name = "rules_ruby",
-    sha256 = "9bfab76e1272dae72355c65cc858ede68b659716381485baa4c8e7a70ddc38a6",
-    strip_prefix = "rules_ruby-0.5.0",
-    url = "https://github.com/bazel-contrib/rules_ruby/releases/download/v0.5.0/rules_ruby-v0.5.0.tar.gz",
+    sha256 = "9ff781fd8180c2be8b3ab0f16d1d88d618c3b1bc4d502dcb914591886da40014",
+    strip_prefix = "rules_ruby-0.8.1",
+    url = "https://github.com/bazel-contrib/rules_ruby/releases/download/v0.8.1/rules_ruby-v0.8.1.tar.gz",
 )
 
 load(
@@ -354,6 +441,81 @@ rb_bundle_fetch(
         "//:rb/selenium-devtools.gemspec",
         "//:rb/selenium-webdriver.gemspec",
     ],
+    gem_checksums = {
+        "abbrev-0.1.2": "ad1b4eaaaed4cb722d5684d63949e4bde1d34f2a95e20db93aecfe7cbac74242",
+        "activesupport-7.1.3.2": "ad8445b7ae4a6d3acc5f88c8c5f437eb0b54062032aaf44856c7b6d3855b8b2e",
+        "addressable-2.8.6": "798f6af3556641a7619bad1dce04cdb6eb44b0216a991b0396ea7339276f2b47",
+        "ast-2.4.2": "1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12",
+        "base64-0.2.0": "0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507",
+        "bigdecimal-3.1.7": "e799b369a0005fc6d62eed7ef19139ac9bc319cc51470c637b9dcdf593600133",
+        "bigdecimal-3.1.7-java": "955f5c7aa90136874b494655e42ed70d81382abb0f49f1b42f374a1660e33c63",
+        "concurrent-ruby-1.2.3": "82fdd3f8a0816e28d513e637bb2b90a45d7b982bdf4f3a0511722d2e495801e2",
+        "connection_pool-2.4.1": "0f40cf997091f1f04ff66da67eabd61a9fe0d4928b9a3645228532512fab62f4",
+        "crack-1.0.0": "c83aefdb428cdc7b66c7f287e488c796f055c0839e6e545fec2c7047743c4a49",
+        "csv-3.3.0": "0bbd1defdc31134abefed027a639b3723c2753862150f4c3ee61cab71b20d67d",
+        "debug-1.9.1": "86f1a6d4a299184f1a1f7ae4c2fe80f178beed55cdf608f83b49d7bdefa3ffda",
+        "diff-lcs-1.5.1": "273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe",
+        "drb-2.2.1": "e9d472bf785f558b96b25358bae115646da0dbfd45107ad858b0bc0d935cb340",
+        "ffi-1.16.3": "6d3242ff10c87271b0675c58d68d3f10148fabc2ad6da52a18123f06078871fb",
+        "fileutils-1.7.2": "36a0fb324218263e52b486ad7408e9a295378fe8edc9fd343709e523c0980631",
+        "git-1.19.1": "b0a422d9f6517353c48a330d6114de4db9e0c82dbe7202964a1d9f1fbc827d70",
+        "hashdiff-1.1.0": "b5465f0e7375f1ee883f53a766ece4dbc764b7674a7c5ffd76e79b2f5f6fc9c9",
+        "i18n-1.14.4": "c7deedead0866ea9102975a4eab7968f53de50793a0c211a37808f75dd187551",
+        "io-console-0.7.2": "f0dccff252f877a4f60d04a4dc6b442b185ebffb4b320ab69212a92b48a7a221",
+        "io-console-0.7.2-java": "73aa382f8832b116613ceaf57b8ff5bf73dfedcaf39f0aa5420e10f63a4543ed",
+        "irb-1.12.0": "07634937fbb7d28d07e46da50d0aa43b4d2f7258174d08de4e32dfb57c10539d",
+        "jar-dependencies-0.4.1": "b2df2f1ecbff15334ce20ea7fdd5b8d8161faab67761ff72c7647d728e40d387",
+        "json-2.7.1": "187ea312fb58420ff0c40f40af1862651d4295c8675267c6a1c353f1a0ac3265",
+        "json-2.7.1-java": "bfd628c0f8357058c2cf848febfa6f140f70f94ec492693a31a0a1933038a61b",
+        "language_server-protocol-3.17.0.3": "3d5c58c02f44a20d972957a9febe386d7e7468ab3900ce6bd2b563dd910c6b3f",
+        "listen-3.9.0": "db9e4424e0e5834480385197c139cb6b0ae0ef28cc13310cfd1ca78377d59c67",
+        "logger-1.6.0": "0ab7c120262dd8de2a18cb8d377f1f318cbe98535160a508af9e7710ff43ef3e",
+        "minitest-5.22.3": "ea84676290cb5e2b4f31f25751af6050aa90d3e43e4337141c3e3e839611981e",
+        "mutex_m-0.2.0": "b6ef0c6c842ede846f2ec0ade9e266b1a9dac0bc151682b04835e8ebd54840d5",
+        "parallel-1.24.0": "5bf38efb9b37865f8e93d7a762727f8c5fc5deb19949f4040c76481d5eee9397",
+        "parser-3.3.0.5": "7748313e505ca87045dc0465c776c802043f777581796eb79b1654c5d19d2687",
+        "psych-5.1.2": "337322f58fc2bf24827d2b9bd5ab595f6a72971867d151bb39980060ea40a368",
+        "psych-5.1.2-java": "1dd68dc609eddbc884e6892e11da942e16f7256bd30ebde9d35449d43043a6fe",
+        "public_suffix-5.0.4": "35cd648e0d21d06b8dce9331d19619538d1d898ba6d56a6f2258409d2526d1ae",
+        "racc-1.7.3": "b785ab8a30ec43bce073c51dbbe791fd27000f68d1c996c95da98bf685316905",
+        "racc-1.7.3-java": "b2ad737e788cfa083263ce7c9290644bb0f2c691908249eb4f6eb48ed2815dbf",
+        "rack-2.2.9": "fd6301a97a1c1e955e68f85c861fcb1cde6145a32c532e1ea321a72ff8cc4042",
+        "rainbow-3.1.1": "039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a",
+        "rake-13.1.0": "be6a3e1aa7f66e6c65fa57555234eb75ce4cf4ada077658449207205474199c6",
+        "rb-fsevent-0.11.2": "43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe",
+        "rb-inotify-0.10.1": "050062d4f31d307cca52c3f6a7f4b946df8de25fc4bd373e1a5142e41034a7ca",
+        "rbs-3.4.4": "1376d2604a00832641bb47521595e63a1c0d1cc241ded383ba48ddb4396de5a8",
+        "rchardet-1.8.0": "693acd5253d5ade81a51940697955f6dd4bb2f0d245bda76a8e23deec70a52c7",
+        "rdoc-6.6.3.1": "39f7b749229ab5ad9d21c81586151c1dd7a549fa8be4070ee09b524f9c656345",
+        "regexp_parser-2.9.0": "81a00ba141cec0d4b4bf58cb80cd9193e5180836d3fa6ef623f7886d3ba8bdd9",
+        "reline-0.5.0": "2c4d4570a3fe730225d62e07ec2ad4c5726d8f211b240cf8f8c648ed006d26b7",
+        "rexml-3.2.6": "e0669a2d4e9f109951cb1fde723d8acd285425d81594a2ea929304af50282816",
+        "rspec-3.13.0": "d490914ac1d5a5a64a0e1400c1d54ddd2a501324d703b8cfe83f458337bab993",
+        "rspec-core-3.13.0": "557792b4e88da883d580342b263d9652b6a10a12d5bda9ef967b01a48f15454c",
+        "rspec-expectations-3.13.0": "621d48c62262f955421eaa418130744760802cad47e781df70dba4d9f897102e",
+        "rspec-mocks-3.13.0": "735a891215758d77cdb5f4721fffc21078793959d1f0ee4a961874311d9b7f66",
+        "rspec-support-3.13.1": "48877d4f15b772b7538f3693c22225f2eda490ba65a0515c4e7cf6f2f17de70f",
+        "rubocop-1.62.1": "aeb1ec501aef5833617b3b6a1512303806218c349c28ce5b3ea72e3782ad4a35",
+        "rubocop-ast-1.31.2": "7c206fb094553779923eca862aceece3913ce384f1bf85730208228e884578ec",
+        "rubocop-capybara-2.20.0": "2a6844b942921f230ee3ab8c94fe77f41a9406096a140245270c0e11624bb938",
+        "rubocop-factory_bot-2.25.1": "62751bde7af789878b8a31cbd2a82e69515ce7b23a2ad1820cb0fcc3e0150134",
+        "rubocop-performance-1.20.2": "1bb1fa8c427fac7ba3c8dd2decb9860f23cb2d6c40350bedc88538de8875c731",
+        "rubocop-rspec-2.27.1": "2f27ce04700be75db65afe83d7993a36e0fafd07ec062222f4b3cc10137a7a9e",
+        "ruby-progressbar-1.13.0": "80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33",
+        "rubyzip-2.3.2": "3f57e3935dc2255c414484fbf8d673b4909d8a6a57007ed754dde39342d2373f",
+        "securerandom-0.3.1": "98f0450c0ea46d2f9a4b6db4f391dbd83dc08049592eada155739f40e0341bde",
+        "steep-1.5.3": "7c6302a4d5932d0a46176ebc79766e52b853c223a85525aa2f8911e345123b85",
+        "stringio-3.1.0": "c1f6263ae03a15025e51194ab19b06b15e06adcaaedb7f5f6c06ab60f5d67718",
+        "strscan-3.1.0": "01b8a81d214fbf7b5308c6fb51b5972bbfc4a6aa1f166fd3618ba97e0fcd5555",
+        "strscan-3.1.0-java": "8645aa76e017e21764c6df572d2d79fcc1672284014f5bdbd806278cdbcd11b0",
+        "terminal-table-3.0.2": "f951b6af5f3e00203fb290a669e0a85c5dd5b051b3b023392ccfd67ba5abae91",
+        "tzinfo-2.0.6": "8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b",
+        "unicode-display_width-2.5.0": "7e7681dcade1add70cb9fda20dd77f300b8587c81ebbd165d14fd93144ff0ab4",
+        "webmock-3.23.0": "100787435c1f556129a238c11cc7cbee38cb9c2864709c6a0dcdcf822545f31f",
+        "webrick-1.8.1": "19411ec6912911fd3df13559110127ea2badd0c035f7762873f58afc803e158f",
+        "websocket-1.2.10": "2cc1a4a79b6e63637b326b4273e46adcddf7871caa5dc5711f2ca4061a629fa8",
+        "yard-0.9.36": "5505736c1b00c926f71053a606ab75f02070c5960d0778b901fe9d8b0a470be4",
+    },
     gemfile = "//:rb/Gemfile",
     gemfile_lock = "//:rb/Gemfile.lock",
 )

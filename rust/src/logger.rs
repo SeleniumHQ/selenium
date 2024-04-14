@@ -15,20 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::config::BooleanKey;
+use crate::config::{BooleanKey, StringKey};
 use crate::metadata::now_unix_timestamp;
-use env_logger::fmt::Color;
 use env_logger::Target::Stdout;
 use env_logger::DEFAULT_FILTER_ENV;
-use log::Level;
 use log::LevelFilter::{Debug, Info, Trace};
+use log::{Level, LevelFilter};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::env;
 use std::fmt::Display;
-use std::io::Write;
 use std::ops::Deref;
-use Color::{Blue, Cyan, Green, Red, Yellow};
+use std::str::FromStr;
 
 pub const DRIVER_PATH: &str = "Driver path: ";
 pub const BROWSER_PATH: &str = "Browser path: ";
@@ -74,10 +72,11 @@ impl Logger {
     pub fn new() -> Self {
         let debug = BooleanKey("debug", false).get_value();
         let trace = BooleanKey("trace", false).get_value();
-        Logger::create("", debug, trace)
+        let log_level = StringKey(vec!["log-level"], "").get_value();
+        Logger::create("", debug, trace, &log_level)
     }
 
-    pub fn create(output: &str, debug: bool, trace: bool) -> Self {
+    pub fn create(output: &str, debug: bool, trace: bool, log_level: &str) -> Self {
         let output_type;
         if output.eq_ignore_ascii_case("json") {
             output_type = OutputType::Json;
@@ -89,32 +88,23 @@ impl Logger {
         match output_type {
             OutputType::Logger => {
                 if env::var(DEFAULT_FILTER_ENV).unwrap_or_default().is_empty() {
-                    let mut filter = match debug {
-                        true => Debug,
-                        false => Info,
+                    let filter = if !log_level.is_empty() {
+                        LevelFilter::from_str(log_level).unwrap_or(Info)
+                    } else {
+                        let mut filter = match debug {
+                            true => Debug,
+                            false => Info,
+                        };
+                        if trace {
+                            filter = Trace;
+                        }
+                        filter
                     };
-                    if trace {
-                        filter = Trace
-                    }
                     env_logger::Builder::new()
                         .filter_module(env!("CARGO_CRATE_NAME"), filter)
                         .target(Stdout)
-                        .format(|buf, record| {
-                            let mut level_style = buf.style();
-                            match record.level() {
-                                Level::Trace => level_style.set_color(Cyan),
-                                Level::Debug => level_style.set_color(Blue),
-                                Level::Info => level_style.set_color(Green),
-                                Level::Warn => level_style.set_color(Yellow),
-                                Level::Error => level_style.set_color(Red).set_bold(true),
-                            };
-                            writeln!(
-                                buf,
-                                "{}\t{}",
-                                level_style.value(record.level()),
-                                record.args()
-                            )
-                        })
+                        .format_target(false)
+                        .format_timestamp_millis()
                         .try_init()
                         .unwrap_or_default();
                 } else {
@@ -158,6 +148,11 @@ impl Logger {
 
     pub fn debug<T: Display>(&self, message: T) {
         self.logger(message.to_string(), Level::Debug);
+    }
+
+    pub fn debug_or_warn<T: Display>(&self, message: T, is_debug: bool) {
+        let level = if is_debug { Level::Debug } else { Level::Warn };
+        self.logger(message.to_string(), level);
     }
 
     pub fn trace<T: Display>(&self, message: T) {

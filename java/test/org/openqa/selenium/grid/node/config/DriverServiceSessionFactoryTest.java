@@ -47,6 +47,7 @@ import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -135,7 +136,7 @@ class DriverServiceSessionFactoryTest {
         .thenReturn(
             new HttpResponse()
                 .setStatus(200)
-                .setContent(() -> new ByteArrayInputStream("Hello, world!".getBytes())));
+                .setContent(Contents.bytes("Hello, world!".getBytes())));
     when(clientFactory.createClient(any(URL.class))).thenReturn(httpClient);
 
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);

@@ -16,6 +16,7 @@
 // under the License.
 
 const { LocalValue } = require('./protocolValue')
+
 class ArgumentValue {
   constructor(value) {
     this.value = value

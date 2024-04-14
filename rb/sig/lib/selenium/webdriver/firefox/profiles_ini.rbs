@@ -1,0 +1,23 @@
+module Selenium
+  module WebDriver
+    module Firefox
+      class ProfilesIni
+        @ini_path: untyped
+
+        @profile_paths: untyped
+
+        def initialize: () -> void
+
+        def []: (untyped name) -> untyped
+
+        def refresh: () -> untyped
+
+        private
+
+        def parse: () -> untyped
+
+        def path_for: (untyped name, untyped is_relative, untyped path) -> untyped?
+      end
+    end
+  end
+end

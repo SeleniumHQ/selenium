@@ -89,6 +89,24 @@ namespace OpenQA.Selenium
         None
     }
 
+    internal class Timeout
+    {
+        public TimeSpan? Script { get; set; }
+        public TimeSpan? PageLoad { get; set; }
+        public TimeSpan? ImplicitWait { get; set; }
+
+        public Dictionary<string, object> ToCapabilities()
+        {
+            var timeoutCapabilities = new Dictionary<string, object>();
+
+            if (Script.HasValue) timeoutCapabilities.Add("script", Script.Value.TotalMilliseconds);
+            if (PageLoad.HasValue) timeoutCapabilities.Add("pageLoad", PageLoad.Value.TotalMilliseconds);
+            if (ImplicitWait.HasValue) timeoutCapabilities.Add("implicit", ImplicitWait.Value.TotalMilliseconds);
+
+            return timeoutCapabilities;
+        }
+    }
+
     /// <summary>
     /// Base class for managing options specific to a browser driver.
     /// </summary>
@@ -102,6 +120,9 @@ namespace OpenQA.Selenium
         private bool? useWebSocketUrl;
         private bool useStrictFileInteractability;
         private bool? enableDownloads;
+        private TimeSpan? scriptTimeout;
+        private TimeSpan? pageLoadTimeout;
+        private TimeSpan? implicitWaitTimeout;
         private UnhandledPromptBehavior unhandledPromptBehavior = UnhandledPromptBehavior.Default;
         private PageLoadStrategy pageLoadStrategy = PageLoadStrategy.Default;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
@@ -217,6 +238,52 @@ namespace OpenQA.Selenium
         {
             get { return this.enableDownloads; }
             set { this.enableDownloads = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the asynchronous script timeout, which is the amount
+        /// of time the driver should wait when executing JavaScript asynchronously.
+        /// This timeout only affects the <see cref="IJavaScriptExecutor.ExecuteAsyncScript(string, object[])"/>
+        /// method.
+        /// </summary>
+        public TimeSpan? ScriptTimeout
+        {
+            get { return this.scriptTimeout; }
+            set { this.scriptTimeout = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the page load timeout, which is the amount of time the driver
+        /// should wait for a page to load when setting the <see cref="IWebDriver.Url"/>
+        /// property.
+        /// </summary>
+        public TimeSpan? PageLoadTimeout
+        {
+            get { return this.pageLoadTimeout; }
+            set { this.pageLoadTimeout = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the implicit wait timeout, which is the  amount of time the
+        /// driver should wait when searching for an element if it is not immediately
+        /// present.
+        /// </summary>
+        /// <remarks>
+        /// When searching for a single element, the driver should poll the page
+        /// until the element has been found, or this timeout expires before throwing
+        /// a <see cref="NoSuchElementException"/>. When searching for multiple elements,
+        /// the driver should poll the page until at least one element has been found
+        /// or this timeout has expired.
+        /// <para>
+        /// Increasing the implicit wait timeout should be used judiciously as it
+        /// will have an adverse effect on test run time, especially when used with
+        /// slower location strategies like XPath.
+        /// </para>
+        /// </remarks>
+        public TimeSpan? ImplicitWaitTimeout
+        {
+            get { return this.implicitWaitTimeout; }
+            set { this.implicitWaitTimeout = value; }
         }
 
         /// <summary>
@@ -535,6 +602,18 @@ namespace OpenQA.Selenium
                 {
                     capabilities.SetCapability(CapabilityType.Proxy, proxyCapability);
                 }
+            }
+
+            if (this.scriptTimeout.HasValue || this.pageLoadTimeout.HasValue || this.implicitWaitTimeout.HasValue)
+            {
+                var timeouts = new Timeout
+                {
+                    Script = this.scriptTimeout,
+                    PageLoad = this.pageLoadTimeout,
+                    ImplicitWait = this.implicitWaitTimeout
+                };
+
+                capabilities.SetCapability(CapabilityType.Timeouts, timeouts.ToCapabilities());
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)

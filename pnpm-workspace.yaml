@@ -1,0 +1,3 @@
+packages:
+  - 'javascript/grid-ui'
+  - 'javascript/node/selenium-webdriver'

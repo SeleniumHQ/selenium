@@ -1,0 +1,33 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      class PointerMove < Interaction
+        @duration: untyped
+
+        @x_offset: untyped
+
+        @y_offset: untyped
+
+        @origin: untyped
+
+        @type: untyped
+
+        @opts: untyped
+
+        include PointerEventProperties
+
+        VIEWPORT: Symbol
+
+        POINTER: Symbol
+
+        ORIGINS: Array[untyped]
+
+        def initialize: (untyped source, untyped duration, untyped x, untyped y, **untyped opts) -> void
+
+        def assert_source: (untyped source) -> (untyped | nil)
+
+        def encode: () -> untyped
+      end
+    end
+  end
+end

@@ -1,9 +1,9 @@
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
-using System.Threading;
-using OpenQA.Selenium.Environment;
 using System.IO;
+using System.Threading;
 
 namespace OpenQA.Selenium.Firefox
 {

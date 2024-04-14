@@ -220,8 +220,7 @@ class Entry {
   constructor(level, message, opt_timestamp, opt_type) {
     this.level = level instanceof Level ? level : getLevel(level)
     this.message = message
-    this.timestamp =
-      typeof opt_timestamp === 'number' ? opt_timestamp : Date.now()
+    this.timestamp = typeof opt_timestamp === 'number' ? opt_timestamp : Date.now()
     this.type = opt_type || ''
   }
 
@@ -311,10 +310,7 @@ class Logger {
    *     by this instance.
    */
   isLoggable(level) {
-    return (
-      level.value !== Level.OFF.value &&
-      level.value >= this.getEffectiveLevel().value
-    )
+    return level.value !== Level.OFF.value && level.value >= this.getEffectiveLevel().value
   }
 
   /**
@@ -358,11 +354,7 @@ class Logger {
     if (!this.isLoggable(level)) {
       return
     }
-    let message =
-      '[' +
-      this.name_ +
-      '] ' +
-      (typeof loggable === 'function' ? loggable() : loggable)
+    let message = '[' + this.name_ + '] ' + (typeof loggable === 'function' ? loggable() : loggable)
     let entry = new Entry(level, message, Date.now())
     for (let logger = this; logger; logger = logger.parent_) {
       if (logger.handlers_) {

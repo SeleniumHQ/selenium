@@ -36,7 +36,7 @@ jobs:
           fi
       - name: Create Pull Request
         if: env.CHANGES_FOUND == 'true'
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           add-paths: common/repositories.bzl

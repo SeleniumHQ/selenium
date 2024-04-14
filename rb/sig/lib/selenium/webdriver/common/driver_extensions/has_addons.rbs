@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasAddons
+        def install_addon: (untyped path, ?untyped? temporary) -> untyped
+
+        def uninstall_addon: (untyped id) -> untyped
+      end
+    end
+  end
+end

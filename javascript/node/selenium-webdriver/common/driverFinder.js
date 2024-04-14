@@ -35,7 +35,7 @@ function getPath(capabilities) {
     throw Error(
       `Unable to obtain browser driver.
         For more information on how to install drivers see
-        https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location/. ${e}`
+        https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location/. ${e}`,
     )
   }
 }

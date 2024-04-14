@@ -92,5 +92,5 @@ test.suite(
       assert.strictEqual(base64Code, pdfMagicNumber)
     })
   },
-  { browsers: [Browser.FIREFOX, Browser.CHROME] }
+  { browsers: [Browser.FIREFOX, Browser.CHROME] },
 )

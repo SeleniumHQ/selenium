@@ -1,3 +1,21 @@
+4.19.0 (2024-03-27)
+=========================
+
+* Add CDP for Chrome 123 and remove 120
+* Avoid over-escaping browser path (#13632)
+* Add full RBS support (#13234)
+
+4.18.1 (2024-02-19)
+=========================
+
+* Add CDP for Chrome 122 and remove 119
+
+4.18.0 (2024-02-19)
+=========================
+
+* Update documentation link in readme (#13570)
+* make suggested updates from rubocop
+
 4.17.0 (2024-01-22)
 =========================
 

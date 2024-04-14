@@ -1,0 +1,9 @@
+module WebSocket
+  module Frame
+    class Outgoing
+      class Client
+        def initialize: (untyped) -> void
+      end
+    end
+  end
+end

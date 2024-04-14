@@ -6,6 +6,10 @@ module Selenium
 
         EDGE_COMMANDS: Hash[Symbol, Array[Symbol | String]]
 
+        COMMANDS: untyped
+
+        def command_list: -> untyped
+
         def commands: (untyped command) -> untyped
       end
     end
