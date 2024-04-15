@@ -406,7 +406,6 @@ function suite(fn, options = undefined) {
 
           const startTimeout = 65 * 1000
 
-          // eslint-disable-next-line no-inner-declarations
           function startSelenium() {
             if (typeof this.timeout === 'function') {
               this.timeout(startTimeout) // For mocha.

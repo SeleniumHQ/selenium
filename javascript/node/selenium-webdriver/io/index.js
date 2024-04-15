@@ -219,6 +219,7 @@ function findInPath(file, opt_checkCwd) {
     try {
       let stats = fs.statSync(tmp)
       return stats.isFile() && !stats.isDirectory()
+      /*eslint no-unused-vars: "off"*/
     } catch (ex) {
       return false
     }

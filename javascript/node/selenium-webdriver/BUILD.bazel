@@ -216,7 +216,7 @@ eslint_bin.eslint_test(
 
 copy_to_bin(
     name = "eslint-config",
-    srcs = [".eslintrc.js"],
+    srcs = ["eslint.config.js"],
 )
 
 prettier_bin.prettier_test(

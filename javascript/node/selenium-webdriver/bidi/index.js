@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-// eslint-disable-next-line node/no-missing-require
 const { EventEmitter } = require('node:events')
 const WebSocket = require('ws')
 

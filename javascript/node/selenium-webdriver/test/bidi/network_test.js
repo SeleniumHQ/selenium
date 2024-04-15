@@ -182,6 +182,7 @@ suite(
 
         try {
           await driver.get('https://not_a_valid_url.test/')
+          /*eslint no-unused-vars: "off"*/
         } catch (e) {
           // ignore
         }

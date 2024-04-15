@@ -45,7 +45,6 @@ let RequestOptions // eslint-disable-line
  * @throws {Error} if the URL does not include a hostname.
  */
 function getRequestOptions(aUrl) {
-  //eslint-disable-next-line node/no-deprecated-api
   let options = url.parse(aUrl)
   if (!options.hostname) {
     throw new Error('Invalid URL: ' + aUrl)
@@ -140,7 +139,6 @@ class HttpClient {
     } else {
       path += httpRequest.path
     }
-    //eslint-disable-next-line node/no-deprecated-api
     let parsedPath = url.parse(path)
 
     let options = {
@@ -218,7 +216,6 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
     if (response.statusCode == 302 || response.statusCode == 303) {
       let location
       try {
-        // eslint-disable-next-line node/no-deprecated-api
         location = url.parse(response.headers['location'])
       } catch (ex) {
         onError(

@@ -27,7 +27,6 @@ const Server = require('../../lib/test/httpserver').Server
 
 describe('HttpClient', function () {
   const server = new Server(function (req, res) {
-    // eslint-disable-next-line node/no-deprecated-api
     const parsedUrl = url.parse(req.url)
 
     if (req.method === 'GET' && req.url === '/echo') {
@@ -186,7 +185,6 @@ describe('HttpClient', function () {
   })
 
   it('can use basic auth', function () {
-    // eslint-disable-next-line node/no-deprecated-api
     const parsed = url.parse(server.url())
     parsed.auth = 'genie:bottle'
 

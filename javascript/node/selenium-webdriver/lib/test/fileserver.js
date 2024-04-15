@@ -165,7 +165,6 @@ function redirectToResultPage(_, response) {
 }
 
 function sendInifinitePage(request, response) {
-  // eslint-disable-next-line node/no-deprecated-api
   var pathname = url.parse(request.url).pathname
   var lastIndex = pathname.lastIndexOf('/')
   var pageNumber = lastIndex == -1 ? 'Unknown' : pathname.substring(lastIndex + 1)
@@ -213,7 +212,6 @@ function sendBasicAuth(request, response) {
 
 function sendDelayedResponse(request, response) {
   var duration = 0
-  // eslint-disable-next-line node/no-deprecated-api
   var query = url.parse(request.url).search.substr(1) || ''
   var match = query.match(/\btime=(\d+)/)
   if (match) {
@@ -301,7 +299,6 @@ function sendEcho(request, response) {
  * @param {!http.ServerResponse} response The response object.
  */
 function sendIndex(request, response) {
-  // eslint-disable-next-line node/no-deprecated-api
   var pathname = url.parse(request.url).pathname
 
   var host = request.headers.host

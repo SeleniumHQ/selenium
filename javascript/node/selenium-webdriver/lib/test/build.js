@@ -134,7 +134,6 @@ exports.isDevMode = isDevMode
  * @throws {Error} If not running in dev mode.
  */
 exports.of = function (_) {
-  // eslint-disable-line
   let targets = Array.prototype.slice.call(arguments, 0)
   return new Build(targets)
 }

@@ -23,7 +23,6 @@ const { Browser } = require('../index')
 const { Environment } = require('../testing')
 const chrome = require('../chrome')
 const firefox = require('../firefox')
-// eslint-disable-next-line node/no-missing-require
 const { runfiles } = require('@bazel/runfiles')
 
 function GetBrowserForTests() {
