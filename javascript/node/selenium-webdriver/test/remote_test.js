@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const path = require('path')
+const assert = require('node:assert')
+const path = require('node:path')
 const io = require('../io')
 const cmd = require('../lib/command')
 const remote = require('../remote')

@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const { Browser, until } = require('..')
 const fileServer = require('../lib/test/fileserver')
 const { HttpResponse } = require('../devtools/networkinterceptor')

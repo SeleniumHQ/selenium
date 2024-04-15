@@ -43,9 +43,9 @@
 
 const by = require('./by')
 const error = require('./error')
-const webdriver = require('./webdriver'),
-  Condition = webdriver.Condition,
-  WebElementCondition = webdriver.WebElementCondition
+const webdriver = require('./webdriver')
+const Condition = webdriver.Condition
+const WebElementCondition = webdriver.WebElementCondition
 
 /**
  * Creates a condition that will wait until the input driver is able to switch

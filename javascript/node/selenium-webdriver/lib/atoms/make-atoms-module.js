@@ -15,12 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('node:fs')
+const path = require('node:path')
 
 if (process.argv.length < 3) {
   process.stderr.write(`Usage: node ${path.basename(__filename)} <src file> <dst file>\n`)
-  // eslint-disable-next-line no-process-exit
+  // eslint-disable-next-line n/no-process-exit
   process.exit(-1)
 }
 

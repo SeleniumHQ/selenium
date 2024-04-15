@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 
 const testutil = require('./testutil')
 const promise = require('../../lib/promise')

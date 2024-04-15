@@ -187,22 +187,15 @@ copy_to_bin(
 
 eslint_bin.eslint_test(
     name = "eslint-test",
-    args = [
-        "--ignore-pattern",
-        "node_modules",
-        "--ignore-pattern",
-        "generator",
-        "--ext",
-        "js",
-        "lib/http.js",
-        "**/*.js",
-    ],
     chdir = package_name(),
     data = SRC_FILES + [
         ":eslint-config",
+        ":node_modules/@eslint/js",
+        ":node_modules/eslint-plugin-mocha",
+        ":node_modules/eslint-plugin-n",
         ":node_modules/eslint-plugin-no-only-tests",
-        ":node_modules/eslint-plugin-node",
         ":node_modules/eslint-plugin-prettier",
+        ":node_modules/globals",
         ":node_modules/jszip",
         ":node_modules/mocha",
         ":node_modules/tmp",
@@ -216,7 +209,7 @@ eslint_bin.eslint_test(
 
 copy_to_bin(
     name = "eslint-config",
-    srcs = [".eslintrc.js"],
+    srcs = ["eslint.config.js"],
 )
 
 prettier_bin.prettier_test(

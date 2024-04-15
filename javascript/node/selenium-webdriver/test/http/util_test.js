@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const http = require('http')
+const assert = require('node:assert')
+const http = require('node:http')
 
 const error = require('../../lib/error')
 const util = require('../../http/util')

@@ -17,9 +17,9 @@
 
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
-const { spawn } = require('child_process')
+const fs = require('node:fs')
+const path = require('node:path')
+const { spawn } = require('node:child_process')
 const PROJECT_ROOT = path.normalize(path.join(__dirname, '../../../../..'))
 const WORKSPACE_FILE = path.join(PROJECT_ROOT, 'WORKSPACE')
 
@@ -134,7 +134,6 @@ exports.isDevMode = isDevMode
  * @throws {Error} If not running in dev mode.
  */
 exports.of = function (_) {
-  // eslint-disable-line
   let targets = Array.prototype.slice.call(arguments, 0)
   return new Build(targets)
 }

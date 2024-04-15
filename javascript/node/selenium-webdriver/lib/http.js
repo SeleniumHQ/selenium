@@ -25,7 +25,7 @@
 
 'use strict'
 
-const path = require('path')
+const path = require('node:path')
 const cmd = require('./command')
 const error = require('./error')
 const logging = require('./logging')
@@ -161,10 +161,10 @@ function resource(method, path) {
 }
 
 /** @typedef {{method: string, path: string}} */
-var CommandSpec // eslint-disable-line
+var CommandSpec
 
 /** @typedef {function(!cmd.Command): !cmd.Command} */
-var CommandTransformer // eslint-disable-line
+var CommandTransformer
 
 class InternalTypeError extends TypeError {}
 
@@ -337,7 +337,7 @@ class Client {
    * @return {!Promise<Response>} A promise that will be fulfilled with the
    *     server's response.
    */
-  send(httpRequest) {} // eslint-disable-line
+  send(httpRequest) {}
 }
 
 /**
@@ -472,6 +472,7 @@ class Executor {
 function tryParse(str) {
   try {
     return JSON.parse(str)
+    /*eslint no-unused-vars: "off"*/
   } catch (ignored) {
     // Do nothing.
   }
