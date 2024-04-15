@@ -111,7 +111,9 @@ module Selenium
         windows? && !cygwin? ? %("#{str}") : str
       end
 
-      def cygwin_path(path, **opts)
+      def cygwin_path(path, only_cygwin: false, **opts)
+        return path if only_cygwin && !cygwin?
+
         flags = []
         opts.each { |k, v| flags << "--#{k}" if v }
 

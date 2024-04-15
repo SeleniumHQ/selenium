@@ -34,88 +34,33 @@ module Selenium
           @bin_path ||= '../../../../../bin'
         end
 
-        # @param [Options] options browser options.
-        # @return [String] the path to the correct driver.
-        def driver_path(options)
-          command = generate_command(binary, options)
+        # @param [Array] arguments what gets sent to to Selenium Manager binary.
+        # @return [Hash] paths to the requested assets.
+        def binary_paths(*arguments)
+          arguments += %w[--language-binding ruby]
+          arguments += %w[--output json]
+          arguments << '--debug' if WebDriver.logger.debug?
 
-          output = run(*command)
-
-          browser_path = Platform.cygwin? ? Platform.cygwin_path(output['browser_path']) : output['browser_path']
-          driver_path = Platform.cygwin? ? Platform.cygwin_path(output['driver_path']) : output['driver_path']
-          Platform.assert_executable driver_path
-
-          if options.respond_to?(:binary) && browser_path && !browser_path.empty?
-            options.binary = browser_path
-            options.browser_version = nil
-          end
-
-          driver_path
+          run(binary, *arguments)
         end
 
         private
 
-        def generate_command(binary, options)
-          command = [binary, '--browser', options.browser_name]
-          if options.browser_version
-            command << '--browser-version'
-            command << options.browser_version
-          end
-          if options.respond_to?(:binary) && !options.binary.nil?
-            command << '--browser-path'
-            command << options.binary.squeeze('\\').gsub('\\', '\\\\\\')
-          end
-          if options.proxy
-            command << '--proxy'
-            command << (options.proxy.ssl || options.proxy.http)
-          end
-          command
-        end
-
         # @return [String] the path to the correct selenium manager
         def binary
           @binary ||= begin
-            location = ENV.fetch('SE_MANAGER_PATH', begin
-              directory = File.expand_path(bin_path, __FILE__)
-              if Platform.windows?
-                "#{directory}/windows/selenium-manager.exe"
-              elsif Platform.mac?
-                "#{directory}/macos/selenium-manager"
-              elsif Platform.linux?
-                "#{directory}/linux/selenium-manager"
-              elsif Platform.unix?
-                WebDriver.logger.warn('Selenium Manager binary may not be compatible with Unix; verify settings',
-                                      id: %i[selenium_manager unix_binary])
-                "#{directory}/linux/selenium-manager"
-              end
-            rescue Error::WebDriverError => e
-              raise Error::WebDriverError, "Unable to obtain Selenium Manager binary for #{e.message}"
-            end)
+            if (location = ENV.fetch('SE_MANAGER_PATH', nil))
+              WebDriver.logger.debug("Selenium Manager set by ENV['SE_MANAGER_PATH']: #{location}")
+            end
+            location ||= platform_location
 
-            validate_location(location)
+            Platform.assert_executable(location)
+            WebDriver.logger.debug("Selenium Manager binary found at #{location}", id: :selenium_manager)
             location
           end
         end
 
-        def validate_location(location)
-          begin
-            Platform.assert_file(location)
-            Platform.assert_executable(location)
-          rescue TypeError
-            raise Error::WebDriverError,
-                  "Unable to locate or obtain Selenium Manager binary; #{location} is not a valid file object"
-          rescue Error::WebDriverError => e
-            raise Error::WebDriverError, "Selenium Manager binary located, but #{e.message}"
-          end
-
-          WebDriver.logger.debug("Selenium Manager binary found at #{location}", id: :selenium_manager)
-        end
-
         def run(*command)
-          command += %w[--language-binding ruby]
-          command += %w[--output json]
-          command << '--debug' if WebDriver.logger.debug?
-
           WebDriver.logger.debug("Executing Process #{command}", id: :selenium_manager)
 
           begin
@@ -124,16 +69,34 @@ module Selenium
             raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
           end
 
-          json_output = stdout.empty? ? {} : JSON.parse(stdout)
-          (json_output['logs'] || []).each do |log|
+          json_output = stdout.empty? ? {'logs' => [], 'result' => {}} : JSON.parse(stdout)
+          json_output['logs'].each do |log|
             level = log['level'].casecmp('info').zero? ? 'debug' : log['level'].downcase
             WebDriver.logger.send(level, log['message'], id: :selenium_manager)
           end
 
           result = json_output['result']
-          return result unless status.exitstatus.positive?
+          return result unless status.exitstatus.positive? || result.nil?
 
-          raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{result}#{stderr}"
+          raise Error::WebDriverError,
+                "Unsuccessful command executed: #{command} - Code #{status.exitstatus}\n#{result}\n#{stderr}"
+        end
+
+        def platform_location
+          directory = File.expand_path(bin_path, __FILE__)
+          if Platform.windows?
+            "#{directory}/windows/selenium-manager.exe"
+          elsif Platform.mac?
+            "#{directory}/macos/selenium-manager"
+          elsif Platform.linux?
+            "#{directory}/linux/selenium-manager"
+          elsif Platform.unix?
+            WebDriver.logger.warn('Selenium Manager binary may not be compatible with Unix',
+                                  id: %i[selenium_manager unix_binary])
+            "#{directory}/linux/selenium-manager"
+          else
+            raise Error::WebDriverError, "unsupported platform: #{Platform.os}"
+          end
         end
       end
     end # SeleniumManager
