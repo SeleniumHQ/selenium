@@ -25,7 +25,7 @@
 
 'use strict'
 
-const path = require('path')
+const path = require('node:path')
 const cmd = require('./command')
 const error = require('./error')
 const logging = require('./logging')

@@ -192,6 +192,7 @@ eslint_bin.eslint_test(
         ":eslint-config",
         ":node_modules/@eslint/js",
         ":node_modules/eslint-plugin-mocha",
+        ":node_modules/eslint-plugin-n",
         ":node_modules/eslint-plugin-no-only-tests",
         ":node_modules/eslint-plugin-prettier",
         ":node_modules/globals",

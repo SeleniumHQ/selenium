@@ -20,11 +20,13 @@ const noOnlyTests = require('eslint-plugin-no-only-tests')
 const js = require('@eslint/js')
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended')
 const mochaPlugin = require('eslint-plugin-mocha')
+const nodePlugin = require('eslint-plugin-n')
 
 module.exports = [
   js.configs.recommended,
   eslintPluginPrettierRecommended,
   mochaPlugin.configs.flat.recommended,
+  nodePlugin.configs['flat/recommended-script'],
   {
     languageOptions: {
       globals: {
@@ -57,6 +59,27 @@ module.exports = [
       'constructor-super': 'error',
       'valid-typeof': 'error',
       'no-only-tests/no-only-tests': 'error',
+      'n/no-deprecated-api': ['error'],
+      'n/no-missing-import': ['error'],
+      'n/no-missing-require': ['error'],
+      'n/no-mixed-requires': ['error'],
+      'n/no-new-require': ['error'],
+      'n/no-unpublished-import': ['error'],
+      'n/no-unpublished-require': [
+        'error',
+        {
+          allowModules: [
+            'globals',
+            '@eslint/js',
+            'eslint-plugin-mocha',
+            'eslint-plugin-prettier',
+            'eslint-plugin-n',
+            'eslint-plugin-no-only-tests',
+          ],
+          tryExtensions: ['.js'],
+        },
+      ],
+      'n/prefer-node-protocol': ['error'],
       'mocha/no-skipped-tests': ['off'],
       'mocha/no-mocha-arrows': ['off'],
       'mocha/no-setup-in-describe': ['off'],

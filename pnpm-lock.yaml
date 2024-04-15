@@ -6,11 +6,7 @@ settings:
 
 importers:
 
-  .:
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.0.0
-        version: 9.0.0
+  .: {}
 
   javascript/grid-ui:
     dependencies:
@@ -127,6 +123,9 @@ importers:
       eslint-plugin-mocha:
         specifier: ^10.4.2
         version: 10.4.2(eslint@9.0.0)
+      eslint-plugin-n:
+        specifier: ^17.2.1
+        version: 17.2.1(eslint@9.0.0)
       eslint-plugin-no-only-tests:
         specifier: ^3.1.0
         version: 3.1.0
@@ -2197,6 +2196,14 @@ packages:
     engines: {node: '>= 0.8'}
     dev: true
 
+  /enhanced-resolve@5.16.0:
+    resolution: {integrity: sha512-O+QWCviPNSSLAD9Ucn8Awv+poAkqn3T1XY5/N7kR7rQO9yfSGWkYZDwpJ+iKF7B8rxaQKWngSqACpgzeapSyoA==}
+    engines: {node: '>=10.13.0'}
+    dependencies:
+      graceful-fs: 4.2.10
+      tapable: 2.2.1
+    dev: true
+
   /error-ex@1.3.2:
     resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
     dependencies:
@@ -2310,6 +2317,16 @@ packages:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
 
+  /eslint-compat-utils@0.5.0(eslint@9.0.0):
+    resolution: {integrity: sha512-dc6Y8tzEcSYZMHa+CMPLi/hyo1FzNeonbhJL7Ol0ccuKQkwopJcJBA9YL/xmMTLU1eKigXo9vj9nALElWYSowg==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      eslint: '>=6.0.0'
+    dependencies:
+      eslint: 9.0.0
+      semver: 7.5.4
+    dev: true
+
   /eslint-config-prettier@9.1.0(eslint@9.0.0):
     resolution: {integrity: sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==}
     hasBin: true
@@ -2403,6 +2420,18 @@ packages:
       - supports-color
     dev: true
 
+  /eslint-plugin-es-x@7.6.0(eslint@9.0.0):
+    resolution: {integrity: sha512-I0AmeNgevgaTR7y2lrVCJmGYF0rjoznpDvqV/kIkZSZbZ8Rw3eu4cGlvBBULScfkSOCzqKbff5LR4CNrV7mZHA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      eslint: '>=8'
+    dependencies:
+      '@eslint-community/eslint-utils': 4.4.0(eslint@9.0.0)
+      '@eslint-community/regexpp': 4.9.1
+      eslint: 9.0.0
+      eslint-compat-utils: 0.5.0(eslint@9.0.0)
+    dev: true
+
   /eslint-plugin-es@4.1.0(eslint@8.52.0):
     resolution: {integrity: sha512-GILhQTnjYE2WorX5Jyi5i4dz5ALWxBIdQECVQavL6s7cI76IZTDWleTHkxz/QT3kvcs2QlGHvKLYsSlPOlPXnQ==}
     engines: {node: '>=8.10.0'}
@@ -2471,6 +2500,23 @@ packages:
       is-core-module: 2.11.0
       minimatch: 3.1.2
       resolve: 1.22.1
+      semver: 7.5.4
+    dev: true
+
+  /eslint-plugin-n@17.2.1(eslint@9.0.0):
+    resolution: {integrity: sha512-uW1+df2bo06kR7ix6nB614RUlvjRPrYxlaX832O6e1MCJp4V7YozEdvMgCYuvn4ltnjPu1FVYhQ2KRrmTNoJfg==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      eslint: '>=8.23.0'
+    dependencies:
+      '@eslint-community/eslint-utils': 4.4.0(eslint@9.0.0)
+      enhanced-resolve: 5.16.0
+      eslint: 9.0.0
+      eslint-plugin-es-x: 7.6.0(eslint@9.0.0)
+      get-tsconfig: 4.7.3
+      globals: 14.0.0
+      ignore: 5.2.4
+      minimatch: 9.0.4
       semver: 7.5.4
     dev: true
 
@@ -3000,6 +3046,12 @@ packages:
     dependencies:
       call-bind: 1.0.2
       get-intrinsic: 1.1.3
+    dev: true
+
+  /get-tsconfig@4.7.3:
+    resolution: {integrity: sha512-ZvkrzoUA0PQZM6fy6+/Hce561s+faD1rsNwhnO5FelNjyy7EMGJ3Rz1AQ8GYDWjhRs/7dBLOEJvhK8MiEJOAFg==}
+    dependencies:
+      resolve-pkg-maps: 1.0.0
     dev: true
 
   /glob-parent@5.1.2:
@@ -3734,6 +3786,13 @@ packages:
     dependencies:
       brace-expansion: 2.0.1
 
+  /minimatch@9.0.4:
+    resolution: {integrity: sha512-KqWh+VchfxcMNRAJjj2tnsSJdNbHsVgnkBhTNrW7AjVo6OvLtxw8zfT9oLw1JSohlFzJ8jCoTgaoXvJ+kHt6fw==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    dependencies:
+      brace-expansion: 2.0.1
+    dev: true
+
   /minimist@1.2.7:
     resolution: {integrity: sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==}
 
@@ -4341,6 +4400,10 @@ packages:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
 
+  /resolve-pkg-maps@1.0.0:
+    resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
+    dev: true
+
   /resolve@1.22.1:
     resolution: {integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==}
     hasBin: true
@@ -4687,6 +4750,11 @@ packages:
     dependencies:
       '@pkgr/core': 0.1.0
       tslib: 2.6.2
+    dev: true
+
+  /tapable@2.2.1:
+    resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
+    engines: {node: '>=6'}
     dev: true
 
   /temp@0.9.4:

@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const net = require('../../net')
 
 describe('net.splitHostAndPort', function () {

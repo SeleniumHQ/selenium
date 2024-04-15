@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const edge = require('../../edge')
 const test = require('../../lib/test')
 const { getPath } = require('../../common/driverFinder')

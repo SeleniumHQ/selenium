@@ -32,7 +32,7 @@
 
 'use strict'
 
-const { isatty } = require('tty')
+const { isatty } = require('node:tty')
 const chrome = require('../chrome')
 const edge = require('../edge')
 const firefox = require('../firefox')

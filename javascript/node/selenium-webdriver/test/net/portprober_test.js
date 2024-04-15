@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const net = require('net')
+const assert = require('node:assert')
+const net = require('node:net')
 const portprober = require('../../net/portprober')
 const host = '127.0.0.1'
 
