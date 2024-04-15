@@ -194,6 +194,8 @@ eslint_bin.eslint_test(
         ":node_modules/eslint-plugin-prettier",
         ":node_modules/jszip",
         ":node_modules/mocha",
+        ":node_modules/globals",
+        ":node_modules/eslint-plugin-mocha",
         ":node_modules/@eslint/js",
         ":node_modules/tmp",
         ":node_modules/ws",
