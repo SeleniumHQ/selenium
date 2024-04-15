@@ -187,24 +187,14 @@ copy_to_bin(
 
 eslint_bin.eslint_test(
     name = "eslint-test",
-    args = [
-        "--ignore-pattern",
-        "node_modules",
-        "--ignore-pattern",
-        "generator",
-        "--ext",
-        "js",
-        "lib/http.js",
-        "**/*.js",
-    ],
     chdir = package_name(),
     data = SRC_FILES + [
         ":eslint-config",
         ":node_modules/eslint-plugin-no-only-tests",
-        ":node_modules/eslint-plugin-node",
         ":node_modules/eslint-plugin-prettier",
         ":node_modules/jszip",
         ":node_modules/mocha",
+        ":node_modules/@eslint/js",
         ":node_modules/tmp",
         ":node_modules/ws",
         ":package-json",

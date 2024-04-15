@@ -7,5 +7,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/SeleniumHQ/selenium.git"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0"
   }
 }
