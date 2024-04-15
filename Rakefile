@@ -693,6 +693,23 @@ namespace :py do
       Bazel.execute('test', [],"//py:test-remote")
     end
   end
+
+  namespace :test do
+    desc 'Python unit tests'
+    task :unit do
+      Rake::Task['py:clean'].invoke
+      Bazel.execute('test', ['--test_size_filters=small'], '//py/...')
+    end
+
+    %i[chrome edge firefox safari].each do |browser|
+      desc "Python #{browser} tests"
+      task browser do
+        Rake::Task['py:clean'].invoke
+        Bazel.execute('test', %w[--test_output all],"//py:common-#{browser}")
+        Bazel.execute('test', %w[--test_output all],"//py:test-#{browser}")
+      end
+    end
+  end
 end
 
 def ruby_version
