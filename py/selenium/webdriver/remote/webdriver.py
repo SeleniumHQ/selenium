@@ -41,7 +41,6 @@ from selenium.common.exceptions import NoSuchCookieException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
@@ -164,10 +163,10 @@ class WebDriver(BaseWebDriver):
 
     def __init__(
         self,
-        command_executor="http://127.0.0.1:4444",
-        keep_alive=True,
-        file_detector=None,
-        options: Union[BaseOptions, List[BaseOptions]] = None,
+        command_executor: Union[str, RemoteConnection] = "http://127.0.0.1:4444",
+        keep_alive: bool = True,
+        file_detector: Optional[FileDetector] = None,
+        options: Optional[Union[BaseOptions, List[BaseOptions]]] = None,
     ) -> None:
         """Create a new driver that will issue commands using the wire
         protocol.
@@ -772,12 +771,6 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.FIND_ELEMENTS, {"using": by, "value": value})["value"] or []
 
     @property
-    def desired_capabilities(self) -> dict:
-        """Returns the drivers current desired capabilities being used."""
-        warnings.warn("desired_capabilities is deprecated. Please call capabilities.", DeprecationWarning, stacklevel=2)
-        return self.caps
-
-    @property
     def capabilities(self) -> dict:
         """Returns the drivers current capabilities being used."""
         return self.caps
@@ -881,7 +874,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: size[k] for k in ("width", "height")}
 
-    def set_window_position(self, x, y, windowHandle: str = "current") -> dict:
+    def set_window_position(self, x: float, y: float, windowHandle: str = "current") -> dict:
         """Sets the x,y position of the current window. (window.moveTo)
 
         :Args:
@@ -997,12 +990,6 @@ class WebDriver(BaseWebDriver):
             raise WebDriverException("You can only set the orientation to 'LANDSCAPE' and 'PORTRAIT'")
 
     @property
-    def application_cache(self):
-        """Returns a ApplicationCache Object to interact with the browser app
-        cache."""
-        return ApplicationCache(self)
-
-    @property
     def log_types(self):
         """Gets a list of the available log types. This only works with w3c
         compliant browsers.
@@ -1059,7 +1046,7 @@ class WebDriver(BaseWebDriver):
         _firefox = False
         if self.caps.get("browserName") == "chrome":
             debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
-        elif self.caps.get("browserName") == "msedge":
+        elif self.caps.get("browserName") == "MicrosoftEdge":
             debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
         else:
             _firefox = True

@@ -33,7 +33,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.BiDiException;
-import org.openqa.selenium.bidi.Input;
+import org.openqa.selenium.bidi.module.Input;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.WheelInput;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -144,7 +144,6 @@ class DefaultWheelTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void shouldScrollFromViewportByGivenAmount() {
     driver.get(
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
@@ -166,7 +165,6 @@ class DefaultWheelTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void shouldScrollFromViewportByGivenAmountFromOrigin() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(10, 10);
@@ -189,7 +187,6 @@ class DefaultWheelTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void throwErrorWhenOriginOffsetIsOutOfViewport() {
     assertThrows(
         BiDiException.class,

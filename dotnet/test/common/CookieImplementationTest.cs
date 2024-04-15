@@ -1,10 +1,10 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
-using System.Text;
 using OpenQA.Selenium.Internal;
+using System;
+using System.Collections.ObjectModel;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace OpenQA.Selenium
 {

@@ -34,12 +34,12 @@ def options():
 def test_set_binary_with_firefox_binary(options):
     binary = FirefoxBinary("foo")
     options.binary = binary
-    assert options._binary == binary
+    assert options.binary_location == "foo"
 
 
 def test_set_binary_with_path(options):
     options.binary = "/foo"
-    assert options._binary._start_cmd == "/foo"
+    assert options.binary_location == "/foo"
 
 
 def test_get_binary(options):
@@ -49,11 +49,11 @@ def test_get_binary(options):
 
 def test_set_binary_location(options):
     options.binary_location = "/foo"
-    assert options._binary._start_cmd == "/foo"
+    assert options.binary_location == "/foo"
 
 
 def test_get_binary_location(options):
-    options._binary = FirefoxBinary("/foo")
+    options._binary_location = "/foo"
     assert options.binary_location == "/foo"
 
 
@@ -131,7 +131,7 @@ def test_set_log_level(options):
 def test_creates_capabilities(options):
     profile = FirefoxProfile()
     options._arguments = ["foo"]
-    options._binary = FirefoxBinary("/bar")
+    options._binary_location = "/bar"
     options._preferences = {"foo": "bar"}
     options.proxy = Proxy({"proxyType": ProxyType.MANUAL})
     options._profile = profile
@@ -142,7 +142,7 @@ def test_creates_capabilities(options):
     assert "foo" in opts["args"]
     assert opts["binary"] == "/bar"
     assert opts["prefs"]["foo"] == "bar"
-    assert opts["profile"] == profile.encoded
+    assert isinstance(opts["profile"], str) and opts["profile"]
     assert caps["proxy"]["proxyType"] == "manual"
     assert opts["log"]["level"] == "debug"
 

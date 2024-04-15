@@ -1,5 +1,5 @@
-using System;
 using NUnit.Framework;
+using System;
 
 namespace OpenQA.Selenium
 {
@@ -26,7 +26,7 @@ namespace OpenQA.Selenium
 
             driver.Url = macbethPage;
             driver.Url = simpleTestPage;
-            
+
             navigation.Back();
             Assert.AreEqual(macbethTitle, driver.Title);
 

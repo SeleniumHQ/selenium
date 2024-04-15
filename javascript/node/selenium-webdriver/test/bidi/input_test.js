@@ -19,10 +19,9 @@
 
 const assert = require('assert')
 const fileServer = require('../../lib/test/fileserver')
-const firefox = require('../../firefox')
-const {ignore, Pages, suite} = require('../../lib/test')
-const {Key, Origin} = require('../../lib/input')
-const {Browser, By, until} = require('../..')
+const { ignore, Pages, suite } = require('../../lib/test')
+const { Key, Origin } = require('../../lib/input')
+const { Browser, By, until } = require('../..')
 const Input = require('../../bidi/input')
 
 suite(
@@ -31,10 +30,7 @@ suite(
       let driver
 
       beforeEach(async function () {
-        driver = await env
-          .builder()
-          .setFirefoxOptions(new firefox.Options().enableBidi())
-          .build()
+        driver = await env.builder().build()
       })
 
       afterEach(function () {
@@ -66,7 +62,7 @@ suite(
 
         const div = await driver.findElement(By.css('div'))
         const rect = await div.getRect()
-        assert.deepStrictEqual(rect, {width: 500, height: 500, x: 0, y: 0})
+        assert.deepStrictEqual(rect, { width: 500, height: 500, x: 0, y: 0 })
 
         const actions = await driver.actions().click(div).getSequences()
 
@@ -91,13 +87,9 @@ suite(
 
         const div = await driver.findElement(By.css('div'))
         const rect = await div.getRect()
-        assert.deepStrictEqual(rect, {width: 500, height: 500, x: 0, y: 0})
+        assert.deepStrictEqual(rect, { width: 500, height: 500, x: 0, y: 0 })
 
-        const actions = await driver
-          .actions()
-          .move({x: 10, y: 10, origin: div})
-          .click()
-          .getSequences()
+        const actions = await driver.actions().move({ x: 10, y: 10, origin: div }).click().getSequences()
 
         await input.perform(browsingContextId, actions)
 
@@ -113,27 +105,21 @@ suite(
         assert.deepStrictEqual(clicks, [[260, 260]])
       })
 
-      ignore(env.browsers(Browser.SAFARI)).it(
-        'doubleClick(element)',
-        async function () {
-          const browsingContextId = await driver.getWindowHandle()
-          const input = await Input(driver)
-          await driver.get(fileServer.whereIs('/data/actions/click.html'))
+      ignore(env.browsers(Browser.SAFARI)).it('doubleClick(element)', async function () {
+        const browsingContextId = await driver.getWindowHandle()
+        const input = await Input(driver)
+        await driver.get(fileServer.whereIs('/data/actions/click.html'))
 
-          let box = await driver.findElement(By.id('box'))
-          assert.strictEqual(await box.getAttribute('class'), '')
+        let box = await driver.findElement(By.id('box'))
+        assert.strictEqual(await box.getAttribute('class'), '')
 
-          const actions = await driver.actions().doubleClick(box).getSequences()
+        const actions = await driver.actions().doubleClick(box).getSequences()
 
-          await input.perform(browsingContextId, actions)
+        await input.perform(browsingContextId, actions)
 
-          await driver.wait(
-            async () => (await box.getAttribute('class')) === 'blue',
-            10000,
-          )
-          assert.strictEqual(await box.getAttribute('class'), 'blue')
-        },
-      )
+        await driver.wait(async () => (await box.getAttribute('class')) === 'blue', 10000)
+        assert.strictEqual(await box.getAttribute('class'), 'blue')
+      })
 
       it('dragAndDrop()', async function () {
         const browsingContextId = await driver.getWindowHandle()
@@ -145,10 +131,7 @@ suite(
         assert.strictEqual(await slide.getCssValue('top'), '0px')
 
         let br = await driver.findElement(By.id('BR'))
-        let actions = await driver
-          .actions()
-          .dragAndDrop(slide, br)
-          .getSequences()
+        let actions = await driver.actions().dragAndDrop(slide, br).getSequences()
         await input.perform(browsingContextId, actions)
         assert.strictEqual(await slide.getCssValue('left'), '206px')
         assert.strictEqual(await slide.getCssValue('top'), '206px')
@@ -171,43 +154,33 @@ suite(
 
         const actions = await driver
           .actions()
-          .move({origin: slide})
+          .move({ origin: slide })
           .press()
-          .move({x: 100, y: 100, origin: Origin.POINTER})
+          .move({ x: 100, y: 100, origin: Origin.POINTER })
           .release()
           .getSequences()
 
         input.perform(browsingContextId, actions)
 
-        await driver.wait(
-          async () => (await slide.getCssValue('left')) === '101px',
-          10000,
-        )
+        await driver.wait(async () => (await slide.getCssValue('left')) === '101px', 10000)
         assert.strictEqual(await slide.getCssValue('left'), '101px')
         assert.strictEqual(await slide.getCssValue('left'), '101px')
       })
 
-      ignore(env.browsers(Browser.FIREFOX)).it(
-        'can move to and click element in an iframe',
-        async function () {
-          const browsingContextId = await driver.getWindowHandle()
-          const input = await Input(driver)
-          await driver.get(
-            fileServer.whereIs('click_tests/click_in_iframe.html'),
-          )
+      xit('can move to and click element in an iframe', async function () {
+        const browsingContextId = await driver.getWindowHandle()
+        const input = await Input(driver)
+        await driver.get(fileServer.whereIs('click_tests/click_in_iframe.html'))
 
-          await driver
-            .wait(until.elementLocated(By.id('ifr')), 5000)
-            .then((frame) => driver.switchTo().frame(frame))
+        await driver.wait(until.elementLocated(By.id('ifr')), 5000).then((frame) => driver.switchTo().frame(frame))
 
-          let link = await driver.findElement(By.id('link'))
+        let link = await driver.findElement(By.id('link'))
 
-          const actions = await driver.actions().click(link).getSequences()
-          input.perform(browsingContextId, actions)
-          await driver.switchTo().defaultContent()
-          return driver.wait(until.titleIs('Submitted Successfully!'), 10000)
-        },
-      )
+        const actions = await driver.actions().click(link).getSequences()
+        input.perform(browsingContextId, actions)
+        await driver.switchTo().defaultContent()
+        return driver.wait(until.titleIs('Submitted Successfully!'), 10000)
+      })
 
       it('can send keys to focused element', async function () {
         const browsingContextId = await driver.getWindowHandle()
@@ -223,10 +196,7 @@ suite(
 
         input.perform(browsingContextId, actions)
 
-        await driver.wait(
-          async () => (await el.getAttribute('value')) === 'foobar',
-          10000,
-        )
+        await driver.wait(async () => (await el.getAttribute('value')) === 'foobar', 10000)
         assert.strictEqual(await el.getAttribute('value'), 'foobar')
       })
 
@@ -243,10 +213,7 @@ suite(
         const actions = await driver.actions().sendKeys('foobar').getSequences()
 
         await input.perform(browsingContextId, actions)
-        await driver.wait(
-          async () => (await el.getProperty('value')) === 'foobar',
-          10000,
-        )
+        await driver.wait(async () => (await el.getProperty('value')) === 'foobar', 10000)
         assert.strictEqual(await el.getProperty('value'), 'foobar')
       })
 
@@ -271,10 +238,7 @@ suite(
 
         await input.perform(browsingContextId, actions)
 
-        await driver.wait(
-          async () => (await el.getAttribute('value')) === 'foOBar',
-          10000,
-        )
+        await driver.wait(async () => (await el.getAttribute('value')) === 'foOBar', 10000)
         assert.strictEqual(await el.getAttribute('value'), 'foOBar')
       })
 
@@ -286,18 +250,11 @@ suite(
         let el = await driver.findElement(By.id('email'))
         assert.strictEqual(await el.getAttribute('value'), '')
 
-        const actions = await driver
-          .actions()
-          .click(el)
-          .sendKeys('foobar')
-          .getSequences()
+        const actions = await driver.actions().click(el).sendKeys('foobar').getSequences()
 
         await input.perform(browsingContextId, actions)
 
-        await driver.wait(
-          async () => (await el.getAttribute('value')) === 'foobar',
-          10000,
-        )
+        await driver.wait(async () => (await el.getAttribute('value')) === 'foobar', 10000)
         assert.strictEqual(await el.getAttribute('value'), 'foobar')
       })
 
@@ -309,41 +266,29 @@ suite(
         let el = await driver.findElement(By.id('email'))
         assert.strictEqual(await el.getAttribute('value'), '')
 
-        const actions = await driver
-          .actions()
-          .sendKeys(el, 'foobar')
-          .getSequences()
+        const actions = await driver.actions().sendKeys(el, 'foobar').getSequences()
 
         await input.perform(browsingContextId, actions)
 
-        await driver.wait(
-          async () => (await el.getAttribute('value')) === 'foobar',
-          10000,
-        )
+        await driver.wait(async () => (await el.getAttribute('value')) === 'foobar', 10000)
         assert.strictEqual(await el.getAttribute('value'), 'foobar')
       })
 
-      ignore(env.browsers(Browser.SAFARI)).it(
-        'can scroll with the wheel input',
-        async function () {
-          const browsingContextId = await driver.getWindowHandle()
-          const input = await Input(driver)
-          await driver.get(Pages.scrollingPage)
-          let scrollable = await driver.findElement(By.id('scrollable'))
+      it('can scroll with the wheel input', async function () {
+        const browsingContextId = await driver.getWindowHandle()
+        const input = await Input(driver)
+        await driver.get(Pages.scrollingPage)
+        let scrollable = await driver.findElement(By.id('scrollable'))
 
-          const actions = await driver
-            .actions()
-            .scroll(0, 0, 5, 10, scrollable)
-            .getSequences()
-          input.perform(browsingContextId, actions)
-          let events = await _getEvents(driver)
-          assert.strictEqual(events[0].type, 'wheel')
-          assert.ok(events[0].deltaX >= 5)
-          assert.ok(events[0].deltaY >= 10)
-          assert.strictEqual(events[0].deltaZ, 0)
-          assert.strictEqual(events[0].target, 'scrollContent')
-        },
-      )
+        const actions = await driver.actions().scroll(0, 0, 5, 10, scrollable).getSequences()
+        input.perform(browsingContextId, actions)
+        let events = await _getEvents(driver)
+        assert.strictEqual(events[0].type, 'wheel')
+        assert.ok(events[0].deltaX >= 5)
+        assert.ok(events[0].deltaY >= 10)
+        assert.strictEqual(events[0].deltaZ, 0)
+        assert.strictEqual(events[0].target, 'scrollContent')
+      })
 
       it('can execute release in browsing context', async function () {
         const browsingContextId = await driver.getWindowHandle()
@@ -354,12 +299,7 @@ suite(
 
         await driver.executeScript('arguments[0].focus()', inputTextBox)
 
-
-        const actions = await driver
-          .actions()
-          .keyDown('a')
-          .keyDown('b')
-          .getSequences()
+        const actions = await driver.actions().keyDown('a').keyDown('b').getSequences()
 
         await input.perform(browsingContextId, actions)
 
@@ -367,7 +307,7 @@ suite(
 
         await input.release(browsingContextId)
 
-        const events =  await driver.executeScript('return allEvents.events')
+        const events = await driver.executeScript('return allEvents.events')
 
         assert.strictEqual(events[0].code, 'KeyB')
         assert.strictEqual(events[1].code, 'KeyA')
@@ -382,5 +322,5 @@ suite(
       }
     })
   },
-  {browsers: [Browser.FIREFOX]},
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )

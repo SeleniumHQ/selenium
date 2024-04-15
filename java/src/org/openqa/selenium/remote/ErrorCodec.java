@@ -85,7 +85,7 @@ public class ErrorCodec {
           new W3CError("unable to capture screen", ScreenshotException.class, 500),
           new W3CError("unable to set cookie", UnableToSetCookieException.class, 500),
           new W3CError("unexpected alert open", UnhandledAlertException.class, 500),
-          new W3CError("unsupported operation", UnsupportedCommandException.class, 404),
+          new W3CError("unsupported operation", UnsupportedCommandException.class, 500),
           new W3CError("unknown command", UnsupportedCommandException.class, 404),
           new W3CError("unknown method", UnsupportedCommandException.class, 405),
           new W3CError("unknown error", WebDriverException.class, 500));
@@ -111,6 +111,23 @@ public class ErrorCodec {
     StringWriter stacktrace = new StringWriter();
     try (PrintWriter printWriter = new PrintWriter(stacktrace)) {
       throwable.printStackTrace(printWriter);
+    }
+
+    if (throwable instanceof UnhandledAlertException) {
+      String text = ((UnhandledAlertException) throwable).getAlertText();
+      if (text != null) {
+        return Map.of(
+            "value",
+            Map.of(
+                "error",
+                err.w3cErrorString,
+                "message",
+                message,
+                "stacktrace",
+                stacktrace.toString(),
+                "data",
+                Map.of("text", text)));
+      }
     }
 
     return Map.of(

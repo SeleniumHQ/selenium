@@ -31,7 +31,8 @@ use crate::grid::GRID_NAME;
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::logger::Logger;
 use crate::metadata::{
-    create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
+    create_browser_metadata, create_stats_metadata, get_browser_version_from_metadata,
+    get_metadata, is_stats_in_metadata, write_metadata,
 };
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
@@ -80,12 +81,9 @@ pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const REG_PV_ARG: &str = "pv";
 pub const PLIST_COMMAND: &str =
     r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
-pub const PKGUTIL_COMMAND: &str = "pkgutil --expand-full {} {}";
 pub const HDIUTIL_ATTACH_COMMAND: &str = "hdiutil attach {}";
 pub const HDIUTIL_DETACH_COMMAND: &str = "hdiutil detach /Volumes/{}";
 pub const CP_VOLUME_COMMAND: &str = "cp -R /Volumes/{}/{}.app {}";
-pub const MV_PAYLOAD_COMMAND: &str = "mv {}/*{}/Payload/*.app {}";
-pub const MV_PAYLOAD_OLD_VERSIONS_COMMAND: &str = "mv {}/Payload/*.app {}";
 pub const MSIEXEC_INSTALL_COMMAND: &str = "start /wait msiexec /i {} /qn ALLOWDOWNGRADE=1";
 pub const WINDOWS_CHECK_ADMIN_COMMAND: &str = "net session";
 pub const DASH_VERSION: &str = "{}{}{} -v";
@@ -212,7 +210,6 @@ pub trait SeleniumManager {
                 self.get_os(),
                 Some(driver_name_with_extension),
                 None,
-                None,
             )?)
         }
     }
@@ -315,10 +312,6 @@ pub trait SeleniumManager {
             let (_tmp_folder, driver_zip_file) =
                 download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
 
-            let major_browser_version_int = self
-                .get_major_browser_version()
-                .parse::<i32>()
-                .unwrap_or_default();
             let browser_label_for_download =
                 self.get_browser_label_for_download(original_browser_version)?;
             uncompress(
@@ -328,7 +321,6 @@ pub trait SeleniumManager {
                 self.get_os(),
                 None,
                 browser_label_for_download,
-                Some(major_browser_version_int),
             )?;
         }
         if browser_binary_path.exists() {
@@ -336,7 +328,7 @@ pub trait SeleniumManager {
             Ok(Some(browser_binary_path))
         } else {
             self.get_logger().warn(format!(
-                "Expected {} path does not exists: {}",
+                "Expected {} path does not exist: {}",
                 self.get_browser_name(),
                 browser_binary_path.display()
             ));
@@ -846,9 +838,22 @@ pub trait SeleniumManager {
             };
             let http_client = self.get_http_client().to_owned();
             let sender = self.get_sender().to_owned();
-            thread::spawn(move || {
-                send_stats_to_plausible(http_client, props, sender);
-            });
+            let cache_path = self.get_cache_path()?;
+            let mut metadata = get_metadata(self.get_logger(), &cache_path);
+            if !is_stats_in_metadata(&metadata.stats, &props) {
+                self.get_logger()
+                    .debug(format!("Sending stats to Plausible: {:?}", props,));
+                let stats_ttl = self.get_ttl();
+                if stats_ttl > 0 {
+                    metadata
+                        .stats
+                        .push(create_stats_metadata(&props, stats_ttl));
+                    write_metadata(&metadata, self.get_logger(), cache_path);
+                }
+                thread::spawn(move || {
+                    send_stats_to_plausible(http_client, props, sender);
+                });
+            }
         }
         Ok(())
     }
@@ -933,10 +938,13 @@ pub trait SeleniumManager {
                 .unwrap_or_default()
                 .unwrap_or_default();
             if best_browser_from_cache.exists() {
-                self.get_logger().warn(format!(
-                    "There was an error managing {}; using browser found in the cache",
-                    self.get_browser_name()
-                ));
+                self.get_logger().debug_or_warn(
+                    format!(
+                        "There was an error managing {}; using browser found in the cache",
+                        self.get_browser_name()
+                    ),
+                    self.is_offline(),
+                );
                 browser_path = path_to_string(best_browser_from_cache);
             }
         }

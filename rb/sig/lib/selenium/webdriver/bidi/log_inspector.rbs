@@ -1,0 +1,33 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class LogInspector
+        @bidi: untyped
+
+        EVENTS: Hash[Symbol, String]
+
+        LOG_LEVEL: Hash[Symbol, String]
+
+        def initialize: (untyped driver, ?untyped? browsing_context_ids) -> void
+
+        def on_console_entry: (?untyped? filter_by) { () -> untyped } -> untyped
+
+        def on_javascript_log: (?untyped? filter_by) { () -> untyped } -> untyped
+
+        def on_javascript_exception: () { () -> untyped } -> untyped
+
+        def on_log: (?untyped? filter_by) { (untyped) -> untyped } -> untyped?
+
+        private
+
+        def on: (untyped event) { () -> untyped } -> untyped
+
+        def check_valid_filter: (untyped filter_by) -> (nil | untyped)
+
+        def console_log_events: (untyped params, untyped filter_by) { (untyped) -> untyped } -> untyped?
+
+        def javascript_log_events: (untyped params, untyped filter_by) { (untyped) -> untyped } -> untyped?
+      end
+    end
+  end
+end

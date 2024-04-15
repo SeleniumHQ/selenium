@@ -1,0 +1,25 @@
+module Selenium
+  module WebDriver
+    class DevTools
+      class MutationEvent
+        @element: untyped
+
+        @attribute_name: untyped
+
+        @current_value: untyped
+
+        @old_value: untyped
+
+        attr_accessor element: untyped
+
+        attr_accessor attribute_name: untyped
+
+        attr_accessor current_value: untyped
+
+        attr_accessor old_value: untyped
+
+        def initialize: (element: untyped, attribute_name: untyped, current_value: untyped, old_value: untyped) -> void
+      end
+    end
+  end
+end

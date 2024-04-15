@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    module Firefox
+      class Driver < WebDriver::Driver
+        EXTENSIONS: Array[untyped]
+
+        include LocalDriver
+
+        def initialize: (?options: untyped?, ?service: untyped?, ?url: untyped?, **untyped opts) -> void
+
+        def browser: () -> Symbol
+
+        private
+
+        def devtools_url: () -> untyped
+
+        def devtools_version: () -> untyped
+      end
+    end
+  end
+end

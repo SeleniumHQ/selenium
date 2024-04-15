@@ -1,0 +1,17 @@
+{
+  "jsc": {
+    "baseUrl": "./src",
+    "parser": {
+      "jsx": true,
+      "syntax": "ecmascript"
+    },
+    "transform": {
+      "react": {
+        "runtime": "automatic"
+      }
+    }
+  },
+  "module": {
+    "type": "commonjs"
+  }
+}

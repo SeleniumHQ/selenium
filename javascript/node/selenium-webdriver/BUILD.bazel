@@ -1,12 +1,21 @@
-load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "pkg_npm")
-load("@npm//@bazel/jasmine:index.bzl", "jasmine_node_test")
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@npm//javascript/node/selenium-webdriver:eslint/package_json.bzl", eslint_bin = "bin")
+load("@npm//javascript/node/selenium-webdriver:prettier/package_json.bzl", prettier_bin = "bin")
+load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("//common:defs.bzl", "copy_file")
+load("//javascript:defs.bzl", "mocha_test")
+
+npm_link_all_packages(name = "node_modules")
+
+VERSION = "4.16.0"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v119",
-    "v120",
-    "v118",
+    "v122",
+    "v123",
+    "v121",
 ]
 
 SRC_FILES = [
@@ -27,11 +36,9 @@ SRC_FILES = [
     "bidi/*.js",
 ])
 
-pkg_npm(
+npm_package(
     name = "selenium-webdriver",
-    package_name = "selenium-webdriver",
-    srcs = SRC_FILES,
-    deps = [
+    srcs = SRC_FILES + [
         ":license",
         ":manager-linux",
         ":manager-macos",
@@ -41,65 +48,108 @@ pkg_npm(
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
         "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
     ],
+    package = "selenium-webdriver",
+    version = VERSION,
+    visibility = ["//visibility:public"],
 )
 
-TEST_FILES = glob(["test/**/*_test.js"])
+pkg_tar(
+    name = "selenium-webdriver.tgz",
+    srcs = [
+        ":selenium-webdriver",
+    ],
+    out = "selenium-webdriver-%s.tgz" % VERSION,
+    extension = "tgz",
+    package_dir = "package",
+    strip_prefix = "selenium-webdriver",
+)
+
+#TEST_FILES = glob(["test/**/*_test.js"])
+#
+SMALL_TESTS = [
+    "test/io/io_test.js",
+    "test/io/zip_test.js",
+    "test/lib/by_test.js",
+    "test/lib/credentials_test.js",
+    "test/lib/error_test.js",
+    "test/lib/http_test.js",
+    "test/lib/input_test.js",
+    "test/lib/logging_test.js",
+    "test/lib/promise_test.js",
+    "test/lib/until_test.js",
+    "test/lib/virtualauthenticatoroptions_test.js",
+    "test/lib/webdriver_test.js",
+    "test/net/index_test.js",
+    "test/net/portprober_test.js",
+]
+
+LARGE_TESTS = glob(
+    ["test/**/*_test.js"],
+    exclude = SMALL_TESTS,
+)
 
 TEST_DATA = SRC_FILES + glob(
     [
         "lib/test/**",
         "test/**",
     ],
-    exclude = TEST_FILES,
+    exclude = LARGE_TESTS + SMALL_TESTS,
 )
 
-nodejs_binary(
-    name = "fileserver",
-    data = TEST_DATA + [
-        "//common/src/web",
-        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
-        "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
-        "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
-        "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
-        "@npm//express",
-        "@npm//jszip",
-        "@npm//multer",
-        "@npm//rimraf",
-        "@npm//serve-index",
-        "@npm//tmp",
+mocha_test(
+    name = "small-tests",
+    size = "small",
+    chdir = package_name(),
+    data = [
+        ":node_modules/jszip",
+        ":node_modules/mocha",
+        ":node_modules/mocha-junit-reporter",
+        ":node_modules/sinon",
+        ":node_modules/tmp",
+        "//:node_modules/selenium-webdriver",
+        "//common/extensions:js-lib",
+        "//common/src/web:js-lib",
+    ] + SMALL_TESTS + TEST_DATA,
+    tags = [
+        "skip-remote",
     ],
-    entry_point = "lib/test/fileserver.js",
 )
 
-jasmine_node_test(
-    name = "tests",
-    srcs = TEST_FILES,
-    data = TEST_DATA + [
-        "tools/init_jasmine.js",
-        "//common/extensions",
-        "//common/src/web",
-        "@npm//express",
-        "@npm//jszip",
-        "@npm//multer",
-        "@npm//rimraf",
-        "@npm//serve-index",
-        "@npm//sinon",
-        "@npm//tmp",
-        "@npm//ws",
-    ],
-    local = True,
-    templated_args = ["--node_options=--require=$$(rlocation $(rootpath :tools/init_jasmine.js))"],
-    deps = [
-        ":manager-linux",
-        ":manager-macos",
-        ":manager-windows",
-        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
-        "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
-        "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
-        "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
-        "@npm//jasmine",
-    ],
-)
+[
+    mocha_test(
+        name = "%s-browser-tests" % browser,
+        size = "large",
+        args = ["--retries 1"],
+        chdir = package_name(),
+        data = LARGE_TESTS + TEST_DATA + [
+            ":node_modules/@bazel/runfiles",
+            ":node_modules/express",
+            ":node_modules/jszip",
+            ":node_modules/multer",
+            ":node_modules/serve-index",
+            ":node_modules/sinon",
+            ":node_modules/tmp",
+            ":node_modules/ws",
+            "//:node_modules/selenium-webdriver",
+            "//common/extensions:js-lib",
+            "//common/src/web:js-lib",
+        ],
+        env = {
+            "SELENIUM_BROWSER": browser,
+        },
+        tags = [
+            browser,
+            "browser-test",
+            "no-sandbox",
+            "requires-network",
+            "skip-remote",
+        ],
+    )
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+]
 
 # npm_package does not pick up filegroup sources.
 genrule(
@@ -128,4 +178,71 @@ copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "bin/windows/selenium-manager.exe",
+)
+
+copy_to_bin(
+    name = "package-json",
+    srcs = ["package.json"],
+)
+
+eslint_bin.eslint_test(
+    name = "eslint-test",
+    args = [
+        "--ignore-pattern",
+        "node_modules",
+        "--ignore-pattern",
+        "generator",
+        "--ext",
+        "js",
+        "lib/http.js",
+        "**/*.js",
+    ],
+    chdir = package_name(),
+    data = SRC_FILES + [
+        ":eslint-config",
+        ":node_modules/eslint-plugin-no-only-tests",
+        ":node_modules/eslint-plugin-node",
+        ":node_modules/eslint-plugin-prettier",
+        ":node_modules/jszip",
+        ":node_modules/mocha",
+        ":node_modules/tmp",
+        ":node_modules/ws",
+        ":package-json",
+    ],
+    tags = [
+        "lint",
+    ],
+)
+
+copy_to_bin(
+    name = "eslint-config",
+    srcs = [".eslintrc.js"],
+)
+
+prettier_bin.prettier_test(
+    name = "prettier-test",
+    args = [
+        ".",
+        "--check",
+        "--ignore-unknown",
+        "--config=.prettierrc",
+    ],
+    chdir = package_name(),
+    data = SRC_FILES + SMALL_TESTS + LARGE_TESTS + [
+        ":prettier-config",
+        ":prettier-ignore",
+    ],
+    tags = [
+        "lint",
+    ],
+)
+
+copy_to_bin(
+    name = "prettier-config",
+    srcs = [".prettierrc"],
+)
+
+copy_to_bin(
+    name = "prettier-ignore",
+    srcs = [".prettierignore"],
 )

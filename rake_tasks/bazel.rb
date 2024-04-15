@@ -43,7 +43,7 @@ module Bazel
       end
     end
 
-    raise "#{cmd.join(' ')} failed with exit code: #{cmd_exit_code}" if cmd_exit_code != 0
+    raise "#{cmd.join(' ')} failed with exit code: #{cmd_exit_code}\nOutput: #{cmd_out}" if cmd_exit_code != 0
 
     block&.call(cmd_out)
     return unless cmd_out =~ %r{\s+(bazel-bin/\S+)}

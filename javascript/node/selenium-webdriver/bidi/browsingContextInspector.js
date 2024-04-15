@@ -15,11 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const {
-  BrowsingContextInfo,
-  NavigationInfo,
-} = require('./browsingContextTypes')
+const { BrowsingContextInfo, NavigationInfo } = require('./browsingContextTypes')
 
+/**
+ * Represents a browsing context related events.
+ * Described in https://w3c.github.io/webdriver-bidi/#module-contexts-events.
+ * While BrowsingContext class represents a browsing context lifecycle and related commands.
+ * This class is specific to listening to events. Events can be subscribed to multiple browsing contexts or all of them.
+ */
 class BrowsingContextInspector {
   constructor(driver, browsingContextIds) {
     this._driver = driver
@@ -30,48 +33,79 @@ class BrowsingContextInspector {
     this.bidi = await this._driver.getBidi()
   }
 
+  /**
+   * Subscribes to the 'browsingContext.contextCreated' event.
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the event is emitted.
+   */
   async onBrowsingContextCreated(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.contextCreated',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.contextCreated', callback)
   }
 
+  /**
+   * Subscribes to the 'browsingContext.contextDestroyed' event.
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the event is emitted.
+   */
+  async onBrowsingContextDestroyed(callback) {
+    await this.subscribeAndHandleEvent('browsingContext.contextDestroyed', callback)
+  }
+
+  /**
+   * Subscribe to the 'browsingContext.navigationStarted' event.
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the event is emitted.
+   */
   async onNavigationStarted(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.navigationStarted',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.navigationStarted', callback)
   }
 
+  /**
+   * Subscribes to the 'browsingContext.fragmentNavigated' event.
+   *
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the event is emitted.
+   */
   async onFragmentNavigated(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.fragmentNavigated',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.fragmentNavigated', callback)
   }
 
+  /**
+   * Subscribes to the 'browsingContext.userPromptClosed' event.
+   *
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the event is emitted.
+   */
   async onUserPromptClosed(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.userPromptClosed',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.userPromptClosed', callback)
   }
 
+  /**
+   * Subscribes to the 'browsingContext.userPromptOpened' event.
+   *
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the event is emitted.
+   */
   async onUserPromptOpened(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.userPromptOpened',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.userPromptOpened', callback)
   }
 
+  /**
+   * Subscribes to the 'browsingContext.domContentLoaded' event.
+   *
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the event is emitted.
+   */
   async onDomContentLoaded(callback) {
-    await this.subscribeAndHandleEvent(
-      'browsingContext.domContentLoaded',
-      callback
-    )
+    await this.subscribeAndHandleEvent('browsingContext.domContentLoaded', callback)
   }
 
+  /**
+   * Subscribes to the 'browsingContext.load' event.
+   *
+   * @param {Function} callback - The callback function to handle the event.
+   * @returns {Promise<void>} - A promise that resolves when the event is emitted.
+   */
   async onBrowsingContextLoaded(callback) {
     await this.subscribeAndHandleEvent('browsingContext.load', callback)
   }
@@ -92,21 +126,11 @@ class BrowsingContextInspector {
       if (params) {
         let response = null
         if ('navigation' in params) {
-          response = new NavigationInfo(
-            params.context,
-            params.navigation,
-            params.timestamp,
-            params.url
-          )
+          response = new NavigationInfo(params.context, params.navigation, params.timestamp, params.url)
         } else if ('accepted' in params) {
           /* Needs to be updated when browsers implement other events */
         } else {
-          response = new BrowsingContextInfo(
-            params.context,
-            params.url,
-            params.children,
-            params.parent
-          )
+          response = new BrowsingContextInfo(params.context, params.url, params.children, params.parent)
         }
         callback(response)
       }

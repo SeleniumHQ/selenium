@@ -1,5 +1,5 @@
-﻿using System;
-using OpenQA.Selenium.Edge;
+﻿using OpenQA.Selenium.Edge;
+using System;
 
 namespace OpenQA.Selenium.Remote
 {

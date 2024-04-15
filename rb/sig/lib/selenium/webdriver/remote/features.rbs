@@ -1,0 +1,29 @@
+module Selenium
+  module WebDriver
+    module Remote
+      module Features
+        include _Bridge
+
+        @command_list: untyped
+
+        REMOTE_COMMANDS: Hash[Symbol, Array[Symbol | String]]
+
+        def add_commands: (untyped commands) -> untyped
+
+        def command_list: () -> Hash[Symbol, Array[Symbol | String]]
+
+        def commands: (Symbol command) -> Array[Symbol | String]?
+
+        def upload: (untyped local_file) -> untyped
+
+        def upload_if_necessary: (untyped keys) -> untyped
+
+        def downloadable_files: () -> untyped
+
+        def download_file: (untyped name) -> untyped
+
+        def delete_downloadable_files: () -> untyped
+      end
+    end
+  end
+end

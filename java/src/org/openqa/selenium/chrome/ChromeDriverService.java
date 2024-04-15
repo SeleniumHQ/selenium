@@ -128,7 +128,7 @@ public class ChromeDriverService extends DriverService {
   /**
    * Configures and returns a new {@link ChromeDriverService} using the default configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by {@link
-   * org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}. Each
+   * org.openqa.selenium.remote.service.DriverFinder#getResult(DriverService, Capabilities)}. Each
    * service created by this method will be configured to use a free port on the current system.
    *
    * @return A new ChromeDriverService using the default configuration.

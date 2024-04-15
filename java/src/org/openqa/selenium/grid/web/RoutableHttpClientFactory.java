@@ -56,9 +56,8 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
       return new HttpClient() {
         @Override
         public HttpResponse execute(HttpRequest request) throws UncheckedIOException {
-          HttpResponse response = new HttpResponse();
-
           if (!handler.test(request)) {
+            HttpResponse response = new HttpResponse();
             response.setStatus(404);
             response.setContent(
                 asJson(

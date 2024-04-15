@@ -1,6 +1,6 @@
 [package]
 name = "selenium-manager"
-version = "0.4.17-nightly" # don't forget to update rust/BUILD.bazel
+version = "0.4.20-nightly" # don't forget to update rust/BUILD.bazel
 edition = "2021"
 authors = ["Selenium <selenium-developers@googlegroups.com"]
 license = "Apache-2.0"
@@ -12,32 +12,33 @@ Selenium Manager is a CLI tool that automatically manages the browser/driver inf
 """
 
 [dependencies]
-clap = { version = "4.4.12", features = ["derive", "cargo"] }
-log = "0.4.20"
-env_logger = "0.10.1"
-regex = "1.10.2"
-tokio = { version = "1.35.1", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
-tempfile = "3.9.0"
-reqwest = { version = "0.11.23", default-features = false, features = [ "rustls-tls" ] }
+clap = { version = "4.5.4", features = ["derive", "cargo"] }
+log = "0.4.21"
+env_logger = "0.11.3"
+regex = "1.10.4"
+tokio = { version = "1.37.0", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
+tempfile = "3.10.1"
+reqwest = { version = "0.12.3", default-features = false, features = [ "rustls-tls" ] }
 zip = "0.6.6"
 directories = "5.0.1"
-serde = { version = "1.0.193", features = ["derive"] }
-serde_json = "1.0.108"
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.115"
 flate2 = "1.0.28"
 tar = "0.4.40"
 infer = "0.15.0"
 exitcode = "1.1.2"
 is_executable = "1.0.1"
-toml = "0.8.8"
+toml = "0.8.12"
 bzip2 = "0.4.4"
-sevenz-rust = "0.5.4"
-walkdir = "2.4.0"
+sevenz-rust = "0.6.0"
+walkdir = "2.5.0"
 debpkg = "0.6.0"
-anyhow = { version = "1.0.77", features = ["backtrace"] }
+anyhow = { version = "1.0.82", features = ["backtrace"] }
+apple-flat-package = "0.18.0"
 
 [dev-dependencies]
-assert_cmd = "2.0.12"
-rstest = "0.18.2"
+assert_cmd = "2.0.14"
+rstest = "0.19.0"
 
 [profile.release]
 opt-level = 'z'     # Optimize for size

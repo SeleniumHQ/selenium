@@ -28,6 +28,12 @@ chrome_args = select({
 }) + headless_args
 
 edge_args = select({
+    "@selenium//common:use_pinned_linux_edge": [
+        "--driver-binary=$(location @linux_edgedriver//:msedgedriver)",
+        "--browser-binary=$(location @linux_edge//:opt/microsoft/msedge/microsoft-edge)",
+        "--browser-args=--disable-dev-shm-usage",
+        "--browser-args=--no-sandbox",
+    ],
     "@selenium//common:use_pinned_macos_edge": [
         "--driver-binary=$(location @mac_edgedriver//:msedgedriver)",
         "--browser-binary='$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge'",
@@ -56,7 +62,7 @@ BROWSERS = {
     "edge": {
         "args": ["--driver=edge"] + edge_args,
         "data": edge_data,
-        "tags": COMMON_TAGS + ["edge", "skip-remote"],
+        "tags": COMMON_TAGS + ["edge"],
     },
     "firefox": {
         "args": ["--driver=firefox"] + firefox_args,

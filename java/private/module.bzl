@@ -242,4 +242,5 @@ java_module = rule(
             cfg = "exec",
         ),
     },
+    toolchains = ["@bazel_tools//tools/jdk:toolchain_type"],
 )

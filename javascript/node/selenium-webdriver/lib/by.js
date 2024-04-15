@@ -396,11 +396,7 @@ class RelativeBy {
  *     strategy.
  */
 function check(locator) {
-  if (
-    locator instanceof By ||
-    locator instanceof RelativeBy ||
-    typeof locator === 'function'
-  ) {
+  if (locator instanceof By || locator instanceof RelativeBy || typeof locator === 'function') {
     return locator
   }
 
@@ -414,10 +410,7 @@ function check(locator) {
   }
 
   for (let key in locator) {
-    if (
-      Object.prototype.hasOwnProperty.call(locator, key) &&
-      Object.prototype.hasOwnProperty.call(By, key)
-    ) {
+    if (Object.prototype.hasOwnProperty.call(locator, key) && Object.prototype.hasOwnProperty.call(By, key)) {
       return By[key](locator[key])
     }
   }

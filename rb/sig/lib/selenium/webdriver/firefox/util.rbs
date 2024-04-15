@@ -1,0 +1,12 @@
+module Selenium
+  module WebDriver
+    module Firefox
+      # @api private
+      module Util
+        def self?.app_data_path: () -> untyped
+
+        def self?.stringified?: (untyped str) -> untyped
+      end
+    end
+  end
+end

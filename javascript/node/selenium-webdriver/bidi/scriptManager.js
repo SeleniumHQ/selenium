@@ -27,20 +27,32 @@ const { RemoteValue } = require('./protocolValue')
 const { Source } = require('./scriptTypes')
 const { WebDriverError } = require('../lib/error')
 
+/**
+ * Represents class to run events and commands of Script module.
+ * Described in https://w3c.github.io/webdriver-bidi/#module-script.
+ * @class
+ */
 class ScriptManager {
   constructor(driver) {
     this._driver = driver
   }
 
-  async init(browsingContextId) {
+  async init(browsingContextIds) {
     if (!(await this._driver.getCapabilities()).get('webSocketUrl')) {
       throw Error('WebDriver instance must support BiDi protocol')
     }
 
     this.bidi = await this._driver.getBidi()
-    this._browsingContextId = browsingContextId
+    this._browsingContextIds = browsingContextIds
   }
 
+  /**
+   * Disowns the handles in the specified realm.
+   *
+   * @param {string} realmId - The ID of the realm.
+   * @param {string[]} handles - The handles to disown to allow garbage collection.
+   * @returns {Promise<void>} - A promise that resolves when the command is sent.
+   */
   async disownRealmScript(realmId, handles) {
     const params = {
       method: 'script.disown',
@@ -55,11 +67,14 @@ class ScriptManager {
     await this.bidi.send(params)
   }
 
-  async disownBrowsingContextScript(
-    browsingContextId,
-    handles,
-    sandbox = null
-  ) {
+  /**
+   * Disowns the handles in the specified browsing context.
+   * @param {string} browsingContextId - The ID of the browsing context.
+   * @param {string[]} handles - The handles to disown to allow garbage collection.
+   * @param {String|null} [sandbox=null] - The sandbox name.
+   * @returns {Promise<void>} - A promise that resolves when the command is sent.
+   */
+  async disownBrowsingContextScript(browsingContextId, handles, sandbox = null) {
     const params = {
       method: 'script.disown',
       params: {
@@ -77,13 +92,24 @@ class ScriptManager {
     await this.bidi.send(params)
   }
 
+  /**
+   * Calls a function in the specified realm.
+   *
+   * @param {string} realmId - The ID of the realm.
+   * @param {string} functionDeclaration - The function to call.
+   * @param {boolean} awaitPromise - Whether to await the promise returned by the function.
+   * @param {LocalValue[]} [argumentValueList|null] - The list of argument values to pass to the function.
+   * @param {Object} [thisParameter|null] - The value of 'this' parameter for the function.
+   * @param {ResultOwnership} [resultOwnership|null] - The ownership of the result.
+   * @returns {Promise<EvaluateResultSuccess|EvaluateResultException>} - A promise that resolves to the evaluation result or exception.
+   */
   async callFunctionInRealm(
     realmId,
     functionDeclaration,
     awaitPromise,
     argumentValueList = null,
     thisParameter = null,
-    resultOwnership = null
+    resultOwnership = null,
   ) {
     const params = this.getCallFunctionParams(
       'realm',
@@ -93,7 +119,7 @@ class ScriptManager {
       awaitPromise,
       argumentValueList,
       thisParameter,
-      resultOwnership
+      resultOwnership,
     )
 
     const command = {
@@ -105,6 +131,17 @@ class ScriptManager {
     return this.createEvaluateResult(response)
   }
 
+  /**
+   * Calls a function in the specified browsing context.
+   *
+   * @param {string} realmId - The ID of the browsing context.
+   * @param {string} functionDeclaration - The function to call.
+   * @param {boolean} awaitPromise - Whether to await the promise returned by the function.
+   * @param {LocalValue[]} [argumentValueList|null] - The list of argument values to pass to the function.
+   * @param {Object} [thisParameter|null] - The value of 'this' parameter for the function.
+   * @param {ResultOwnership} [resultOwnership|null] - The ownership of the result.
+   * @returns {Promise<EvaluateResultSuccess|EvaluateResultException>} - A promise that resolves to the evaluation result or exception.
+   */
   async callFunctionInBrowsingContext(
     browsingContextId,
     functionDeclaration,
@@ -112,7 +149,7 @@ class ScriptManager {
     argumentValueList = null,
     thisParameter = null,
     resultOwnership = null,
-    sandbox = null
+    sandbox = null,
   ) {
     const params = this.getCallFunctionParams(
       'contextTarget',
@@ -122,7 +159,7 @@ class ScriptManager {
       awaitPromise,
       argumentValueList,
       thisParameter,
-      resultOwnership
+      resultOwnership,
     )
 
     const command = {
@@ -133,20 +170,17 @@ class ScriptManager {
     return this.createEvaluateResult(response)
   }
 
-  async evaluateFunctionInRealm(
-    realmId,
-    expression,
-    awaitPromise,
-    resultOwnership = null
-  ) {
-    const params = this.getEvaluateParams(
-      'realm',
-      realmId,
-      null,
-      expression,
-      awaitPromise,
-      resultOwnership
-    )
+  /**
+   * Evaluates a function in the specified realm.
+   *
+   * @param {string} realmId - The ID of the realm.
+   * @param {string} expression - The expression to function to evaluate.
+   * @param {boolean} awaitPromise - Whether to await the promise.
+   * @param {ResultOwnership|null} resultOwnership - The ownership of the result.
+   * @returns {Promise<EvaluateResultSuccess|EvaluateResultException>} - A promise that resolves to the evaluation result or exception.
+   */
+  async evaluateFunctionInRealm(realmId, expression, awaitPromise, resultOwnership = null) {
+    const params = this.getEvaluateParams('realm', realmId, null, expression, awaitPromise, resultOwnership)
 
     const command = {
       method: 'script.evaluate',
@@ -157,12 +191,21 @@ class ScriptManager {
     return this.createEvaluateResult(response)
   }
 
+  /**
+   * Evaluates a function in the browsing context.
+   *
+   * @param {string} realmId - The ID of the browsing context.
+   * @param {string} expression - The expression to function to evaluate.
+   * @param {boolean} awaitPromise - Whether to await the promise.
+   * @param {ResultOwnership|null} resultOwnership - The ownership of the result.
+   * @returns {Promise<EvaluateResultSuccess|EvaluateResultException>} - A promise that resolves to the evaluation result or exception.
+   */
   async evaluateFunctionInBrowsingContext(
     browsingContextId,
     expression,
     awaitPromise,
     resultOwnership = null,
-    sandbox = null
+    sandbox = null,
   ) {
     const params = this.getEvaluateParams(
       'contextTarget',
@@ -170,7 +213,7 @@ class ScriptManager {
       sandbox,
       expression,
       awaitPromise,
-      resultOwnership
+      resultOwnership,
     )
 
     const command = {
@@ -182,15 +225,30 @@ class ScriptManager {
     return this.createEvaluateResult(response)
   }
 
-  async addPreloadScript(
-    functionDeclaration,
-    argumentValueList = [],
-    sandbox = null
-  ) {
+  /**
+   * Adds a preload script.
+   *
+   * @param {string} functionDeclaration - The declaration of the function to be added as a preload script.
+   * @param {LocalValue[]} [argumentValueList=[]] - The list of argument values to be passed to the preload script function.
+   * @param {string} [sandbox|null] - The sandbox object to be used for the preload script.
+   * @returns {Promise<number>} - A promise that resolves to the added preload script ID.
+   */
+  async addPreloadScript(functionDeclaration, argumentValueList = [], sandbox = null) {
     const params = {
       functionDeclaration: functionDeclaration,
       arguments: argumentValueList,
-      sandbox: sandbox,
+    }
+
+    if (sandbox !== null) {
+      params.sandbox = sandbox
+    }
+
+    if (Array.isArray(this._browsingContextIds) && this._browsingContextIds.length > 0) {
+      params.contexts = this._browsingContextIds
+    }
+
+    if (typeof this._browsingContextIds === 'string') {
+      params.contexts = new Array(this._browsingContextIds)
     }
 
     const command = {
@@ -202,6 +260,13 @@ class ScriptManager {
     return response.result.script
   }
 
+  /**
+   * Removes a preload script.
+   *
+   * @param {string} script - The ID for the script to be removed.
+   * @returns {Promise<any>} - A promise that resolves with the result of the removal.
+   * @throws {WebDriverError} - If an error occurs during the removal process.
+   */
   async removePreloadScript(script) {
     const params = { script: script }
     const command = {
@@ -223,7 +288,7 @@ class ScriptManager {
     awaitPromise,
     argumentValueList = null,
     thisParameter = null,
-    resultOwnership = null
+    resultOwnership = null,
   ) {
     const params = {
       functionDeclaration: functionDeclaration,
@@ -258,14 +323,7 @@ class ScriptManager {
     return params
   }
 
-  getEvaluateParams(
-    targetType,
-    id,
-    sandbox,
-    expression,
-    awaitPromise,
-    resultOwnership = null
-  ) {
+  getEvaluateParams(targetType, id, sandbox, expression, awaitPromise, resultOwnership = null) {
     const params = {
       expression: expression,
       awaitPromise: awaitPromise,
@@ -293,16 +351,10 @@ class ScriptManager {
 
     if (type === EvaluateResultType.SUCCESS) {
       const result = response.result.result
-      evaluateResult = new EvaluateResultSuccess(
-        realmId,
-        new RemoteValue(result)
-      )
+      evaluateResult = new EvaluateResultSuccess(realmId, new RemoteValue(result))
     } else {
       const exceptionDetails = response.result.exceptionDetails
-      evaluateResult = new EvaluateResultException(
-        realmId,
-        new ExceptionDetails(exceptionDetails)
-      )
+      evaluateResult = new EvaluateResultException(realmId, new ExceptionDetails(exceptionDetails))
     }
     return evaluateResult
   }
@@ -315,6 +367,10 @@ class ScriptManager {
     return realmsList
   }
 
+  /**
+   * Retrieves all realms.
+   * @returns {Promise<RealmInfo[]>} - A promise that resolves to an array of RealmInfo objects.
+   */
   async getAllRealms() {
     const command = {
       method: 'script.getRealms',
@@ -324,6 +380,12 @@ class ScriptManager {
     return this.realmInfoMapper(response.result.realms)
   }
 
+  /**
+   * Retrieves the realms by type.
+   *
+   * @param {Type} type - The type of realms to retrieve.
+   * @returns {Promise<RealmInfo[]>} - A promise that resolves to an array of RealmInfo objects.
+   */
   async getRealmsByType(type) {
     const command = {
       method: 'script.getRealms',
@@ -333,6 +395,12 @@ class ScriptManager {
     return this.realmInfoMapper(response.result.realms)
   }
 
+  /**
+   * Retrieves the realms in the specified browsing context.
+   *
+   * @param {string} browsingContext - The browsing context ID.
+   * @returns {Promise<RealmInfo[]>} - A promise that resolves to an array of RealmInfo objects.
+   */
   async getRealmsInBrowsingContext(browsingContext) {
     const command = {
       method: 'script.getRealms',
@@ -342,6 +410,13 @@ class ScriptManager {
     return this.realmInfoMapper(response.result.realms)
   }
 
+  /**
+   * Retrieves the realms in a browsing context based on the specified type.
+   *
+   * @param {string} browsingContext - The browsing context ID.
+   * @param {string} type - The type of realms to retrieve.
+   * @returns {Promise<RealmInfo[]>} - A promise that resolves to an array of RealmInfo objects.
+   */
   async getRealmsInBrowsingContextByType(browsingContext, type) {
     const command = {
       method: 'script.getRealms',
@@ -351,17 +426,39 @@ class ScriptManager {
     return this.realmInfoMapper(response.result.realms)
   }
 
+  /**
+   * Subscribes to the 'script.message' event and handles the callback function when a message is received.
+   *
+   * @param {Function} callback - The callback function to be executed when a message is received.
+   * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
+   */
   async onMessage(callback) {
     await this.subscribeAndHandleEvent('script.message', callback)
   }
 
+  /**
+   * Subscribes to the 'script.realmCreated' event and handles it with the provided callback.
+   *
+   * @param {Function} callback - The callback function to handle the 'script.realmCreated' event.
+   * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
+   */
   async onRealmCreated(callback) {
     await this.subscribeAndHandleEvent('script.realmCreated', callback)
   }
 
+  /**
+   * Subscribes to the 'script.realmDestroyed' event and handles it with the provided callback function.
+   *
+   * @param {Function} callback - The callback function to be executed when the 'script.realmDestroyed' event occurs.
+   * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
+   */
+  async onRealmDestroyed(callback) {
+    await this.subscribeAndHandleEvent('script.realmDestroyed', callback)
+  }
+
   async subscribeAndHandleEvent(eventType, callback) {
-    if (this._browsingContextIds != null) {
-      await this.bidi.subscribe(eventType, this._browsingContextIds)
+    if (this.browsingContextIds != null) {
+      await this.bidi.subscribe(eventType, this.browsingContextIds)
     } else {
       await this.bidi.subscribe(eventType)
     }
@@ -375,20 +472,10 @@ class ScriptManager {
       if (params) {
         let response = null
         if ('channel' in params) {
-          response = new Message(
-            params.channel,
-            new RemoteValue(params.data),
-            new Source(params.source)
-          )
+          response = new Message(params.channel, new RemoteValue(params.data), new Source(params.source))
         } else if ('realm' in params) {
           if (params.type === RealmType.WINDOW) {
-            response = new WindowRealmInfo(
-              params.realm,
-              params.origin,
-              params.type,
-              params.context,
-              params.sandbox
-            )
+            response = new WindowRealmInfo(params.realm, params.origin, params.type, params.context, params.sandbox)
           } else if (params.realm !== null && params.type !== null) {
             response = new RealmInfo(params.realm, params.origin, params.type)
           } else if (params.realm !== null) {

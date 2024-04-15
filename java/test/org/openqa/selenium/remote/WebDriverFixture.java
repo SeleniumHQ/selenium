@@ -156,6 +156,7 @@ class WebDriverFixture {
   public static Function<Command, Response> valueResponder(Object value) {
     return cmd -> {
       Response response = new Response();
+      response.setState("success");
       response.setValue(value);
       response.setSessionId(cmd.getSessionId() != null ? cmd.getSessionId().toString() : null);
       return response;
@@ -181,6 +182,7 @@ class WebDriverFixture {
         Collection<Capabilities> capabilities =
             (Collection<Capabilities>) cmd.getParameters().get("capabilities");
 
+        response.setState("success");
         response.setValue(
             capabilities.iterator().next().asMap().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString())));

@@ -37,8 +37,8 @@ import {
   DialogTitle,
   IconButton
 } from '@mui/material'
-import InfoIcon from '@mui/icons-material/Info'
-import VideocamIcon from '@mui/icons-material/Videocam'
+import { Info as InfoIcon } from '@mui/icons-material'
+import {Videocam as VideocamIcon } from '@mui/icons-material'
 import Slide from '@mui/material/Slide'
 import { TransitionProps } from '@mui/material/transitions'
 import browserVersion from '../../util/browser-version'

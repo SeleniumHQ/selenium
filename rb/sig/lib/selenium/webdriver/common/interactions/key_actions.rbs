@@ -1,11 +1,14 @@
 module Selenium
   module WebDriver
     module KeyActions
-      def key_down: (*Symbol | String | Element args, ?device: Symbol | String?) -> self
+      include _ActionBuilder
+      include _Clickable
 
-      def key_up: (*Symbol | String | Element args, ?device: Symbol | String?) -> self
+      def key_down: (*Symbol | String | Element args, ?device: Symbol | String?) -> KeyActions
 
-      def send_keys: (*Symbol | String | Element args, ?device: Symbol | String?) -> self
+      def key_up: (*Symbol | String | Element args, ?device: Symbol | String?) -> KeyActions
+
+      def send_keys: (*untyped args, ?device: Symbol | String?) -> self
 
       private
 

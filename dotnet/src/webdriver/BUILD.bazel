@@ -109,6 +109,24 @@ copy_file(
     out = "transitive.Selenium.WebDriver.targets",
 )
 
+copy_file(
+    name = "manager-linux",
+    src = "//common/manager:selenium-manager-linux",
+    out = "manager/linux/selenium-manager",
+)
+
+copy_file(
+    name = "manager-macos",
+    src = "//common/manager:selenium-manager-macos",
+    out = "manager/macos/selenium-manager",
+)
+
+copy_file(
+    name = "manager-windows",
+    src = "//common/manager:selenium-manager-windows",
+    out = "manager/windows/selenium-manager.exe",
+)
+
 nuget_pack(
     name = "webdriver-pack",
     files = {

@@ -1,0 +1,65 @@
+module Selenium
+  module WebDriver
+    class Options
+      @options: untyped
+
+      W3C_OPTIONS: Array[Symbol]
+
+      GRID_OPTIONS: Array[Symbol]
+
+      BROWSER: untyped
+
+      KEY: untyped
+
+      CAPABILITIES: Hash[Symbol, String]
+
+      attr_reader self.driver_path: untyped
+
+      def self.chrome: (**untyped opts) -> untyped
+
+      def self.firefox: (**untyped opts) -> untyped
+
+      def self.ie: (**untyped opts) -> untyped
+
+      alias self.internet_explorer self.ie
+
+      def self.edge: (**untyped opts) -> untyped
+
+      alias self.microsoftedge self.edge
+
+      def self.safari: (**untyped opts) -> untyped
+
+      def self.set_capabilities: () -> untyped
+
+      attr_accessor options: untyped
+
+      def initialize: (**untyped opts) -> void
+
+      def add_option: (untyped name, ?untyped? value) -> untyped
+
+      def ==: (untyped other) -> (false | untyped)
+
+      alias eql? ==
+
+      def as_json: (*untyped) -> untyped
+
+      private
+
+      def w3c?: (untyped key) -> untyped
+
+      def process_w3c_options: (untyped options) -> untyped
+
+      def process_browser_options: (untyped _browser_options) -> nil
+
+      def camelize?: (untyped _key) -> true
+
+      def generate_as_json: (untyped value, ?camelize_keys: bool) -> untyped
+
+      def process_json_hash: (untyped value, untyped camelize_keys) -> untyped
+
+      def convert_json_key: (untyped key, ?camelize: bool) -> untyped
+
+      def camel_case: (untyped str) -> untyped
+    end
+  end
+end

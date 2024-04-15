@@ -78,7 +78,7 @@ module Selenium
         def listening?
           addr     = Socket.getaddrinfo(@host, @port, Socket::AF_INET, Socket::SOCK_STREAM)
           sock     = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
-          sockaddr = Socket.pack_sockaddr_in(@port, addr[0][3])
+          sockaddr = Socket.pack_sockaddr_in(@port, addr[0][3].to_s)
 
           begin
             sock.connect_nonblock sockaddr

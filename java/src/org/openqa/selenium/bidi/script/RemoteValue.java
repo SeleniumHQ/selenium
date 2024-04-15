@@ -197,6 +197,7 @@ public class RemoteValue {
 
     switch (type) {
       case ARRAY:
+      case NODE_LIST:
       case SET:
         try (StringReader reader = new StringReader(JSON.toJson(value));
             JsonInput input = JSON.newInput(reader)) {

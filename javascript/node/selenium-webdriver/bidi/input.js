@@ -18,7 +18,12 @@
 // type: module added to package.json
 // import { WebElement } from '../lib/webdriver'
 const { WebElement } = require('../lib/webdriver')
+const { RemoteReferenceType, ReferenceValue } = require('./protocolValue')
 
+/**
+ * Represents commands and events related to the Input module (simulated user input).
+ * Described in https://w3c.github.io/webdriver-bidi/#module-input.
+ */
 class Input {
   constructor(driver) {
     this._driver = driver
@@ -32,6 +37,13 @@ class Input {
     this.bidi = await this._driver.getBidi()
   }
 
+  /**
+   * Performs the specified actions on the given browsing context.
+   *
+   * @param {string} browsingContextId - The ID of the browsing context.
+   * @param {Array} actions - The actions to be performed.
+   * @returns {Promise} A promise that resolves with the response from the server.
+   */
   async perform(browsingContextId, actions) {
     const _actions = await updateActions(actions)
 
@@ -48,6 +60,12 @@ class Input {
     return response
   }
 
+  /**
+   * Resets the input state in the specified browsing context.
+   *
+   * @param {string} browsingContextId - The ID of the browsing context.
+   * @returns {Promise} A promise that resolves when the release actions are sent.
+   */
   async release(browsingContextId) {
     const command = {
       method: 'input.releaseActions',
@@ -56,6 +74,34 @@ class Input {
       },
     }
     return await this.bidi.send(command)
+  }
+
+  /**
+   * Sets the files property of a given input element.
+   *
+   * @param {string} browsingContextId - The ID of the browsing context.
+   * @param {string | ReferenceValue} element - The ID of the element or a ReferenceValue object representing the element.
+   * @param {string | string[]} files - The file path or an array of file paths to be set.
+   * @throws {Error} If the element is not a string or a ReferenceValue.
+   * @returns {Promise<void>} A promise that resolves when the files are set.
+   */
+  async setFiles(browsingContextId, element, files) {
+    if (typeof element !== 'string' && !(element instanceof ReferenceValue)) {
+      throw Error(`Pass in a WebElement id as a string or a ReferenceValue. Received: ${element}`)
+    }
+
+    const command = {
+      method: 'input.setFiles',
+      params: {
+        context: browsingContextId,
+        element:
+          typeof element === 'string'
+            ? new ReferenceValue(RemoteReferenceType.SHARED_ID, element).asMap()
+            : element.asMap(),
+        files: typeof files === 'string' ? [files] : files,
+      },
+    }
+    await this.bidi.send(command)
   }
 }
 
@@ -67,10 +113,7 @@ async function updateActions(actions) {
 
     if (action.type === 'pointer' || action.type === 'wheel') {
       for (const sequence of sequenceList) {
-        if (
-          (sequence.type === 'pointerMove' || sequence.type === 'scroll') &&
-          sequence.origin instanceof WebElement
-        ) {
+        if ((sequence.type === 'pointerMove' || sequence.type === 'scroll') && sequence.origin instanceof WebElement) {
           const element = sequence.origin
           const elementId = await element.getId()
           sequence.origin = {

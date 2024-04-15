@@ -18,8 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox
 {

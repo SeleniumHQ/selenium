@@ -33,11 +33,7 @@ const ELEMENT_ID_KEY = 'element-6066-11e4-a52e-4f735466cecf'
  * @return {boolean} whether the object is a valid encoded WebElement ID.
  */
 function isId(obj) {
-  return (
-    isObject(obj) &&
-    (typeof obj[ELEMENT_ID_KEY] === 'string' ||
-      typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string')
-  )
+  return isObject(obj) && (typeof obj[ELEMENT_ID_KEY] === 'string' || typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string')
 }
 
 /**

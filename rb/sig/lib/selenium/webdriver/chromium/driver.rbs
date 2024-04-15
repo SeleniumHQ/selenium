@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module Chromium
+      class Driver < WebDriver::Driver
+        include _Driver
+
+        EXTENSIONS: Array[untyped]
+      end
+    end
+  end
+end

@@ -4,7 +4,7 @@ filegroup(
     name = "assembly-fixtures",
     testonly = True,
     srcs = [
-        "AssemblyTeardown.cs",
+        "AssemblyFixture.cs",
     ],
     visibility = [
         "//dotnet/test:__subpackages__",

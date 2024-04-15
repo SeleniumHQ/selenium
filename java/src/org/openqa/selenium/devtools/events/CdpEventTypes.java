@@ -105,9 +105,13 @@ public class CdpEventTypes {
                   Map<String, Object> values = JSON.toType(json, MAP_TYPE);
                   String id = (String) values.get("target");
 
-                  List<WebElement> elements =
-                      driver.findElements(
-                          By.cssSelector(String.format("*[data-__webdriver_id='%s']", id)));
+                  List<WebElement> elements;
+
+                  synchronized (this) {
+                    elements =
+                        driver.findElements(
+                            By.cssSelector(String.format("*[data-__webdriver_id='%s']", id)));
+                  }
 
                   if (!elements.isEmpty()) {
                     DomMutationEvent event =

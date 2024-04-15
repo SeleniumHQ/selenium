@@ -1,0 +1,24 @@
+module Selenium
+  module WebDriver
+    module HTML5
+      module SharedWebStorage
+        include Enumerable[untyped]
+        include _LocalStorage
+
+        def key?: (untyped key) -> untyped
+
+        alias member? key?
+
+        alias has_key? key?
+
+        def fetch: (untyped key) ?{ (untyped) -> untyped } -> untyped
+
+        def empty?: () -> untyped
+
+        def each: () ?{ (untyped, untyped) -> untyped } -> untyped
+
+        def []: (untyped key) -> untyped
+      end
+    end
+  end
+end

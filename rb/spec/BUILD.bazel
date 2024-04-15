@@ -1,14 +1,21 @@
 load("@rules_ruby//ruby:defs.bzl", "rb_library")
 
+rb_library(
+    name = "rspec_matchers",
+    testonly = True,
+    srcs = ["rspec_matchers.rb"],
+    visibility = ["//rb/spec:__subpackages__"],
+)
+
 # List of dependencies can be gathered by running:
-# bazel query 'kind("rb_.* rule", //rb/spec/...) except //rb/spec:spec' | xargs -I{} echo '"{}",'
+# bazel query 'kind("rb_.* rule", //rb/spec/...) except attr(tags, "browser-test", //rb/spec/...) except //rb/spec:spec' | xargs -I{} echo '"{}",'
 
 rb_library(
     name = "spec",
     testonly = True,
-    srcs = ["rspec_matchers.rb"],
     visibility = ["//rb:__pkg__"],
     deps = [
+        "//rb/spec:rspec_matchers",
         "//rb/spec/integration/selenium/webdriver:action_builder",
         "//rb/spec/integration/selenium/webdriver:bidi",
         "//rb/spec/integration/selenium/webdriver:devtools",
@@ -45,6 +52,7 @@ rb_library(
         "//rb/spec/integration/selenium/webdriver/remote:driver",
         "//rb/spec/integration/selenium/webdriver/remote:element",
         "//rb/spec/integration/selenium/webdriver/safari:driver",
+        "//rb/spec/unit/selenium:devtools",
         "//rb/spec/unit/selenium:server",
         "//rb/spec/unit/selenium/devtools:cdp_client_generator",
         "//rb/spec/unit/selenium/webdriver:file_reaper",
@@ -60,6 +68,7 @@ rb_library(
         "//rb/spec/unit/selenium/webdriver/chrome:service",
         "//rb/spec/unit/selenium/webdriver/common:action_builder",
         "//rb/spec/unit/selenium/webdriver/common:credentials",
+        "//rb/spec/unit/selenium/webdriver/common:driver_finder",
         "//rb/spec/unit/selenium/webdriver/common:logger",
         "//rb/spec/unit/selenium/webdriver/common:selenium_manager",
         "//rb/spec/unit/selenium/webdriver/common:service",

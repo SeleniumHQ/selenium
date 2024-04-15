@@ -133,7 +133,7 @@ v3.141.59.2
 
 v3.141.59.1
 ===========
- * Added checking for max expiriation date in IE driver cookie handling.
+ * Added checking for max expiration date in IE driver cookie handling.
    Attempting to add a cookie with a very large expiration date caused
    the IE driver to crash because of overflows in the C++ standard library
    time formatting functions. This commit now avoids the crash by

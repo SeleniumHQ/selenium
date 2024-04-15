@@ -2,6 +2,8 @@ module Selenium
   module WebDriver
     module Chromium
       module Features
+        include _Bridge
+
         CHROMIUM_COMMANDS: Hash[Symbol, Array[Symbol | String]]
 
         def commands: (Symbol command) -> Array[Symbol | String]
@@ -32,7 +34,8 @@ module Selenium
 
         def available_log_types: () -> Array[Symbol]
 
-        def log: (untyped type) -> untyped
+        def log: (Symbol type) -> Array[Hash[String, untyped]] |
+          (Symbol type) -> Array[LogEntry]
       end
     end
   end

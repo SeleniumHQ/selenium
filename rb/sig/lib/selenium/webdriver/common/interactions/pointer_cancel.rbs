@@ -1,0 +1,15 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      class PointerCancel < Interaction
+        @type: untyped
+
+        def initialize: (untyped source) -> void
+
+        def assert_source: (untyped source) -> untyped?
+
+        def encode: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

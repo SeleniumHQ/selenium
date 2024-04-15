@@ -15,19 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const {
-  PrimitiveType,
-  NonPrimitiveType,
-  RemoteType,
-} = require('./protocolType')
+const { PrimitiveType, NonPrimitiveType, RemoteType } = require('./protocolType')
 
 const TYPE_CONSTANT = 'type'
 const VALUE_CONSTANT = 'value'
+/**
+ * Represents the types of remote reference.
+ * @enum {string}
+ */
 const RemoteReferenceType = {
   HANDLE: 'handle',
   SHARED_ID: 'sharedId',
 }
 
+/**
+ * Represents a local value with a specified type and optional value.
+ * @class
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-LocalValue
+ */
 class LocalValue {
   constructor(type, value = null) {
     if (type === PrimitiveType.UNDEFINED || type === PrimitiveType.NULL) {
@@ -38,42 +43,97 @@ class LocalValue {
     }
   }
 
+  /**
+   * Creates a new LocalValue object with a string value.
+   *
+   * @param {string} value - The string value to be stored in the LocalValue object.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createStringValue(value) {
     return new LocalValue(PrimitiveType.STRING, value)
   }
 
+  /**
+   * Creates a new LocalValue object with a number value.
+   *
+   * @param {number} value - The number value.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createNumberValue(value) {
     return new LocalValue(PrimitiveType.NUMBER, value)
   }
 
+  /**
+   * Creates a new LocalValue object with a special number value.
+   *
+   * @param {number} value - The value of the special number.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createSpecialNumberValue(value) {
     return new LocalValue(PrimitiveType.SPECIAL_NUMBER, value)
   }
 
+  /**
+   * Creates a new LocalValue object with an undefined value.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createUndefinedValue() {
     return new LocalValue(PrimitiveType.UNDEFINED)
   }
 
+  /**
+   * Creates a new LocalValue object with a null value.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createNullValue() {
     return new LocalValue(PrimitiveType.NULL)
   }
 
+  /**
+   * Creates a new LocalValue object with a boolean value.
+   *
+   * @param {boolean} value - The boolean value.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createBooleanValue(value) {
     return new LocalValue(PrimitiveType.BOOLEAN, value)
   }
 
+  /**
+   * Creates a new LocalValue object with a BigInt value.
+   *
+   * @param {BigInt} value - The BigInt value.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createBigIntValue(value) {
     return new LocalValue(PrimitiveType.BIGINT, value)
   }
 
+  /**
+   * Creates a new LocalValue object with an array.
+   *
+   * @param {Array} value - The array.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createArrayValue(value) {
     return new LocalValue(NonPrimitiveType.ARRAY, value)
   }
 
+  /**
+   * Creates a new LocalValue object with date value.
+   *
+   * @param {string} value - The date.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createDateValue(value) {
     return new LocalValue(NonPrimitiveType.DATE, value)
   }
 
+  /**
+   * Creates a new LocalValue object of map value.
+   * @param {Map} map - The map.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createMapValue(map) {
     let value = []
     Object.entries(map).forEach((entry) => {
@@ -82,22 +142,45 @@ class LocalValue {
     return new LocalValue(NonPrimitiveType.MAP, value)
   }
 
-  static createObjectValue(map) {
+  /**
+   * Creates a new LocalValue object from the passed object.
+   *
+   * @param {Object} map - The object.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
+  static createObjectValue(object) {
     let value = []
-    Object.entries(map).forEach((entry) => {
+    Object.entries(object).forEach((entry) => {
       value.push(entry)
     })
     return new LocalValue(NonPrimitiveType.OBJECT, value)
   }
 
+  /**
+   * Creates a new LocalValue object of regular expression value.
+   *
+   * @param {string} value - The value of the regular expression.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createRegularExpressionValue(value) {
     return new LocalValue(NonPrimitiveType.REGULAR_EXPRESSION, value)
   }
 
+  /**
+   * Creates a new LocalValue object with the specified value.
+   * @param {Set} value - The value to be set.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createSetValue(value) {
     return new LocalValue(NonPrimitiveType.SET, value)
   }
 
+  /**
+   * Creates a new LocalValue object with the given channel value
+   *
+   * @param {ChannelValue} value - The channel value.
+   * @returns {LocalValue} - The created LocalValue object.
+   */
   static createChannelValue(value) {
     return new LocalValue(NonPrimitiveType.CHANNEL, value)
   }
@@ -106,18 +189,18 @@ class LocalValue {
     let toReturn = {}
     toReturn[TYPE_CONSTANT] = this.type
 
-    if (
-      !(
-        this.type === PrimitiveType.NULL ||
-        this.type === PrimitiveType.UNDEFINED
-      )
-    ) {
+    if (!(this.type === PrimitiveType.NULL || this.type === PrimitiveType.UNDEFINED)) {
       toReturn[VALUE_CONSTANT] = this.value
     }
     return toReturn
   }
 }
 
+/**
+ * Represents a remote value.
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-RemoteValue.
+ * @class
+ */
 class RemoteValue {
   constructor(remoteValue) {
     this.type = null
@@ -168,55 +251,88 @@ class RemoteValue {
   }
 }
 
+/**
+ * Represents a reference value in the protocol.
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-RemoteReference.
+ */
 class ReferenceValue {
+  #handle
+  #sharedId
+
+  /**
+   * Constructs a new ReferenceValue object.
+   * @param {string} handle - The handle value.
+   * @param {string} sharedId - The shared ID value.
+   */
   constructor(handle, sharedId) {
     if (handle === RemoteReferenceType.HANDLE) {
-      this.handle = sharedId
+      this.#handle = sharedId
+    } else if (handle === RemoteReferenceType.SHARED_ID) {
+      this.#sharedId = sharedId
     } else {
-      this.handle = handle
-      this.sharedId = sharedId
+      this.#handle = handle
+      this.#sharedId = sharedId
     }
   }
 
   asMap() {
     const toReturn = {}
-    if (this.handle != null) {
-      toReturn[RemoteReferenceType.HANDLE] = this.handle
+    if (this.#handle != null) {
+      toReturn[RemoteReferenceType.HANDLE] = this.#handle
     }
 
-    if (this.sharedId != null) {
-      toReturn[RemoteReferenceType.SHARED_ID] = this.sharedId
+    if (this.#sharedId != null) {
+      toReturn[RemoteReferenceType.SHARED_ID] = this.#sharedId
     }
 
     return toReturn
   }
 }
 
+/**
+ * Represents a regular expression value.
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-LocalValue.
+ */
 class RegExpValue {
+  /**
+   * Constructs a new RegExpValue object.
+   * @param {string} pattern - The pattern of the regular expression.
+   * @param {string|null} [flags=null] - The flags of the regular expression.
+   */
   constructor(pattern, flags = null) {
     this.pattern = pattern
     this.flags = flags
   }
 }
 
+/**
+ * Represents serialization options.
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-SerializationOptions.
+ */
 class SerializationOptions {
-  constructor(
-    maxDomDepth = 0,
-    maxObjectDepth = null,
-    includeShadowTree = 'none'
-  ) {
+  /**
+   * Constructs a new instance of SerializationOptions.
+   * @param {number} [maxDomDepth=0] - The maximum depth to serialize the DOM.
+   * @param {number|null} [maxObjectDepth=null] - The maximum depth to serialize objects.
+   * @param {'none'|'open'|'all'} [includeShadowTree='none'] - The inclusion level of the shadow tree.
+   * @throws {Error} If the `includeShadowTree` value is not one of 'none', 'open', or 'all'.
+   */
+  constructor(maxDomDepth = 0, maxObjectDepth = null, includeShadowTree = 'none') {
     this._maxDomDepth = maxDomDepth
     this._maxObjectDepth = maxObjectDepth
 
     if (['none', 'open', 'all'].includes(includeShadowTree)) {
-      throw Error(
-        `Valid types are 'none', 'open', and 'all'. Received: ${includeShadowTree}`
-      )
+      throw Error(`Valid types are 'none', 'open', and 'all'. Received: ${includeShadowTree}`)
     }
     this._includeShadowTree = includeShadowTree
   }
 }
 
+/**
+ * Represents a channel value.
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-ChannelValue.
+ * @class
+ */
 class ChannelValue {
   constructor(channel, options = undefined, resultOwnership = undefined) {
     this.channel = channel
@@ -225,9 +341,7 @@ class ChannelValue {
       if (options instanceof SerializationOptions) {
         this.options = options
       } else {
-        throw Error(
-          `Pass in SerializationOptions object. Received: ${options} `
-        )
+        throw Error(`Pass in SerializationOptions object. Received: ${options} `)
       }
     }
 
@@ -235,9 +349,7 @@ class ChannelValue {
       if (['root', 'none'].includes(resultOwnership)) {
         this.resultOwnership = resultOwnership
       } else {
-        throw Error(
-          `Valid types are 'root' and 'none. Received: ${resultOwnership}`
-        )
+        throw Error(`Valid types are 'root' and 'none. Received: ${resultOwnership}`)
       }
     }
   }

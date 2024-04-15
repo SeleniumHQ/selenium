@@ -33,7 +33,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.BiDiException;
-import org.openqa.selenium.bidi.Input;
+import org.openqa.selenium.bidi.module.Input;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
@@ -64,7 +64,6 @@ class DragAndDropTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void testDragAndDropRelative() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
@@ -82,7 +81,6 @@ class DragAndDropTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
     WebElement img1 = driver.findElement(By.id("test1"));
@@ -138,7 +136,6 @@ class DragAndDropTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void testElementInDiv() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
@@ -179,7 +176,6 @@ class DragAndDropTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
@@ -201,7 +197,6 @@ class DragAndDropTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
 

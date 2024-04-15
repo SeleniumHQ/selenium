@@ -20,8 +20,6 @@ package org.openqa.selenium.bidi.input;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -32,7 +30,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.bidi.Input;
+import org.openqa.selenium.bidi.module.Input;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
@@ -61,7 +59,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void testBasicKeyboardInput() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -77,7 +74,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   @NotYetImplemented(SAFARI)
   public void testSendingKeyDownOnly() {
     driver.get(appServer.whereIs("key_logger.html"));
@@ -100,7 +96,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   @NotYetImplemented(SAFARI)
   public void testSendingKeyUp() {
     driver.get(appServer.whereIs("key_logger.html"));
@@ -129,7 +124,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   @NotYetImplemented(SAFARI)
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
@@ -158,7 +152,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testSendingKeysToActiveElement() {
     driver.get(pages.bodyTypingPage);
@@ -172,7 +165,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   @NotYetImplemented(SAFARI)
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
@@ -189,7 +181,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void canGenerateKeyboardShortcuts() {
     driver.get(appServer.whereIs("keyboard_shortcut.html"));
 
@@ -221,10 +212,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
-  @NotYetImplemented(
-      value = FIREFOX,
-      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
   public void testSelectionSelectBySymbol() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -252,11 +239,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   @Ignore(IE)
-  @NotYetImplemented(
-      value = FIREFOX,
-      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
   public void testSelectionSelectByWord() {
     assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "MacOS has alternative keyboard");
 
@@ -286,7 +269,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   void testSelectionSelectAll() {
     assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "MacOS has alternative keyboard");
 

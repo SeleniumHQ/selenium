@@ -2,6 +2,15 @@ name: CI - Rust
 
 on:
   workflow_call:
+    inputs:
+      release:
+        required: false
+        type: string
+        default: false
+      branch:
+        required: false
+        type: string
+        default: trunk
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
@@ -43,6 +52,8 @@ jobs:
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
       - name: "Update Rust"
         run: |
           rustup update
@@ -55,7 +66,7 @@ jobs:
       - name: "Rename binary"
         run: mv rust/target/release/selenium-manager.exe selenium-manager-windows.exe
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-windows
           path: selenium-manager-windows.exe
@@ -71,6 +82,8 @@ jobs:
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
       - name: "Update Rust"
         run: |
           rustup update
@@ -83,7 +96,7 @@ jobs:
       - name: "Rename binary"
         run: mv rust/target/debug/selenium-manager.exe selenium-manager-windows-debug.exe
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-windows-debug
           path: selenium-manager-windows-debug.exe
@@ -97,6 +110,8 @@ jobs:
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
       - name: "Update Rust"
         run: |
           rustup update
@@ -104,14 +119,13 @@ jobs:
       - name: "Install cross"
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
-          cross -V
       - name: "Build release binary"
         run: cross build --target x86_64-unknown-linux-musl --release
         working-directory: rust
       - name: "Rename binary"
         run: mv rust/target/x86_64-unknown-linux-musl/release/selenium-manager selenium-manager-linux
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-linux
           path: selenium-manager-linux
@@ -125,6 +139,8 @@ jobs:
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
       - name: "Update Rust"
         run: |
           rustup update
@@ -132,7 +148,6 @@ jobs:
       - name: "Install cross"
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
-          cross -V
       - name: "Build release binary"
         run: |
           cross build --target x86_64-unknown-linux-musl --profile dev
@@ -140,7 +155,7 @@ jobs:
           tar -cvf ../../../../selenium-manager-linux-debug.tar selenium-manager
         working-directory: rust
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-linux-debug
           path: selenium-manager-linux-debug.tar
@@ -156,6 +171,8 @@ jobs:
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
       - name: "Update Rust"
         run: |
           rustup update
@@ -170,7 +187,7 @@ jobs:
             target/x86_64-apple-darwin/release/selenium-manager
         working-directory: rust
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-macos
           path: rust/target/selenium-manager-macos
@@ -186,6 +203,8 @@ jobs:
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
       - name: "Update Rust"
         run: |
           rustup update
@@ -202,7 +221,7 @@ jobs:
           tar -cvf ../../selenium-manager-macos-debug.tar selenium-manager
         working-directory: rust
       - name: "Upload release binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-macos-debug
           path: selenium-manager-macos-debug.tar
@@ -211,8 +230,8 @@ jobs:
   release:
     name: "Release Binaries"
     runs-on: ubuntu-latest
-    needs: [macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug]
-    if: github.event_name != 'schedule'
+    needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug ]
+    if: github.event_name != 'schedule' && github.repository_owner == 'seleniumhq' && (github.ref == 'refs/heads/trunk' || inputs.release == 'true')
     steps:
       - name: "Checkout selenium_manager_artifacts"
         uses: actions/checkout@v4
@@ -220,7 +239,7 @@ jobs:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           repository: SeleniumHQ/selenium_manager_artifacts
       - name: "Download Artifacts"
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
       - name: "Prepare and Commit"
@@ -238,7 +257,7 @@ jobs:
           git tag ${{ env.TAG_NAME }}
           git push && git push --tags
       - name: "Release"
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           repository: SeleniumHQ/selenium_manager_artifacts

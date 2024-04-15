@@ -1,3 +1,32 @@
+4.19.0 (2024-03-27)
+=========================
+
+* Add CDP for Chrome 123 and remove 120
+* Avoid over-escaping browser path (#13632)
+* Add full RBS support (#13234)
+
+4.18.1 (2024-02-19)
+=========================
+
+* Add CDP for Chrome 122 and remove 119
+
+4.18.0 (2024-02-19)
+=========================
+
+* Update documentation link in readme (#13570)
+* make suggested updates from rubocop
+
+4.17.0 (2024-01-22)
+=========================
+
+* Logger defaults output to stderr instead of stdout
+* Fully support Chrome 120+ old headless mode (#13271)
+* Add ruby to Selenium Manager input for tracking (see #13288)
+* Define default command_list (fixes #13307)
+* Fix issues with incorrectly named edge browser
+* Check for whether driver supports full page screenshots to error (#12799)
+* Add CDP for Chrome 121 and remove 118
+
 4.16.0 (2023-12-06)
 =========================
 
