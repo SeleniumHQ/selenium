@@ -61,9 +61,9 @@ class JsonTest {
 
   @Test
   void canReadANumber() {
-    assertThat((Number) new Json().toType("42", Number.class)).isEqualTo(Long.valueOf(42));
-    assertThat((Integer) new Json().toType("42", Integer.class)).isEqualTo(Integer.valueOf(42));
-    assertThat((Double) new Json().toType("42", Double.class)).isEqualTo(Double.valueOf(42));
+    assertThat((Number) new Json().toType("42", Number.class)).isEqualTo(42L);
+    assertThat((Integer) new Json().toType("42", Integer.class)).isEqualTo(42);
+    assertThat((Double) new Json().toType("42", Double.class)).isEqualTo(42.0);
   }
 
   @Test
