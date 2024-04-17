@@ -84,7 +84,6 @@ class StorageCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
   @NotYetImplemented(EDGE)
   public void canGetCookieInDefaultUserContext() {
     String windowHandle = driver.getWindowHandle();
@@ -155,7 +154,6 @@ class StorageCommandsTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
   public void canAddAndGetCookie() {
     driver.get(appServer.whereIs("/common/animals"));
 
@@ -253,7 +251,6 @@ class StorageCommandsTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
   public void canDeleteAllCookies() {
     addCookieOnServerSide(new Cookie("foo", "set"));
     assertSomeCookiesArePresent();
@@ -271,7 +268,6 @@ class StorageCommandsTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
   public void canDeleteCookieWithName() {
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
