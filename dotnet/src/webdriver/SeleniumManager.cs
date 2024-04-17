@@ -191,13 +191,18 @@ namespace OpenQA.Selenium
                 Dictionary<string, string> logs = result["logs"] as Dictionary<string, string>;
                 foreach (KeyValuePair<string, string> entry in logs)
                 {
-                    if (entry.Key == "WARN")
+                    switch (entry.Key)
                     {
-                        _logger.Warn(entry.Value);
-                    }
-                    if (_logger.IsEnabled(LogEventLevel.Debug) && (entry.Key == "DEBUG" || entry.Key == "INFO"))
-                    {
-                        _logger.Debug(entry.Value);
+                        case "WARN":
+                            _logger.Warn(entry.Value);
+                            break;
+                        case "DEBUG":
+                        case "INFO":
+                            if (_logger.IsEnabled(LogEventLevel.Debug) && (entry.Key == "DEBUG" || entry.Key == "INFO"))
+                            {
+                                _logger.Debug(entry.Value);
+                            }
+                            break;
                     }
                 }
             }

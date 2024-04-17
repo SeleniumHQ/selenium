@@ -32,6 +32,8 @@ namespace OpenQA.Selenium
     {
         private DriverOptions options;
         private Dictionary<string, string> paths = new Dictionary<string, string>();
+        private const string BrowserPathKey = "browser_path";
+        private const string DriverPathKey = "driver_path";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverFinder"/> class.
@@ -49,7 +51,7 @@ namespace OpenQA.Selenium
         /// </returns>
         public string BrowserPath()
         {
-            return BinaryPaths()["browser_path"];
+            return BinaryPaths()[BrowserPathKey];
         }
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace OpenQA.Selenium
         /// </returns>
         public string DriverPath()
         {
-            return BinaryPaths()["driver_path"];
+            return BinaryPaths()[DriverPathKey];
         }
 
         public bool HasBrowserPath()
@@ -77,16 +79,16 @@ namespace OpenQA.Selenium
         /// <exception cref="NoSuchDriverException">If one of the paths does not exist.</exception>
         private Dictionary<string, string> BinaryPaths()
         {
-            if (!string.IsNullOrWhiteSpace(paths["driver_path"]))
+            if (paths.ContainsKey(DriverPathKey) && !string.IsNullOrWhiteSpace(paths[DriverPathKey]))
             {
                 return paths;
             }
             Dictionary<string, string> binaryPaths = SeleniumManager.BinaryPaths(CreateArguments());
-            string driverPath = binaryPaths["driver_path"];
-            string browserPath = binaryPaths["browser_path"];
+            string driverPath = binaryPaths[DriverPathKey];
+            string browserPath = binaryPaths[BrowserPathKey];
             if (File.Exists(driverPath))
             {
-                paths.Add("driver_path", driverPath);                
+                paths.Add(DriverPathKey, driverPath);                
             }
             else
             {
@@ -94,7 +96,7 @@ namespace OpenQA.Selenium
             }
             if (File.Exists(browserPath))
             {
-                paths.Add("browser_path", browserPath);
+                paths.Add(BrowserPathKey, browserPath);
             }
             else
             {
