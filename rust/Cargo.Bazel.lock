@@ -11271,86 +11271,11 @@
           "common": [
             "alloc",
             "default",
+            "fs",
             "std",
             "use-libc-auxv"
           ],
-          "selects": {
-            "aarch64-apple-darwin": [
-              "fs"
-            ],
-            "aarch64-apple-ios": [
-              "fs"
-            ],
-            "aarch64-apple-ios-sim": [
-              "fs"
-            ],
-            "aarch64-fuchsia": [
-              "fs"
-            ],
-            "aarch64-linux-android": [
-              "fs"
-            ],
-            "aarch64-unknown-linux-gnu": [
-              "fs"
-            ],
-            "aarch64-unknown-nixos-gnu": [
-              "fs"
-            ],
-            "aarch64-unknown-nto-qnx710": [
-              "fs"
-            ],
-            "arm-unknown-linux-gnueabi": [
-              "fs"
-            ],
-            "armv7-linux-androideabi": [
-              "fs"
-            ],
-            "armv7-unknown-linux-gnueabi": [
-              "fs"
-            ],
-            "i686-apple-darwin": [
-              "fs"
-            ],
-            "i686-linux-android": [
-              "fs"
-            ],
-            "i686-unknown-freebsd": [
-              "fs"
-            ],
-            "i686-unknown-linux-gnu": [
-              "fs"
-            ],
-            "powerpc-unknown-linux-gnu": [
-              "fs"
-            ],
-            "s390x-unknown-linux-gnu": [
-              "fs"
-            ],
-            "wasm32-wasi": [
-              "fs"
-            ],
-            "x86_64-apple-darwin": [
-              "fs"
-            ],
-            "x86_64-apple-ios": [
-              "fs"
-            ],
-            "x86_64-fuchsia": [
-              "fs"
-            ],
-            "x86_64-linux-android": [
-              "fs"
-            ],
-            "x86_64-unknown-freebsd": [
-              "fs"
-            ],
-            "x86_64-unknown-linux-gnu": [
-              "fs"
-            ],
-            "x86_64-unknown-nixos-gnu": [
-              "fs"
-            ]
-          }
+          "selects": {}
         },
         "deps": {
           "common": [
