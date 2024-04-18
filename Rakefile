@@ -807,9 +807,9 @@ namespace :dotnet do
 
   desc 'Upload nupkg files to Nuget'
   task :release, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || ['--stamp']
-    Rake::Task['dotnet:build'].invoke(args)
-    Rake::Task['dotnet:zip_assets'].invoke(args)
+#     args = Array(arguments[:args]) || ['--stamp']
+#     Rake::Task['dotnet:build'].invoke(args)
+#     Rake::Task['dotnet:zip_assets'].invoke(args)
 
     release_version = dotnet_version
     api_key = ENV.fetch('NUGET_API_KEY', nil)
@@ -823,10 +823,10 @@ namespace :dotnet do
       sh "dotnet nuget add source --username seleniumhq --password #{api_key} --store-password-in-clear-text --name #{push_destination} #{github_push_url}"
     end
 
-    ["./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
-     "./bazel-bin/dotnet/src/support/Selenium.Support.#{dotnet_version}.nupkg"].each do |asset|
-      sh "dotnet nuget push #{asset} --api-key #{api_key} --source #{push_destination}"
-    end
+#     ["./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
+#      "./bazel-bin/dotnet/src/support/Selenium.Support.#{dotnet_version}.nupkg"].each do |asset|
+#       sh "dotnet nuget push #{asset} --api-key #{api_key} --source #{push_destination}"
+#     end
   end
 
   desc 'Generate .NET documentation'
