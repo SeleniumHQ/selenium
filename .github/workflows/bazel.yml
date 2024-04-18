@@ -96,7 +96,7 @@ jobs:
         if: inputs.dotnet-version != ''
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ dotnet.dotnet-version }}
+          dotnet-version: ${{ inputs.dotnet-version }}
       - name: Setup Java
         if: inputs.java-version != ''
         uses: actions/setup-java@v3
