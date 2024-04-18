@@ -114,8 +114,7 @@ public class v122Network extends Network<AuthRequired, RequestPaused> {
 
   @Override
   public Either<HttpRequest, HttpResponse> createSeMessages(RequestPaused pausedReq) {
-    if (pausedReq.getResponseStatusCode().isPresent()
-        || pausedReq.getResponseErrorReason().isPresent()) {
+    if (pausedReq.getResponseStatusCode().isPresent()) {
       String body;
       boolean bodyIsBase64Encoded;
 
@@ -159,6 +158,11 @@ public class v122Network extends Network<AuthRequired, RequestPaused> {
             cdpReq.getMethod(), cdpReq.getUrl(), cdpReq.getHeaders(), cdpReq.getPostData());
 
     return Either.left(req);
+  }
+
+  @Override
+  protected boolean hasErrorResponse(RequestPaused pausedReq) {
+    return pausedReq.getResponseErrorReason().isPresent();
   }
 
   @Override

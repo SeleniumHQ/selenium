@@ -200,6 +200,12 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
         pausedRequest -> {
           try {
             String id = getRequestId(pausedRequest);
+
+            if (hasErrorResponse(pausedRequest)) {
+              devTools.send(continueWithoutModification(pausedRequest));
+              return;
+            }
+
             Either<HttpRequest, HttpResponse> message = createSeMessages(pausedRequest);
 
             if (message.isRight()) {
@@ -347,6 +353,8 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   protected abstract String getRequestId(REQUESTPAUSED pausedReq);
 
   protected abstract Either<HttpRequest, HttpResponse> createSeMessages(REQUESTPAUSED pausedReq);
+
+  protected abstract boolean hasErrorResponse(REQUESTPAUSED pausedReq);
 
   protected abstract Command<Void> continueWithoutModification(REQUESTPAUSED pausedReq);
 
