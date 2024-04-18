@@ -151,9 +151,15 @@ namespace OpenQA.Selenium.Chromium
         {
             if (service.DriverServicePath == null)
             {
-                string fullServicePath = DriverFinder.FullPath(options);
+                DriverFinder finder = new DriverFinder(options);
+                string fullServicePath = finder.DriverPath();
                 service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
                 service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
+                if (finder.HasBrowserPath())
+                {
+                    options.BinaryLocation = finder.BrowserPath();
+                    options.BrowserVersion = null;
+                }
             }
             return new DriverServiceCommandExecutor(service, commandTimeout);
         }
