@@ -35,8 +35,8 @@ exports_files(
 
     http_archive(
         name = "linux_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/126.0b1/linux-x86_64/en-US/firefox-126.0b1.tar.bz2",
-        sha256 = "e26915f5a1de4ef4d966735529dd5762f689d270e508e2a961a0775db96f3a6a",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/126.0b2/linux-x86_64/en-US/firefox-126.0b2.tar.bz2",
+        sha256 = "915ad101d26acf80a0ac18b4e787277b3d8c2d1371cc1796bd2cba641810390a",
         build_file_content = """
 filegroup(
     name = "files",
@@ -52,8 +52,8 @@ exports_files(
 
     dmg_archive(
         name = "mac_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/126.0b1/mac/en-US/Firefox%20126.0b1.dmg",
-        sha256 = "1fbaa788b46f9c6051d4a7b373eebfb03320cb8b8010e2439682804a3bbb1050",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/126.0b2/mac/en-US/Firefox%20126.0b2.dmg",
+        sha256 = "d49b5260d15ee137388e1e3b4dd5a102047794ccd6ef6de62dc0a48a41bb7785",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
