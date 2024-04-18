@@ -18,6 +18,9 @@ jobs:
       os: ${{ matrix.os }}
       browser: chrome
       cache-key: java-${{ matrix.os }}-tests
+      # rules_jvm_external is not fully hermetic
+      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
+      java-version: 17
       run: |
         bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest `
             //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest `
@@ -39,10 +42,13 @@ jobs:
       os: ${{ matrix.os }}
       browser: chrome
       cache-key: java-${{ matrix.os }}-tests
+      # rules_jvm_external is not fully hermetic
+      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
+      java-version: 17
       run: |
         bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote \
             //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest \
-            //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest \
+          //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest \
             //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest \
             //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest \
             //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
@@ -60,5 +66,8 @@ jobs:
       os: ${{ matrix.os }}
       browser: chrome
       cache-key: java-${{ matrix.os }}-remote-tests
+      # rules_jvm_external is not fully hermetic
+      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
+      java-version: 17
       run: |
         bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
