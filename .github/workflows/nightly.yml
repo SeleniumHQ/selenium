@@ -32,7 +32,7 @@ jobs:
         gem:
           - selenium-webdriver
     with:
-      name: Release
+      name: Nightly Ruby Release
       cache-key: rb-nightly-${{ matrix.gem }}
       run: |
         export GEM_HOST_API_KEY="Bearer $GITHUB_TOKEN"
@@ -44,7 +44,7 @@ jobs:
     name: Python
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Release
+      name: Nightly Python Release
       cache-key: python-nightly
       run: |
         ./go "py:version[nightly]"
@@ -59,7 +59,7 @@ jobs:
     name: Java
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Release
+      name: Nightly Java Release
       cache-key: java-nightly
       run: |
         ./go publish-maven-snapshot
@@ -70,10 +70,10 @@ jobs:
     name: DotNet
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Release
+      name: Nightly DotNet Release
       cache-key: dotnet-nightly
+      dotnet-version: '6.x'
       run: |
-        sudo apt-get update && sudo apt-get install -y dotnet-sdk-7.0
         ./go "dotnet:version[nightly]"
         ./go dotnet:release
     secrets: inherit
@@ -83,7 +83,7 @@ jobs:
     name: Grid
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Release
+      name: Nightly Grid Release
       cache-key: grid-nightly
       run: |
         echo build --stamp >>.bazelrc.local
