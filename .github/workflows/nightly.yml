@@ -19,6 +19,7 @@ on:
           - ruby
           - python
           - grid
+          - dotnet
 
 jobs:
   ruby:
@@ -62,6 +63,18 @@ jobs:
       cache-key: java-nightly
       run: |
         ./go publish-maven-snapshot
+    secrets: inherit
+
+  dotnet:
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'java' || github.event_name == 'schedule')
+    name: Java
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Release
+      cache-key: dotnet-nightly
+      run: |
+        ./go "dotnet:version[nightly]"
+        ./go dotnet:release
     secrets: inherit
 
   grid:
