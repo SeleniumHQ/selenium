@@ -66,8 +66,8 @@ jobs:
     secrets: inherit
 
   dotnet:
-    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'java' || github.event_name == 'schedule')
-    name: Java
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'dotnet' || github.event_name == 'schedule')
+    name: DotNet
     uses: ./.github/workflows/bazel.yml
     with:
       name: Release
