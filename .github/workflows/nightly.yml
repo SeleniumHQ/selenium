@@ -101,10 +101,8 @@ jobs:
       node-version: '18.x'
       registry-url: 'https://npm.pkg.github.com'
       run: |
-        ls -lah
+        echo "@seleniumhq:registry=https://npm.pkg.github.com" >> .npmrc
         cat .npmrc
         ./go "node:version[nightly]"
-        bazel build --stamp //javascript/node/selenium-webdriver:selenium-webdriver
-        bazel build //javascript/node/selenium-webdriver:selenium-webdriver.tgz 
-        npm publish bazel-bin/javascript/node/selenium-webdriver/selenium-webdriver-*.tgz --tag=next
+        ./go node:release
     secrets: inherit
