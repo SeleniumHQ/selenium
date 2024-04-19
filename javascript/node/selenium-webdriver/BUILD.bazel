@@ -101,6 +101,7 @@ mocha_test(
     size = "small",
     chdir = package_name(),
     data = [
+        ":node_modules/@bazel/runfiles",
         ":node_modules/jszip",
         ":node_modules/mocha",
         ":node_modules/mocha-junit-reporter",
@@ -109,6 +110,10 @@ mocha_test(
         "//:node_modules/selenium-webdriver",
         "//common/extensions:js-lib",
         "//common/src/web:js-lib",
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
+        "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
+        "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+        "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
     ] + SMALL_TESTS + TEST_DATA,
     tags = [
         "skip-remote",
@@ -133,6 +138,10 @@ mocha_test(
             "//:node_modules/selenium-webdriver",
             "//common/extensions:js-lib",
             "//common/src/web:js-lib",
+            "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
+            "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
+            "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+            "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
         ],
         env = {
             "SELENIUM_BROWSER": browser,
