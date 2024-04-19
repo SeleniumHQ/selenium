@@ -52,7 +52,12 @@ on:
         type: string
         default: ''
       registry-url:
-        description: Custom Node registry URL to use
+        description: Custom npm registry URL to use
+        required: false
+        type: string
+        default: ''
+      scoped-registries:
+        description: Custom npm scoped registries to use
         required: false
         type: string
         default: ''
@@ -114,11 +119,12 @@ jobs:
           java-version: ${{ inputs.java-version }}
           distribution: 'temurin'
       - name: Setup Node for Nightly
-        if: inputs.node-version != '' && inputs.registry-url != ''
+        if: inputs.node-version != '' && inputs.registry-url != '' && inputs.scoped-registries != ''
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
           registry-url: ${{ inputs.registry-url }}
+          scope: ${{ inputs.scoped-registries }}
       - name: Setup Bazel with caching
         if: inputs.caching
         uses: bazel-contrib/setup-bazel@0.8.1

@@ -100,7 +100,7 @@ jobs:
       cache-key: javascript-nightly
       node-version: '18.x'
       registry-url: 'https://npm.pkg.github.com'
-      scope: '@seleniumhq'
+      scoped-registries: '@seleniumhq'
       run: |
         export NODE_AUTH_TOKEN=$GITHUB_TOKEN
         ./go "node:version[nightly]"
