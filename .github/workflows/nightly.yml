@@ -100,7 +100,7 @@ jobs:
       cache-key: javascript-nightly
       node-version: '18.x'
       run: |
-        sed -i '' 's|https://registry.npmjs.org/|https://npm.pkg.github.com|g' javascript/node/selenium-webdriver/package.json
+        sed -i 's|https://registry.npmjs.org/|https://npm.pkg.github.com|g' javascript/node/selenium-webdriver/package.json
         ./go "node:version[nightly]"
         ./go node:release
     secrets: inherit
