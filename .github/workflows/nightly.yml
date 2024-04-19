@@ -104,5 +104,7 @@ jobs:
       run: |
         export NODE_AUTH_TOKEN=$GITHUB_TOKEN
         ./go "node:version[nightly]"
-        ./go node:release
+        bazel build --stamp //javascript/node/selenium-webdriver:selenium-webdriver
+        bazel build //javascript/node/selenium-webdriver:selenium-webdriver.tgz 
+        npm publish bazel-bin/javascript/node/selenium-webdriver/selenium-webdriver.tgz --tag=next
     secrets: inherit

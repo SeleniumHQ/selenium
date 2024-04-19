@@ -496,7 +496,7 @@ namespace :node do
   end
 
   task :'dry-run' do
-    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.pack')
+    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.publish  -- --dry-run=true')
   end
 
   desc 'Release Node npm package'
@@ -551,7 +551,8 @@ namespace :node do
     # Fetching the new version number
     new_version = node_version
     ['javascript/node/selenium-webdriver/package.json',
-     'package-lock.json'].each do |file|
+     'package-lock.json',
+     'javascript/node/selenium-webdriver/BUILD.bazel'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
       File.open(file, "w") { |f| f.puts text }
     end
