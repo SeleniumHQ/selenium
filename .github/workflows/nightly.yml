@@ -102,8 +102,11 @@ jobs:
       run: |
         sed -i 's|https://registry.npmjs.org/|https://npm.pkg.github.com|g' javascript/node/selenium-webdriver/package.json
         echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > javascript/node/selenium-webdriver/.npmrc
+        echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
         echo "@seleniumhq:registry=https://npm.pkg.github.com" >> javascript/node/selenium-webdriver/.npmrc
+        echo "@seleniumhq:registry=https://npm.pkg.github.com" >> .npmrc
         echo "always-auth=true" >> javascript/node/selenium-webdriver/.npmrc
+        echo "always-auth=true" >> .npmrc
         ./go "node:version[nightly]"
         ./go node:release
     secrets: inherit
