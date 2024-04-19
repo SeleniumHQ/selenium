@@ -100,9 +100,7 @@ jobs:
       cache-key: javascript-nightly
       node-version: '18.x'
       registry-url: 'https://npm.pkg.github.com'
-      scoped-registries: '@seleniumhq'
       run: |
-        export NODE_AUTH_TOKEN=$GITHUB_TOKEN
         ./go "node:version[nightly]"
         bazel build --stamp //javascript/node/selenium-webdriver:selenium-webdriver
         bazel build //javascript/node/selenium-webdriver:selenium-webdriver.tgz 
