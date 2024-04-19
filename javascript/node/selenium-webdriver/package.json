@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.19.0",
+  "version": "4.20.0-nightly202404191827",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -54,5 +54,8 @@
   "mocha": {
     "recursive": true,
     "timeout": 600000
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }

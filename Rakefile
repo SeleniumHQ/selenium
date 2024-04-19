@@ -496,7 +496,7 @@ namespace :node do
   end
 
   task :'dry-run' do
-    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.pack')
+    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.publish  -- --dry-run=true')
   end
 
   desc 'Release Node npm package'
@@ -520,16 +520,43 @@ namespace :node do
 
   desc 'Update Node version'
   task :version, [:version] do |_task, arguments|
+    bump_nightly = arguments[:version] === 'nightly'
     old_version = node_version
-    new_version = updated_version(old_version, arguments[:version])
+    new_version = nil
+
+    # There are three cases we want to deal with:
+    # 1. Switching from a release build to a nightly one
+    # 2. Updating a nightly build for the next nightly build
+    # 3. Switching from nightlies to a release build.
+
+    if bump_nightly && old_version.include?('-nightly')
+      # This is the case where we are updating a nightly build to the next nightly build.
+      # This change is usually done by the CI system and never committed.
+      # The "-nightlyYmdHM" is removed to add a new timestamp.
+      new_version = old_version.gsub(/\-nightly\d+$/, '') + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+    elsif bump_nightly
+      # This is the case after a production release and the version number is configured
+      # to start doing nightly builds.
+      new_version = old_version + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+    else
+      if old_version.include?('-nightly')
+        # From a nightly build to a release build.
+        new_version = old_version.gsub(/\-nightly\d+$/, '')
+      else
+        # From a release build to a nightly build. We use npm version for this.
+        new_version = updated_version(old_version.gsub(/\-nightly\d+$/, ''), arguments[:version])
+        new_version = new_version + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+      end
+    end
 
     ['javascript/node/selenium-webdriver/package.json',
-     'package-lock.json'].each do |file|
+     'package-lock.json',
+     'javascript/node/selenium-webdriver/BUILD.bazel'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
       File.open(file, "w") { |f| f.puts text }
     end
 
-    Rake::Task['node:changelog'].invoke
+    Rake::Task['node:changelog'].invoke unless new_version.include?('-nightly') || bump_nightly
   end
 end
 
