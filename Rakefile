@@ -520,16 +520,43 @@ namespace :node do
 
   desc 'Update Node version'
   task :version, [:version] do |_task, arguments|
+    bump_nightly = arguments[:version] === 'nightly'
     old_version = node_version
-    new_version = updated_version(old_version, arguments[:version])
+    new_version = nil
 
+    # There are three cases we want to deal with:
+    # 1. Switching from a release build to a nightly one
+    # 2. Updating a nightly build for the next nightly build
+    # 3. Switching from nightlies to a release build.
+
+    if bump_nightly && old_version.include?('-next')
+      # This is the case where we are updating a nightly build to the next nightly build.
+      # This change is usually done by the CI system and never committed. We use npm version for this.
+      sh 'npm --prefix ./javascript/node/selenium-webdriver version prerelease --preid=next'
+    elsif bump_nightly
+      # This is the case after a production release and the version number is configured
+      # to start doing nightly builds. We use npm version for this.
+      # Bump to the next preminor version, e.g. from 4.19.x to 4.20.0-next.0
+      sh 'npm --prefix ./javascript/node/selenium-webdriver version preminor --no-git-tag-version --preid=next'
+    else
+      if old_version.include?('-next')
+        # From a nightly build to a release build. We use npm version for this.
+        sh 'npm --prefix ./javascript/node/selenium-webdriver version minor --no-git-tag-version'
+      else
+        # From a release build to a nightly build. We use npm version for this.
+        sh 'npm --prefix ./javascript/node/selenium-webdriver version preminor --no-git-tag-version --preid=next'
+      end
+    end
+
+    # Fetching the new version number
+    new_version = node_version
     ['javascript/node/selenium-webdriver/package.json',
      'package-lock.json'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
       File.open(file, "w") { |f| f.puts text }
     end
 
-    Rake::Task['node:changelog'].invoke
+    Rake::Task['node:changelog'].invoke unless new_version.include?('-next') || bump_nightly
   end
 end
 

@@ -20,6 +20,7 @@ on:
           - python
           - grid
           - dotnet
+          - javascript
 
 jobs:
   ruby:
@@ -89,3 +90,19 @@ jobs:
         echo build --stamp >>.bazelrc.local
         ./go java-release-zip
       nightly-release-files: build/dist/*.*
+
+  javascript:
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'javascript' || github.event_name == 'schedule')
+    name: DotNet
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Nightly JavaScript Release
+      cache-key: javascript-nightly
+      node-version: '18.x'
+      registry-url: 'https://npm.pkg.github.com'
+      scope: '@seleniumhq'
+      run: |
+        export NODE_AUTH_TOKEN=$GITHUB_TOKEN
+        ./go "node:version[nightly]"
+        ./go node:release
+    secrets: inherit
