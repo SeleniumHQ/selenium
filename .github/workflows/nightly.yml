@@ -106,5 +106,5 @@ jobs:
         ./go "node:version[nightly]"
         bazel build --stamp //javascript/node/selenium-webdriver:selenium-webdriver
         bazel build //javascript/node/selenium-webdriver:selenium-webdriver.tgz 
-        npm publish bazel-bin/javascript/node/selenium-webdriver/selenium-webdriver.tgz --tag=next
+        npm publish bazel-bin/javascript/node/selenium-webdriver/selenium-webdriver-*.tgz --tag=next
     secrets: inherit
