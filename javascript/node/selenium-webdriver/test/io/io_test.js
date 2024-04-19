@@ -17,9 +17,9 @@
 
 'use strict'
 
-const assert = require('assert'),
-  fs = require('fs'),
-  path = require('path')
+const assert = require('node:assert'),
+  fs = require('node:fs'),
+  path = require('node:path')
 
 const io = require('../../io')
 

@@ -44,7 +44,7 @@ class WebDriver(RemoteWebDriver):
             options = Options()
 
         self.service = service if service else Service()
-        self.service.path = DriverFinder.get_path(self.service, options)
+        self.service.path = DriverFinder(self.service, options).get_driver_path()
         self.service.start()
 
         super().__init__(command_executor=self.service.service_url, options=options)

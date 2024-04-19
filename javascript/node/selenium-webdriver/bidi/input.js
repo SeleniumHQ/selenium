@@ -55,9 +55,7 @@ class Input {
       },
     }
 
-    let response = await this.bidi.send(command)
-
-    return response
+    return await this.bidi.send(command)
   }
 
   /**

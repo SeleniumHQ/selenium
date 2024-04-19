@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const { Browser } = require('../../')
 const { Pages, suite, ignore } = require('../../lib/test')
 const Network = require('../../bidi/network')
@@ -182,6 +182,7 @@ suite(
 
         try {
           await driver.get('https://not_a_valid_url.test/')
+          /*eslint no-unused-vars: "off"*/
         } catch (e) {
           // ignore
         }

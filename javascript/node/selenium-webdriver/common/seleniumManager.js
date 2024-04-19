@@ -21,10 +21,10 @@
  *  Wrapper for getting information from the Selenium Manager binaries
  */
 
-const { platform } = require('process')
-const path = require('path')
-const fs = require('fs')
-const spawnSync = require('child_process').spawnSync
+const { platform } = require('node:process')
+const path = require('node:path')
+const fs = require('node:fs')
+const spawnSync = require('node:child_process').spawnSync
 const { Capability } = require('../lib/capabilities')
 const logging = require('../lib/logging')
 

@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const by = require('../../lib/by')
 
 describe('by', function () {

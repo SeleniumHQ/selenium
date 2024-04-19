@@ -38,7 +38,14 @@ module Selenium
           raise ArgumentError, ":options must be an instance of #{default_options.class}"
         end
 
-        service.executable_path ||= WebDriver::DriverFinder.path(options, service.class)
+        service.executable_path ||= begin
+          finder = WebDriver::DriverFinder.new(options, service)
+          if options.respond_to?(:binary) && finder.browser_path?
+            options.binary = finder.browser_path
+            options.browser_version = nil
+          end
+          finder.driver_path
+        end
         options.as_json
       end
     end

@@ -84,6 +84,10 @@ public class ContainerConfig {
     this.hostConfig = hostConfig;
   }
 
+  public Image getImage() {
+    return this.image;
+  }
+
   public static ContainerConfig image(Image image) {
     return new ContainerConfig(
         image,

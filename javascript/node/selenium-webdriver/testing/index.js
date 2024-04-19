@@ -32,7 +32,7 @@
 
 'use strict'
 
-const { isatty } = require('tty')
+const { isatty } = require('node:tty')
 const chrome = require('../chrome')
 const edge = require('../edge')
 const firefox = require('../firefox')
@@ -406,7 +406,6 @@ function suite(fn, options = undefined) {
 
           const startTimeout = 65 * 1000
 
-          // eslint-disable-next-line no-inner-declarations
           function startSelenium() {
             if (typeof this.timeout === 'function') {
               this.timeout(startTimeout) // For mocha.
