@@ -99,10 +99,12 @@ jobs:
       name: Nightly JavaScript Release
       cache-key: javascript-nightly
       node-version: '18.x'
-      registry-url: 'https://npm.pkg.github.com'
       run: |
         echo "@seleniumhq:registry=https://npm.pkg.github.com" >> .npmrc
         cat .npmrc
         ./go "node:version[nightly]"
-        ./go node:release
+        cp .npmrc javascript/node/selenium-webdriver
+        bazel build --stamp //javascript/node/selenium-webdriver:selenium-webdriver
+        bazel build //javascript/node/selenium-webdriver:selenium-webdriver.tgz
+        npm publish bazel-bin/javascript/node/selenium-webdriver/selenium-webdriver-*.tgz --tag=next
     secrets: inherit
