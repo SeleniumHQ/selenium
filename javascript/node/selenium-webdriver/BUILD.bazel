@@ -107,6 +107,7 @@ mocha_test(
         ":node_modules/mocha-junit-reporter",
         ":node_modules/sinon",
         ":node_modules/tmp",
+        ":node_modules/ws",
         "//:node_modules/selenium-webdriver",
         "//common/extensions:js-lib",
         "//common/src/web:js-lib",
