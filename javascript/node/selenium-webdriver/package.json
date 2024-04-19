@@ -54,5 +54,8 @@
   "mocha": {
     "recursive": true,
     "timeout": 600000
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }
