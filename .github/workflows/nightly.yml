@@ -109,6 +109,5 @@ jobs:
         echo "always-auth=true" >> javascript/node/selenium-webdriver/.npmrc
         echo "always-auth=true" >> .npmrc
         ./go "node:version[nightly]"
-        ./go node:release
-        bazel run --stamp //javascript/node/selenium-webdriver:selenium-webdriver.publish
+        bazel run --stamp //javascript/node/selenium-webdriver:selenium-webdriver.publish  -- --tag=next
     secrets: inherit
