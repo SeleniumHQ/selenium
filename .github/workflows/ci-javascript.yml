@@ -12,9 +12,19 @@ jobs:
       name: Build
       cache-key: javascript-build
       run: bazel build //javascript/node/selenium-webdriver:selenium-webdriver
+
+  small-tests:
+    name: Small Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Small Tests
+      cache-key: javascript-small-tests
+      run: bazel test //javascript/node/selenium-webdriver:small-tests
+
   browser-tests:
     name: Browser Tests
-    needs: build
+    needs: small-tests
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -25,7 +35,8 @@ jobs:
     with:
       name: Browser Tests  (${{ matrix.browser }})
       browser: ${{ matrix.browser }}
-      cache-key: node
-      run: |
-        export SELENIUM_BROWSER=${{ matrix.browser }}
-        bazel test --flaky_test_attempts 3 //javascript/node/selenium-webdriver:${{matrix.browser}}-browser-tests
+      cache-key: javascript-${{matrix.browser}}-browser-tests
+      run: >
+        bazel test
+        --flaky_test_attempts 3
+        //javascript/node/selenium-webdriver:${{ matrix.browser }}-browser-tests

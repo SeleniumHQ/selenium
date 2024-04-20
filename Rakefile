@@ -496,7 +496,7 @@ namespace :node do
   end
 
   task :'dry-run' do
-    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.pack')
+    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.publish  -- --dry-run=true')
   end
 
   desc 'Release Node npm package'
@@ -520,16 +520,43 @@ namespace :node do
 
   desc 'Update Node version'
   task :version, [:version] do |_task, arguments|
+    bump_nightly = arguments[:version] === 'nightly'
     old_version = node_version
-    new_version = updated_version(old_version, arguments[:version])
+    new_version = nil
+
+    # There are three cases we want to deal with:
+    # 1. Switching from a release build to a nightly one
+    # 2. Updating a nightly build for the next nightly build
+    # 3. Switching from nightlies to a release build.
+
+    if bump_nightly && old_version.include?('-nightly')
+      # This is the case where we are updating a nightly build to the next nightly build.
+      # This change is usually done by the CI system and never committed.
+      # The "-nightlyYmdHM" is removed to add a new timestamp.
+      new_version = old_version.gsub(/\-nightly\d+$/, '') + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+    elsif bump_nightly
+      # This is the case after a production release and the version number is configured
+      # to start doing nightly builds.
+      new_version = old_version + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+    else
+      if old_version.include?('-nightly')
+        # From a nightly build to a release build.
+        new_version = old_version.gsub(/\-nightly\d+$/, '')
+      else
+        # From a release build to a nightly build. We use npm version for this.
+        new_version = updated_version(old_version.gsub(/\-nightly\d+$/, ''), arguments[:version])
+        new_version = new_version + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+      end
+    end
 
     ['javascript/node/selenium-webdriver/package.json',
-     'package-lock.json'].each do |file|
+     'package-lock.json',
+     'javascript/node/selenium-webdriver/BUILD.bazel'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
       File.open(file, "w") { |f| f.puts text }
     end
 
-    Rake::Task['node:changelog'].invoke
+    Rake::Task['node:changelog'].invoke unless new_version.include?('-nightly') || bump_nightly
   end
 end
 
@@ -746,7 +773,7 @@ namespace :rb do
     FileUtils.rm_rf('build/docs/api/rb/')
     Bazel.execute('run', [], '//rb:docs')
     FileUtils.mkdir_p('build/docs/api')
-    FileUtils.cp_r('bazel-bin/rb/docs.sh.runfiles/selenium/docs/api/rb/.', 'build/docs/api/rb')
+    FileUtils.cp_r('bazel-bin/rb/docs.sh.runfiles/_main/docs/api/rb/.', 'build/docs/api/rb')
 
     unless arguments[:skip_update]
       puts "Updating Ruby documentation"
@@ -811,9 +838,21 @@ namespace :dotnet do
     Rake::Task['dotnet:build'].invoke(args)
     Rake::Task['dotnet:zip_assets'].invoke(args)
 
+    release_version = dotnet_version
+    api_key = ENV.fetch('NUGET_API_KEY', nil)
+    push_destination = 'https://api.nuget.org/v3/index.json'
+    if release_version.include?('-nightly')
+      # Nightly builds are pushed to GitHub NuGet repository
+      # This commands will run in GitHub Actions
+      api_key = ENV.fetch('GITHUB_TOKEN', nil)
+      github_push_url = 'https://nuget.pkg.github.com/seleniumhq/index.json'
+      push_destination = 'github'
+      sh "dotnet nuget add source --username seleniumhq --password #{api_key} --store-password-in-clear-text --name #{push_destination} #{github_push_url}"
+    end
+
     ["./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
      "./bazel-bin/dotnet/src/support/Selenium.Support.#{dotnet_version}.nupkg"].each do |asset|
-      sh "dotnet nuget push #{asset} --api-key #{ENV.fetch('NUGET_API_KEY', nil)} --source https://api.nuget.org/v3/index.json"
+      sh "dotnet nuget push #{asset} --api-key #{api_key} --source #{push_destination}"
     end
   end
 
@@ -854,14 +893,38 @@ namespace :dotnet do
 
   desc 'Update .NET version'
   task :version, [:version] do |_task, arguments|
+    bump_nightly = arguments[:version] === 'nightly'
     old_version = dotnet_version
-    new_version = updated_version(old_version, arguments[:version])
+    new_version = nil
+
+    # There are three cases we want to deal with:
+    # 1. Switching from a release build to a nightly one
+    # 2. Updating a nightly build for the next nightly build
+    # 3. Switching from nightlies to a release build.
+
+    if bump_nightly && old_version.include?('-nightly')
+      # This is the case where we are updating a nightly build to the next nightly build.
+      # This change is usually done by the CI system and never committed.
+      # The "-nightlyYmdHM" is removed to add a new timestamp.
+      new_version = old_version.gsub(/\-nightly\d+$/, '') + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+    elsif bump_nightly
+      # This is the case after a production release and the version number is configured
+      # to start doing nightly builds.
+      new_version = old_version + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+    else
+      if old_version.include?('-nightly')
+        new_version = old_version.gsub(/\-nightly\d+$/, '')
+      else
+        new_version = updated_version(old_version.gsub(/\-nightly\d+$/, ''), arguments[:version])
+        new_version = new_version + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+      end
+    end
 
     file = 'dotnet/selenium-dotnet-version.bzl'
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, "w") { |f| f.puts text }
 
-    Rake::Task['dotnet:changelog'].invoke
+    Rake::Task['dotnet:changelog'].invoke unless new_version.include?('-nightly') || bump_nightly
   end
 end
 
