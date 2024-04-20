@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient.Version;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
@@ -103,6 +104,21 @@ public class RelayOptions {
     }
   }
 
+  public String getServiceProtocolVersion() {
+    String protocolVersion = config.get(RELAY_SECTION, "protocol-version").orElse("");
+    if (protocolVersion.isEmpty()) {
+      return protocolVersion;
+    } else {
+      // Support input in the form of "http/1.1" or "HTTP/1.1"
+      protocolVersion = protocolVersion.toUpperCase().replaceAll("/", "_").replaceAll("\\.", "_");
+    }
+    try {
+      return Version.valueOf(protocolVersion).toString();
+    } catch (IllegalArgumentException e) {
+      throw new ConfigException("Unable to determine the service protocol version", e);
+    }
+  }
+
   // Method being used in SessionSlot
   @SuppressWarnings("unused")
   private boolean isServiceUp(HttpClient client) {
@@ -160,6 +176,7 @@ public class RelayOptions {
                     sessionTimeout,
                     getServiceUri(),
                     getServiceStatusUri(),
+                    getServiceProtocolVersion(),
                     immutable));
           }
           LOG.info(String.format("Mapping %s, %d times", immutable, maxSessions));
