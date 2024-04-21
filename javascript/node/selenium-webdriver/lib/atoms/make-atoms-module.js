@@ -26,7 +26,8 @@ if (process.argv.length < 3) {
 
 const buffer = fs.readFileSync(process.argv[2])
 
-fs.writeFileSync(process.argv[3],
+fs.writeFileSync(
+  process.argv[3],
   `// GENERATED CODE - DO NOT EDIT
 module.exports = ${buffer.toString('utf8').trim()};
 `,
