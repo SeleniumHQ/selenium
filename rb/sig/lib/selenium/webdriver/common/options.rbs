@@ -53,13 +53,14 @@ module Selenium
 
       def camelize?: (untyped _key) -> true
 
-      def generate_as_json: (untyped value, ?camelize_keys: bool) -> untyped
+      def generate_as_json: (Array[untyped] | Hash[untyped, untyped] | String | Symbol value, ?camelize_keys: bool)
+        -> (Array[untyped] | Hash[untyped, untyped] | String | Symbol)
 
-      def process_json_hash: (untyped value, untyped camelize_keys) -> untyped
+      def process_json_hash: (Hash[untyped, untyped] value, bool camelize_keys) -> Hash[untyped, untyped]
 
-      def convert_json_key: (untyped key, ?camelize: bool) -> untyped
+      def convert_json_key: (String | Symbol key, camelize: bool) -> String
 
-      def camel_case: (untyped str) -> untyped
+      def camel_case: (String str) -> String
     end
   end
 end
