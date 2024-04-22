@@ -23,7 +23,6 @@
 
 const path = require('node:path')
 const { binaryPaths } = require('./seleniumManager')
-const { Capabilities } = require('../lib/capabilities')
 
 /**
  * Determines the path of the correct Selenium Manager binary
