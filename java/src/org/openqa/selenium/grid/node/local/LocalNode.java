@@ -154,7 +154,12 @@ public class LocalNode extends Node {
       List<SessionSlot> factories,
       Secret registrationSecret,
       boolean managedDownloadsEnabled) {
-    super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret, sessionTimeout);
+    super(
+        tracer,
+        new NodeId(UUID.randomUUID()),
+        uri,
+        registrationSecret,
+        Require.positive(sessionTimeout));
 
     this.bus = Require.nonNull("Event bus", bus);
 

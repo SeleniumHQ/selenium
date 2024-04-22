@@ -115,7 +115,7 @@ public class OneShotNode extends Node {
       URI gridUri,
       Capabilities stereotype,
       WebDriverInfo driverInfo) {
-    super(tracer, id, uri, registrationSecret, sessionTimeout);
+    super(tracer, id, uri, registrationSecret, Require.positive(sessionTimeout));
 
     this.heartbeatPeriod = heartbeatPeriod;
     this.events = Require.nonNull("Event bus", events);

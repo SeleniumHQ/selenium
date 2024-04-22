@@ -93,10 +93,7 @@ public class RemoteNode extends Node implements Closeable {
     this.capabilities = ImmutableSet.copyOf(capabilities);
 
     ClientConfig clientConfig =
-        defaultConfig()
-            .connectionTimeout(this.getSessionTimeout())
-            .readTimeout(this.getSessionTimeout())
-            .baseUrl(fromUri(externalUri));
+        defaultConfig().readTimeout(this.getSessionTimeout()).baseUrl(fromUri(externalUri));
     this.client = Require.nonNull("HTTP client factory", clientFactory).createClient(clientConfig);
 
     this.healthCheck = new RemoteCheck();

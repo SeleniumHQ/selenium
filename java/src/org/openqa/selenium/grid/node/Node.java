@@ -130,7 +130,7 @@ public abstract class Node implements HasReadyState, Routable {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("URI", uri);
-    this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
+    this.sessionTimeout = Require.positive("Session timeout", sessionTimeout);
     Require.nonNull("Registration secret", registrationSecret);
 
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
