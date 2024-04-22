@@ -140,7 +140,8 @@ class RelayOptionsTest {
         .isThrownBy(
             () -> {
               relayOptions.getServiceProtocolVersion();
-            });
+            })
+        .withMessageContaining("Unsupported protocol version provided: HTTP/0.9");
   }
 
   @Test
