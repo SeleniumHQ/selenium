@@ -25,7 +25,6 @@ const { platform } = require('node:process')
 const path = require('node:path')
 const fs = require('node:fs')
 const spawnSync = require('node:child_process').spawnSync
-const { Capability } = require('../lib/capabilities')
 const logging = require('../lib/logging')
 
 const log_ = logging.getLogger(logging.Type.DRIVER)
@@ -63,7 +62,7 @@ function getBinary() {
 
 /**
  * Determines the path of the correct driver
- * @param {string[]} args browser options to fetch the driver
+ * @param {string[]} args arguments to invoke Selenium Manager
  * @returns {{browserPath: string, driverPath: string}} path of the driver and
  * browser location
  */

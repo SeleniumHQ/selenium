@@ -21,10 +21,13 @@
  *  Utility to find if a given file is present and executable.
  */
 
+const path = require('node:path')
 const { binaryPaths } = require('./seleniumManager')
+const { Capabilities } = require('../lib/capabilities')
 
 /**
  * Determines the path of the correct Selenium Manager binary
+ * @param {Capabilities} capabilities browser options to fetch the driver
  * @returns {{browserPath: string, driverPath: string}} path of the driver
  * and browser location
  */
