@@ -116,9 +116,9 @@ const io = require('./io')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const zip = require('./io/zip')
-const { Browser, Capabilities } = require('./lib/capabilities')
+const { Browser, Capabilities, Capability } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
-const { getPath } = require('./common/driverFinder')
+const { getBinaryPaths } = require('./common/driverFinder')
 const FIREFOX_CAPABILITY_KEY = 'moz:firefoxOptions'
 
 /**
@@ -541,7 +541,7 @@ class Driver extends webdriver.WebDriver {
       configureExecutor(executor)
     } else if (opt_executor instanceof remote.DriverService) {
       if (!opt_executor.getExecutable()) {
-        const { driverPath, browserPath } = getPath(caps)
+        const { driverPath, browserPath } = getBinaryPaths(caps)
         opt_executor.setExecutable(driverPath)
         firefoxBrowserPath = browserPath
       }
@@ -550,7 +550,7 @@ class Driver extends webdriver.WebDriver {
     } else {
       let service = new ServiceBuilder().build()
       if (!service.getExecutable()) {
-        const { driverPath, browserPath } = getPath(caps)
+        const { driverPath, browserPath } = getBinaryPaths(caps)
         service.setExecutable(driverPath)
         firefoxBrowserPath = browserPath
       }
@@ -566,6 +566,7 @@ class Driver extends webdriver.WebDriver {
       } else {
         caps.set(FIREFOX_CAPABILITY_KEY, { binary: firefoxBrowserPath })
       }
+      caps.delete(Capability.BROWSER_VERSION)
     }
 
     return /** @type {!Driver} */ (super.createSession(executor, caps, onQuit))
