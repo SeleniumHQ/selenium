@@ -13,15 +13,15 @@ module FedCM
     #
     # @param [Hash]
     def initialize(**args)
-      @account_id = args.fetch("accountId", nil)
-      @email = args.fetch("email", nil)
-      @name = args.fetch("name", nil)
-      @given_name = args.fetch("givenName", nil)
-      @picture_url = args.fetch("pictureUrl", nil)
-      @idp_config_url = args.fetch("idpConfigUrl", nil)
-      @login_state = args.fetch("loginState", nil)
-      @terms_of_service_url = args.fetch("termsOfServiceUrl", nil)
-      @privacy_policy_url = args.fetch("privacyPolicyUrl", nil)
+      @account_id = args[:accountId]
+      @email = args[:email]
+      @name = args[:name]
+      @given_name = args[:givenName]
+      @picture_url = args[:pictureUrl]
+      @idp_config_url = args[:idpConfigUrl]
+      @login_state = args[:loginState]
+      @terms_of_service_url = args[:termsOfServiceUrl]
+      @privacy_policy_url = args[:privacyPolicyUrl]
     end
   end
 end
