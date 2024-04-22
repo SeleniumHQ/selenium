@@ -96,6 +96,55 @@ class RelayOptionsTest {
   }
 
   @Test
+  void protocolVersionIsParsedSuccessfully() {
+    String[] rawConfig =
+        new String[] {
+          "[relay]",
+          "host = '127.0.0.1'",
+          "port = '8888'",
+          "status-endpoint = '/statusEndpoint'",
+          "protocol-version = 'HTTP/1.1'",
+          "configs = [\"5\", '{\"browserName\": \"firefox\"}']",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    RelayOptions relayOptions = new RelayOptions(config);
+    assertThat(relayOptions.getServiceProtocolVersion()).isEqualTo("HTTP_1_1");
+    rawConfig =
+        new String[] {
+          "[relay]",
+          "host = '127.0.0.1'",
+          "port = '8888'",
+          "status-endpoint = '/statusEndpoint'",
+          "protocol-version = 'HTTP_1_1'",
+          "configs = [\"5\", '{\"browserName\": \"firefox\"}']",
+        };
+    config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    relayOptions = new RelayOptions(config);
+    assertThat(relayOptions.getServiceProtocolVersion()).isEqualTo("HTTP_1_1");
+  }
+
+  @Test
+  void protocolVersionThrowsConfigException() {
+    String[] rawConfig =
+        new String[] {
+          "[relay]",
+          "host = '127.0.0.1'",
+          "port = '8888'",
+          "status-endpoint = '/statusEndpoint'",
+          "protocol-version = 'HTTP/0.9'",
+          "configs = [\"5\", '{\"browserName\": \"firefox\"}']",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    RelayOptions relayOptions = new RelayOptions(config);
+    assertThatExceptionOfType(ConfigException.class)
+        .isThrownBy(
+            () -> {
+              relayOptions.getServiceProtocolVersion();
+            })
+        .withMessageContaining("Unsupported protocol version provided: HTTP/0.9");
+  }
+
+  @Test
   void missingConfigsThrowsConfigException() {
     String[] rawConfig =
         new String[] {

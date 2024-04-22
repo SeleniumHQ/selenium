@@ -76,6 +76,7 @@ public class RelaySessionFactory implements SessionFactory {
   private final Duration sessionTimeout;
   private final URL serviceUrl;
   private final URL serviceStatusUrl;
+  private final String serviceProtocolVersion;
   private final Capabilities stereotype;
 
   public RelaySessionFactory(
@@ -84,12 +85,15 @@ public class RelaySessionFactory implements SessionFactory {
       Duration sessionTimeout,
       URI serviceUri,
       URI serviceStatusUri,
+      String serviceProtocolVersion,
       Capabilities stereotype) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
     this.serviceUrl = createUrlFromUri(Require.nonNull("Service URL", serviceUri));
     this.serviceStatusUrl = createUrlFromUri(serviceStatusUri);
+    this.serviceProtocolVersion =
+        Require.nonNull("Service protocol version", serviceProtocolVersion);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
   }
 
@@ -209,7 +213,12 @@ public class RelaySessionFactory implements SessionFactory {
       // If no status endpoint was configured, we assume the server is up.
       return true;
     }
-    try (HttpClient client = clientFactory.createClient(serviceStatusUrl)) {
+
+    ClientConfig clientConfig = ClientConfig.defaultConfig().baseUrl(serviceStatusUrl);
+    if (!serviceProtocolVersion.isEmpty()) {
+      clientConfig = clientConfig.version(serviceProtocolVersion);
+    }
+    try (HttpClient client = clientFactory.createClient(clientConfig)) {
       HttpResponse response =
           client.execute(new HttpRequest(HttpMethod.GET, serviceStatusUrl.toString()));
       LOG.log(Debug.getDebugLogLevel(), () -> Contents.string(response));
