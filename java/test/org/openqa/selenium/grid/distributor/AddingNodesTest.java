@@ -345,6 +345,7 @@ class AddingNodesTest {
                           Instant.now()))),
               UP,
               Duration.ofSeconds(10),
+              status.getSessionTimeout(),
               status.getVersion(),
               status.getOsInfo());
 
@@ -468,6 +469,7 @@ class AddingNodesTest {
               new Slot(new SlotId(getId(), UUID.randomUUID()), CAPS, Instant.now(), sess)),
           UP,
           Duration.ofSeconds(10),
+          getSessionTimeout(),
           getNodeVersion(),
           getOsInfo());
     }

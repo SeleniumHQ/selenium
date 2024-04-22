@@ -158,6 +158,7 @@ class NodeTest {
             new NodeId(UUID.randomUUID()),
             uri,
             registrationSecret,
+            local.getSessionTimeout(),
             ImmutableSet.of(caps));
   }
 
@@ -172,6 +173,7 @@ class NodeTest {
             new NodeId(UUID.randomUUID()),
             uri,
             registrationSecret,
+            local.getSessionTimeout(),
             ImmutableSet.of());
 
     Either<WebDriverException, CreateSessionResponse> response =
@@ -223,6 +225,7 @@ class NodeTest {
             new NodeId(UUID.randomUUID()),
             uri,
             registrationSecret,
+            local.getSessionTimeout(),
             ImmutableSet.of(caps));
 
     ImmutableCapabilities wrongCaps = new ImmutableCapabilities("browserName", "burger");
@@ -346,6 +349,7 @@ class NodeTest {
             new NodeId(UUID.randomUUID()),
             uri,
             registrationSecret,
+            local.getSessionTimeout(),
             ImmutableSet.of(caps));
 
     Either<WebDriverException, CreateSessionResponse> response =
