@@ -17,7 +17,7 @@
 
 'use strict'
 
-const os = require('os')
+const os = require('node:os')
 
 function getLoInterface() {
   let name

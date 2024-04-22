@@ -17,14 +17,14 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 require('../../lib/test/fileserver')
 const { Pages, suite } = require('../../lib/test')
 const { Browser, By } = require('../..')
 const Input = require('../../bidi/input')
 const io = require('../../io')
 const { ReferenceValue, RemoteReferenceType } = require('../../bidi/protocolValue')
-const fs = require('fs')
+const fs = require('node:fs')
 const { ignore } = require('../../testing')
 
 suite(

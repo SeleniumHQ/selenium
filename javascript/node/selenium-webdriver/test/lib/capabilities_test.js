@@ -24,8 +24,8 @@ const chrome = require('../../chrome')
 const { Browser, By, until } = require('../../')
 const remote = require('../../remote')
 
-const assert = require('assert')
-const fs = require('fs')
+const assert = require('node:assert')
+const fs = require('node:fs')
 const io = require('../../io')
 
 const Pages = test.Pages

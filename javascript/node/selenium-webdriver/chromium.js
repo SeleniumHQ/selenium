@@ -78,7 +78,7 @@ const error = require('./lib/error')
 const Symbols = require('./lib/symbols')
 const webdriver = require('./lib/webdriver')
 const remote = require('./remote')
-const { getPath } = require('./common/driverFinder')
+const { getBinaryPaths } = require('./common/driverFinder')
 
 /**
  * Custom command names supported by Chromium WebDriver.
@@ -622,14 +622,17 @@ class Driver extends webdriver.WebDriver {
     } else {
       let service = opt_serviceExecutor || this.getDefaultService()
       if (!service.getExecutable()) {
-        const { driverPath, browserPath } = getPath(caps)
+        const { driverPath, browserPath } = getBinaryPaths(caps)
         service.setExecutable(driverPath)
-        const vendorOptions = caps.get(vendorCapabilityKey)
-        if (vendorOptions) {
-          vendorOptions['binary'] = browserPath
-          caps.set(vendorCapabilityKey, vendorOptions)
-        } else {
-          caps.set(vendorCapabilityKey, { binary: browserPath })
+        if (browserPath) {
+          const vendorOptions = caps.get(vendorCapabilityKey)
+          if (vendorOptions) {
+            vendorOptions['binary'] = browserPath
+            caps.set(vendorCapabilityKey, vendorOptions)
+          } else {
+            caps.set(vendorCapabilityKey, { binary: browserPath })
+          }
+          caps.delete(Capability.BROWSER_VERSION)
         }
       }
       onQuit = () => service.kill()
@@ -743,7 +746,7 @@ class Driver extends webdriver.WebDriver {
    * Set a permission state to the given value.
    *
    * @param {string} name A name of the permission to update.
-   * @param {('granted'|'denied'|'prompt')} state State to set permission to.
+   * @param {("granted"|"denied"|"prompt")} state State to set permission to.
    * @returns {!Promise<Object>} A promise that will be resolved when the
    *     command has finished.
    * @see <https://w3c.github.io/permissions/#permission-registry> for valid

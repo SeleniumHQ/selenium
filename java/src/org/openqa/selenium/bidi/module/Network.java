@@ -165,7 +165,7 @@ public class Network implements AutoCloseable {
     if (browsingContextIds.isEmpty()) {
       this.bidi.addListener(responseCompleted, consumer);
     } else {
-      this.bidi.addListener(browsingContextIds, responseStarted, consumer);
+      this.bidi.addListener(browsingContextIds, responseCompleted, consumer);
     }
   }
 

@@ -51,23 +51,23 @@ class ISelect {
    * @return {!Promise<boolean>} Whether this select element supports selecting multiple options at the same time? This
    * is done by checking the value of the "multiple" attribute.
    */
-  isMultiple() {} // eslint-disable-line
+  isMultiple() {}
 
   /**
    * @return {!Promise<!Array<!WebElement>>} All options belonging to this select tag
    */
-  getOptions() {} // eslint-disable-line
+  getOptions() {}
 
   /**
    * @return {!Promise<!Array<!WebElement>>} All selected options belonging to this select tag
    */
-  getAllSelectedOptions() {} // eslint-disable-line
+  getAllSelectedOptions() {}
 
   /**
    * @return {!Promise<!WebElement>} The first selected option in this select tag (or the currently selected option in a
    * normal select)
    */
-  getFirstSelectedOption() {} // eslint-disable-line
+  getFirstSelectedOption() {}
 
   /**
    * Select all options that display text matching the argument. That is, when given "Bar" this
@@ -105,7 +105,7 @@ class ISelect {
    *
    * @return {Promise<void>}
    */
-  deselectAll() {} // eslint-disable-line
+  deselectAll() {}
 
   /**
    * Deselect all options that display text matching the argument. That is, when given "Bar" this

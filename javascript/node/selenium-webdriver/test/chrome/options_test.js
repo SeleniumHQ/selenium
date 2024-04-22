@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const fs = require('fs')
+const assert = require('node:assert')
+const fs = require('node:fs')
 const chrome = require('../../chrome')
 const symbols = require('../../lib/symbols')
 const test = require('../../lib/test')

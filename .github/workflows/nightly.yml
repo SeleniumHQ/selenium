@@ -19,6 +19,8 @@ on:
           - ruby
           - python
           - grid
+          - dotnet
+          - javascript
 
 jobs:
   ruby:
@@ -31,7 +33,7 @@ jobs:
         gem:
           - selenium-webdriver
     with:
-      name: Release
+      name: Nightly Ruby Release
       cache-key: rb-nightly-${{ matrix.gem }}
       run: |
         export GEM_HOST_API_KEY="Bearer $GITHUB_TOKEN"
@@ -43,7 +45,7 @@ jobs:
     name: Python
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Release
+      name: Nightly Python Release
       cache-key: python-nightly
       run: |
         ./go "py:version[nightly]"
@@ -58,10 +60,23 @@ jobs:
     name: Java
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Release
+      name: Nightly Java Release
       cache-key: java-nightly
       run: |
         ./go publish-maven-snapshot
+    secrets: inherit
+
+  dotnet:
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'dotnet' || github.event_name == 'schedule')
+    name: DotNet
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Nightly DotNet Release
+      cache-key: dotnet-nightly
+      dotnet-version: '6.x'
+      run: |
+        ./go "dotnet:version[nightly]"
+        ./go dotnet:release
     secrets: inherit
 
   grid:
@@ -69,9 +84,27 @@ jobs:
     name: Grid
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Release
+      name: Nightly Grid Release
       cache-key: grid-nightly
       run: |
         echo build --stamp >>.bazelrc.local
         ./go java-release-zip
       nightly-release-files: build/dist/*.*
+
+  javascript:
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'javascript' || github.event_name == 'schedule')
+    name: DotNet
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Nightly JavaScript Release
+      cache-key: javascript-nightly
+      node-version: '18.x'
+      run: |
+        sed -i 's|https://registry.npmjs.org/|https://npm.pkg.github.com|g' javascript/node/selenium-webdriver/package.json
+        sed -i 's|"name": "selenium-webdriver"|"name": "@seleniumhq/selenium-webdriver"|g' javascript/node/selenium-webdriver/package.json
+        echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        echo "@seleniumhq:registry=https://npm.pkg.github.com" >> .npmrc
+        echo "always-auth=true" >> .npmrc
+        ./go "node:version[nightly]"
+        ./go node:release
+    secrets: inherit

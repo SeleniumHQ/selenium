@@ -84,6 +84,14 @@ public class RelayFlags implements HasRoles {
   @ConfigValue(section = RELAY_SECTION, name = "status-endpoint", example = "\"/status\"")
   private String serviceStatusEndpoint;
 
+  @Parameter(
+      names = {"--service-protocol-version"},
+      description =
+          "Enforce a specific protocol version in HttpClient when communicating with the endpoint"
+              + " service status")
+  @ConfigValue(section = RELAY_SECTION, name = "protocol-version", example = "\"HTTP/1.1\"")
+  private String serviceProtocolVersion;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(NODE_ROLE);

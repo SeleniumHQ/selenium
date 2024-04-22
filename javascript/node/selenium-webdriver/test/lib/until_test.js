@@ -17,14 +17,14 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 
 const By = require('../../lib/by').By
 const CommandName = require('../../lib/command').Name
 const error = require('../../lib/error')
 const until = require('../../lib/until')
-const webdriver = require('../../lib/webdriver'),
-  WebElement = webdriver.WebElement
+const webdriver = require('../../lib/webdriver')
+const WebElement = webdriver.WebElement
 
 describe('until', function () {
   let driver, executor

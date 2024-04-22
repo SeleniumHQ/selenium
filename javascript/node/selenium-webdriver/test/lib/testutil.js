@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const sinon = require('sinon')
 
 class StubError extends Error {

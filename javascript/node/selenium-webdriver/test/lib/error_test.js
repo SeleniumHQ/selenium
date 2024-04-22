@@ -18,7 +18,7 @@
 'use strict'
 
 describe('error', function () {
-  let assert = require('assert')
+  let assert = require('node:assert')
   let error = require('../../lib/error')
 
   describe('encodeError', function () {
