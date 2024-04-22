@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const command = require('../../lib/command')
 const error = require('../../lib/error')
 const input = require('../../lib/input')

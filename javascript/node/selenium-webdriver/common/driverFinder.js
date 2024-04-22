@@ -21,16 +21,19 @@
  *  Utility to find if a given file is present and executable.
  */
 
-const { driverLocation } = require('./seleniumManager')
+const path = require('node:path')
+const { binaryPaths } = require('./seleniumManager')
 
 /**
  * Determines the path of the correct Selenium Manager binary
+ * @param {Capabilities} capabilities browser options to fetch the driver
  * @returns {{browserPath: string, driverPath: string}} path of the driver
  * and browser location
  */
-function getPath(capabilities) {
+function getBinaryPaths(capabilities) {
   try {
-    return driverLocation(capabilities)
+    const args = getArgs(capabilities)
+    return binaryPaths(args)
   } catch (e) {
     throw Error(
       `Unable to obtain browser driver.
@@ -40,5 +43,34 @@ function getPath(capabilities) {
   }
 }
 
+function getArgs(options) {
+  let args = ['--browser', options.getBrowserName(), '--language-binding', 'javascript', '--output', 'json']
+
+  if (options.getBrowserVersion() && options.getBrowserVersion() !== '') {
+    args.push('--browser-version', options.getBrowserVersion())
+  }
+
+  const vendorOptions =
+    options.get('goog:chromeOptions') || options.get('ms:edgeOptions') || options.get('moz:firefoxOptions')
+  if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== '') {
+    args.push('--browser-path', path.resolve(vendorOptions.binary))
+  }
+
+  const proxyOptions = options.getProxy()
+
+  // Check if proxyOptions exists and has properties
+  if (proxyOptions && Object.keys(proxyOptions).length > 0) {
+    const httpProxy = proxyOptions['httpProxy']
+    const sslProxy = proxyOptions['sslProxy']
+
+    if (httpProxy !== undefined) {
+      args.push('--proxy', httpProxy)
+    } else if (sslProxy !== undefined) {
+      args.push('--proxy', sslProxy)
+    }
+  }
+  return args
+}
+
 // PUBLIC API
-module.exports = { getPath }
+module.exports = { getBinaryPaths }

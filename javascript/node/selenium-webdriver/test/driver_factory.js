@@ -16,14 +16,13 @@
 // under the License.
 
 'use strict'
-const fs = require('fs')
-const os = require('os')
-const path = require('path')
+const fs = require('node:fs')
+const os = require('node:os')
+const path = require('node:path')
 const { Browser } = require('../index')
 const { Environment } = require('../testing')
 const chrome = require('../chrome')
 const firefox = require('../firefox')
-// eslint-disable-next-line node/no-missing-require
 const { runfiles } = require('@bazel/runfiles')
 
 function GetBrowserForTests() {

@@ -42,6 +42,7 @@ public final class Require {
   private static final String MUST_BE_DIR = "%s must be a directory: %s";
   private static final String MUST_BE_FILE = "%s must be a regular file: %s";
   private static final String MUST_BE_EQUAL = "%s must be equal to `%s`";
+  private static final String MUST_BE_EXECUTABLE = "%s must be executable: %s";
   private static final String MUST_BE_NON_NEGATIVE = "%s must be 0 or greater";
   private static final String MUST_BE_POSITIVE = "%s must be greater than 0";
 
@@ -359,6 +360,15 @@ public final class Require {
       }
       if (!file.isDirectory()) {
         throw new IllegalStateException(String.format(MUST_BE_DIR, name, file.getAbsolutePath()));
+      }
+      return file;
+    }
+
+    public File isExecutable() {
+      isFile();
+      if (!file.canExecute()) {
+        throw new IllegalStateException(
+            String.format(MUST_BE_EXECUTABLE, name, file.getAbsolutePath()));
       }
       return file;
     }

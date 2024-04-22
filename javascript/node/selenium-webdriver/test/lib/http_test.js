@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert'),
+const assert = require('node:assert'),
   sinon = require('sinon')
 
 const Capabilities = require('../../lib/capabilities').Capabilities,

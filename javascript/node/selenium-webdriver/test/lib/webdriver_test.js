@@ -28,7 +28,7 @@ const { By } = require('../../lib/by')
 const { Capabilities } = require('../../lib/capabilities')
 const { Name } = require('../../lib/command')
 const { Session } = require('../../lib/session')
-const assert = require('assert')
+const assert = require('node:assert')
 
 const CName = Name
 const SESSION_ID = 'test_session_id'
