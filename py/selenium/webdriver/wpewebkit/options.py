@@ -57,6 +57,9 @@ class Options(ArgOptions):
 
         caps[Options.KEY] = browser_options
 
+        if self.browser_name:
+            caps["browserName"] = self.browser_name
+
         return caps
 
     @property
