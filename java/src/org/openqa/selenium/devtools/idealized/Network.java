@@ -202,6 +202,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
             String id = getRequestId(pausedRequest);
 
             if (hasErrorResponse(pausedRequest)) {
+              pendingResponses.remove(id);
               devTools.send(continueWithoutModification(pausedRequest));
               return;
             }
