@@ -972,7 +972,7 @@ namespace :java do
   task :update do
     # Make sure things are in a good state to start with
     args = ['--action_env=RULES_JVM_EXTERNAL_REPIN=1']
-    Bazel.execute('run', args, '@unpinned_maven//:pin')
+    Bazel.execute('run', args, '@maven//:pin')
 
     file_path = 'java/maven_deps.bzl'
     content = File.read(file_path)
@@ -996,7 +996,7 @@ namespace :java do
     File.write(file_path, content)
 
     args = ['--action_env=RULES_JVM_EXTERNAL_REPIN=1']
-    Bazel.execute('run', args, '@unpinned_maven//:pin')
+    Bazel.execute('run', args, '@maven//:pin')
   end
 
   desc 'Update Java changelog'
