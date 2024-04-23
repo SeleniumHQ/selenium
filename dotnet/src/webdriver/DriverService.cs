@@ -275,7 +275,7 @@ namespace OpenQA.Selenium
             }
             else
             {
-                this.driverServiceProcess.StartInfo.FileName = new DriverFinder(this.GetDefaultDriverOptions()).DriverPath();
+                this.driverServiceProcess.StartInfo.FileName = new DriverFinder(this.GetDefaultDriverOptions()).GetDriverPath();
             }
 
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
