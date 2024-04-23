@@ -98,7 +98,7 @@ module Selenium
           original = DevTools::Request.from(id, params)
           mutable = DevTools::Request.from(id, params)
 
-          block.call(mutable) do |&continue| # rubocop:disable Performance/RedundantBlockCall
+          block.call(mutable) do |&continue|
             pending_response_requests[id] = continue
 
             if original == mutable
