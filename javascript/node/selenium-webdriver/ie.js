@@ -33,7 +33,7 @@ const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const error = require('./lib/error')
-const { getPath } = require('./common/driverFinder')
+const { getBinaryPaths } = require('./common/driverFinder')
 
 const OPTIONS_CAPABILITY_KEY = 'se:ieOptions'
 const SCROLL_BEHAVIOUR = {
@@ -223,7 +223,9 @@ class Options extends Capabilities {
 
   addBrowserCommandSwitches(...args) {
     let current = this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] || []
-    if (typeof current == 'string') current = current.split(' ')
+    if (typeof current == 'string') {
+      current = current.split(' ')
+    }
     this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current.concat(args).join(' ')
     return this
   }
@@ -239,7 +241,9 @@ class Options extends Capabilities {
 
   addArguments(...args) {
     let current = this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] || []
-    if (typeof current == 'string') current = current.split(' ')
+    if (typeof current == 'string') {
+      current = current.split(' ')
+    }
     this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current.concat(args).join(' ')
     return this
   }
@@ -447,7 +451,7 @@ class Driver extends webdriver.WebDriver {
       service = createServiceFromCapabilities(options)
     }
     if (!service.getExecutable()) {
-      service.setExecutable(getPath(options).driverPath)
+      service.setExecutable(getBinaryPaths(options).driverPath)
     }
 
     let client = service.start().then((url) => new http.HttpClient(url))

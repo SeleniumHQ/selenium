@@ -1,6 +1,5 @@
-import .bazelrc.remote
-try-import .bazelrc.local
-try-import .bazelrc.windows.local
+try-import %workspace%/.bazelrc.local
+try-import %workspace%/.bazelrc.windows.local
 
 # Enable bzlmod but without lockfile for a moment.
 # Lockfile is a problem to check in at the moment
@@ -103,3 +102,6 @@ test:ruby_debug --test_output=streamed --test_env=RUBY_DEBUG_FORK_MODE=parent --
 build:release --config=remote
 build:release --stamp
 build:release --remote_download_outputs=toplevel
+
+# RBE
+import %workspace%/.bazelrc.remote
