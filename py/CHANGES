@@ -1,3 +1,19 @@
+Selenium 4.20.0
+
+>>> [build] Moving versions to nightly
+>>> Add type hints for selenium.webdriver.remote.webdriver.WebDriver.__init__ (#13775)
+>>> Add types to set_window_position parameters (#13786)
+>>> [py] update SOC for driver finder and selenium manager classes (#13387)
+* [py] update SOC for driver finder and selenium manager classes
+* [py] change error and log handling and add tests
+* [py] adjustments
+* [py] change names and validations and make tweaks
+* [py] make the driver finder class non-static
+* [py] missed renaming a bunch of things
+* [py] memoize and fix tests
+* [py] bad logic
+* [py] tidy things from merges
+
 Selenium 4.19.0
 
 * Add CDP for Chrome 123 and remove 120

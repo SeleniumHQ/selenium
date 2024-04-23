@@ -1,3 +1,44 @@
+v4.20.0
+======
+
+>>> [grid] synchronize read from field written by other thread
+>>> [bidi][java] Deprecate using builder for Locate Node parameters.  (#13767)
+>>> [bidi][java] Update Locator class to not use optional
+>>> [grid] do not create unused HttpResponse instances
+>>> [bidi][java] Enable chrome tests (#13770)
+>>> [grid] handle baseRoute like the hubRoute and the graphqlRoute (#13772)
+>>> [bidi][java] Enable Edge BiDi tests (#13780)
+>>> [grid][java] fix node-docker (#13789)
+* [grid][java] fix node-docker
+Fixed: https://github.com/SeleniumHQ/docker-selenium/issues/2175
+Exception in thread "Thread-0" java.lang.NullPointerException: Cannot invoke "org.openqa.selenium.grid.node.Node.getStatus()" because "this.node" is null
+* [grid][java]: fix node-docker
+Fixed exception: Caused by: java.lang.IllegalArgumentException: non-positive contentLength: 0
+>>> [grid][java] browser containers provisioned in dynamic grid can get hostconfig from node-docker (#13804)
+* [grid][java] browser containers provisioned in dynamic grid uses node-docker hostConfig
+* update code as suggestions
+>>> [java] Selenium Manager generates output from argument list  (#13385)
+* [java] rename driver finder and selenium manager methods to getResult
+* [java] Selenium Manager generates output from argument list instead of capabilities instance
+* [java] allow driver finder to store state instead of static
+* [java] rename method to getBinaryPaths
+* [java] rename method again
+* [java] false and true are different
+* a getter method should have a return value
+>>> [grid][java]: dynamic grid re-fetch browser images if they were pruned during runtime (#13821)
+[grid][java]: dynamic grid checks image before creating
+>>> [bazel] Move rules_jvm_external to MODULE
+>>> [bazel] Restore javadoc targets
+>>> [bazel] Fix maven_bom targets
+>>> [grid][java]: relay service can set protocol version in fetching status (#13849)
+* [grid][java]: relay service can set protocol version in fetching status
+* [grid][java] fix code as suggestions
+>>> [java] register the callback to the correct event
+>>> [java][bidi] Fix import for the Script module class
+>>> [cdp][java] Continue requests without modification for know errors in NetworkInterceptor (#13836)
+>>> [bidi][java] Update argument type to RemoteValue
+>>> Update supported versions for Chrome DevTools
+
 v4.19.1
 ======
 * [bidi] Fix the bazel file after the BiDi breaking change
