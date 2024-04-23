@@ -1,3 +1,9 @@
+0.4.20
+======
+
+>>> [rust] Minor typo-fix in warninig trace
+>>> [rust] Use DEBUG level for WARN traces in offline mode (#13810)
+
 0.4.19
 ======
 
