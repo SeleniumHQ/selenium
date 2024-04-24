@@ -18,20 +18,23 @@
 package org.openqa.selenium.support.ui;
 
 import com.google.common.base.Joiner;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 /** Canned {@link ExpectedCondition}s which are generally useful within webdriver tests. */
 public class ExpectedConditions {
@@ -1312,6 +1315,114 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String.format("visibility of element located by %s -> %s", parent, childLocator);
+      }
+    };
+  }
+
+  /**
+   * An expectation for the presence of WebElement within the shadow-root of a host element.
+   *
+   * @param hostLocator   used to check shadow-root's host element. For example table with locator By.xpath("//table")
+   * @param nestedLocator used to find an element in shadow-root. For example By.cssSelector("[name='button']")
+   * @return sub-element
+   */
+  public static ExpectedCondition<WebElement> presenceOfNestedInShadowRootElementLocatedBy(
+    final By hostLocator, final By nestedLocator) {
+
+    return new ExpectedCondition<WebElement>() {
+
+      @Override
+      public WebElement apply(WebDriver driver) {
+        SearchContext shadowRoot = driver.findElement(hostLocator).getShadowRoot();
+
+        return shadowRoot.findElement(nestedLocator);
+      }
+
+      @Override
+      public String toString() {
+        return String.format("visibility of element located by %s", nestedLocator);
+      }
+    };
+  }
+
+  /**
+   * An expectation for the presence of WebElement within the shadow-root of a host element.
+   *
+   * @param hostLocator   used to check shadow-root's host element.
+   * @param nestedLocator used to find an element in shadow-root. For example By.cssSelector("[name='button']")
+   * @return sub-element
+   */
+  public static ExpectedCondition<WebElement> presenceOfNestedInShadowRootElementLocatedBy(
+    final WebElement hostLocator, final By nestedLocator) {
+
+    return new ExpectedCondition<WebElement>() {
+
+      @Override
+      public WebElement apply(WebDriver driver) {
+        SearchContext shadowRoot = hostLocator.getShadowRoot();
+
+        return shadowRoot.findElement(nestedLocator);
+      }
+
+      @Override
+      public String toString() {
+        return String.format("visibility of element located by %s", nestedLocator);
+      }
+    };
+  }
+
+  /**
+   * An expectation for the presence of WebElements within the shadow-root of a host element.
+   *
+   * @param hostLocator   used to check shadow-root's host element. For example table with locator By.xpath("//table")
+   * @param nestedLocator used to find an element in shadow-root. For example By.cssSelector("[name='button']")
+   * @return sub-element
+   */
+  public static ExpectedCondition<List<WebElement>> presenceOfNestedInShadowRootElementsLocatedBy(
+    final By hostLocator, final By nestedLocator) {
+
+    return new ExpectedCondition<List<WebElement>>() {
+
+      @Override
+      public List<WebElement> apply(WebDriver driver) {
+        SearchContext shadowRoot = driver.findElement(hostLocator).getShadowRoot();
+
+        List<WebElement> allNestedInShadowRoot = shadowRoot.findElements(nestedLocator);
+
+        return allNestedInShadowRoot.isEmpty() ? null : allNestedInShadowRoot;
+      }
+
+      @Override
+      public String toString() {
+        return String.format("visibility of element located by %s -> %s", hostLocator, nestedLocator);
+      }
+    };
+  }
+
+  /**
+   * An expectation for the presence of WebElements within the shadow-root of a host element.
+   *
+   * @param hostLocator   used to check shadow-root's host element.
+   * @param nestedLocator used to find an element in shadow-root. For example By.cssSelector("[name='button']")
+   * @return sub-element
+   */
+  public static ExpectedCondition<List<WebElement>> presenceOfNestedInShadowRootElementsLocatedBy(
+    final WebElement hostLocator, final By nestedLocator) {
+
+    return new ExpectedCondition<List<WebElement>>() {
+
+      @Override
+      public List<WebElement> apply(WebDriver driver) {
+        SearchContext shadowRoot = hostLocator.getShadowRoot();
+
+        List<WebElement> allNestedInShadowRoot = shadowRoot.findElements(nestedLocator);
+
+        return allNestedInShadowRoot.isEmpty() ? null : allNestedInShadowRoot;
+      }
+
+      @Override
+      public String toString() {
+        return String.format("visibility of element located by %s -> %s", hostLocator, nestedLocator);
       }
     };
   }
