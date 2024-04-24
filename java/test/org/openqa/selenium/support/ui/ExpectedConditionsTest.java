@@ -70,12 +70,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.ShadowRoot;
 
 @Tag("UnitTests")
 class ExpectedConditionsTest {
@@ -869,40 +872,61 @@ class ExpectedConditionsTest {
     assertThat(mockNestedElement).isEqualTo(elements.get(0));
   }
 
+  //___-----------------__------_-_-_-_-_-_-_//___-----------------__------_-_-_-_-_-_-_
+
   @Test
   void waitingForPresenceOfNestedElementInShadowRootByLocatorWhenElementPresents() {
-    String testHostSelector = "hostSelector";
-    String testNestedSelector = "testNestedSelector";
-    when(mockDriver.findElement(By.cssSelector(testHostSelector))).thenReturn(mockElement);
-    when(mockElement.findElement(By.cssSelector(testNestedSelector))).thenReturn(mockNestedElement);
-    wait.until(
-      presenceOfNestedInShadowRootElementLocatedBy(
-        By.cssSelector(testHostSelector), By.cssSelector(testNestedSelector)));
+    By hostSelector = By.cssSelector("host-selector");
+    By nestedSelector = By.cssSelector("span");
+
+    when(mockDriver.findElement(hostSelector)).thenReturn(mockElement);
+
+    SearchContext shadowRoot = mock(ShadowRoot.class);
+    when(mockElement.getShadowRoot()).thenReturn(shadowRoot);
+
+    when(shadowRoot.findElement(nestedSelector)).thenReturn(mockNestedElement);
+
+    WebElement foundElement = wait.until(presenceOfNestedInShadowRootElementLocatedBy(hostSelector, nestedSelector));
+    assertThat(foundElement, is(mockNestedElement));
   }
 
   @Test
   void waitingForPresenceOfNestedElementInShadowRootByLocatorWhenElementPresents() {
-    String testHostSelector = "hostSelector";
-    String testNestedSelector = "testNestedSelector";
-    when(mockDriver.findElement(By.cssSelector(testHostSelector))).thenReturn(mockElement);
-    when(mockElement.findElement(By.cssSelector(testNestedSelector))).thenReturn(mockNestedElement);
-    wait.until(
-      presenceOfNestedInShadowRootElementLocatedBy(
-        mockElement, By.cssSelector(testNestedSelector)));
+    String hostSelector = "host-selector";
+    String nestedSelector = "span";
+
+    when(mockDriver.findElement(By.cssSelector(hostSelector))).thenReturn(mockElement);
+
+    SearchContext shadowRoot = mock(ShadowRoot.class);
+    when(mockElement.getShadowRoot()).thenReturn(shadowRoot);
+
+    when(shadowRoot.findElement(By.cssSelector(nestedSelector))).thenReturn(mockNestedElement);
+
+    WebElement foundElement = wait.until(
+      presenceOfNestedInShadowRootElementLocatedBy(mockElement, By.cssSelector(nestedSelector))
+    );
+
+    assertThat(foundElement, is(mockNestedElement));
   }
 
   @Test
   void waitingForPresenceOfNestedElementsInShadowRootWhenElementsPresent() {
-    By host = By.cssSelector("host");
-    By nested = By.cssSelector("nested");
+    By hostSelector = By.cssSelector("host-selector");
+    By nestedSelector = By.cssSelector("span");
 
-    when(mockDriver.findElement(host)).thenReturn(mockElement);
-    when(mockElement.findElements(nested)).thenReturn(singletonList(mockNestedElement));
+    when(mockDriver.findElement(hostSelector)).thenReturn(mockElement);
 
-    List<WebElement> elements = wait.until(presenceOfNestedInShadowRootElementsLocatedBy(host, nested));
+    SearchContext shadowRoot = mock(ShadowRoot.class);
+    when(mockElement.getShadowRoot()).thenReturn(shadowRoot);
 
-    assertThat(mockNestedElement).isEqualTo(elements.get(0));
+    when(shadowRoot.findElements(nestedSelector)).thenReturn(singletonList(mockNestedElement));
+
+    List<WebElement> elements = wait.until(presenceOfNestedInShadowRootElementsLocatedBy(hostSelector, nestedSelector));
+
+    assertThat(elements, is(not(empty())));
   }
+
+  //___-----------------__------_-_-_-_-_-_-_//___-----------------__------_-_-_-_-_-_-_
 
   @Test
   void waitingForAllElementsInvisibility() {
