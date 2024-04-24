@@ -798,7 +798,7 @@ namespace :rb do
     File.open(file, "w") { |f| f.puts text }
 
     Rake::Task['rb:changelog'].invoke unless new_version.include?('nightly')
-    sh 'cd rb && bundle update'
+    sh 'cd rb && bundle --version && bundle update'
   end
 
   desc 'Update Ruby Syntax'
