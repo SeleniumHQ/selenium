@@ -1,10 +1,11 @@
 4.20.0 (2024-04-24)
 =========================
 
->>> [build] Moving versions to nightly
->>> [rb] update SOC for driver finder and selenium manager classes (#13386)
-[rb] move driver finding logic out of selenium manager class
->>> Update supported versions for Chrome DevTools
+* Add CDP for Chrome 124 and remove 121
+* Making Selenium Manager a thin wrapper (#13386)
+  * This change has been made to make it easier to maintain and improve, the interface has
+  changed and if users were invoking it, they might experience issues. Selenium Manager is
+  still in beta and these type of changes are expected.
 
 4.19.0 (2024-03-27)
 =========================

@@ -1,22 +1,13 @@
 v4.20.0
 ======
 
->>> [dotnet] use correct devtools session id after reinitialization (#13768)
-Fix regression issue, appeared in v4.17. Closing a tab breaks the devtools session
-Fixes #13755
->>> [bazel] Fix .NET compiler errors
->>> [dotnet] Revert System namespace prefix
->>> [dotnet] Making SeleniumManager a thin wrapper (#13833)
-* [dotnet] Making SeleniumManager a thin wrapper
-Also moving things to the driver classes and
-DriverFinder.
-Logging warnings from Selenium Manager as well,
-and debug messages when that level is enabled.
-* [dotnet] Addressing PR comments
->>> [dotnet] Checking if log level is enabled before logging in SM.
->>> [dotnet] Renaming methods to follow C# pattern.
->>> [dotnet] Pushing missing changes to method names in dotnet SM
->>> Update supported versions for Chrome DevTools
+* Add CDP for Chrome 124 and remove 121
+* Use correct devtools session id after reinitialization (#13768)
+* Making Selenium Manager a thin wrapper (#13833)
+  * This change has been made to make it easier to maintain and improve, the interface has
+  changed and if users were invoking it, they might experience issues. Selenium Manager is
+  still in beta and these type of changes are expected.
+* Nightly dotnet builds are now pushed to GitHub packages
 
 v4.19.0
 ======
