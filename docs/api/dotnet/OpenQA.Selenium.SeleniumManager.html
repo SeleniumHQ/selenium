@@ -150,32 +150,32 @@ This implementation is still in beta, and may change.</p>
 </h2>
 
 
-  <a id="OpenQA_Selenium_SeleniumManager_DriverPath_" data-uid="OpenQA.Selenium.SeleniumManager.DriverPath*"></a>
+  <a id="OpenQA_Selenium_SeleniumManager_BinaryPaths_" data-uid="OpenQA.Selenium.SeleniumManager.BinaryPaths*"></a>
 
-  <h3 id="OpenQA_Selenium_SeleniumManager_DriverPath_OpenQA_Selenium_DriverOptions_" data-uid="OpenQA.Selenium.SeleniumManager.DriverPath(OpenQA.Selenium.DriverOptions)">
-  DriverPath(DriverOptions)
+  <h3 id="OpenQA_Selenium_SeleniumManager_BinaryPaths_System_String_" data-uid="OpenQA.Selenium.SeleniumManager.BinaryPaths(System.String)">
+  BinaryPaths(string)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/SeleniumManager.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines the location of the correct driver.</p>
+  <div class="markdown level1 summary"><p>Determines the location of the browser and driver binaries.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static string DriverPath(DriverOptions options)</code></pre>
+    <pre><code class="lang-csharp hljs">public static Dictionary&lt;string, string&gt; BinaryPaths(string arguments)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.DriverOptions.html">DriverOptions</a></dt>
-    <dd><p>The correct path depends on which options are being used.</p>
+    <dt><code>arguments</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>List of arguments to use when invoking Selenium Manager.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The location of the driver.</p>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>An array with two entries, one for the driver path, and another one for the browser path.</p>
 </dd>
   </dl>
 

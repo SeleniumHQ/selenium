@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class DriverFinder ">
       
-      <meta name="description" content="Finds a driver, checks if the provided path exists, if not, Selenium Manager is used. This implementation is still in beta, and may change.">
+      <meta name="description" content="Finds a driver, checks if the provided path exists, if not, Selenium Manager is used. This implementation is still in beta and may change.">
       <link rel="icon" href="favicon.ico">
       <link rel="stylesheet" href="public/docfx.min.css">
       <link rel="stylesheet" href="public/main.css">
@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DriverFinder" data-uid="OpenQA.Selenium.DriverFinder" class="text-break">
-Class DriverFinder  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverFinder.cs/#L28"><i class="bi bi-code-slash"></i></a>
+Class DriverFinder  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverFinder.cs/#L31"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -94,12 +94,12 @@ Class DriverFinder  <a class="header-action link-secondary" title="View source" 
   </div>
 
   <div class="markdown summary"><p>Finds a driver, checks if the provided path exists, if not, Selenium Manager is used.
-This implementation is still in beta, and may change.</p>
+This implementation is still in beta and may change.</p>
 </div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class DriverFinder</code></pre>
+    <pre><code class="lang-csharp hljs">public class DriverFinder</code></pre>
   </div>
 
 
@@ -146,36 +146,66 @@ This implementation is still in beta, and may change.</p>
 
 
 
-  <h2 class="section" id="methods">Methods
+  <h2 class="section" id="constructors">Constructors
 </h2>
 
 
-  <a id="OpenQA_Selenium_DriverFinder_FullPath_" data-uid="OpenQA.Selenium.DriverFinder.FullPath*"></a>
+  <a id="OpenQA_Selenium_DriverFinder__ctor_" data-uid="OpenQA.Selenium.DriverFinder.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_DriverFinder_FullPath_OpenQA_Selenium_DriverOptions_" data-uid="OpenQA.Selenium.DriverFinder.FullPath(OpenQA.Selenium.DriverOptions)">
-  FullPath(DriverOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverFinder.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_DriverFinder__ctor_OpenQA_Selenium_DriverOptions_" data-uid="OpenQA.Selenium.DriverFinder.#ctor(OpenQA.Selenium.DriverOptions)">
+  DriverFinder(DriverOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverFinder.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Use Selenium Manager to locate the driver</p>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.DriverFinder.html">DriverFinder</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static string FullPath(DriverOptions options)</code></pre>
+    <pre><code class="lang-csharp hljs">public DriverFinder(DriverOptions options)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.DriverOptions.html">DriverOptions</a></dt>
-    <dd><p>DriverOptions with the current browser options.</p>
-</dd>
+    <dd></dd>
   </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_DriverFinder_GetBrowserPath_" data-uid="OpenQA.Selenium.DriverFinder.GetBrowserPath*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverFinder_GetBrowserPath" data-uid="OpenQA.Selenium.DriverFinder.GetBrowserPath">
+  GetBrowserPath()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverFinder.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the browser path retrieved by Selenium Manager</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string GetBrowserPath()</code></pre>
+  </div>
+
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The full path and name of the driver</p>
+    <dd><p>The full browser path</p>
 </dd>
   </dl>
 
@@ -186,11 +216,70 @@ This implementation is still in beta, and may change.</p>
 
 
 
-  <h4 class="section">Exceptions</h4>
+
+
+
+  <a id="OpenQA_Selenium_DriverFinder_GetDriverPath_" data-uid="OpenQA.Selenium.DriverFinder.GetDriverPath*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverFinder_GetDriverPath" data-uid="OpenQA.Selenium.DriverFinder.GetDriverPath">
+  GetDriverPath()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverFinder.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the driver path retrieved by Selenium Manager</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string GetDriverPath()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.NoSuchDriverException.html">NoSuchDriverException</a></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The full driver path</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverFinder_HasBrowserPath_" data-uid="OpenQA.Selenium.DriverFinder.HasBrowserPath*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverFinder_HasBrowserPath" data-uid="OpenQA.Selenium.DriverFinder.HasBrowserPath">
+  HasBrowserPath()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverFinder.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasBrowserPath()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
     <dd></dd>
   </dl>
+
+
+
+
+
+
+
+
 
 
 
@@ -198,7 +287,7 @@ This implementation is still in beta, and may change.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverFinder.cs/#L28" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverFinder.cs/#L31" class="edit-link">Edit this page</a>
         </div>
 
 
