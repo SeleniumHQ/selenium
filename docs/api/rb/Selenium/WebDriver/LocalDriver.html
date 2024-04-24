@@ -245,7 +245,14 @@
 40
 41
 42
-43</pre>
+43
+44
+45
+46
+47
+48
+49
+50</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/local_driver.rb', line 33</span>
@@ -258,7 +265,14 @@
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>:options must be an instance of </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_default_options'>default_options</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
-  <span class='id identifier rubyid_service'>service</span><span class='period'>.</span><span class='id identifier rubyid_executable_path'>executable_path</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="DriverFinder.html" title="Selenium::WebDriver::DriverFinder (class)">DriverFinder</a></span></span><span class='period'>.</span><span class='id identifier rubyid_path'><span class='object_link'><a href="DriverFinder.html#path-class_method" title="Selenium::WebDriver::DriverFinder.path (method)">path</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_service'>service</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_service'>service</span><span class='period'>.</span><span class='id identifier rubyid_executable_path'>executable_path</span> <span class='op'>||=</span> <span class='kw'>begin</span>
+    <span class='id identifier rubyid_finder'>finder</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="DriverFinder.html" title="Selenium::WebDriver::DriverFinder (class)">DriverFinder</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DriverFinder.html#initialize-instance_method" title="Selenium::WebDriver::DriverFinder#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_service'>service</span><span class='rparen'>)</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:binary</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_finder'>finder</span><span class='period'>.</span><span class='id identifier rubyid_browser_path?'>browser_path?</span>
+      <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_binary'>binary</span> <span class='op'>=</span> <span class='id identifier rubyid_finder'>finder</span><span class='period'>.</span><span class='id identifier rubyid_browser_path'>browser_path</span>
+      <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_browser_version'>browser_version</span> <span class='op'>=</span> <span class='kw'>nil</span>
+    <span class='kw'>end</span>
+    <span class='id identifier rubyid_finder'>finder</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span>
+  <span class='kw'>end</span>
   <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -271,7 +285,7 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Mar 27 13:39:39 2024 by
+  Generated on Wed Apr 24 21:18:50 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.36 (ruby-3.0.6).
 </div>

@@ -108,7 +108,7 @@
 
   
     <h2>
-      Class Method Summary
+      Instance Method Summary
       <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
@@ -117,7 +117,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#path-class_method" title="path (class method)">.<strong>path</strong>(options, klass)  &#x21d2; Object </a>
+      <a href="#browser_path-instance_method" title="#browser_path (instance method)">#<strong>browser_path</strong>  &#x21d2; Object </a>
     
 
     
@@ -136,19 +136,136 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#browser_path%3F-instance_method" title="#browser_path? (instance method)">#<strong>browser_path?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#driver_path-instance_method" title="#driver_path (instance method)">#<strong>driver_path</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(options, service)  &#x21d2; DriverFinder </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of DriverFinder.</p>
+</div></span>
+  
+</li>
+
+      
     </ul>
   
 
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(options, service)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::DriverFinder (class)">DriverFinder</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of DriverFinder.</p>
 
 
-  <div id="class_method_details" class="method_details_list">
-    <h2>Class Method Details</h2>
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+23
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 23</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_service'>service</span><span class='rparen'>)</span>
+  <span class='ivar'>@options</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span>
+  <span class='ivar'>@service</span> <span class='op'>=</span> <span class='id identifier rubyid_service'>service</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="path-class_method">
+  <h3 class="signature first" id="browser_path-instance_method">
   
-    .<strong>path</strong>(options, klass)  &#x21d2; <tt>Object</tt> 
+    #<strong>browser_path</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -160,49 +277,97 @@
       <pre class="lines">
 
 
-23
-24
-25
-26
-27
 28
 29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42</pre>
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 28</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_klass'>klass</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span>
-  <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span> <span class='kw'>if</span> <span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Proc</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_browser_path'>browser_path</span>
+  <span class='id identifier rubyid_paths'>paths</span><span class='lbracket'>[</span><span class='symbol'>:browser_path</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="browser_path?-instance_method">
+  
+    #<strong>browser_path?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
 
-  <span class='id identifier rubyid_path'>path</span> <span class='op'>||=</span> <span class='kw'>begin</span>
-    <span class='const'><span class='object_link'><a href="SeleniumManager.html" title="Selenium::WebDriver::SeleniumManager (class)">SeleniumManager</a></span></span><span class='period'>.</span><span class='id identifier rubyid_driver_path'><span class='object_link'><a href="SeleniumManager.html#driver_path-class_method" title="Selenium::WebDriver::SeleniumManager.driver_path (method)">driver_path</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Remote/Capabilities.html" title="Selenium::WebDriver::Remote::Capabilities (class)">Capabilities</a></span></span><span class='rparen'>)</span>
-  <span class='kw'>rescue</span> <span class='const'>StandardError</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/NoSuchDriverError.html" title="Selenium::WebDriver::Error::NoSuchDriverError (class)">NoSuchDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Unable to obtain </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_klass'>klass</span><span class='op'>::</span><span class='const'>EXECUTABLE</span><span class='embexpr_end'>}</span><span class='tstring_content'> using Selenium Manager; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  
 
-  <span class='kw'>begin</span>
-    <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'><span class='object_link'><a href="Platform.html#assert_executable-class_method" title="Selenium::WebDriver::Platform.assert_executable (method)">assert_executable</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
-  <span class='kw'>rescue</span> <span class='const'>TypeError</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/NoSuchDriverError.html" title="Selenium::WebDriver::Error::NoSuchDriverError (class)">NoSuchDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Unable to locate or obtain </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_klass'>klass</span><span class='op'>::</span><span class='const'>EXECUTABLE</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/NoSuchDriverError.html" title="Selenium::WebDriver::Error::NoSuchDriverError (class)">NoSuchDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_klass'>klass</span><span class='op'>::</span><span class='const'>EXECUTABLE</span><span class='embexpr_end'>}</span><span class='tstring_content'> located, but: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
 
-  <span class='id identifier rubyid_path'>path</span>
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+36
+37
+38</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 36</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_browser_path?'>browser_path?</span>
+  <span class='op'>!</span><span class='id identifier rubyid_browser_path'>browser_path</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_browser_path'>browser_path</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="driver_path-instance_method">
+  
+    #<strong>driver_path</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_driver_path'>driver_path</span>
+  <span class='id identifier rubyid_paths'>paths</span><span class='lbracket'>[</span><span class='symbol'>:driver_path</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -214,7 +379,7 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Mar 27 13:39:41 2024 by
+  Generated on Wed Apr 24 21:18:53 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.36 (ruby-3.0.6).
 </div>
