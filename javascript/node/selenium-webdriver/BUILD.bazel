@@ -9,13 +9,13 @@ load("//javascript:defs.bzl", "mocha_test")
 
 npm_link_all_packages(name = "node_modules")
 
-VERSION = "4.20.0-nightly202404191827"
+VERSION = "4.20.0"
 
 BROWSER_VERSIONS = [
     "v85",
     "v122",
     "v123",
-    "v121",
+    "v124",
 ]
 
 SRC_FILES = [

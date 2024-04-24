@@ -136,3 +136,9 @@ Style/NumericLiterals:
 
 Style/OptionalBooleanParameter:
   Enabled: false
+
+Lint/Debugger:
+  Enabled: true
+  DebuggerMethods:
+    Capybara:
+      - save_screenshot: ~

@@ -217,7 +217,7 @@ experimental domain Accessibility
       # If omitted, the full tree is returned.
       optional integer depth
       # The frame for whose document the AX tree should be retrieved.
-      # If omited, the root frame is used.
+      # If omitted, the root frame is used.
       optional Page.FrameId frameId
     returns
       array of AXNode nodes
@@ -258,7 +258,7 @@ experimental domain Accessibility
 
   # Query a DOM node's accessibility subtree for accessible name and role.
   # This command computes the name and role for all nodes in the subtree, including those that are
-  # ignored for accessibility, and returns those that mactch the specified name and role. If no DOM
+  # ignored for accessibility, and returns those that match the specified name and role. If no DOM
   # node is specified, or the DOM node does not exist, the command returns an error. If neither
   # `accessibleName` or `role` is specified, it returns all the accessibility nodes in the subtree.
   experimental command queryAXTree
@@ -309,6 +309,9 @@ experimental domain Animation
       # `Animation`'s playback rate.
       number playbackRate
       # `Animation`'s start time.
+      # Milliseconds for time based animations and
+      # percentage [0 - 100] for scroll driven animations
+      # (i.e. when viewOrScrollTimeline exists).
       number startTime
       # `Animation`'s current time.
       number currentTime
@@ -322,6 +325,26 @@ experimental domain Animation
       # A unique ID for `Animation` representing the sources that triggered this CSS
       # animation/transition.
       optional string cssId
+      # View or scroll timeline
+      optional ViewOrScrollTimeline viewOrScrollTimeline
+
+  # Timeline instance
+  type ViewOrScrollTimeline extends object
+    properties
+      # Scroll container node
+      optional DOM.BackendNodeId sourceNodeId
+      # Represents the starting scroll position of the timeline
+      # as a length offset in pixels from scroll origin.
+      optional number startOffset
+      # Represents the ending scroll position of the timeline
+      # as a length offset in pixels from scroll origin.
+      optional number endOffset
+      # The element whose principal box's visibility in the
+      # scrollport defined the progress of the timeline.
+      # Does not exist for animations with ScrollTimeline
+      optional DOM.BackendNodeId subjectNodeId
+      # Orientation of the scroll
+      DOM.ScrollOrientation axis
 
   # AnimationEffect instance
   type AnimationEffect extends object
@@ -335,6 +358,9 @@ experimental domain Animation
       # `AnimationEffect`'s iterations.
       number iterations
       # `AnimationEffect`'s iteration duration.
+      # Milliseconds for time based animations and
+      # percentage [0 - 100] for scroll driven animations
+      # (i.e. when viewOrScrollTimeline exists).
       number duration
       # `AnimationEffect`'s playback direction.
       string direction
@@ -545,6 +571,7 @@ experimental domain Audits
       Frame
       Image
       Import
+      JSON
       Manifest
       Ping
       PluginData
@@ -702,6 +729,11 @@ experimental domain Audits
       WebAndOsHeaders
       NoWebOrOsSupport
       NavigationRegistrationWithoutTransientUserActivation
+      InvalidInfoHeader
+      NoRegisterSourceHeader
+      NoRegisterTriggerHeader
+      NoRegisterOsSourceHeader
+      NoRegisterOsTriggerHeader
 
   # Details for issues around "Attribution Reporting API" usage.
   # Explainer: https://github.com/WICG/attribution-reporting-api
@@ -1060,7 +1092,7 @@ experimental domain Autofill
   # Munich 81456
   type AddressUI extends object
     properties
-      # A two dimension array containing the repesentation of values from an address profile.
+      # A two dimension array containing the representation of values from an address profile.
       array of AddressFields addressFields
 
   # Specified whether a filled field was done so by using the html autocomplete attribute or autofill heuristics.
@@ -1083,6 +1115,10 @@ experimental domain Autofill
       string autofillType
       # The filling strategy
       FillingStrategy fillingStrategy
+      # The frame the field belongs to
+      Page.FrameId frameId
+      # The form field's DOM node
+      DOM.BackendNodeId fieldId
 
   # Emitted when an address form is filled.
   event addressFormFilled
@@ -1221,6 +1257,7 @@ domain Browser
       audioCapture
       backgroundSync
       backgroundFetch
+      capturedSurfaceControl
       clipboardReadWrite
       clipboardSanitizedWrite
       displayCapture
@@ -1238,6 +1275,7 @@ domain Browser
       protectedMediaIdentifier
       sensors
       storageAccess
+      speakerSelection
       topLevelStorageAccess
       videoCapture
       videoCapturePanTiltZoom
@@ -1296,7 +1334,7 @@ domain Browser
       optional BrowserContextID browserContextId
 
   # Reset all permission management for all origins.
-  experimental command resetPermissions
+  command resetPermissions
     parameters
       # BrowserContext to reset permissions. When omitted, default browser context is used.
       optional BrowserContextID browserContextId
@@ -1306,7 +1344,7 @@ domain Browser
     parameters
       # Whether to allow all or deny all download requests, or use default Chrome behavior if
       # available (otherwise deny). |allowAndName| allows download and names files according to
-      # their dowmload guids.
+      # their download guids.
       enum behavior
         deny
         allow
@@ -1573,7 +1611,7 @@ experimental domain CSS
       # Owner frame identifier.
       Page.FrameId frameId
       # Stylesheet resource URL. Empty if this is a constructed stylesheet created using
-      # new CSSStyleSheet() (but non-empty if this is a constructed sylesheet imported
+      # new CSSStyleSheet() (but non-empty if this is a constructed stylesheet imported
       # as a CSS module script).
       string sourceURL
       # URL of source map associated with the stylesheet (if any).
@@ -1906,11 +1944,24 @@ experimental domain CSS
       CSSStyle style
 
   # CSS position-fallback rule representation.
-  type CSSPositionFallbackRule extends object
+  deprecated type CSSPositionFallbackRule extends object
     properties
       Value name
       # List of keyframes.
       array of CSSTryRule tryRules
+
+  # CSS @position-try rule representation.
+  type CSSPositionTryRule extends object
+    properties
+      # The prelude dashed-ident name
+      Value name
+      # The css style sheet identifier (absent for user agent stylesheet and user-specified
+      # stylesheet rules) this rule came from.
+      optional StyleSheetId styleSheetId
+      # Parent stylesheet's origin.
+      StyleSheetOrigin origin
+      # Associated style declaration.
+      CSSStyle style
 
   # CSS keyframes rule representation.
   type CSSKeyframesRule extends object
@@ -1988,6 +2039,10 @@ experimental domain CSS
       string ruleText
       # Text position of a new rule in the target style sheet.
       SourceRange location
+      # NodeId for the DOM node in whose context custom property declarations for registered properties should be
+      # validated. If omitted, declarations in the new rule text can only be validated statically, which may produce
+      # incorrect results if the declaration contains a var() for example.
+      experimental optional DOM.NodeId nodeForPropertySyntaxValidation
     returns
       # The newly created rule.
       CSSRule rule
@@ -2081,7 +2136,9 @@ experimental domain CSS
       # A list of CSS keyframed animations matching this node.
       optional array of CSSKeyframesRule cssKeyframesRules
       # A list of CSS position fallbacks matching this node.
-      optional array of CSSPositionFallbackRule cssPositionFallbackRules
+      deprecated optional array of CSSPositionFallbackRule cssPositionFallbackRules
+      # A list of CSS @position-try rules matching this node, based on the position-try-options property.
+      optional array of CSSPositionTryRule cssPositionTryRules
       # A list of CSS at-property rules matching this node.
       optional array of CSSPropertyRule cssPropertyRules
       # A list of CSS property registrations matching this node.
@@ -2122,6 +2179,15 @@ experimental domain CSS
       DOM.NodeId nodeId
     returns
       CSSLayerData rootLayer
+
+  # Given a CSS selector text and a style sheet ID, getLocationForSelector
+  # returns an array of locations of the CSS selector in the style sheet.
+  experimental command getLocationForSelector
+    parameters
+      StyleSheetId styleSheetId
+      string selectorText
+    returns
+      array of SourceRange ranges
 
   # Starts tracking the given computed styles for updates. The specified array of properties
   # replaces the one previously specified. Pass empty array to disable tracking.
@@ -2231,6 +2297,10 @@ experimental domain CSS
   command setStyleTexts
     parameters
       array of StyleDeclarationEdit edits
+      # NodeId for the DOM node in whose context custom property declarations for registered properties should be
+      # validated. If omitted, declarations in the new rule text can only be validated statically, which may produce
+      # incorrect results if the declaration contains a var() for example.
+      experimental optional DOM.NodeId nodeForPropertySyntaxValidation
     returns
       # The resulting styles after modification.
       array of CSSStyle styles
@@ -2547,6 +2617,12 @@ domain DOM
       Block
       Both
 
+  # Physical scroll orientation
+  type ScrollOrientation extends string
+    enum
+      horizontal
+      vertical
+
   # DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes.
   # DOMNode is a base node mirror type.
   type Node extends object
@@ -2726,7 +2802,7 @@ domain DOM
   # Scrolls the specified rect of the given node into view if not already visible.
   # Note: exactly one between nodeId, backendNodeId and objectId should be passed
   # to identify the node.
-  experimental command scrollIntoViewIfNeeded
+  command scrollIntoViewIfNeeded
     parameters
       # Identifier of the node.
       optional NodeId nodeId
@@ -2771,7 +2847,7 @@ domain DOM
   # Returns attributes for the specified node.
   command getAttributes
     parameters
-      # Id of the node to retrieve attibutes for.
+      # Id of the node to retrieve attributes for.
       NodeId nodeId
     returns
       # An interleaved array of node attribute names and values.
@@ -3939,13 +4015,13 @@ domain Emulation
       pause
       pauseIfNetworkFetchesPending
 
-  # Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+  # Used to specify User Agent Client Hints to emulate. See https://wicg.github.io/ua-client-hints
   experimental type UserAgentBrandVersion extends object
     properties
       string brand
       string version
 
-  # Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+  # Used to specify User Agent Client Hints to emulate. See https://wicg.github.io/ua-client-hints
   # Missing optional values will be filled in by the target with what it would normally use.
   experimental type UserAgentMetadata extends object
     properties
@@ -4006,7 +4082,7 @@ domain Emulation
       optional SensorReadingQuaternion quaternion
 
   # Tells whether emulation is supported.
-  command canEmulate
+  deprecated command canEmulate
     returns
       # True if emulation is supported.
       boolean result
@@ -4034,7 +4110,7 @@ domain Emulation
       optional boolean enabled
 
   # Enables CPU throttling to emulate slow CPUs.
-  experimental command setCPUThrottlingRate
+  command setCPUThrottlingRate
     parameters
       # Throttling rate as a slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
       number rate
@@ -4113,7 +4189,7 @@ domain Emulation
       optional array of MediaFeature features
 
   # Emulates the given vision deficiency.
-  experimental command setEmulatedVisionDeficiency
+  command setEmulatedVisionDeficiency
     parameters
       # Vision deficiency to emulate. Order: best-effort emulations come first, followed by any
       # physiologically accurate emulations for medically recognized color vision deficiencies.
@@ -4154,7 +4230,7 @@ domain Emulation
       SensorType type
       optional SensorMetadata metadata
 
-  # Updates the sensor readings reported by a sensor type previously overriden
+  # Updates the sensor readings reported by a sensor type previously overridden
   # by setSensorOverrideEnabled.
   experimental command setSensorOverrideReadings
     parameters
@@ -4162,7 +4238,7 @@ domain Emulation
       SensorReading reading
 
   # Overrides the Idle state.
-  experimental command setIdleOverride
+  command setIdleOverride
     parameters
       # Mock isUserActive
       boolean isUserActive
@@ -4170,7 +4246,7 @@ domain Emulation
       boolean isScreenUnlocked
 
   # Clears Idle state overrides.
-  experimental command clearIdleOverride
+  command clearIdleOverride
 
   # Overrides value returned by the javascript navigator object.
   experimental deprecated command setNavigatorOverrides
@@ -4223,10 +4299,11 @@ domain Emulation
       optional string locale
 
   # Overrides default host system timezone with the specified one.
-  experimental command setTimezoneOverride
+  command setTimezoneOverride
     parameters
-      # The timezone identifier. If empty, disables the override and
-      # restores default host system timezone.
+      # The timezone identifier. List of supported timezones:
+      # https://source.chromium.org/chromium/chromium/deps/icu.git/+/faee8bc70570192d82d2978a71e2a615788597d1:source/data/misc/metaZones.txt
+      # If empty, disables the override and restores default host system timezone.
       string timezoneId
 
   # Resizes the frame/viewport of the page. Note that this does not affect the frame's container
@@ -4259,6 +4336,7 @@ domain Emulation
       integer hardwareConcurrency
 
   # Allows overriding user agent with the given string.
+  # `userAgentMetadata` must be set for Client Hint headers to be sent.
   command setUserAgentOverride
     parameters
       # User agent to use.
@@ -4345,7 +4423,7 @@ domain IO
     parameters
       # Handle of the stream to read.
       StreamHandle handle
-      # Seek to the specified offset before reading (if not specificed, proceed with offset
+      # Seek to the specified offset before reading (if not specified, proceed with offset
       # following the last read). Some types of streams may only support sequential reads.
       optional integer offset
       # Maximum number of bytes to read (left upon the agent discretion if not specified).
@@ -4729,7 +4807,7 @@ domain Input
       # The text to insert.
       string text
 
-  # This method sets the current candidate text for ime.
+  # This method sets the current candidate text for IME.
   # Use imeCommitComposition to commit the final text.
   # Use imeSetComposition with empty string as text to cancel composition.
   experimental command imeSetComposition
@@ -5109,7 +5187,7 @@ experimental domain LayerTree
 
   event layerTreeDidChange
     parameters
-      # Layer tree, absent if not in the comspositing mode.
+      # Layer tree, absent if not in the compositing mode.
       optional array of Layer layers
 
 # Provides access to log entries.
@@ -5461,10 +5539,11 @@ domain Network
       # HTTP request headers.
       Headers headers
       # HTTP POST request data.
-      optional string postData
+      # Use postDataEntries instead.
+      deprecated optional string postData
       # True when the request has POST data. Note that postData might still be omitted when this flag is true when the data is too long.
       optional boolean hasPostData
-      # Request body elements. This will be converted from base64 to binary
+      # Request body elements (post data broken into individual entries).
       experimental optional array of PostDataEntry postDataEntries
       # The mixed content type of the request.
       optional Security.MixedContentType mixedContentType
@@ -5486,7 +5565,7 @@ domain Network
       # passed by the developer (e.g. via "fetch") as understood by the backend.
       experimental optional TrustTokenParams trustTokenParams
       # True if this resource request is considered to be the 'same site' as the
-      # request correspondinfg to the main frame.
+      # request corresponding to the main frame.
       experimental optional boolean isSameSite
 
   # Details of a signed certificate timestamp (SCT).
@@ -5690,9 +5769,18 @@ domain Network
       # This value is used when the reason is unknown.
       unspecifiedReason
 
+  # Source of service worker router.
+  type ServiceWorkerRouterSource extends string
+    enum
+      network
+      cache
+      fetch-event
+      race-network-and-fetch-handler
+
   experimental type ServiceWorkerRouterInfo extends object
     properties
       integer ruleIdMatched
+      ServiceWorkerRouterSource matchedSourceType
 
   # HTTP response data.
   type Response extends object
@@ -5709,6 +5797,8 @@ domain Network
       deprecated optional string headersText
       # Resource mimeType as determined by the browser.
       string mimeType
+      # Resource charset as determined by the browser (if applicable).
+      string charset
       # Refined HTTP request headers that were actually transmitted over the network.
       optional Headers requestHeaders
       # HTTP request headers text. This has been replaced by the headers in Network.requestWillBeSentExtraInfo.
@@ -5727,7 +5817,7 @@ domain Network
       optional boolean fromServiceWorker
       # Specifies that the request was served from the prefetch cache.
       optional boolean fromPrefetchCache
-      # Infomation about how Service Worker Static Router was used.
+      # Information about how Service Worker Static Router was used.
       experimental optional ServiceWorkerRouterInfo serviceWorkerRouterInfo
       # Total number of bytes received for this request so far.
       number encodedDataLength
@@ -5863,7 +5953,7 @@ domain Network
       # The cookie had the "Secure" attribute but was not received over a secure connection.
       SecureOnly
       # The cookie had the "SameSite=Strict" attribute but came from a cross-origin response.
-      # This includes navigation requests intitiated by other origins.
+      # This includes navigation requests initiated by other origins.
       SameSiteStrict
       # The cookie had the "SameSite=Lax" attribute but came from a cross-origin response.
       SameSiteLax
@@ -5897,7 +5987,7 @@ domain Network
       UnknownError
       # The cookie had the "SameSite=Strict" attribute but came from a response
       # with the same registrable domain but a different scheme.
-      # This includes navigation requests intitiated by other origins.
+      # This includes navigation requests initiated by other origins.
       # This is the "Schemeful Same-Site" version of the blocked reason.
       SchemefulSameSiteStrict
       # The cookie had the "SameSite=Lax" attribute but came from a response
@@ -5959,7 +6049,7 @@ domain Network
       UnknownError
       # The cookie had the "SameSite=Strict" attribute but came from a response
       # with the same registrable domain but a different scheme.
-      # This includes navigation requests intitiated by other origins.
+      # This includes navigation requests initiated by other origins.
       # This is the "Schemeful Same-Site" version of the blocked reason.
       SchemefulSameSiteStrict
       # The cookie had the "SameSite=Lax" attribute but came from a response
@@ -5977,6 +6067,28 @@ domain Network
       # RFC6265bis.
       NameValuePairExceedsMaxSize
 
+  # Types of reasons why a cookie should have been blocked by 3PCD but is exempted for the request.
+  experimental type CookieExemptionReason extends string
+    enum
+      # The default value. Cookie with this reason could either be blocked or included.
+      None
+      # The cookie should have been blocked by 3PCD but is exempted by explicit user setting.
+      UserSetting
+      # The cookie should have been blocked by 3PCD but is exempted by metadata mitigation.
+      TPCDMetadata
+      # The cookie should have been blocked by 3PCD but is exempted by Deprecation Trial mitigation.
+      TPCDDeprecationTrial
+      # The cookie should have been blocked by 3PCD but is exempted by heuristics mitigation.
+      TPCDHeuristics
+      # The cookie should have been blocked by 3PCD but is exempted by Enterprise Policy.
+      EnterprisePolicy
+      # The cookie should have been blocked by 3PCD but is exempted by Storage Access API.
+      StorageAccess
+      # The cookie should have been blocked by 3PCD but is exempted by Top-level Storage Access API.
+      TopLevelStorageAccess
+      # The cookie should have been blocked by 3PCD but is exempted by CORS opt-in.
+      CorsOptIn
+
   # A cookie which was not stored from a response with the corresponding reason.
   experimental type BlockedSetCookieWithReason extends object
     properties
@@ -5990,13 +6102,26 @@ domain Network
       # errors.
       optional Cookie cookie
 
-  # A cookie with was not sent with a request with the corresponding reason.
-  experimental type BlockedCookieWithReason extends object
+  # A cookie should have been blocked by 3PCD but is exempted and stored from a response with the
+  # corresponding reason. A cookie could only have at most one exemption reason.
+  experimental type ExemptedSetCookieWithReason extends object
     properties
-      # The reason(s) the cookie was blocked.
-      array of CookieBlockedReason blockedReasons
+      # The reason the cookie was exempted.
+      CookieExemptionReason exemptionReason
+      # The cookie object representing the cookie.
+      Cookie cookie
+
+  # A cookie associated with the request which may or may not be sent with it.
+  # Includes the cookies itself and reasons for blocking or exemption.
+  experimental type AssociatedCookie extends object
+    properties
       # The cookie object representing the cookie which was not sent.
       Cookie cookie
+      # The reason(s) the cookie was blocked. If empty means the cookie is included.
+      array of CookieBlockedReason blockedReasons
+      # The reason the cookie should have been blocked by 3PCD but is exempted. A cookie could
+      # only have at most one exemption reason.
+      optional CookieExemptionReason exemptionReason
 
   # Cookie parameter object
   type CookieParam extends object
@@ -6151,7 +6276,7 @@ domain Network
       optional SignedExchangeHeader header
       # Security details for the signed exchange header.
       optional SecurityDetails securityDetails
-      # Errors occurred while handling the signed exchagne.
+      # Errors occurred while handling the signed exchange.
       optional array of SignedExchangeError errors
 
   # List of content encodings supported by the backend.
@@ -6224,7 +6349,7 @@ domain Network
       # Response to a requestIntercepted with an authChallenge. Must not be set otherwise.
       optional AuthChallengeResponse authChallengeResponse
 
-  # Deletes browser cookies with matching name and url or domain/path pair.
+  # Deletes browser cookies with matching name and url or domain/path/partitionKey pair.
   command deleteCookies
     parameters
       # Name of the cookies to remove.
@@ -6236,6 +6361,9 @@ domain Network
       optional string domain
       # If specified, deletes only cookies with the exact path.
       optional string path
+      # If specified, deletes only cookies with the the given name and partitionKey where domain
+      # matches provided URL.
+      optional string partitionKey
 
   # Disables network tracking, prevents network events from being sent to the client.
   command disable
@@ -6253,6 +6381,12 @@ domain Network
       number uploadThroughput
       # Connection type if known.
       optional ConnectionType connectionType
+      # WebRTC packet loss (percent, 0-100). 0 disables packet loss emulation, 100 drops all the packets.
+      experimental optional number packetLoss
+      # WebRTC packet queue length (packet). 0 removes any queue length limitations.
+      experimental optional integer packetQueueLength
+      # WebRTC packetReordering feature.
+      experimental optional boolean packetReordering
 
   # Enables network tracking, network events will now be delivered to the client.
   command enable
@@ -6363,7 +6497,7 @@ domain Network
       array of string urls
 
   # Toggles ignoring of service worker for each request.
-  experimental command setBypassServiceWorker
+  command setBypassServiceWorker
     parameters
       # Bypass service worker and load from network.
       boolean bypass
@@ -6465,6 +6599,18 @@ domain Network
       integer dataLength
       # Actual bytes received (might be less than dataLength for compressed encodings).
       integer encodedDataLength
+      # Data that was received.
+      experimental optional binary data
+
+  # Enables streaming of the response for the given requestId.
+  # If enabled, the dataReceived event contains the data that was received during streaming.
+  experimental command streamResourceContent
+    parameters
+      # Identifier of the request to stream.
+      RequestId requestId
+    returns
+      # Data that has been buffered until streaming is enabled.
+      binary bufferedData
 
   # Fired when EventSource message is received.
   event eventSourceMessageReceived
@@ -6489,7 +6635,7 @@ domain Network
       MonotonicTime timestamp
       # Resource type.
       ResourceType type
-      # User friendly error message.
+      # Error message. List of network errors: https://cs.chromium.org/chromium/src/net/base/net_error_list.h
       string errorText
       # True if loading was canceled.
       optional boolean canceled
@@ -6753,8 +6899,8 @@ domain Network
       # Request identifier. Used to match this information to an existing requestWillBeSent event.
       RequestId requestId
       # A list of cookies potentially associated to the requested URL. This includes both cookies sent with
-      # the request and the ones not sent; the latter are distinguished by having blockedReason field set.
-      array of BlockedCookieWithReason associatedCookies
+      # the request and the ones not sent; the latter are distinguished by having blockedReasons field set.
+      array of AssociatedCookie associatedCookies
       # Raw request headers as they will be sent over the wire.
       Headers headers
       # Connection timing information for the request.
@@ -6790,8 +6936,11 @@ domain Network
       # The cookie partition key that will be used to store partitioned cookies set in this response.
       # Only sent when partitioned cookies are enabled.
       optional string cookiePartitionKey
-      # True if partitioned cookies are enabled, but the partition key is not serializeable to string.
+      # True if partitioned cookies are enabled, but the partition key is not serializable to string.
       optional boolean cookiePartitionKeyOpaque
+      # A list of cookies which should have been blocked by 3PCD but are exempted and stored from
+      # the response with the corresponding reason.
+      optional array of ExemptedSetCookieWithReason exemptedCookies
 
   # Fired exactly once for each Trust Token operation. Depending on
   # the type of the operation and whether the operation succeeded or
@@ -7031,7 +7180,7 @@ experimental domain Overlay
   # Configuration data for drawing the source order of an elements children.
   type SourceOrderConfig extends object
     properties
-      # the color to outline the givent element in.
+      # the color to outline the given element in.
       DOM.RGBA parentOutlineColor
       # the color to outline the child elements in.
       DOM.RGBA childOutlineColor
@@ -7231,7 +7380,7 @@ experimental domain Overlay
     properties
       # Whether the title bar CSS should be shown when emulating the Window Controls Overlay.
       boolean showCSS
-      # Seleted platforms to show the overlay.
+      # Selected platforms to show the overlay.
       string selectedPlatform
       # The theme color defined in app manifest.
       string themeColor
@@ -7319,8 +7468,8 @@ experimental domain Overlay
   command hideHighlight
 
   # Highlights owner element of the frame with given id.
-  # Deprecated: Doesn't work reliablity and cannot be fixed due to process
-  # separatation (the owner node might be in a different process). Determine
+  # Deprecated: Doesn't work reliably and cannot be fixed due to process
+  # separation (the owner node might be in a different process). Determine
   # the owner node in the client and use highlightNode.
   deprecated command highlightFrame
     parameters
@@ -7595,6 +7744,7 @@ domain Page
       bluetooth
       browsing-topics
       camera
+      captured-surface-control
       ch-dpr
       ch-device-memory
       ch-downlink
@@ -7610,7 +7760,7 @@ domain Page
       ch-ua-platform
       ch-ua-model
       ch-ua-mobile
-      ch-ua-form-factor
+      ch-ua-form-factors
       ch-ua-full-version
       ch-ua-full-version-list
       ch-ua-platform-version
@@ -7650,6 +7800,7 @@ domain Page
       private-aggregation
       private-state-token-issuance
       private-state-token-redemption
+      publickey-credentials-create
       publickey-credentials-get
       run-ad-auction
       screen-wake-lock
@@ -7658,7 +7809,9 @@ domain Page
       shared-storage
       shared-storage-select-url
       smart-card
+      speaker-selection
       storage-access
+      sub-apps
       sync-xhr
       unload
       usb
@@ -7883,7 +8036,7 @@ domain Page
     properties
       # Error message.
       string message
-      # If criticial, this is a non-recoverable parse error.
+      # If critical, this is a non-recoverable parse error.
       integer critical
       # Error line.
       integer line
@@ -8372,7 +8525,7 @@ domain Page
       boolean enabled
 
   # Enable page Content Security Policy by-passing.
-  experimental command setBypassCSP
+  command setBypassCSP
     parameters
       # Whether to bypass page CSP.
       boolean enabled
@@ -8484,7 +8637,7 @@ domain Page
       optional number accuracy
 
   # Controls whether page will emit lifecycle events.
-  experimental command setLifecycleEventsEnabled
+  command setLifecycleEventsEnabled
     parameters
       # If true, starts emitting lifecycle events.
       boolean enabled
@@ -8524,7 +8677,7 @@ domain Page
   experimental command crash
 
   # Tries to close page, running its beforeunload hooks, if any.
-  experimental command close
+  command close
 
   # Tries to update the web lifecycle state of the page.
   # It will transition the page to the given state according to:
@@ -8540,7 +8693,7 @@ domain Page
   experimental command stopScreencast
 
   # Requests backend to produce compilation cache for the specified scripts.
-  # `scripts` are appeneded to the list of scripts for which the cache
+  # `scripts` are appended to the list of scripts for which the cache
   # would be produced. The list may be reset during page navigation.
   # When script with a matching URL is encountered, the cache is optionally
   # produced upon backend discretion, based on internal heuristics.
@@ -8560,7 +8713,7 @@ domain Page
   # Clears seeded compilation cache.
   experimental command clearCompilationCache
 
-  # Enum of possible auto-reponse for permisison / prompt dialogs.
+  # Enum of possible auto-response for permission / prompt dialogs.
   experimental type AutoResponseMode extends string
     enum
       none
@@ -8594,7 +8747,7 @@ domain Page
   # Intercept file chooser requests and transfer control to protocol clients.
   # When file chooser interception is enabled, native file chooser dialog is not shown.
   # Instead, a protocol event `Page.fileChooserOpened` is emitted.
-  experimental command setInterceptFileChooserDialog
+  command setInterceptFileChooserDialog
     parameters
       boolean enabled
 
@@ -8831,6 +8984,7 @@ domain Page
       CookieDisabled
       HTTPAuthRequired
       CookieFlushed
+      BroadcastChannelOnMessage
       #Blocklisted features
       WebSocket
       WebTransport
@@ -8841,7 +8995,6 @@ domain Page
       SubresourceHasCacheControlNoCache
       ContainsPlugins
       DocumentLoaded
-      DedicatedWorkerOrWorklet
       OutstandingNetworkRequestOthers
       RequestedMIDIPermission
       RequestedAudioCapturePermission
@@ -8879,6 +9032,10 @@ domain Page
       WebRTCSticky
       WebTransportSticky
       WebSocketSticky
+      SmartCard
+      LiveMediaStreamTrack
+      UnloadHandler
+      ParserAborted
       # Disabled for RenderFrameHost reasons
       # See content/browser/renderer_host/back_forward_cache_disable.h for explanations.
       ContentSecurityHandler
@@ -8955,7 +9112,7 @@ domain Page
   # when bfcache navigation fails.
   experimental event backForwardCacheNotUsed
     parameters
-      # The loader id for the associated navgation.
+      # The loader id for the associated navigation.
       Network.LoaderId loaderId
       # The frame id of the associated frame.
       FrameId frameId
@@ -9112,7 +9269,7 @@ experimental domain PerformanceTimeline
       # Identifies the frame that this event is related to. Empty for non-frame targets.
       Page.FrameId frameId
       # The event type, as specified in https://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype
-      # This determines which of the optional "details" fiedls is present.
+      # This determines which of the optional "details" fields is present.
       string type
       # Name may be empty depending on the type.
       string name
@@ -9188,7 +9345,7 @@ domain Security
       Network.TimeSinceEpoch validTo
       # The highest priority network error code, if the certificate has an error.
       optional string certificateNetworkError
-      # True if the certificate uses a weak signature aglorithm.
+      # True if the certificate uses a weak signature algorithm.
       boolean certificateHasWeakSignature
       # True if the certificate has a SHA1 signature in the chain.
       boolean certificateHasSha1Signature
@@ -9277,7 +9434,7 @@ domain Security
   command enable
 
   # Enable/disable whether all certificate errors should be ignored.
-  experimental command setIgnoreCertificateErrors
+  command setIgnoreCertificateErrors
     parameters
       # If true, all certificate errors will be ignored.
       boolean ignore
@@ -9490,6 +9647,9 @@ experimental domain Storage
       string issuerOrigin
       number count
 
+  # Protected audience interest group auction identifier.
+  type InterestGroupAuctionId extends string
+
   # Enum of interest group access types.
   type InterestGroupAccessType extends string
     enum
@@ -9501,29 +9661,24 @@ experimental domain Storage
       win
       additionalBid
       additionalBidWin
+      topLevelBid
+      topLevelAdditionalBid
       clear
 
-  # Ad advertising element inside an interest group.
-  type InterestGroupAd extends object
-    properties
-      string renderURL
-      optional string metadata
+  # Enum of auction events.
+  type InterestGroupAuctionEventType extends string
+    enum
+      started
+      configResolved
 
-  # The full details of an interest group.
-  type InterestGroupDetails extends object
-    properties
-      string ownerOrigin
-      string name
-      Network.TimeSinceEpoch expirationTime
-      string joiningOrigin
-      optional string biddingLogicURL
-      optional string biddingWasmHelperURL
-      optional string updateURL
-      optional string trustedBiddingSignalsURL
-      array of string trustedBiddingSignalsKeys
-      optional string userBiddingSignals
-      array of InterestGroupAd ads
-      array of InterestGroupAd adComponents
+  # Enum of network fetches auctions can do.
+  type InterestGroupAuctionFetchType extends string
+    enum
+      bidderJs
+      bidderWasm
+      sellerJs
+      bidderTrustedSignals
+      sellerTrustedSignals
 
   # Enum of shared storage access types.
   type SharedStorageAccessType extends string
@@ -9535,6 +9690,7 @@ experimental domain Storage
       documentAppend
       documentDelete
       documentClear
+      documentGet
       workletSet
       workletAppend
       workletDelete
@@ -9544,6 +9700,10 @@ experimental domain Storage
       workletEntries
       workletLength
       workletRemainingBudget
+      headerSet
+      headerAppend
+      headerDelete
+      headerClear
 
   # Struct for a single key-value pair in an origin's shared storage.
   type SharedStorageEntry extends object
@@ -9554,9 +9714,15 @@ experimental domain Storage
   # Details for an origin's shared storage.
   type SharedStorageMetadata extends object
     properties
+      # Time when the origin's shared storage was last created.
       Network.TimeSinceEpoch creationTime
+      # Number of key-value pairs stored in origin's shared storage.
       integer length
+      # Current amount of bits of entropy remaining in the navigation budget.
       number remainingBudget
+      # Total number of bytes stored as key-value pairs in origin's shared
+      # storage.
+      integer bytesUsed
 
   # Pair of reporting metadata details for a candidate URL for `selectURL()`.
   type SharedStorageReportingMetadata extends object
@@ -9596,18 +9762,24 @@ experimental domain Storage
       # SharedStorageAccessType.documentDelete,
       # SharedStorageAccessType.workletSet,
       # SharedStorageAccessType.workletAppend,
-      # SharedStorageAccessType.workletDelete, and
-      # SharedStorageAccessType.workletGet.
+      # SharedStorageAccessType.workletDelete,
+      # SharedStorageAccessType.workletGet,
+      # SharedStorageAccessType.headerSet,
+      # SharedStorageAccessType.headerAppend, and
+      # SharedStorageAccessType.headerDelete.
       optional string key
       # Value for a specific entry in an origin's shared storage.
       # Present only for SharedStorageAccessType.documentSet,
       # SharedStorageAccessType.documentAppend,
-      # SharedStorageAccessType.workletSet, and
-      # SharedStorageAccessType.workletAppend.
+      # SharedStorageAccessType.workletSet,
+      # SharedStorageAccessType.workletAppend,
+      # SharedStorageAccessType.headerSet, and
+      # SharedStorageAccessType.headerAppend.
       optional string value
       # Whether or not to set an entry for a key if that key is already present.
-      # Present only for SharedStorageAccessType.documentSet and
-      # SharedStorageAccessType.workletSet.
+      # Present only for SharedStorageAccessType.documentSet,
+      # SharedStorageAccessType.workletSet, and
+      # SharedStorageAccessType.headerSet.
       optional boolean ignoreIfPresent
 
   type StorageBucketsDurability extends string
@@ -9775,10 +9947,20 @@ experimental domain Storage
       string ownerOrigin
       string name
     returns
-      InterestGroupDetails details
+      # This largely corresponds to:
+      # https://wicg.github.io/turtledove/#dictdef-generatebidinterestgroup
+      # but has absolute expirationTime instead of relative lifetimeMs and
+      # also adds joiningOrigin.
+      object details
 
   # Enables/Disables issuing of interestGroupAccessed events.
   experimental command setInterestGroupTracking
+    parameters
+      boolean enable
+
+  # Enables/Disables issuing of interestGroupAuctionEventOccurred and
+  # interestGroupAuctionNetworkRequestCreated.
+  experimental command setInterestGroupAuctionTracking
     parameters
       boolean enable
 
@@ -9889,13 +10071,47 @@ experimental domain Storage
       # Storage bucket to update.
       string bucketId
 
-  # One of the interest groups was accessed by the associated page.
+  # One of the interest groups was accessed. Note that these events are global
+  # to all targets sharing an interest group store.
   event interestGroupAccessed
     parameters
       Network.TimeSinceEpoch accessTime
       InterestGroupAccessType type
       string ownerOrigin
       string name
+      # For topLevelBid/topLevelAdditionalBid, and when appropriate,
+      # win and additionalBidWin
+      optional string componentSellerOrigin
+      # For bid or somethingBid event, if done locally and not on a server.
+      optional number bid
+      optional string bidCurrency
+      # For non-global events --- links to interestGroupAuctionEvent
+      optional InterestGroupAuctionId uniqueAuctionId
+
+  # An auction involving interest groups is taking place. These events are
+  # target-specific.
+  event interestGroupAuctionEventOccurred
+    parameters
+      Network.TimeSinceEpoch eventTime
+      InterestGroupAuctionEventType type
+      InterestGroupAuctionId uniqueAuctionId
+      # Set for child auctions.
+      optional InterestGroupAuctionId parentAuctionId
+      # Set for started and configResolved
+      optional object auctionConfig
+
+  # Specifies which auctions a particular network fetch may be related to, and
+  # in what role. Note that it is not ordered with respect to
+  # Network.requestWillBeSent (but will happen before loadingFinished
+  # loadingFailed).
+  event interestGroupAuctionNetworkRequestCreated
+    parameters
+      InterestGroupAuctionFetchType type
+      Network.RequestId requestId
+      # This is the set of the auctions using the worklet that issued this
+      # request.  In the case of trusted signals, it's possible that only some of
+      # them actually care about the keys being queried.
+      array of InterestGroupAuctionId auctions
 
   # Shared storage was accessed by the associated page.
   # The following parameters are included in all events.
@@ -9909,7 +10125,7 @@ experimental domain Storage
       Page.FrameId mainFrameId
       # Serialized origin for the context that invoked the Shared Storage API.
       string ownerOrigin
-      # The sub-parameters warapped by `params` are all optional and their
+      # The sub-parameters wrapped by `params` are all optional and their
       # presence/absence depends on `type`.
       SharedStorageAccessParams params
 
@@ -9945,6 +10161,17 @@ experimental domain Storage
     properties
       string key
       array of string values
+
+  experimental type AttributionReportingFilterConfig extends object
+    properties
+      array of AttributionReportingFilterDataEntry filterValues
+      # duration in seconds
+      optional integer lookbackWindow
+
+  experimental type AttributionReportingFilterPair extends object
+    properties
+      array of AttributionReportingFilterConfig filters
+      array of AttributionReportingFilterConfig notFilters
 
   experimental type AttributionReportingAggregationKeysEntry extends object
     properties
@@ -10004,12 +10231,119 @@ experimental domain Storage
       reportingOriginsPerSiteLimitReached
       exceedsMaxChannelCapacity
 
-  # TODO(crbug.com/1458532): Add other Attribution Reporting events, e.g.
-  # trigger registration.
   experimental event attributionReportingSourceRegistered
     parameters
       AttributionReportingSourceRegistration registration
       AttributionReportingSourceRegistrationResult result
+
+  experimental type AttributionReportingSourceRegistrationTimeConfig extends string
+    enum
+      include
+      exclude
+
+  experimental type AttributionReportingAggregatableValueDictEntry extends object
+    properties
+      string key
+      # number instead of integer because not all uint32 can be represented by
+      # int
+      number value
+
+  experimental type AttributionReportingAggregatableValueEntry extends object
+    properties
+      array of AttributionReportingAggregatableValueDictEntry values
+      AttributionReportingFilterPair filters
+
+  experimental type AttributionReportingEventTriggerData extends object
+    properties
+      UnsignedInt64AsBase10 data
+      SignedInt64AsBase10 priority
+      optional UnsignedInt64AsBase10 dedupKey
+      AttributionReportingFilterPair filters
+
+  experimental type AttributionReportingAggregatableTriggerData extends object
+    properties
+      UnsignedInt128AsBase16 keyPiece
+      array of string sourceKeys
+      AttributionReportingFilterPair filters
+
+  experimental type AttributionReportingAggregatableDedupKey extends object
+    properties
+      optional UnsignedInt64AsBase10 dedupKey
+      AttributionReportingFilterPair filters
+
+  experimental type AttributionReportingTriggerRegistration extends object
+    properties
+      AttributionReportingFilterPair filters
+      optional UnsignedInt64AsBase10 debugKey
+      array of AttributionReportingAggregatableDedupKey aggregatableDedupKeys
+      array of AttributionReportingEventTriggerData eventTriggerData
+      array of AttributionReportingAggregatableTriggerData aggregatableTriggerData
+      array of AttributionReportingAggregatableValueEntry aggregatableValues
+      boolean debugReporting
+      optional string aggregationCoordinatorOrigin
+      AttributionReportingSourceRegistrationTimeConfig sourceRegistrationTimeConfig
+      optional string triggerContextId
+
+  experimental type AttributionReportingEventLevelResult extends string
+    enum
+      success
+      successDroppedLowerPriority
+      internalError
+      noCapacityForAttributionDestination
+      noMatchingSources
+      deduplicated
+      excessiveAttributions
+      priorityTooLow
+      neverAttributedSource
+      excessiveReportingOrigins
+      noMatchingSourceFilterData
+      prohibitedByBrowserPolicy
+      noMatchingConfigurations
+      excessiveReports
+      falselyAttributedSource
+      reportWindowPassed
+      notRegistered
+      reportWindowNotStarted
+      noMatchingTriggerData
+
+  experimental type AttributionReportingAggregatableResult extends string
+    enum
+      success
+      internalError
+      noCapacityForAttributionDestination
+      noMatchingSources
+      excessiveAttributions
+      excessiveReportingOrigins
+      noHistograms
+      insufficientBudget
+      noMatchingSourceFilterData
+      notRegistered
+      prohibitedByBrowserPolicy
+      deduplicated
+      reportWindowPassed
+      excessiveReports
+
+  experimental event attributionReportingTriggerRegistered
+    parameters
+      AttributionReportingTriggerRegistration registration
+      AttributionReportingEventLevelResult eventLevel
+      AttributionReportingAggregatableResult aggregatable
+
+  # A single Related Website Set object.
+  experimental type RelatedWebsiteSet extends object
+    properties
+      # The primary site of this set, along with the ccTLDs if there is any.
+      array of string primarySites
+      # The associated sites of this set, along with the ccTLDs if there is any.
+      array of string associatedSites
+      # The service sites of this set, along with the ccTLDs if there is any.
+      array of string serviceSites
+
+  # Returns the effective Related Website Sets in use by this profile for the browser
+  # session. The effective Related Website Sets will not change during a browser session.
+  experimental command getRelatedWebsiteSets
+    returns
+      array of RelatedWebsiteSet sets
 
 # The SystemInfo domain defines methods and events for querying low-level system information.
 experimental domain SystemInfo
@@ -10162,6 +10496,7 @@ domain Target
   type TargetInfo extends object
     properties
       TargetID targetId
+      # List of types: https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_agent_host_impl.cc?ss=chromium&q=f:devtools%20-f:out%20%22::kTypeTab%5B%5D%22
       string type
       string title
       string url
@@ -10181,7 +10516,7 @@ domain Target
   # A filter used by target query/discovery/auto-attach operations.
   experimental type FilterEntry extends object
     properties
-      # If set, causes exclusion of mathcing targets from the list.
+      # If set, causes exclusion of matching targets from the list.
       optional boolean exclude
       # If not present, matches any type.
       optional string type
@@ -10235,7 +10570,7 @@ domain Target
   #
   # Injected object will be available as `window[bindingName]`.
   #
-  # The object has the follwing API:
+  # The object has the following API:
   # - `binding.send(json)` - a method to send messages over the remote debugging protocol
   # - `binding.onmessage = json => handleMessage(json)` - a callback that will be called for the protocol notifications and command responses.
   experimental command exposeDevToolsProtocol
@@ -10246,23 +10581,23 @@ domain Target
 
   # Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
   # one.
-  experimental command createBrowserContext
+  command createBrowserContext
     parameters
       # If specified, disposes this context when debugging session disconnects.
-      optional boolean disposeOnDetach
+      experimental optional boolean disposeOnDetach
       # Proxy server, similar to the one passed to --proxy-server
-      optional string proxyServer
+      experimental optional string proxyServer
       # Proxy bypass list, similar to the one passed to --proxy-bypass-list
-      optional string proxyBypassList
+      experimental optional string proxyBypassList
       # An optional list of origins to grant unlimited cross-origin access to.
       # Parts of the URL other than those constituting origin are ignored.
-      optional array of string originsWithUniversalNetworkAccess
+      experimental optional array of string originsWithUniversalNetworkAccess
     returns
       # The id of the context created.
       Browser.BrowserContextID browserContextId
 
   # Returns all browser contexts created with `Target.createBrowserContext` method.
-  experimental command getBrowserContexts
+  command getBrowserContexts
     returns
       # An array of browser context ids.
       array of Browser.BrowserContextID browserContextIds
@@ -10302,7 +10637,7 @@ domain Target
 
   # Deletes a BrowserContext. All the belonging pages will be closed without calling their
   # beforeunload hooks.
-  experimental command disposeBrowserContext
+  command disposeBrowserContext
     parameters
       Browser.BrowserContextID browserContextId
 
@@ -10340,7 +10675,7 @@ domain Target
   # automatically detaches from all currently attached targets.
   # This also clears all targets added by `autoAttachRelated` from the list of targets to watch
   # for creation of related targets.
-  experimental command setAutoAttach
+  command setAutoAttach
     parameters
       # Whether to auto-attach to related targets.
       boolean autoAttach
@@ -10350,7 +10685,7 @@ domain Target
       # Enables "flat" access to the session via specifying sessionId attribute in the commands.
       # We plan to make this the default, deprecate non-flattened mode,
       # and eventually retire it. See crbug.com/991325.
-      optional boolean flatten
+      experimental optional boolean flatten
       # Only targets matching filter will be attached.
       experimental optional TargetFilter filter
 
@@ -10460,47 +10795,47 @@ experimental domain Tethering
       # Connection id to be used.
       string connectionId
 
-experimental domain Tracing
+domain Tracing
   depends on IO
 
   # Configuration for memory dump. Used only when "memory-infra" category is enabled.
-  type MemoryDumpConfig extends object
+  experimental type MemoryDumpConfig extends object
 
   type TraceConfig extends object
     properties
       # Controls how the trace buffer stores data.
-      optional enum recordMode
+      experimental optional enum recordMode
         recordUntilFull
         recordContinuously
         recordAsMuchAsPossible
         echoToConsole
       # Size of the trace buffer in kilobytes. If not specified or zero is passed, a default value
       # of 200 MB would be used.
-      optional number traceBufferSizeInKb
+      experimental optional number traceBufferSizeInKb
       # Turns on JavaScript stack sampling.
-      optional boolean enableSampling
+      experimental optional boolean enableSampling
       # Turns on system tracing.
-      optional boolean enableSystrace
+      experimental optional boolean enableSystrace
       # Turns on argument filter.
-      optional boolean enableArgumentFilter
+      experimental optional boolean enableArgumentFilter
       # Included category filters.
       optional array of string includedCategories
       # Excluded category filters.
       optional array of string excludedCategories
       # Configuration to synthesize the delays in tracing.
-      optional array of string syntheticDelays
+      experimental optional array of string syntheticDelays
       # Configuration for memory dump triggers. Used only when "memory-infra" category is enabled.
-      optional MemoryDumpConfig memoryDumpConfig
+      experimental optional MemoryDumpConfig memoryDumpConfig
 
   # Data format of a trace. Can be either the legacy JSON format or the
   # protocol buffer format. Note that the JSON format will be deprecated soon.
-  type StreamFormat extends string
+  experimental type StreamFormat extends string
     enum
       json
       proto
 
   # Compression type to use for traces returned via streams.
-  type StreamCompression extends string
+  experimental type StreamCompression extends string
     enum
       none
       gzip
@@ -10508,7 +10843,7 @@ experimental domain Tracing
   # Details exposed when memory request explicitly declared.
   # Keep consistent with memory_dump_request_args.h and
   # memory_instrumentation.mojom
-  type MemoryDumpLevelOfDetail extends string
+  experimental type MemoryDumpLevelOfDetail extends string
     enum
       background
       light
@@ -10519,7 +10854,7 @@ experimental domain Tracing
   # supported on Chrome OS and uses the Perfetto system tracing service.
   # `auto` chooses `system` when the perfettoConfig provided to Tracing.start
   # specifies at least one non-Chrome data source; otherwise uses `chrome`.
-  type TracingBackend extends string
+  experimental type TracingBackend extends string
     enum
       auto
       chrome
@@ -10529,19 +10864,19 @@ experimental domain Tracing
   command end
 
   # Gets supported tracing categories.
-  command getCategories
+  experimental command getCategories
     returns
       # A list of supported tracing categories.
       array of string categories
 
   # Record a clock sync marker in the trace.
-  command recordClockSyncMarker
+  experimental command recordClockSyncMarker
     parameters
       # The ID of this clock sync marker
       string syncId
 
   # Request a global memory dump.
-  command requestMemoryDump
+  experimental command requestMemoryDump
     parameters
       # Enables more deterministic results by forcing garbage collection
       optional boolean deterministic
@@ -10557,11 +10892,11 @@ experimental domain Tracing
   command start
     parameters
       # Category/tag filter
-      deprecated optional string categories
+      experimental deprecated optional string categories
       # Tracing options
-      deprecated optional string options
+      experimental deprecated optional string options
       # If set, the agent will issue bufferUsage events at this interval, specified in milliseconds
-      optional number bufferUsageReportingInterval
+      experimental optional number bufferUsageReportingInterval
       # Whether to report trace events as series of dataCollected events or to save trace to a
       # stream (defaults to `ReportEvents`).
       optional enum transferMode
@@ -10572,16 +10907,16 @@ experimental domain Tracing
       optional StreamFormat streamFormat
       # Compression format to use. This only applies when using `ReturnAsStream`
       # transfer mode (defaults to `none`)
-      optional StreamCompression streamCompression
+      experimental optional StreamCompression streamCompression
       optional TraceConfig traceConfig
       # Base64-encoded serialized perfetto.protos.TraceConfig protobuf message
       # When specified, the parameters `categories`, `options`, `traceConfig`
       # are ignored.
-      optional binary perfettoConfig
+      experimental optional binary perfettoConfig
       # Backend type (defaults to `auto`)
-      optional TracingBackend tracingBackend
+      experimental optional TracingBackend tracingBackend
 
-  event bufferUsage
+  experimental event bufferUsage
     parameters
       # A number in range [0..1] that indicates the used size of event buffer as a fraction of its
       # total size.
@@ -10594,7 +10929,7 @@ experimental domain Tracing
 
   # Contains a bucket of collected trace events. When tracing is stopped collected events will be
   # sent as a sequence of dataCollected events followed by tracingComplete event.
-  event dataCollected
+  experimental event dataCollected
     parameters
       array of object value
 
@@ -11142,6 +11477,14 @@ experimental domain WebAuthn
       # The large blob associated with the credential.
       # See https://w3c.github.io/webauthn/#sctn-large-blob-extension
       optional binary largeBlob
+      # Assertions returned by this credential will have the backup eligibility
+      # (BE) flag set to this value. Defaults to the authenticator's
+      # defaultBackupEligibility value.
+      optional boolean backupEligibility
+      # Assertions returned by this credential will have the backup state (BS)
+      # flag set to this value. Defaults to the authenticator's
+      # defaultBackupState value.
+      optional boolean backupState
 
   # Enable the WebAuthn domain and start intercepting credential storage and
   # retrieval with a virtual authenticator.
@@ -11229,6 +11572,15 @@ experimental domain WebAuthn
     parameters
       AuthenticatorId authenticatorId
       boolean enabled
+
+  # Allows setting credential properties.
+  # https://w3c.github.io/webauthn/#sctn-automation-set-credential-properties
+  command setCredentialProperties
+    parameters
+      AuthenticatorId authenticatorId
+      binary credentialId
+      optional boolean backupEligibility
+      optional boolean backupState
 
   # Triggered when a credential is added to an authenticator.
   event credentialAdded
@@ -11455,7 +11807,7 @@ experimental domain Preload
   # that had a speculation rule that triggered the attempt, and the
   # BackendNodeIds of <a href> or <area href> elements that triggered the
   # attempt (in the case of attempts triggered by a document rule). It is
-  # possible for mulitple rule sets and links to trigger a single attempt.
+  # possible for multiple rule sets and links to trigger a single attempt.
   type PreloadingAttemptSource extends object
     properties
       PreloadingAttemptKey key
@@ -11577,7 +11929,8 @@ experimental domain Preload
       PrefetchFailedNetError
       PrefetchFailedNon2XX
       PrefetchFailedPerPageLimitExceeded
-      PrefetchEvicted
+      PrefetchEvictedAfterCandidateRemoved
+      PrefetchEvictedForNewerPrefetch
       PrefetchHeldback
       # A previous prefetch to the origin got a HTTP 503 response with an
       # Retry-After header that has no elapsed yet.
@@ -11665,6 +12018,12 @@ experimental domain FedCm
       ErrorGotIt
       ErrorMoreDetails
 
+  # The URLs that each account has
+  type AccountUrlType extends string
+    enum
+      TermsOfService
+      PrivacyPolicy
+
   # Corresponds to IdentityRequestAccount
   type Account extends object
     properties
@@ -11714,6 +12073,12 @@ experimental domain FedCm
     parameters
       string dialogId
       DialogButton dialogButton
+
+  command openUrl
+    parameters
+      string dialogId
+      integer accountIndex
+      AccountUrlType accountUrlType
 
   command dismissDialog
     parameters
