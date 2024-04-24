@@ -1,3 +1,11 @@
+4.20.0 (2024-04-24)
+=========================
+
+>>> [build] Moving versions to nightly
+>>> [rb] update SOC for driver finder and selenium manager classes (#13386)
+[rb] move driver finding logic out of selenium manager class
+>>> Update supported versions for Chrome DevTools
+
 4.19.0 (2024-03-27)
 =========================
 

@@ -1,3 +1,59 @@
+## 4.20.0
+
+>>> [bidi][js] Update the capture screenshot APIs to include all parameters and remove scroll parameter (#13744)
+>>> [js] Fix linting (#13753)
+>>> [JS][bidi] Impelments functionality to retrieve all top-level browsing contexts
+>>> [js] Running format script
+>>> [js] Add JS comments for BiDi related files (#13763)
+>>> [JS] lint fixes
+>>> [JS] Set browserName by default when browserOptions are used
+>>> [JS] Implement fullPageScreenshot functionality for Firefox (#13301)
+>>> [js] Running format script
+>>> [JS] Remove duplicate license agreement from files
+>>> [bidi][js] Enable add intercept parameters test
+>>> [bidi][js] Enable tests for Edge and Chrome (#13790)
+>>> [bidi][js] Fix log inspector test
+>>> [JS] Update npm deps to latest
+>>> [JS] Migrate eslint to latest (#13825)
+* [JS] Migrate eslint to latest
+* [JS] Update bazel targets
+* [JS] Update copyright
+* [JS] Update missing deps in bazel target
+* [JS] Update code format
+* [JS] Add eslint plugin for Node.js-specific linting rules
+>>> [JS] Fix stale element test and enable window tests
+>>> Nightly javascript (#13844)
+* [js] Adding node setup to main bazel.yml
+* [js] Nightly for JavaScript
+* [js] Adding missing parameter
+* [js] Building and packaging locally, npm to publish
+* [js] Trying to push with wildcard
+* [js] Trying to set the NODE_AUTH_TOKEN
+* [js] Debugging
+* [js] Modifying npmrc
+* [js] Copying npmrc
+* [js] Now trying with publishConfig and registru
+* [js] Fixing command for ubuntu
+* [js] Trying more things to auth
+* [js] Both npmrc files
+* [js] Changing package name
+* [js] Bumping version
+* [js] Removing next tag
+* [js] Just publishing once
+* [js] Only npmrc on the root directory
+* [js] Only npmrc on the root directory
+* [js] Using nightly now
+>>> [js] Improve atoms loading under Bazel
+>>> [js] Fix small tests
+>>> [js] Fix formatting
+>>> [js] Making SeleniumManager a thin wrapper (#13853)
+* [js] Making SeleniumManager a thin wrapper
+* [js] Fixing imports and js doc
+* [js] Removing unused import
+>>> [JS] Update npm deps
+>>> [bidi] Update browsing context create method (#13766)
+>>> Update supported versions for Chrome DevTools
+
 ## 4.19.0
 
 - Add CDP for Chrome 123 and remove 120
