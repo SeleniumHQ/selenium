@@ -8,7 +8,7 @@ SUPPORTED_DEVTOOLS_VERSIONS = [
     "v85",
     "v122",
     "v123",
-    "v121",
+    "v124",
 ]
 
 ASSEMBLY_COMPANY = "Selenium Committers"
