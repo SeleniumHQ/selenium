@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../../../script-dir/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../../jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="../../../../../../script.js"></script>
-<script type="text/javascript" src="../../../../../../script-dir/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../../../script-dir/jquery-3.6.1.min.js"></script>
 <script type="text/javascript" src="../../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -95,11 +95,12 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,java.net.URI,java.net.URI,org.openqa.selenium.Capabilities)" class="member-name-link">RelaySessionFactory</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,java.net.URI,java.net.URI,java.lang.String,org.openqa.selenium.Capabilities)" class="member-name-link">RelaySessionFactory</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionTimeout,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;serviceUri,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;serviceStatusUri,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;serviceProtocolVersion,
  <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
@@ -152,13 +153,14 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,java.net.URI,java.net.URI,org.openqa.selenium.Capabilities)">
+<section class="detail" id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,java.net.URI,java.net.URI,java.lang.String,org.openqa.selenium.Capabilities)">
 <h3>RelaySessionFactory</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">RelaySessionFactory</span><wbr><span class="parameters">(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionTimeout,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;serviceUri,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;serviceStatusUri,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;serviceProtocolVersion,
  <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype)</span></div>
 </section>
 </li>

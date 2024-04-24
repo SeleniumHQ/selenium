@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../script-dir/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="../../../../script.js"></script>
-<script type="text/javascript" src="../../../../script-dir/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../script-dir/jquery-3.6.1.min.js"></script>
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -104,10 +104,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SeleniumManagerOutput.Result.html" title="class in org.openqa.selenium.manager">SeleniumManagerOutput.Result</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDriverPath(org.openqa.selenium.Capabilities,boolean)" class="member-name-link">getDriverPath</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;options,
- boolean&nbsp;offline)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBinaryPaths(java.util.List)" class="member-name-link">getBinaryPaths</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;arguments)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Determines the location of the correct driver.</div>
+<div class="block">Executes Selenium Manager to get the locations of the requested assets</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="SeleniumManager.html" title="class in org.openqa.selenium.manager">SeleniumManager</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance()" class="member-name-link">getInstance</a>()</code></div>
@@ -136,16 +135,15 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="getDriverPath(org.openqa.selenium.Capabilities,boolean)">
-<h3>getDriverPath</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SeleniumManagerOutput.Result.html" title="class in org.openqa.selenium.manager">SeleniumManagerOutput.Result</a></span>&nbsp;<span class="element-name">getDriverPath</span><wbr><span class="parameters">(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;options,
- boolean&nbsp;offline)</span></div>
-<div class="block">Determines the location of the correct driver.</div>
+<section class="detail" id="getBinaryPaths(java.util.List)">
+<h3>getBinaryPaths</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SeleniumManagerOutput.Result.html" title="class in org.openqa.selenium.manager">SeleniumManagerOutput.Result</a></span>&nbsp;<span class="element-name">getBinaryPaths</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;arguments)</span></div>
+<div class="block">Executes Selenium Manager to get the locations of the requested assets</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>options</code> - Browser Options instance.</dd>
+<dd><code>arguments</code> - List of command line arguments to send to Selenium Manager binary</dd>
 <dt>Returns:</dt>
-<dd>the location of the driver.</dd>
+<dd>the locations of the assets from Selenium Manager execution</dd>
 </dl>
 </section>
 </li>

@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../script-dir/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="../../../../script.js"></script>
-<script type="text/javascript" src="../../../../script-dir/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../script-dir/jquery-3.6.1.min.js"></script>
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -386,7 +386,7 @@ loadScripts(document, 'script');</script>
 <h3>createDefaultService</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a></span>&nbsp;<span class="element-name">createDefaultService</span>()</div>
 <div class="block">Configures and returns a new <a href="GeckoDriverService.html" title="class in org.openqa.selenium.firefox"><code>GeckoDriverService</code></a> using the default configuration. In
- this configuration, the service will use the GeckoDriver executable identified by the <a href="../remote/service/DriverFinder.html#getPath(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.Capabilities)"><code>DriverFinder.getPath(DriverService, Capabilities)</code></a>. Each
+ this configuration, the service will use the GeckoDriver executable identified by the <code>org.openqa.selenium.remote.service.DriverFinder#getResult(DriverService, Capabilities)</code>. Each
  service created by this method will be configured to use a free port on the current system.</div>
 <dl class="notes">
 <dt>Returns:</dt>

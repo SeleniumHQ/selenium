@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../../../../../script-dir/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="../../../../../script.js"></script>
-<script type="text/javascript" src="../../../../../script-dir/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../../script-dir/jquery-3.6.1.min.js"></script>
 <script type="text/javascript" src="../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-use-page">
@@ -57,12 +57,22 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><a href="#org.openqa.selenium.bidi">org.openqa.selenium.bidi</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.devtools">org.openqa.selenium.devtools</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.bidi.browsingcontext">org.openqa.selenium.bidi.browsingcontext</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.data">org.openqa.selenium.grid.data</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.bidi.log">org.openqa.selenium.bidi.log</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.json">org.openqa.selenium.json</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.bidi.network">org.openqa.selenium.bidi.network</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.bidi.script">org.openqa.selenium.bidi.script</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.bidi.storage">org.openqa.selenium.bidi.storage</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.devtools">org.openqa.selenium.devtools</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.data">org.openqa.selenium.grid.data</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.json">org.openqa.selenium.json</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -103,6 +113,154 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;params,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>,<wbr><a href="../../bidi/Command.html" title="type parameter in Command">X</a>&gt;&nbsp;mapper,
  boolean&nbsp;sendsResponse)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.browsingcontext">
+<h2>Uses of <a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a> in <a href="../../bidi/browsingcontext/package-summary.html">org.openqa.selenium.bidi.browsingcontext</a></h2>
+<div class="caption"><span>Methods in <a href="../../bidi/browsingcontext/package-summary.html">org.openqa.selenium.bidi.browsingcontext</a> with parameters of type <a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/browsingcontext/BrowsingContextInfo.html" title="class in org.openqa.selenium.bidi.browsingcontext">BrowsingContextInfo</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">BrowsingContextInfo.</span><code><a href="../../bidi/browsingcontext/BrowsingContextInfo.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/browsingcontext/NavigationInfo.html" title="class in org.openqa.selenium.bidi.browsingcontext">NavigationInfo</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">NavigationInfo.</span><code><a href="../../bidi/browsingcontext/NavigationInfo.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/browsingcontext/NavigationResult.html" title="class in org.openqa.selenium.bidi.browsingcontext">NavigationResult</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">NavigationResult.</span><code><a href="../../bidi/browsingcontext/NavigationResult.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/browsingcontext/UserPromptClosed.html" title="class in org.openqa.selenium.bidi.browsingcontext">UserPromptClosed</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">UserPromptClosed.</span><code><a href="../../bidi/browsingcontext/UserPromptClosed.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/browsingcontext/UserPromptOpened.html" title="class in org.openqa.selenium.bidi.browsingcontext">UserPromptOpened</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">UserPromptOpened.</span><code><a href="../../bidi/browsingcontext/UserPromptOpened.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.log">
+<h2>Uses of <a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a> in <a href="../../bidi/log/package-summary.html">org.openqa.selenium.bidi.log</a></h2>
+<div class="caption"><span>Methods in <a href="../../bidi/log/package-summary.html">org.openqa.selenium.bidi.log</a> with parameters of type <a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConsoleLogEntry.</span><code><a href="../../bidi/log/ConsoleLogEntry.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/log/GenericLogEntry.html" title="class in org.openqa.selenium.bidi.log">GenericLogEntry</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">GenericLogEntry.</span><code><a href="../../bidi/log/GenericLogEntry.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">JavascriptLogEntry.</span><code><a href="../../bidi/log/JavascriptLogEntry.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/log/StackFrame.html" title="class in org.openqa.selenium.bidi.log">StackFrame</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">StackFrame.</span><code><a href="../../bidi/log/StackFrame.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/log/StackTrace.html" title="class in org.openqa.selenium.bidi.log">StackTrace</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">StackTrace.</span><code><a href="../../bidi/log/StackTrace.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.network">
+<h2>Uses of <a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a> in <a href="../../bidi/network/package-summary.html">org.openqa.selenium.bidi.network</a></h2>
+<div class="caption"><span>Methods in <a href="../../bidi/network/package-summary.html">org.openqa.selenium.bidi.network</a> with parameters of type <a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/network/AuthChallenge.html" title="class in org.openqa.selenium.bidi.network">AuthChallenge</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AuthChallenge.</span><code><a href="../../bidi/network/AuthChallenge.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/network/BaseParameters.html" title="class in org.openqa.selenium.bidi.network">BaseParameters</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">BaseParameters.</span><code><a href="../../bidi/network/BaseParameters.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/network/BytesValue.html" title="class in org.openqa.selenium.bidi.network">BytesValue</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">BytesValue.</span><code><a href="../../bidi/network/BytesValue.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/network/Cookie.html" title="class in org.openqa.selenium.bidi.network">Cookie</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Cookie.</span><code><a href="../../bidi/network/Cookie.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/network/FetchTimingInfo.html" title="class in org.openqa.selenium.bidi.network">FetchTimingInfo</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">FetchTimingInfo.</span><code><a href="../../bidi/network/FetchTimingInfo.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/network/Header.html" title="class in org.openqa.selenium.bidi.network">Header</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Header.</span><code><a href="../../bidi/network/Header.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/network/Initiator.html" title="class in org.openqa.selenium.bidi.network">Initiator</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Initiator.</span><code><a href="../../bidi/network/Initiator.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/network/RequestData.html" title="class in org.openqa.selenium.bidi.network">RequestData</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RequestData.</span><code><a href="../../bidi/network/RequestData.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/network/ResponseData.html" title="class in org.openqa.selenium.bidi.network">ResponseData</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ResponseData.</span><code><a href="../../bidi/network/ResponseData.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.script">
+<h2>Uses of <a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a> in <a href="../../bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a></h2>
+<div class="caption"><span>Methods in <a href="../../bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a> with parameters of type <a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/script/ExceptionDetails.html" title="class in org.openqa.selenium.bidi.script">ExceptionDetails</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ExceptionDetails.</span><code><a href="../../bidi/script/ExceptionDetails.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/script/Message.html" title="class in org.openqa.selenium.bidi.script">Message</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Message.</span><code><a href="../../bidi/script/Message.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/script/NodeProperties.html" title="class in org.openqa.selenium.bidi.script">NodeProperties</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">NodeProperties.</span><code><a href="../../bidi/script/NodeProperties.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/script/RealmInfo.html" title="class in org.openqa.selenium.bidi.script">RealmInfo</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RealmInfo.</span><code><a href="../../bidi/script/RealmInfo.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/script/RegExpValue.html" title="class in org.openqa.selenium.bidi.script">RegExpValue</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RegExpValue.</span><code><a href="../../bidi/script/RegExpValue.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/script/RemoteValue.html" title="class in org.openqa.selenium.bidi.script">RemoteValue</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RemoteValue.</span><code><a href="../../bidi/script/RemoteValue.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/script/Source.html" title="class in org.openqa.selenium.bidi.script">Source</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Source.</span><code><a href="../../bidi/script/Source.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/script/StackFrame.html" title="class in org.openqa.selenium.bidi.script">StackFrame</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">StackFrame.</span><code><a href="../../bidi/script/StackFrame.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/script/StackTrace.html" title="class in org.openqa.selenium.bidi.script">StackTrace</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">StackTrace.</span><code><a href="../../bidi/script/StackTrace.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/script/WindowProxyProperties.html" title="class in org.openqa.selenium.bidi.script">WindowProxyProperties</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">WindowProxyProperties.</span><code><a href="../../bidi/script/WindowProxyProperties.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.bidi.storage">
+<h2>Uses of <a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a> in <a href="../../bidi/storage/package-summary.html">org.openqa.selenium.bidi.storage</a></h2>
+<div class="caption"><span>Methods in <a href="../../bidi/storage/package-summary.html">org.openqa.selenium.bidi.storage</a> with parameters of type <a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static <a href="../../bidi/storage/GetCookiesResult.html" title="class in org.openqa.selenium.bidi.storage">GetCookiesResult</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GetCookiesResult.</span><code><a href="../../bidi/storage/GetCookiesResult.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../../bidi/storage/PartitionKey.html" title="class in org.openqa.selenium.bidi.storage">PartitionKey</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">PartitionKey.</span><code><a href="../../bidi/storage/PartitionKey.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson</a><wbr>(<a href="../JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
