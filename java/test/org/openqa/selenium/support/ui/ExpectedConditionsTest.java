@@ -41,6 +41,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfWindowsT
 import static org.openqa.selenium.support.ui.ExpectedConditions.or;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfNestedElementLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfNestedElementsLocatedBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfNestedInShadowRootElementLocatedBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfNestedInShadowRootElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textMatches;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement;
@@ -863,6 +865,41 @@ class ExpectedConditionsTest {
     when(mockElement.findElements(child)).thenReturn(singletonList(mockNestedElement));
 
     List<WebElement> elements = wait.until(presenceOfNestedElementsLocatedBy(parent, child));
+
+    assertThat(mockNestedElement).isEqualTo(elements.get(0));
+  }
+
+  @Test
+  void waitingForPresenceOfNestedElementInShadowRootByLocatorWhenElementPresents() {
+    String testHostSelector = "hostSelector";
+    String testNestedSelector = "testNestedSelector";
+    when(mockDriver.findElement(By.cssSelector(testHostSelector))).thenReturn(mockElement);
+    when(mockElement.findElement(By.cssSelector(testNestedSelector))).thenReturn(mockNestedElement);
+    wait.until(
+      presenceOfNestedInShadowRootElementLocatedBy(
+        By.cssSelector(testHostSelector), By.cssSelector(testNestedSelector)));
+  }
+
+  @Test
+  void waitingForPresenceOfNestedElementInShadowRootByLocatorWhenElementPresents() {
+    String testHostSelector = "hostSelector";
+    String testNestedSelector = "testNestedSelector";
+    when(mockDriver.findElement(By.cssSelector(testHostSelector))).thenReturn(mockElement);
+    when(mockElement.findElement(By.cssSelector(testNestedSelector))).thenReturn(mockNestedElement);
+    wait.until(
+      presenceOfNestedInShadowRootElementLocatedBy(
+        mockElement, By.cssSelector(testNestedSelector)));
+  }
+
+  @Test
+  void waitingForPresenceOfNestedElementsInShadowRootWhenElementsPresent() {
+    By host = By.cssSelector("host");
+    By nested = By.cssSelector("nested");
+
+    when(mockDriver.findElement(host)).thenReturn(mockElement);
+    when(mockElement.findElements(nested)).thenReturn(singletonList(mockNestedElement));
+
+    List<WebElement> elements = wait.until(presenceOfNestedInShadowRootElementsLocatedBy(host, nested));
 
     assertThat(mockNestedElement).isEqualTo(elements.get(0));
   }
