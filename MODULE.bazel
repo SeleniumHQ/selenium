@@ -151,15 +151,6 @@ use_repo(
 )
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
-
-JUNIT_VERSION = "1.10.2"
-
-JUPITER_VERSION = "5.10.2"
-
-NETTY_VERSION = "4.1.109.Final"
-
-OPENTELEMETRY_VERSION = "1.37.0"
-
 maven.install(
     name = "maven",
     artifacts = [
@@ -178,22 +169,22 @@ maven.install(
         "dev.failsafe:failsafe:3.3.2",
         "io.grpc:grpc-context:1.63.0",
         "io.lettuce:lettuce-core:6.3.2.RELEASE",
-        "io.netty:netty-buffer:%s" % NETTY_VERSION,
-        "io.netty:netty-codec-http:%s" % NETTY_VERSION,
-        "io.netty:netty-codec-http2:%s" % NETTY_VERSION,
-        "io.netty:netty-common:%s" % NETTY_VERSION,
-        "io.netty:netty-handler:%s" % NETTY_VERSION,
-        "io.netty:netty-handler-proxy:%s" % NETTY_VERSION,
-        "io.netty:netty-transport:%s" % NETTY_VERSION,
-        "io.opentelemetry:opentelemetry-api:%s" % OPENTELEMETRY_VERSION,
-        "io.opentelemetry:opentelemetry-context:%s" % OPENTELEMETRY_VERSION,
-        "io.opentelemetry:opentelemetry-exporter-logging:%s" % OPENTELEMETRY_VERSION,
-        "io.opentelemetry:opentelemetry-sdk:%s" % OPENTELEMETRY_VERSION,
-        "io.opentelemetry:opentelemetry-sdk-common:%s" % OPENTELEMETRY_VERSION,
-        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:%s" % OPENTELEMETRY_VERSION,
-        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:%s" % OPENTELEMETRY_VERSION,
-        "io.opentelemetry:opentelemetry-sdk-testing:%s" % OPENTELEMETRY_VERSION,
-        "io.opentelemetry:opentelemetry-sdk-trace:%s" % OPENTELEMETRY_VERSION,
+        "io.netty:netty-buffer:4.1.109.Final",
+        "io.netty:netty-codec-http:4.1.109.Final",
+        "io.netty:netty-codec-http2:4.1.109.Final",
+        "io.netty:netty-common:4.1.109.Final",
+        "io.netty:netty-handler:4.1.109.Final",
+        "io.netty:netty-handler-proxy:4.1.109.Final",
+        "io.netty:netty-transport:4.1.109.Final",
+        "io.opentelemetry:opentelemetry-api:1.37.0",
+        "io.opentelemetry:opentelemetry-context:1.37.0",
+        "io.opentelemetry:opentelemetry-exporter-logging:1.37.0",
+        "io.opentelemetry:opentelemetry-sdk:1.37.0",
+        "io.opentelemetry:opentelemetry-sdk-common:1.37.0",
+        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.37.0",
+        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.37.0",
+        "io.opentelemetry:opentelemetry-sdk-testing:1.37.0",
+        "io.opentelemetry:opentelemetry-sdk-trace:1.37.0",
         "io.opentelemetry.semconv:opentelemetry-semconv:1.25.0-alpha",
         "io.ous:jtoml:2.0.0",
         "it.ozimov:embedded-redis:0.7.3",
@@ -205,13 +196,13 @@ maven.install(
         "org.bouncycastle:bcpkix-jdk18on:1.78.1",
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
         "org.hsqldb:hsqldb:2.7.2",
-        "org.junit.jupiter:junit-jupiter-api:%s" % JUPITER_VERSION,
-        "org.junit.jupiter:junit-jupiter-engine:%s" % JUPITER_VERSION,
-        "org.junit.jupiter:junit-jupiter-params:%s" % JUPITER_VERSION,
-        "org.junit.platform:junit-platform-launcher:%s" % JUNIT_VERSION,
-        "org.junit.platform:junit-platform-reporting:%s" % JUNIT_VERSION,
-        "org.junit.platform:junit-platform-commons:%s" % JUNIT_VERSION,
-        "org.junit.platform:junit-platform-engine:%s" % JUNIT_VERSION,
+        "org.junit.jupiter:junit-jupiter-api:5.10.2",
+        "org.junit.jupiter:junit-jupiter-engine:5.10.2",
+        "org.junit.jupiter:junit-jupiter-params:5.10.2",
+        "org.junit.platform:junit-platform-launcher:1.10.2",
+        "org.junit.platform:junit-platform-reporting:1.10.2",
+        "org.junit.platform:junit-platform-commons:1.10.2",
+        "org.junit.platform:junit-platform-engine:1.10.2",
         "org.mockito:mockito-core:5.11.0",
         "org.mockito:mockito-inline:5.2.0",
         "org.redisson:redisson:3.29.0",
