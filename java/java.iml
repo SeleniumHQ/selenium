@@ -35,6 +35,10 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="hamcrest-2.2" level="project" />
+    <orderEntry type="library" name="mockito-core-5.11.0" level="project" />
+    <orderEntry type="library" name="assertj-core-3.25.3" level="project" />
+    <orderEntry type="library" name="guava-33.1.0-jre" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />

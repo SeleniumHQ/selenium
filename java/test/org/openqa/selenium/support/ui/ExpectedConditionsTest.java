@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.support.ui;
 
+import static com.sun.org.apache.xerces.internal.util.PropertyState.is;
 import static java.time.Instant.EPOCH;
 import static java.util.Collections.singletonList;
 import static java.util.regex.Pattern.compile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -78,7 +80,6 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.ShadowRoot;
 
 @Tag("UnitTests")
 class ExpectedConditionsTest {
@@ -872,8 +873,6 @@ class ExpectedConditionsTest {
     assertThat(mockNestedElement).isEqualTo(elements.get(0));
   }
 
-  //___-----------------__------_-_-_-_-_-_-_//___-----------------__------_-_-_-_-_-_-_
-
   @Test
   void waitingForPresenceOfNestedElementInShadowRootByLocatorWhenElementPresents() {
     By hostSelector = By.cssSelector("host-selector");
@@ -881,23 +880,23 @@ class ExpectedConditionsTest {
 
     when(mockDriver.findElement(hostSelector)).thenReturn(mockElement);
 
-    SearchContext shadowRoot = mock(ShadowRoot.class);
+    SearchContext shadowRoot = mock(SearchContext.class);
     when(mockElement.getShadowRoot()).thenReturn(shadowRoot);
 
     when(shadowRoot.findElement(nestedSelector)).thenReturn(mockNestedElement);
 
     WebElement foundElement = wait.until(presenceOfNestedInShadowRootElementLocatedBy(hostSelector, nestedSelector));
-    assertThat(foundElement, is(mockNestedElement));
+    assertThat(foundElement).isEqualTo(mockNestedElement);
   }
 
   @Test
-  void waitingForPresenceOfNestedElementInShadowRootByLocatorWhenElementPresents() {
+  void waitingForPresenceOfNestedElementInShadowRootWebElementLocatorWhenElementPresents() {
     String hostSelector = "host-selector";
     String nestedSelector = "span";
 
     when(mockDriver.findElement(By.cssSelector(hostSelector))).thenReturn(mockElement);
 
-    SearchContext shadowRoot = mock(ShadowRoot.class);
+    SearchContext shadowRoot = mock(SearchContext.class);
     when(mockElement.getShadowRoot()).thenReturn(shadowRoot);
 
     when(shadowRoot.findElement(By.cssSelector(nestedSelector))).thenReturn(mockNestedElement);
@@ -906,7 +905,7 @@ class ExpectedConditionsTest {
       presenceOfNestedInShadowRootElementLocatedBy(mockElement, By.cssSelector(nestedSelector))
     );
 
-    assertThat(foundElement, is(mockNestedElement));
+    assertThat(foundElement).isEqualTo(mockNestedElement);
   }
 
   @Test
@@ -916,17 +915,15 @@ class ExpectedConditionsTest {
 
     when(mockDriver.findElement(hostSelector)).thenReturn(mockElement);
 
-    SearchContext shadowRoot = mock(ShadowRoot.class);
+    SearchContext shadowRoot = mock(SearchContext.class);
     when(mockElement.getShadowRoot()).thenReturn(shadowRoot);
 
     when(shadowRoot.findElements(nestedSelector)).thenReturn(singletonList(mockNestedElement));
 
     List<WebElement> elements = wait.until(presenceOfNestedInShadowRootElementsLocatedBy(hostSelector, nestedSelector));
 
-    assertThat(elements, is(not(empty())));
+    assertThat(!elements.isEmpty());
   }
-
-  //___-----------------__------_-_-_-_-_-_-_//___-----------------__------_-_-_-_-_-_-_
 
   @Test
   void waitingForAllElementsInvisibility() {
