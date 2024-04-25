@@ -20,6 +20,11 @@
 module Selenium
   module WebDriver
     class DriverFinder
+      def self.path(options, service_class)
+        WebDriver.logger.deprecate('DriverFinder.path(options, service_class)', 'DriverFinder.new(options, service).driver_path')
+        new(options, service_class.new).driver_path
+      end
+
       def initialize(options, service)
         @options = options
         @service = service
