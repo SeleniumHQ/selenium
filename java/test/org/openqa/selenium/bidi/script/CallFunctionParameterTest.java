@@ -72,16 +72,17 @@ public class CallFunctionParameterTest extends JupiterTestBase {
     try (Script script = new Script(id, driver)) {
 
       script.evaluateFunction(
-              new EvaluateParameters(new ContextTarget(id), "window.open();", true)
-                      .userActivation(true));
+          new EvaluateParameters(new ContextTarget(id), "window.open();", true)
+              .userActivation(true));
 
       EvaluateResult result =
-              script.callFunction(
-                      new CallFunctionParameters(
-                              new ContextTarget(id),
-                              "() => navigator.userActivation.isActive && navigator.userActivation.hasBeenActive",
-                              true)
-                              .userActivation(true));
+          script.callFunction(
+              new CallFunctionParameters(
+                      new ContextTarget(id),
+                      "() => navigator.userActivation.isActive &&"
+                          + " navigator.userActivation.hasBeenActive",
+                      true)
+                  .userActivation(true));
 
       assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
       assertThat(result.getRealmId()).isNotNull();
@@ -99,16 +100,17 @@ public class CallFunctionParameterTest extends JupiterTestBase {
     try (Script script = new Script(id, driver)) {
 
       script.evaluateFunction(
-              new EvaluateParameters(new ContextTarget(id), "window.open();", true)
-                      .userActivation(false));
+          new EvaluateParameters(new ContextTarget(id), "window.open();", true)
+              .userActivation(false));
 
       EvaluateResult result =
-              script.callFunction(
-                      new CallFunctionParameters(
-                              new ContextTarget(id),
-                              "() => navigator.userActivation.isActive && navigator.userActivation.hasBeenActive",
-                              true)
-                              .userActivation(false));
+          script.callFunction(
+              new CallFunctionParameters(
+                      new ContextTarget(id),
+                      "() => navigator.userActivation.isActive &&"
+                          + " navigator.userActivation.hasBeenActive",
+                      true)
+                  .userActivation(false));
 
       assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
       assertThat(result.getRealmId()).isNotNull();
