@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.20.0-nightly202404191827",
+  "version": "4.21.0-nightly202404242350",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -20,7 +20,7 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "engines": {
-    "node": ">= 14.20.0"
+    "node": ">= 14.21.0-nightly202404242350"
   },
   "dependencies": {
     "jszip": "^3.10.1",
