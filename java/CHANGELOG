@@ -1,3 +1,20 @@
+v4.20.0
+======
+
+* Add CDP for Chrome 124 and remove 121
+* [bidi] Deprecate using builder for Locate Node parameters. (#13767)
+* [grid] handle baseRoute like the hubRoute and the graphqlRoute (#13772)
+* [grid] Fixing Dynamic Grid Docker (#13789)
+* [grid] Browser containers provisioned in dynamic grid uses node-docker hostConfig
+* Making Selenium Manager a thin wrapper (#13385)
+  * This change has been made to make it easier to maintain and improve, the interface has
+  changed and if users were invoking it, they might experience issues. Selenium Manager is
+  still in beta and these type of changes are expected.
+* [grid] Dynamic Grid re-fetch browser images if they were pruned during runtime (#13821)
+* [grid] Relay service can set protocol version in fetching status (#13849)
+* [cdp] Continue requests without modification for know errors in NetworkInterceptor (#13836)
+* [bidi] Update browsing context create method (#13766)
+
 v4.19.1
 ======
 * [bidi] Fix the bazel file after the BiDi breaking change

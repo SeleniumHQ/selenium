@@ -105,6 +105,11 @@ public class BrowsingContext {
     this.id = this.create(type);
   }
 
+  /*
+   * @deprecated
+   * Use {@link #BrowsingContext(WebDriver, CreateParameters)} instead.
+   */
+  @Deprecated
   public BrowsingContext(WebDriver driver, WindowType type, String referenceContextId) {
     Require.nonNull("WebDriver", driver);
     Require.nonNull("Reference browsing context id", referenceContextId);
@@ -117,7 +122,19 @@ public class BrowsingContext {
 
     this.driver = driver;
     this.bidi = ((HasBiDi) driver).getBiDi();
-    this.id = this.create(type, referenceContextId);
+    this.id = this.create(new CreateContextParameters(type).referenceContext(referenceContextId));
+  }
+
+  public BrowsingContext(WebDriver driver, CreateContextParameters parameters) {
+    Require.nonNull("WebDriver", driver);
+
+    if (!(driver instanceof HasBiDi)) {
+      throw new IllegalArgumentException("WebDriver instance must support BiDi protocol");
+    }
+
+    this.driver = driver;
+    this.bidi = ((HasBiDi) driver).getBiDi();
+    this.id = this.create(parameters);
   }
 
   public String getId() {
@@ -130,12 +147,9 @@ public class BrowsingContext {
             "browsingContext.create", Map.of("type", type.toString()), browsingContextIdMapper));
   }
 
-  private String create(WindowType type, String referenceContext) {
+  private String create(CreateContextParameters parameters) {
     return this.bidi.send(
-        new Command<>(
-            "browsingContext.create",
-            Map.of("type", type.toString(), "referenceContext", referenceContext),
-            browsingContextIdMapper));
+        new Command<>("browsingContext.create", parameters.toMap(), browsingContextIdMapper));
   }
 
   public NavigationResult navigate(String url) {

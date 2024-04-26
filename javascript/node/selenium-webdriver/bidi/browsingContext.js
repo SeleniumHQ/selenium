@@ -20,6 +20,7 @@ const { BrowsingContextInfo } = require('./browsingContextTypes')
 const { SerializationOptions, ReferenceValue, RemoteValue } = require('./protocolValue')
 const { WebElement } = require('../lib/webdriver')
 const { CaptureScreenshotParameters } = require('./captureScreenshotParameters')
+const { CreateContextParameters } = require('./createContextParameters')
 
 /**
  * Represents the locator to locate nodes in the browsing context.
@@ -110,9 +111,17 @@ class BrowsingContext {
     return this._id
   }
 
-  async init({ browsingContextId, type, referenceContext }) {
+  async init({ browsingContextId = undefined, type = undefined, createParameters = undefined }) {
     if (!(await this._driver.getCapabilities()).get('webSocketUrl')) {
       throw Error('WebDriver instance must support BiDi protocol')
+    }
+
+    if (browsingContextId === undefined && type === undefined && createParameters === undefined) {
+      throw Error('Either BrowsingContextId or Type or CreateParameters must be provided')
+    }
+
+    if (type === undefined && createParameters !== undefined) {
+      throw Error('Type must be provided with CreateParameters')
     }
 
     if (type !== undefined && !['window', 'tab'].includes(type)) {
@@ -122,22 +131,33 @@ class BrowsingContext {
     this.bidi = await this._driver.getBidi()
     this._id =
       browsingContextId === undefined
-        ? (await this.create(type, referenceContext))['result']['context']
+        ? (await this.create(type, createParameters))['result']['context']
         : browsingContextId
   }
 
   /**
-   * Creates a browsing context for the given type and referenceContext
+   * Creates a browsing context for the given type with the given parameters
    */
-  async create(type, referenceContext) {
+  async create(type, createParameters = undefined) {
+    if (createParameters !== undefined && (!createParameters) instanceof CreateContextParameters) {
+      throw Error(`Pass in the instance of CreateContextParameters. Received: ${createParameters}`)
+    }
+
+    let parameters = new Map()
+    parameters.set('type', type)
+
+    if (createParameters !== undefined) {
+      createParameters.asMap().forEach((value, key) => {
+        parameters.set(key, value)
+      })
+    }
+
     const params = {
       method: 'browsingContext.create',
-      params: {
-        type: type,
-        referenceContext: referenceContext,
-      },
+      params: Object.fromEntries(parameters),
     }
-    return await this.bidi.send(params)
+    const res = await this.bidi.send(params)
+    return res
   }
 
   /**
@@ -635,12 +655,15 @@ class PrintResult {
  * @param driver
  * @param browsingContextId The browsing context of current window/tab
  * @param type "window" or "tab"
- * @param referenceContext To get a browsing context for this reference if passed
+ * @param createParameters The parameters for creating a new browsing context
  * @returns {Promise<BrowsingContext>}
  */
-async function getBrowsingContextInstance(driver, { browsingContextId, type, referenceContext }) {
+async function getBrowsingContextInstance(
+  driver,
+  { browsingContextId = undefined, type = undefined, createParameters = undefined },
+) {
   let instance = new BrowsingContext(driver)
-  await instance.init({ browsingContextId, type, referenceContext })
+  await instance.init({ browsingContextId, type, createParameters })
   return instance
 }
 

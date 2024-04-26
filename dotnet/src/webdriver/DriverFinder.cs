@@ -49,7 +49,7 @@ namespace OpenQA.Selenium
         /// <returns>
         /// The full browser path
         /// </returns>
-        public string BrowserPath()
+        public string GetBrowserPath()
         {
             return BinaryPaths()[BrowserPathKey];
         }
@@ -60,14 +60,14 @@ namespace OpenQA.Selenium
         /// <returns>
         /// The full driver path
         /// </returns>
-        public string DriverPath()
+        public string GetDriverPath()
         {
             return BinaryPaths()[DriverPathKey];
         }
 
         public bool HasBrowserPath()
         {
-            return !string.IsNullOrWhiteSpace(BrowserPath());
+            return !string.IsNullOrWhiteSpace(GetBrowserPath());
         }
 
         /// <summary>

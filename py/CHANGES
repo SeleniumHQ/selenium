@@ -1,3 +1,14 @@
+Selenium 4.20.0
+
+* Add CDP for Chrome 124 and remove 121
+* Add type hints for selenium.webdriver.remote.webdriver.WebDriver.__init__ (#13775)
+* Add types to set_window_position parameters (#13786)
+* Making Selenium Manager a thin wrapper (#13387)
+  * This change has been made to make it easier to maintain and improve, the interface has
+  changed and if users were invoking it, they might experience issues. Selenium Manager is
+  still in beta and these type of changes are expected.
+
+
 Selenium 4.19.0
 
 * Add CDP for Chrome 123 and remove 120
