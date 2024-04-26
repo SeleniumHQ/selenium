@@ -1,3 +1,8 @@
+4.20.1 (2024-04-25)
+=========================
+
+* Returned accidentally removed DriverFinder.path and deprecated it.
+
 4.20.0 (2024-04-24)
 =========================
 
