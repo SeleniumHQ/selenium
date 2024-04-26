@@ -30,9 +30,9 @@ http_archive(
 load("@io_bazel_rules_closure//closure:repositories.bzl", "rules_closure_dependencies", "rules_closure_toolchains")
 
 rules_closure_dependencies(
-  omit_rules_java = True,
-  omit_rules_proto = True,
-  omit_rules_python = True,
+    omit_rules_java = True,
+    omit_rules_proto = True,
+    omit_rules_python = True,
 )
 
 rules_closure_toolchains()
