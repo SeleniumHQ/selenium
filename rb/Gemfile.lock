@@ -41,6 +41,8 @@ GEM
     diff-lcs (1.5.1)
     drb (2.2.1)
     ffi (1.16.3)
+    ffi (1.16.3-java)
+    ffi (1.16.3-x64-mingw32)
     fileutils (1.7.2)
     git (1.19.1)
       addressable (~> 2.8)
