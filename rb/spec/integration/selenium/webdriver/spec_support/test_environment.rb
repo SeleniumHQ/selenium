@@ -87,12 +87,19 @@ module Selenium
         def remote_server
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
+            java: bazel_java,
             port: random_port,
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 60,
             args: %w[--selenium-manager true --enable-managed-downloads true]
           )
+        end
+
+        def bazel_java
+          return unless ENV.key?('WD_BAZEL_JAVA_LOCATION')
+
+          File.expand_path(File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp)
         end
 
         def reset_remote_server
