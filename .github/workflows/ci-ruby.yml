@@ -64,7 +64,7 @@ jobs:
 
   integration-tests-local:
     name: Local Tests
-    needs: build
+    # needs: build
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
