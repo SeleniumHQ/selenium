@@ -62,49 +62,44 @@ jobs:
   #       --test_size_filters small
   #       //rb/spec/...
 
-  # integration-tests-local:
-  #   name: Local Tests
-  #   needs: build
-  #   uses: ./.github/workflows/bazel.yml
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       browser:
-  #         - chrome
-  #         - edge
-  #         - firefox
-  #         - safari
-  #       os:
-  #         - ubuntu
-  #         - windows
-  #         - macos
-  #       exclude:
-  #         - browser: edge
-  #           os: ubuntu
-  #         - browser: edge
-  #           os: macos
-  #         - browser: safari
-  #           os: ubuntu
-  #         - browser: safari
-  #           os: windows
-  #         # TODO: Investigate why they are timing out
-  #         - browser: chrome
-  #           os: windows
-  #         - browser: edge
-  #           os: windows
-  #   with:
-  #     name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
-  #     browser: ${{ matrix.browser }}
-  #     cache-key: rb-${{ matrix.browser }}-test
-  #     os: ${{ matrix.os }}
-  #     run: >
-  #       bazel test
-  #       --build_tests_only
-  #       --flaky_test_attempts 3
-  #       --local_test_jobs 1
-  #       --test_size_filters large
-  #       --test_tag_filters ${{ matrix.browser }}
-  #       //rb/spec/...
+  integration-tests-local:
+    name: Local Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        browser:
+          - chrome
+          - edge
+          # - firefox
+          # - safari
+        os:
+          # - ubuntu
+          - windows
+          # - macos
+        exclude:
+          - browser: edge
+            os: ubuntu
+          - browser: edge
+            os: macos
+          - browser: safari
+            os: ubuntu
+          - browser: safari
+            os: windows
+    with:
+      name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
+      browser: ${{ matrix.browser }}
+      cache-key: rb-${{ matrix.browser }}-test
+      os: ${{ matrix.os }}
+      run: >
+        bazel test
+        --build_tests_only
+        --flaky_test_attempts 3
+        --local_test_jobs 1
+        --test_size_filters large
+        --test_tag_filters ${{ matrix.browser }}
+        //rb/spec/...
 
   integration-tests-remote:
     name: Remote Tests
