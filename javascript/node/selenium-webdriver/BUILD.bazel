@@ -19,57 +19,6 @@ BROWSER_VERSIONS = [
     "v124",
 ]
 
-XSMALL_TESTS = [
-    "test/io/io_test.js",
-    "test/io/zip_test.js",
-    "test/lib/by_test.js",
-    "test/lib/credentials_test.js",
-    "test/lib/error_test.js",
-    "test/lib/http_test.js",
-    "test/lib/input_test.js",
-    "test/lib/logging_test.js",
-    "test/lib/promise_test.js",
-    "test/lib/until_test.js",
-    "test/lib/virtualauthenticatoroptions_test.js",
-    "test/lib/webdriver_test.js",
-    "test/net/index_test.js",
-    "test/net/portprober_test.js",
-]
-
-js_library(
-    name = "small-test-srcs",
-    srcs = XSMALL_TESTS,
-)
-
-js_library(
-    name = "large-test-srcs",
-    srcs = glob(
-        ["test/**/*_test.js"],
-        exclude = XSMALL_TESTS,
-    ),
-)
-
-js_library(
-    name = "test-data",
-    srcs = glob(
-        [
-            "lib/test/**",
-            "test/**",
-        ],
-        exclude = [
-            "test/**/*_test.js",
-        ],
-    ),
-)
-
-#TEST_DATA = SRC_FILES + glob(
-#    [
-#        "lib/test/**",
-#        "test/**",
-#    ],
-#    exclude = LARGE_TESTS + SMALL_TESTS,
-#)
-
 js_library(
     name = "prod-src-files",
     srcs = [
@@ -118,6 +67,49 @@ pkg_tar(
     extension = "tgz",
     package_dir = "package",
     strip_prefix = "selenium-webdriver",
+)
+
+SMALL_TESTS = [
+    "test/io/io_test.js",
+    "test/io/zip_test.js",
+    "test/lib/by_test.js",
+    "test/lib/credentials_test.js",
+    "test/lib/error_test.js",
+    "test/lib/http_test.js",
+    "test/lib/input_test.js",
+    "test/lib/logging_test.js",
+    "test/lib/promise_test.js",
+    "test/lib/until_test.js",
+    "test/lib/virtualauthenticatoroptions_test.js",
+    "test/lib/webdriver_test.js",
+    "test/net/index_test.js",
+    "test/net/portprober_test.js",
+]
+
+js_library(
+    name = "small-test-srcs",
+    srcs = SMALL_TESTS,
+)
+
+js_library(
+    name = "large-test-srcs",
+    srcs = glob(
+        ["test/**/*_test.js"],
+        exclude = SMALL_TESTS,
+    ),
+)
+
+js_library(
+    name = "test-data",
+    srcs = glob(
+        [
+            "lib/test/**",
+            "test/**",
+        ],
+        exclude = [
+            "test/**/*_test.js",
+        ],
+    ),
 )
 
 mocha_test(
