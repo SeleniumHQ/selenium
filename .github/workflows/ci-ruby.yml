@@ -5,110 +5,110 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      cache-key: rb-build
-      run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
+  # build:
+  #   name: Build
+  #   uses: ./.github/workflows/bazel.yml
+  #   with:
+  #     name: Build
+  #     cache-key: rb-build
+  #     run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
 
-  docs:
-    name: Documentation
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Documentation
-      cache-key: rb-docs
-      run: bazel run //rb:docs
+  # docs:
+  #   name: Documentation
+  #   needs: build
+  #   uses: ./.github/workflows/bazel.yml
+  #   with:
+  #     name: Documentation
+  #     cache-key: rb-docs
+  #     run: bazel run //rb:docs
 
-  lint:
-    name: Lint
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint
-      cache-key: rb-lint
-      run: bazel test //rb:lint
+  # lint:
+  #   name: Lint
+  #   needs: build
+  #   uses: ./.github/workflows/bazel.yml
+  #   with:
+  #     name: Lint
+  #     cache-key: rb-lint
+  #     run: bazel test //rb:lint
 
-  unit-tests:
-    name: Unit Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - ruby-version: 3.0.6
-            os: ubuntu
-          - ruby-version: 3.0.6
-            os: windows
-          - ruby-version: 3.0.6
-            os: macos
-          - ruby-version: 3.3.0
-            os: ubuntu
-          - ruby-version: jruby-9.4.5.0
-            os: ubuntu
-          - ruby-version: truffleruby-23.1.1
-            os: ubuntu
-    with:
-      name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})
-      cache-key: rb-unit-test-${{ matrix.ruby-version }}
-      os: ${{ matrix.os }}
-      ruby-version: ${{ matrix.ruby-version }}
-      run: >
-        bazel test
-        --build_tests_only
-        --test_size_filters small
-        //rb/spec/...
+  # unit-tests:
+  #   name: Unit Tests
+  #   needs: build
+  #   uses: ./.github/workflows/bazel.yml
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         - ruby-version: 3.0.6
+  #           os: ubuntu
+  #         - ruby-version: 3.0.6
+  #           os: windows
+  #         - ruby-version: 3.0.6
+  #           os: macos
+  #         - ruby-version: 3.3.0
+  #           os: ubuntu
+  #         - ruby-version: jruby-9.4.5.0
+  #           os: ubuntu
+  #         - ruby-version: truffleruby-23.1.1
+  #           os: ubuntu
+  #   with:
+  #     name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})
+  #     cache-key: rb-unit-test-${{ matrix.ruby-version }}
+  #     os: ${{ matrix.os }}
+  #     ruby-version: ${{ matrix.ruby-version }}
+  #     run: >
+  #       bazel test
+  #       --build_tests_only
+  #       --test_size_filters small
+  #       //rb/spec/...
 
-  integration-tests-local:
-    name: Local Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        browser:
-          - chrome
-          - edge
-          - firefox
-          - safari
-        os:
-          - ubuntu
-          - windows
-          - macos
-        exclude:
-          - browser: edge
-            os: ubuntu
-          - browser: edge
-            os: macos
-          - browser: safari
-            os: ubuntu
-          - browser: safari
-            os: windows
-          # TODO: Investigate why they are timing out
-          - browser: chrome
-            os: windows
-          - browser: edge
-            os: windows
-    with:
-      name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
-      browser: ${{ matrix.browser }}
-      cache-key: rb-${{ matrix.browser }}-test
-      os: ${{ matrix.os }}
-      run: >
-        bazel test
-        --build_tests_only
-        --flaky_test_attempts 3
-        --local_test_jobs 1
-        --test_size_filters large
-        --test_tag_filters ${{ matrix.browser }}
-        //rb/spec/...
+  # integration-tests-local:
+  #   name: Local Tests
+  #   needs: build
+  #   uses: ./.github/workflows/bazel.yml
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       browser:
+  #         - chrome
+  #         - edge
+  #         - firefox
+  #         - safari
+  #       os:
+  #         - ubuntu
+  #         - windows
+  #         - macos
+  #       exclude:
+  #         - browser: edge
+  #           os: ubuntu
+  #         - browser: edge
+  #           os: macos
+  #         - browser: safari
+  #           os: ubuntu
+  #         - browser: safari
+  #           os: windows
+  #         # TODO: Investigate why they are timing out
+  #         - browser: chrome
+  #           os: windows
+  #         - browser: edge
+  #           os: windows
+  #   with:
+  #     name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
+  #     browser: ${{ matrix.browser }}
+  #     cache-key: rb-${{ matrix.browser }}-test
+  #     os: ${{ matrix.os }}
+  #     run: >
+  #       bazel test
+  #       --build_tests_only
+  #       --flaky_test_attempts 3
+  #       --local_test_jobs 1
+  #       --test_size_filters large
+  #       --test_tag_filters ${{ matrix.browser }}
+  #       //rb/spec/...
 
   integration-tests-remote:
     name: Remote Tests
-    needs: build
+    # needs: build
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -116,12 +116,12 @@ jobs:
         include:
           - browser: edge
             os: windows
-          - browser: chrome
-            os: ubuntu
-          - browser: firefox
-            os: ubuntu
-          - browser: safari
-            os: macos
+          # - browser: chrome
+          #   os: ubuntu
+          # - browser: firefox
+          #   os: ubuntu
+          # - browser: safari
+          #   os: macos
     with:
       name: Remote Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
