@@ -30,6 +30,9 @@ BROWSERS = {
         }) | select({
             "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
             "//conditions:default": {},
+        }) | select({
+            "@platforms//os:windows": {},
+            "//conditions:default": {"NO_SANDBOX": "true"},
         }),
     },
     "edge": {
@@ -53,6 +56,9 @@ BROWSERS = {
         }) | select({
             "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
             "//conditions:default": {},
+        }) | select({
+            "@platforms//os:windows": {},
+            "//conditions:default": {"NO_SANDBOX": "true"},
         }),
     },
     "firefox": {
