@@ -183,6 +183,7 @@ module Selenium
     def initialize(jar, opts = {})
       raise Errno::ENOENT, jar unless File.exist?(jar)
 
+      @java = opts.fetch(:java, 'java')
       @jar = jar
       @host = '127.0.0.1'
       @role = opts.fetch(:role, 'standalone')
@@ -241,7 +242,7 @@ module Selenium
         # extract any additional_args that start with -D as options
         properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
         args = ['-jar', @jar, @role, '--port', @port.to_s]
-        server_command = ['java'] + properties + args + @additional_args
+        server_command = [@java] + properties + args + @additional_args
         cp = WebDriver::ChildProcess.build(*server_command)
 
         if @log.is_a?(String)
