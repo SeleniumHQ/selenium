@@ -157,7 +157,7 @@ namespace OpenQA.Selenium.IE
             if (service.DriverServicePath == null)
             {
                 DriverFinder finder = new DriverFinder(options);
-                string fullServicePath = finder.DriverPath();
+                string fullServicePath = finder.GetDriverPath();
                 service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
                 service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
             }

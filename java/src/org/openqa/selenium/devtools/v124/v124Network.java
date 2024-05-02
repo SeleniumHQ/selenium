@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v121;
+package org.openqa.selenium.devtools.v124;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
@@ -30,35 +30,35 @@ import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.Network;
-import org.openqa.selenium.devtools.v121.fetch.Fetch;
-import org.openqa.selenium.devtools.v121.fetch.model.*;
-import org.openqa.selenium.devtools.v121.network.model.Request;
+import org.openqa.selenium.devtools.v124.fetch.Fetch;
+import org.openqa.selenium.devtools.v124.fetch.model.*;
+import org.openqa.selenium.devtools.v124.network.model.Request;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-public class v121Network extends Network<AuthRequired, RequestPaused> {
+public class v124Network extends Network<AuthRequired, RequestPaused> {
 
-  private static final Logger LOG = Logger.getLogger(v121Network.class.getName());
+  private static final Logger LOG = Logger.getLogger(v124Network.class.getName());
 
-  public v121Network(DevTools devTools) {
+  public v124Network(DevTools devTools) {
     super(devTools);
   }
 
   @Override
   protected Command<Void> setUserAgentOverride(UserAgent userAgent) {
-    return org.openqa.selenium.devtools.v121.network.Network.setUserAgentOverride(
+    return org.openqa.selenium.devtools.v124.network.Network.setUserAgentOverride(
         userAgent.userAgent(), userAgent.acceptLanguage(), userAgent.platform(), Optional.empty());
   }
 
   @Override
   protected Command<Void> enableNetworkCaching() {
-    return org.openqa.selenium.devtools.v121.network.Network.setCacheDisabled(false);
+    return org.openqa.selenium.devtools.v124.network.Network.setCacheDisabled(false);
   }
 
   @Override
   protected Command<Void> disableNetworkCaching() {
-    return org.openqa.selenium.devtools.v121.network.Network.setCacheDisabled(true);
+    return org.openqa.selenium.devtools.v124.network.Network.setCacheDisabled(true);
   }
 
   @Override
@@ -114,8 +114,7 @@ public class v121Network extends Network<AuthRequired, RequestPaused> {
 
   @Override
   public Either<HttpRequest, HttpResponse> createSeMessages(RequestPaused pausedReq) {
-    if (pausedReq.getResponseStatusCode().isPresent()
-        || pausedReq.getResponseErrorReason().isPresent()) {
+    if (pausedReq.getResponseStatusCode().isPresent()) {
       String body;
       boolean bodyIsBase64Encoded;
 
@@ -159,6 +158,11 @@ public class v121Network extends Network<AuthRequired, RequestPaused> {
             cdpReq.getMethod(), cdpReq.getUrl(), cdpReq.getHeaders(), cdpReq.getPostData());
 
     return Either.left(req);
+  }
+
+  @Override
+  protected boolean hasErrorResponse(RequestPaused pausedReq) {
+    return pausedReq.getResponseErrorReason().isPresent();
   }
 
   @Override

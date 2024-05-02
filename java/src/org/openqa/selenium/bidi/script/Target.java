@@ -15,15 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v121;
+package org.openqa.selenium.bidi.script;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+import java.util.HashMap;
+import java.util.Map;
 
-@AutoService(CdpInfo.class)
-public class v121CdpInfo extends CdpInfo {
+public abstract class Target {
+  protected final Map<String, Object> map = new HashMap<>();
 
-  public v121CdpInfo() {
-    super(121, v121Domains::new);
+  public Map<String, Object> toMap() {
+    return this.map;
   }
 }

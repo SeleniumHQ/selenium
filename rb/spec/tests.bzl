@@ -30,6 +30,9 @@ BROWSERS = {
         }) | select({
             "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
             "//conditions:default": {},
+        }) | select({
+            "@platforms//os:windows": {},
+            "//conditions:default": {"NO_SANDBOX": "true"},
         }),
     },
     "edge": {
@@ -53,6 +56,9 @@ BROWSERS = {
         }) | select({
             "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
             "//conditions:default": {},
+        }) | select({
+            "@platforms//os:windows": {},
+            "//conditions:default": {"NO_SANDBOX": "true"},
         }),
     },
     "firefox": {
@@ -174,8 +180,13 @@ def rb_integration_test(name, srcs, deps = [], data = [], browsers = BROWSERS.ke
             data = BROWSERS[browser]["data"] + data + [
                 "//common/src/web",
                 "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+                "//rb/spec:java-location",
+                "@bazel_tools//tools/jdk:current_java_runtime",
             ],
-            env = BROWSERS[browser]["env"] | {"WD_SPEC_DRIVER": "remote"},
+            env = BROWSERS[browser]["env"] | {
+                "WD_BAZEL_JAVA_LOCATION": "$(rootpath //rb/spec:java-location)",
+                "WD_SPEC_DRIVER": "remote",
+            },
             main = "@bundle//bin:rspec",
             tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + [
                 "{}-remote".format(browser),

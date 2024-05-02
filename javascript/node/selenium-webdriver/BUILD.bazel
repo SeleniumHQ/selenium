@@ -1,4 +1,5 @@
 load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
+load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@npm//javascript/node/selenium-webdriver:eslint/package_json.bzl", eslint_bin = "bin")
@@ -9,40 +10,44 @@ load("//javascript:defs.bzl", "mocha_test")
 
 npm_link_all_packages(name = "node_modules")
 
-VERSION = "4.20.0-nightly202404191827"
+VERSION = "4.21.0-nightly202404242350"
 
 BROWSER_VERSIONS = [
     "v85",
     "v122",
     "v123",
-    "v121",
+    "v124",
 ]
 
-SRC_FILES = [
-    "CHANGES.md",
-    "README.md",
-    "package.json",
-] + glob([
-    "*.js",
-    "example/*.js",
-    "http/*.js",
-    "io/*.js",
-    "lib/*.js",
-    "net/*.js",
-    "remote/*.js",
-    "testing/*.js",
-    "devtools/*.js",
-    "common/*.js",
-    "bidi/*.js",
-])
+js_library(
+    name = "prod-src-files",
+    srcs = [
+        "CHANGES.md",
+        "README.md",
+        "package.json",
+    ] + glob([
+        "*.js",
+        "example/*.js",
+        "http/*.js",
+        "io/*.js",
+        "lib/*.js",
+        "net/*.js",
+        "remote/*.js",
+        "testing/*.js",
+        "devtools/*.js",
+        "common/*.js",
+        "bidi/*.js",
+    ]),
+)
 
 npm_package(
     name = "selenium-webdriver",
-    srcs = SRC_FILES + [
+    srcs = [
         ":license",
         ":manager-linux",
         ":manager-macos",
         ":manager-windows",
+        ":prod-src-files",
         "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
@@ -64,8 +69,6 @@ pkg_tar(
     strip_prefix = "selenium-webdriver",
 )
 
-#TEST_FILES = glob(["test/**/*_test.js"])
-#
 SMALL_TESTS = [
     "test/io/io_test.js",
     "test/io/zip_test.js",
@@ -83,17 +86,30 @@ SMALL_TESTS = [
     "test/net/portprober_test.js",
 ]
 
-LARGE_TESTS = glob(
-    ["test/**/*_test.js"],
-    exclude = SMALL_TESTS,
+js_library(
+    name = "small-test-srcs",
+    srcs = SMALL_TESTS,
 )
 
-TEST_DATA = SRC_FILES + glob(
-    [
-        "lib/test/**",
-        "test/**",
-    ],
-    exclude = LARGE_TESTS + SMALL_TESTS,
+js_library(
+    name = "large-test-srcs",
+    srcs = glob(
+        ["test/**/*_test.js"],
+        exclude = SMALL_TESTS,
+    ),
+)
+
+js_library(
+    name = "test-data",
+    srcs = glob(
+        [
+            "lib/test/**",
+            "test/**",
+        ],
+        exclude = [
+            "test/**/*_test.js",
+        ],
+    ),
 )
 
 mocha_test(
@@ -108,6 +124,8 @@ mocha_test(
         ":node_modules/sinon",
         ":node_modules/tmp",
         ":node_modules/ws",
+        ":small-test-srcs",
+        ":test-data",
         "//:node_modules/selenium-webdriver",
         "//common/extensions:js-lib",
         "//common/src/web:js-lib",
@@ -115,7 +133,7 @@ mocha_test(
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
         "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
-    ] + SMALL_TESTS + TEST_DATA,
+    ],
     tags = [
         "skip-remote",
     ],
@@ -127,7 +145,9 @@ mocha_test(
         size = "large",
         args = ["--retries 1"],
         chdir = package_name(),
-        data = LARGE_TESTS + TEST_DATA + [
+        data = [
+            "test-data",
+            ":large-test-srcs",
             ":node_modules/@bazel/runfiles",
             ":node_modules/express",
             ":node_modules/jszip",
@@ -198,7 +218,7 @@ copy_to_bin(
 eslint_bin.eslint_test(
     name = "eslint-test",
     chdir = package_name(),
-    data = SRC_FILES + [
+    data = [
         ":eslint-config",
         ":node_modules/@eslint/js",
         ":node_modules/eslint-plugin-mocha",
@@ -211,6 +231,7 @@ eslint_bin.eslint_test(
         ":node_modules/tmp",
         ":node_modules/ws",
         ":package-json",
+        ":prod-src-files",
     ],
     tags = [
         "lint",
@@ -231,9 +252,12 @@ prettier_bin.prettier_test(
         "--config=.prettierrc",
     ],
     chdir = package_name(),
-    data = SRC_FILES + SMALL_TESTS + LARGE_TESTS + [
+    data = [
+        ":large-test-srcs",
         ":prettier-config",
         ":prettier-ignore",
+        ":prod-src-files",
+        ":small-test-srcs",
     ],
     tags = [
         "lint",
