@@ -94,6 +94,7 @@ const Pages = (function () {
   addPage('scrollingPage', 'scrollingPage.html')
   addPage('selectableItemsPage', 'selectableItems.html')
   addPage('selectPage', 'selectPage.html')
+  addPage('selectSpacePage', 'select_space.html')
   addPage('simpleTestPage', 'simpleTest.html')
   addPage('simpleXmlDocument', 'simple.xml')
   addPage('sleepingPage', 'sleep')
