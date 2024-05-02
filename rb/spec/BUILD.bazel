@@ -126,4 +126,3 @@ genrule(
     toolchains = ["@bazel_tools//tools/jdk:current_java_runtime"],
     visibility = ["//rb/spec:__subpackages__"],
 )
-.
