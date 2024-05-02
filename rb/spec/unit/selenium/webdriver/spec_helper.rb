@@ -58,7 +58,9 @@ RSpec.configure do |c|
 
   c.include Selenium::WebDriver::UnitSpecHelper
 
-  c.filter_run focus: true if ENV['focus']
+  c.filter_run_when_matching :focus
+  c.run_all_when_everything_filtered = true
+  c.default_formatter = c.files_to_run.count > 1 ? 'progress' : 'doc'
 
   c.before do
     # https://github.com/ruby/debug/issues/797
