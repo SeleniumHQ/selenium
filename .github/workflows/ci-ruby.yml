@@ -72,8 +72,8 @@ jobs:
         browser:
           - chrome
           - edge
-          # - firefox
-          # - safari
+          - firefox
+          - safari
         os:
           - ubuntu
           - windows
