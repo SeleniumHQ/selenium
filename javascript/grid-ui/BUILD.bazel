@@ -33,7 +33,6 @@ SRCS = glob(
     exclude = [
         "src/simple.ts",
         "src/**/*.test.tsx",
-        #        "src/assets/**/*",
     ],
 )
 
@@ -54,7 +53,9 @@ DEPS = [
 ts_project(
     name = "transpile_ts",
     srcs = SRCS,
+    allow_js = True,
     assets = glob(["src/assets/**/*"]),
+    resolve_json_module = True,
     tsconfig = "tsconfig.json",
     deps = DEPS,
 )

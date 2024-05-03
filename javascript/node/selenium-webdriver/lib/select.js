@@ -153,6 +153,10 @@ class Select {
         throw new Error(`Select only works on <select> elements`)
       }
     })
+
+    this.element.getAttribute('multiple').then((multiple) => {
+      this.multiple = multiple !== null && multiple !== 'false'
+    })
   }
 
   /**
@@ -254,30 +258,46 @@ class Select {
   async selectByVisibleText(text) {
     text = typeof text === 'number' ? text.toString() : text
 
-    const normalized = text
-      .trim() // strip leading and trailing white-space characters
-      .replace(/\s+/, ' ') // replace sequences of whitespace characters by a single space
+    const xpath = './/option[normalize-space(.) = ' + escapeQuotes(text) + ']'
 
-    /**
-     * find option element using xpath
-     */
-    const formatted = /"/.test(normalized)
-      ? 'concat("' + normalized.split('"').join('", \'"\', "') + '")'
-      : `"${normalized}"`
-    const dotFormat = `[. = ${formatted}]`
-    const spaceFormat = `[normalize-space(text()) = ${formatted}]`
+    const options = await this.element.findElements(By.xpath(xpath))
 
-    const selections = [
-      `./option${dotFormat}`,
-      `./option${spaceFormat}`,
-      `./optgroup/option${dotFormat}`,
-      `./optgroup/option${spaceFormat}`,
-    ]
+    for (let option of options) {
+      await this.setSelected(option)
+      if (!(await this.isMultiple())) {
+        return
+      }
+    }
 
-    const optionElement = await this.element.findElement({
-      xpath: selections.join('|'),
-    })
-    await this.setSelected(optionElement)
+    let matched = Array.isArray(options) && options.length > 0
+
+    if (!matched && text.includes(' ')) {
+      const subStringWithoutSpace = getLongestSubstringWithoutSpace(text)
+      let candidates
+      if ('' === subStringWithoutSpace) {
+        candidates = await this.element.findElements(By.tagName('option'))
+      } else {
+        const xpath = './/option[contains(., ' + escapeQuotes(subStringWithoutSpace) + ')]'
+        candidates = await this.element.findElements(By.xpath(xpath))
+      }
+
+      const trimmed = text.trim()
+
+      for (let option of candidates) {
+        const optionText = await option.getText()
+        if (trimmed === optionText.trim()) {
+          await this.setSelected(option)
+          if (!(await this.isMultiple())) {
+            return
+          }
+          matched = true
+        }
+      }
+    }
+
+    if (!matched) {
+      throw new Error(`Cannot locate option with text: ${text}`)
+    }
   }
 
   /**
@@ -293,7 +313,7 @@ class Select {
    * @returns {Promise<boolean>}
    */
   async isMultiple() {
-    return (await this.element.getAttribute('multiple')) !== null
+    return this.multiple
   }
 
   /**
@@ -457,4 +477,42 @@ class Select {
   }
 }
 
-module.exports = { Select }
+function escapeQuotes(toEscape) {
+  if (toEscape.includes(`"`) && toEscape.includes(`'`)) {
+    const quoteIsLast = toEscape.lastIndexOf(`"`) === toEscape.length - 1
+    const substrings = toEscape.split(`"`)
+
+    // Remove the last element if it's an empty string
+    if (substrings[substrings.length - 1] === '') {
+      substrings.pop()
+    }
+
+    let result = 'concat('
+
+    for (let i = 0; i < substrings.length; i++) {
+      result += `"${substrings[i]}"`
+      result += i === substrings.length - 1 ? (quoteIsLast ? `, '"')` : `)`) : `, '"', `
+    }
+    return result
+  }
+
+  if (toEscape.includes('"')) {
+    return `'${toEscape}'`
+  }
+
+  // Otherwise return the quoted string
+  return `"${toEscape}"`
+}
+
+function getLongestSubstringWithoutSpace(text) {
+  let words = text.split(' ')
+  let longestString = ''
+  for (let word of words) {
+    if (word.length > longestString.length) {
+      longestString = word
+    }
+  }
+  return longestString
+}
+
+module.exports = { Select, escapeQuotes }
