@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.environment.webserver;
 
-
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
