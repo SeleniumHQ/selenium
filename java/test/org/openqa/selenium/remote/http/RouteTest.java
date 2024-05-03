@@ -152,8 +152,11 @@ class RouteTest {
     HttpHandler handler =
         Route.combine(
             Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("world"))),
-            Route.get("/hello")
-                .to(() -> req -> new HttpResponse().setContent(utf8String("buddy"))));
+            Route.combine(
+                Route.get("/hello")
+                    .to(() -> req -> new HttpResponse().setContent(utf8String("world"))),
+                Route.get("/hello")
+                    .to(() -> req -> new HttpResponse().setContent(utf8String("buddy")))));
 
     HttpResponse response = handler.execute(new HttpRequest(GET, "/hello"));
     assertThat(string(response)).isEqualTo("buddy");
