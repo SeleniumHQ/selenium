@@ -85,6 +85,16 @@ module Selenium
         end
 
         def remote_server
+          if ENV.key?('CHROMEDRIVER_BINARY')
+            args = ["-Dwebdriver.chrome.driver=#{ENV['CHROMEDRIVER_BINARY']}"]
+          elsif ENV.key?('MSEDGEDRIVER_BINARY')
+            args = ["-Dwebdriver.edge.driver=#{ENV['MSEDGEDRIVER_BINARY']}"]
+          elsif ENV.key?('GECKODRIVER_BINARY')
+            args = ["-Dwebdriver.gecko.driver=#{ENV['GECKODRIVER_BINARY']}"]
+          else
+            args = %w[--selenium-manager true --enable-managed-downloads true]
+          end
+
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
             java: bazel_java,
@@ -92,7 +102,7 @@ module Selenium
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 60,
-            args: %w[--selenium-manager true --enable-managed-downloads true]
+            args: args
           )
         end
 
@@ -250,7 +260,7 @@ module Selenium
         def chrome_options(args: [], **opts)
           opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
-          args << '--no-sandbox' if ENV['NO_SANDBOX']
+          args << '--no-sandbox' unless Platform.windows?
           args << '--disable-gpu'
           WebDriver::Options.chrome(browser_version: 'stable', args: args, **opts)
         end
@@ -258,7 +268,7 @@ module Selenium
         def edge_options(args: [], **opts)
           opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
-          args << '--no-sandbox' if ENV['NO_SANDBOX']
+          args << '--no-sandbox' unless Platform.windows?
           args << '--disable-gpu'
           WebDriver::Options.edge(browser_version: 'stable', args: args, **opts)
         end

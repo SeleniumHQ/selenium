@@ -75,16 +75,11 @@ jobs:
           - firefox
           - safari
         os:
-          - ubuntu
           - windows
           - macos
         exclude:
           - browser: edge
-            os: ubuntu
-          - browser: edge
             os: macos
-          - browser: safari
-            os: ubuntu
           - browser: safari
             os: windows
     with:
@@ -111,10 +106,6 @@ jobs:
         include:
           - browser: edge
             os: windows
-          - browser: chrome
-            os: ubuntu
-          - browser: firefox
-            os: ubuntu
           - browser: safari
             os: macos
     with:
