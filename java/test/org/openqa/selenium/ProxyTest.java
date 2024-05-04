@@ -117,7 +117,7 @@ class ProxyTest {
     assertThat(proxy.getHttpProxy()).isEqualTo("http.proxy:1234");
     assertThat(proxy.getSslProxy()).isEqualTo("ssl.proxy");
     assertThat(proxy.getSocksProxy()).isEqualTo("socks.proxy:65555");
-    assertThat(proxy.getSocksVersion()).isEqualTo(Integer.valueOf(5));
+    assertThat(proxy.getSocksVersion()).isEqualTo(5);
     assertThat(proxy.getSocksUsername()).isEqualTo("test1");
     assertThat(proxy.getSocksPassword()).isEqualTo("test2");
     assertThat(proxy.getNoProxy()).isEqualTo("localhost,127.0.0.*");
@@ -184,7 +184,7 @@ class ProxyTest {
     assertThat(proxy.getHttpProxy()).isEqualTo("http.proxy:1234");
     assertThat(proxy.getSslProxy()).isEqualTo("ssl.proxy");
     assertThat(proxy.getSocksProxy()).isEqualTo("socks.proxy:65555");
-    assertThat(proxy.getSocksVersion()).isEqualTo(Integer.valueOf(5));
+    assertThat(proxy.getSocksVersion()).isEqualTo(5);
     assertThat(proxy.getSocksUsername()).isEqualTo("test1");
     assertThat(proxy.getSocksPassword()).isEqualTo("test2");
     assertThat(proxy.getNoProxy()).isEqualTo("localhost,127.0.0.*");
@@ -209,7 +209,7 @@ class ProxyTest {
 
     Proxy proxy = new Proxy(proxyData);
 
-    assertThat(proxy.getSocksVersion()).isEqualTo(Integer.valueOf(5));
+    assertThat(proxy.getSocksVersion()).isEqualTo(5);
   }
 
   @Test

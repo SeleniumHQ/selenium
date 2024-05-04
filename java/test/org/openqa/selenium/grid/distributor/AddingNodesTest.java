@@ -153,7 +153,7 @@ class AddingNodesTest {
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, getStereotypes(status).get(CAPS).intValue());
+    assertEquals(1, getStereotypes(status).get(CAPS));
   }
 
   @Test
@@ -192,7 +192,7 @@ class AddingNodesTest {
       wait.until(obj -> distributor.getStatus().hasCapacity());
 
       NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
-      assertEquals(1, getStereotypes(status).get(CAPS).intValue());
+      assertEquals(1, getStereotypes(status).get(CAPS));
     }
   }
 
@@ -231,7 +231,7 @@ class AddingNodesTest {
       wait.until(obj -> distributor.getStatus().hasCapacity());
 
       NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
-      assertEquals(1, getStereotypes(status).get(CAPS).intValue());
+      assertEquals(1, getStereotypes(status).get(CAPS));
     }
   }
 
@@ -323,7 +323,7 @@ class AddingNodesTest {
       wait.until(obj -> distributor.getStatus().hasCapacity());
 
       NodeStatus nodeStatus = getOnlyElement(distributor.getStatus().getNodes());
-      assertEquals(1, getStereotypes(nodeStatus).get(CAPS).intValue());
+      assertEquals(1, getStereotypes(nodeStatus).get(CAPS));
 
       // Craft a status that makes it look like the node is busy, and post it on the bus.
       NodeStatus status = node.getStatus();
