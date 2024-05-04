@@ -26,3 +26,4 @@
 -//rb/spec/integration/selenium/webdriver/edge:service-edge
 -//rb/spec/integration/selenium/webdriver/firefox:service-firefox
 -//rb/spec/integration/selenium/webdriver/firefox:service-firefox-beta
+-//rb/spec/integration/selenium/webdriver:element-chrome

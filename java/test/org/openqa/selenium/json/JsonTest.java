@@ -61,9 +61,9 @@ class JsonTest {
 
   @Test
   void canReadANumber() {
-    assertThat((Number) new Json().toType("42", Number.class)).isEqualTo(Long.valueOf(42));
-    assertThat((Integer) new Json().toType("42", Integer.class)).isEqualTo(Integer.valueOf(42));
-    assertThat((Double) new Json().toType("42", Double.class)).isEqualTo(Double.valueOf(42));
+    assertThat((Number) new Json().toType("42", Number.class)).isEqualTo(42L);
+    assertThat((Integer) new Json().toType("42", Integer.class)).isEqualTo(42);
+    assertThat((Double) new Json().toType("42", Double.class)).isEqualTo(42.0);
   }
 
   @Test
@@ -285,7 +285,7 @@ class JsonTest {
 
     assertThat(response.getSessionId()).isEqualTo("bar");
     assertThat(((List<?>) converted.getValue())).hasSize(2);
-    assertThat(response.getStatus().intValue()).isEqualTo(1512);
+    assertThat(response.getStatus()).isEqualTo(1512);
   }
 
   @Test
@@ -426,7 +426,7 @@ class JsonTest {
   void shouldRecognizeNumericStatus() {
     Response response = new Json().toType("{\"status\":0,\"value\":\"cheese\"}", Response.class);
 
-    assertThat(response.getStatus().intValue()).isZero();
+    assertThat(response.getStatus()).isZero();
     assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(0));
     String value = (String) response.getValue();
     assertThat(value).isEqualTo("cheese");
@@ -437,7 +437,7 @@ class JsonTest {
     Response response =
         new Json().toType("{\"status\":\"success\",\"value\":\"cheese\"}", Response.class);
 
-    assertThat(response.getStatus().intValue()).isZero();
+    assertThat(response.getStatus()).isZero();
     assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(0));
     String value = (String) response.getValue();
     assertThat(value).isEqualTo("cheese");
@@ -450,7 +450,7 @@ class JsonTest {
             .toType(
                 "{\"state\":\"invalid selector\",\"message\":\"invalid xpath selector\"}",
                 Response.class);
-    assertThat(response.getStatus().intValue()).isEqualTo(32);
+    assertThat(response.getStatus()).isEqualTo(32);
     assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(32));
   }
 
@@ -459,7 +459,7 @@ class JsonTest {
     Response response =
         new Json().toType("{\"state\":\"success\",\"value\":\"cheese\"}", Response.class);
     assertThat(response.getState()).isEqualTo("success");
-    assertThat(response.getStatus().intValue()).isZero();
+    assertThat(response.getStatus()).isZero();
     String value = (String) response.getValue();
     assertThat(value).isEqualTo("cheese");
   }

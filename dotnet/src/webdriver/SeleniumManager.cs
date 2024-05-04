@@ -194,7 +194,10 @@ namespace OpenQA.Selenium
                     switch (entry.Key)
                     {
                         case "WARN":
-                            _logger.Warn(entry.Value);
+                            if (_logger.IsEnabled(LogEventLevel.Warn))
+                            {
+                                _logger.Warn(entry.Value);
+                            }
                             break;
                         case "DEBUG":
                         case "INFO":

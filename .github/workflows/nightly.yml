@@ -93,7 +93,7 @@ jobs:
 
   javascript:
     if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'javascript' || github.event_name == 'schedule')
-    name: DotNet
+    name: JavaScript
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly JavaScript Release
