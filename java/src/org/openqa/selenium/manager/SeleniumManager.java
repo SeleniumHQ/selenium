@@ -126,14 +126,15 @@ public class SeleniumManager {
       Properties properties = System.getProperties();
       for (String name : properties.stringPropertyNames()) {
         if (name.startsWith(SE_ENV_PREFIX)) {
-          //read property with 'default' value due to concurrency
+          // read property with 'default' value due to concurrency
           String value = properties.getProperty(name, "");
-          if (!value.isEmpty())
+          if (!value.isEmpty()) {
             processBuilder.environment(name, value);
+          }
         }
       }
       ExternalProcess process =
-        processBuilder.command(binary.toAbsolutePath().toString(), arguments).start();
+          processBuilder.command(binary.toAbsolutePath().toString(), arguments).start();
 
       if (!process.waitFor(Duration.ofHours(1))) {
         LOG.warning("Selenium Manager did not exit, shutting it down");
@@ -257,10 +258,8 @@ public class SeleniumManager {
 
     // Look for cache path as system property or env
     String cachePath = System.getProperty(CACHE_PATH_ENV, "");
-    if (cachePath.isEmpty())
-      cachePath = System.getenv(CACHE_PATH_ENV);
-    if (cachePath == null)
-      cachePath = DEFAULT_CACHE_PATH;
+    if (cachePath.isEmpty()) cachePath = System.getenv(CACHE_PATH_ENV);
+    if (cachePath == null) cachePath = DEFAULT_CACHE_PATH;
 
     cachePath = cachePath.replace(HOME, System.getProperty("user.home"));
 
