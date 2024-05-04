@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.openqa.selenium.Capabilities;
@@ -329,10 +330,11 @@ public class DriverServiceSessionFactory implements SessionFactory {
               .setCapability(vendorOptionsCapability, vendorOptions)
               .setCapability("browserVersion", null);
         } catch (Exception e) {
-          LOG.warning(
+          LOG.log(
+              Level.WARNING,
               String.format(
-                  "Exception while setting the browser binary path. %s: %s",
-                  options, e.getMessage()));
+                  "Exception while setting the browser binary path. Options: %s", options),
+              e);
         }
       }
     }

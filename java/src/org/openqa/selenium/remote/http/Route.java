@@ -27,8 +27,8 @@ import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -292,7 +292,7 @@ public abstract class Route implements HttpHandler, Routable {
       // Don't forget to register our prefix
       Object rawPrefixes = request.getAttribute(ROUTE_PREFIX_KEY);
       if (!(rawPrefixes instanceof List)) {
-        rawPrefixes = new LinkedList<>();
+        rawPrefixes = Collections.emptyList();
       }
       List<String> prefixes =
           Stream.concat(((List<?>) rawPrefixes).stream(), Stream.of(prefix))
@@ -321,7 +321,21 @@ public abstract class Route implements HttpHandler, Routable {
     private CombinedRoute(Stream<Routable> routes) {
       // We want later routes to have a greater chance of being called so that we can override
       // routes as necessary.
-      List<Routable> routables = routes.collect(Collectors.toList());
+      List<Routable> routables =
+          routes
+              .flatMap(
+                  route -> {
+                    // flatten a nested CombinedRoute
+                    if (route instanceof CombinedRoute) {
+                      List<Routable> nestedRoutes =
+                          new ArrayList<>(((CombinedRoute) route).allRoutes);
+                      // reverse to have the identical behaviour like not flattened
+                      Collections.reverse(nestedRoutes);
+                      return nestedRoutes.stream();
+                    }
+                    return Stream.of(route);
+                  })
+              .collect(Collectors.toList());
       Collections.reverse(routables);
       allRoutes = List.copyOf(routables);
       Require.stateCondition(!allRoutes.isEmpty(), "At least one route must be specified.");
