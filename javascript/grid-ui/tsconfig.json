@@ -22,7 +22,7 @@
     "types": [
       "@types/node"
     ],
-    "sourceMap": false,
+    "sourceMap": false
   },
   "include": [
     "src"

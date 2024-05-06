@@ -117,3 +117,12 @@ rb_library(
         "//rb/spec/unit/selenium/webdriver/support:select",
     ],
 )
+
+genrule(
+    name = "java-location",
+    srcs = [],
+    outs = ["java-location.txt"],
+    cmd = "echo $(JAVA) > $@",
+    toolchains = ["@bazel_tools//tools/jdk:current_java_runtime"],
+    visibility = ["//rb/spec:__subpackages__"],
+)
