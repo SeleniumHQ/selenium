@@ -265,13 +265,17 @@ class NetworkInterceptorTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   void shouldPassResponseBackToBrowserIfRequestResultsInAnKnownErrorAndExceptionCaughtByFilter() {
-    Filter filter = next -> req -> {
-      try {
-        return next.execute(req);
-      } catch (RequestFailedException e) {
-        return new HttpResponse().setStatus(200).setContent(Contents.utf8String("Hello, World!"));
-      }
-    };
+    Filter filter =
+        next ->
+            req -> {
+              try {
+                return next.execute(req);
+              } catch (RequestFailedException e) {
+                return new HttpResponse()
+                    .setStatus(200)
+                    .setContent(Contents.utf8String("Hello, World!"));
+              }
+            };
     try (NetworkInterceptor ignored = new NetworkInterceptor(driver, filter)) {
       driver.get("http://localhost:" + PortProber.findFreePort());
       String body = driver.findElement(By.tagName("body")).getText();
