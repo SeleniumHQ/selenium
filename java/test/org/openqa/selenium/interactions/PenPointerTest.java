@@ -407,8 +407,8 @@ class PenPointerTest extends JupiterTestBase {
 
     Rectangle rect = pointerArea.getRect();
 
-    int centerX = (int) Math.floor(rect.width / 2 + rect.getX());
-    int centerY = (int) Math.floor(rect.height / 2 + rect.getY());
+    int centerX = rect.width / 2 + rect.getX();
+    int centerY = rect.height / 2 + rect.getY();
     Assertions.assertThat(moveTo.get("button")).isEqualTo("-1");
     Assertions.assertThat(moveTo.get("pageX")).isEqualTo("" + centerX);
     Assertions.assertThat(moveTo.get("pageY")).isEqualTo("" + centerY);
