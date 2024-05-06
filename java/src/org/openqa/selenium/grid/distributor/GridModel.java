@@ -367,6 +367,7 @@ public class GridModel {
         status.getSlots(),
         availability,
         status.getHeartbeatPeriod(),
+        status.getSessionTimeout(),
         status.getVersion(),
         status.getOsInfo());
   }
@@ -508,6 +509,7 @@ public class GridModel {
               newSlots,
               availability,
               status.getHeartbeatPeriod(),
+              status.getSessionTimeout(),
               status.getVersion(),
               status.getOsInfo()));
     } finally {

@@ -229,6 +229,7 @@ class DefaultSlotSelectorTest {
         ImmutableSet.copyOf(slots),
         UP,
         Duration.ofSeconds(10),
+        Duration.ofSeconds(300),
         "4.0.0",
         ImmutableMap.of(
             "name", "Max OS X",
