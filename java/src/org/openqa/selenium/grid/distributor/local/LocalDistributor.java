@@ -314,6 +314,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
               status.getNodeId(),
               status.getExternalUri(),
               registrationSecret,
+              status.getSessionTimeout(),
               capabilities);
 
       add(remoteNode);
