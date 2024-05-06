@@ -159,6 +159,9 @@ public class RelaySessionFactory implements SessionFactory {
 
       ClientConfig clientConfig =
           ClientConfig.defaultConfig().readTimeout(sessionTimeout).baseUrl(serviceUrl);
+      if (!serviceProtocolVersion.isEmpty()) {
+        clientConfig = clientConfig.version(serviceProtocolVersion);
+      }
       HttpClient client = clientFactory.createClient(clientConfig);
 
       Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
