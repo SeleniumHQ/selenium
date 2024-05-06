@@ -481,7 +481,7 @@ class DefaultMouseTest extends JupiterTestBase {
     inputModule.perform(
         windowHandle,
         getBuilder(driver)
-            .moveToElement(redbox, redSize.getWidth() / 1 + 1, redSize.getHeight() / 1 + 1)
+            .moveToElement(redbox, redSize.getWidth() + 1, redSize.getHeight() + 1)
             .getSequences());
 
     wait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
