@@ -367,7 +367,7 @@ class PenPointerTest extends JupiterTestBase {
         .isEqualTo(RED.getColorValue());
 
     setDefaultPen(driver)
-        .moveToElement(redbox, redSize.getWidth() / 1 + 1, redSize.getHeight() / 1 + 1)
+        .moveToElement(redbox, redSize.getWidth() + 1, redSize.getHeight() + 1)
         .perform();
 
     wait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
