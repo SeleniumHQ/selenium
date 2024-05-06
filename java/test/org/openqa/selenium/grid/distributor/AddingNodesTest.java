@@ -164,6 +164,7 @@ class AddingNodesTest {
             bus,
             new NodeId(UUID.randomUUID()),
             externalUrl.toURI(),
+            Duration.ofSeconds(300),
             c ->
                 new Session(
                     new SessionId(UUID.randomUUID()), sessionUri, stereotype, c, Instant.now()));
@@ -193,6 +194,7 @@ class AddingNodesTest {
 
       NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
       assertEquals(1, getStereotypes(status).get(CAPS));
+      assertEquals(Duration.ofSeconds(300), status.getSessionTimeout());
     }
   }
 
@@ -375,8 +377,12 @@ class AddingNodesTest {
     private Session running;
 
     protected CustomNode(
-        EventBus bus, NodeId nodeId, URI uri, Function<Capabilities, Session> factory) {
-      super(DefaultTestTracer.createTracer(), nodeId, uri, registrationSecret);
+        EventBus bus,
+        NodeId nodeId,
+        URI uri,
+        Duration sessionTimeout,
+        Function<Capabilities, Session> factory) {
+      super(DefaultTestTracer.createTracer(), nodeId, uri, registrationSecret, sessionTimeout);
 
       this.bus = bus;
       this.factory = Objects.requireNonNull(factory);

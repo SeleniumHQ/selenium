@@ -121,10 +121,6 @@ public abstract class Node implements HasReadyState, Routable {
   private final Route routes;
   protected boolean draining;
 
-  protected Node(Tracer tracer, NodeId id, URI uri, Secret registrationSecret) {
-    this(tracer, id, uri, registrationSecret, Duration.ofSeconds(300));
-  }
-
   protected Node(
       Tracer tracer, NodeId id, URI uri, Secret registrationSecret, Duration sessionTimeout) {
     this.tracer = Require.nonNull("Tracer", tracer);
