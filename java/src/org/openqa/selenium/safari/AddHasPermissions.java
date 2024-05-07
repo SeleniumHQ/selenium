@@ -69,8 +69,7 @@ public class AddHasPermissions
       public Map<String, Boolean> getPermissions() {
         Object resultObject = executeMethod.execute(GET_PERMISSIONS, null);
 
-        if (resultObject instanceof Map<?, ?>) {
-          Map<?, ?> resultMap = (Map<?, ?>) resultObject;
+        if (resultObject instanceof Map<?, ?> resultMap) {
           Map<String, Boolean> permissionMap = new HashMap<>();
           for (Map.Entry<?, ?> entry : resultMap.entrySet()) {
             if (entry.getKey() instanceof String && entry.getValue() instanceof Boolean) {
