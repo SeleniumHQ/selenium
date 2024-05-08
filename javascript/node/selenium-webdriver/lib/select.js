@@ -36,7 +36,7 @@
 
 'use strict'
 
-const { By, escapeCss } = require('./by')
+const { By } = require('./by')
 const error = require('./error')
 
 /**
@@ -146,6 +146,10 @@ class Select {
    * @param {WebElement} element Select WebElement.
    */
   constructor(element) {
+    if (element === null) {
+      throw new Error(`Element must not be null. Please provide a valid <select> element.`)
+    }
+
     this.element = element
 
     this.element.getAttribute('tagName').then(function (tagName) {
@@ -220,9 +224,7 @@ class Select {
     let matched = false
     let isMulti = await this.isMultiple()
 
-    let options = await this.element.findElements({
-      css: 'option[value =' + escapeCss(value) + ']',
-    })
+    let options = await this.element.findElements(By.xpath('.//option[@value = ' + escapeQuotes(value) + ']'))
 
     for (let option of options) {
       await this.setSelected(option)
@@ -373,29 +375,9 @@ class Select {
      */
     text = typeof text === 'number' ? text.toString() : text
 
-    const normalized = text
-      .trim() // strip leading and trailing white-space characters
-      .replace(/\s+/, ' ') // replace sequences of whitespace characters by a single space
-
-    /**
-     * find option element using xpath
-     */
-    const formatted = /"/.test(normalized)
-      ? 'concat("' + normalized.split('"').join('", \'"\', "') + '")'
-      : `"${normalized}"`
-    const dotFormat = `[. = ${formatted}]`
-    const spaceFormat = `[normalize-space(text()) = ${formatted}]`
-
-    const selections = [
-      `./option${dotFormat}`,
-      `./option${spaceFormat}`,
-      `./optgroup/option${dotFormat}`,
-      `./optgroup/option${spaceFormat}`,
-    ]
-
-    const optionElement = await this.element.findElement({
-      xpath: selections.join('|'),
-    })
+    const optionElement = await this.element.findElement(
+      By.xpath('.//option[normalize-space(.) = ' + escapeQuotes(text) + ']'),
+    )
     if (await optionElement.isSelected()) {
       await optionElement.click()
     }
@@ -451,9 +433,11 @@ class Select {
 
     let matched = false
 
-    let options = await this.element.findElements({
-      css: 'option[value =' + escapeCss(value) + ']',
-    })
+    let options = await this.element.findElements(By.xpath('.//option[@value = ' + escapeQuotes(value) + ']'))
+
+    if (options.length === 0) {
+      throw new Error(`Cannot locate option with value: ${value}`)
+    }
 
     for (let option of options) {
       if (await option.isSelected()) {
