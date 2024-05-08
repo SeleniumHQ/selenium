@@ -36,7 +36,7 @@
 
 'use strict'
 
-const { By, escapeCss } = require('./by')
+const { By } = require('./by')
 const error = require('./error')
 
 /**
