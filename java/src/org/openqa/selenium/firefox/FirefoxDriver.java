@@ -354,14 +354,16 @@ public class FirefoxDriver extends RemoteWebDriver
   }
 
   private Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
-    if (!biDiUri.isPresent()) {
+    if (biDiUri.isEmpty()) {
       return Optional.empty();
     }
 
     URI wsUri =
         biDiUri.orElseThrow(
             () ->
-                new BiDiException("This version of Firefox or geckodriver does not support BiDi"));
+                new BiDiException(
+                    "Check if this browser version supports BiDi and if the 'webSocketUrl: true'"
+                        + " capability is set."));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
@@ -380,8 +382,10 @@ public class FirefoxDriver extends RemoteWebDriver
 
   @Override
   public BiDi getBiDi() {
-    if (!biDiUri.isPresent()) {
-      throw new BiDiException("This version of Firefox or geckodriver does not support Bidi");
+    if (biDiUri.isEmpty()) {
+      throw new BiDiException(
+          "Check if this browser version supports BiDi and if the 'webSocketUrl: true' capability"
+              + " is set.");
     }
 
     return maybeGetBiDi()

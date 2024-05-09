@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 import base64
-import logging
 import os
 import warnings
 import zipfile
@@ -28,8 +27,6 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .options import Options
 from .remote_connection import FirefoxRemoteConnection
 from .service import Service
-
-logger = logging.getLogger(__name__)
 
 
 class WebDriver(RemoteWebDriver):

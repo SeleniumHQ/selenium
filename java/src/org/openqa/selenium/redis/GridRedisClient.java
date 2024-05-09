@@ -144,6 +144,7 @@ public class GridRedisClient implements Closeable {
               node.getSlots(),
               node.getAvailability(),
               node.getHeartbeatPeriod(),
+              node.getSessionTimeout(),
               node.getVersion(),
               node.getOsInfo());
       return Optional.of(resultNode);

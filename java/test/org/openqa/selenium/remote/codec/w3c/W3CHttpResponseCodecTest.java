@@ -78,7 +78,7 @@ class W3CHttpResponseCodecTest {
 
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
-    assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.UNHANDLED_ERROR);
+    assertThat(decoded.getStatus()).isEqualTo(ErrorCodes.UNHANDLED_ERROR);
     assertThat(decoded.getValue()).isEqualTo(responseString);
   }
 
@@ -104,7 +104,7 @@ class W3CHttpResponseCodecTest {
 
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
-    assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.UNHANDLED_ERROR);
+    assertThat(decoded.getStatus()).isEqualTo(ErrorCodes.UNHANDLED_ERROR);
     assertThat(decoded.getValue()).isEqualTo(responseString);
   }
 
@@ -120,7 +120,7 @@ class W3CHttpResponseCodecTest {
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
     assertThat(decoded.getState()).isEqualTo("unsupported operation");
-    assertThat(decoded.getStatus().intValue()).isEqualTo(METHOD_NOT_ALLOWED);
+    assertThat(decoded.getStatus()).isEqualTo(METHOD_NOT_ALLOWED);
 
     assertThat(decoded.getValue()).isInstanceOf(UnsupportedCommandException.class);
     assertThat(((WebDriverException) decoded.getValue()).getMessage()).contains("I like peas");
@@ -140,7 +140,7 @@ class W3CHttpResponseCodecTest {
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
     assertThat(decoded.getState()).isEqualTo("unsupported operation");
-    assertThat(decoded.getStatus().intValue()).isEqualTo(METHOD_NOT_ALLOWED);
+    assertThat(decoded.getStatus()).isEqualTo(METHOD_NOT_ALLOWED);
 
     assertThat(decoded.getValue()).isInstanceOf(UnsupportedCommandException.class);
     assertThat(((WebDriverException) decoded.getValue()).getMessage()).contains("I like peas");
