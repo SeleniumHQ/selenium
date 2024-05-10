@@ -437,7 +437,7 @@ class ArgOptions(BaseOptions):
     def ignore_local_proxy_environment_variables(self) -> None:
         """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
         being picked up and used."""
-        super()._ignore_local_proxy = True
+        super().ignore_local_proxy_environment_variables()
 
     def to_capabilities(self):
         return self._caps
