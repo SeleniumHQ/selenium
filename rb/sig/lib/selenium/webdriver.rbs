@@ -27,7 +27,7 @@ module Selenium
 
     def self.root: () -> String
 
-    def self.for: (*String args) -> WebDriver::Driver
+    def self.for: (*untyped args) -> untyped
 
     def self.logger: (**String | Symbol opts) -> WebDriver::Logger
   end

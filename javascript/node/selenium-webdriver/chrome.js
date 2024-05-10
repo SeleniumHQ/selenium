@@ -36,17 +36,12 @@
  *     a unique browser session with a clean user profile (unless otherwise
  *     configured through the {@link Options} class).
  *
- * __Headless Chrome__ <a id="headless"></a>
- *
- * To start Chrome in headless mode, simply call
- * {@linkplain Options#headless Options.headless()}.
- *
  *     let chrome = require('selenium-webdriver/chrome');
  *     let {Builder} = require('selenium-webdriver');
  *
  *     let driver = new Builder()
  *         .forBrowser('chrome')
- *         .setChromeOptions(new chrome.Options().headless())
+ *         .setChromeOptions(new chrome.Options())
  *         .build();
  *
  * __Customizing the ChromeDriver Server__ <a id="custom-server"></a>
@@ -219,14 +214,7 @@ class Driver extends chromium.Driver {
    */
   static createSession(opt_config, opt_serviceExecutor) {
     let caps = opt_config || new Options()
-    return /** @type {!Driver} */ (
-      super.createSession(
-        caps,
-        opt_serviceExecutor,
-        'goog',
-        CHROME_CAPABILITY_KEY
-      )
-    )
+    return /** @type {!Driver} */ (super.createSession(caps, opt_serviceExecutor, 'goog', CHROME_CAPABILITY_KEY))
   }
 
   /**

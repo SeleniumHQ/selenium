@@ -1,0 +1,35 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasLogEvents
+        include _ExecuteScript
+        include _FindElements
+        include _DevTools
+
+        @log_listeners: untyped
+
+        @mutation_listener: untyped
+
+        include Atoms
+
+        KINDS: Array[Symbol]
+
+        def on_log_event: (untyped kind) { () -> untyped } -> (nil | untyped)
+
+        private
+
+        def log_listeners: () -> untyped
+
+        def log_console_events: () -> untyped
+
+        def log_exception_events: () -> untyped
+
+        def log_mutation_events: () -> untyped
+
+        def log_mutation_event: (untyped params) -> (nil | untyped)
+
+        def mutation_listener: () -> untyped
+      end
+    end
+  end
+end

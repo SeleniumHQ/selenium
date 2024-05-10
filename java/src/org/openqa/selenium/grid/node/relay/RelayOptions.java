@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient.Version;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.SessionFactory;
@@ -102,6 +104,27 @@ public class RelayOptions {
     }
   }
 
+  public String getServiceProtocolVersion() {
+    String rawProtocolVersion = config.get(RELAY_SECTION, "protocol-version").orElse("");
+    String protocolVersion = rawProtocolVersion;
+    if (protocolVersion.isEmpty()) {
+      return protocolVersion;
+    } else {
+      protocolVersion = normalizeProtocolVersion(protocolVersion);
+    }
+    try {
+      return Version.valueOf(protocolVersion).toString();
+    } catch (IllegalArgumentException e) {
+      LOG.info("Unsupported protocol version: " + protocolVersion);
+      throw new ConfigException("Unsupported protocol version provided: " + rawProtocolVersion, e);
+    }
+  }
+
+  private String normalizeProtocolVersion(String protocolVersion) {
+    // Support input in the form of "http/1.1" or "HTTP/1.1"
+    return protocolVersion.toUpperCase().replaceAll("/", "_").replaceAll("\\.", "_");
+  }
+
   // Method being used in SessionSlot
   @SuppressWarnings("unused")
   private boolean isServiceUp(HttpClient client) {
@@ -149,18 +172,20 @@ public class RelayOptions {
     LOG.info(String.format("Adding relay configs for %s", getServiceUri()));
     parsedConfigs.forEach(
         (maxSessions, stereotype) -> {
+          ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
           for (int i = 0; i < maxSessions; i++) {
             factories.put(
-                stereotype,
+                immutable,
                 new RelaySessionFactory(
                     tracer,
                     clientFactory,
                     sessionTimeout,
                     getServiceUri(),
                     getServiceStatusUri(),
-                    stereotype));
+                    getServiceProtocolVersion(),
+                    immutable));
           }
-          LOG.info(String.format("Mapping %s, %d times", stereotype, maxSessions));
+          LOG.info(String.format("Mapping %s, %d times", immutable, maxSessions));
         });
     return factories.build().asMap();
   }

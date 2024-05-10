@@ -192,15 +192,11 @@ public class Standalone extends TemplateGridServerCommand {
 
     Routable appendRoute =
         Stream.of(
-                router,
+                baseRoute(subPath, combine(router)),
                 hubRoute(subPath, combine(router)),
                 graphqlRoute(subPath, () -> graphqlHandler))
             .reduce(Route::combine)
             .get();
-
-    if (!subPath.isEmpty()) {
-      appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(router)));
-    }
 
     Routable httpHandler;
     if (routerOptions.disableUi()) {
@@ -222,7 +218,7 @@ public class Standalone extends TemplateGridServerCommand {
     httpHandler = combine(httpHandler, Route.get("/readyz").to(() -> readinessCheck));
     Node node = createNode(config, bus, distributor, combinedHandler);
 
-    return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node));
+    return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node, subPath));
   }
 
   @Override

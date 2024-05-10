@@ -14,8 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
 from typing import Union
+
+from typing_extensions import deprecated
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
@@ -38,35 +39,37 @@ class Options(ArgOptions):
 
     def __init__(self) -> None:
         super().__init__()
-        self._binary: typing.Optional[FirefoxBinary] = None
+        self._binary_location = ""
         self._preferences: dict = {}
         self._profile = None
         self.log = Log()
 
     @property
+    @deprecated("use binary_location instead")
     def binary(self) -> FirefoxBinary:
         """Returns the FirefoxBinary instance."""
-        return self._binary
+        return FirefoxBinary(self._binary_location)
 
     @binary.setter
+    @deprecated("use binary_location instead")
     def binary(self, new_binary: Union[str, FirefoxBinary]) -> None:
         """Sets location of the browser binary, either by string or
         ``FirefoxBinary`` instance."""
-        if not isinstance(new_binary, FirefoxBinary):
-            new_binary = FirefoxBinary(new_binary)
-        self._binary = new_binary
+        if isinstance(new_binary, FirefoxBinary):
+            new_binary = new_binary._start_cmd
+        self.binary_location = new_binary
 
     @property
     def binary_location(self) -> str:
         """:Returns: The location of the binary."""
-        return self.binary._start_cmd
+        return self._binary_location
 
     @binary_location.setter  # noqa
     def binary_location(self, value: str) -> None:
         """Sets the location of the browser binary by string."""
         if not isinstance(value, str):
             raise TypeError(self.BINARY_LOCATION_ERROR)
-        self.binary = value
+        self._binary_location = value
 
     @property
     def preferences(self) -> dict:
@@ -102,8 +105,8 @@ class Options(ArgOptions):
         caps = self._caps
         opts = {}
 
-        if self._binary:
-            opts["binary"] = self._binary._start_cmd
+        if self._binary_location:
+            opts["binary"] = self._binary_location
         if self._preferences:
             opts["prefs"] = self._preferences
         if self._profile:

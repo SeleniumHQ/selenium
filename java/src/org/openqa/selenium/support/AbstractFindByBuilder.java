@@ -109,7 +109,7 @@ public abstract class AbstractFindByBuilder {
       throw new IllegalArgumentException(
           String.format(
               "You must specify at most one location strategy. Number found: %d (%s)",
-              finders.size(), finders.toString()));
+              finders.size(), finders));
     }
   }
 

@@ -13,7 +13,8 @@
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
-// under the License
+// under the License.
+
 package org.openqa.selenium.bidi.script;
 
 import static java.util.Collections.unmodifiableMap;
@@ -22,7 +23,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.openqa.selenium.internal.Require;
 
-class PrimitiveProtocolValue extends LocalValue {
+public class PrimitiveProtocolValue extends LocalValue {
 
   private final PrimitiveType type;
   private Object value;

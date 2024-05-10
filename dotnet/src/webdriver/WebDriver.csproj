@@ -44,13 +44,6 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="WebDriver.Common.Tests" />
-    
-    <Compile Remove="cdp\**" />
-    <Compile Remove="obj\**" />
-    <EmbeddedResource Remove="cdp\**" />
-    <EmbeddedResource Remove="obj\**" />
-    <None Remove="cdp\**" />
-    <None Remove="obj\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,43 +52,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
-      <Visible>False</Visible>
-      <LogicalName>webdriver_prefs.json</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js">
-      <Visible>False</Visible>
-      <LogicalName>get-attribute.js</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\is-displayed.js">
-      <Visible>False</Visible>
-      <LogicalName>is-displayed.js</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js">
-      <Visible>False</Visible>
-      <LogicalName>find-elements.js</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)..\..\..\javascript\cdp-support\mutation-listener.js">
-      <Visible>False</Visible>
-      <LogicalName>mutation-listener.js</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Remote\JsonConverters\" />
-  </ItemGroup>
-
   <PropertyGroup>
-    <BaseSeleniumManagerPath>..\..\..\common\manager</BaseSeleniumManagerPath>
-    <BaseImagePath>..\..\..\common\images</BaseImagePath>
+    <BaseImagePath>..\..\..\bazel-bin\dotnet\src\webdriver\images</BaseImagePath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -109,12 +70,47 @@
     <None Include="$(BaseSeleniumManagerPath)\windows\selenium-manager.exe" Pack="true" PackagePath="manager\windows" Visible="false" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
-    <Exec Command="call $(ProjectDir)WebDriver.csproj.prebuild.cmd $(ProjectDir)" />
+  <Target Name="GenerateSeleniumManagerBinaries" BeforeTargets="PrepareForBuild">
+    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos" />
+
+    <PropertyGroup>
+      <BaseSeleniumManagerPath>..\..\..\bazel-bin\dotnet\src\webdriver\manager</BaseSeleniumManagerPath>
+    </PropertyGroup>
   </Target>
 
-  <Target Name="PreBuildNonWindows" BeforeTargets="PreBuildEvent" Condition="'$(OS)' != 'Windows_NT'">
-    <Exec Command="$(ProjectDir)WebDriver.csproj.prebuild.sh $(ProjectDir)" />
+  <Target Name="GenerateAtoms" BeforeTargets="PrepareForBuild">
+    <Exec Command="bazel build //javascript/webdriver/atoms:get-attribute.js //javascript/atoms/fragments:is-displayed.js //javascript/atoms/fragments:find-elements.js" />
+
+    <ItemGroup>
+      <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
+        <Visible>False</Visible>
+        <LogicalName>webdriver_prefs.json</LogicalName>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js">
+        <Visible>False</Visible>
+        <LogicalName>get-attribute.js</LogicalName>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\is-displayed.js">
+        <Visible>False</Visible>
+        <LogicalName>is-displayed.js</LogicalName>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js">
+        <Visible>False</Visible>
+        <LogicalName>find-elements.js</LogicalName>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(ProjectDir)..\..\..\javascript\cdp-support\mutation-listener.js">
+        <Visible>False</Visible>
+        <LogicalName>mutation-listener.js</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateCdp" BeforeTargets="CoreCompile">
+    <Exec Command="bazel build //dotnet/src/webdriver/cdp:generate-v85 //dotnet/src/webdriver/cdp:generate-v124 //dotnet/src/webdriver/cdp:generate-v122 //dotnet/src/webdriver/cdp:generate-v123" />
+
+    <ItemGroup>
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />
+    </ItemGroup>
   </Target>
 
 </Project>

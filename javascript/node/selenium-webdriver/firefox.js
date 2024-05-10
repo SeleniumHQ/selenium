@@ -63,27 +63,18 @@
  *
  * For Linux, Firefox will always be located on the PATH: `$(where firefox)`.
  *
- * Several methods are provided for starting Firefox with a custom executable.
- * First, on Windows and MacOS, you may configure WebDriver to check the default
- * install location for a non-release channel. If the requested channel cannot
- * be found in its default location, WebDriver will fallback to searching your
- * PATH. _Note:_ on Linux, Firefox is _always_ located on your path, regardless
- * of the requested channel.
+ * You can provide a custom location for Firefox by setting the binary in the
+ * {@link Options}:setBinary method.
  *
  *     const {Builder} = require('selenium-webdriver');
  *     const firefox = require('selenium-webdriver/firefox');
  *
- *     let options = new firefox.Options().setBinary(firefox.Channel.NIGHTLY);
+ *    let options = new firefox.Options()
+ *         .setBinary('/my/firefox/install/dir/firefox');
  *     let driver = new Builder()
  *         .forBrowser('firefox')
  *         .setFirefoxOptions(options)
  *         .build();
- *
- * On all platforms, you may configure WebDriver to use a Firefox specific
- * executable:
- *
- *     let options = new firefox.Options()
- *         .setBinary('/my/firefox/install/dir/firefox-bin');
  *
  * __Remote Testing__
  *
@@ -102,7 +93,7 @@
  *
  *     let options = new firefox.Options()
  *         .setProfile('/profile/path/on/remote/host')
- *         .setBinary('/install/dir/on/remote/host/firefox-bin');
+ *         .setBinary('/install/dir/on/remote/host/firefox');
  *
  *     let driver = new Builder()
  *         .forBrowser('firefox')
@@ -116,8 +107,8 @@
 
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('node:fs')
+const path = require('node:path')
 const Symbols = require('./lib/symbols')
 const command = require('./lib/command')
 const http = require('./http')
@@ -125,9 +116,9 @@ const io = require('./io')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const zip = require('./io/zip')
-const { Browser, Capabilities } = require('./lib/capabilities')
+const { Browser, Capabilities, Capability } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
-const { getPath } = require('./common/driverFinder')
+const { getBinaryPaths } = require('./common/driverFinder')
 const FIREFOX_CAPABILITY_KEY = 'moz:firefoxOptions'
 
 /**
@@ -224,11 +215,7 @@ async function buildProfile(template, extensions) {
   if (extensions.length) {
     dir = await io.tmpDir()
     if (template) {
-      await io.copyDir(
-        /** @type {string} */ (template),
-        dir,
-        /(parent\.lock|lock|\.parentlock)/
-      )
+      await io.copyDir(/** @type {string} */ (template), dir, /(parent\.lock|lock|\.parentlock)/)
     }
 
     const extensionsDir = path.join(dir, 'extensions')
@@ -300,21 +287,7 @@ class Options extends Capabilities {
   }
 
   /**
-   * @deprecated Use {@link Options#addArguments} instead.
-   * @example
-   * options.addArguments('-headless');
-   * @example
-   * Configures the geckodriver to start Firefox in headless mode.
-   *
-   * @return {!Options} A self reference.
-   */
-  headless() {
-    return this.addArguments('-headless')
-  }
-
-  /**
-   * Sets the initial window size when running in
-   * {@linkplain #headless headless} mode.
+   * Sets the initial window size
    *
    * @param {{width: number, height: number}} size The desired window size.
    * @return {!Options} A self reference.
@@ -327,6 +300,7 @@ class Options extends Capabilities {
         throw TypeError('Arguments must be {width, height} with numbers > 0')
       }
     }
+
     checkArg(width)
     checkArg(height)
     return this.addArguments(`--width=${width}`, `--height=${height}`)
@@ -353,14 +327,8 @@ class Options extends Capabilities {
     if (typeof key !== 'string') {
       throw TypeError(`key must be a string, but got ${typeof key}`)
     }
-    if (
-      typeof value !== 'string' &&
-      typeof value !== 'number' &&
-      typeof value !== 'boolean'
-    ) {
-      throw TypeError(
-        `value must be a string, number, or boolean, but got ${typeof value}`
-      )
+    if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'boolean') {
+      throw TypeError(`value must be a string, number, or boolean, but got ${typeof value}`)
     }
     let options = this.firefoxOptions_()
     options.prefs = options.prefs || {}
@@ -387,9 +355,9 @@ class Options extends Capabilities {
 
   /**
    * Sets the binary to use. The binary may be specified as the path to a
-   * Firefox executable or a desired release {@link Channel}.
+   * Firefox executable.
    *
-   * @param {(string|!Channel)} binary The binary to use.
+   * @param {(string)} binary The binary to use.
    * @return {!Options} A self reference.
    * @throws {TypeError} If `binary` is an invalid type.
    */
@@ -398,7 +366,7 @@ class Options extends Capabilities {
       this.firefoxOptions_().binary = binary
       return this
     }
-    throw TypeError('binary must be a string path or Channel object')
+    throw TypeError('binary must be a string path ')
   }
 
   /**
@@ -407,11 +375,7 @@ class Options extends Capabilities {
    * @param {string} androidPackage The package to use
    * @return {!Options} A self reference
    */
-  enableMobile(
-    androidPackage = 'org.mozilla.firefox',
-    androidActivity = null,
-    deviceSerial = null
-  ) {
+  enableMobile(androidPackage = 'org.mozilla.firefox', androidActivity = null, deviceSerial = null) {
     this.firefoxOptions_().androidPackage = androidPackage
 
     if (androidActivity) {
@@ -480,6 +444,7 @@ const ExtensionCommand = {
   SET_CONTEXT: 'setContext',
   INSTALL_ADDON: 'install addon',
   UNINSTALL_ADDON: 'uninstall addon',
+  FULL_PAGE_SCREENSHOT: 'fullPage screenshot',
 }
 
 /**
@@ -499,29 +464,15 @@ function createExecutor(serverUrl) {
  * @param {!http.Executor} executor the executor to configure.
  */
 function configureExecutor(executor) {
-  executor.defineCommand(
-    ExtensionCommand.GET_CONTEXT,
-    'GET',
-    '/session/:sessionId/moz/context'
-  )
+  executor.defineCommand(ExtensionCommand.GET_CONTEXT, 'GET', '/session/:sessionId/moz/context')
 
-  executor.defineCommand(
-    ExtensionCommand.SET_CONTEXT,
-    'POST',
-    '/session/:sessionId/moz/context'
-  )
+  executor.defineCommand(ExtensionCommand.SET_CONTEXT, 'POST', '/session/:sessionId/moz/context')
 
-  executor.defineCommand(
-    ExtensionCommand.INSTALL_ADDON,
-    'POST',
-    '/session/:sessionId/moz/addon/install'
-  )
+  executor.defineCommand(ExtensionCommand.INSTALL_ADDON, 'POST', '/session/:sessionId/moz/addon/install')
 
-  executor.defineCommand(
-    ExtensionCommand.UNINSTALL_ADDON,
-    'POST',
-    '/session/:sessionId/moz/addon/uninstall'
-  )
+  executor.defineCommand(ExtensionCommand.UNINSTALL_ADDON, 'POST', '/session/:sessionId/moz/addon/uninstall')
+
+  executor.defineCommand(ExtensionCommand.FULL_PAGE_SCREENSHOT, 'GET', '/session/:sessionId/moz/screenshot/full')
 }
 
 /**
@@ -578,8 +529,7 @@ class Driver extends webdriver.WebDriver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(opt_config, opt_executor) {
-    let caps =
-      opt_config instanceof Capabilities ? opt_config : new Options(opt_config)
+    let caps = opt_config instanceof Capabilities ? opt_config : new Options(opt_config)
 
     let firefoxBrowserPath = null
 
@@ -591,7 +541,7 @@ class Driver extends webdriver.WebDriver {
       configureExecutor(executor)
     } else if (opt_executor instanceof remote.DriverService) {
       if (!opt_executor.getExecutable()) {
-        const { driverPath, browserPath } = getPath(caps)
+        const { driverPath, browserPath } = getBinaryPaths(caps)
         opt_executor.setExecutable(driverPath)
         firefoxBrowserPath = browserPath
       }
@@ -600,7 +550,7 @@ class Driver extends webdriver.WebDriver {
     } else {
       let service = new ServiceBuilder().build()
       if (!service.getExecutable()) {
-        const { driverPath, browserPath } = getPath(caps)
+        const { driverPath, browserPath } = getBinaryPaths(caps)
         service.setExecutable(driverPath)
         firefoxBrowserPath = browserPath
       }
@@ -616,6 +566,7 @@ class Driver extends webdriver.WebDriver {
       } else {
         caps.set(FIREFOX_CAPABILITY_KEY, { binary: firefoxBrowserPath })
       }
+      caps.delete(Capability.BROWSER_VERSION)
     }
 
     return /** @type {!Driver} */ (super.createSession(executor, caps, onQuit))
@@ -652,12 +603,7 @@ class Driver extends webdriver.WebDriver {
    * @param {!Promise<void>} ctx The context to switch to.
    */
   setContext(ctx) {
-    return this.execute(
-      new command.Command(ExtensionCommand.SET_CONTEXT).setParameter(
-        'context',
-        ctx
-      )
-    )
+    return this.execute(new command.Command(ExtensionCommand.SET_CONTEXT).setParameter('context', ctx))
   }
 
   /**
@@ -687,7 +633,7 @@ class Driver extends webdriver.WebDriver {
     return this.execute(
       new command.Command(ExtensionCommand.INSTALL_ADDON)
         .setParameter('addon', buf.toString('base64'))
-        .setParameter('temporary', temporary)
+        .setParameter('temporary', temporary),
     )
   }
 
@@ -701,12 +647,17 @@ class Driver extends webdriver.WebDriver {
    */
   async uninstallAddon(id) {
     id = await Promise.resolve(id)
-    return this.execute(
-      new command.Command(ExtensionCommand.UNINSTALL_ADDON).setParameter(
-        'id',
-        id
-      )
-    )
+    return this.execute(new command.Command(ExtensionCommand.UNINSTALL_ADDON).setParameter('id', id))
+  }
+
+  /**
+   * Take full page screenshot of the visible region
+   *
+   * @return {!Promise<string>} A promise that will be
+   *     resolved to the screenshot as a base-64 encoded PNG.
+   */
+  takeFullPageScreenshot() {
+    return this.execute(new command.Command(ExtensionCommand.FULL_PAGE_SCREENSHOT))
   }
 }
 
@@ -714,7 +665,9 @@ class Driver extends webdriver.WebDriver {
  * Provides methods for locating the executable for a Firefox release channel
  * on Windows and MacOS. For other systems (i.e. Linux), Firefox will always
  * be located on the system PATH.
- *
+ * @deprecated Instead of using this class, you should configure the
+ *    {@link Options} with the appropriate binary location or let Selenium
+ *    Manager handle it for you.
  * @final
  */
 class Channel {
@@ -746,15 +699,11 @@ class Channel {
     let found
     switch (process.platform) {
       case 'darwin':
-        found = io
-          .exists(this.darwin_)
-          .then((exists) => (exists ? this.darwin_ : io.findInPath('firefox')))
+        found = io.exists(this.darwin_).then((exists) => (exists ? this.darwin_ : io.findInPath('firefox')))
         break
 
       case 'win32':
-        found = findInProgramFiles(this.win32_).then(
-          (found) => found || io.findInPath('firefox.exe')
-        )
+        found = findInProgramFiles(this.win32_).then((found) => found || io.findInPath('firefox.exe'))
         break
 
       default:
@@ -781,11 +730,11 @@ class Channel {
 /**
  * Firefox's developer channel.
  * @const
- * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#aurora>
+ * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#developer>
  */
-Channel.AURORA = new Channel(
-  '/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox-bin',
-  'Firefox Developer Edition\\firefox.exe'
+Channel.DEV = new Channel(
+  '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
+  'Firefox Developer Edition\\firefox.exe',
 )
 
 /**
@@ -795,30 +744,21 @@ Channel.AURORA = new Channel(
  * @const
  * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#beta>
  */
-Channel.BETA = new Channel(
-  '/Applications/Firefox.app/Contents/MacOS/firefox-bin',
-  'Mozilla Firefox\\firefox.exe'
-)
+Channel.BETA = new Channel('/Applications/Firefox.app/Contents/MacOS/firefox', 'Mozilla Firefox\\firefox.exe')
 
 /**
  * Firefox's release channel.
  * @const
  * @see <https://www.mozilla.org/en-US/firefox/desktop/>
  */
-Channel.RELEASE = new Channel(
-  '/Applications/Firefox.app/Contents/MacOS/firefox-bin',
-  'Mozilla Firefox\\firefox.exe'
-)
+Channel.RELEASE = new Channel('/Applications/Firefox.app/Contents/MacOS/firefox', 'Mozilla Firefox\\firefox.exe')
 
 /**
  * Firefox's nightly release channel.
  * @const
  * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#nightly>
  */
-Channel.NIGHTLY = new Channel(
-  '/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin',
-  'Nightly\\firefox.exe'
-)
+Channel.NIGHTLY = new Channel('/Applications/Firefox Nightly.app/Contents/MacOS/firefox', 'Nightly\\firefox.exe')
 
 // PUBLIC API
 

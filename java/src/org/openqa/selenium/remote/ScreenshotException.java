@@ -21,19 +21,20 @@ import org.openqa.selenium.WebDriverException;
 
 public class ScreenshotException extends WebDriverException {
 
-  private final String screenshot;
-
-  public ScreenshotException(String screenGrab) {
-    super("Screen shot has been taken");
-    this.screenshot = screenGrab;
+  public ScreenshotException(String message) {
+    super(message);
   }
 
-  public ScreenshotException(String screenGrab, Throwable cause) {
-    super("Screen shot has been taken", cause);
-    this.screenshot = screenGrab;
+  public ScreenshotException(Throwable cause) {
+    super(cause);
   }
 
+  public ScreenshotException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  @Deprecated(forRemoval = true)
   public String getBase64EncodedScreenshot() {
-    return screenshot;
+    return null;
   }
 }

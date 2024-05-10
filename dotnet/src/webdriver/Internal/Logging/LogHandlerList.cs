@@ -33,6 +33,12 @@ namespace OpenQA.Selenium.Internal.Logging
             _logContext = logContext;
         }
 
+        public LogHandlerList(ILogContext logContext, IEnumerable<ILogHandler> handlers)
+            : base(handlers)
+        {
+            _logContext = logContext;
+        }
+
         public new ILogContext Add(ILogHandler handler)
         {
             base.Add(handler);

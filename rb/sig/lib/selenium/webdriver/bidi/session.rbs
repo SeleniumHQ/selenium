@@ -1,0 +1,19 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class Session
+        @bidi: untyped
+
+        Status: untyped
+
+        def initialize: (untyped bidi) -> void
+
+        def status: () -> untyped
+
+        def subscribe: (untyped events, ?untyped? browsing_contexts) -> untyped
+
+        def unsubscribe: (untyped events, ?untyped? browsing_contexts) -> untyped
+      end
+    end
+  end
+end

@@ -21,8 +21,9 @@ use crate::config::{str_to_os, ManagerConfig};
 use crate::downloads::download_to_tmp_folder;
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
 use crate::files::{
-    create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
-    get_binary_extension, path_to_string,
+    capitalize, collect_files_from_cache, create_parent_path_if_not_exists,
+    create_path_if_not_exists, default_cache_folder, find_latest_from_cache, get_binary_extension,
+    path_to_string,
 };
 use crate::files::{parse_version, uncompress, BrowserPath};
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
@@ -30,22 +31,25 @@ use crate::grid::GRID_NAME;
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::logger::Logger;
 use crate::metadata::{
-    create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
+    create_browser_metadata, create_stats_metadata, get_browser_version_from_metadata,
+    get_metadata, is_stats_in_metadata, write_metadata,
 };
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
 use crate::shell::{
     run_shell_command, run_shell_command_by_os, run_shell_command_with_log, split_lines, Command,
 };
+use crate::stats::{send_stats_to_plausible, Props};
 use anyhow::anyhow;
 use anyhow::Error;
 use is_executable::IsExecutable;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
-use std::{env, fs};
-use walkdir::{DirEntry, WalkDir};
+use std::{env, fs, thread};
+use walkdir::DirEntry;
 
 pub mod chrome;
 pub mod config;
@@ -61,6 +65,7 @@ pub mod mirror;
 pub mod safari;
 pub mod safaritp;
 pub mod shell;
+pub mod stats;
 
 pub const REQUEST_TIMEOUT_SEC: u64 = 300; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
@@ -76,12 +81,9 @@ pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const REG_PV_ARG: &str = "pv";
 pub const PLIST_COMMAND: &str =
     r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
-pub const PKGUTIL_COMMAND: &str = "pkgutil --expand-full {} {}";
 pub const HDIUTIL_ATTACH_COMMAND: &str = "hdiutil attach {}";
 pub const HDIUTIL_DETACH_COMMAND: &str = "hdiutil detach /Volumes/{}";
 pub const CP_VOLUME_COMMAND: &str = "cp -R /Volumes/{}/{}.app {}";
-pub const MV_PAYLOAD_COMMAND: &str = "mv {}/*{}/Payload/*.app {}";
-pub const MV_PAYLOAD_OLD_VERSIONS_COMMAND: &str = "mv {}/Payload/*.app {}";
 pub const MSIEXEC_INSTALL_COMMAND: &str = "start /wait msiexec /i {} /qn ALLOWDOWNGRADE=1";
 pub const WINDOWS_CHECK_ADMIN_COMMAND: &str = "net session";
 pub const DASH_VERSION: &str = "{}{}{} -v";
@@ -111,6 +113,7 @@ pub const NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG: &str =
     "{} can only be installed in Windows with administrator permissions";
 pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {}{} in online repository";
 pub const UNC_PREFIX: &str = r"\\?\";
+pub const SM_BETA_LABEL: &str = "0.";
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -148,6 +151,10 @@ pub trait SeleniumManager {
     fn get_logger(&self) -> &Logger;
 
     fn set_logger(&mut self, log: Logger);
+
+    fn get_sender(&self) -> &Sender<String>;
+
+    fn get_receiver(&self) -> &Receiver<String>;
 
     fn get_platform_label(&self) -> &str;
 
@@ -202,7 +209,6 @@ pub trait SeleniumManager {
                 self.get_logger(),
                 self.get_os(),
                 Some(driver_name_with_extension),
-                None,
                 None,
             )?)
         }
@@ -306,10 +312,6 @@ pub trait SeleniumManager {
             let (_tmp_folder, driver_zip_file) =
                 download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
 
-            let major_browser_version_int = self
-                .get_major_browser_version()
-                .parse::<i32>()
-                .unwrap_or_default();
             let browser_label_for_download =
                 self.get_browser_label_for_download(original_browser_version)?;
             uncompress(
@@ -319,7 +321,6 @@ pub trait SeleniumManager {
                 self.get_os(),
                 None,
                 browser_label_for_download,
-                Some(major_browser_version_int),
             )?;
         }
         if browser_binary_path.exists() {
@@ -327,7 +328,7 @@ pub trait SeleniumManager {
             Ok(Some(browser_binary_path))
         } else {
             self.get_logger().warn(format!(
-                "Expected {} path does not exists: {}",
+                "Expected {} path does not exist: {}",
                 self.get_browser_name(),
                 browser_binary_path.display()
             ));
@@ -825,6 +826,38 @@ pub trait SeleniumManager {
         Ok(driver_path)
     }
 
+    fn stats(&self) -> Result<(), Error> {
+        if !self.is_avoid_stats() && !self.is_offline() {
+            let props = Props {
+                browser: self.get_browser_name().to_ascii_lowercase(),
+                browser_version: self.get_browser_version().to_ascii_lowercase(),
+                os: self.get_os().to_ascii_lowercase(),
+                arch: self.get_arch().to_ascii_lowercase(),
+                lang: self.get_language_binding().to_ascii_lowercase(),
+                selenium_version: self.get_selenium_version().to_ascii_lowercase(),
+            };
+            let http_client = self.get_http_client().to_owned();
+            let sender = self.get_sender().to_owned();
+            let cache_path = self.get_cache_path()?;
+            let mut metadata = get_metadata(self.get_logger(), &cache_path);
+            if !is_stats_in_metadata(&metadata.stats, &props) {
+                self.get_logger()
+                    .debug(format!("Sending stats to Plausible: {:?}", props,));
+                let stats_ttl = self.get_ttl();
+                if stats_ttl > 0 {
+                    metadata
+                        .stats
+                        .push(create_stats_metadata(&props, stats_ttl));
+                    write_metadata(&metadata, self.get_logger(), cache_path);
+                }
+                thread::spawn(move || {
+                    send_stats_to_plausible(http_client, props, sender);
+                });
+            }
+        }
+        Ok(())
+    }
+
     fn check_error_with_driver_in_path(
         &mut self,
         is_driver_in_path: &bool,
@@ -842,13 +875,34 @@ pub trait SeleniumManager {
         }
     }
 
+    fn is_browser(&self, entry: &DirEntry) -> bool {
+        if MACOS.is(self.get_os()) && !self.is_firefox() {
+            let entry_path = path_to_string(entry.path());
+            self.is_in_cache(entry, &capitalize(self.get_browser_name()))
+                && entry_path.contains(".app/Contents/MacOS")
+                && !entry_path.contains("Framework")
+        } else {
+            self.is_in_cache(entry, &self.get_browser_name_with_extension())
+        }
+    }
+
     fn is_driver(&self, entry: &DirEntry) -> bool {
+        self.is_in_cache(entry, &self.get_driver_name_with_extension())
+    }
+
+    fn is_in_cache(&self, entry: &DirEntry, file_name: &str) -> bool {
         let is_file = entry.path().is_file();
 
-        let is_driver = entry
+        let is_file_name = entry
             .file_name()
             .to_str()
-            .map(|s| s.contains(&self.get_driver_name_with_extension()))
+            .map(|s| {
+                if MACOS.is(self.get_os()) && !self.is_firefox() {
+                    s.contains(file_name)
+                } else {
+                    s.ends_with(file_name)
+                }
+            })
             .unwrap_or(false);
 
         let match_os = entry
@@ -857,7 +911,7 @@ pub trait SeleniumManager {
             .map(|s| s.contains(self.get_platform_label()))
             .unwrap_or(false);
 
-        is_file && is_driver && match_os
+        is_file && is_file_name && match_os
     }
 
     fn is_driver_and_matches_browser_version(&self, entry: &DirEntry) -> bool {
@@ -876,14 +930,37 @@ pub trait SeleniumManager {
         self.is_driver(entry) && match_driver_version
     }
 
+    fn get_browser_path_or_latest_from_cache(&self) -> String {
+        let mut browser_path = self.get_browser_path().to_string();
+        if browser_path.is_empty() {
+            let best_browser_from_cache = &self
+                .find_best_browser_from_cache()
+                .unwrap_or_default()
+                .unwrap_or_default();
+            if best_browser_from_cache.exists() {
+                self.get_logger().debug_or_warn(
+                    format!(
+                        "There was an error managing {}; using browser found in the cache",
+                        self.get_browser_name()
+                    ),
+                    self.is_offline(),
+                );
+                browser_path = path_to_string(best_browser_from_cache);
+            }
+        }
+        browser_path
+    }
+
+    fn find_best_browser_from_cache(&self) -> Result<Option<PathBuf>, Error> {
+        let cache_path = self.get_cache_path()?.unwrap_or_default();
+        find_latest_from_cache(&cache_path, |entry| self.is_browser(entry))
+    }
+
     fn find_best_driver_from_cache(&self) -> Result<Option<PathBuf>, Error> {
         let cache_path = self.get_cache_path()?.unwrap_or_default();
-        let drivers_in_cache_matching_version: Vec<PathBuf> = WalkDir::new(&cache_path)
-            .into_iter()
-            .filter_map(|entry| entry.ok())
-            .filter(|entry| self.is_driver_and_matches_browser_version(entry))
-            .map(|entry| entry.path().to_owned())
-            .collect();
+        let drivers_in_cache_matching_version = collect_files_from_cache(&cache_path, |entry| {
+            self.is_driver_and_matches_browser_version(entry)
+        });
 
         // First we look for drivers in cache that matches browser version (should work for Chrome and Edge)
         if !drivers_in_cache_matching_version.is_empty() {
@@ -896,17 +973,7 @@ pub trait SeleniumManager {
             ))
         } else {
             // If not available, we look for the latest available driver in the cache
-            let drivers_in_cache: Vec<PathBuf> = WalkDir::new(&cache_path)
-                .into_iter()
-                .filter_map(|entry| entry.ok())
-                .filter(|entry| self.is_driver(entry))
-                .map(|entry| entry.path().to_owned())
-                .collect();
-            if !drivers_in_cache.is_empty() {
-                Ok(Some(drivers_in_cache.iter().last().unwrap().to_owned()))
-            } else {
-                Ok(None)
-            }
+            find_latest_from_cache(&cache_path, |entry| self.is_driver(entry))
         }
     }
 
@@ -1393,6 +1460,36 @@ pub trait SeleniumManager {
     fn set_cache_path(&mut self, cache_path: String) {
         if !cache_path.is_empty() {
             self.get_config_mut().cache_path = cache_path;
+        }
+    }
+
+    fn get_language_binding(&self) -> &str {
+        self.get_config().language_binding.as_str()
+    }
+
+    fn set_language_binding(&mut self, language_binding: String) {
+        if !language_binding.is_empty() {
+            self.get_config_mut().language_binding = language_binding;
+        }
+    }
+
+    fn get_selenium_version(&self) -> &str {
+        self.get_config().selenium_version.as_str()
+    }
+
+    fn set_selenium_version(&mut self, selenium_version: String) {
+        if !selenium_version.is_empty() {
+            self.get_config_mut().selenium_version = selenium_version;
+        }
+    }
+
+    fn is_avoid_stats(&self) -> bool {
+        self.get_config().avoid_stats
+    }
+
+    fn set_avoid_stats(&mut self, avoid_stats: bool) {
+        if avoid_stats {
+            self.get_config_mut().avoid_stats = true;
         }
     }
 }

@@ -17,9 +17,9 @@
 
 'use strict'
 
-const assert = require('assert')
-const http = require('http')
-const url = require('url')
+const assert = require('node:assert')
+const http = require('node:http')
+const url = require('node:url')
 
 const HttpClient = require('../../http').HttpClient
 const HttpRequest = require('../../lib/http').Request
@@ -27,7 +27,7 @@ const Server = require('../../lib/test/httpserver').Server
 
 describe('HttpClient', function () {
   const server = new Server(function (req, res) {
-    // eslint-disable-next-line node/no-deprecated-api
+    // eslint-disable-next-line n/no-deprecated-api
     const parsedUrl = url.parse(req.url)
 
     if (req.method === 'GET' && req.url === '/echo') {
@@ -73,20 +73,12 @@ describe('HttpClient', function () {
 
       res.writeHead(200, { 'content-type': 'text/plain' })
       res.end('Access granted!')
-    } else if (
-      req.method === 'GET' &&
-      parsedUrl.pathname &&
-      parsedUrl.pathname.endsWith('/proxy')
-    ) {
+    } else if (req.method === 'GET' && parsedUrl.pathname && parsedUrl.pathname.endsWith('/proxy')) {
       let headers = Object.assign({}, req.headers)
       headers['x-proxy-request-uri'] = req.url
       res.writeHead(200, headers)
       res.end()
-    } else if (
-      req.method === 'GET' &&
-      parsedUrl.pathname &&
-      parsedUrl.pathname.endsWith('/proxy/redirect')
-    ) {
+    } else if (req.method === 'GET' && parsedUrl.pathname && parsedUrl.pathname.endsWith('/proxy/redirect')) {
       let path = `/proxy${parsedUrl.search || ''}${parsedUrl.hash || ''}`
       res.writeHead(303, { Location: path })
       res.end()
@@ -121,16 +113,10 @@ describe('HttpClient', function () {
       assert.strictEqual(headers['host'], server.host())
 
       const regex = /^selenium\/.* \(js (windows|mac|linux)\)$/
-      assert.ok(
-        regex.test(headers['user-agent']),
-        `${headers['user-agent']} does not match ${regex}`
-      )
+      assert.ok(regex.test(headers['user-agent']), `${headers['user-agent']} does not match ${regex}`)
 
       assert.strictEqual(request.headers.get('Foo'), 'Bar')
-      assert.strictEqual(
-        request.headers.get('Accept'),
-        'application/json; charset=utf-8'
-      )
+      assert.strictEqual(request.headers.get('Accept'), 'application/json; charset=utf-8')
       assert.strictEqual(agent.keepAlive, false)
     })
   })
@@ -157,10 +143,7 @@ describe('HttpClient', function () {
 
       assert.strictEqual(request.headers.get('Foo'), 'Bar')
       assert.strictEqual(agent.keepAlive, false)
-      assert.strictEqual(
-        request.headers.get('Accept'),
-        'application/json; charset=utf-8'
-      )
+      assert.strictEqual(request.headers.get('Accept'), 'application/json; charset=utf-8')
     })
   })
 
@@ -184,17 +167,11 @@ describe('HttpClient', function () {
       assert.strictEqual(headers['host'], server.host())
 
       const regex = /^selenium\/.* \(js (windows|mac|linux)\)$/
-      assert.ok(
-        regex.test(headers['user-agent']),
-        `${headers['user-agent']} does not match ${regex}`
-      )
+      assert.ok(regex.test(headers['user-agent']), `${headers['user-agent']} does not match ${regex}`)
 
       assert.strictEqual(request.headers.get('Foo'), 'Bar')
       assert.strictEqual(agent.keepAlive, true)
-      assert.strictEqual(
-        request.headers.get('Accept'),
-        'application/json; charset=utf-8'
-      )
+      assert.strictEqual(request.headers.get('Accept'), 'application/json; charset=utf-8')
     })
   })
 
@@ -209,7 +186,7 @@ describe('HttpClient', function () {
   })
 
   it('can use basic auth', function () {
-    // eslint-disable-next-line node/no-deprecated-api
+    // eslint-disable-next-line n/no-deprecated-api
     const parsed = url.parse(server.url())
     parsed.auth = 'genie:bottle'
 
@@ -245,62 +222,38 @@ describe('HttpClient', function () {
     const request = new HttpRequest('GET', '/badredirect')
     const client = new HttpClient(server.url())
     return client.send(request).then(assert.fail, function (err) {
-      assert.ok(
-        /Failed to parse "Location"/.test(err.message),
-        'Not the expected error: ' + err.message
-      )
+      assert.ok(/Failed to parse "Location"/.test(err.message), 'Not the expected error: ' + err.message)
     })
   })
 
   describe('with proxy', function () {
     it('sends request to proxy with absolute URI', function () {
       const request = new HttpRequest('GET', '/proxy')
-      const client = new HttpClient(
-        'http://another.server.com',
-        undefined,
-        server.url()
-      )
+      const client = new HttpClient('http://another.server.com', undefined, server.url())
       return client.send(request).then(function (response) {
         assert.strictEqual(200, response.status)
         assert.strictEqual(response.headers.get('host'), 'another.server.com')
-        assert.strictEqual(
-          response.headers.get('x-proxy-request-uri'),
-          'http://another.server.com/proxy'
-        )
+        assert.strictEqual(response.headers.get('x-proxy-request-uri'), 'http://another.server.com/proxy')
       })
     })
 
     it('uses proxy when following redirects', function () {
       const request = new HttpRequest('GET', '/proxy/redirect')
-      const client = new HttpClient(
-        'http://another.server.com',
-        undefined,
-        server.url()
-      )
+      const client = new HttpClient('http://another.server.com', undefined, server.url())
       return client.send(request).then(function (response) {
         assert.strictEqual(200, response.status)
         assert.strictEqual(response.headers.get('host'), 'another.server.com')
-        assert.strictEqual(
-          response.headers.get('x-proxy-request-uri'),
-          'http://another.server.com/proxy'
-        )
+        assert.strictEqual(response.headers.get('x-proxy-request-uri'), 'http://another.server.com/proxy')
       })
     })
 
     it('includes search and hash in redirect URI', function () {
       const request = new HttpRequest('GET', '/proxy/redirect?foo#bar')
-      const client = new HttpClient(
-        'http://another.server.com',
-        undefined,
-        server.url()
-      )
+      const client = new HttpClient('http://another.server.com', undefined, server.url())
       return client.send(request).then(function (response) {
         assert.strictEqual(200, response.status)
         assert.strictEqual(response.headers.get('host'), 'another.server.com')
-        assert.strictEqual(
-          response.headers.get('x-proxy-request-uri'),
-          'http://another.server.com/proxy?foo#bar'
-        )
+        assert.strictEqual(response.headers.get('x-proxy-request-uri'), 'http://another.server.com/proxy?foo#bar')
       })
     })
   })

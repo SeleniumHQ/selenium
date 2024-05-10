@@ -1,0 +1,17 @@
+interface _Driver
+  def capabilities: () -> untyped
+
+  def devtools_url: () -> untyped
+
+  def devtools_version: () -> untyped
+
+  def devtools_address: () -> untyped
+
+  def ref: () -> untyped
+
+  def bridge: () -> untyped
+
+  def browser: () -> untyped
+
+  def service_url: (untyped service) -> untyped
+end

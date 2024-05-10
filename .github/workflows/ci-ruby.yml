@@ -45,7 +45,7 @@ jobs:
             os: windows
           - ruby-version: 3.0.6
             os: macos
-          - ruby-version: 3.2.2
+          - ruby-version: 3.3.0
             os: ubuntu
           - ruby-version: jruby-9.4.5.0
             os: ubuntu
@@ -56,7 +56,11 @@ jobs:
       cache-key: rb-unit-test-${{ matrix.ruby-version }}
       os: ${{ matrix.os }}
       ruby-version: ${{ matrix.ruby-version }}
-      run: bazel test //rb/spec/unit/...
+      run: >
+        bazel test
+        --build_tests_only
+        --test_size_filters small
+        //rb/spec/...
 
   integration-tests-local:
     name: Local Tests
@@ -90,10 +94,12 @@ jobs:
       os: ${{ matrix.os }}
       run: >
         bazel test
-        --define browser=${{ matrix.browser }}
+        --build_tests_only
         --flaky_test_attempts 3
         --local_test_jobs 1
-        //rb/spec/integration/...
+        --test_size_filters large
+        --test_tag_filters ${{ matrix.browser }}
+        //rb/spec/...
 
   integration-tests-remote:
     name: Remote Tests
@@ -119,8 +125,9 @@ jobs:
       java-version: 11
       run: >
         bazel test
-        --define browser=${{ matrix.browser }}
-        --define remote=true
+        --build_tests_only
         --flaky_test_attempts 3
         --local_test_jobs 1
-        //rb/spec/integration/...
+        --test_size_filters large
+        --test_tag_filters ${{ matrix.browser }}-remote
+        //rb/spec/...

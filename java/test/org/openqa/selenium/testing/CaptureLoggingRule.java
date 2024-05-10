@@ -135,7 +135,7 @@ class CaptureLoggingRule {
             .append("]");
       }
       buffer.append(" - ");
-      buffer.append(formatMessage(record)).append(System.getProperty("line.separator"));
+      buffer.append(formatMessage(record)).append(System.lineSeparator());
       if (record.getThrown() != null) {
         final StringWriter trace = new StringWriter();
         record.getThrown().printStackTrace(new PrintWriter(trace));

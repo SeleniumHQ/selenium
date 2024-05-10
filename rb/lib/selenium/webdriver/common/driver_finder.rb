@@ -20,25 +20,70 @@
 module Selenium
   module WebDriver
     class DriverFinder
-      def self.path(options, klass)
-        path = klass.driver_path
-        path = path.call if path.is_a?(Proc)
+      def self.path(options, service_class)
+        WebDriver.logger.deprecate('DriverFinder.path(options, service_class)',
+                                   'DriverFinder.new(options, service).driver_path')
+        new(options, service_class.new).driver_path
+      end
 
-        path ||= begin
-          SeleniumManager.driver_path(options) unless options.is_a?(Remote::Capabilities)
+      def initialize(options, service)
+        @options = options
+        @service = service
+      end
+
+      def browser_path
+        paths[:browser_path]
+      end
+
+      def driver_path
+        paths[:driver_path]
+      end
+
+      def browser_path?
+        !browser_path.nil? && !browser_path.empty?
+      end
+
+      private
+
+      def paths
+        @paths ||= begin
+          path = @service.class.driver_path
+          path = path.call if path.is_a?(Proc)
+          exe = @service.class::EXECUTABLE
+          if path
+            WebDriver.logger.debug("Skipping Selenium Manager; path to #{exe} specified in service class: #{path}")
+            Platform.assert_executable(path)
+            {driver_path: path}
+          else
+            output = SeleniumManager.binary_paths(*to_args)
+            formatted = {driver_path: Platform.cygwin_path(output['driver_path'], only_cygwin: true),
+                         browser_path: Platform.cygwin_path(output['browser_path'], only_cygwin: true)}
+            Platform.assert_executable(formatted[:driver_path])
+            Platform.assert_executable(formatted[:browser_path])
+            formatted
+          end
         rescue StandardError => e
-          raise Error::NoSuchDriverError, "Unable to obtain #{klass::EXECUTABLE} using Selenium Manager; #{e.message}"
+          WebDriver.logger.error("Exception occurred: #{e.message}")
+          WebDriver.logger.error("Backtrace:\n\t#{e.backtrace&.join("\n\t")}")
+          raise Error::NoSuchDriverError, "Unable to obtain #{exe}"
         end
+      end
 
-        begin
-          Platform.assert_executable(path)
-        rescue TypeError
-          raise Error::NoSuchDriverError, "Unable to locate or obtain #{klass::EXECUTABLE}"
-        rescue Error::WebDriverError => e
-          raise Error::NoSuchDriverError, "#{klass::EXECUTABLE} located, but: #{e.message}"
+      def to_args
+        args = ['--browser', @options.browser_name]
+        if @options.browser_version
+          args << '--browser-version'
+          args << @options.browser_version
         end
-
-        path
+        if @options.respond_to?(:binary) && !@options.binary.nil?
+          args << '--browser-path'
+          args << @options.binary.gsub('\\', '\\\\\\')
+        end
+        if @options.proxy
+          args << '--proxy'
+          args << (@options.proxy.ssl || @options.proxy.http)
+        end
+        args
       end
     end
   end

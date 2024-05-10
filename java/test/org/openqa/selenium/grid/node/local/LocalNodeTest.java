@@ -316,6 +316,41 @@ class LocalNodeTest {
   }
 
   @Test
+  void seVncCdpUrlCapabilityWhenGridUrlWithTrailingSlash() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("https://my.domain.com/");
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            "se:vncLocalAddress", "ws://localhost:7900",
+            "se:cdp", "ws://localhost:9222/devtools/browser/1a2b3c4d5e6f");
+
+    LocalNode.Builder builder =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+            .enableCdp(true)
+            .add(
+                stereotype,
+                new TestSessionFactory(
+                    (id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())));
+    LocalNode localNode = builder.build();
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        localNode.newSession(
+            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+    assertThat(response.isRight()).isTrue();
+
+    CreateSessionResponse sessionResponse = response.right();
+    Capabilities capabilities = sessionResponse.getSession().getCapabilities();
+    Object seVnc = capabilities.getCapability("se:vnc");
+    assertThat(seVnc).isNotNull();
+    assertThat(seVnc.toString().contains("wss://my.domain.com/session")).isTrue();
+
+    Object seCdp = capabilities.getCapability("se:cdp");
+    assertThat(seCdp).isNotNull();
+    assertThat(seCdp.toString().contains("wss://my.domain.com/session")).isTrue();
+  }
+
+  @Test
   void cdpIsDisabledAndResponseCapsShowThat() throws URISyntaxException {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();

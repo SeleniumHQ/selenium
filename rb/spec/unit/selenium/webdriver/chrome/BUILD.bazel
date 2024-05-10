@@ -1,18 +1,13 @@
-load("@rules_ruby//ruby:defs.bzl", "rb_test")
-
-package(default_visibility = ["//rb:__subpackages__"])
+load("//rb/spec:tests.bzl", "rb_unit_test")
 
 [
-    rb_test(
+    rb_unit_test(
         name = file[:-8],
-        size = "small",
         srcs = [file],
-        args = ["rb/spec/"],
-        main = "@bundle//:bin/rspec",
-        tags = ["no-sandbox"],
         deps = [
             "//rb/lib/selenium/webdriver:chrome",
-            "//rb/spec/unit/selenium/webdriver:spec_helper",
+            "//rb/lib/selenium/webdriver:firefox",
+            "//rb/lib/selenium/webdriver:remote",
         ],
     )
     for file in glob(["*_spec.rb"])

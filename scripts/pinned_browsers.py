@@ -63,7 +63,17 @@ def chromedriver(selected_version):
         url = "%s",
         sha256 = "%s",
         strip_prefix = "chromedriver-linux64",
-        build_file_content = "exports_files([\\"chromedriver\\"])",
+        build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["chromedriver"])
+
+js_library(
+    name = "chromedriver-js",
+    data = ["chromedriver"],
+)
+\"\"\",
     )
 """
         % (linux, sha)
@@ -79,7 +89,17 @@ def chromedriver(selected_version):
         url = "%s",
         sha256 = "%s",
         strip_prefix = "chromedriver-mac-x64",
-        build_file_content = "exports_files([\\"chromedriver\\"])",
+        build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["chromedriver"])
+
+js_library(
+    name = "chromedriver-js",
+    data = ["chromedriver"],
+)
+\"\"\",
     )
 """
         % (mac, sha)
@@ -100,14 +120,19 @@ def chrome(selected_version):
         url = "%s",
         sha256 = "%s",
         build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
 filegroup(
     name = "files",
     srcs = glob(["**/*"]),
-    visibility = ["//visibility:public"],
 )
 
-exports_files(
-    ["chrome-linux64/chrome"],
+exports_files(["chrome-linux64/chrome"])
+
+js_library(
+    name = "chrome-js",
+    data = [":files"],
 )
 \"\"\",
     )
@@ -129,7 +154,17 @@ exports_files(
             "mv 'Google Chrome for Testing.app' Chrome.app",
             "mv 'Chrome.app/Contents/MacOS/Google Chrome for Testing' Chrome.app/Contents/MacOS/Chrome",
         ],
-        build_file_content = "exports_files([\\"Chrome.app\\"])",
+        build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["Chrome.app"])
+
+js_library(
+    name = "chrome-js",
+    data = glob(["Chrome.app/**/*"]),
+)
+\"\"\",
     )
 
 """ % (
@@ -141,11 +176,14 @@ exports_files(
 
 
 def edge():
+    content = ""
     r = http.request("GET", "https://edgeupdates.microsoft.com/api/products")
     all_data = json.loads(r.data)
 
-    edge = None
-    hash = None
+    linux = None
+    linux_hash = None
+    mac = None
+    mac_hash = None
     version = None
 
     for data in all_data:
@@ -155,12 +193,17 @@ def edge():
             if "MacOS" == release.get("Platform"):
                 for artifact in release["Artifacts"]:
                     if "pkg" == artifact["ArtifactName"]:
-                        edge = artifact["Location"]
-                        hash = artifact["Hash"]
-                        version = release["ProductVersion"]
+                        mac = artifact["Location"]
+                        mac_hash = artifact["Hash"]
+                        mac_version = release["ProductVersion"]
+            elif "Linux" == release.get("Platform"):
+                for artifact in release["Artifacts"]:
+                    if "deb" == artifact["ArtifactName"]:
+                        linux = artifact["Location"]
+                        linux_hash = artifact["Hash"]
 
-    if edge and hash:
-        return """
+    if mac and mac_hash:
+        content += """
     pkg_archive(
         name = "mac_edge",
         url = "%s",
@@ -168,15 +211,53 @@ def edge():
         move = {
             "MicrosoftEdge-%s.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
-        build_file_content = "exports_files([\\"Edge.app\\"])",
+        build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["Edge.app"])
+
+js_library(
+    name = "edge-js",
+    data = glob(["Edge.app/**/*"]),
+)
+\"\"\",
     )
 """ % (
-            edge,
-            hash.lower(),
-            version,
+            mac,
+            mac_hash.lower(),
+            mac_version,
         )
 
-    return ""
+    if linux and linux_hash:
+        content += """
+    deb_archive(
+        name = "linux_edge",
+        url = "%s",
+        sha256 = "%s",
+        build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "files",
+    srcs = glob(["**/*"]),
+)
+
+exports_files(["opt/microsoft/msedge/microsoft-edge"])
+
+js_library(
+    name = "edge-js",
+    data = [":files"],
+)
+\"\"\",
+    )
+""" % (
+            linux,
+            linux_hash.lower()
+        )
+
+    return content
 
 
 def edgedriver():
@@ -194,7 +275,17 @@ def edgedriver():
         name = "linux_edgedriver",
         url = "%s",
         sha256 = "%s",
-        build_file_content = "exports_files([\\"msedgedriver\\"])",
+        build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["msedgedriver"])
+
+js_library(
+    name = "msedgedriver-js",
+    data = ["msedgedriver"],
+)
+\"\"\",
     )
 """
         % (linux, sha)
@@ -209,7 +300,17 @@ def edgedriver():
         name = "mac_edgedriver",
         url = "%s",
         sha256 = "%s",
-        build_file_content = "exports_files([\\"msedgedriver\\"])",
+        build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["msedgedriver"])
+
+js_library(
+    name = "msedgedriver-js",
+    data = ["msedgedriver"],
+)
+\"\"\",
     )
 """
         % (mac, sha)
@@ -231,7 +332,17 @@ def geckodriver():
         name = "linux_geckodriver",
         url = "%s",
         sha256 = "%s",
-        build_file_content = "exports_files([\\"geckodriver\\"])",
+        build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["geckodriver"])
+
+js_library(
+    name = "geckodriver-js",
+    data = ["geckodriver"],
+)
+\"\"\",
     )
 """
                 % (url, sha)
@@ -247,7 +358,17 @@ def geckodriver():
         name = "mac_geckodriver",
         url = "%s",
         sha256 = "%s",
-        build_file_content = "exports_files([\\"geckodriver\\"])",
+        build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["geckodriver"])
+
+js_library(
+    name = "geckodriver-js",
+    data = ["geckodriver"],
+)
+\"\"\",
     )
 """
                 % (url, sha)
@@ -267,13 +388,7 @@ def firefox():
     if latest_firefox != beta_firefox:
         sha_linux = calculate_hash(firefox_linux(beta_firefox))
         sha_mac = calculate_hash(firefox_mac(beta_firefox))
-    content = content + print_firefox(beta_firefox, "beta_", sha_linux, sha_mac)
-
-    dev_firefox = firefox_versions["FIREFOX_DEVEDITION"]
-    if beta_firefox != dev_firefox:
-        sha_linux = calculate_hash(firefox_linux(dev_firefox))
-        sha_mac = calculate_hash(firefox_mac(dev_firefox))
-    return content + print_firefox(dev_firefox, "dev_", sha_linux, sha_mac)
+    return content + print_firefox(beta_firefox, "beta_", sha_linux, sha_mac)
 
 
 def firefox_version_data():
@@ -299,14 +414,19 @@ def print_firefox(version, workspace_name, sha_linux, sha_mac):
         url = "{firefox_linux(version)}",
         sha256 = "{sha_linux}",
         build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
 filegroup(
     name = "files",
     srcs = glob(["**/*"]),
-    visibility = ["//visibility:public"],
 )
 
-exports_files(
-    ["firefox/firefox"],
+exports_files(["firefox/firefox"])
+
+js_library(
+    name = "firefox-js",
+    data = [":files"],
 )
 \"\"\",
     )
@@ -320,7 +440,17 @@ exports_files(
         name = "mac_{workspace_name}firefox",
         url = "{firefox_mac(version)}",
         sha256 = "{sha_mac}",
-        build_file_content = "exports_files([\\"Firefox.app\\"])",
+        build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["Firefox.app"])
+
+js_library(
+    name = "firefox-js",
+    data = glob(["Firefox.app/**/*"]),
+)
+\"\"\",
     )
 
 """
@@ -333,12 +463,13 @@ if __name__ == "__main__":
     content = """# This file has been generated using `bazel run scripts:pinned_browsers`
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("//common/private:deb_archive.bzl", "deb_archive")
 load("//common/private:dmg_archive.bzl", "dmg_archive")
 load("//common/private:drivers.bzl", "local_drivers")
 load("//common/private:pkg_archive.bzl", "pkg_archive")
 
 def pin_browsers():
-    local_drivers()
+    local_drivers(name = "local_drivers")
 
 """
     content = content + firefox()
@@ -348,6 +479,14 @@ def pin_browsers():
     chrome_milestone = get_chrome_milestone()
     content = content + chrome(chrome_milestone)
     content = content + chromedriver(chrome_milestone)
+    content += """
+def _pin_browsers_extension_impl(_ctx):
+    pin_browsers()
+
+pin_browsers_extension = module_extension(
+    implementation = _pin_browsers_extension_impl,
+)
+"""
 
     current_script_dir = Path(os.path.realpath(__file__)).parent
     target_file_path = current_script_dir.parent / "common/repositories.bzl"

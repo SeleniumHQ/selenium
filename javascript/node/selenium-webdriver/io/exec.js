@@ -17,7 +17,7 @@
 
 'use strict'
 
-const childProcess = require('child_process')
+const childProcess = require('node:child_process')
 
 /**
  * Options for configuring an executed command.
@@ -76,8 +76,7 @@ class Result {
   }
 }
 
-const COMMAND_RESULT =
-  /** !WeakMap<!Command, !Promise<!Result>> */ new WeakMap()
+const COMMAND_RESULT = /** !WeakMap<!Command, !Promise<!Result>> */ new WeakMap()
 const KILL_HOOK = /** !WeakMap<!Command, function(string)> */ new WeakMap()
 
 /**

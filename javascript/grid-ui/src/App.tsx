@@ -32,9 +32,9 @@ import Footer from './components/Footer/Footer'
 import Container from '@mui/material/Container'
 import Sessions from './screens/Sessions/Sessions'
 import Help from './screens/Help/Help'
-import { loader } from 'graphql.macro'
 import NavBar from './components/NavBar/NavBar'
 import { Box } from '@mui/material'
+import {GRID_QUERY} from './graphql/grid'
 
 export const client: ApolloClient<NormalizedCacheObject> = new ApolloClient(
   {
@@ -46,7 +46,7 @@ if (process.env.NODE_ENV !== 'test') {
   ReactModal.setAppElement('#root')
 }
 
-const GRID_QUERY = loader('./graphql/grid.gql')
+// const GRID_QUERY = loader('./graphql/grid.gql')
 
 function App () {
   const { error, data } = useQuery(GRID_QUERY, {
@@ -54,6 +54,8 @@ function App () {
     fetchPolicy: 'network-only',
     client: client
   })
+
+  console.log("Error", error, "data", data)
 
   const [drawerOpen, setDrawerOpen] = useState(true)
 

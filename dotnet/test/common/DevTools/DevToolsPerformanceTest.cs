@@ -1,9 +1,9 @@
-using System.Threading.Tasks;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V120;
+    using CurrentCdpVersion = V124;
 
     [TestFixture]
     public class DevToolsPerformanceTest : DevToolsTestFixture
@@ -102,7 +102,7 @@ namespace OpenQA.Selenium.DevTools
             await domains.Performance.Enable(new CurrentCdpVersion.Performance.EnableCommandSettings());
             driver.Url = simpleTestPage;
             var response = await domains.Performance.GetMetrics();
-           var metrics = response.Metrics;
+            var metrics = response.Metrics;
             Assert.That(metrics, Is.Not.Null);
             Assert.That(metrics.Length, Is.GreaterThan(0));
             await domains.Performance.Disable();

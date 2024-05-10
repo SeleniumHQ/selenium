@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 
 public class SessionMapOptions {
@@ -30,7 +31,6 @@ public class SessionMapOptions {
 
   private static final String DEFAULT_SESSION_MAP =
       "org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap";
-  private static final String DEFAULT_SESSION_MAP_SCHEME = "http";
   private final Config config;
 
   public SessionMapOptions(Config config) {
@@ -39,7 +39,11 @@ public class SessionMapOptions {
 
   public URI getSessionMapUri() {
 
-    String scheme = config.get(SESSIONS_SECTION, "scheme").orElse(DEFAULT_SESSION_MAP_SCHEME);
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    String scheme =
+        config
+            .get(SESSIONS_SECTION, "scheme")
+            .orElse((serverOptions.isSecure() || serverOptions.isSelfSigned()) ? "https" : "http");
 
     Optional<URI> host =
         config

@@ -1,13 +1,13 @@
-load("@bazel_skylib//rules:run_binary.bzl", "run_binary")
+load("@aspect_bazel_lib//lib:run_binary.bzl", "run_binary")
 load("@rules_ruby//ruby:defs.bzl", "rb_binary", "rb_library")
 
 package(default_visibility = ["//rb:__subpackages__"])
 
 CDP_VERSIONS = [
     "v85",
-    "v119",
-    "v120",
-    "v118",
+    "v122",
+    "v123",
+    "v124",
 ]
 
 rb_library(
@@ -38,17 +38,14 @@ rb_binary(
             "//common/devtools/chromium/" + version + ":browser_protocol",
             "//common/devtools/chromium/" + version + ":js_protocol",
         ],
-        outs = [
-            version,
-            version + ".rb",
-        ],
+        outs = [version + ".rb"],
         args = [
             "$(location //common/devtools/chromium/" + version + ":browser_protocol)",
             "$(location //common/devtools/chromium/" + version + ":js_protocol)",
-            "$(location :" + version + ")/",
             "$(location :" + version + ".rb)",
             version,
         ],
+        out_dirs = [version],
         tool = ":cdp-generate",
     )
     for version in CDP_VERSIONS

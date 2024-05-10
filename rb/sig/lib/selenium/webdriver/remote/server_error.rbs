@@ -1,0 +1,9 @@
+module Selenium
+  module WebDriver
+    module Error
+      class ServerError < StandardError
+        def initialize: (untyped response) -> void
+      end
+    end
+  end
+end

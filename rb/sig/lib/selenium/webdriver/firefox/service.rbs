@@ -1,0 +1,13 @@
+module Selenium
+  module WebDriver
+    module Firefox
+      class Service < WebDriver::Service
+        DEFAULT_PORT: 4444
+
+        EXECUTABLE: "geckodriver"
+
+        SHUTDOWN_SUPPORTED: false
+      end
+    end
+  end
+end

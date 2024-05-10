@@ -16,6 +16,8 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.DevTools;
+using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,8 +25,6 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -204,9 +204,15 @@ namespace OpenQA.Selenium.Firefox
         {
             if (service.DriverServicePath == null)
             {
-                string fullServicePath = DriverFinder.FullPath(options);
+                DriverFinder finder = new DriverFinder(options);
+                string fullServicePath = finder.GetDriverPath();
                 service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
                 service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
+                if (finder.HasBrowserPath())
+                {
+                    options.BinaryLocation = finder.GetBrowserPath();
+                    options.BrowserVersion = null;
+                }
             }
             return new DriverServiceCommandExecutor(service, commandTimeout);
         }
@@ -376,7 +382,7 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession()
         {
-            return GetDevToolsSession(FirefoxDevToolsProtocolVersion);
+            return GetDevToolsSession(new DevToolsOptions() { ProtocolVersion = FirefoxDevToolsProtocolVersion });
         }
 
         /// <summary>
@@ -384,7 +390,17 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+        [Obsolete("Use GetDevToolsSession(DevToolsOptions options)")]
         public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
+        {
+            return GetDevToolsSession(new DevToolsOptions() { ProtocolVersion = devToolsProtocolVersion });
+        }
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using a Developer Tools debugging protocol.
+        /// </summary>
+        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
+        public DevToolsSession GetDevToolsSession(DevToolsOptions options)
         {
             if (this.devToolsSession == null)
             {
@@ -396,8 +412,8 @@ namespace OpenQA.Selenium.Firefox
                 string debuggerAddress = this.Capabilities.GetCapability(FirefoxDevToolsCapabilityName).ToString();
                 try
                 {
-                    DevToolsSession session = new DevToolsSession(debuggerAddress);
-                    Task.Run(async () => await session.StartSession(devToolsProtocolVersion)).GetAwaiter().GetResult();
+                    DevToolsSession session = new DevToolsSession(debuggerAddress, options);
+                    Task.Run(async () => await session.StartSession()).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)

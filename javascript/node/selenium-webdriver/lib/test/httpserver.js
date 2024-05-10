@@ -17,9 +17,9 @@
 
 'use strict'
 
-const assert = require('assert')
-const http = require('http')
-const url = require('url')
+const assert = require('node:assert')
+const http = require('node:http')
+const url = require('node:url')
 
 const net = require('../../net')
 const portprober = require('../../net/portprober')
@@ -52,16 +52,11 @@ let Server = function (requestHandler) {
    *     with the server host when it has fully started.
    */
   this.start = function (opt_port) {
-    assert(
-      typeof opt_port !== 'function',
-      'start invoked with function, not port (mocha callback)?'
-    )
+    assert(typeof opt_port !== 'function', 'start invoked with function, not port (mocha callback)?')
     const port = opt_port || portprober.findFreePort('127.0.0.1')
     return Promise.resolve(port)
       .then((port) => {
-        return promise.checkedNodeCall(
-          server.listen.bind(server, port, '127.0.0.1')
-        )
+        return promise.checkedNodeCall(server.listen.bind(server, port, '127.0.0.1'))
       })
       .then(function () {
         return server.address()

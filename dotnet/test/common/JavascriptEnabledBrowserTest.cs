@@ -1,7 +1,7 @@
-using System;
 using NUnit.Framework;
-using System.Drawing;
 using NUnit.Framework.Constraints;
+using System;
+using System.Drawing;
 
 namespace OpenQA.Selenium
 {
@@ -33,6 +33,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Not working properly in Chrome")]
         public void ShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad()
         {
             driver.Url = formsPage;
@@ -43,6 +44,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Not working properly in Chrome")]
         public void ShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
         {
             driver.Url = formsPage;
@@ -209,7 +211,7 @@ namespace OpenQA.Selenium
             }, "No element to close window found");
             closeElement.Click();
 
-	        driver.SwitchTo().Window(handle);
+            driver.SwitchTo().Window(handle);
         }
     }
 }

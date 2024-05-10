@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Chrome
@@ -12,15 +11,6 @@ namespace OpenQA.Selenium.Chrome
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
             EnvironmentManager.Instance.WebServer.Stop();
-        }
-
-        [Test]
-        public void W3CFalse()
-        {
-            Assert.Throws<ArgumentException>(() => new ChromeOptions
-            {
-                UseSpecCompliantProtocol = false
-            });
         }
     }
 }

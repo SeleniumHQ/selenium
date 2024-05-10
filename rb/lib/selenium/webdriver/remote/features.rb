@@ -51,7 +51,7 @@ module Selenium
         end
 
         def upload_if_necessary(keys)
-          local_files = keys.first&.split("\n")&.map { |key| @file_detector.call(Array(key)) }&.compact
+          local_files = keys.first&.split("\n")&.filter_map { |key| @file_detector.call(Array(key)) }
           return keys unless local_files&.any?
 
           keys = local_files.map { |local_file| upload(local_file) }

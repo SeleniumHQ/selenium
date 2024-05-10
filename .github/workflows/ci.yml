@@ -9,10 +9,6 @@ on:
     - cron: "0 */12 * * *"
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
 jobs:
   check:
     name: Check
@@ -25,22 +21,21 @@ jobs:
         with:
           fetch-depth: 50
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.3.2
+        uses: bazel-contrib/setup-bazel@0.8.1
         with:
           bazelisk-cache: true
+          cache-version: 2
           external-cache: |
             name: ci-check
             manifest:
               crates: rust/Cargo.Bazel.lock
-              npm: package-lock.json
-              pypi__pip: py/requirements_lock.txt
-              rules_ruby_dist: rb/ruby_version.bzl
+              rules_ruby~~ruby~ruby: rb/.ruby-version
           repository-cache: true
       - name: Check Bazel targets
         id: check-targets
         run: ./scripts/github-actions/check-bazel-targets.sh
         env:
-          COMMIT_RANGE: ${{ github.event.pull_request.base.sha || github.event.before }}..${{ github.sha }}
+          COMMIT_RANGE: ${{ github.event.pull_request.base.sha || github.event.before }}...${{ github.event.pull_request.head.sha || github.sha }}
 
   dotnet:
     name: .NET
@@ -101,6 +96,8 @@ jobs:
     name: Rust
     needs: check
     uses: ./.github/workflows/ci-rust.yml
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||

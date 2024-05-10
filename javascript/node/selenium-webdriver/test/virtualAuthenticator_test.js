@@ -17,19 +17,16 @@
 
 'use strict'
 
-const assert = require('assert')
-const virtualAuthenticatorCredential =
-  require('../lib/virtual_authenticator').Credential
-const virtualAuthenticatorOptions =
-  require('../lib/virtual_authenticator').VirtualAuthenticatorOptions
+const assert = require('node:assert')
+const virtualAuthenticatorCredential = require('../lib/virtual_authenticator').Credential
+const virtualAuthenticatorOptions = require('../lib/virtual_authenticator').VirtualAuthenticatorOptions
 const Protocol = require('../lib/virtual_authenticator').Protocol
 const { ignore, suite } = require('../lib/test')
 const { Browser } = require('../lib/capabilities')
 const fileServer = require('../lib/test/fileserver')
 const invalidArgumentError = require('../lib/error').InvalidArgumentError
 
-const REGISTER_CREDENTIAL =
-  'registerCredential().then(arguments[arguments.length - 1]);'
+const REGISTER_CREDENTIAL = 'registerCredential().then(arguments[arguments.length - 1]);'
 const GET_CREDENTIAL = `getCredential([{
                           "type": "public-key",
                           "id": Int8Array.from(arguments[0]),
@@ -136,9 +133,7 @@ suite(function (env) {
 
   beforeEach(async function () {
     driver = await env.builder().build()
-    await driver.get(
-      fileServer.Pages.virtualAuthenticator.replace('127.0.0.1', 'localhost')
-    )
+    await driver.get(fileServer.Pages.virtualAuthenticator.replace('127.0.0.1', 'localhost'))
     assert.strictEqual(await driver.getTitle(), 'Virtual Authenticator Tests')
   })
 
@@ -150,61 +145,51 @@ suite(function (env) {
   })
 
   describe('VirtualAuthenticator Test Suit 2', function () {
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
-      'should test create authenticator',
-      async function () {
-        /**
-         * Register a credential on the Virtual Authenticator.
-         */
-        driver = await createRkDisabledU2fAuthenticator(driver)
-        assert((await driver.virtualAuthenticatorId()) != null)
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it('should test create authenticator', async function () {
+      /**
+       * Register a credential on the Virtual Authenticator.
+       */
+      driver = await createRkDisabledU2fAuthenticator(driver)
+      assert((await driver.virtualAuthenticatorId()) != null)
 
-        let response = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
-        assert(response['status'] === 'OK')
+      let response = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
+      assert(response['status'] === 'OK')
 
-        /**
-         * Attempt to use the credential to get an assertion.
-         */
-        response = await getAssertionFor(driver, extractRawIdFrom(response))
-        assert(response['status'] === 'OK')
-      }
-    )
+      /**
+       * Attempt to use the credential to get an assertion.
+       */
+      response = await getAssertionFor(driver, extractRawIdFrom(response))
+      assert(response['status'] === 'OK')
+    })
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
-      'should test remove authenticator',
-      async function () {
-        let options = new virtualAuthenticatorOptions()
-        await driver.addVirtualAuthenticator(options)
-        assert((await driver.virtualAuthenticatorId()) != null)
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it('should test remove authenticator', async function () {
+      let options = new virtualAuthenticatorOptions()
+      await driver.addVirtualAuthenticator(options)
+      assert((await driver.virtualAuthenticatorId()) != null)
 
-        await driver.removeVirtualAuthenticator()
-        assert((await driver.virtualAuthenticatorId()) == null)
-      }
-    )
+      await driver.removeVirtualAuthenticator()
+      assert((await driver.virtualAuthenticatorId()) == null)
+    })
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
-      'should test add non-resident credential',
-      async function () {
-        /**
-         * Add a non-resident credential using the testing API.
-         */
-        driver = await createRkDisabledCTAP2Authenticator(driver)
-        let credential =
-          virtualAuthenticatorCredential.createNonResidentCredential(
-            new Uint8Array([1, 2, 3, 4]),
-            'localhost',
-            Buffer.from(BASE64_ENCODED_PK, 'base64').toString('binary'),
-            0
-          )
-        await driver.addCredential(credential)
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it('should test add non-resident credential', async function () {
+      /**
+       * Add a non-resident credential using the testing API.
+       */
+      driver = await createRkDisabledCTAP2Authenticator(driver)
+      let credential = virtualAuthenticatorCredential.createNonResidentCredential(
+        new Uint8Array([1, 2, 3, 4]),
+        'localhost',
+        Buffer.from(BASE64_ENCODED_PK, 'base64').toString('binary'),
+        0,
+      )
+      await driver.addCredential(credential)
 
-        /**
-         * Attempt to use the credential to generate an assertion.
-         */
-        let response = await getAssertionFor(driver, [1, 2, 3, 4])
-        assert(response['status'] === 'OK')
-      }
-    )
+      /**
+       * Attempt to use the credential to generate an assertion.
+       */
+      let response = await getAssertionFor(driver, [1, 2, 3, 4])
+      assert(response['status'] === 'OK')
+    })
 
     ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test add non-resident credential when authenticator uses U2F protocol',
@@ -222,13 +207,12 @@ suite(function (env) {
           'hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU' +
           'RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB'
 
-        let credential =
-          virtualAuthenticatorCredential.createNonResidentCredential(
-            new Uint8Array([1, 2, 3, 4]),
-            'localhost',
-            Buffer.from(base64EncodedPK, 'base64').toString('binary'),
-            0
-          )
+        let credential = virtualAuthenticatorCredential.createNonResidentCredential(
+          new Uint8Array([1, 2, 3, 4]),
+          'localhost',
+          Buffer.from(base64EncodedPK, 'base64').toString('binary'),
+          0,
+        )
         await driver.addCredential(credential)
 
         /**
@@ -236,38 +220,32 @@ suite(function (env) {
          */
         let response = await getAssertionFor(driver, [1, 2, 3, 4])
         assert(response['status'] === 'OK')
-      }
+      },
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
-      'should test add resident credential',
-      async function () {
-        /**
-         * Add a resident credential using the testing API.
-         */
-        driver = await createRkEnabledCTAP2Authenticator(driver)
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it('should test add resident credential', async function () {
+      /**
+       * Add a resident credential using the testing API.
+       */
+      driver = await createRkEnabledCTAP2Authenticator(driver)
 
-        let credential =
-          virtualAuthenticatorCredential.createResidentCredential(
-            new Uint8Array([1, 2, 3, 4]),
-            'localhost',
-            new Uint8Array([1]),
-            Buffer.from(BASE64_ENCODED_PK, 'base64').toString('binary'),
-            0
-          )
-        await driver.addCredential(credential)
+      let credential = virtualAuthenticatorCredential.createResidentCredential(
+        new Uint8Array([1, 2, 3, 4]),
+        'localhost',
+        new Uint8Array([1]),
+        Buffer.from(BASE64_ENCODED_PK, 'base64').toString('binary'),
+        0,
+      )
+      await driver.addCredential(credential)
 
-        /**
-         * Attempt to use the credential to generate an assertion. Notice we use an
-         * empty allowCredentials array.
-         */
-        let response = await driver.executeAsyncScript(
-          'getCredential([]).then(arguments[arguments.length - 1]);'
-        )
-        assert(response['status'] === 'OK')
-        assert(response.attestation.userHandle.includes(1))
-      }
-    )
+      /**
+       * Attempt to use the credential to generate an assertion. Notice we use an
+       * empty allowCredentials array.
+       */
+      let response = await driver.executeAsyncScript('getCredential([]).then(arguments[arguments.length - 1]);')
+      assert(response['status'] === 'OK')
+      assert(response.attestation.userHandle.includes(1))
+    })
 
     ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test add resident credential not supported when authenticator uses U2F protocol',
@@ -285,14 +263,13 @@ suite(function (env) {
           'hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU' +
           'RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB'
 
-        let credential =
-          virtualAuthenticatorCredential.createResidentCredential(
-            new Uint8Array([1, 2, 3, 4]),
-            'localhost',
-            new Uint8Array([1]),
-            Buffer.from(base64EncodedPK, 'base64').toString('binary'),
-            0
-          )
+        let credential = virtualAuthenticatorCredential.createResidentCredential(
+          new Uint8Array([1, 2, 3, 4]),
+          'localhost',
+          new Uint8Array([1]),
+          Buffer.from(base64EncodedPK, 'base64').toString('binary'),
+          0,
+        )
 
         /**
          * Throws InvalidArgumentError
@@ -306,88 +283,82 @@ suite(function (env) {
             assert(false)
           }
         }
-      }
+      },
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
-      'should test get credentials',
-      async function () {
-        /**
-         * Create an authenticator and add two credentials.
-         */
-        driver = await createRkEnabledCTAP2Authenticator(driver)
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it('should test get credentials', async function () {
+      /**
+       * Create an authenticator and add two credentials.
+       */
+      driver = await createRkEnabledCTAP2Authenticator(driver)
 
-        /**
-         * Register a resident credential.
-         */
-        let response1 = await driver.executeAsyncScript(
-          'registerCredential({authenticatorSelection: {requireResidentKey: true}})' +
-            ' .then(arguments[arguments.length - 1]);'
-        )
-        assert(response1['status'] === 'OK')
+      /**
+       * Register a resident credential.
+       */
+      let response1 = await driver.executeAsyncScript(
+        'registerCredential({authenticatorSelection: {requireResidentKey: true}})' +
+          ' .then(arguments[arguments.length - 1]);',
+      )
+      assert(response1['status'] === 'OK')
 
-        /**
-         * Register a non resident credential.
-         */
-        let response2 = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
-        assert(response2['status'] === 'OK')
+      /**
+       * Register a non resident credential.
+       */
+      let response2 = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
+      assert(response2['status'] === 'OK')
 
-        let credential1Id = extractRawIdFrom(response1)
-        let credential2Id = extractRawIdFrom(response2)
+      let credential1Id = extractRawIdFrom(response1)
+      let credential2Id = extractRawIdFrom(response2)
 
-        assert.notDeepStrictEqual(credential1Id.sort(), credential2Id.sort())
+      assert.notDeepStrictEqual(credential1Id.sort(), credential2Id.sort())
 
-        /**
-         * Retrieve the two credentials.
-         */
-        let credentials = await driver.getCredentials()
-        assert.equal(credentials.length, 2)
+      /**
+       * Retrieve the two credentials.
+       */
+      let credentials = await driver.getCredentials()
+      assert.equal(credentials.length, 2)
 
-        let credential1 = null
-        let credential2 = null
+      let credential1 = null
+      let credential2 = null
 
-        credentials.forEach(function (credential) {
-          if (arraysEqual(credential.id(), credential1Id)) {
-            credential1 = credential
-          } else if (arraysEqual(credential.id(), credential2Id)) {
-            credential2 = credential
-          } else {
-            assert.fail(new Error('Unrecognized credential id'))
-          }
-        })
+      credentials.forEach(function (credential) {
+        if (arraysEqual(credential.id(), credential1Id)) {
+          credential1 = credential
+        } else if (arraysEqual(credential.id(), credential2Id)) {
+          credential2 = credential
+        } else {
+          assert.fail(new Error('Unrecognized credential id'))
+        }
+      })
 
-        assert.equal(credential1.isResidentCredential(), true)
-        assert.notEqual(credential1.privateKey(), null)
+      assert.equal(credential1.isResidentCredential(), true)
+      assert.notEqual(credential1.privateKey(), null)
 
-        assert.equal(credential2.isResidentCredential(), false)
-        assert.notEqual(credential2.privateKey(), null)
-      }
-    )
+      assert.equal(credential2.isResidentCredential(), false)
+      assert.notEqual(credential2.privateKey(), null)
+    })
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
-      'should test remove credential by rawID',
-      async function () {
-        driver = await createRkDisabledU2fAuthenticator(driver)
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it('should test remove credential by rawID', async function () {
+      driver = await createRkDisabledU2fAuthenticator(driver)
 
-        /**
-         * Register credential.
-         */
-        let response = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
-        assert(response['status'] === 'OK')
+      /**
+       * Register credential.
+       */
+      let response = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
+      assert(response['status'] === 'OK')
 
-        /**
-         * Remove a credential by its ID as an array of bytes.
-         */
-        let rawId = extractRawIdFrom(response)
-        await driver.removeCredential(rawId)
+      /**
+       * Remove a credential by its ID as an array of bytes.
+       */
+      let rawId = extractRawIdFrom(response)
+      await driver.removeCredential(rawId)
 
-        /**
-         * Trying to get an assertion should fail.
-         */
-        response = await getAssertionFor(driver, rawId)
-        assert(response['status'].startsWith('NotAllowedError'))
-      }
-    )
+      /**
+       * Trying to get an assertion should fail.
+       */
+      response = await getAssertionFor(driver, rawId)
+      assert(response['status'].startsWith('NotAllowedError'))
+    })
 
     ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
       'should test remove credential by base64url Id',
@@ -413,80 +384,74 @@ suite(function (env) {
          */
         response = await getAssertionFor(driver, rawId)
         assert(response['status'].startsWith('NotAllowedError'))
-      }
+      },
     )
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
-      'should test remove all credentials',
-      async function () {
-        driver = await createRkDisabledU2fAuthenticator(driver)
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it('should test remove all credentials', async function () {
+      driver = await createRkDisabledU2fAuthenticator(driver)
 
-        /**
-         * Register two credentials.
-         */
-        let response1 = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
-        assert(response1['status'] === 'OK')
-        let rawId1 = extractRawIdFrom(response1)
+      /**
+       * Register two credentials.
+       */
+      let response1 = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
+      assert(response1['status'] === 'OK')
+      let rawId1 = extractRawIdFrom(response1)
 
-        let response2 = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
-        assert(response2['status'] === 'OK')
-        let rawId2 = extractRawIdFrom(response2)
+      let response2 = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
+      assert(response2['status'] === 'OK')
+      let rawId2 = extractRawIdFrom(response2)
 
-        /**
-         * Remove all credentials.
-         */
-        await driver.removeAllCredentials()
+      /**
+       * Remove all credentials.
+       */
+      await driver.removeAllCredentials()
 
-        /**
-         * Trying to get an assertion allowing for any of both should fail.
-         */
-        let response = await driver.executeAsyncScript(
-          'getCredential([{' +
-            '  "type": "public-key",' +
-            '  "id": Int8Array.from(arguments[0]),' +
-            '}, {' +
-            '  "type": "public-key",' +
-            '  "id": Int8Array.from(arguments[1]),' +
-            '}]).then(arguments[arguments.length - 1]);',
-          rawId1,
-          rawId2
-        )
-        assert(response['status'].startsWith('NotAllowedError'))
-      }
-    )
+      /**
+       * Trying to get an assertion allowing for any of both should fail.
+       */
+      let response = await driver.executeAsyncScript(
+        'getCredential([{' +
+          '  "type": "public-key",' +
+          '  "id": Int8Array.from(arguments[0]),' +
+          '}, {' +
+          '  "type": "public-key",' +
+          '  "id": Int8Array.from(arguments[1]),' +
+          '}]).then(arguments[arguments.length - 1]);',
+        rawId1,
+        rawId2,
+      )
+      assert(response['status'].startsWith('NotAllowedError'))
+    })
 
-    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
-      'should test set user verified',
-      async function () {
-        driver = await createRkEnabledCTAP2Authenticator(driver)
+    ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it('should test set user verified', async function () {
+      driver = await createRkEnabledCTAP2Authenticator(driver)
 
-        /**
-         * Register a credential requiring UV.
-         */
-        let response = await driver.executeAsyncScript(
-          "registerCredential({authenticatorSelection: {userVerification: 'required'}})" +
-            '  .then(arguments[arguments.length - 1]);'
-        )
-        assert(response['status'] === 'OK')
-        let rawId = extractRawIdFrom(response)
+      /**
+       * Register a credential requiring UV.
+       */
+      let response = await driver.executeAsyncScript(
+        "registerCredential({authenticatorSelection: {userVerification: 'required'}})" +
+          '  .then(arguments[arguments.length - 1]);',
+      )
+      assert(response['status'] === 'OK')
+      let rawId = extractRawIdFrom(response)
 
-        /**
-         * Getting an assertion requiring user verification should succeed.
-         */
-        response = await driver.executeAsyncScript(GET_CREDENTIAL, rawId)
-        assert(response['status'] === 'OK')
+      /**
+       * Getting an assertion requiring user verification should succeed.
+       */
+      response = await driver.executeAsyncScript(GET_CREDENTIAL, rawId)
+      assert(response['status'] === 'OK')
 
-        /**
-         * Disable user verification.
-         */
-        await driver.setUserVerified(false)
+      /**
+       * Disable user verification.
+       */
+      await driver.setUserVerified(false)
 
-        /**
-         * Getting an assertion requiring user verification should fail.
-         */
-        response = await driver.executeAsyncScript(GET_CREDENTIAL, rawId)
-        assert(response['status'].startsWith('NotAllowedError'))
-      }
-    )
+      /**
+       * Getting an assertion requiring user verification should fail.
+       */
+      response = await driver.executeAsyncScript(GET_CREDENTIAL, rawId)
+      assert(response['status'].startsWith('NotAllowedError'))
+    })
   })
 })

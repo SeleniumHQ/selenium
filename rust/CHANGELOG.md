@@ -1,5 +1,34 @@
+0.4.20
+======
+
+* Minor typo-fix in warning trace
+* Use DEBUG level for WARN traces in offline mode (#13810)
+
+0.4.19
+======
+
+* Select release with artifact when filtering Edge response (#13735)
+* Use apple-flat-package crate to extract PKG files (#13740)
+* Fix Edge management in RPM-based Linux (#13705)
+* Enhance logic to uncompress DEB files and set toolchain version (#13741)
+
+0.4.18
+======
+
+* Add timestamps to Selenium Manager logs (#13554)
+* Selenium Manager decrease frequency of statistics reporting (#13555)
+* Selenium Manager log level (#13566)
+
+0.4.17
+======
+
+* Use latest browser from cache when browser path is not discovered (#13283)
+* Throw a descriptive message when error parsing JSON from response (#13291)
+* Tracking Selenium Manager usage through Plausible (#11211) (#13173)
+
 0.4.16
 ======
+
 * Use online mapping to discover proper geckodriver version (#11671) (#13133)
 * Refactor logic to discover driver version in Firefox module using match
 * Refactor logic to discover driver version and download browser if necessary
@@ -11,6 +40,7 @@
 
 0.4.15
 ======
+
 * Include mirror arguments to change default online repository URLs (#11687)
 * Support for automatic management of Firefox ESR (#12946)
 * Fix webview2 support (#12966)
@@ -23,6 +53,7 @@
 
 0.4.14
 ======
+
 * Use original browser version in Firefox management logic
 * Clean logic for checking driver version
 * Avoids resolving symbolic links and consider the cache might not be writable (#12877)
@@ -33,6 +64,7 @@
 
 0.4.13
 ======
+
 * Ensure logger is set first so other setters can use it (#12720)
 * Avoid using robocopy to move extracted files from sfx in windows (#12690)
 * Make sure offline sets associated flags (#12718)
@@ -43,6 +75,7 @@
 
 0.4.12
 ======
+
 * Build universal macOS Selenium-Manager on CI (#12455)
 * Fix bug in condition to check stable label (#12472)
 * Implement browser path discovery for iexplorer (#12489)

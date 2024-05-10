@@ -52,5 +52,16 @@ namespace OpenQA.Selenium.DevTools
         {
             return commandResponseTypeDictionary.TryGetValue(typeof(T), out commandResponseType);
         }
+
+        /// <summary>
+        /// Gets the command response type corresponding to the specified command type.
+        /// </summary>
+        /// <param name="command">The type of command for which to retrieve the response type.</param>
+        /// <param name="commandResponseType">The returned response type.</param>
+        /// <returns><see langword="true"/> if the specified command type has a mapped response type; otherwise, <see langword="false"/>.</returns>
+        public bool TryGetCommandResponseType(ICommand command, out Type commandResponseType)
+        {
+            return commandResponseTypeDictionary.TryGetValue(command.GetType(), out commandResponseType);
+        }
     }
 }

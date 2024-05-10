@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const promise = require('../lib/promise')
 const { Browser, By, error, withTagName, until } = require('..')
 const { Pages, ignore, suite, whereIs } = require('../lib/test')
@@ -54,23 +54,17 @@ suite(function (env) {
 
       it('should fail if ID not present on page', async function () {
         await driver.get(Pages.formPage)
-        return driver
-          .findElement(By.id('nonExistentButton'))
-          .then(assert.fail, function (e) {
-            assert.ok(e instanceof error.NoSuchElementError)
-          })
+        return driver.findElement(By.id('nonExistentButton')).then(assert.fail, function (e) {
+          assert.ok(e instanceof error.NoSuchElementError)
+        })
       })
 
-      it(
-        'should find multiple elements by ID even though that is ' +
-          'malformed HTML',
-        async function () {
-          await driver.get(Pages.nestedPage)
+      it('should find multiple elements by ID even though that is ' + 'malformed HTML', async function () {
+        await driver.get(Pages.nestedPage)
 
-          let elements = await driver.findElements(By.id('2'))
-          assert.strictEqual(elements.length, 8)
-        }
-      )
+        let elements = await driver.findElements(By.id('2'))
+        assert.strictEqual(elements.length, 8)
+      })
     })
 
     describe('By.linkText()', function () {
@@ -134,15 +128,12 @@ suite(function (env) {
         assert.strictEqual(elements.length, 2)
       })
 
-      ignore(browsers(Browser.SAFARI)).it(
-        'works on XHTML pages',
-        async function () {
-          await driver.get(whereIs('actualXhtmlPage.xhtml'))
+      ignore(browsers(Browser.SAFARI)).it('works on XHTML pages', async function () {
+        await driver.get(whereIs('actualXhtmlPage.xhtml'))
 
-          let el = await driver.findElement(By.linkText('Foo'))
-          assert.strictEqual(await el.getText(), 'Foo')
-        }
-      )
+        let el = await driver.findElement(By.linkText('Foo'))
+        assert.strictEqual(await el.getText(), 'Foo')
+      })
     })
 
     describe('By.name()', function () {
@@ -179,10 +170,7 @@ suite(function (env) {
 
         let el = await driver.findElement(By.className('extraDiv'))
         let text = await el.getText()
-        assert.ok(
-          text.startsWith('Another div starts here.'),
-          `Unexpected text: "${text}"`
-        )
+        assert.ok(text.startsWith('Another div starts here.'), `Unexpected text: "${text}"`)
       })
 
       it('should work when name is first name among many', async function () {
@@ -215,11 +203,9 @@ suite(function (env) {
 
       it('should fail if queried name only partially matches', async function () {
         await driver.get(Pages.xhtmlTestPage)
-        return driver
-          .findElement(By.className('nameB'))
-          .then(assert.fail, function (e) {
-            assert.ok(e instanceof error.NoSuchElementError)
-          })
+        return driver.findElement(By.className('nameB')).then(assert.fail, function (e) {
+          assert.ok(e instanceof error.NoSuchElementError)
+        })
       })
 
       it('should implicitly wait', async function () {
@@ -230,19 +216,14 @@ suite(function (env) {
         await driver.get(Pages.formPage)
 
         let start = new Date()
-        return driver
-          .findElement(By.id('nonExistentButton'))
-          .then(assert.fail, function (e) {
-            let end = new Date()
-            assert.ok(e instanceof error.NoSuchElementError)
+        return driver.findElement(By.id('nonExistentButton')).then(assert.fail, function (e) {
+          let end = new Date()
+          assert.ok(e instanceof error.NoSuchElementError)
 
-            let elapsed = end - start
-            let diff = Math.abs(elapsed - TIMEOUT_IN_MS)
-            assert.ok(
-              diff < EPSILON,
-              `Expected ${TIMEOUT_IN_MS} \u00b1 ${EPSILON} but got ${elapsed}`
-            )
-          })
+          let elapsed = end - start
+          let diff = Math.abs(elapsed - TIMEOUT_IN_MS)
+          assert.ok(diff < EPSILON, `Expected ${TIMEOUT_IN_MS} \u00b1 ${EPSILON} but got ${elapsed}`)
+        })
       })
 
       it('should be able to find multiple matches', async function () {
@@ -306,27 +287,18 @@ suite(function (env) {
         // Pass if no error.
       })
 
-      it(
-        'should find first matching element when searching by ' +
-          'compound CSS selector',
-        async function () {
-          await driver.get(Pages.xhtmlTestPage)
+      it('should find first matching element when searching by ' + 'compound CSS selector', async function () {
+        await driver.get(Pages.xhtmlTestPage)
 
-          let el = await driver.findElement(By.css('div.extraDiv, div.content'))
-          assert.strictEqual(await el.getAttribute('class'), 'content')
-        }
-      )
+        let el = await driver.findElement(By.css('div.extraDiv, div.content'))
+        assert.strictEqual(await el.getAttribute('class'), 'content')
+      })
 
       it('should be able to find multiple elements by compound selector', async function () {
         await driver.get(Pages.xhtmlTestPage)
-        let elements = await driver.findElements(
-          By.css('div.extraDiv, div.content')
-        )
+        let elements = await driver.findElements(By.css('div.extraDiv, div.content'))
 
-        return Promise.all([
-          assertClassIs(elements[0], 'content'),
-          assertClassIs(elements[1], 'extraDiv'),
-        ])
+        return Promise.all([assertClassIs(elements[0], 'content'), assertClassIs(elements[1], 'extraDiv')])
 
         async function assertClassIs(el, expected) {
           let clazz = await el.getAttribute('class')
@@ -338,42 +310,26 @@ suite(function (env) {
       ignore(browsers(Browser.INTERNET_EXPLORER)).it(
         'should be able to find element by boolean attribute',
         async function () {
-          await driver.get(
-            whereIs('locators_tests/boolean_attribute_selected.html')
-          )
+          await driver.get(whereIs('locators_tests/boolean_attribute_selected.html'))
 
-          let el = await driver.findElement(
-            By.css('option[selected="selected"]')
-          )
+          let el = await driver.findElement(By.css('option[selected="selected"]'))
           assert.strictEqual(await el.getAttribute('value'), 'two')
-        }
+        },
       )
 
-      it(
-        'should be able to find element with short ' +
-          'boolean attribute selector',
-        async function () {
-          await driver.get(
-            whereIs('locators_tests/boolean_attribute_selected.html')
-          )
+      it('should be able to find element with short ' + 'boolean attribute selector', async function () {
+        await driver.get(whereIs('locators_tests/boolean_attribute_selected.html'))
 
-          let el = await driver.findElement(By.css('option[selected]'))
-          assert.strictEqual(await el.getAttribute('value'), 'two')
-        }
-      )
+        let el = await driver.findElement(By.css('option[selected]'))
+        assert.strictEqual(await el.getAttribute('value'), 'two')
+      })
 
-      it(
-        'should be able to find element with short boolean attribute ' +
-          'selector on HTML4 page',
-        async function () {
-          await driver.get(
-            whereIs('locators_tests/boolean_attribute_selected_html4.html')
-          )
+      it('should be able to find element with short boolean attribute ' + 'selector on HTML4 page', async function () {
+        await driver.get(whereIs('locators_tests/boolean_attribute_selected_html4.html'))
 
-          let el = await driver.findElement(By.css('option[selected]'))
-          assert.strictEqual(await el.getAttribute('value'), 'two')
-        }
-      )
+        let el = await driver.findElement(By.css('option[selected]'))
+        assert.strictEqual(await el.getAttribute('value'), 'two')
+      })
     })
 
     describe('by custom locator', function () {
@@ -413,7 +369,7 @@ suite(function (env) {
 
         return link.then(
           () => assert.fail('Should have failed'),
-          (e) => assert.ok(e instanceof TypeError)
+          (e) => assert.ok(e instanceof TypeError),
         )
       })
     })
@@ -434,18 +390,12 @@ suite(function (env) {
       it('should combine filters', async function () {
         await driver.get(Pages.relativeLocators)
 
-        let elements = await driver.findElements(
-          withTagName('td').above(By.id('center')).toRightOf(By.id('second'))
-        )
+        let elements = await driver.findElements(withTagName('td').above(By.id('center')).toRightOf(By.id('second')))
         let ids = []
         for (let i = 0; i < elements.length; i++) {
           ids.push(await elements[i].getAttribute('id'))
         }
-        assert.notDeepStrictEqual(
-          ids.indexOf('third'),
-          -1,
-          `Elements are ${ids}`
-        )
+        assert.notDeepStrictEqual(ids.indexOf('third'), -1, `Elements are ${ids}`)
       })
     })
 
@@ -459,17 +409,13 @@ suite(function (env) {
 
       it('should combine filters', async function () {
         await driver.get(Pages.relativeLocators)
-        let element = await driver.findElement(
-          withTagName('td').above(By.id('center')).toRightOf(By.id('second'))
-        )
+        let element = await driver.findElement(withTagName('td').above(By.id('center')).toRightOf(By.id('second')))
         assert.deepStrictEqual(await element.getAttribute('id'), `third`)
       })
 
       it('should search by passing in a by object', async function () {
         await driver.get(Pages.relativeLocators)
-        let relativeLocator = locateWith(By.css('p')).above(
-          await driver.findElement(By.id('below'))
-        )
+        let relativeLocator = locateWith(By.css('p')).above(await driver.findElement(By.id('below')))
         assert.ok(relativeLocator instanceof RelativeBy)
 
         let element = await driver.findElement(relativeLocator)
@@ -480,23 +426,16 @@ suite(function (env) {
     describe('switchTo().activeElement()', function () {
       // SAFARI's new session response does not identify it as a W3C browser,
       // so the command is sent in the unsupported wire protocol format.
-      ignore(browsers(Browser.SAFARI)).it(
-        'returns document.activeElement',
-        async function () {
-          await driver.get(Pages.formPage)
+      ignore(browsers(Browser.SAFARI)).it('returns document.activeElement', async function () {
+        await driver.get(Pages.formPage)
 
-          let email = await driver.findElement(By.css('#email'))
-          await driver.executeScript('arguments[0].focus()', email)
+        let email = await driver.findElement(By.css('#email'))
+        await driver.executeScript('arguments[0].focus()', email)
 
-          let ae = await driver.switchTo().activeElement()
-          let equal = await driver.executeScript(
-            'return arguments[0] === arguments[1]',
-            email,
-            ae
-          )
-          assert.ok(equal)
-        }
-      )
+        let ae = await driver.switchTo().activeElement()
+        let equal = await driver.executeScript('return arguments[0] === arguments[1]', email, ae)
+        assert.ok(equal)
+      })
     })
   })
 })

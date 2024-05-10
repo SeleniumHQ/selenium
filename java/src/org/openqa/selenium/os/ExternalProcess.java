@@ -217,6 +217,7 @@ public class ExternalProcess {
                 "External Process Output Forwarder - "
                     + (builder.command().isEmpty() ? "N/A" : builder.command().get(0)));
 
+        worker.setDaemon(true);
         worker.start();
 
         return new ExternalProcess(process, circular, worker);
@@ -264,7 +265,21 @@ public class ExternalProcess {
     boolean exited = process.waitFor(duration.toMillis(), TimeUnit.MILLISECONDS);
 
     if (exited) {
-      worker.join();
+      try {
+        // the worker might not stop even when process.destroyForcibly is called
+        worker.join(8000);
+      } catch (InterruptedException ex) {
+        Thread.interrupted();
+      } finally {
+        // if already stopped interrupt is ignored, otherwise raises I/O exceptions in the worker
+        worker.interrupt();
+        try {
+          // now we might be able to join
+          worker.join(2000);
+        } catch (InterruptedException ex) {
+          Thread.interrupted();
+        }
+      }
     }
 
     return exited;
@@ -289,24 +304,42 @@ public class ExternalProcess {
    * @param timeout the duration for a process to terminate before destroying it forcibly.
    */
   public void shutdown(Duration timeout) {
-    if (process.supportsNormalTermination()) {
-      process.destroy();
+    try {
+      if (process.supportsNormalTermination()) {
+        process.destroy();
 
-      try {
-        if (process.waitFor(timeout.toMillis(), MILLISECONDS)) {
-          worker.join();
-          return;
+        try {
+          if (process.waitFor(timeout.toMillis(), MILLISECONDS)) {
+            // the outer finally block will take care of the worker
+            return;
+          }
+        } catch (InterruptedException ex) {
+          Thread.interrupted();
         }
+      }
+
+      process.destroyForcibly();
+      try {
+        process.waitFor(timeout.toMillis(), MILLISECONDS);
       } catch (InterruptedException ex) {
         Thread.interrupted();
       }
-    }
-
-    process.destroyForcibly();
-    try {
-      worker.join();
-    } catch (InterruptedException ex) {
-      Thread.interrupted();
+    } finally {
+      try {
+        // the worker might not stop even when process.destroyForcibly is called
+        worker.join(8000);
+      } catch (InterruptedException ex) {
+        Thread.interrupted();
+      } finally {
+        // if already stopped interrupt is ignored, otherwise raises I/O exceptions in the worker
+        worker.interrupt();
+        try {
+          // now we might be able to join
+          worker.join(2000);
+        } catch (InterruptedException ex) {
+          Thread.interrupted();
+        }
+      }
     }
   }
 }

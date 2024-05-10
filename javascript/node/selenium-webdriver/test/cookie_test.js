@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const { URL } = require('url')
+const assert = require('node:assert')
+const { URL } = require('node:url')
 
 const { ignore, suite } = require('../lib/test')
 const fileserver = require('../lib/test/fileserver')
@@ -84,7 +84,7 @@ suite(function (env) {
 
         await driver.get(pageUrl)
         await assertHasCookies(cookie1, cookie2)
-      }
+      },
     )
 
     it('can delete all cookies', async function () {
@@ -92,12 +92,11 @@ suite(function (env) {
       const cookie2 = createCookieSpec()
 
       await driver.executeScript(
-        'document.cookie = arguments[0] + "=" + arguments[1];' +
-          'document.cookie = arguments[2] + "=" + arguments[3];',
+        'document.cookie = arguments[0] + "=" + arguments[1];' + 'document.cookie = arguments[2] + "=" + arguments[3];',
         cookie1.name,
         cookie1.value,
         cookie2.name,
-        cookie2.value
+        cookie2.value,
       )
       await assertHasCookies(cookie1, cookie2)
 
@@ -110,12 +109,11 @@ suite(function (env) {
       const cookie2 = createCookieSpec()
 
       await driver.executeScript(
-        'document.cookie = arguments[0] + "=" + arguments[1];' +
-          'document.cookie = arguments[2] + "=" + arguments[3];',
+        'document.cookie = arguments[0] + "=" + arguments[1];' + 'document.cookie = arguments[2] + "=" + arguments[3];',
         cookie1.name,
         cookie1.value,
         cookie2.name,
-        cookie2.value
+        cookie2.value,
       )
       await assertHasCookies(cookie1, cookie2)
 
@@ -137,7 +135,7 @@ suite(function (env) {
         cookie2.name,
         cookie2.value,
         cookie3.name,
-        cookie3.value
+        cookie3.value,
       )
       await assertHasCookies(cookie1, cookie2, cookie3)
 
@@ -148,9 +146,7 @@ suite(function (env) {
     it('can delete cookies set higher in the path', async function () {
       const cookie = createCookieSpec()
       const childUrl = fileserver.whereIs('child/childPage.html')
-      const grandchildUrl = fileserver.whereIs(
-        'child/grandchild/grandchildPage.html'
-      )
+      const grandchildUrl = fileserver.whereIs('child/grandchild/grandchildPage.html')
 
       await driver.get(childUrl)
       await driver.manage().addCookie(cookie)
@@ -181,38 +177,37 @@ suite(function (env) {
             assert.strictEqual(actual.value, cookie.value)
 
             // expiry times should be in seconds since January 1, 1970 UTC
-            assert.strictEqual(
-              actual.expiry,
-              Math.floor(expiry.getTime() / 1000)
-            )
+            assert.strictEqual(actual.expiry, Math.floor(expiry.getTime() / 1000))
           })
 
         await driver.sleep(expirationDelay)
         await assertHasCookies()
-      }
+      },
     )
 
-    ignore(
-      env.browsers(Browser.FIREFOX, Browser.INTERNET_EXPLORER, Browser.SAFARI)
-    ).it('can add same site cookie property to `Strict`', async function () {
-      let cookie = createSameSiteCookieSpec('Strict')
-      let childUrl = fileserver.whereIs('child/childPage.html')
-      await driver.get(childUrl)
-      await driver.manage().addCookie(cookie)
-      const actual = await driver.manage().getCookie(cookie.name)
-      assert.strictEqual(actual.sameSite, 'Strict')
-    })
+    ignore(env.browsers(Browser.FIREFOX, Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
+      'can add same site cookie property to `Strict`',
+      async function () {
+        let cookie = createSameSiteCookieSpec('Strict')
+        let childUrl = fileserver.whereIs('child/childPage.html')
+        await driver.get(childUrl)
+        await driver.manage().addCookie(cookie)
+        const actual = await driver.manage().getCookie(cookie.name)
+        assert.strictEqual(actual.sameSite, 'Strict')
+      },
+    )
 
-    ignore(
-      env.browsers(Browser.FIREFOX, Browser.INTERNET_EXPLORER, Browser.SAFARI)
-    ).it('can add same site cookie property to `Lax`', async function () {
-      let cookie = createSameSiteCookieSpec('Lax')
-      let childUrl = fileserver.whereIs('child/childPage.html')
-      await driver.get(childUrl)
-      await driver.manage().addCookie(cookie)
-      const actualCookie = await driver.manage().getCookie(cookie.name)
-      assert.strictEqual(actualCookie.sameSite, 'Lax')
-    })
+    ignore(env.browsers(Browser.FIREFOX, Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
+      'can add same site cookie property to `Lax`',
+      async function () {
+        let cookie = createSameSiteCookieSpec('Lax')
+        let childUrl = fileserver.whereIs('child/childPage.html')
+        await driver.get(childUrl)
+        await driver.manage().addCookie(cookie)
+        const actualCookie = await driver.manage().getCookie(cookie.name)
+        assert.strictEqual(actualCookie.sameSite, 'Lax')
+      },
+    )
 
     ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
       'can add same site cookie property to `None` when cookie is Secure',
@@ -223,10 +218,8 @@ suite(function (env) {
         let childUrl = fileserver.whereIs('child/childPage.html')
         await driver.get(childUrl)
         await driver.manage().addCookie(cookie)
-        await assert.doesNotReject(
-          async () => await driver.manage().addCookie(cookie)
-        )
-      }
+        await assert.doesNotReject(async () => await driver.manage().addCookie(cookie))
+      },
     )
 
     ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
@@ -235,14 +228,11 @@ suite(function (env) {
         let cookie = createSameSiteCookieSpec('None')
         let childUrl = fileserver.whereIs('child/childPage.html')
         await driver.get(childUrl)
-        await assert.rejects(
-          async () => await driver.manage().addCookie(cookie),
-          {
-            name: 'InvalidArgumentError',
-            message: `Invalid cookie configuration: SameSite=None must be Secure`,
-          }
-        )
-      }
+        await assert.rejects(async () => await driver.manage().addCookie(cookie), {
+          name: 'InvalidArgumentError',
+          message: `Invalid cookie configuration: SameSite=None must be Secure`,
+        })
+      },
     )
 
     ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
@@ -251,14 +241,11 @@ suite(function (env) {
         let cookie = createSameSiteCookieSpec('Foo')
         let childUrl = fileserver.whereIs('child/childPage.html')
         await driver.get(childUrl)
-        await assert.rejects(
-          async () => await driver.manage().addCookie(cookie),
-          {
-            name: 'InvalidArgumentError',
-            message: `Invalid sameSite cookie value 'Foo'. It should be one of "Lax", "Strict" or "None"`,
-          }
-        )
-      }
+        await assert.rejects(async () => await driver.manage().addCookie(cookie), {
+          name: 'InvalidArgumentError',
+          message: `Invalid sameSite cookie value 'Foo'. It should be one of "Lax", "Strict" or "None"`,
+        })
+      },
     )
   })
 
@@ -302,7 +289,7 @@ suite(function (env) {
             '\n  Expected: ' +
             JSON.stringify(expected) +
             '\n  Was     : ' +
-            JSON.stringify(cookies)
+            JSON.stringify(cookies),
         )
 
         const map = buildCookieMap(cookies)

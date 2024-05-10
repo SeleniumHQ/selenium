@@ -1,10 +1,9 @@
+using Moq;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
 using System.Collections.ObjectModel;
-using OpenQA.Selenium.Internal;
-using Moq;
+using System.Text;
 
 namespace OpenQA.Selenium.Support.Events
 {
@@ -190,10 +189,10 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
             {
                 testedDriver.ExecuteScript("foo", element);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // This is the error we're trying to fix
-                throw e;
+                throw;
             }
         }
 

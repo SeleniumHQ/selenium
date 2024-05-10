@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-import warnings
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
@@ -38,21 +37,12 @@ class Service(service.ChromiumService):
         self,
         executable_path: str = None,
         port: int = 0,
-        verbose: bool = False,
         log_output: SubprocessStdAlias = None,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
-
-        if verbose:
-            warnings.warn(
-                "verbose=True is deprecated. Use `service_args=['--verbose', ...]` instead.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            self.service_args.append("--verbose")
 
         super().__init__(
             executable_path=executable_path,

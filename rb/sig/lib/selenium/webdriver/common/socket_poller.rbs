@@ -1,0 +1,37 @@
+module Selenium
+  module WebDriver
+    class SocketPoller
+      @host: untyped
+
+      @port: untyped
+
+      @timeout: untyped
+
+      @interval: untyped
+
+      def initialize: (untyped host, untyped port, ?::Integer timeout, ?::Float interval) -> void
+
+      def connected?: () -> untyped
+
+      def closed?: () -> untyped
+
+      private
+
+      CONNECT_TIMEOUT: Integer
+
+      NOT_CONNECTED_ERRORS: Array[singleton(::Errno::ECONNREFUSED) | singleton(::Errno::ENOTCONN)  | singleton(::Errno::EPERM)]
+
+      CONNECTED_ERRORS: Array[singleton(::Errno::EISCONN) | singleton(::Errno::EINVAL) | singleton(::Errno::EALREADY)]
+
+      def listening?: () -> untyped
+
+      def socket_writable?: (untyped sock) -> untyped
+
+      def conn_completed?: (untyped sock) -> untyped
+
+      def with_timeout: () { () -> untyped } -> bool
+
+      def current_time: () -> untyped
+    end
+  end
+end

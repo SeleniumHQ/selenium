@@ -1,0 +1,7 @@
+module WebSocket
+  module Handshake
+    class Client
+      def initialize: (untyped) -> void
+    end
+  end
+end

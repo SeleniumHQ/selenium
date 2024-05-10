@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module PrintsPage
+        def save_print_page: (untyped path, **untyped options) -> untyped
+
+        def print_page: (**untyped options) -> untyped
+      end
+    end
+  end
+end

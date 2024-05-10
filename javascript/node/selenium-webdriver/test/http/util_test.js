@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const http = require('http')
+const assert = require('node:assert')
+const http = require('node:http')
 
 const error = require('../../lib/error')
 const util = require('../../http/util')
@@ -81,7 +81,7 @@ describe('selenium-webdriver/http/util', function () {
           assert.ok(err instanceof error.WebDriverError)
           assert.strictEqual(err.code, error.WebDriverError.code)
           assert.strictEqual(err.message, value)
-        }
+        },
       )
     })
 
@@ -96,7 +96,7 @@ describe('selenium-webdriver/http/util', function () {
           function () {
             // Expected.
             done()
-          }
+          },
         )
       })
     })
@@ -112,7 +112,7 @@ describe('selenium-webdriver/http/util', function () {
           assert.ok(err instanceof error.WebDriverError)
           assert.strictEqual(err.code, error.WebDriverError.code)
           assert.strictEqual(err.message, value)
-        }
+        },
       )
     })
   })
@@ -132,7 +132,7 @@ describe('selenium-webdriver/http/util', function () {
         function () {
           throw Error('Expected to time out')
         },
-        function () {}
+        function () {},
       )
     })
 
@@ -145,7 +145,7 @@ describe('selenium-webdriver/http/util', function () {
         () => {
           throw Error('Did not expect to succeed!')
         },
-        (e) => assert.ok(e instanceof util.CancellationError)
+        (e) => assert.ok(e instanceof util.CancellationError),
       )
     })
   })
@@ -165,7 +165,7 @@ describe('selenium-webdriver/http/util', function () {
 
       return util.waitForUrl(baseUrl, 50).then(
         () => assert.fail('Expected to time out'),
-        () => true
+        () => true,
       )
     })
 
@@ -180,7 +180,7 @@ describe('selenium-webdriver/http/util', function () {
             },
             function () {
               resolve()
-            }
+            },
           )
         })
       })
@@ -195,7 +195,7 @@ describe('selenium-webdriver/http/util', function () {
         () => {
           throw Error('Did not expect to succeed!')
         },
-        (e) => assert.ok(e instanceof util.CancellationError)
+        (e) => assert.ok(e instanceof util.CancellationError),
       )
     })
   })

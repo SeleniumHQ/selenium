@@ -113,9 +113,9 @@ module Selenium
         end
 
         def dispatch(name, *args)
-          @listener.__send__("before_#{name}", *args)
+          @listener.__send__(:"before_#{name}", *args)
           returned = yield
-          @listener.__send__("after_#{name}", *args)
+          @listener.__send__(:"after_#{name}", *args)
 
           returned
         end

@@ -1,11 +1,11 @@
 using Bazel;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Diagnostics;
-using System.Text;
-using System.Runtime.InteropServices;
 using System.Net.Http;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -13,7 +13,7 @@ namespace OpenQA.Selenium.Environment
     {
         private Process webserverProcess;
 
-        private string standaloneTestJar = @"selenium/java/test/org/openqa/selenium/environment/appserver";
+        private string standaloneTestJar = @"_main/java/test/org/openqa/selenium/environment/appserver";
         private string projectRootPath;
         private bool captureWebServerOutput;
         private bool hideCommandPrompt;
@@ -119,19 +119,22 @@ namespace OpenQA.Selenium.Environment
                 TimeSpan timeout = TimeSpan.FromSeconds(30);
                 DateTime endTime = DateTime.Now.Add(TimeSpan.FromSeconds(30));
                 bool isRunning = false;
+
+                // Poll until the webserver is correctly serving pages.
+                using var httpClient = new HttpClient();
+
                 while (!isRunning && DateTime.Now < endTime)
                 {
-                    // Poll until the webserver is correctly serving pages.
-                    HttpWebRequest request = WebRequest.Create(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("simpleTest.html")) as HttpWebRequest;
                     try
                     {
-                        HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                        using var response = httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("simpleTest.html")).GetAwaiter().GetResult();
+
                         if (response.StatusCode == HttpStatusCode.OK)
                         {
                             isRunning = true;
                         }
                     }
-                    catch (WebException)
+                    catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
                     {
                     }
                 }
@@ -154,16 +157,16 @@ namespace OpenQA.Selenium.Environment
 
         public void Stop()
         {
-            using (var httpClient = new HttpClient())
-            {
-                using (var quitResponse = httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")).GetAwaiter().GetResult())
-                {
-
-                }
-            }
-
             if (webserverProcess != null)
             {
+                using (var httpClient = new HttpClient())
+                {
+                    using (var quitResponse = httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")).GetAwaiter().GetResult())
+                    {
+
+                    }
+                }
+
                 try
                 {
                     webserverProcess.WaitForExit(10000);

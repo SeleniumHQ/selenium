@@ -18,6 +18,7 @@
 const logging = require('../lib/logging')
 
 const RESPONSE_TIMEOUT = 1000 * 30
+
 class CDPConnection {
   constructor(wsConnection) {
     this._wsConnection = wsConnection
@@ -67,9 +68,7 @@ class CDPConnection {
             resolve(payload)
           }
         } catch (err) {
-          logging
-            .getLogger(logging.Type.BROWSER)
-            .severe(`Failed parse message: ${err.message}`)
+          logging.getLogger(logging.Type.BROWSER).severe(`Failed parse message: ${err.message}`)
         }
       }
 

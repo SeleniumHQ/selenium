@@ -103,22 +103,20 @@ def create_new_chrome_files(src_base, chrome_milestone):
     target_dir = root_dir / f"{src_base}/v{new_chrome(chrome_milestone)}"
     old_dir = root_dir / f"{src_base}/v{old_chrome(chrome_milestone)}"
 
-    # New target must not be already present
-    if not target_dir.is_dir():
-        if old_dir.is_dir():
-            shutil.rmtree(old_dir)
+    if old_dir.is_dir():
+        shutil.rmtree(old_dir)
 
-        if source_dir.is_dir() and any(source_dir.iterdir()):
-            os.makedirs(target_dir, exist_ok=True)
-            for item in source_dir.iterdir():
-                shutil.copy(item, target_dir)
+    if source_dir.is_dir() and any(source_dir.iterdir()):
+        os.makedirs(target_dir, exist_ok=True)
+        for item in source_dir.iterdir():
+            shutil.copy(item, target_dir)
 
-            for file in target_dir.iterdir():
-                replace_in_file(file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
-                new_filename = file.name.replace(previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
-                file.rename(target_dir / new_filename)
+        for file in target_dir.iterdir():
+            replace_in_file(file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
+            new_filename = file.name.replace(previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
+            file.rename(target_dir / new_filename)
 
-        subprocess.run(["git", "add", str(target_dir / "*")], cwd=root_dir)
+    subprocess.run(["git", "add", str(target_dir / "*")], cwd=root_dir)
 
 
 def replace_in_file(file_path, old_string, new_string, is_regex=False):
@@ -147,8 +145,7 @@ def update_dotnet(chrome_milestone):
 
     files = [
         root_dir / "dotnet/selenium-dotnet-version.bzl",
-        root_dir / "dotnet/src/webdriver/WebDriver.csproj.prebuild.cmd",
-        root_dir / "dotnet/src/webdriver/WebDriver.csproj.prebuild.sh",
+        root_dir / "dotnet/src/webdriver/WebDriver.csproj",
         root_dir / "dotnet/src/webdriver/DevTools/DevToolsDomains.cs",
     ]
     for file in files:
@@ -188,3 +185,5 @@ if __name__ == "__main__":
     update_ruby(chrome_milestone)
     update_python(chrome_milestone)
     update_js(chrome_milestone)
+
+    print(f"adding CDP {new_chrome(chrome_milestone)} and removing {old_chrome(chrome_milestone)}")

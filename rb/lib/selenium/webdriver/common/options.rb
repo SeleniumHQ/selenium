@@ -59,7 +59,7 @@ module Selenium
               @options[key]
             end
 
-            define_method "#{key}=" do |value|
+            define_method :"#{key}=" do |value|
               @options[key] = value
             end
           end
@@ -177,7 +177,7 @@ module Selenium
       end
 
       def camel_case(str)
-        str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
+        str.gsub(/_([a-z])/) { Regexp.last_match(1)&.upcase }
       end
     end # Options
   end # WebDriver

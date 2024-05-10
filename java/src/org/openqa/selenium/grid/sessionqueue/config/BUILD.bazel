@@ -12,6 +12,7 @@ java_library(
         "//java:auto-service",
         "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/grid/jmx",
+        "//java/src/org/openqa/selenium/grid/server",
         "//java/src/org/openqa/selenium/grid/sessionqueue",
         artifact("com.beust:jcommander"),
     ],

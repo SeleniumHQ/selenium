@@ -314,6 +314,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
               status.getNodeId(),
               status.getExternalUri(),
               registrationSecret,
+              status.getSessionTimeout(),
               capabilities);
 
       add(remoteNode);
@@ -459,6 +460,12 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
+      Node node = nodes.get(nodeId);
+
+      if (node instanceof RemoteNode) {
+        ((RemoteNode) node).close();
+      }
+
       nodes.remove(nodeId);
       model.remove(nodeId);
       allChecks.remove(nodeId);

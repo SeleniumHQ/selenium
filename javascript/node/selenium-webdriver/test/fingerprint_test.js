@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 
 const test = require('../lib/test')
 const Pages = test.Pages
@@ -44,9 +44,7 @@ test.suite(
       test.it('fingerprint must not be writable', async function () {
         await driver.get(Pages.simpleTestPage)
 
-        let wd = await driver.executeScript(
-          'navigator.webdriver = "ohai"; return navigator.webdriver'
-        )
+        let wd = await driver.executeScript('navigator.webdriver = "ohai"; return navigator.webdriver')
         assert.strictEqual(wd, true)
       })
 
@@ -60,5 +58,5 @@ test.suite(
 
     // Currently only implemented in legacy firefox.
   },
-  { browsers: ['legacy-firefox'] }
+  { browsers: ['legacy-firefox'] },
 )

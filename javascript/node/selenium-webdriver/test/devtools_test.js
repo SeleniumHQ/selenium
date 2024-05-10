@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const { Browser, until } = require('..')
 const fileServer = require('../lib/test/fileserver')
 const { HttpResponse } = require('../devtools/networkinterceptor')
@@ -34,84 +34,60 @@ suite(
     })
     after(async () => await driver.quit())
 
-    ignore(browsers(Browser.CHROME)).it(
-      'sends Page.enable command using devtools',
-      async function () {
-        const cdpConnection = await driver.createCDPConnection('page')
-        cdpConnection.execute('Page.enable', {}, function (_res, err) {
-          assert(!err)
-        })
-      }
-    )
+    ignore(browsers(Browser.CHROME)).it('sends Page.enable command using devtools', async function () {
+      const cdpConnection = await driver.createCDPConnection('page')
+      cdpConnection.execute('Page.enable', {}, function (_res, err) {
+        assert(!err)
+      })
+    })
 
-    ignore(browsers(Browser.CHROME)).it(
-      'sends Network and Page command using devtools',
-      async function () {
-        const cdpConnection = await driver.createCDPConnection('page')
-        cdpConnection.execute('Network.enable', {}, function (_res, err) {
-          assert(!err)
-        })
+    ignore(browsers(Browser.CHROME)).it('sends Network and Page command using devtools', async function () {
+      const cdpConnection = await driver.createCDPConnection('page')
+      cdpConnection.execute('Network.enable', {}, function (_res, err) {
+        assert(!err)
+      })
 
-        cdpConnection.execute(
-          'Page.navigate',
-          { url: 'chrome://newtab/' },
-          function (_res, err) {
-            assert(!err)
-          }
-        )
-      }
-    )
+      cdpConnection.execute('Page.navigate', { url: 'chrome://newtab/' }, function (_res, err) {
+        assert(!err)
+      })
+    })
 
     describe('JS CDP events', function () {
-      ignore(browsers(Browser.CHROME)).it(
-        'calls the event listener for console.log',
-        async function () {
-          const cdpConnection = await driver.createCDPConnection('page')
-          await driver.onLogEvent(cdpConnection, function (event) {
-            assert.strictEqual(event['args'][0]['value'], 'here')
-          })
-          await driver.executeScript('console.log("here")')
-        }
-      )
+      ignore(browsers(Browser.CHROME)).it('calls the event listener for console.log', async function () {
+        const cdpConnection = await driver.createCDPConnection('page')
+        await driver.onLogEvent(cdpConnection, function (event) {
+          assert.strictEqual(event['args'][0]['value'], 'here')
+        })
+        await driver.executeScript('console.log("here")')
+      })
 
-      ignore(browsers(Browser.CHROME)).it(
-        'calls the event listener for js exceptions',
-        async function () {
-          const cdpConnection = await driver.createCDPConnection('page')
-          await driver.onLogException(cdpConnection, function (event) {
-            assert.strictEqual(
-              event['exceptionDetails']['stackTrace']['callFrames'][0][
-                'functionName'
-              ],
-              'onmouseover'
-            )
-          })
-          await driver.get(Pages.javascriptPage)
-          let element = driver.findElement({ id: 'throwing-mouseover' })
-          await element.click()
-        }
-      )
+      ignore(browsers(Browser.CHROME)).it('calls the event listener for js exceptions', async function () {
+        const cdpConnection = await driver.createCDPConnection('page')
+        await driver.onLogException(cdpConnection, function (event) {
+          assert.strictEqual(event['exceptionDetails']['stackTrace']['callFrames'][0]['functionName'], 'onmouseover')
+        })
+        await driver.get(Pages.javascriptPage)
+        let element = driver.findElement({ id: 'throwing-mouseover' })
+        await element.click()
+      })
     })
 
     describe('JS DOM events', function () {
-      ignore(browsers(Browser.CHROME)).it(
-        'calls the event listener on dom mutations',
-        async function () {
-          const cdpConnection = await driver.createCDPConnection('page')
-          await driver.logMutationEvents(cdpConnection, function (event) {
-            assert.strictEqual(event['attribute_name'], 'style')
-            assert.strictEqual(event['current_value'], '')
-            assert.strictEqual(event['old_value'], 'display:none;')
-          })
+      ignore(browsers(Browser.CHROME)).it('calls the event listener on dom mutations', async function () {
+        const cdpConnection = await driver.createCDPConnection('page')
+        await driver.logMutationEvents(cdpConnection, function (event) {
+          assert.strictEqual(event['attribute_name'], 'style')
+          assert.strictEqual(event['current_value'], '')
+          assert.strictEqual(event['old_value'], 'display:none;')
+        })
 
-          await driver.get(fileServer.Pages.dynamicPage)
+        await driver.get(fileServer.Pages.dynamicPage)
 
-          let element = driver.findElement({ id: 'reveal' })
-          await element.click()
-          let revealed = driver.findElement({ id: 'revealed' })
-          await driver.wait(until.elementIsVisible(revealed), 5000)
-        }
-      )
+        let element = driver.findElement({ id: 'reveal' })
+        await element.click()
+        let revealed = driver.findElement({ id: 'revealed' })
+        await driver.wait(until.elementIsVisible(revealed), 5000)
+      })
     })
 
     describe('Basic Auth Injection', function () {
@@ -123,11 +99,8 @@ suite(
           await driver.register('random', 'random', pageCdpConnection)
           await driver.get(fileServer.Pages.basicAuth)
           let source = await driver.getPageSource()
-          assert.ok(
-            !source.includes('Access granted!'),
-            `The Source is \n ${source}`
-          )
-        }
+          assert.ok(!source.includes('Access granted!'), `The Source is \n ${source}`)
+        },
       )
 
       ignore(browsers(Browser.SAFARI, Browser.FIREFOX, Browser.CHROME)).it(
@@ -139,7 +112,7 @@ suite(
           await driver.get(fileServer.Pages.basicAuth)
           let source = await driver.getPageSource()
           assert.strictEqual(source.includes('Access granted!'), true)
-        }
+        },
       )
     })
 
@@ -154,16 +127,12 @@ suite(
           httpResponse.body = 'sausages'
           await driver.onIntercept(connection, httpResponse, async function () {
             let body = await driver.getPageSource()
-            assert.strictEqual(
-              body.includes('sausages'),
-              true,
-              `Body contains: ${body}`
-            )
+            assert.strictEqual(body.includes('sausages'), true, `Body contains: ${body}`)
           })
           await driver.get(url)
-        }
+        },
       )
     })
   },
-  { browsers: ['firefox', 'chrome'] }
+  { browsers: ['firefox', 'chrome'] },
 )

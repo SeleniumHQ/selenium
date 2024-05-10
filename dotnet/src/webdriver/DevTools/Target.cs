@@ -73,6 +73,10 @@ namespace OpenQA.Selenium.DevTools
         /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task SetAutoAttach();
 
+        internal abstract ICommand CreateSetAutoAttachCommand(bool waitForDebuggerOnStart);
+
+        internal abstract ICommand CreateDiscoverTargetsCommand();
+
         /// <summary>
         /// Raises the TargetDetached event.
         /// </summary>

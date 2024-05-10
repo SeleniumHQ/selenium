@@ -24,7 +24,7 @@ public enum FirefoxCommandContext {
   CONTENT("content"),
   CHROME("chrome");
 
-  private String text;
+  private final String text;
 
   FirefoxCommandContext(String text) {
     this.text = text;

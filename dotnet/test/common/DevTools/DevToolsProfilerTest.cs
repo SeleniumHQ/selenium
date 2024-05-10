@@ -1,11 +1,11 @@
+using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V120;
+    using CurrentCdpVersion = V124;
 
     [TestFixture]
     public class DevToolsProfilerTest : DevToolsTestFixture

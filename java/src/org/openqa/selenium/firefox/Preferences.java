@@ -56,8 +56,8 @@ class Preferences {
   private static final Pattern PREFERENCE_PATTERN =
       Pattern.compile("user_pref\\(\"([^\"]+)\", (\"?.+?\"?)\\);");
 
-  private Map<String, Object> immutablePrefs = new HashMap<>();
-  private Map<String, Object> allPrefs = new HashMap<>();
+  private final Map<String, Object> immutablePrefs = new HashMap<>();
+  private final Map<String, Object> allPrefs = new HashMap<>();
 
   public Preferences() {}
 

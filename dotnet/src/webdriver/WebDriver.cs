@@ -16,14 +16,14 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.VirtualAuth;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.VirtualAuth;
 
 namespace OpenQA.Selenium
 {
@@ -54,7 +54,18 @@ namespace OpenQA.Selenium
         protected WebDriver(ICommandExecutor executor, ICapabilities capabilities)
         {
             this.executor = executor;
-            this.StartSession(capabilities);
+
+            try
+            {
+                this.StartSession(capabilities);
+            }
+            catch (Exception)
+            {
+                // Failed to start driver session, disposing of driver
+                this.Quit();
+                throw;
+            }
+
             this.elementFactory = new WebElementFactory(this);
             this.network = new NetworkManager(this);
             this.registeredCommands.AddRange(DriverCommand.KnownCommands);
@@ -594,8 +605,8 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Starts a session with the driver
         /// </summary>
-        /// <param name="desiredCapabilities">Capabilities of the browser</param>
-        protected void StartSession(ICapabilities desiredCapabilities)
+        /// <param name="capabilities">Capabilities of the browser</param>
+        protected void StartSession(ICapabilities capabilities)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
@@ -604,10 +615,10 @@ namespace OpenQA.Selenium
             // and end nodes are compliant with the W3C WebDriver Specification,
             // and therefore will already contain all of the appropriate values
             // for establishing a session.
-            RemoteSessionSettings remoteSettings = desiredCapabilities as RemoteSessionSettings;
+            RemoteSessionSettings remoteSettings = capabilities as RemoteSessionSettings;
             if (remoteSettings == null)
             {
-                Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
+                Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(capabilities);
 
                 List<object> firstMatchCapabilitiesList = new List<object>();
                 firstMatchCapabilitiesList.Add(matchCapabilities);
@@ -692,7 +703,6 @@ namespace OpenQA.Selenium
             {
                 this.sessionId = null;
             }
-
             this.executor.Dispose();
         }
 
@@ -798,6 +808,12 @@ namespace OpenQA.Selenium
 
                         case WebDriverResult.NoSuchShadowRoot:
                             throw new NoSuchShadowRootException(errorMessage);
+
+                        case WebDriverResult.DetachedShadowRoot:
+                            throw new DetachedShadowRootException(errorMessage);
+
+                        case WebDriverResult.InsecureCertificate:
+                            throw new InsecureCertificateException(errorMessage);
 
                         default:
                             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", errorMessage, errorResponse.Status));

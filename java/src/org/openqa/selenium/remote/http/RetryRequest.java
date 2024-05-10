@@ -17,20 +17,19 @@
 
 package org.openqa.selenium.remote.http;
 
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static java.net.HttpURLConnection.HTTP_CLIENT_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
-import com.google.common.collect.ImmutableMap;
 import dev.failsafe.Failsafe;
 import dev.failsafe.Fallback;
 import dev.failsafe.RetryPolicy;
 import dev.failsafe.event.ExecutionAttemptedEvent;
 import dev.failsafe.function.CheckedFunction;
 import java.net.ConnectException;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class RetryRequest implements Filter {
@@ -61,7 +60,8 @@ public class RetryRequest implements Filter {
           .handleResultIf(
               response ->
                   response.getStatus() == HTTP_INTERNAL_ERROR
-                      && Integer.parseInt((response).getHeader(CONTENT_LENGTH)) == 0)
+                      && Integer.parseInt((response).getHeader(HttpHeader.ContentLength.getName()))
+                          == 0)
           .handleResultIf(response -> (response).getStatus() == HTTP_UNAVAILABLE)
           .withMaxRetries(2)
           .onRetry(
@@ -88,19 +88,16 @@ public class RetryRequest implements Filter {
       if (exception.getCause() instanceof ConnectException) {
         return new HttpResponse()
             .setStatus(HTTP_CLIENT_TIMEOUT)
-            .setContent(
-                asJson(ImmutableMap.of("value", ImmutableMap.of("message", "Connection failure"))));
+            .setContent(asJson(Map.of("value", Map.of("message", "Connection failure"))));
       } else throw exception;
     } else if (executionAttemptedEvent.getLastResult() != null) {
       HttpResponse response = executionAttemptedEvent.getLastResult();
       if ((response.getStatus() == HTTP_INTERNAL_ERROR
-              && Integer.parseInt(response.getHeader(CONTENT_LENGTH)) == 0)
+              && Integer.parseInt(response.getHeader(HttpHeader.ContentLength.getName())) == 0)
           || response.getStatus() == HTTP_UNAVAILABLE) {
         return new HttpResponse()
             .setStatus(response.getStatus())
-            .setContent(
-                asJson(
-                    ImmutableMap.of("value", ImmutableMap.of("message", "Internal server error"))));
+            .setContent(asJson(Map.of("value", Map.of("message", "Internal server error"))));
       }
     }
     return executionAttemptedEvent.getLastResult();

@@ -17,19 +17,20 @@
 
 package org.openqa.selenium.remote.http;
 
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
-import com.google.common.net.MediaType;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -37,9 +38,9 @@ import org.openqa.selenium.internal.Require;
 
 abstract class HttpMessage<M extends HttpMessage<M>> {
 
-  private final Multimap<String, String> headers = ArrayListMultimap.create();
+  private final Map<String, List<String>> headers = new HashMap<>();
   private final Map<String, Object> attributes = new HashMap<>();
-  private Supplier<InputStream> content = Contents.empty();
+  private Contents.Supplier content = Contents.empty();
 
   /**
    * Retrieves a user-defined attribute of this message. Attributes are stored as simple key-value
@@ -63,7 +64,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
   }
 
   public Iterable<String> getAttributeNames() {
-    return ImmutableSet.copyOf(attributes.keySet());
+    return Set.copyOf(attributes.keySet());
   }
 
   /**
@@ -72,7 +73,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    * @param action the action to call
    */
   public void forEachHeader(BiConsumer<String, String> action) {
-    headers.forEach(action);
+    headers.forEach((name, values) -> values.forEach((value) -> action.accept(name, value)));
   }
 
   /**
@@ -91,10 +92,10 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    * @return an iterable view of the values
    */
   public Iterable<String> getHeaders(String name) {
-    return headers.entries().stream()
+    return headers.entrySet().stream()
         .filter(e -> Objects.nonNull(e.getKey()))
         .filter(e -> e.getKey().equalsIgnoreCase(name.toLowerCase()))
-        .map(Map.Entry::getValue)
+        .flatMap((e) -> e.getValue().stream())
         .collect(Collectors.toList());
   }
 
@@ -105,10 +106,10 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    * @return the value
    */
   public String getHeader(String name) {
-    return headers.entries().stream()
+    return headers.entrySet().stream()
         .filter(e -> Objects.nonNull(e.getKey()))
         .filter(e -> e.getKey().equalsIgnoreCase(name.toLowerCase()))
-        .map(Map.Entry::getValue)
+        .flatMap((e) -> e.getValue().stream())
         .findFirst()
         .orElse(null);
   }
@@ -134,7 +135,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    * @return self
    */
   public M addHeader(String name, String value) {
-    headers.put(name, value);
+    headers.computeIfAbsent(name, (n) -> new ArrayList<>()).add(value);
     return self();
   }
 
@@ -152,10 +153,15 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
   public Charset getContentEncoding() {
     Charset charset = UTF_8;
     try {
-      String contentType = getHeader(CONTENT_TYPE);
+      String contentType = getHeader(HttpHeader.ContentType.getName());
       if (contentType != null) {
-        MediaType mediaType = MediaType.parse(contentType);
-        charset = mediaType.charset().or(UTF_8);
+        return Arrays.stream(contentType.split(";"))
+            .map((e) -> e.trim().toLowerCase())
+            .filter((e) -> e.startsWith("charset="))
+            .map((e) -> e.substring(e.indexOf('=') + 1))
+            .map(Charset::forName)
+            .findFirst()
+            .orElse(UTF_8);
       }
     } catch (IllegalArgumentException ignored) {
       // Do nothing.
@@ -163,12 +169,21 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
     return charset;
   }
 
+  @Deprecated
   public M setContent(Supplier<InputStream> supplier) {
+    try {
+      return setContent(Contents.bytes(supplier.get().readAllBytes()));
+    } catch (IOException ex) {
+      throw new UncheckedIOException(ex);
+    }
+  }
+
+  public M setContent(Contents.Supplier supplier) {
     this.content = Require.nonNull("Supplier", supplier);
     return self();
   }
 
-  public Supplier<InputStream> getContent() {
+  public Contents.Supplier getContent() {
     return content;
   }
 

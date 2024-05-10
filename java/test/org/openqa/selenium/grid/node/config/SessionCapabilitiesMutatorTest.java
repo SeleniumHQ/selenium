@@ -238,6 +238,7 @@ public class SessionCapabilitiesMutatorTest {
     stereotypeOptions.put("log", debugLog);
 
     stereotypeOptions.put("profile", "profile-string");
+    stereotypeOptions.put("androidDeviceSerial", "emulator-5556");
 
     stereotype =
         new ImmutableCapabilities(
@@ -260,6 +261,7 @@ public class SessionCapabilitiesMutatorTest {
     capabilityOptions.put("profile", "different-profile-string");
 
     capabilityOptions.put("binary", "/path/to/caps/binary");
+    capabilityOptions.put("androidPackage", "com.android.chrome");
 
     capabilities =
         new ImmutableCapabilities(
@@ -304,6 +306,20 @@ public class SessionCapabilitiesMutatorTest {
         .extractingByKey("profile")
         .asInstanceOf(STRING)
         .isEqualTo("different-profile-string");
+
+    assertThat(modifiedCapabilities)
+        .extractingByKey("moz:firefoxOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("androidDeviceSerial")
+        .asInstanceOf(STRING)
+        .isEqualTo("emulator-5556");
+
+    assertThat(modifiedCapabilities)
+        .extractingByKey("moz:firefoxOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("androidPackage")
+        .asInstanceOf(STRING)
+        .isEqualTo("com.android.chrome");
   }
 
   @Test

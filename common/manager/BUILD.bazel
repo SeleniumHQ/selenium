@@ -10,35 +10,15 @@ package(
 
 alias(
     name = "selenium-manager-linux",
-    actual = select({
-        "//common:stamp": "linux/selenium-manager",
-        "//conditions:default": "//rust:selenium-manager-linux",
-    }),
+    actual = "@download_sm_linux//file",
 )
 
 alias(
     name = "selenium-manager-macos",
-    actual = select({
-        "//common:stamp": "macos/selenium-manager",
-        "//conditions:default": "//rust:selenium-manager-macos",
-    }),
+    actual = "@download_sm_macos//file",
 )
 
 alias(
     name = "selenium-manager-windows",
-    actual = select({
-        "//common:stamp": "windows/selenium-manager.exe",
-        "//conditions:default": "//rust:selenium-manager-windows",
-    }),
-)
-
-exports_files(
-    [
-        "linux/selenium-manager",
-        "macos/selenium-manager",
-        "windows/selenium-manager.exe",
-    ],
-    visibility = [
-        "//rust:__pkg__",
-    ],
+    actual = "@download_sm_windows//file",
 )

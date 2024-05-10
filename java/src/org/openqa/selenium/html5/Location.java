@@ -18,6 +18,7 @@
 package org.openqa.selenium.html5;
 
 /** Represents the physical location of the browser. */
+@Deprecated
 public class Location {
 
   private final double latitude;

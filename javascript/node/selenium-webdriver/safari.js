@@ -25,10 +25,10 @@ const http = require('./http')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const { Browser, Capabilities } = require('./lib/capabilities')
-const { getPath } = require('./common/driverFinder')
+const { getBinaryPaths } = require('./common/driverFinder')
 
 /**
- * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
+ * Creates {@link remote.DriverService} instances that manage
  * a [safaridriver] server in a child process.
  *
  * [safaridriver]: https://developer.apple.com/library/prerelease/content/releasenotes/General/WhatsNewInSafari/Articles/Safari_10_0.html#//apple_ref/doc/uid/TP40014305-CH11-DontLinkElementID_28
@@ -95,8 +95,7 @@ function useTechnologyPreview(o) {
   return false
 }
 
-const SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE =
-  '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'
+const SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE = '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'
 
 /**
  * A WebDriver client for Safari. This class should never be instantiated
@@ -124,15 +123,11 @@ class Driver extends webdriver.WebDriver {
 
     let service = new ServiceBuilder(exe).build()
     if (!service.getExecutable()) {
-      service.setExecutable(getPath(caps).driverPath)
+      service.setExecutable(getBinaryPaths(caps).driverPath)
     }
-    let executor = new http.Executor(
-      service.start().then((url) => new http.HttpClient(url))
-    )
+    let executor = new http.Executor(service.start().then((url) => new http.HttpClient(url)))
 
-    return /** @type {!Driver} */ (
-      super.createSession(executor, caps, () => service.kill())
-    )
+    return /** @type {!Driver} */ (super.createSession(executor, caps, () => service.kill()))
   }
 }
 

@@ -16,12 +16,11 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.DevTools.V85.Target;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V85.Target;
 
 namespace OpenQA.Selenium.DevTools.V85
 {
@@ -134,6 +133,24 @@ namespace OpenQA.Selenium.DevTools.V85
                 },
                 WaitingForDebugger = e.WaitingForDebugger
             });
+        }
+
+        internal override ICommand CreateSetAutoAttachCommand(bool waitForDebuggerOnStart)
+        {
+            return new SetAutoAttachCommandSettings
+            {
+                AutoAttach = true,
+                Flatten = true,
+                WaitForDebuggerOnStart = waitForDebuggerOnStart
+            };
+        }
+
+        internal override ICommand CreateDiscoverTargetsCommand()
+        {
+            return new SetDiscoverTargetsCommandSettings
+            {
+                Discover = true
+            };
         }
     }
 }

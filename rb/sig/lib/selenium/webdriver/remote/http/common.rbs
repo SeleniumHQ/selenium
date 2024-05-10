@@ -1,0 +1,31 @@
+module Selenium
+  module WebDriver
+    module Remote
+      module Http
+        class Common
+          MAX_REDIRECTS: Integer
+
+          CONTENT_TYPE: String
+
+          DEFAULT_HEADERS: Hash[String, untyped]
+
+          attr_writer server_url: untyped
+
+          def quit_errors: () -> Array[untyped]
+
+          def close: () -> untyped
+
+          def call: (untyped verb, untyped url, untyped command_hash) -> untyped
+
+          private
+
+          def server_url: () -> untyped
+
+          def request: (*untyped) -> untyped
+
+          def create_response: (untyped code, untyped body, untyped content_type) -> untyped
+        end
+      end
+    end
+  end
+end

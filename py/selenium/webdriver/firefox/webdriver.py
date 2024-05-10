@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 import base64
-import logging
 import os
 import warnings
 import zipfile
@@ -28,8 +27,6 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .options import Options
 from .remote_connection import FirefoxRemoteConnection
 from .service import Service
-
-logger = logging.getLogger(__name__)
 
 
 class WebDriver(RemoteWebDriver):
@@ -56,7 +53,12 @@ class WebDriver(RemoteWebDriver):
         self.service = service if service else Service()
         options = options if options else Options()
 
-        self.service.path = DriverFinder.get_path(self.service, options)
+        finder = DriverFinder(self.service, options)
+        if finder.get_browser_path():
+            options.binary_location = finder.get_browser_path()
+            options.browser_version = None
+
+        self.service.path = finder.get_driver_path()
         self.service.start()
 
         executor = FirefoxRemoteConnection(
@@ -125,7 +127,10 @@ class WebDriver(RemoteWebDriver):
 
         if os.path.isdir(path):
             fp = BytesIO()
-            path_root = len(path) + 1  # account for trailing slash
+            # filter all trailing slash found in path
+            path = os.path.normpath(path)
+            # account for trailing slash that will be added by os.walk()
+            path_root = len(path) + 1
             with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED) as zipped:
                 for base, _, files in os.walk(path):
                     for fyle in files:
