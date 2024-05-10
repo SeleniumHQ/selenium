@@ -15,12 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-import warnings
 from abc import ABCMeta
 from abc import abstractmethod
 from enum import Enum
-
-from typing_extensions import deprecated
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy
@@ -437,16 +434,9 @@ class ArgOptions(BaseOptions):
         else:
             raise ValueError("argument can not be null")
 
-    @deprecated("Ignore local proxy in ArgOptions is deprecated, use it from BaseOptions")
     def ignore_local_proxy_environment_variables(self) -> None:
         """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
         being picked up and used."""
-        warnings.warn(
-            "using ignore_local_proxy_environment_variables in ArgOptions has been deprecated, "
-            "instead, use it from BaseOptions",
-            DeprecationWarning,
-            stacklevel=2,
-        )
         super()._ignore_local_proxy = True
 
     def to_capabilities(self):
