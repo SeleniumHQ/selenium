@@ -246,7 +246,7 @@ public class JsonInput implements Closeable {
       }
       return number.longValue();
     } catch (NumberFormatException e) {
-      throw new JsonException("Unable to parse to a number: " + builder.toString() + ". " + input);
+      throw new JsonException("Unable to parse to a number: " + builder + ". " + input);
     }
   }
 
