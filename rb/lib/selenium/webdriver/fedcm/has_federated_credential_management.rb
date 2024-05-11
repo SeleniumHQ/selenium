@@ -1,4 +1,7 @@
 module HasFederatedCredentialManagement
+  def execute_fedcm(cmd, **params)
+    @bridge.send_command(cmd: cmd, params: params)
+  end
   # Disables the promise rejection delay for FedCM.
   #
   # FedCM by default delays promise resolution in failure cases for privacy reasons.
@@ -20,7 +23,7 @@ module HasFederatedCredentialManagement
   # Gets the currently open FedCM dialog, or nil if there is no dialog.
   #
   # This can be used similar to WebDriverWait in Selenium to wait until a dialog appears.
-  def get_federated_credential_management_dialog
+  def federated_credential_management_dialog
     # Implementation to retrieve the dialog
     # Placeholder for actual code to check the dialog's presence.
   end
