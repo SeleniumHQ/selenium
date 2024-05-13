@@ -94,7 +94,7 @@ class ProxySettingTest extends JupiterTestBase {
                     .join(
                         "function FindProxyForURL(url, host) {",
                         "  return 'PROXY " + getHostAndPort(helloServer) + "';",
-                        "}")); ) {
+                        "}"))) {
 
       Proxy proxy = new Proxy();
       proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
@@ -132,7 +132,7 @@ class ProxySettingTest extends JupiterTestBase {
                         "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
                         "  }",
                         "  return 'DIRECT';",
-                        "}")); ) {
+                        "}"))) {
 
       Proxy proxy = new Proxy();
       proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
