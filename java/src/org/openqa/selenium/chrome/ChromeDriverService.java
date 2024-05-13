@@ -285,34 +285,36 @@ public class ChromeDriverService extends DriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
-      args.add(String.valueOf(new Formatter(Locale.US).format("--port=%d", getPort()));
+      try (Formatter formatter = new Formatter(Locale.US)) {
+        args.add(String.valueOf(formatter.format("--port=%d", getPort()));
 
       // Readable timestamp and append logs only work if log path is specified in args
       // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
       if (getLogFile() != null) {
-        args.add(String.valueOf(new Formatter(Locale.ENGLISH).format("--log-path=%s", getLogFile().getAbsolutePath())));
-        if (Boolean.TRUE.equals(readableTimestamp)) {
-          args.add("--readable-timestamp");
+          args.add(String.valueOf(formatter.format("--log-path=%s", getLogFile().getAbsolutePath())));
+          if (Boolean.TRUE.equals(readableTimestamp)) {
+            args.add("--readable-timestamp");
+          }
+          if (Boolean.TRUE.equals(appendLog)) {
+            args.add("--append-log");
+          }
+          withLogOutput(
+              OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
+        
+        if (logLevel != null) {
+          args.add(String.valueOf(formatter.format("--log-level=%s", logLevel.toString().toUpperCase())));
         }
-        if (Boolean.TRUE.equals(appendLog)) {
-          args.add("--append-log");
+        if (allowedListIps != null) {
+          args.add(String.valueOf(formatter.format("--allowed-ips=%s", allowedListIps)));
         }
-        withLogOutput(
-            OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
-      }
+        if (Boolean.TRUE.equals(disableBuildCheck)) {
+          args.add("--disable-build-check");
+        }
 
-      if (logLevel != null) {
-        args.add(String.valueOf(new Formatter(Locale.US).format("--log-level=%s", logLevel.toString().toUpperCase())));
+        return unmodifiableList(args);
       }
-      if (allowedListIps != null) {
-        args.add(String.valueOf(new Formatter(Locale.US).format("--allowed-ips=%s", allowedListIps)));
-      }
-      if (Boolean.TRUE.equals(disableBuildCheck)) {
-        args.add("--disable-build-check");
-      }
-
-      return unmodifiableList(args);
     }
+  }
 
     @Override
     protected ChromeDriverService createDriverService(

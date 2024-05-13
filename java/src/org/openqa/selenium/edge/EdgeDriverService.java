@@ -279,40 +279,42 @@ public class EdgeDriverService extends DriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
-      args.add(String.valueOf(new Formatter(Locale.US).format("--port=%d", getPort())));
+      try (Formatter formatter = new Formatter(Locale.US)) {
+        args.add(String.valueOf(formatter.format("--port=%d", getPort())));
 
-      // Readable timestamp and append logs only work if log path is specified in args
-      // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
-      if (getLogFile() != null) {
-        args.add(String.valueOf(new Formatter(Locale.US).format("--log-path=%s", getLogFile().getAbsolutePath())));
-        if (Boolean.TRUE.equals(readableTimestamp)) {
-          args.add("--readable-timestamp");
+        // Readable timestamp and append logs only work if log path is specified in args
+        // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
+        if (getLogFile() != null) {
+          args.add(formatter.format("--log-path=%s", getLogFile().getAbsolutePath()).toString());
+          if (Boolean.TRUE.equals(readableTimestamp)) {
+            args.add("--readable-timestamp");
+          }
+          if (Boolean.TRUE.equals(appendLog)) {
+            args.add("--append-log");
+          }
+          withLogOutput(
+              OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
+        
+        if (logLevel != null) {
+          args.add(formatter.format("--log-level=%s", logLevel.toString().toUpperCase()).toString());
         }
-        if (Boolean.TRUE.equals(appendLog)) {
-          args.add("--append-log");
+        if (Boolean.TRUE.equals(silent)) {
+          args.add("--silent");
         }
-        withLogOutput(
-            OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
-      }
+        if (Boolean.TRUE.equals(verbose)) {
+          args.add("--verbose");
+        }
+        if (allowedListIps != null) {
+          args.add(formatter.format("--allowed-ips=%s", allowedListIps).toString());
+        }
+        if (Boolean.TRUE.equals(disableBuildCheck)) {
+          args.add("--disable-build-check");
+        }
 
-      if (logLevel != null) {
-        args.add(String.valueOf(new Formatter(Locale.US).format("--log-level=%s", logLevel.toString().toUpperCase())));
+        return List.copyOf(args);
       }
-      if (Boolean.TRUE.equals(silent)) {
-        args.add("--silent");
-      }
-      if (Boolean.TRUE.equals(verbose)) {
-        args.add("--verbose");
-      }
-      if (allowedListIps != null) {
-        args.add(String.valueOf(new Formatter(Locale.US).format("--allowed-ips=%s", allowedListIps)));
-      }
-      if (Boolean.TRUE.equals(disableBuildCheck)) {
-        args.add("--disable-build-check");
-      }
-
-      return List.copyOf(args);
     }
+  }
 
     @Override
     protected EdgeDriverService createDriverService(
