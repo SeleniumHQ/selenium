@@ -27,8 +27,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -283,12 +285,12 @@ public class ChromeDriverService extends DriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
-      args.add(String.format("--port=%d", getPort()));
+      args.add(String.valueOf(new Formatter(Locale.US).format("--port=%d", getPort()));
 
       // Readable timestamp and append logs only work if log path is specified in args
       // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
       if (getLogFile() != null) {
-        args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+        args.add(String.valueOf(new Formatter(Locale.ENGLISH).format("--log-path=%s", getLogFile().getAbsolutePath())));
         if (Boolean.TRUE.equals(readableTimestamp)) {
           args.add("--readable-timestamp");
         }
@@ -300,10 +302,10 @@ public class ChromeDriverService extends DriverService {
       }
 
       if (logLevel != null) {
-        args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
+        args.add(String.valueOf(new Formatter(Locale.US).format("--log-level=%s", logLevel.toString().toUpperCase())));
       }
       if (allowedListIps != null) {
-        args.add(String.format("--allowed-ips=%s", allowedListIps));
+        args.add(String.valueOf(new Formatter(Locale.US).format("--allowed-ips=%s", allowedListIps)));
       }
       if (Boolean.TRUE.equals(disableBuildCheck)) {
         args.add("--disable-build-check");

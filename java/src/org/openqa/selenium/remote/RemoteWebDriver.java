@@ -32,9 +32,11 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -512,7 +514,7 @@ public class RemoteWebDriver
     String currentName = Thread.currentThread().getName();
     Thread.currentThread()
         .setName(
-            String.format("Forwarding %s on session %s to remote", command.getName(), sessionId));
+          String.valueOf(new Formatter(Locale.US).format("Forwarding %s on session %s to remote", command.getName(), sessionId)));
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
@@ -726,7 +728,7 @@ public class RemoteWebDriver
         && toLog instanceof Response) {
       Response responseToLog = (Response) toLog;
       Response copyToLog = new Response(new SessionId((responseToLog).getSessionId()));
-      copyToLog.setValue(String.format("*%s response suppressed*", commandName));
+      copyToLog.setValue(String.valueOf(new Formatter(Locale.US).format("*%s response suppressed*", commandName)));
       copyToLog.setState(responseToLog.getState());
       text = String.valueOf(copyToLog);
     }
@@ -757,11 +759,11 @@ public class RemoteWebDriver
       LOG.log(
           Level.WARNING,
           () ->
-              String.format(
+          String.valueOf(new Formatter(Locale.US).format(
                   "Support for Legacy Capabilities is deprecated; You are sending the following"
                       + " invalid capabilities: %s; Please update to W3C Syntax:"
                       + " https://www.selenium.dev/blog/2022/legacy-protocol-support/",
-                  invalid));
+                  invalid)));
     }
   }
 
@@ -815,9 +817,9 @@ public class RemoteWebDriver
       platformName = "unknown";
     }
 
-    return String.format(
+    return String.valueOf(new Formatter(Locale.US).format(
         "%s: %s on %s (%s)",
-        getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId());
+        getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId()));
   }
 
   public enum When {
