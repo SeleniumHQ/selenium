@@ -22,7 +22,7 @@ namespace OpenQA.Selenium.Internal.Logging
         /// </summary>
         /// <param name="filePath">The path of the log file.</param>
         public FileLogHandler(string filePath)
-            : this(filePath, overwrite: false)
+            : this(filePath, overwrite: true)
         {
 
         }

@@ -37,32 +37,7 @@ namespace OpenQA.Selenium.Internal.Logging
         }
 
         [Test]
-        public void ShouldAppendFileIfDoesNotExist()
-        {
-            var tempFilePath = Path.GetTempPath() + "somefile.log";
-
-            try
-            {
-                using (var fileLogHandler = new FileLogHandler(tempFilePath))
-                {
-                    fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
-                }
-
-                using (var fileLogHandler2 = new FileLogHandler(tempFilePath))
-                {
-                    fileLogHandler2.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
-                }
-
-                Assert.That(Regex.Matches(File.ReadAllText(tempFilePath), "test message").Count, Is.EqualTo(2));
-            }
-            finally
-            {
-                File.Delete(tempFilePath);
-            }
-        }
-
-        [Test]
-        public void ShouldAppendFileIfExists()
+        public void ShouldCreateFileIfDoesNotExist()
         {
             var tempFile = Path.GetTempFileName();
 
@@ -78,11 +53,36 @@ namespace OpenQA.Selenium.Internal.Logging
                     fileLogHandler2.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
                 }
 
-                Assert.That(Regex.Matches(File.ReadAllText(tempFile), "test message").Count, Is.EqualTo(2));
+                Assert.That(Regex.Matches(File.ReadAllText(tempFile), "test message").Count, Is.EqualTo(1));
             }
             finally
             {
                 File.Delete(tempFile);
+            }
+        }
+
+        [Test]
+        public void ShouldAppendFileIfExists()
+        {
+            var tempFilePath = Path.GetTempPath() + "somefile.log";
+
+            try
+            {
+                using (var fileLogHandler = new FileLogHandler(tempFilePath))
+                {
+                    fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+                }
+
+                using (var fileLogHandler2 = new FileLogHandler(tempFilePath, overwrite: false))
+                {
+                    fileLogHandler2.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+                }
+
+                Assert.That(Regex.Matches(File.ReadAllText(tempFilePath), "test message").Count, Is.EqualTo(2));
+            }
+            finally
+            {
+                File.Delete(tempFilePath);
             }
         }
 
@@ -107,7 +107,7 @@ namespace OpenQA.Selenium.Internal.Logging
         }
 
         [Test]
-        public void ShouldCreateFileIfDoesNotExist()
+        public void ShouldAppendFileIfDoesNotExist()
         {
             var tempFilePath = Path.GetTempPath() + "somefile.log";
 
