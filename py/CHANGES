@@ -1,3 +1,13 @@
+Selenium 4.21.0
+
+>>> [py] Setting nightly version
+>>> [py] removed unused logger object from `firefox/webdriver.py` (#13892)
+[py] removed unused logger object from firefox/webdriver.py
+>>> Moving ignore_local_proxy_environment_variables to BaseOptions (#13926)
+* Moving ignore_local_proxy_environment_variables to BaseOptions
+* Just moving instead of deprecating
+* Invoking method instead of property
+
 Selenium 4.20.0
 
 * Add CDP for Chrome 124 and remove 121

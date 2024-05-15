@@ -1,3 +1,54 @@
+v4.21.0
+======
+
+>>> [bidi][java] Add methods to allow all parameters for script callFunction and evaluate method (#13873)
+>>> [java] Setting a connection timeout for the WS connection
+Fixes #13884
+>>> [java] Improving error message for BiDi connection
+Either when `webSocketUrl` is not set or the
+browser version does not support BiDi.
+Related to #13896
+[skip ci]
+>>> [java] Improving logging to understand why "Value must be set" is raised.
+>>> [grid] flatten combined routes to improve routing (#13856)
+>>> [grid][java]: apply protocol version in relay session factory (#13880)
+>>> [java][sm] Configure Selenium Manager environment from System Properties (#13858)
+* [java][sm] Configure Selenium Manager environment from System Properties
+* Running format script
+>>> [java][grid]: Set test name to video file name in dynamic grid (#13907)
+* [java][grid]: Set test name to video file name in dynamic grid
+* Revert unexpected changes
+>>> [grid][java]: session-timeout set connection timeout in RemoteNode (#13854)
+* [grid][java]: add session-timeout to all kind of Nodes
+* [grid][java]: fix code as suggestions
+* [java][grid]: update test CustomNode can get/set sessionTimeout
+>>> [java] type casting and numeric improvements (#13909)
+* replaced condition controll flow with switch
+* remove casting from double to int
+division operation with integer ergument is equal to cast to int Math.floor()
+* remove division by 1 in tests
+* replaced manual calculation of hashcode with Long.hashCode()
+* removed redundand toString method call
+* removed cast to string in string concat
+* applying code formatting
+>>> [cdp][java] Allow filters to recover from failed requests in NetworkInterceptor (#13847)
+>>> [java] allow a DevTools listener to determinate the order of handler calls (#13921)
+>>> [java] read selenium manager output as UTF-8 #13653
+>>> [java] Reduce redundant toString() calls (#13932)
+* removed unnecessary semicolons
+* removed redundant access modifier for interface member
+* removed redundant toString() calls for id in RedisBackedSessionMap
+* removed redundant toString() call in DragAndDropTest
+* removed redundant toString() calls
+* applying formatting
+>>> [java] fixed format of expires in Cookie.toString #13927
+>>> [java] Fixing JavaDocs for driver classes
+>>> [grid] Using MutableCapabilities to get rid of browserVersion
+And later returning them as PersistentCapabilities
+Also, restoring the null check in PersistentCapabilities.java
+Fixes #13937
+>>> Update supported versions for Chrome DevTools
+
 v4.20.0
 ======
 
