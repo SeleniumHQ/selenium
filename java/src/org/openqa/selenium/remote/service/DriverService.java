@@ -30,7 +30,9 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -137,7 +139,7 @@ public class DriverService implements Closeable {
   }
 
   protected URL getUrl(int port) throws IOException {
-    return new URL(String.format("http://localhost:%d", port));
+    return new URL(new Formatter(Locale.US).format("http://localhost:%d", port).toString());
   }
 
   protected Capabilities getDefaultDriverOptions() {
@@ -198,7 +200,7 @@ public class DriverService implements Closeable {
         }
         this.executable = new DriverFinder(this, getDefaultDriverOptions()).getDriverPath();
       }
-      LOG.fine(String.format("Starting driver at %s with %s", this.executable, this.args));
+      LOG.fine(new Formatter(Locale.US).format("Starting driver at %s with %s", this.executable, this.args).toString());
 
       ExternalProcess.Builder builder =
           ExternalProcess.builder().command(this.executable, args).copyOutputTo(getOutputStream());

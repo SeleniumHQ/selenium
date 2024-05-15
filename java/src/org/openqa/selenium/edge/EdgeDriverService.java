@@ -280,7 +280,7 @@ public class EdgeDriverService extends DriverService {
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
       try (Formatter formatter = new Formatter(Locale.US)) {
-        args.add(String.valueOf(formatter.format("--port=%d", getPort())));
+        args.add((formatter.format("--port=%d", getPort()).toString()));
 
         // Readable timestamp and append logs only work if log path is specified in args
         // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
@@ -294,7 +294,8 @@ public class EdgeDriverService extends DriverService {
           }
           withLogOutput(
               OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
-        
+        }
+
         if (logLevel != null) {
           args.add(formatter.format("--log-level=%s", logLevel.toString().toUpperCase()).toString());
         }
@@ -311,9 +312,8 @@ public class EdgeDriverService extends DriverService {
           args.add("--disable-build-check");
         }
 
-        return List.copyOf(args);
-      }
     }
+    return List.copyOf(args);
   }
 
     @Override

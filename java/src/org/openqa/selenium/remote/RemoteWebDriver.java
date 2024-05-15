@@ -817,11 +817,9 @@ public class RemoteWebDriver
       platformName = "unknown";
     }
 
-    try (Formatter formatter = new Formatter(Locale.US)) {
-      return formatter.format(
+      return new Formatter(Locale.US).format(
           "%s: %s on %s (%s)",
           getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId()).toString();
-    }
   }
 
   public enum When {
