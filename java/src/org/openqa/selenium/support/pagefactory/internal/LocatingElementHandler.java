@@ -38,7 +38,7 @@ public class LocatingElementHandler implements InvocationHandler {
       element = locator.findElement();
     } catch (NoSuchElementException e) {
       if ("toString".equals(method.getName())) {
-        return "Proxy element for: " + locator.toString();
+        return "Proxy element for: " + locator;
       }
       throw e;
     }

@@ -23,11 +23,13 @@ import static org.openqa.selenium.Platform.WINDOWS;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
@@ -62,6 +64,7 @@ public class SeleniumManager {
   private static final String CACHE_PATH_ENV = "SE_CACHE_PATH";
   private static final String BETA_PREFIX = "0.";
   private static final String EXE = ".exe";
+  private static final String SE_ENV_PREFIX = "SE_";
 
   private static volatile SeleniumManager manager;
   private final String managerPath = System.getenv("SE_MANAGER_PATH");
@@ -119,14 +122,27 @@ public class SeleniumManager {
     String output;
     int code;
     try {
+      ExternalProcess.Builder processBuilder = ExternalProcess.builder();
+
+      Properties properties = System.getProperties();
+      for (String name : properties.stringPropertyNames()) {
+        if (name.startsWith(SE_ENV_PREFIX)) {
+          // read property with 'default' value due to concurrency
+          String value = properties.getProperty(name, "");
+          if (!value.isEmpty()) {
+            processBuilder.environment(name, value);
+          }
+        }
+      }
       ExternalProcess process =
-          ExternalProcess.builder().command(binary.toAbsolutePath().toString(), arguments).start();
+          processBuilder.command(binary.toAbsolutePath().toString(), arguments).start();
+
       if (!process.waitFor(Duration.ofHours(1))) {
         LOG.warning("Selenium Manager did not exit, shutting it down");
         process.shutdown();
       }
       code = process.exitValue();
-      output = process.getOutput();
+      output = process.getOutput(StandardCharsets.UTF_8);
     } catch (Exception e) {
       throw new WebDriverException("Failed to run command: " + arguments, e);
     }
@@ -240,13 +256,13 @@ public class SeleniumManager {
   }
 
   private Path getBinaryInCache(String binaryName) throws IOException {
-    String cachePath = DEFAULT_CACHE_PATH.replace(HOME, System.getProperty("user.home"));
 
-    // Look for cache path as env
-    String cachePathEnv = System.getenv(CACHE_PATH_ENV);
-    if (cachePathEnv != null) {
-      cachePath = cachePathEnv;
-    }
+    // Look for cache path as system property or env
+    String cachePath = System.getProperty(CACHE_PATH_ENV, "");
+    if (cachePath.isEmpty()) cachePath = System.getenv(CACHE_PATH_ENV);
+    if (cachePath == null) cachePath = DEFAULT_CACHE_PATH;
+
+    cachePath = cachePath.replace(HOME, System.getProperty("user.home"));
 
     // If cache path is not writable, SM will be extracted to a temporal folder
     Path cacheParent = Paths.get(cachePath);

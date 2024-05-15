@@ -367,6 +367,7 @@ class BaseOptions(metaclass=ABCMeta):
         self._proxy = None
         self.set_capability("pageLoadStrategy", PageLoadStrategy.normal)
         self.mobile_options = None
+        self._ignore_local_proxy = False
 
     @property
     def capabilities(self):
@@ -404,6 +405,11 @@ class BaseOptions(metaclass=ABCMeta):
     def default_capabilities(self):
         """Return minimal capabilities necessary as a dictionary."""
 
+    def ignore_local_proxy_environment_variables(self) -> None:
+        """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
+        being picked up and used."""
+        self._ignore_local_proxy = True
+
 
 class ArgOptions(BaseOptions):
     BINARY_LOCATION_ERROR = "Binary Location Must be a String"
@@ -411,7 +417,6 @@ class ArgOptions(BaseOptions):
     def __init__(self) -> None:
         super().__init__()
         self._arguments = []
-        self._ignore_local_proxy = False
 
     @property
     def arguments(self):
@@ -432,7 +437,7 @@ class ArgOptions(BaseOptions):
     def ignore_local_proxy_environment_variables(self) -> None:
         """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
         being picked up and used."""
-        self._ignore_local_proxy = True
+        super().ignore_local_proxy_environment_variables()
 
     def to_capabilities(self):
         return self._caps

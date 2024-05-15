@@ -43,7 +43,7 @@ test:remote --test_env=PATH=/bin:/usr/bin:/usr/local/bin
 test:remote --test_env=HOME=/home/dev
 
 # Make sure we sniff credentials properly
-build:remote --credential_helper=%workspace%/scripts/credential-helper.sh
+build:remote --credential_helper=gypsum.cluster.engflow.com=%workspace%/scripts/credential-helper.sh
 
 # Use pinned browsers when running remotely
 build:remote --//common:pin_browsers

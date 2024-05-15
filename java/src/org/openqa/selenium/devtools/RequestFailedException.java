@@ -15,26 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote;
+package org.openqa.selenium.devtools;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.service.DriverFinder;
+import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpHandler;
 
-/** Thrown by {@link DriverFinder#getDriverPath()} (DriverService, Capabilities)}. */
-public class NoSuchDriverException extends WebDriverException {
-
-  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "/driver_location/";
-
-  public NoSuchDriverException(String reason) {
-    super(reason);
-  }
-
-  public NoSuchDriverException(String reason, Throwable cause) {
-    super(reason, cause);
-  }
-
-  @Override
-  public String getSupportUrl() {
-    return SUPPORT_URL;
-  }
-}
+/**
+ * This exception is thrown by the final {@link HttpHandler} in a {@link Filter} chain when the
+ * browser fails to send a HTTP request. It can be caught in a {@link Filter} to handle the error
+ * by, for example, returning a custom HTTP response.
+ */
+public class RequestFailedException extends WebDriverException {}

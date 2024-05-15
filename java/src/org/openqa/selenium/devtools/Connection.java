@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,11 +71,12 @@ public class Connection implements Closeable {
             return thread;
           });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
+  private static final AtomicLong NEXT_SEQUENCE = new AtomicLong(1L);
   private WebSocket socket;
   private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks =
       new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
-  private final Map<Event<?>, List<Consumer<?>>> eventCallbacks = new HashMap<>();
+  private final Map<Event<?>, List<BiConsumer<Long, ?>>> eventCallbacks = new HashMap<>();
   private HttpClient client;
   private final String url;
   private final AtomicBoolean isClosed;
@@ -196,7 +198,7 @@ public class Connection implements Closeable {
     }
   }
 
-  public <X> void addListener(Event<X> event, Consumer<X> handler) {
+  public <X> void addListener(Event<X> event, BiConsumer<Long, X> handler) {
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
 
@@ -230,10 +232,11 @@ public class Connection implements Closeable {
 
     @Override
     public void onText(CharSequence data) {
+      long sequence = NEXT_SEQUENCE.getAndIncrement();
       EXECUTOR.execute(
           () -> {
             try {
-              handle(data);
+              handle(sequence, data);
             } catch (Throwable t) {
               LOG.log(Level.WARNING, "Unable to process: " + data, t);
               throw new DevToolsException(t);
@@ -242,7 +245,7 @@ public class Connection implements Closeable {
     }
   }
 
-  private void handle(CharSequence data) {
+  private void handle(long sequence, CharSequence data) {
     // It's kind of gross to decode the data twice, but this lets us get started on something
     // that feels nice to users.
     // TODO: decode once, and once only
@@ -335,14 +338,14 @@ public class Connection implements Closeable {
                       return;
                     }
 
-                    for (Consumer<?> action : event.getValue()) {
+                    for (BiConsumer<Long, ?> action : event.getValue()) {
                       @SuppressWarnings("unchecked")
-                      Consumer<Object> obj = (Consumer<Object>) action;
+                      BiConsumer<Long, Object> obj = (BiConsumer<Long, Object>) action;
                       LOG.log(
                           getDebugLogLevel(),
                           "Calling callback for {0} using {1} being passed {2}",
                           new Object[] {event.getKey(), obj, params});
-                      obj.accept(params);
+                      obj.accept(sequence, params);
                     }
                   }
                 });

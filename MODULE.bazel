@@ -124,6 +124,16 @@ use_repo(pip, "py_dev_requirements")
 
 register_toolchains("@pythons_hub//:all")
 
+# https://github.com/bazelbuild/rules_jvm_external/pull/1079
+archive_override(
+    module_name = "rules_jvm_external",
+    integrity = "sha256-yS8Qes1PLbYbe10b1WSgl0Auqn/1Wlxg8O3wSr7a/Sg=",
+    patch_strip = 1,
+    patches = ["//java:rules_jvm_external_javadoc.patch"],
+    strip_prefix = "rules_jvm_external-f572a26116c7ef71d8842dd056c2605782f7be8d",
+    urls = ["https://github.com/bazelbuild/rules_jvm_external/archive/f572a26116c7ef71d8842dd056c2605782f7be8d.tar.gz"],
+)
+
 java_toolchains = use_extension("@rules_java//java:extensions.bzl", "toolchains")
 use_repo(
     java_toolchains,
@@ -194,7 +204,6 @@ maven.install(
         "org.junit.platform:junit-platform-commons:1.10.2",
         "org.junit.platform:junit-platform-engine:1.10.2",
         "org.mockito:mockito-core:5.11.0",
-        "org.mockito:mockito-inline:5.2.0",
         "org.redisson:redisson:3.29.0",
         "org.slf4j:slf4j-api:2.0.13",
         "org.slf4j:slf4j-jdk14:2.0.13",

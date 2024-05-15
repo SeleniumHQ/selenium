@@ -133,10 +133,6 @@ class DesiredCapabilitiesTest {
   }
 
   private String createString(int length) {
-    StringBuilder outputBuffer = new StringBuilder(length);
-    for (int i = 0; i < length; i++) {
-      outputBuffer.append("x");
-    }
-    return outputBuffer.toString();
+    return "x".repeat(Math.max(0, length));
   }
 }
