@@ -101,7 +101,7 @@ class TestFileLocator {
         testFile
             .toAbsolutePath()
             .toString()
-            .replace(baseDir.toAbsolutePath().toString() + File.separator, "")
+            .replace(baseDir.toAbsolutePath() + File.separator, "")
             .replace(File.separator, "/");
     if (path.endsWith(".js")) {
       path = "common/generated/" + path;
