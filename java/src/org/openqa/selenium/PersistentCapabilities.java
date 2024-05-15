@@ -50,6 +50,7 @@ public class PersistentCapabilities implements Capabilities {
 
   public PersistentCapabilities setCapability(String name, Object value) {
     Require.nonNull("Name", name);
+    Require.nonNull("Value", value);
 
     return new PersistentCapabilities(this, new ImmutableCapabilities(name, value));
   }

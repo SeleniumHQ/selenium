@@ -326,9 +326,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
           Map<String, Object> vendorOptions =
               (Map<String, Object>) options.getCapability(vendorOptionsCapability);
           vendorOptions.put("binary", browserPath);
-          return new PersistentCapabilities(options)
-              .setCapability(vendorOptionsCapability, vendorOptions)
-              .setCapability("browserVersion", null);
+          MutableCapabilities toReturn = new MutableCapabilities(options);
+          toReturn.setCapability(vendorOptionsCapability, vendorOptions);
+          toReturn.setCapability("browserVersion", (String) null);
+          return new PersistentCapabilities(toReturn);
         } catch (Exception e) {
           LOG.log(
               Level.WARNING,
