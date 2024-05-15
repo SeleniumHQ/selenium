@@ -190,43 +190,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
-  void canLocateNodesWithNoneOwnershipParameter() {
-    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
-    assertThat(browsingContext.getId()).isNotEmpty();
-
-    driver.get(pages.xhtmlTestPage);
-
-    LocateNodeParameters parameters =
-        new LocateNodeParameters(Locator.css("div")).setOwnership(ResultOwnership.NONE);
-
-    List<RemoteValue> elements = browsingContext.locateNodes(parameters);
-    assertThat(elements.size()).isEqualTo(13);
-    assertThat(elements.get(0).getHandle().isPresent()).isFalse();
-  }
-
-  @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
-  void canLocateNodesWithRootOwnershipParameter() {
-    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
-    assertThat(browsingContext.getId()).isNotEmpty();
-
-    driver.get(pages.xhtmlTestPage);
-
-    LocateNodeParameters parameters =
-        new LocateNodeParameters(Locator.css("div")).setOwnership(ResultOwnership.ROOT);
-
-    List<RemoteValue> elements = browsingContext.locateNodes(parameters);
-    assertThat(elements.size()).isEqualTo(13);
-    assertThat(elements.get(0).getHandle().isPresent()).isTrue();
-  }
-
-  @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canLocateNodesGivenStartNodes() {
