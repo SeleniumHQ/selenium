@@ -39,4 +39,5 @@ jobs:
       run: >
         bazel test
         --flaky_test_attempts 3
-        //javascript/node/selenium-webdriver:${{ matrix.browser }}-browser-tests
+        --test_tag_filters ${{ matrix.browser }}
+        //javascript/node/...

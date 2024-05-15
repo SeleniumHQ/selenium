@@ -86,6 +86,11 @@ SMALL_TESTS = [
     "test/net/portprober_test.js",
 ]
 
+LARGE_TESTS = glob(
+    ["test/**/*_test.js"],
+    exclude = SMALL_TESTS,
+)
+
 js_library(
     name = "small-test-srcs",
     srcs = SMALL_TESTS,
@@ -93,10 +98,7 @@ js_library(
 
 js_library(
     name = "large-test-srcs",
-    srcs = glob(
-        ["test/**/*_test.js"],
-        exclude = SMALL_TESTS,
-    ),
+    srcs = LARGE_TESTS,
 )
 
 js_library(
@@ -140,41 +142,51 @@ mocha_test(
 )
 
 [
-    mocha_test(
-        name = "%s-browser-tests" % browser,
-        size = "large",
-        args = ["--retries 1"],
-        chdir = package_name(),
-        data = [
-            "test-data",
-            ":large-test-srcs",
-            ":node_modules/@bazel/runfiles",
-            ":node_modules/express",
-            ":node_modules/jszip",
-            ":node_modules/multer",
-            ":node_modules/serve-index",
-            ":node_modules/sinon",
-            ":node_modules/tmp",
-            ":node_modules/ws",
-            "//:node_modules/selenium-webdriver",
-            "//common/extensions:js-lib",
-            "//common/src/web:js-lib",
-            "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
-            "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
-            "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
-            "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
-        ],
-        env = {
-            "SELENIUM_BROWSER": browser,
-        },
-        tags = [
-            browser,
-            "browser-test",
-            "no-sandbox",
-            "requires-network",
-            "skip-remote",
-        ],
-    )
+    [
+        mocha_test(
+            name = "%s-%s" % (
+                test.replace("/", "-").replace("_", "-"),
+                browser,
+            ),
+            size = "large",
+            args = [
+                "--retries",
+                "1",
+                test,
+            ],
+            chdir = package_name(),
+            data = [
+                "test-data",
+                ":large-test-srcs",
+                ":node_modules/@bazel/runfiles",
+                ":node_modules/express",
+                ":node_modules/jszip",
+                ":node_modules/multer",
+                ":node_modules/serve-index",
+                ":node_modules/sinon",
+                ":node_modules/tmp",
+                ":node_modules/ws",
+                "//:node_modules/selenium-webdriver",
+                "//common/extensions:js-lib",
+                "//common/src/web:js-lib",
+                "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
+                "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
+                "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+                "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
+            ],
+            env = {
+                "SELENIUM_BROWSER": browser,
+            },
+            tags = [
+                browser,
+                "browser-test",
+                "no-sandbox",
+                "requires-network",
+                "skip-remote",
+            ],
+        ),
+    ]
+    for test in LARGE_TESTS
     for browser in [
         "chrome",
         "firefox",
