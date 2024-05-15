@@ -14,7 +14,7 @@ VERSION = "4.21.0-nightly202404242350"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v122",
+    "v125",
     "v123",
     "v124",
 ]

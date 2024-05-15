@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V124;
+    using CurrentCdpVersion = V125;
 
     [TestFixture]
     public class DevToolsTabsTest : DevToolsTestFixture
