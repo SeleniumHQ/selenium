@@ -5,6 +5,7 @@ using OpenQA.Selenium.Internal;
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -23,9 +24,9 @@ namespace OpenQA.Selenium.Environment
         private EnvironmentManager()
         {
             string dataFilePath;
+            var runfiles = Runfiles.Create();
             try
             {
-                var runfiles = Runfiles.Create();
                 dataFilePath = runfiles.Rlocation("_main/dotnet/test/common/appconfig.json");
             }
             catch (FileNotFoundException)
@@ -136,6 +137,30 @@ namespace OpenQA.Selenium.Environment
             else
             {
                 projectRoot += "/_main";
+            }
+
+            // Find selenium-manager binary.
+            try
+            {
+                string managerFilePath = "";
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    managerFilePath = runfiles.Rlocation("_main/dotnet/src/webdriver/manager/windows/selenium-manager.exe");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    managerFilePath = runfiles.Rlocation("_main/dotnet/src/webdriver/manager/linux/selenium-manager");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    managerFilePath = runfiles.Rlocation("_main/dotnet/src/webdriver/manager/macos/selenium-manager");
+                }
+
+                System.Environment.SetEnvironmentVariable("SE_MANAGER_PATH", managerFilePath);
+            }
+            catch (FileNotFoundException)
+            {
+                // Use the default one.
             }
 
             webServer = new TestWebServer(projectRoot, webServerConfig);
