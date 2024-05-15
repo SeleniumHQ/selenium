@@ -38,7 +38,7 @@ def write_atom_literal(out, name, contents, lang, utf8):
       else:
         line_format = "    L\"{}\",\n"
     elif "java" == lang:
-        line_format = "      .append\(\"{}\")\n"
+        line_format = "      .append\\(\"{}\")\n"
     else:
         raise RuntimeError("Unknown language: %s " % lang)
 
@@ -47,7 +47,7 @@ def write_atom_literal(out, name, contents, lang, utf8):
     if "cc" == lang or "hh" == lang:
         string_type = "std::string" if utf8 else "std::wstring"
         char_type = "char" if utf8 else "wchar_t"
-        out.write("const %s* const %s[] = {\n" % (char_type, name))
+        out.write("const {}* const {}[] = {{\n".format(char_type, name))
     elif "java" == lang:
         out.write("  %s(new StringBuilder()\n" % name)
     else:
@@ -75,43 +75,43 @@ def write_atom_literal(out, name, contents, lang, utf8):
 def generate_header(file_name, out, js_map, just_declare, utf8):
     define_guard = "WEBDRIVER_%s" % os.path.basename(file_name.upper()).replace(".", "_")
     include_stddef = "" if utf8 else "\n#include <stddef.h>  // For wchar_t."
-    out.write("""%s
+    out.write("""{}
     
 /* AUTO GENERATED - DO NOT EDIT BY HAND */
-#ifndef %s
-#define %s
-%s
+#ifndef {}
+#define {}
+{}
 #include <string>    // For std::(w)string.
 
-namespace webdriver {
-namespace atoms {
+namespace webdriver {{
+namespace atoms {{
     
-""" % (_copyright, define_guard, define_guard, include_stddef))
+""".format(_copyright, define_guard, define_guard, include_stddef))
 
     string_type = "std::string" if utf8 else "std::wstring"
     char_type = "char" if utf8 else "wchar_t"
     
     for (name, file) in js_map.items():
         if just_declare:
-            out.write("extern const %s* const %s[];\n" % (char_type, name.upper()))
+            out.write("extern const {}* const {}[];\n".format(char_type, name.upper()))
         else:
-            contents = open(file, "r").read()
+            contents = open(file).read()
             write_atom_literal(out, name, contents, "hh", utf8)
 
     out.write("""
-static inline %s asString(const %s* const atom[]) {
-  %s source;
-  for (int i = 0; atom[i] != NULL; i++) {
+static inline {} asString(const {}* const atom[]) {{
+  {} source;
+  for (int i = 0; atom[i] != NULL; i++) {{
     source += atom[i];
-  }
+  }}
   return source;
-}
+}}
 
-}  // namespace atoms
-}  // namespace webdriver
+}}  // namespace atoms
+}}  // namespace webdriver
     
-#endif  // %s
-""" % (string_type, char_type, string_type, define_guard))
+#endif  // {}
+""".format(string_type, char_type, string_type, define_guard))
 
 def generate_cc_source(out, js_map, utf8):
     out.write("""%s
@@ -127,7 +127,7 @@ namespace atoms {
 """ % _copyright)
 
     for (name, file) in js_map.items():
-        contents = open(file, "r").read()
+        contents = open(file).read()
         write_atom_literal(out, name, contents, "cc", utf8)
 
     out.write("""
@@ -152,7 +152,7 @@ public enum %s {
 """ % class_name)
 
     for (name, file) in js_map.items():
-        contents = open(file, "r").read()
+        contents = open(file).read()
         write_atom_literal(out, name, contents, "java", True)
 
     out.write("""
