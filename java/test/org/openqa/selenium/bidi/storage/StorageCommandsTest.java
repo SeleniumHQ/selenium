@@ -250,7 +250,6 @@ class StorageCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   public void canDeleteAllCookies() {
     addCookieOnServerSide(new Cookie("foo", "set"));
     assertSomeCookiesArePresent();
@@ -267,7 +266,6 @@ class StorageCommandsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   public void canDeleteCookieWithName() {
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();

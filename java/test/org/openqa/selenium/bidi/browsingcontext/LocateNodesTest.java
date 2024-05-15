@@ -57,7 +57,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canLocateNodes() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -74,7 +73,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canLocateNodesWithJustLocator() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -104,7 +102,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canLocateNodesWithCSSLocator() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -130,7 +127,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canLocateNodesWithXPathLocator() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -156,7 +152,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(FIREFOX)
   void canLocateNodesWithInnerText() {
@@ -179,7 +174,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canLocateNodesWithMaxNodeCount() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -197,7 +191,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canLocateNodesWithNoneOwnershipParameter() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -277,7 +270,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canLocateNodesInAGivenSandbox() {
     String sandbox = "sandbox";
@@ -324,7 +316,6 @@ public class LocateNodesTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canFindElement() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
