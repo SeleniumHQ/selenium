@@ -1,3 +1,11 @@
+v4.21.0
+======
+
+>>> [dotnet] Overwrite internal log file if it already exists (#13900)
+* [dotnet] Optionally overwrite internal log file if it already exists
+* Overwrite log file by default
+>>> [dotnet] Align binary location property for FirefoxOptions with other options (#13901)
+
 v4.20.0
 ======
 

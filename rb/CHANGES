@@ -1,3 +1,15 @@
+4.21.0 (2024-05-15)
+=========================
+
+>>> [rb] Setting nightly version
+>>> [rb] Return and deprecate DriverFinder.path
+This was accidentally removed in #13386.
+Fixes #13876.
+Related to rails/rails#51658.
+>>> [rb] Release 4.20.1
+>>> [rb] Update version for nightly
+>>> [rb] Use Bazel JDK in remote tests
+
 4.20.1 (2024-04-25)
 =========================
 
