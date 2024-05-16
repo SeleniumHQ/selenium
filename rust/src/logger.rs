@@ -26,7 +26,6 @@ use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::env;
 use std::fmt::Display;
-use std::ops::Deref;
 use std::str::FromStr;
 
 pub const DRIVER_PATH: &str = "Driver path: ";
@@ -100,7 +99,7 @@ impl Logger {
         match output_type {
             OutputType::Logger | OutputType::Mixed => {
                 if env::var(DEFAULT_FILTER_ENV).unwrap_or_default().is_empty() {
-                    let filter = if !log_level.is_empty() {
+                    let mut filter = if !log_level.is_empty() {
                         LevelFilter::from_str(log_level).unwrap_or(Info)
                     } else {
                         let mut filter = match debug {
