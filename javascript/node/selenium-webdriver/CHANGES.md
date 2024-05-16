@@ -1,18 +1,8 @@
 ## 4.21.0
 
-> > > [js] Setting nightly version
-> > > [js] Fixing wrongly updated package-lock.json
-> > > [bazel + js] Allow `bazel build //javascript/...` to work (#13893)
-
-- [bazel + js] Allow `bazel build //javascript/...` to work
-- cp: hackity hack
-- Reorganise the build file
-  > > > [js] Ensure 'selectVisibleByText' method is same as other languages (#13899)
-  > > > [js] Ensure parity in the locators used by methods (#13902)
-  > > > [js] Updating README.md
-  > > > Fixes #13940
-  > > > [slip ci] >>> [js] Running format script
-  > > > Update supported versions for Chrome DevTools
+- Add CDP for Chrome 125 and remove 122
+- Ensure 'selectVisibleByText' method is same as other languages (#13899)
+- Ensure parity in the locators used by methods (#13902)
 
 ## 4.20.0
 
