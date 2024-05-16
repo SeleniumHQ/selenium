@@ -1,4 +1,4 @@
-// <copyright file="V122Log.cs" company="WebDriver Committers">
+// <copyright file="V125Log.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -15,23 +15,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using OpenQA.Selenium.DevTools.V122.Log;
+using OpenQA.Selenium.DevTools.V125.Log;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.DevTools.V122
+namespace OpenQA.Selenium.DevTools.V125
 {
     /// <summary>
-    /// Class containing the browser's log as referenced by version 122 of the DevTools Protocol.
+    /// Class containing the browser's log as referenced by version 125 of the DevTools Protocol.
     /// </summary>
-    public class V122Log : DevTools.Log
+    public class V125Log : DevTools.Log
     {
         private LogAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V122Log"/> class.
+        /// Initializes a new instance of the <see cref="V125Log"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Log domain.</param>
-        public V122Log(LogAdapter adapter)
+        public V125Log(LogAdapter adapter)
         {
             this.adapter = adapter;
             this.adapter.EntryAdded += OnAdapterEntryAdded;
