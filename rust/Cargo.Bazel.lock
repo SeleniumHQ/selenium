@@ -1,5 +1,5 @@
 {
-  "checksum": "e2afd74804afa9cdcc69561f3cfbea803e365a03b971d46b0963e636fa90b19a",
+  "checksum": "56fdaab3fc8fbbad2fa1adba945c9339107eb008d5b9fc5e22503e02f134349e",
   "crates": {
     "addr2line 0.21.0": {
       "name": "addr2line",
@@ -88,65 +88,6 @@
         "MIT"
       ],
       "license_file": "LICENSE-0BSD"
-    },
-    "aes 0.8.4": {
-      "name": "aes",
-      "version": "0.8.4",
-      "package_url": "https://github.com/RustCrypto/block-ciphers",
-      "repository": {
-        "Http": {
-          "url": "https://static.crates.io/crates/aes/0.8.4/download",
-          "sha256": "b169f7a6d4742236a0a00c541b845991d0ac43e546831af1249753ab4c3aa3a0"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "aes",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "allow_empty": false,
-              "include": [
-                "**/*.rs"
-              ]
-            }
-          }
-        }
-      ],
-      "library_target_name": "aes",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "deps": {
-          "common": [
-            {
-              "id": "cfg-if 1.0.0",
-              "target": "cfg_if"
-            },
-            {
-              "id": "cipher 0.4.4",
-              "target": "cipher"
-            }
-          ],
-          "selects": {
-            "cfg(any(target_arch = \"aarch64\", target_arch = \"x86_64\", target_arch = \"x86\"))": [
-              {
-                "id": "cpufeatures 0.2.12",
-                "target": "cpufeatures"
-              }
-            ]
-          }
-        },
-        "edition": "2021",
-        "version": "0.8.4"
-      },
-      "license": "MIT OR Apache-2.0",
-      "license_ids": [
-        "Apache-2.0",
-        "MIT"
-      ],
-      "license_file": "LICENSE-APACHE"
     },
     "aho-corasick 1.1.3": {
       "name": "aho-corasick",
@@ -914,6 +855,45 @@
         "MIT"
       ],
       "license_file": "LICENSE"
+    },
+    "arbitrary 1.3.2": {
+      "name": "arbitrary",
+      "version": "1.3.2",
+      "package_url": "https://github.com/rust-fuzz/arbitrary/",
+      "repository": {
+        "Http": {
+          "url": "https://static.crates.io/crates/arbitrary/1.3.2/download",
+          "sha256": "7d5a26814d8dcb93b0e5a0ff3c6d80a8843bafb21b39e8e18a6f05471870e110"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "arbitrary",
+            "crate_root": "src/lib.rs",
+            "srcs": {
+              "allow_empty": false,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        }
+      ],
+      "library_target_name": "arbitrary",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "edition": "2021",
+        "version": "1.3.2"
+      },
+      "license": "MIT OR Apache-2.0",
+      "license_ids": [
+        "Apache-2.0",
+        "MIT"
+      ],
+      "license_file": "LICENSE-APACHE"
     },
     "arrayvec 0.7.4": {
       "name": "arrayvec",
@@ -2374,58 +2354,6 @@
       ],
       "license_file": "LICENSE.txt"
     },
-    "cipher 0.4.4": {
-      "name": "cipher",
-      "version": "0.4.4",
-      "package_url": "https://github.com/RustCrypto/traits",
-      "repository": {
-        "Http": {
-          "url": "https://static.crates.io/crates/cipher/0.4.4/download",
-          "sha256": "773f3b9af64447d2ce9850330c473515014aa235e6a783b02db81ff39e4a3dad"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "cipher",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "allow_empty": false,
-              "include": [
-                "**/*.rs"
-              ]
-            }
-          }
-        }
-      ],
-      "library_target_name": "cipher",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "deps": {
-          "common": [
-            {
-              "id": "crypto-common 0.1.6",
-              "target": "crypto_common"
-            },
-            {
-              "id": "inout 0.1.3",
-              "target": "inout"
-            }
-          ],
-          "selects": {}
-        },
-        "edition": "2021",
-        "version": "0.4.4"
-      },
-      "license": "MIT OR Apache-2.0",
-      "license_ids": [
-        "Apache-2.0",
-        "MIT"
-      ],
-      "license_file": "LICENSE-APACHE"
-    },
     "clap 4.5.4": {
       "name": "clap",
       "version": "4.5.4",
@@ -2751,44 +2679,6 @@
         "MIT"
       ],
       "license_file": "LICENSE-APACHE"
-    },
-    "constant_time_eq 0.1.5": {
-      "name": "constant_time_eq",
-      "version": "0.1.5",
-      "package_url": "https://github.com/cesarb/constant_time_eq",
-      "repository": {
-        "Http": {
-          "url": "https://static.crates.io/crates/constant_time_eq/0.1.5/download",
-          "sha256": "245097e9a4535ee1e3e3931fcfcd55a796a44c643e8596ff6566d68f09b87bbc"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "constant_time_eq",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "allow_empty": false,
-              "include": [
-                "**/*.rs"
-              ]
-            }
-          }
-        }
-      ],
-      "library_target_name": "constant_time_eq",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "edition": "2015",
-        "version": "0.1.5"
-      },
-      "license": "CC0-1.0",
-      "license_ids": [
-        "CC0-1.0"
-      ],
-      "license_file": "LICENSE.txt"
     },
     "core-foundation 0.9.4": {
       "name": "core-foundation",
@@ -3593,6 +3483,62 @@
       ],
       "license_file": "LICENSE-Apache"
     },
+    "derive_arbitrary 1.3.2": {
+      "name": "derive_arbitrary",
+      "version": "1.3.2",
+      "package_url": "https://github.com/rust-fuzz/arbitrary",
+      "repository": {
+        "Http": {
+          "url": "https://static.crates.io/crates/derive_arbitrary/1.3.2/download",
+          "sha256": "67e77553c4162a157adbf834ebae5b415acbecbeafc7a74b0e886657506a7611"
+        }
+      },
+      "targets": [
+        {
+          "ProcMacro": {
+            "crate_name": "derive_arbitrary",
+            "crate_root": "src/lib.rs",
+            "srcs": {
+              "allow_empty": false,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        }
+      ],
+      "library_target_name": "derive_arbitrary",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "deps": {
+          "common": [
+            {
+              "id": "proc-macro2 1.0.82",
+              "target": "proc_macro2"
+            },
+            {
+              "id": "quote 1.0.36",
+              "target": "quote"
+            },
+            {
+              "id": "syn 2.0.64",
+              "target": "syn"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2021",
+        "version": "1.3.2"
+      },
+      "license": "MIT/Apache-2.0",
+      "license_ids": [
+        "Apache-2.0",
+        "MIT"
+      ],
+      "license_file": "LICENSE-APACHE"
+    },
     "difflib 0.4.0": {
       "name": "difflib",
       "version": "0.4.0",
@@ -3666,9 +3612,7 @@
             "block-buffer",
             "core-api",
             "default",
-            "mac",
-            "std",
-            "subtle"
+            "std"
           ],
           "selects": {}
         },
@@ -3681,10 +3625,6 @@
             {
               "id": "crypto-common 0.1.6",
               "target": "crypto_common"
-            },
-            {
-              "id": "subtle 2.5.0",
-              "target": "subtle"
             }
           ],
           "selects": {}
@@ -3806,6 +3746,62 @@
         },
         "edition": "2015",
         "version": "0.4.1"
+      },
+      "license": "MIT OR Apache-2.0",
+      "license_ids": [
+        "Apache-2.0",
+        "MIT"
+      ],
+      "license_file": "LICENSE-APACHE"
+    },
+    "displaydoc 0.2.4": {
+      "name": "displaydoc",
+      "version": "0.2.4",
+      "package_url": "https://github.com/yaahc/displaydoc",
+      "repository": {
+        "Http": {
+          "url": "https://static.crates.io/crates/displaydoc/0.2.4/download",
+          "sha256": "487585f4d0c6655fe74905e2504d8ad6908e4db67f744eb140876906c2f3175d"
+        }
+      },
+      "targets": [
+        {
+          "ProcMacro": {
+            "crate_name": "displaydoc",
+            "crate_root": "src/lib.rs",
+            "srcs": {
+              "allow_empty": false,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        }
+      ],
+      "library_target_name": "displaydoc",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "deps": {
+          "common": [
+            {
+              "id": "proc-macro2 1.0.82",
+              "target": "proc_macro2"
+            },
+            {
+              "id": "quote 1.0.36",
+              "target": "quote"
+            },
+            {
+              "id": "syn 2.0.64",
+              "target": "syn"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2018",
+        "version": "0.2.4"
       },
       "license": "MIT OR Apache-2.0",
       "license_ids": [
@@ -4422,9 +4418,12 @@
         "crate_features": {
           "common": [
             "any_impl",
+            "any_zlib",
             "default",
+            "libz-sys",
             "miniz_oxide",
-            "rust_backend"
+            "rust_backend",
+            "zlib"
           ],
           "selects": {}
         },
@@ -4433,6 +4432,10 @@
             {
               "id": "crc32fast 1.4.0",
               "target": "crc32fast"
+            },
+            {
+              "id": "libz-sys 1.1.16",
+              "target": "libz_sys"
             },
             {
               "id": "miniz_oxide 0.7.2",
@@ -5972,60 +5975,6 @@
       ],
       "license_file": "LICENSE-APACHE"
     },
-    "hmac 0.12.1": {
-      "name": "hmac",
-      "version": "0.12.1",
-      "package_url": "https://github.com/RustCrypto/MACs",
-      "repository": {
-        "Http": {
-          "url": "https://static.crates.io/crates/hmac/0.12.1/download",
-          "sha256": "6c49c37c09c17a53d937dfbb742eb3a961d65a994e6bcdcf37e7399d0cc8ab5e"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "hmac",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "allow_empty": false,
-              "include": [
-                "**/*.rs"
-              ]
-            }
-          }
-        }
-      ],
-      "library_target_name": "hmac",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "crate_features": {
-          "common": [
-            "reset"
-          ],
-          "selects": {}
-        },
-        "deps": {
-          "common": [
-            {
-              "id": "digest 0.10.7",
-              "target": "digest"
-            }
-          ],
-          "selects": {}
-        },
-        "edition": "2018",
-        "version": "0.12.1"
-      },
-      "license": "MIT OR Apache-2.0",
-      "license_ids": [
-        "Apache-2.0",
-        "MIT"
-      ],
-      "license_file": "LICENSE-APACHE"
-    },
     "http 0.2.12": {
       "name": "http",
       "version": "0.2.12",
@@ -7397,54 +7346,6 @@
       ],
       "license_file": "LICENSE"
     },
-    "inout 0.1.3": {
-      "name": "inout",
-      "version": "0.1.3",
-      "package_url": "https://github.com/RustCrypto/utils",
-      "repository": {
-        "Http": {
-          "url": "https://static.crates.io/crates/inout/0.1.3/download",
-          "sha256": "a0c10553d664a4d0bcff9f4215d0aac67a639cc68ef660840afe309b807bc9f5"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "inout",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "allow_empty": false,
-              "include": [
-                "**/*.rs"
-              ]
-            }
-          }
-        }
-      ],
-      "library_target_name": "inout",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "deps": {
-          "common": [
-            {
-              "id": "generic-array 0.14.7",
-              "target": "generic_array"
-            }
-          ],
-          "selects": {}
-        },
-        "edition": "2021",
-        "version": "0.1.3"
-      },
-      "license": "MIT OR Apache-2.0",
-      "license_ids": [
-        "Apache-2.0",
-        "MIT"
-      ],
-      "license_file": "LICENSE-APACHE"
-    },
     "ipnet 2.9.0": {
       "name": "ipnet",
       "version": "2.9.0",
@@ -7900,6 +7801,89 @@
         "MIT"
       ],
       "license_file": "LICENSE"
+    },
+    "libz-sys 1.1.16": {
+      "name": "libz-sys",
+      "version": "1.1.16",
+      "package_url": "https://github.com/rust-lang/libz-sys",
+      "repository": {
+        "Http": {
+          "url": "https://static.crates.io/crates/libz-sys/1.1.16/download",
+          "sha256": "5e143b5e666b2695d28f6bca6497720813f699c9602dd7f5cac91008b8ada7f9"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "libz_sys",
+            "crate_root": "src/lib.rs",
+            "srcs": {
+              "allow_empty": false,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        },
+        {
+          "BuildScript": {
+            "crate_name": "build_script_build",
+            "crate_root": "build.rs",
+            "srcs": {
+              "allow_empty": false,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        }
+      ],
+      "library_target_name": "libz_sys",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "deps": {
+          "common": [
+            {
+              "id": "libz-sys 1.1.16",
+              "target": "build_script_build"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2018",
+        "version": "1.1.16"
+      },
+      "build_script_attrs": {
+        "data_glob": [
+          "**"
+        ],
+        "deps": {
+          "common": [
+            {
+              "id": "cc 1.0.97",
+              "target": "cc"
+            },
+            {
+              "id": "pkg-config 0.3.30",
+              "target": "pkg_config"
+            },
+            {
+              "id": "vcpkg 0.2.15",
+              "target": "vcpkg"
+            }
+          ],
+          "selects": {}
+        },
+        "links": "z"
+      },
+      "license": "MIT OR Apache-2.0",
+      "license_ids": [
+        "Apache-2.0",
+        "MIT"
+      ],
+      "license_file": "LICENSE-APACHE"
     },
     "linux-raw-sys 0.4.13": {
       "name": "linux-raw-sys",
@@ -8820,138 +8804,6 @@
         "MPL-2.0"
       ],
       "license_file": "LICENSE.txt"
-    },
-    "password-hash 0.4.2": {
-      "name": "password-hash",
-      "version": "0.4.2",
-      "package_url": "https://github.com/RustCrypto/traits/tree/master/password-hash",
-      "repository": {
-        "Http": {
-          "url": "https://static.crates.io/crates/password-hash/0.4.2/download",
-          "sha256": "7676374caaee8a325c9e7a2ae557f216c5563a171d6997b0ef8a65af35147700"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "password_hash",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "allow_empty": false,
-              "include": [
-                "**/*.rs"
-              ]
-            }
-          }
-        }
-      ],
-      "library_target_name": "password_hash",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "crate_features": {
-          "common": [
-            "rand_core"
-          ],
-          "selects": {}
-        },
-        "deps": {
-          "common": [
-            {
-              "id": "base64ct 1.6.0",
-              "target": "base64ct"
-            },
-            {
-              "id": "rand_core 0.6.4",
-              "target": "rand_core"
-            },
-            {
-              "id": "subtle 2.5.0",
-              "target": "subtle"
-            }
-          ],
-          "selects": {}
-        },
-        "edition": "2021",
-        "version": "0.4.2"
-      },
-      "license": "MIT OR Apache-2.0",
-      "license_ids": [
-        "Apache-2.0",
-        "MIT"
-      ],
-      "license_file": "LICENSE-APACHE"
-    },
-    "pbkdf2 0.11.0": {
-      "name": "pbkdf2",
-      "version": "0.11.0",
-      "package_url": "https://github.com/RustCrypto/password-hashes/tree/master/pbkdf2",
-      "repository": {
-        "Http": {
-          "url": "https://static.crates.io/crates/pbkdf2/0.11.0/download",
-          "sha256": "83a0692ec44e4cf1ef28ca317f14f8f07da2d95ec3fa01f86e4467b725e60917"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "pbkdf2",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "allow_empty": false,
-              "include": [
-                "**/*.rs"
-              ]
-            }
-          }
-        }
-      ],
-      "library_target_name": "pbkdf2",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "crate_features": {
-          "common": [
-            "default",
-            "hmac",
-            "password-hash",
-            "sha2",
-            "simple"
-          ],
-          "selects": {}
-        },
-        "deps": {
-          "common": [
-            {
-              "id": "digest 0.10.7",
-              "target": "digest"
-            },
-            {
-              "id": "hmac 0.12.1",
-              "target": "hmac"
-            },
-            {
-              "id": "password-hash 0.4.2",
-              "target": "password_hash"
-            },
-            {
-              "id": "sha2 0.10.8",
-              "target": "sha2"
-            }
-          ],
-          "selects": {}
-        },
-        "edition": "2021",
-        "version": "0.11.0"
-      },
-      "license": "MIT OR Apache-2.0",
-      "license_ids": [
-        "Apache-2.0",
-        "MIT"
-      ],
-      "license_file": "LICENSE-APACHE"
     },
     "pem 3.0.4": {
       "name": "pem",
@@ -13767,7 +13619,7 @@
               "target": "walkdir"
             },
             {
-              "id": "zip 0.6.6",
+              "id": "zip 1.2.3",
               "target": "zip"
             }
           ],
@@ -17941,6 +17793,45 @@
       ],
       "license_file": "LICENSE-APACHE"
     },
+    "vcpkg 0.2.15": {
+      "name": "vcpkg",
+      "version": "0.2.15",
+      "package_url": "https://github.com/mcgoo/vcpkg-rs",
+      "repository": {
+        "Http": {
+          "url": "https://static.crates.io/crates/vcpkg/0.2.15/download",
+          "sha256": "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "vcpkg",
+            "crate_root": "src/lib.rs",
+            "srcs": {
+              "allow_empty": false,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        }
+      ],
+      "library_target_name": "vcpkg",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "edition": "2015",
+        "version": "0.2.15"
+      },
+      "license": "MIT/Apache-2.0",
+      "license_ids": [
+        "Apache-2.0",
+        "MIT"
+      ],
+      "license_file": "LICENSE-APACHE"
+    },
     "version_check 0.9.4": {
       "name": "version_check",
       "version": "0.9.4",
@@ -20878,14 +20769,14 @@
       ],
       "license_file": "LICENSE-APACHE"
     },
-    "zip 0.6.6": {
+    "zip 1.2.3": {
       "name": "zip",
-      "version": "0.6.6",
-      "package_url": "https://github.com/zip-rs/zip.git",
+      "version": "1.2.3",
+      "package_url": "https://github.com/zip-rs/zip2.git",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/zip/0.6.6/download",
-          "sha256": "760394e246e4c28189f19d488c058bf16f564016aefac5d32bb1f3b51d5e9261"
+          "url": "https://static.crates.io/crates/zip/1.2.3/download",
+          "sha256": "c700ea425e148de30c29c580c1f9508b93ca57ad31c9f4e96b83c194c37a7a8f"
         }
       },
       "targets": [
@@ -20893,6 +20784,18 @@
           "Library": {
             "crate_name": "zip",
             "crate_root": "src/lib.rs",
+            "srcs": {
+              "allow_empty": false,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        },
+        {
+          "BuildScript": {
+            "crate_name": "build_script_build",
+            "crate_root": "src/build.rs",
             "srcs": {
               "allow_empty": false,
               "include": [
@@ -20909,39 +20812,14 @@
         ],
         "crate_features": {
           "common": [
-            "aes",
-            "aes-crypto",
-            "bzip2",
-            "constant_time_eq",
-            "default",
-            "deflate",
-            "flate2",
-            "hmac",
-            "pbkdf2",
-            "sha1",
-            "time",
-            "zstd"
+            "_deflate-any",
+            "deflate-zlib",
+            "flate2"
           ],
           "selects": {}
         },
         "deps": {
           "common": [
-            {
-              "id": "aes 0.8.4",
-              "target": "aes"
-            },
-            {
-              "id": "byteorder 1.5.0",
-              "target": "byteorder"
-            },
-            {
-              "id": "bzip2 0.4.4",
-              "target": "bzip2"
-            },
-            {
-              "id": "constant_time_eq 0.1.5",
-              "target": "constant_time_eq"
-            },
             {
               "id": "crc32fast 1.4.0",
               "target": "crc32fast"
@@ -20951,24 +20829,16 @@
               "target": "flate2"
             },
             {
-              "id": "hmac 0.12.1",
-              "target": "hmac"
+              "id": "indexmap 2.2.6",
+              "target": "indexmap"
             },
             {
-              "id": "pbkdf2 0.11.0",
-              "target": "pbkdf2"
+              "id": "thiserror 1.0.60",
+              "target": "thiserror"
             },
             {
-              "id": "sha1 0.10.6",
-              "target": "sha1"
-            },
-            {
-              "id": "time 0.3.36",
-              "target": "time"
-            },
-            {
-              "id": "zstd 0.11.2+zstd.1.5.2",
-              "target": "zstd"
+              "id": "zip 1.2.3",
+              "target": "build_script_build"
             }
           ],
           "selects": {
@@ -20977,11 +20847,31 @@
                 "id": "crossbeam-utils 0.8.19",
                 "target": "crossbeam_utils"
               }
+            ],
+            "cfg(fuzzing)": [
+              {
+                "id": "arbitrary 1.3.2",
+                "target": "arbitrary"
+              }
             ]
           }
         },
         "edition": "2021",
-        "version": "0.6.6"
+        "proc_macro_deps": {
+          "common": [
+            {
+              "id": "displaydoc 0.2.4",
+              "target": "displaydoc"
+            }
+          ],
+          "selects": {}
+        },
+        "version": "1.2.3"
+      },
+      "build_script_attrs": {
+        "data_glob": [
+          "**"
+        ]
       },
       "license": "MIT",
       "license_ids": [
@@ -21480,6 +21370,7 @@
       "x86_64-unknown-linux-gnu",
       "x86_64-unknown-nixos-gnu"
     ],
+    "cfg(fuzzing)": [],
     "cfg(not(all(windows, target_env = \"msvc\", not(target_vendor = \"uwp\"))))": [
       "aarch64-apple-darwin",
       "aarch64-apple-ios",
@@ -21745,7 +21636,7 @@
     "tokio 1.37.0",
     "toml 0.8.13",
     "walkdir 2.5.0",
-    "zip 0.6.6"
+    "zip 1.2.3"
   ],
   "direct_dev_deps": [
     "assert_cmd 2.0.14",
