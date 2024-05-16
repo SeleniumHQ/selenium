@@ -54,6 +54,7 @@ csharp_library(
         "@rules_dotnet//tools/runfiles",
         framework("nuget", "Newtonsoft.Json"),
         framework("nuget", "NUnit"),
+        framework("nuget", "WebDriverBiDi"),
     ],
 )
 
@@ -92,5 +93,6 @@ dotnet_nunit_test_suite(
         framework("nuget", "BenderProxy"),
         framework("nuget", "Newtonsoft.Json"),
         framework("nuget", "NUnit"),
+        framework("nuget", "WebDriverBiDi"),
     ],
 )
