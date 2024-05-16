@@ -1,3 +1,9 @@
+## 4.21.0
+
+- Add CDP for Chrome 125 and remove 122
+- Ensure 'selectVisibleByText' method is same as other languages (#13899)
+- Ensure parity in the locators used by methods (#13902)
+
 ## 4.20.0
 
 - Add CDP for Chrome 124 and remove 121

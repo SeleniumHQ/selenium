@@ -106,7 +106,7 @@
   </Target>
 
   <Target Name="GenerateCdp" BeforeTargets="CoreCompile">
-    <Exec Command="bazel build //dotnet/src/webdriver/cdp:generate-v85 //dotnet/src/webdriver/cdp:generate-v124 //dotnet/src/webdriver/cdp:generate-v122 //dotnet/src/webdriver/cdp:generate-v123" />
+    <Exec Command="bazel build //dotnet/src/webdriver/cdp:generate-v85 //dotnet/src/webdriver/cdp:generate-v124 //dotnet/src/webdriver/cdp:generate-v125 //dotnet/src/webdriver/cdp:generate-v123" />
 
     <ItemGroup>
       <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />

@@ -1,3 +1,8 @@
+Selenium 4.21.0
+
+* Add CDP for Chrome 124 and remove 121
+* Moving ignore_local_proxy_environment_variables to BaseOptions (#13926)
+
 Selenium 4.20.0
 
 * Add CDP for Chrome 124 and remove 121
