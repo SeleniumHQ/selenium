@@ -1,7 +1,14 @@
-4.21.0 (2024-05-15)
+4.21.0 (2024-05-16)
 =========================
 
 * Add CDP for Chrome 125 and remove 122
+* Initial extensibility points for Appium
+  * Support registering extra headers in HTTP client
+  * Support overriding User-Agent in HTTP client
+  * Support registering extra bridge commands
+  * Support overriding default locator conversion
+  * Support registering custom finders for SearchContext
+  * Support using custom element classes
 
 4.20.1 (2024-04-25)
 =========================
