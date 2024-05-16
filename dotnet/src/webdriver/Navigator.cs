@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium
@@ -42,7 +43,16 @@ namespace OpenQA.Selenium
         /// </summary>
         public void Back()
         {
-            this.driver.InternalExecute(DriverCommand.GoBack, null);
+            BackAsync().GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Move back a single entry in the browser's history.
+        /// </summary>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        public async Task BackAsync()
+        {
+            await this.driver.InternalExecuteAsync(DriverCommand.GoBack, null);
         }
 
         /// <summary>
