@@ -159,7 +159,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A response from the browser</returns>
         public virtual Response Execute(Command commandToExecute)
         {
-            return this.ExecuteAsync(commandToExecute).GetAwaiter().GetResult();
+            return Task.Run(() => this.ExecuteAsync(commandToExecute)).GetAwaiter().GetResult();
         }
 
         /// <summary>
