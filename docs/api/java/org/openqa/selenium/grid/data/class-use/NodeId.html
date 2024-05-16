@@ -144,12 +144,13 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><code><a href="../NodeDrainStarted.html#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">NodeDrainStarted</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../NodeStatus.html#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId,java.net.URI,int,java.util.Set,org.openqa.selenium.grid.data.Availability,java.time.Duration,java.lang.String,java.util.Map)" class="member-name-link">NodeStatus</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+<div class="col-second odd-row-color"><code><a href="../NodeStatus.html#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId,java.net.URI,int,java.util.Set,org.openqa.selenium.grid.data.Availability,java.time.Duration,java.time.Duration,java.lang.String,java.util.Map)" class="member-name-link">NodeStatus</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;externalUri,
  int&nbsp;maxSessionCount,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../Slot.html" title="class in org.openqa.selenium.grid.data">Slot</a>&gt;&nbsp;slots,
  <a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;heartbeatPeriod,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionTimeout,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;version,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;osInfo)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
@@ -281,10 +282,11 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-second even-row-color"><code><a href="../../node/Node.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.security.Secret)" class="member-name-link">Node</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<div class="col-second even-row-color"><code><a href="../../node/Node.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.security.Secret,java.time.Duration)" class="member-name-link">Node</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
- <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret)</code></div>
+ <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionTimeout)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -298,11 +300,12 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../node/remote/RemoteNode.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.security.Secret,java.util.Collection)" class="member-name-link">RemoteNode</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<div class="col-second even-row-color"><code><a href="../../node/remote/RemoteNode.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.security.Secret,java.time.Duration,java.util.Collection)" class="member-name-link">RemoteNode</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
  <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;externalUri,
  <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionTimeout,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;capabilities)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
