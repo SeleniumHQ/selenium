@@ -1,5 +1,5 @@
 {
-  "checksum": "cf09893e2a6b4d45261e4b6a4cf4136eebe0a2129176ae2113eb63b5f5ff8c52",
+  "checksum": "56fdaab3fc8fbbad2fa1adba945c9339107eb008d5b9fc5e22503e02f134349e",
   "crates": {
     "addr2line 0.21.0": {
       "name": "addr2line",
@@ -4418,9 +4418,12 @@
         "crate_features": {
           "common": [
             "any_impl",
+            "any_zlib",
             "default",
+            "libz-sys",
             "miniz_oxide",
-            "rust_backend"
+            "rust_backend",
+            "zlib"
           ],
           "selects": {}
         },
@@ -4429,6 +4432,10 @@
             {
               "id": "crc32fast 1.4.0",
               "target": "crc32fast"
+            },
+            {
+              "id": "libz-sys 1.1.16",
+              "target": "libz_sys"
             },
             {
               "id": "miniz_oxide 0.7.2",
@@ -7794,6 +7801,89 @@
         "MIT"
       ],
       "license_file": "LICENSE"
+    },
+    "libz-sys 1.1.16": {
+      "name": "libz-sys",
+      "version": "1.1.16",
+      "package_url": "https://github.com/rust-lang/libz-sys",
+      "repository": {
+        "Http": {
+          "url": "https://static.crates.io/crates/libz-sys/1.1.16/download",
+          "sha256": "5e143b5e666b2695d28f6bca6497720813f699c9602dd7f5cac91008b8ada7f9"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "libz_sys",
+            "crate_root": "src/lib.rs",
+            "srcs": {
+              "allow_empty": false,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        },
+        {
+          "BuildScript": {
+            "crate_name": "build_script_build",
+            "crate_root": "build.rs",
+            "srcs": {
+              "allow_empty": false,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        }
+      ],
+      "library_target_name": "libz_sys",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "deps": {
+          "common": [
+            {
+              "id": "libz-sys 1.1.16",
+              "target": "build_script_build"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2018",
+        "version": "1.1.16"
+      },
+      "build_script_attrs": {
+        "data_glob": [
+          "**"
+        ],
+        "deps": {
+          "common": [
+            {
+              "id": "cc 1.0.97",
+              "target": "cc"
+            },
+            {
+              "id": "pkg-config 0.3.30",
+              "target": "pkg_config"
+            },
+            {
+              "id": "vcpkg 0.2.15",
+              "target": "vcpkg"
+            }
+          ],
+          "selects": {}
+        },
+        "links": "z"
+      },
+      "license": "MIT OR Apache-2.0",
+      "license_ids": [
+        "Apache-2.0",
+        "MIT"
+      ],
+      "license_file": "LICENSE-APACHE"
     },
     "linux-raw-sys 0.4.13": {
       "name": "linux-raw-sys",
@@ -17703,6 +17793,45 @@
       ],
       "license_file": "LICENSE-APACHE"
     },
+    "vcpkg 0.2.15": {
+      "name": "vcpkg",
+      "version": "0.2.15",
+      "package_url": "https://github.com/mcgoo/vcpkg-rs",
+      "repository": {
+        "Http": {
+          "url": "https://static.crates.io/crates/vcpkg/0.2.15/download",
+          "sha256": "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "vcpkg",
+            "crate_root": "src/lib.rs",
+            "srcs": {
+              "allow_empty": false,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        }
+      ],
+      "library_target_name": "vcpkg",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "edition": "2015",
+        "version": "0.2.15"
+      },
+      "license": "MIT/Apache-2.0",
+      "license_ids": [
+        "Apache-2.0",
+        "MIT"
+      ],
+      "license_file": "LICENSE-APACHE"
+    },
     "version_check 0.9.4": {
       "name": "version_check",
       "version": "0.9.4",
@@ -20684,7 +20813,7 @@
         "crate_features": {
           "common": [
             "_deflate-any",
-            "deflate",
+            "deflate-zlib",
             "flate2"
           ],
           "selects": {}
