@@ -133,9 +133,72 @@
 
 
 
+  <h2>Class Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#extra_finders-class_method" title="extra_finders (class method)">.<strong>extra_finders</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute extra_finders.</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
 
 
 
+
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#finders-class_method" title="finders (class method)">.<strong>finders</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
   
     <h2>
       Instance Method Summary
@@ -196,6 +259,90 @@
   
 
 
+  <div id="class_attr_details" class="attr_details">
+    <h2>Class Attribute Details</h2>
+    
+      
+      <span id="extra_finders=-class_method"></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="extra_finders-class_method">
+  
+    .<strong>extra_finders</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute extra_finders.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_extra_finders'>extra_finders</span>
+  <span class='ivar'>@extra_finders</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="finders-class_method">
+  
+    .<strong>finders</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+41
+42
+43</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 41</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_finders'>finders</span>
+  <span class='const'><span class='object_link'><a href="#FINDERS-constant" title="Selenium::WebDriver::SearchContext::FINDERS (constant)">FINDERS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_extra_finders'>extra_finders</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
@@ -377,22 +524,22 @@
       <pre class="lines">
 
 
-57
-58
-59
-60
-61
-62
-63
-64</pre>
+65
+66
+67
+68
+69
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 65</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span> <span class='op'>=</span> <span class='id identifier rubyid_extract_args'>extract_args</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_by'>by</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#FINDERS-constant" title="Selenium::WebDriver::SearchContext::FINDERS (constant)">FINDERS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_by'>by</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></span><span class='period'>.</span><span class='id identifier rubyid_finders'><span class='object_link'><a href="#finders-class_method" title="Selenium::WebDriver::SearchContext.finders (method)">finders</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot find element by </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_by'>by</span>
 
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_find_element_by'>find_element_by</span> <span class='id identifier rubyid_by'>by</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_ref'>ref</span>
@@ -448,22 +595,22 @@
       <pre class="lines">
 
 
-72
-73
-74
-75
-76
-77
-78
-79</pre>
+80
+81
+82
+83
+84
+85
+86
+87</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 80</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_elements'>find_elements</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span> <span class='op'>=</span> <span class='id identifier rubyid_extract_args'>extract_args</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_by'>by</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#FINDERS-constant" title="Selenium::WebDriver::SearchContext::FINDERS (constant)">FINDERS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_by'>by</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></span><span class='period'>.</span><span class='id identifier rubyid_finders'><span class='object_link'><a href="#finders-class_method" title="Selenium::WebDriver::SearchContext.finders (method)">finders</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot find elements by </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_by'>by</span>
 
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_find_elements_by'>find_elements_by</span> <span class='id identifier rubyid_by'>by</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_ref'>ref</span>
@@ -478,7 +625,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Apr 25 18:46:56 2024 by
+  Generated on Thu May 16 04:49:16 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.36 (ruby-3.0.6).
 </div>

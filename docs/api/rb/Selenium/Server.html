@@ -779,7 +779,8 @@
 198
 199
 200
-201</pre>
+201
+202</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 183</span>
@@ -787,6 +788,7 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ENOENT</span><span class='comma'>,</span> <span class='id identifier rubyid_jar'>jar</span> <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_exist?'>exist?</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='rparen'>)</span>
 
+  <span class='ivar'>@java</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:java</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>java</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
   <span class='ivar'>@jar</span> <span class='op'>=</span> <span class='id identifier rubyid_jar'>jar</span>
   <span class='ivar'>@host</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>127.0.0.1</span><span class='tstring_end'>&#39;</span></span>
   <span class='ivar'>@role</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:role</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>standalone</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -1525,16 +1527,16 @@
       <pre class="lines">
 
 
-221
 222
 223
 224
 225
 226
-227</pre>
+227
+228</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 221</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 222</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_arg'>arg</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
@@ -1563,15 +1565,15 @@
       <pre class="lines">
 
 
-203
 204
 205
 206
 207
-208</pre>
+208
+209</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 203</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 204</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='id identifier rubyid_process'>process</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
@@ -1599,15 +1601,15 @@
       <pre class="lines">
 
 
-210
 211
 212
 213
 214
-215</pre>
+215
+216</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 210</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 211</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='id identifier rubyid_stop_process'>stop_process</span> <span class='kw'>if</span> <span class='ivar'>@process</span>
@@ -1635,12 +1637,12 @@
       <pre class="lines">
 
 
-217
 218
-219</pre>
+219
+220</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 217</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 218</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_webdriver_url'>webdriver_url</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>/wd/hub</span><span class='tstring_end'>&quot;</span></span>
@@ -1655,7 +1657,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Apr 25 18:46:56 2024 by
+  Generated on Thu May 16 04:49:17 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.36 (ruby-3.0.6).
 </div>
