@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium
 {
@@ -30,6 +31,12 @@ namespace OpenQA.Selenium
         /// Move back a single entry in the browser's history.
         /// </summary>
         void Back();
+
+        /// <summary>
+        /// Move back a single entry in the browser's history.
+        /// </summary>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        Task BackAsync();
 
         /// <summary>
         /// Move a single "item" forward in the browser's history.
