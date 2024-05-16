@@ -56,13 +56,13 @@ Metrics/MethodLength:
     - 'lib/selenium/server.rb'
     - 'lib/selenium/webdriver/common/options.rb'
     - 'lib/selenium/webdriver/common/driver.rb'
+    - 'lib/selenium/webdriver/common/driver_finder.rb'
     - 'lib/selenium/webdriver/remote/http/default.rb'
 
 Metrics/ModuleLength:
   CountComments: false
   Max: 110
   Exclude:
-    - 'lib/selenium/webdriver/common/driver_finder.rb'
     - 'lib/selenium/webdriver/common/platform.rb'
     - 'spec/**/*'
 
