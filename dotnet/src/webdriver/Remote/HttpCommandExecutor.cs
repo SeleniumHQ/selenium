@@ -159,6 +159,16 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A response from the browser</returns>
         public virtual Response Execute(Command commandToExecute)
         {
+            return this.ExecuteAsync(commandToExecute).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Executes a command Asynchronously
+        /// </summary>
+        /// <param name="commandToExecute">The command you wish to execute</param>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        public virtual async Task<Response> ExecuteAsync(Command commandToExecute)
+        {
             if (commandToExecute == null)
             {
                 throw new ArgumentNullException(nameof(commandToExecute), "commandToExecute cannot be null");
@@ -184,7 +194,7 @@ namespace OpenQA.Selenium.Remote
             HttpResponseInfo responseInfo = null;
             try
             {
-                responseInfo = Task.Run(async () => await this.MakeHttpRequest(requestInfo)).GetAwaiter().GetResult();
+                responseInfo = await this.MakeHttpRequest(requestInfo);
             }
             catch (HttpRequestException ex)
             {
