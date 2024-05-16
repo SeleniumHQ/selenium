@@ -29,7 +29,7 @@ setup_args = {
     'name': 'selenium',
     'version': "4.22.0.dev202405160507",
     'license': 'Apache 2.0',
-    'description': 'Python bindings for Selenium',
+    'description': 'Official Python bindings for Selenium WebDriver.',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
     'url': 'https://github.com/SeleniumHQ/selenium/',
     'project_urls': {

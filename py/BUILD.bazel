@@ -251,6 +251,7 @@ py_wheel(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
     ],
+    description = "Official Python bindings for Selenium WebDriver",
     description_file = "README.rst",
     distribution = "selenium",
     homepage = "https://www.selenium.dev",
