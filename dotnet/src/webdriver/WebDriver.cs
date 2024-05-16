@@ -557,7 +557,7 @@ namespace OpenQA.Selenium
         /// <returns>WebDriver Response</returns>
         internal Response InternalExecute(string driverCommandToExecute, Dictionary<string, object> parameters)
         {
-            return this.InternalExecuteAsync(driverCommandToExecute, parameters).GetAwaiter().GetResult();
+            return Task.Run(() => this.InternalExecuteAsync(driverCommandToExecute, parameters)).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -575,9 +575,8 @@ namespace OpenQA.Selenium
         internal Response Execute(string driverCommandToExecute,
             Dictionary<string, object> parameters)
         {
-            return this.ExecuteAsync(driverCommandToExecute, parameters).GetAwaiter().GetResult();
+            return Task.Run(() => this.ExecuteAsync(driverCommandToExecute, parameters)).GetAwaiter().GetResult();
         }
-
 
         /// <summary>
         /// Executes a command with this driver .

@@ -43,7 +43,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public void Back()
         {
-            BackAsync().GetAwaiter().GetResult();
+            Task.Run(this.BackAsync).GetAwaiter().GetResult();
         }
 
         /// <summary>
