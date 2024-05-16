@@ -21,6 +21,7 @@ Layout/SpaceInsideHashLiteralBraces:
 Metrics/AbcSize:
   Max: 30
   Exclude:
+    - 'lib/selenium/webdriver/common/driver_finder.rb'
     - 'lib/selenium/webdriver/common/options.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/remote/http/curb.rb'
@@ -61,6 +62,7 @@ Metrics/ModuleLength:
   CountComments: false
   Max: 110
   Exclude:
+    - 'lib/selenium/webdriver/common/driver_finder.rb'
     - 'lib/selenium/webdriver/common/platform.rb'
     - 'spec/**/*'
 
