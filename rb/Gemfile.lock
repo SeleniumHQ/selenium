@@ -3,7 +3,7 @@ PATH
   specs:
     selenium-devtools (0.125.0)
       selenium-webdriver (~> 4.2)
-    selenium-webdriver (4.21.0)
+    selenium-webdriver (4.22.0.nightly)
       base64 (~> 0.2)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -41,6 +41,7 @@ GEM
     diff-lcs (1.5.1)
     drb (2.2.1)
     ffi (1.16.3)
+    ffi (1.16.3-java)
     fileutils (1.7.2)
     git (1.19.1)
       addressable (~> 2.8)
@@ -188,4 +189,4 @@ DEPENDENCIES
   yard (~> 0.9.11, >= 0.9.36)
 
 BUNDLED WITH
-   2.4.19
+   2.5.10
