@@ -1017,6 +1017,33 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_LOG, {"type": log_type})["value"]
 
+    @property
+    def bidi(self):
+        global cdp
+        import_cdp()
+        if self.caps.get("se:cdp"):
+            ws_url = self.caps.get("se:cdp")
+            version = self.caps.get("se:cdpVersion").split(".")[0]
+        else:
+            version, ws_url = self._get_cdp_details()
+
+        if not ws_url:
+            raise WebDriverException("Unable to find url to connect to from capabilities")
+
+        global devtools
+        devtools = cdp.import_devtools(version)
+        conn = cdp.connect_cdp_sync(ws_url)
+        targets = conn.send_cmd(devtools.target.get_targets())
+        target_id = targets[0].target_id
+        session = conn.send_cmd(devtools.target.attach_to_target(target_id, True))
+        conn.session_id = session
+        return conn
+
+    def on_log_event(self, type, callback):
+        bidi = self.bidi
+        bidi.send_cmd(devtools.runtime.enable())
+        bidi.callbacks['Runtime.consoleAPICalled'] = [callback]
+
     @asynccontextmanager
     async def bidi_connection(self):
         global cdp

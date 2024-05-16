@@ -35,6 +35,7 @@ class ChromiumOptions(ArgOptions):
         self._extensions = []
         self._experimental_options = {}
         self._debugger_address = None
+        self.add_argument("--remote-allow-origins=*")
 
     @property
     def binary_location(self) -> str:

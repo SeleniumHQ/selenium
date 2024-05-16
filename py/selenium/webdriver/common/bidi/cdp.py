@@ -499,3 +499,7 @@ async def connect_cdp(nursery, url) -> CdpConnection:
     cdp_conn = CdpConnection(ws)
     nursery.start_soon(cdp_conn._reader_task)
     return cdp_conn
+
+from selenium.webdriver.common.bidi.websocket_connection import WebSocketConnection
+def connect_cdp_sync(url) -> WebSocketConnection:
+    return WebSocketConnection(url)
