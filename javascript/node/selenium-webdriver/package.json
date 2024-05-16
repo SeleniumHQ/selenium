@@ -20,7 +20,7 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "engines": {
-    "node": ">= 14.22.0-nightly202405160507"
+    "node": ">= 14.21.0"
   },
   "dependencies": {
     "jszip": "^3.10.1",
