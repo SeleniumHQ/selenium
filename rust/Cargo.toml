@@ -18,22 +18,22 @@ env_logger = "0.11.3"
 regex = "1.10.4"
 tokio = { version = "1.37.0", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
 tempfile = "3.10.1"
-reqwest = { version = "0.12.4", default-features = false, features = ["rustls-tls"] }
-zip = "1.2.3"
+reqwest = { version = "0.12.3", default-features = false, features = ["rustls-tls"] }
+zip = "0.6.6"
 directories = "5.0.1"
-serde = { version = "1.0.202", features = ["derive"] }
-serde_json = "1.0.117"
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.115"
 flate2 = "1.0.28"
 tar = "0.4.40"
 infer = "0.15.0"
 exitcode = "1.1.2"
 is_executable = "1.0.1"
-toml = "0.8.13"
+toml = "0.8.12"
 bzip2 = "0.4.4"
 sevenz-rust = "0.6.0"
 walkdir = "2.5.0"
 debpkg = "0.6.0"
-anyhow = { version = "1.0.83", features = ["backtrace"] }
+anyhow = { version = "1.0.82", features = ["backtrace"] }
 apple-flat-package = "0.18.0"
 
 [dev-dependencies]
