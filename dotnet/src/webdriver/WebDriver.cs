@@ -109,17 +109,7 @@ namespace OpenQA.Selenium
                 return commandResponse.Value.ToString();
             }
 
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value), "Argument 'url' cannot be null.");
-                }
-
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("url", value);
-                this.Execute(DriverCommand.Get, parameters);
-            }
+            set => new Navigator(this).GoToUrl(value);
         }
 
         /// <summary>
