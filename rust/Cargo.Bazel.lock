@@ -1,5 +1,5 @@
 {
-  "checksum": "f35d1100ea52e80b9d55fe9ace086af727b1dd92ea0d53aa5c96c79de5b59bc7",
+  "checksum": "d8671aa04f5cd21901de59f80188b5fa42024b948d0efab13eb8b24310ff43fa",
   "crates": {
     "addr2line 0.21.0": {
       "name": "addr2line",
@@ -576,7 +576,6 @@
         "crate_features": {
           "common": [
             "backtrace",
-            "default",
             "std"
           ],
           "selects": {}

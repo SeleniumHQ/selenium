@@ -33,7 +33,7 @@ bzip2 = "0.4.4"
 sevenz-rust = "0.6.0"
 walkdir = "2.5.0"
 debpkg = "0.6.0"
-anyhow = { version = "1.0.83", features = ["backtrace"] }
+anyhow = { version = "1.0.84", default-features = false, features = ["backtrace" , "std"] }
 apple-flat-package = "0.18.0"
 
 [dev-dependencies]
