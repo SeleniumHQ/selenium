@@ -29,12 +29,12 @@ java_test_suite(
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium:helpers",
         "//java/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.mockito:mockito-core"),
-        artifact("org.mockito:mockito-inline"),
     ] + JUNIT5_DEPS,
 )
 

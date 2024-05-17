@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const sinon = require('sinon')
 
 class StubError extends Error {
@@ -26,6 +26,7 @@ class StubError extends Error {
     this.name = this.constructor.name
   }
 }
+
 exports.StubError = StubError
 
 exports.throwStubError = function () {
@@ -77,6 +78,7 @@ function callbackPair(cb, eb) {
     assertNeither,
   }
 }
+
 exports.callbackPair = callbackPair
 
 exports.callbackHelper = function (cb) {

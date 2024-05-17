@@ -17,16 +17,14 @@
 
 'use strict'
 
-const assert = require('assert')
-const fs = require('fs')
+const assert = require('node:assert')
+const fs = require('node:fs')
 const chrome = require('../../chrome')
 const symbols = require('../../lib/symbols')
 const test = require('../../lib/test')
 const { locate } = require('../../lib/test/resources')
 
-const WEBEXTENSION_CRX = locate(
-  'common/extensions/webextensions-selenium-example.crx'
-)
+const WEBEXTENSION_CRX = locate('common/extensions/webextensions-selenium-example.crx')
 
 describe('chrome.Options', function () {
   describe('addArguments', function () {
@@ -77,26 +75,16 @@ describe('chrome.Options', function () {
       assert.strictEqual(options.options_.extensions, undefined)
 
       options.addExtensions(['a', 'b'], 'c', [1, 2], 3)
-      assert.deepStrictEqual(options.options_.extensions.extensions, [
-        'a',
-        'b',
-        'c',
-        1,
-        2,
-        3,
-      ])
+      assert.deepStrictEqual(options.options_.extensions.extensions, ['a', 'b', 'c', 1, 2, 3])
     })
   })
 
   describe('serialize', function () {
     it('base64 encodes extensions', async function () {
       let expected = fs.readFileSync(WEBEXTENSION_CRX, 'base64')
-      let wire = new chrome.Options()
-        .addExtensions(WEBEXTENSION_CRX)
-        [symbols.serialize]()
+      let wire = new chrome.Options().addExtensions(WEBEXTENSION_CRX)[symbols.serialize]()
 
-      let extensions =
-        wire['goog:chromeOptions'].extensions[symbols.serialize]()
+      let extensions = wire['goog:chromeOptions'].extensions[symbols.serialize]()
       assert.strictEqual(extensions.length, 1)
       assert.strictEqual(await extensions[0], expected)
     })
@@ -116,14 +104,7 @@ describe('chrome.Options', function () {
       assert.strictEqual(options.options_.windowTypes, undefined)
 
       options.windowTypes(['a', 'b'], 'c', [1, 2], 3)
-      assert.deepStrictEqual(options.options_.windowTypes, [
-        'a',
-        'b',
-        'c',
-        1,
-        2,
-        3,
-      ])
+      assert.deepStrictEqual(options.options_.windowTypes, ['a', 'b', 'c', 1, 2, 3])
     })
   })
 })
@@ -148,9 +129,7 @@ test.suite(
 
         await driver.get(test.Pages.ajaxyPage)
 
-        const userAgent = await driver.executeScript(
-          'return window.navigator.userAgent'
-        )
+        const userAgent = await driver.executeScript('return window.navigator.userAgent')
         assert.strictEqual(userAgent, 'foo;bar')
       })
 
@@ -175,26 +154,16 @@ test.suite(
       it('can install an extension from path', async function () {
         let options = new chrome.Options().addExtensions(WEBEXTENSION_CRX)
 
-        driver = await env
-          .builder()
-          .forBrowser('chrome')
-          .setChromeOptions(options)
-          .build()
+        driver = await env.builder().forBrowser('chrome').setChromeOptions(options).build()
 
         await driver.get(test.Pages.echoPage)
         await verifyWebExtensionWasInstalled()
       })
 
       it('can install an extension from Buffer', async function () {
-        let options = new chrome.Options().addExtensions(
-          fs.readFileSync(WEBEXTENSION_CRX)
-        )
+        let options = new chrome.Options().addExtensions(fs.readFileSync(WEBEXTENSION_CRX))
 
-        driver = await env
-          .builder()
-          .forBrowser('chrome')
-          .setChromeOptions(options)
-          .build()
+        driver = await env.builder().forBrowser('chrome').setChromeOptions(options).build()
 
         await driver.get(test.Pages.echoPage)
         await verifyWebExtensionWasInstalled()
@@ -205,12 +174,9 @@ test.suite(
           id: 'webextensions-selenium-example',
         })
         let text = await footer.getText()
-        assert.strictEqual(
-          text,
-          'Content injected by webextensions-selenium-example'
-        )
+        assert.strictEqual(text, 'Content injected by webextensions-selenium-example')
       }
     })
   },
-  { browsers: ['chrome'] }
+  { browsers: ['chrome'] },
 )

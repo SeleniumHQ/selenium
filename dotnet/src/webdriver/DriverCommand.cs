@@ -16,7 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium
@@ -394,6 +393,21 @@ namespace OpenQA.Selenium
         public static readonly string SetUserVerified = "setUserVerified";
 
         /// <summary>
+        /// Represents the GetDownloadableFiles command.
+        /// </summary>
+        public static readonly string GetDownloadableFiles = "getDownloadableFiles";
+
+        /// <summary>
+        /// Represents the DownloadFile command.
+        /// </summary>
+        public static readonly string DownloadFile = "downloadFile";
+
+        /// <summary>
+        /// Represents the DeleteDownloadableFiles command.
+        /// </summary>
+        public static readonly string DeleteDownloadableFiles = "deleteDownloadableFiles";
+
+        /// <summary>
         /// Lists the set of known commands valid for the Selenium library.
         /// </summary>
         public static readonly IList<string> KnownCommands = new List<string>()
@@ -468,7 +482,10 @@ namespace OpenQA.Selenium
             GetCredentials,
             RemoveCredential,
             RemoveAllCredentials,
-            SetUserVerified
+            SetUserVerified,
+            GetDownloadableFiles,
+            DownloadFile,
+            DeleteDownloadableFiles
         }.AsReadOnly();
     }
 }

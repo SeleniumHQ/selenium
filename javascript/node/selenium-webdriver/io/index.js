@@ -17,8 +17,8 @@
 
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('node:fs')
+const path = require('node:path')
 const tmp = require('tmp')
 
 /**
@@ -219,6 +219,7 @@ function findInPath(file, opt_checkCwd) {
     try {
       let stats = fs.statSync(tmp)
       return stats.isFile() && !stats.isDirectory()
+      /*eslint no-unused-vars: "off"*/
     } catch (ex) {
       return false
     }
@@ -293,7 +294,7 @@ function mkdirp(dir) {
             .then(() => mkdirp(dir))
             .then(
               () => callback(null, dir),
-              (err) => callback(err)
+              (err) => callback(err),
             )
         default:
           callback(err)
@@ -326,8 +327,8 @@ function walkDir(rootPath) {
             })
             return stats.isDirectory() && walk(file)
           })
-        })
-      )
+        }),
+      ),
     )
   })(rootPath).then(() => seen)
 }

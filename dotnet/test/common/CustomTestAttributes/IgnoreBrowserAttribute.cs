@@ -1,9 +1,9 @@
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
-using System;
 using NUnit.Framework.Internal;
-using System.Collections.Generic;
 using OpenQA.Selenium.Environment;
+using System;
+using System.Collections.Generic;
 
 namespace OpenQA.Selenium
 {
@@ -23,7 +23,7 @@ namespace OpenQA.Selenium
         {
             this.ignoreReason = reason;
         }
-        
+
         public Browser Value
         {
             get { return browser; }

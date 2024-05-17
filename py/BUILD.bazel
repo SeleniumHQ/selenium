@@ -1,3 +1,4 @@
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
 load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
@@ -9,6 +10,26 @@ load("//py:defs.bzl", "generate_devtools", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:import.bzl", "py_import")
 
+py_binary(
+    name = "selenium-release",
+    srcs = [
+        "release-selenium.py",
+    ],
+    args = [
+        "upload",
+        "$(location :selenium-wheel)",
+        "$(location :selenium-sdist)",
+    ],
+    data = [
+        ":selenium-sdist",
+        ":selenium-wheel",
+    ],
+    main = "release-selenium.py",
+    deps = [
+        requirement("twine"),
+    ],
+)
+
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
@@ -19,13 +40,13 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.14.0"
+SE_VERSION = "4.22.0.dev202405160507"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v116",
-    "v117",
-    "v118",
+    "v125",
+    "v123",
+    "v124",
 ]
 
 TEST_DEPS = [
@@ -115,6 +136,24 @@ copy_file(
     out = "test/extensions/webextensions-selenium-example-unsigned.zip",
 )
 
+select_file(
+    name = "global-license",
+    srcs = "//:license",
+    subpath = "LICENSE",
+)
+
+copy_file(
+    name = "license",
+    src = ":global-license",
+    out = "LICENSE",
+)
+
+copy_file(
+    name = "license-wheel",
+    src = ":global-license",
+    out = "selenium-%s.dist-info/LICENSE" % SE_VERSION,
+)
+
 py_library(
     name = "selenium",
     srcs = glob(
@@ -135,6 +174,7 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
+        requirement("typing_extensions"),
         requirement("trio"),
         requirement("trio_websocket"),
         requirement("urllib3"),
@@ -167,6 +207,7 @@ pkg_files(
         "MANIFEST.in",
         "README.rst",
         "setup.py",
+        ":license",
         ":selenium-pkg",
         ":selenium-pkginfo",
     ],
@@ -221,13 +262,16 @@ py_wheel(
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
+        "typing_extensions>=4.9.0",
     ],
     strip_path_prefixes = [
         "py/",
     ],
+    summary = "Official Python bindings for Selenium WebDriver",
     version = SE_VERSION,
     visibility = ["//visibility:public"],
     deps = [
+        ":license-wheel",
         ":selenium-pkg",
     ],
 )
@@ -314,7 +358,7 @@ py_library(
 
 [
     py_test_suite(
-        name = "auto-%s" % browser,
+        name = "common-%s" % browser,
         size = "large",
         srcs = glob(
             [
@@ -346,19 +390,17 @@ py_test_suite(
     srcs = glob(
         [
             "test/selenium/webdriver/chrome/**/*.py",
-            "test/selenium/webdriver/common/**/*.py",
-            "test/selenium/webdriver/support/**/*.py",
         ],
         exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"],
     ),
     args = [
         "--instafail",
-        "--driver=chrome",
-    ],
+    ] + BROWSERS["chrome"]["args"],
+    data = BROWSERS["chrome"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
-        "skip-remote",
-    ],
+    ] + BROWSERS["chrome"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -372,19 +414,18 @@ py_test_suite(
     srcs = glob(
         [
             "test/selenium/webdriver/chrome/**/*.py",
-            "test/selenium/webdriver/common/**/*.py",
-            "test/selenium/webdriver/support/**/*.py",
         ],
     ),
     args = [
         "--instafail",
-        "--driver=chrome",
         "--headless=true",
-    ],
+    ] + BROWSERS["chrome"]["args"],
+    data = BROWSERS["chrome"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
         "skip-remote",
-    ],
+    ] + BROWSERS["chrome"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -397,17 +438,15 @@ py_test_suite(
     size = "large",
     srcs = glob([
         "test/selenium/webdriver/edge/**/*.py",
-        "test/selenium/webdriver/common/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
     ]),
     args = [
         "--instafail",
-        "--driver=edge",
-    ],
+    ] + BROWSERS["edge"]["args"],
+    data = BROWSERS["edge"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
-        "skip-remote",
-    ],
+    ] + BROWSERS["edge"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -419,19 +458,18 @@ py_test_suite(
     name = "test-firefox",
     size = "large",
     srcs = glob([
-        "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/marionette/**/*.py",
         "test/selenium/webdriver/firefox/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
     ]),
     args = [
         "--instafail",
-        "--driver=firefox",
-    ],
+    ] + BROWSERS["firefox"]["args"],
+    data = BROWSERS["firefox"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
         "skip-remote",
-    ],
+    ] + BROWSERS["firefox"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -545,7 +583,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=WPEWebKit",
+        "--driver=wpewebkit",
         "--browser-binary=MiniBrowser",
         "--browser-args=--automation --headless",
     ],

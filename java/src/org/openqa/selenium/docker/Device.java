@@ -34,7 +34,7 @@ public class Device {
   }
 
   public static Device device(String pathOnHost, String pathInContainer, String cgroupPermissions) {
-    if (Objects.isNull(cgroupPermissions) || cgroupPermissions.trim().length() == 0) {
+    if (Objects.isNull(cgroupPermissions) || cgroupPermissions.trim().isEmpty()) {
       cgroupPermissions = "crw";
     }
     return new Device(pathOnHost, pathInContainer, cgroupPermissions);

@@ -30,6 +30,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -59,6 +60,8 @@ import org.openqa.selenium.support.decorators.Decorated;
  */
 @Beta
 public class Augmenter {
+
+  private static final Logger LOG = Logger.getLogger(Augmenter.class.getName());
   private final Set<Augmentation<?>> augmentations;
 
   public Augmenter() {
@@ -146,6 +149,19 @@ public class Augmenter {
     Require.nonNull("WebDriver", driver);
     Require.precondition(
         driver instanceof HasCapabilities, "Driver must have capabilities", driver);
+
+    if (driver instanceof Decorated<?>) {
+      LOG.warning(
+          "Warning: In future versions, passing a decorated driver will no longer be allowed.\n"
+              + " Instead, augment the driver first and then use it to created a decorated"
+              + " driver.\n"
+              + " Explanation: Decorated drivers are not aware of the augmentations applied to"
+              + " them. It can lead to expected behavior.\n"
+              + " For example, augmenting HasDevTools interface to a decorated driver. \n"
+              + " The decorated driver is not aware that after augmentation it is an instance of"
+              + " HasDevTools. So it does not invoke the close() method of the underlying"
+              + " websocket, potentially causing a memory leak. ");
+    }
 
     Capabilities caps = ImmutableCapabilities.copyOf(((HasCapabilities) driver).getCapabilities());
 

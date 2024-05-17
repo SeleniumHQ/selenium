@@ -1,17 +1,14 @@
-using System.Collections.Generic;
 using NUnit.Framework;
-using System.Collections.ObjectModel;
-using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Environment;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium
 {
     [TestFixture]
     [IgnoreBrowser(Browser.Firefox, "Firefox driver (when using Marionette/Geckodriver) does not support logs API")]
     [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
-	[IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]
+    [IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]
     public class GetLogsTest : DriverTestFixture
     {
         private IWebDriver localDriver;

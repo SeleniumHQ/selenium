@@ -16,8 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.Firefox
 {
     /// <summary>

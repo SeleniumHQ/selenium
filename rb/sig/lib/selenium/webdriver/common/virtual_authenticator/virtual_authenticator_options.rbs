@@ -1,0 +1,45 @@
+module Selenium
+  module WebDriver
+    class VirtualAuthenticatorOptions
+      @protocol: untyped
+
+      @transport: untyped
+
+      @resident_key: untyped
+
+      @user_verification: untyped
+
+      @user_consenting: untyped
+
+      @user_verified: untyped
+
+      PROTOCOL: Hash[Symbol, String]
+
+      TRANSPORT: Hash[Symbol, String]
+
+      attr_accessor protocol: untyped
+
+      attr_accessor transport: untyped
+
+      attr_accessor resident_key: untyped
+
+      attr_accessor user_verification: untyped
+
+      attr_accessor user_consenting: untyped
+
+      attr_accessor user_verified: untyped
+
+      alias resident_key? resident_key
+
+      alias user_verification? user_verification
+
+      alias user_consenting? user_consenting
+
+      alias user_verified? user_verified
+
+      def initialize: (**untyped opts) -> void
+
+      def as_json: (*untyped) -> Hash[String, untyped]
+    end
+  end
+end

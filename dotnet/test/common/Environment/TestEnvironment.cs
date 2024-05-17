@@ -28,6 +28,6 @@ namespace OpenQA.Selenium.Environment
         public Dictionary<string, DriverConfig> DriverConfigs { get; set; }
 
         [JsonProperty]
-        public TestWebServerConfig TestWebServerConfig {get; set;}
+        public TestWebServerConfig TestWebServerConfig { get; set; }
     }
 }

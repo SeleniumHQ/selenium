@@ -17,16 +17,14 @@
 
 'use strict'
 
-const assert = require('assert')
-const fs = require('fs')
+const assert = require('node:assert')
+const fs = require('node:fs')
 const edge = require('../../edge')
 const symbols = require('../../lib/symbols')
 const test = require('../../lib/test')
 const { locate } = require('../../lib/test/resources')
 
-const WEBEXTENSION_CRX = locate(
-  'common/extensions/webextensions-selenium-example.crx'
-)
+const WEBEXTENSION_CRX = locate('common/extensions/webextensions-selenium-example.crx')
 
 describe('edge.Options', function () {
   describe('addArguments', function () {
@@ -86,23 +84,14 @@ describe('edge.Options', function () {
       assert.strictEqual(options.options_.extensions, undefined)
 
       options.addExtensions(['a', 'b'], 'c', [1, 2], 3)
-      assert.deepStrictEqual(options.options_.extensions.extensions, [
-        'a',
-        'b',
-        'c',
-        1,
-        2,
-        3,
-      ])
+      assert.deepStrictEqual(options.options_.extensions.extensions, ['a', 'b', 'c', 1, 2, 3])
     })
   })
 
   describe('serialize', function () {
     it('base64 encodes extensions', async function () {
       let expected = fs.readFileSync(WEBEXTENSION_CRX, 'base64')
-      let wire = new edge.Options()
-        .addExtensions(WEBEXTENSION_CRX)
-        [symbols.serialize]()
+      let wire = new edge.Options().addExtensions(WEBEXTENSION_CRX)[symbols.serialize]()
 
       let extensions = wire['ms:edgeOptions'].extensions[symbols.serialize]()
       assert.strictEqual(extensions.length, 1)
@@ -124,14 +113,7 @@ describe('edge.Options', function () {
       assert.strictEqual(options.options_.windowTypes, undefined)
 
       options.windowTypes(['a', 'b'], 'c', [1, 2], 3)
-      assert.deepStrictEqual(options.options_.windowTypes, [
-        'a',
-        'b',
-        'c',
-        1,
-        2,
-        3,
-      ])
+      assert.deepStrictEqual(options.options_.windowTypes, ['a', 'b', 'c', 1, 2, 3])
     })
   })
 })
@@ -156,9 +138,7 @@ test.suite(
 
         await driver.get(test.Pages.ajaxyPage)
 
-        var userAgent = await driver.executeScript(
-          'return window.navigator.userAgent'
-        )
+        var userAgent = await driver.executeScript('return window.navigator.userAgent')
         assert.strictEqual(userAgent, 'foo;bar')
       })
 
@@ -189,9 +169,7 @@ test.suite(
       })
 
       it('can install an extension from Buffer', async function () {
-        let options = new edge.Options().addExtensions(
-          fs.readFileSync(WEBEXTENSION_CRX)
-        )
+        let options = new edge.Options().addExtensions(fs.readFileSync(WEBEXTENSION_CRX))
 
         driver = await env.builder().setEdgeOptions(options).build()
 
@@ -204,12 +182,9 @@ test.suite(
           id: 'webextensions-selenium-example',
         })
         let text = await footer.getText()
-        assert.strictEqual(
-          text,
-          'Content injected by webextensions-selenium-example'
-        )
+        assert.strictEqual(text, 'Content injected by webextensions-selenium-example')
       }
     })
   },
-  { browsers: ['MicrosoftEdge'] }
+  { browsers: ['MicrosoftEdge'] },
 )

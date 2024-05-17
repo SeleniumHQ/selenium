@@ -13,7 +13,8 @@
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
-// under the License
+// under the License.
+
 package org.openqa.selenium.bidi.script;
 
 import java.util.Map;
@@ -23,7 +24,7 @@ public class SetLocalValue extends LocalValue {
 
   private final Set<LocalValue> value;
 
-  public SetLocalValue(Set<LocalValue> value) {
+  SetLocalValue(Set<LocalValue> value) {
     this.value = value;
   }
 

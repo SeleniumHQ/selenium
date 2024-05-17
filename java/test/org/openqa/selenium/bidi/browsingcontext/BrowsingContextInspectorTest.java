@@ -19,6 +19,7 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
+import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -26,34 +27,28 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
-import org.openqa.selenium.bidi.BrowsingContextInspector;
+import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
-class BrowsingContextInspectorTest {
+class BrowsingContextInspectorTest extends JupiterTestBase {
 
   private AppServer server;
-  private FirefoxDriver driver;
 
   @BeforeEach
   public void setUp() {
-    FirefoxOptions options = (FirefoxOptions) Browser.FIREFOX.getCapabilities();
-    options.setCapability("webSocketUrl", true);
-
-    driver = new FirefoxDriver(options);
-
     server = new NettyAppServer();
     server.start();
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canListenToWindowBrowsingContextCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -74,6 +69,31 @@ class BrowsingContextInspectorTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  void canListenToBrowsingContextDestroyedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
+
+      inspector.onBrowsingContextDestroyed(future::complete);
+
+      String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
+
+      driver.close();
+
+      BrowsingContextInfo browsingContextInfo = future.get(5, TimeUnit.SECONDS);
+
+      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
+      assertThat("about:blank").isEqualTo(browsingContextInfo.getUrl());
+      assertThat(browsingContextInfo.getChildren()).isEqualTo(null);
+      assertThat(browsingContextInfo.getParentBrowsingContext()).isEqualTo(null);
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canListenToTabBrowsingContextCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -93,6 +113,8 @@ class BrowsingContextInspectorTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canListenToDomContentLoadedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -109,6 +131,8 @@ class BrowsingContextInspectorTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canListenToBrowsingContextLoadedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -125,7 +149,10 @@ class BrowsingContextInspectorTest {
   }
 
   @Test
-  @Disabled
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   void canListenToNavigationStartedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -142,7 +169,8 @@ class BrowsingContextInspectorTest {
   }
 
   @Test
-  @Disabled
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canListenToFragmentNavigatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -163,7 +191,8 @@ class BrowsingContextInspectorTest {
   }
 
   @Test
-  @Disabled
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canListenToUserPromptOpenedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -183,7 +212,10 @@ class BrowsingContextInspectorTest {
   }
 
   @Test
-  @Disabled
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  // TODO: This test is flaky for comparing the browsing context id for Chrome and Edge. Fix flaky
+  // test.
   void canListenToUserPromptClosedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {

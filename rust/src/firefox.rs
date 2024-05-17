@@ -1,5 +1,4 @@
 // Licensed to the Software Freedom Conservancy (SFC) under one
-// Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The SFC licenses this file
@@ -19,9 +18,7 @@
 use crate::config::ManagerConfig;
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
-use crate::downloads::{
-    parse_generic_json_from_url, read_content_from_link, read_redirect_from_link,
-};
+use crate::downloads::{parse_json_from_url, read_content_from_link, read_redirect_from_link};
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -33,13 +30,19 @@ use crate::{
 use anyhow::anyhow;
 use anyhow::Error;
 use reqwest::Client;
+use serde::Deserialize;
+use serde::Serialize;
+use serde_json::Value;
 use std::collections::HashMap;
 use std::path::PathBuf;
+use std::sync::mpsc;
+use std::sync::mpsc::{Receiver, Sender};
 
 pub const FIREFOX_NAME: &str = "firefox";
 pub const GECKODRIVER_NAME: &str = "geckodriver";
 const DRIVER_URL: &str = "https://github.com/mozilla/geckodriver/releases/";
 const LATEST_RELEASE: &str = "latest";
+const DRIVER_VERSIONS_URL: &str = "https://raw.githubusercontent.com/SeleniumHQ/selenium/trunk/common/geckodriver/geckodriver-support.json";
 const BROWSER_URL: &str = "https://ftp.mozilla.org/pub/firefox/releases/";
 const FIREFOX_DEFAULT_LANG: &str = "en-US";
 const FIREFOX_MACOS_APP_NAME: &str = "Firefox.app/Contents/MacOS/firefox";
@@ -56,7 +59,7 @@ const FIREFOX_HISTORY_DEV_ENDPOINT: &str = "firefox_history_development_releases
 const FIREFOX_NIGHTLY_URL: &str =
     "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os={}&lang={}";
 const FIREFOX_VOLUME: &str = "Firefox";
-const FIREFOX_NIGHTLY_VOLUME: &str = r#"Firefox\ Nightly"#;
+const FIREFOX_NIGHTLY_VOLUME: &str = r"Firefox\ Nightly";
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN: i32 = 13;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC: i32 = 4;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX: i32 = 4;
@@ -69,6 +72,9 @@ pub struct FirefoxManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub tx: Sender<String>,
+    pub rx: Receiver<String>,
+    pub download_browser: bool,
 }
 
 impl FirefoxManager {
@@ -78,12 +84,16 @@ impl FirefoxManager {
         let config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
+        let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(FirefoxManager {
             browser_name,
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::new(),
+            tx,
+            rx,
+            download_browser: false,
         }))
     }
 
@@ -95,7 +105,7 @@ impl FirefoxManager {
         let browser_version = self.get_browser_version().to_string();
         let firefox_versions_url = self.create_firefox_details_url(endpoint);
         let firefox_versions =
-            parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
+            parse_json_from_url::<Value>(self.get_http_client(), &firefox_versions_url)?;
 
         let versions_map = firefox_versions.as_object().unwrap();
         let filter_key = if browser_version.contains('.') {
@@ -132,24 +142,24 @@ impl SeleniumManager for FirefoxManager {
         HashMap::from([
             (
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"Mozilla Firefox\firefox.exe"#,
+                r"Mozilla Firefox\firefox.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, BETA),
                 // "",
-                r#"Mozilla Firefox\firefox.exe"#,
+                r"Mozilla Firefox\firefox.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, DEV),
-                r#"Firefox Developer Edition\firefox.exe"#,
+                r"Firefox Developer Edition\firefox.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, NIGHTLY),
-                r#"Firefox Nightly\firefox.exe"#,
+                r"Firefox Nightly\firefox.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, ESR),
-                r#"Mozilla Firefox\firefox.exe"#,
+                r"Mozilla Firefox\firefox.exe",
             ),
             (
                 BrowserPath::new(MACOS, STABLE),
@@ -181,7 +191,7 @@ impl SeleniumManager for FirefoxManager {
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
-            r#"HKCU\Software\Mozilla\Mozilla Firefox"#,
+            r"HKCU\Software\Mozilla\Mozilla Firefox",
             REG_CURRENT_VERSION_ARG,
             DASH_VERSION,
         )
@@ -212,13 +222,58 @@ impl SeleniumManager for FirefoxManager {
             _ => {
                 self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
 
-                let latest_url = format!(
-                    "{}{}",
-                    self.get_driver_mirror_url_or_default(DRIVER_URL),
-                    LATEST_RELEASE
-                );
-                let driver_version =
-                    read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?;
+                let driver_version = match parse_json_from_url::<GeckodriverReleases>(
+                    self.get_http_client(),
+                    DRIVER_VERSIONS_URL,
+                ) {
+                    Ok(driver_releases) => {
+                        let major_browser_version_int =
+                            major_browser_version.parse::<u32>().unwrap_or_default();
+                        let filtered_versions: Vec<String> = driver_releases
+                            .geckodriver_releases
+                            .into_iter()
+                            .filter(|r| {
+                                major_browser_version_int >= r.min_firefox_version
+                                    && (r.max_firefox_version.is_none()
+                                        || (r.max_firefox_version.is_some()
+                                            && major_browser_version_int
+                                                <= r.max_firefox_version.unwrap()))
+                            })
+                            .map(|r| r.geckodriver_version)
+                            .collect();
+                        self.log.debug(format!(
+                            "Valid {} versions for {} {}: {:?}",
+                            &self.driver_name,
+                            &self.browser_name,
+                            major_browser_version_int,
+                            filtered_versions
+                        ));
+                        if filtered_versions.is_empty() {
+                            return Err(anyhow!(format!(
+                                "Not valid {} version found for {} {}",
+                                &self.driver_name, &self.browser_name, major_browser_version_int
+                            )));
+                        } else {
+                            filtered_versions.first().unwrap().to_string()
+                        }
+                    }
+                    Err(err) => {
+                        self.log.warn(format!(
+                            "Problem reading {} versions: {}. Using latest {} version",
+                            &self.driver_name, err, &self.driver_name,
+                        ));
+                        let latest_url = format!(
+                            "{}{}",
+                            self.get_driver_mirror_url_or_default(DRIVER_URL),
+                            LATEST_RELEASE
+                        );
+                        read_redirect_from_link(
+                            self.get_http_client(),
+                            latest_url,
+                            self.get_logger(),
+                        )?
+                    }
+                };
 
                 let driver_ttl = self.get_ttl();
                 if driver_ttl > 0 && !major_browser_version.is_empty() {
@@ -312,6 +367,14 @@ impl SeleniumManager for FirefoxManager {
         self.log = log;
     }
 
+    fn get_sender(&self) -> &Sender<String> {
+        &self.tx
+    }
+
+    fn get_receiver(&self) -> &Receiver<String> {
+        &self.rx
+    }
+
     fn get_platform_label(&self) -> &str {
         let driver_version = self.get_driver_version();
         let os = self.get_os();
@@ -356,7 +419,7 @@ impl SeleniumManager for FirefoxManager {
 
         let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
         let firefox_versions =
-            parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
+            parse_json_from_url::<Value>(self.get_http_client(), &firefox_versions_url)?;
         let browser_version = firefox_versions
             .get(FIREFOX_STABLE_LABEL)
             .unwrap()
@@ -379,7 +442,7 @@ impl SeleniumManager for FirefoxManager {
         if self.is_unstable(browser_version) {
             let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
             let firefox_versions =
-                parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
+                parse_json_from_url::<Value>(self.get_http_client(), &firefox_versions_url)?;
             let version_label = if self.is_beta(browser_version) {
                 FIREFOX_BETA_LABEL
             } else if self.is_dev(browser_version) {
@@ -429,7 +492,7 @@ impl SeleniumManager for FirefoxManager {
                 );
                 self.get_logger()
                     .trace(format!("Checking release URL: {}", release_url));
-                let content = read_content_from_link(self.get_http_client(), release_url)?;
+                let content = read_content_from_link(self.get_http_client(), &release_url)?;
                 if !content.contains("Not Found") {
                     return Ok(version.to_string());
                 }
@@ -543,6 +606,30 @@ impl SeleniumManager for FirefoxManager {
         };
         Ok(Some(browser_label))
     }
+
+    fn is_download_browser(&self) -> bool {
+        self.download_browser
+    }
+
+    fn set_download_browser(&mut self, download_browser: bool) {
+        self.download_browser = download_browser;
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct GeckodriverReleases {
+    #[serde(rename = "geckodriver-releases")]
+    pub geckodriver_releases: Vec<GeckodriverRelease>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct GeckodriverRelease {
+    #[serde(rename = "geckodriver-version")]
+    pub geckodriver_version: String,
+    #[serde(rename = "min-firefox-version")]
+    pub min_firefox_version: u32,
+    #[serde(rename = "max-firefox-version")]
+    pub max_firefox_version: Option<u32>,
 }
 
 #[cfg(test)]

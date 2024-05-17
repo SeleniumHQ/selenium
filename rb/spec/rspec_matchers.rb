@@ -22,7 +22,7 @@ LEVELS = %w[warning info deprecated].freeze
 LEVELS.each do |level|
   RSpec::Matchers.define "have_#{level}" do |entry|
     match do |actual|
-      # Suppresses logging output to stdout while ensuring that it is still happening
+      # Suppresses logging output to stderr while ensuring that it is still happening
       default_output = Selenium::WebDriver.logger.io
       io = StringIO.new
       Selenium::WebDriver.logger.output = io

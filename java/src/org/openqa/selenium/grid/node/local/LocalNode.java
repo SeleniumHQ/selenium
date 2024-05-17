@@ -154,7 +154,12 @@ public class LocalNode extends Node {
       List<SessionSlot> factories,
       Secret registrationSecret,
       boolean managedDownloadsEnabled) {
-    super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
+    super(
+        tracer,
+        new NodeId(UUID.randomUUID()),
+        uri,
+        registrationSecret,
+        Require.positive(sessionTimeout));
 
     this.bus = Require.nonNull("Event bus", bus);
 
@@ -652,7 +657,11 @@ public class LocalNode extends Node {
     }
     TemporaryFilesystem tempFS = downloadsTempFileSystem.getIfPresent(uuid);
     if (tempFS == null) {
-      throw new WebDriverException("Cannot find downloads file system for session id: " + id);
+      String msg =
+          "Cannot find downloads file system for session id: "
+              + id
+              + " — ensure downloads are enabled in the options class when requesting a session.";
+      throw new WebDriverException(msg);
     }
     File downloadsDirectory =
         Optional.ofNullable(tempFS.getBaseDir().listFiles()).orElse(new File[] {})[0];
@@ -801,20 +810,34 @@ public class LocalNode extends Node {
     }
 
     // Check if the user wants to use BiDi
-    boolean webSocketUrl = toUse.asMap().containsKey("webSocketUrl");
-    // Add se:bidi if necessary to send the bidi url back
-    boolean bidiSupported = isSupportingBiDi || toUse.getCapability("se:bidi") != null;
-    if (bidiSupported && bidiEnabled && webSocketUrl) {
+    // This will be null if the user has not set the capability.
+    Object webSocketUrl = toUse.getCapability("webSocketUrl");
+
+    // In case of Firefox versions that do not support webSocketUrl, it returns the capability as it
+    // is i.e. boolean value. So need to check if it is a string.
+    // Check if the Node supports BiDi and if the client wants to use BiDi.
+    boolean bidiSupported = isSupportingBiDi && (webSocketUrl instanceof String);
+    if (bidiSupported && bidiEnabled) {
+      String biDiUrl = (String) other.getCapabilities().getCapability("webSocketUrl");
+      URI uri = null;
+      try {
+        uri = new URI(biDiUrl);
+      } catch (URISyntaxException e) {
+        throw new IllegalArgumentException("Unable to create URI from " + uri);
+      }
       String bidiPath = String.format("/session/%s/se/bidi", other.getId());
-      toUse = new PersistentCapabilities(toUse).setCapability("se:bidi", rewrite(bidiPath));
+      toUse =
+          new PersistentCapabilities(toUse)
+              .setCapability("se:gridWebSocketUrl", uri)
+              .setCapability("webSocketUrl", rewrite(bidiPath));
     } else {
-      // Remove any se:bidi* from the response, BiDi is not supported nor enabled
+      // Remove any "webSocketUrl" from the response, BiDi is not supported nor enabled
       MutableCapabilities bidiFiltered = new MutableCapabilities();
       toUse
           .asMap()
           .forEach(
               (key, value) -> {
-                if (!key.startsWith("se:bidi")) {
+                if (!key.startsWith("webSocketUrl")) {
                   bidiFiltered.setCapability(key, value);
                 }
               });
@@ -834,6 +857,7 @@ public class LocalNode extends Node {
   private URI rewrite(String path) {
     try {
       String scheme = "https".equals(gridUri.getScheme()) ? "wss" : "ws";
+      path = NodeOptions.normalizeSubPath(gridUri.getPath()) + path;
       return new URI(
           scheme, gridUri.getUserInfo(), gridUri.getHost(), gridUri.getPort(), path, null, null);
     } catch (URISyntaxException e) {
@@ -887,6 +911,7 @@ public class LocalNode extends Node {
         slots,
         availability,
         heartbeatPeriod,
+        getSessionTimeout(),
         getNodeVersion(),
         getOsInfo());
   }

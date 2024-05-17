@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Globalization;
 using System.IO;
@@ -28,6 +29,8 @@ namespace OpenQA.Selenium.Internal
     /// </summary>
     internal static class FileUtilities
     {
+        private static readonly ILogger logger = Log.GetLogger(typeof(FileUtilities));
+
         /// <summary>
         /// Recursively copies a directory.
         /// </summary>
@@ -99,7 +102,10 @@ namespace OpenQA.Selenium.Internal
 
             if (Directory.Exists(directoryToDelete))
             {
-                Console.WriteLine("Unable to delete directory '{0}'", directoryToDelete);
+                if (logger.IsEnabled(LogEventLevel.Trace))
+                {
+                    logger.Trace($"Unable to delete directory '{directoryToDelete}'");
+                }
             }
         }
 

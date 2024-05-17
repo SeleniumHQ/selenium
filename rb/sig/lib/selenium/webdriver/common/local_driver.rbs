@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module LocalDriver
+      include _Driver
+
+      def initialize_local_driver: (untyped options, untyped service, untyped url) -> Array[untyped]
+
+      def process_options: (untyped options, untyped service) -> untyped
+    end
+  end
+end

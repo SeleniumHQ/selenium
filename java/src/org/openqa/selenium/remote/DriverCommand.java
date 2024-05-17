@@ -20,10 +20,10 @@ package org.openqa.selenium.remote;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonMap;
 
-import com.google.common.collect.ImmutableMap;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -41,7 +41,6 @@ import org.openqa.selenium.print.PrintOptions;
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public interface DriverCommand {
-  String GET_ALL_SESSIONS = "getAllSessions";
   String GET_CAPABILITIES = "getCapabilities";
   String NEW_SESSION = "newSession";
   String STATUS = "status";
@@ -70,11 +69,8 @@ public interface DriverCommand {
   String UPLOAD_FILE = "uploadFile";
   String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
   String GET_WINDOW_HANDLES = "getWindowHandles";
-  String GET_CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle";
-  String GET_CONTEXT_HANDLES = "getContextHandles";
   String SWITCH_TO_WINDOW = "switchToWindow";
   String SWITCH_TO_NEW_WINDOW = "newWindow";
-  String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
   String SWITCH_TO_PARENT_FRAME = "switchToParentFrame";
   String GET_ACTIVE_ELEMENT = "getActiveElement";
@@ -98,14 +94,12 @@ public interface DriverCommand {
   String GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty";
   String GET_ELEMENT_ARIA_ROLE = "getElementAriaRole";
   String GET_ELEMENT_ACCESSIBLE_NAME = "getElementAccessibleName";
-  String ELEMENT_EQUALS = "elementEquals";
   String SCREENSHOT = "screenshot";
   String ELEMENT_SCREENSHOT = "elementScreenshot";
   String ACCEPT_ALERT = "acceptAlert";
   String DISMISS_ALERT = "dismissAlert";
   String GET_ALERT_TEXT = "getAlertText";
   String SET_ALERT_VALUE = "setAlertValue";
-  String SET_ALERT_CREDENTIALS = "setAlertCredentials";
   String GET_TIMEOUTS = "getTimeouts";
   String SET_TIMEOUT = "setTimeout";
   String PRINT_PAGE = "printPage";
@@ -114,10 +108,7 @@ public interface DriverCommand {
   String GET_LOCATION = "getLocation";
   String SET_LOCATION = "setLocation";
   String GET_APP_CACHE = "getAppCache";
-  String GET_APP_CACHE_STATUS = "getStatus";
   String CLEAR_APP_CACHE = "clearAppCache";
-  String IS_BROWSER_ONLINE = "isBrowserOnline";
-  String SET_BROWSER_ONLINE = "setBrowserOnline";
   String GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem";
   String GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys";
   String SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem";
@@ -130,10 +121,6 @@ public interface DriverCommand {
   String REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem";
   String CLEAR_SESSION_STORAGE = "clearSessionStorage";
   String GET_SESSION_STORAGE_SIZE = "getSessionStorageSize";
-  String SET_SCREEN_ORIENTATION = "setScreenOrientation";
-  String GET_SCREEN_ORIENTATION = "getScreenOrientation";
-  String SET_SCREEN_ROTATION = "setScreenRotation";
-  String GET_SCREEN_ROTATION = "getScreenRotation";
   // W3C Actions APIs
   String ACTIONS = "actions";
   String CLEAR_ACTIONS_STATE = "clearActionState";
@@ -149,7 +136,6 @@ public interface DriverCommand {
   // Logging API
   String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";
   String GET_LOG = "getLog";
-  String GET_SESSION_LOGS = "getSessionLogs";
   // Mobile API
   String GET_NETWORK_CONNECTION = "getNetworkConnection";
   String SET_NETWORK_CONNECTION = "setNetworkConnection";
@@ -166,16 +152,19 @@ public interface DriverCommand {
   // https://fedidcg.github.io/FedCM/#automation
   String CANCEL_DIALOG = "cancelDialog";
   String SELECT_ACCOUNT = "selectAccount";
+  String CLICK_DIALOG = "clickDialog";
   String GET_ACCOUNTS = "getAccounts";
   String GET_FEDCM_TITLE = "getFedCmTitle";
   String GET_FEDCM_DIALOG_TYPE = "getFedCmDialogType";
   String SET_DELAY_ENABLED = "setDelayEnabled";
   String RESET_COOLDOWN = "resetCooldown";
+  String GET_DOWNLOADABLE_FILES = "getDownloadableFiles";
+  String DOWNLOAD_FILE = "downloadFile";
+  String DELETE_DOWNLOADABLE_FILES = "deleteDownloadableFiles";
 
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
     Require.nonNull("Capabilities", capabilities);
-    return new CommandPayload(
-        NEW_SESSION, ImmutableMap.of("capabilities", singleton(capabilities)));
+    return new CommandPayload(NEW_SESSION, Map.of("capabilities", singleton(capabilities)));
   }
 
   static CommandPayload NEW_SESSION(Collection<Capabilities> capabilities) {
@@ -184,37 +173,37 @@ public interface DriverCommand {
       throw new IllegalArgumentException("Capabilities for new session must not be empty");
     }
 
-    return new CommandPayload(NEW_SESSION, ImmutableMap.of("capabilities", capabilities));
+    return new CommandPayload(NEW_SESSION, Map.of("capabilities", capabilities));
   }
 
   static CommandPayload GET(String url) {
-    return new CommandPayload(GET, ImmutableMap.of("url", url));
+    return new CommandPayload(GET, Map.of("url", url));
   }
 
   static CommandPayload ADD_COOKIE(Cookie cookie) {
-    return new CommandPayload(ADD_COOKIE, ImmutableMap.of("cookie", cookie));
+    return new CommandPayload(ADD_COOKIE, Map.of("cookie", cookie));
   }
 
   static CommandPayload DELETE_COOKIE(String name) {
-    return new CommandPayload(DELETE_COOKIE, ImmutableMap.of("name", name));
+    return new CommandPayload(DELETE_COOKIE, Map.of("name", name));
   }
 
   static CommandPayload FIND_ELEMENT(String strategy, Object value) {
-    return new CommandPayload(FIND_ELEMENT, ImmutableMap.of("using", strategy, "value", value));
+    return new CommandPayload(FIND_ELEMENT, Map.of("using", strategy, "value", value));
   }
 
   static CommandPayload FIND_ELEMENTS(String strategy, Object value) {
-    return new CommandPayload(FIND_ELEMENTS, ImmutableMap.of("using", strategy, "value", value));
+    return new CommandPayload(FIND_ELEMENTS, Map.of("using", strategy, "value", value));
   }
 
   static CommandPayload FIND_CHILD_ELEMENT(String id, String strategy, String value) {
     return new CommandPayload(
-        FIND_CHILD_ELEMENT, ImmutableMap.of("id", id, "using", strategy, "value", value));
+        FIND_CHILD_ELEMENT, Map.of("id", id, "using", strategy, "value", value));
   }
 
   static CommandPayload FIND_CHILD_ELEMENTS(String id, String strategy, String value) {
     return new CommandPayload(
-        FIND_CHILD_ELEMENTS, ImmutableMap.of("id", id, "using", strategy, "value", value));
+        FIND_CHILD_ELEMENTS, Map.of("id", id, "using", strategy, "value", value));
   }
 
   static CommandPayload GET_ELEMENT_SHADOW_ROOT(String id) {
@@ -229,7 +218,7 @@ public interface DriverCommand {
     Require.nonNull("Value for finding strategy", value);
     return new CommandPayload(
         FIND_ELEMENT_FROM_SHADOW_ROOT,
-        ImmutableMap.of("shadowId", shadowId, "using", strategy, "value", value));
+        Map.of("shadowId", shadowId, "using", strategy, "value", value));
   }
 
   static CommandPayload FIND_ELEMENTS_FROM_SHADOW_ROOT(
@@ -239,35 +228,35 @@ public interface DriverCommand {
     Require.nonNull("Value for finding strategy", value);
     return new CommandPayload(
         FIND_ELEMENTS_FROM_SHADOW_ROOT,
-        ImmutableMap.of("shadowId", shadowId, "using", strategy, "value", value));
+        Map.of("shadowId", shadowId, "using", strategy, "value", value));
   }
 
   static CommandPayload CLEAR_ELEMENT(String id) {
-    return new CommandPayload(CLEAR_ELEMENT, ImmutableMap.of("id", id));
+    return new CommandPayload(CLEAR_ELEMENT, Map.of("id", id));
   }
 
   static CommandPayload CLICK_ELEMENT(String id) {
-    return new CommandPayload(CLICK_ELEMENT, ImmutableMap.of("id", id));
+    return new CommandPayload(CLICK_ELEMENT, Map.of("id", id));
   }
 
   static CommandPayload SEND_KEYS_TO_ELEMENT(String id, CharSequence[] keysToSend) {
-    return new CommandPayload(SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keysToSend));
+    return new CommandPayload(SEND_KEYS_TO_ELEMENT, Map.of("id", id, "value", keysToSend));
   }
 
   static CommandPayload SUBMIT_ELEMENT(String id) {
-    return new CommandPayload(SUBMIT_ELEMENT, ImmutableMap.of("id", id));
+    return new CommandPayload(SUBMIT_ELEMENT, Map.of("id", id));
   }
 
   static CommandPayload UPLOAD_FILE(String file) {
-    return new CommandPayload(UPLOAD_FILE, ImmutableMap.of("file", file));
+    return new CommandPayload(UPLOAD_FILE, Map.of("file", file));
   }
 
   static CommandPayload SWITCH_TO_WINDOW(String windowHandleOrName) {
-    return new CommandPayload(SWITCH_TO_WINDOW, ImmutableMap.of("handle", windowHandleOrName));
+    return new CommandPayload(SWITCH_TO_WINDOW, Map.of("handle", windowHandleOrName));
   }
 
   static CommandPayload SWITCH_TO_NEW_WINDOW(WindowType typeHint) {
-    return new CommandPayload(SWITCH_TO_NEW_WINDOW, ImmutableMap.of("type", typeHint.toString()));
+    return new CommandPayload(SWITCH_TO_NEW_WINDOW, Map.of("type", typeHint.toString()));
   }
 
   static CommandPayload SWITCH_TO_FRAME(Object frame) {
@@ -275,82 +264,80 @@ public interface DriverCommand {
   }
 
   static CommandPayload EXECUTE_SCRIPT(String script, List<Object> args) {
-    return new CommandPayload(EXECUTE_SCRIPT, ImmutableMap.of("script", script, "args", args));
+    return new CommandPayload(EXECUTE_SCRIPT, Map.of("script", script, "args", args));
   }
 
   static CommandPayload EXECUTE_ASYNC_SCRIPT(String script, List<Object> args) {
-    return new CommandPayload(
-        EXECUTE_ASYNC_SCRIPT, ImmutableMap.of("script", script, "args", args));
+    return new CommandPayload(EXECUTE_ASYNC_SCRIPT, Map.of("script", script, "args", args));
   }
 
   static CommandPayload GET_ELEMENT_TEXT(String id) {
-    return new CommandPayload(GET_ELEMENT_TEXT, ImmutableMap.of("id", id));
+    return new CommandPayload(GET_ELEMENT_TEXT, Map.of("id", id));
   }
 
   static CommandPayload GET_ELEMENT_TAG_NAME(String id) {
-    return new CommandPayload(GET_ELEMENT_TAG_NAME, ImmutableMap.of("id", id));
+    return new CommandPayload(GET_ELEMENT_TAG_NAME, Map.of("id", id));
   }
 
   static CommandPayload IS_ELEMENT_SELECTED(String id) {
-    return new CommandPayload(IS_ELEMENT_SELECTED, ImmutableMap.of("id", id));
+    return new CommandPayload(IS_ELEMENT_SELECTED, Map.of("id", id));
   }
 
   static CommandPayload IS_ELEMENT_ENABLED(String id) {
-    return new CommandPayload(IS_ELEMENT_ENABLED, ImmutableMap.of("id", id));
+    return new CommandPayload(IS_ELEMENT_ENABLED, Map.of("id", id));
   }
 
   static CommandPayload IS_ELEMENT_DISPLAYED(String id) {
-    return new CommandPayload(IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", id));
+    return new CommandPayload(IS_ELEMENT_DISPLAYED, Map.of("id", id));
   }
 
   static CommandPayload GET_ELEMENT_RECT(String id) {
-    return new CommandPayload(GET_ELEMENT_RECT, ImmutableMap.of("id", id));
+    return new CommandPayload(GET_ELEMENT_RECT, Map.of("id", id));
   }
 
   static CommandPayload GET_ELEMENT_LOCATION(String id) {
-    return new CommandPayload(GET_ELEMENT_LOCATION, ImmutableMap.of("id", id));
+    return new CommandPayload(GET_ELEMENT_LOCATION, Map.of("id", id));
   }
 
   static CommandPayload GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW(String id) {
-    return new CommandPayload(
-        GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, ImmutableMap.of("id", id));
+    return new CommandPayload(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, Map.of("id", id));
   }
 
   static CommandPayload GET_ELEMENT_SIZE(String id) {
-    return new CommandPayload(GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
+    return new CommandPayload(GET_ELEMENT_SIZE, Map.of("id", id));
   }
 
   static CommandPayload GET_ELEMENT_DOM_PROPERTY(String id, String name) {
-    return new CommandPayload(GET_ELEMENT_DOM_PROPERTY, ImmutableMap.of("id", id, "name", name));
+    return new CommandPayload(GET_ELEMENT_DOM_PROPERTY, Map.of("id", id, "name", name));
   }
 
   static CommandPayload GET_ELEMENT_DOM_ATTRIBUTE(String id, String name) {
-    return new CommandPayload(GET_ELEMENT_DOM_ATTRIBUTE, ImmutableMap.of("id", id, "name", name));
+    return new CommandPayload(GET_ELEMENT_DOM_ATTRIBUTE, Map.of("id", id, "name", name));
   }
 
   static CommandPayload GET_ELEMENT_ATTRIBUTE(String id, String name) {
-    return new CommandPayload(GET_ELEMENT_ATTRIBUTE, ImmutableMap.of("id", id, "name", name));
+    return new CommandPayload(GET_ELEMENT_ATTRIBUTE, Map.of("id", id, "name", name));
   }
 
   static CommandPayload GET_ELEMENT_VALUE_OF_CSS_PROPERTY(String id, String name) {
     return new CommandPayload(
-        GET_ELEMENT_VALUE_OF_CSS_PROPERTY, ImmutableMap.of("id", id, "propertyName", name));
+        GET_ELEMENT_VALUE_OF_CSS_PROPERTY, Map.of("id", id, "propertyName", name));
   }
 
   static CommandPayload GET_ELEMENT_ARIA_ROLE(String id) {
-    return new CommandPayload(GET_ELEMENT_ARIA_ROLE, ImmutableMap.of("id", id));
+    return new CommandPayload(GET_ELEMENT_ARIA_ROLE, Map.of("id", id));
   }
 
   static CommandPayload GET_ELEMENT_ACCESSIBLE_NAME(String id) {
-    return new CommandPayload(GET_ELEMENT_ACCESSIBLE_NAME, ImmutableMap.of("id", id));
+    return new CommandPayload(GET_ELEMENT_ACCESSIBLE_NAME, Map.of("id", id));
   }
 
   static CommandPayload ELEMENT_SCREENSHOT(String id) {
-    return new CommandPayload(ELEMENT_SCREENSHOT, ImmutableMap.of("id", id));
+    return new CommandPayload(ELEMENT_SCREENSHOT, Map.of("id", id));
   }
 
   static CommandPayload SET_ALERT_VALUE(String keysToSend) {
-    return new CommandPayload(SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
+    return new CommandPayload(SET_ALERT_VALUE, Map.of("text", keysToSend));
   }
 
   static CommandPayload PRINT_PAGE(PrintOptions options) {
@@ -360,62 +347,60 @@ public interface DriverCommand {
   @Deprecated
   static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-        SET_TIMEOUT, ImmutableMap.of("implicit", TimeUnit.MILLISECONDS.convert(time, unit)));
+        SET_TIMEOUT, Map.of("implicit", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
 
   static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(Duration duration) {
-    return new CommandPayload(SET_TIMEOUT, ImmutableMap.of("implicit", duration.toMillis()));
+    return new CommandPayload(SET_TIMEOUT, Map.of("implicit", duration.toMillis()));
   }
 
   @Deprecated
   static CommandPayload SET_SCRIPT_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-        SET_TIMEOUT, ImmutableMap.of("script", TimeUnit.MILLISECONDS.convert(time, unit)));
+        SET_TIMEOUT, Map.of("script", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
 
   static CommandPayload SET_SCRIPT_TIMEOUT(Duration duration) {
-    return new CommandPayload(SET_TIMEOUT, ImmutableMap.of("script", duration.toMillis()));
+    return new CommandPayload(SET_TIMEOUT, Map.of("script", duration.toMillis()));
   }
 
   @Deprecated
   static CommandPayload SET_PAGE_LOAD_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-        SET_TIMEOUT, ImmutableMap.of("pageLoad", TimeUnit.MILLISECONDS.convert(time, unit)));
+        SET_TIMEOUT, Map.of("pageLoad", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
 
   static CommandPayload SET_PAGE_LOAD_TIMEOUT(Duration duration) {
-    return new CommandPayload(SET_TIMEOUT, ImmutableMap.of("pageLoad", duration.toMillis()));
+    return new CommandPayload(SET_TIMEOUT, Map.of("pageLoad", duration.toMillis()));
   }
 
   static CommandPayload ACTIONS(Collection<Sequence> actions) {
-    return new CommandPayload(ACTIONS, ImmutableMap.of("actions", actions));
+    return new CommandPayload(ACTIONS, Map.of("actions", actions));
   }
 
   static CommandPayload IME_ACTIVATE_ENGINE(String engine) {
-    return new CommandPayload(SET_ALERT_VALUE, ImmutableMap.of("engine", engine));
+    return new CommandPayload(SET_ALERT_VALUE, Map.of("engine", engine));
   }
 
   static CommandPayload SET_CURRENT_WINDOW_POSITION(Point targetPosition) {
     return new CommandPayload(
-        SET_CURRENT_WINDOW_POSITION, ImmutableMap.of("x", targetPosition.x, "y", targetPosition.y));
+        SET_CURRENT_WINDOW_POSITION, Map.of("x", targetPosition.x, "y", targetPosition.y));
   }
 
   static CommandPayload GET_CURRENT_WINDOW_POSITION() {
-    return new CommandPayload(
-        GET_CURRENT_WINDOW_POSITION, ImmutableMap.of("windowHandle", "current"));
+    return new CommandPayload(GET_CURRENT_WINDOW_POSITION, Map.of("windowHandle", "current"));
   }
 
   static CommandPayload SET_CURRENT_WINDOW_SIZE(Dimension targetSize) {
     return new CommandPayload(
-        SET_CURRENT_WINDOW_SIZE,
-        ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
+        SET_CURRENT_WINDOW_SIZE, Map.of("width", targetSize.width, "height", targetSize.height));
   }
 
   static CommandPayload SELECT_ACCOUNT(int index) {
-    return new CommandPayload(SELECT_ACCOUNT, ImmutableMap.of("accountIndex", index));
+    return new CommandPayload(SELECT_ACCOUNT, Map.of("accountIndex", index));
   }
 
   static CommandPayload SET_DELAY_ENABLED(boolean enabled) {
-    return new CommandPayload(SET_DELAY_ENABLED, ImmutableMap.of("enabled", enabled));
+    return new CommandPayload(SET_DELAY_ENABLED, Map.of("enabled", enabled));
   }
 }

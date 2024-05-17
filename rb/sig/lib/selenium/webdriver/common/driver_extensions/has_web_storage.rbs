@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasWebStorage
+        def local_storage: () -> untyped
+
+        def session_storage: () -> untyped
+      end
+    end
+  end
+end

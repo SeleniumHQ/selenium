@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
-import com.google.common.collect.ImmutableSet;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.trace.StatusCode;
@@ -32,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.json.Json;
@@ -41,8 +41,8 @@ import org.openqa.selenium.remote.tracing.Span;
 public class SeleniumSpanExporter {
 
   private static final Logger LOG = Logger.getLogger(SeleniumSpanExporter.class.getName());
-  private static final ImmutableSet<String> EXCEPTION_ATTRIBUTES =
-      ImmutableSet.of("exception.message", "exception.stacktrace");
+  private static final Set<String> EXCEPTION_ATTRIBUTES =
+      Set.of("exception.message", "exception.stacktrace");
   private static final boolean httpLogs = OpenTelemetryTracer.getHttpLogs();
   private static final AttributeKey<String> KEY_SPAN_KIND =
       AttributeKey.stringKey(org.openqa.selenium.remote.tracing.AttributeKey.SPAN_KIND.getKey());

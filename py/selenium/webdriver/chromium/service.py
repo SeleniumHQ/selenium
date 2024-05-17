@@ -49,7 +49,7 @@ class ChromiumService(service.Service):
             self.log_output = log_output
 
         super().__init__(
-            executable=executable_path,
+            executable_path=executable_path,
             port=port,
             env=env,
             log_output=self.log_output,

@@ -1,0 +1,43 @@
+module Selenium
+  module WebDriver
+    module PointerActions
+      include _ActionBuilder
+
+      @default_move_duration: untyped
+
+      attr_writer default_move_duration: Integer
+
+      def default_move_duration: () -> Integer
+
+      def pointer_down: (?Symbol button, ?device: String | Symbol?, **Symbol | String opts) -> PointerActions
+
+      def pointer_up: (?Symbol button, ?device: String | Symbol?, **Symbol | String opts) -> PointerActions
+
+      def move_to: (Element element, ?Integer? right_by, ?Integer? down_by, **Symbol | String | nil opts) -> PointerActions
+
+      def move_by: (Integer right_by, Integer down_by, ?device: Symbol | String?, ?duration: Integer, **Symbol | String opts) -> PointerActions
+
+      def move_to_location: (Integer x, Integer y, ?device: Symbol | String?, ?duration: Integer, **Symbol | String opts) -> PointerActions
+
+      def click_and_hold: (?Element ?element, ?button: Symbol?, ?device: Symbol | String?) -> PointerActions
+
+      def release: (?button: Symbol?, ?device: Symbol | String?) -> PointerActions
+
+      def click: (?Element ?element, ?button: Symbol?, ?device: Symbol | String?) -> PointerActions
+
+      def double_click: (?Element? element, ?device: Symbol | String?) -> PointerActions
+
+      def context_click: (?Element? element, ?device: Symbol | String?) -> PointerActions
+
+      def drag_and_drop: (Element source, Element target, ?device: Symbol | String?) -> PointerActions
+
+      def drag_and_drop_by: (Element source, Integer right_by, Integer down_by, ?device: Symbol | String?) -> PointerActions
+
+      private
+
+      def button_action: (Symbol button, Symbol action, ?device: Symbol | String?, **Symbol | String opts) -> PointerActions
+
+      def pointer_input: (?Symbol | String? name) -> untyped
+    end
+  end
+end

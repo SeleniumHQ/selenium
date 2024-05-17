@@ -31,11 +31,11 @@ module Selenium
           expect(caps.browser_version).to match(/^\d\d\d?\./)
           expect(caps.platform_name).not_to be_nil
 
-          expect(caps.accept_insecure_certs).to be == (caps.browser_name == 'firefox')
-          expect(caps.page_load_strategy).to be == 'normal'
+          expect(caps.accept_insecure_certs).to eq(caps.browser_name == 'firefox')
+          expect(caps.page_load_strategy).to eq 'normal'
           expect(caps.implicit_timeout).to be_zero
-          expect(caps.page_load_timeout).to be == 300000
-          expect(caps.script_timeout).to be == 30000
+          expect(caps.page_load_timeout).to eq 300000
+          expect(caps.script_timeout).to eq 30000
         end
       end
 
@@ -148,7 +148,9 @@ module Selenium
         end
 
         it 'raises if invalid locator',
-           exclude: {browser: %i[safari safari_preview], reason: 'Safari raises TimeoutError'} do
+           except: {browser: %i[chrome edge],
+                    reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743'},
+           exclude: {browser: %i[safari safari_preview], reason: 'Safari TimeoutError'} do
           driver.navigate.to url_for('xhtmlTest.html')
           expect {
             driver.find_element(xpath: '*?//-')

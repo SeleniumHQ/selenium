@@ -38,7 +38,8 @@ module Selenium
       #    el = driver.find_element(id: "some_id")
       #    driver.action.scroll_to(element).perform
       #
-      # @param [Object] Which element to scroll into the viewport.
+      # @param [Object] element Which element to scroll into the viewport.
+      # @param [Object] device Which device to use to scroll
       # @return [Selenium::WebDriver::WheelActions] A self reference.
       def scroll_to(element, device: nil)
         scroll(origin: element, device: device)

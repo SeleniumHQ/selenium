@@ -187,22 +187,25 @@ public class Standalone extends TemplateGridServerCommand {
         new GraphqlHandler(
             tracer, distributor, queue, serverOptions.getExternalUri(), getFormattedVersion());
 
-    String subPath = new RouterOptions(config).subPath();
-    Routable ui = new GridUiRoute(subPath);
+    RouterOptions routerOptions = new RouterOptions(config);
+    String subPath = routerOptions.subPath();
 
     Routable appendRoute =
         Stream.of(
-                router,
+                baseRoute(subPath, combine(router)),
                 hubRoute(subPath, combine(router)),
                 graphqlRoute(subPath, () -> graphqlHandler))
             .reduce(Route::combine)
             .get();
 
-    if (!subPath.isEmpty()) {
-      appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(router)));
+    Routable httpHandler;
+    if (routerOptions.disableUi()) {
+      LOG.info("Grid UI has been disabled.");
+      httpHandler = appendRoute;
+    } else {
+      Routable ui = new GridUiRoute(subPath);
+      httpHandler = combine(ui, appendRoute);
     }
-
-    Routable httpHandler = combine(ui, appendRoute);
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {
@@ -213,35 +216,9 @@ public class Standalone extends TemplateGridServerCommand {
     // Allow the liveness endpoint to be reached, since k8s doesn't make it easy to authenticate
     // these checks
     httpHandler = combine(httpHandler, Route.get("/readyz").to(() -> readinessCheck));
+    Node node = createNode(config, bus, distributor, combinedHandler);
 
-    Node node = new NodeOptions(config).getNode();
-    combinedHandler.addHandler(node);
-    distributor.add(node);
-
-    bus.addListener(
-        NodeDrainComplete.listener(
-            nodeId -> {
-              if (!node.getId().equals(nodeId)) {
-                return;
-              }
-
-              // Wait a beat before shutting down so the final response from the
-              // node can escape.
-              new Thread(
-                      () -> {
-                        try {
-                          Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                          // Swallow, the next thing we're doing is shutting down
-                        }
-                        LOG.info("Shutting down");
-                        System.exit(0);
-                      },
-                      "Standalone shutdown: " + nodeId)
-                  .start();
-            }));
-
-    return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node));
+    return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node, subPath));
   }
 
   @Override
@@ -269,5 +246,36 @@ public class Standalone extends TemplateGridServerCommand {
   private String getFormattedVersion() {
     BuildInfo info = new BuildInfo();
     return String.format("%s (revision %s)", info.getReleaseLabel(), info.getBuildRevision());
+  }
+
+  private Node createNode(
+      Config config, EventBus bus, Distributor distributor, CombinedHandler combinedHandler) {
+    Node node = new NodeOptions(config).getNode();
+    combinedHandler.addHandler(node);
+    distributor.add(node);
+
+    bus.addListener(
+        NodeDrainComplete.listener(
+            nodeId -> {
+              if (!node.getId().equals(nodeId)) {
+                return;
+              }
+
+              // Wait a beat before shutting down so the final response from the
+              // node can escape.
+              new Thread(
+                      () -> {
+                        try {
+                          Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                          // Swallow, the next thing we're doing is shutting down
+                        }
+                        LOG.info("Shutting down");
+                        System.exit(0);
+                      },
+                      "Standalone shutdown: " + nodeId)
+                  .start();
+            }));
+    return node;
   }
 }

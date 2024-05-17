@@ -24,6 +24,10 @@ module Selenium
         include ProfileHelper
 
         VALID_PREFERENCE_TYPES = [TrueClass, FalseClass, Integer, Float, String].freeze
+        WEBDRIVER_PREFS = {
+          port: 'webdriver_firefox_port',
+          log_file: 'webdriver.log.file'
+        }.freeze
 
         DEFAULT_PREFERENCES = {
           'browser.newtabpage.enabled' => false,
@@ -33,8 +37,10 @@ module Selenium
           'security.csp.enable' => false
         }.freeze
 
-        attr_reader   :name, :log_file
-        attr_writer   :secure_ssl, :load_no_focus_lib
+        LOCK_FILES = %w[.parentlock parent.lock lock].freeze
+
+        attr_reader :name, :log_file
+        attr_writer :secure_ssl, :load_no_focus_lib
 
         class << self
           def ini
@@ -176,7 +182,7 @@ module Selenium
         end
 
         def delete_lock_files(directory)
-          %w[.parentlock parent.lock].each do |name|
+          LOCK_FILES.each do |name|
             FileUtils.rm_f File.join(directory, name)
           end
         end
@@ -204,8 +210,8 @@ module Selenium
           File.read(path).split("\n").each do |line|
             next unless line =~ /user_pref\("([^"]+)"\s*,\s*(.+?)\);/
 
-            key = Regexp.last_match(1).strip
-            value = Regexp.last_match(2).strip
+            key = Regexp.last_match(1)&.strip
+            value = Regexp.last_match(2)&.strip
 
             # wrap the value in an array to make it a valid JSON string.
             prefs[key] = JSON.parse("[#{value}]").first
@@ -221,7 +227,9 @@ module Selenium
             end
           end
         end
-      end # Profile
+      end
+
+      # Profile
     end # Firefox
   end # WebDriver
 end # Selenium

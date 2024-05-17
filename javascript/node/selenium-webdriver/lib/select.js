@@ -36,7 +36,7 @@
 
 'use strict'
 
-const { By, escapeCss } = require('./by')
+const { By } = require('./by')
 const error = require('./error')
 
 /**
@@ -51,23 +51,23 @@ class ISelect {
    * @return {!Promise<boolean>} Whether this select element supports selecting multiple options at the same time? This
    * is done by checking the value of the "multiple" attribute.
    */
-  isMultiple() {} // eslint-disable-line
+  isMultiple() {}
 
   /**
    * @return {!Promise<!Array<!WebElement>>} All options belonging to this select tag
    */
-  getOptions() {} // eslint-disable-line
+  getOptions() {}
 
   /**
    * @return {!Promise<!Array<!WebElement>>} All selected options belonging to this select tag
    */
-  getAllSelectedOptions() {} // eslint-disable-line
+  getAllSelectedOptions() {}
 
   /**
    * @return {!Promise<!WebElement>} The first selected option in this select tag (or the currently selected option in a
    * normal select)
    */
-  getFirstSelectedOption() {} // eslint-disable-line
+  getFirstSelectedOption() {}
 
   /**
    * Select all options that display text matching the argument. That is, when given "Bar" this
@@ -105,7 +105,7 @@ class ISelect {
    *
    * @return {Promise<void>}
    */
-  deselectAll() {} // eslint-disable-line
+  deselectAll() {}
 
   /**
    * Deselect all options that display text matching the argument. That is, when given "Bar" this
@@ -146,12 +146,20 @@ class Select {
    * @param {WebElement} element Select WebElement.
    */
   constructor(element) {
+    if (element === null) {
+      throw new Error(`Element must not be null. Please provide a valid <select> element.`)
+    }
+
     this.element = element
 
     this.element.getAttribute('tagName').then(function (tagName) {
       if (tagName.toLowerCase() !== 'select') {
         throw new Error(`Select only works on <select> elements`)
       }
+    })
+
+    this.element.getAttribute('multiple').then((multiple) => {
+      this.multiple = multiple !== null && multiple !== 'false'
     })
   }
 
@@ -161,9 +169,9 @@ class Select {
    *
    * <example>
    <select id="selectbox">
-    <option value="1">Option 1</option>
-    <option value="2">Option 2</option>
-    <option value="3">Option 3</option>
+   <option value="1">Option 1</option>
+   <option value="2">Option 2</option>
+   <option value="3">Option 3</option>
    </select>
    const selectBox = await driver.findElement(By.id("selectbox"));
    await selectObject.selectByIndex(1);
@@ -184,9 +192,7 @@ class Select {
 
     if (options.length - 1 < index) {
       throw new Error(
-        `Option with index "${index}" not found. Select element only contains ${
-          options.length - 1
-        } option elements`
+        `Option with index "${index}" not found. Select element only contains ${options.length - 1} option elements`,
       )
     }
 
@@ -218,9 +224,7 @@ class Select {
     let matched = false
     let isMulti = await this.isMultiple()
 
-    let options = await this.element.findElements({
-      css: 'option[value =' + escapeCss(value) + ']',
-    })
+    let options = await this.element.findElements(By.xpath('.//option[@value = ' + escapeQuotes(value) + ']'))
 
     for (let option of options) {
       await this.setSelected(option)
@@ -256,30 +260,46 @@ class Select {
   async selectByVisibleText(text) {
     text = typeof text === 'number' ? text.toString() : text
 
-    const normalized = text
-      .trim() // strip leading and trailing white-space characters
-      .replace(/\s+/, ' ') // replace sequences of whitespace characters by a single space
+    const xpath = './/option[normalize-space(.) = ' + escapeQuotes(text) + ']'
 
-    /**
-     * find option element using xpath
-     */
-    const formatted = /"/.test(normalized)
-      ? 'concat("' + normalized.split('"').join('", \'"\', "') + '")'
-      : `"${normalized}"`
-    const dotFormat = `[. = ${formatted}]`
-    const spaceFormat = `[normalize-space(text()) = ${formatted}]`
+    const options = await this.element.findElements(By.xpath(xpath))
 
-    const selections = [
-      `./option${dotFormat}`,
-      `./option${spaceFormat}`,
-      `./optgroup/option${dotFormat}`,
-      `./optgroup/option${spaceFormat}`,
-    ]
+    for (let option of options) {
+      await this.setSelected(option)
+      if (!(await this.isMultiple())) {
+        return
+      }
+    }
 
-    const optionElement = await this.element.findElement({
-      xpath: selections.join('|'),
-    })
-    await this.setSelected(optionElement)
+    let matched = Array.isArray(options) && options.length > 0
+
+    if (!matched && text.includes(' ')) {
+      const subStringWithoutSpace = getLongestSubstringWithoutSpace(text)
+      let candidates
+      if ('' === subStringWithoutSpace) {
+        candidates = await this.element.findElements(By.tagName('option'))
+      } else {
+        const xpath = './/option[contains(., ' + escapeQuotes(subStringWithoutSpace) + ')]'
+        candidates = await this.element.findElements(By.xpath(xpath))
+      }
+
+      const trimmed = text.trim()
+
+      for (let option of candidates) {
+        const optionText = await option.getText()
+        if (trimmed === optionText.trim()) {
+          await this.setSelected(option)
+          if (!(await this.isMultiple())) {
+            return
+          }
+          matched = true
+        }
+      }
+    }
+
+    if (!matched) {
+      throw new Error(`Cannot locate option with text: ${text}`)
+    }
   }
 
   /**
@@ -295,7 +315,7 @@ class Select {
    * @returns {Promise<boolean>}
    */
   async isMultiple() {
-    return (await this.element.getAttribute('multiple')) !== null
+    return this.multiple
   }
 
   /**
@@ -355,29 +375,9 @@ class Select {
      */
     text = typeof text === 'number' ? text.toString() : text
 
-    const normalized = text
-      .trim() // strip leading and trailing white-space characters
-      .replace(/\s+/, ' ') // replace sequences of whitespace characters by a single space
-
-    /**
-     * find option element using xpath
-     */
-    const formatted = /"/.test(normalized)
-      ? 'concat("' + normalized.split('"').join('", \'"\', "') + '")'
-      : `"${normalized}"`
-    const dotFormat = `[. = ${formatted}]`
-    const spaceFormat = `[normalize-space(text()) = ${formatted}]`
-
-    const selections = [
-      `./option${dotFormat}`,
-      `./option${spaceFormat}`,
-      `./optgroup/option${dotFormat}`,
-      `./optgroup/option${spaceFormat}`,
-    ]
-
-    const optionElement = await this.element.findElement({
-      xpath: selections.join('|'),
-    })
+    const optionElement = await this.element.findElement(
+      By.xpath('.//option[normalize-space(.) = ' + escapeQuotes(text) + ']'),
+    )
     if (await optionElement.isSelected()) {
       await optionElement.click()
     }
@@ -408,9 +408,7 @@ class Select {
 
     if (options.length - 1 < index) {
       throw new Error(
-        `Option with index "${index}" not found. Select element only contains ${
-          options.length - 1
-        } option elements`
+        `Option with index "${index}" not found. Select element only contains ${options.length - 1} option elements`,
       )
     }
 
@@ -435,9 +433,11 @@ class Select {
 
     let matched = false
 
-    let options = await this.element.findElements({
-      css: 'option[value =' + escapeCss(value) + ']',
-    })
+    let options = await this.element.findElements(By.xpath('.//option[@value = ' + escapeQuotes(value) + ']'))
+
+    if (options.length === 0) {
+      throw new Error(`Cannot locate option with value: ${value}`)
+    }
 
     for (let option of options) {
       if (await option.isSelected()) {
@@ -454,13 +454,49 @@ class Select {
   async setSelected(option) {
     if (!(await option.isSelected())) {
       if (!(await option.isEnabled())) {
-        throw new error.UnsupportedOperationError(
-          `You may not select a disabled option`
-        )
+        throw new error.UnsupportedOperationError(`You may not select a disabled option`)
       }
       await option.click()
     }
   }
 }
 
-module.exports = { Select }
+function escapeQuotes(toEscape) {
+  if (toEscape.includes(`"`) && toEscape.includes(`'`)) {
+    const quoteIsLast = toEscape.lastIndexOf(`"`) === toEscape.length - 1
+    const substrings = toEscape.split(`"`)
+
+    // Remove the last element if it's an empty string
+    if (substrings[substrings.length - 1] === '') {
+      substrings.pop()
+    }
+
+    let result = 'concat('
+
+    for (let i = 0; i < substrings.length; i++) {
+      result += `"${substrings[i]}"`
+      result += i === substrings.length - 1 ? (quoteIsLast ? `, '"')` : `)`) : `, '"', `
+    }
+    return result
+  }
+
+  if (toEscape.includes('"')) {
+    return `'${toEscape}'`
+  }
+
+  // Otherwise return the quoted string
+  return `"${toEscape}"`
+}
+
+function getLongestSubstringWithoutSpace(text) {
+  let words = text.split(' ')
+  let longestString = ''
+  for (let word of words) {
+    if (word.length > longestString.length) {
+      longestString = word
+    }
+  }
+  return longestString
+}
+
+module.exports = { Select, escapeQuotes }

@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const ie = require('../../ie')
 const test = require('../../lib/test')
 const Capabilities = require('../../lib/capabilities').Capabilities
@@ -34,9 +34,7 @@ test.suite(
         driver = await env.builder().setIeOptions(options).build()
 
         let caps = await driver.getCapabilities()
-        caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
-          ie.Key.FILE_UPLOAD_DIALOG_TIMEOUT
-        ]
+        caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.FILE_UPLOAD_DIALOG_TIMEOUT]
         assert.strictEqual(caps, timeOut)
         await driver.quit()
       })
@@ -48,9 +46,7 @@ test.suite(
         driver = await env.builder().setIeOptions(options).build()
 
         let caps = await driver.getCapabilities()
-        caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
-          ie.Key.BROWSER_ATTACH_TIMEOUT
-        ]
+        caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.BROWSER_ATTACH_TIMEOUT]
         assert.strictEqual(caps, timeOut)
         await driver.quit()
       })
@@ -60,9 +56,7 @@ test.suite(
         driver = await env.builder().setIeOptions(options).build()
 
         let caps = await driver.getCapabilities()
-        caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
-          ie.Key.ELEMENT_SCROLL_BEHAVIOR
-        ]
+        caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.ELEMENT_SCROLL_BEHAVIOR]
         assert.strictEqual(caps, ie.Behavior.TOP)
         await driver.quit()
       })
@@ -72,9 +66,7 @@ test.suite(
         driver = await env.builder().setIeOptions(options).build()
 
         let caps = await driver.getCapabilities()
-        caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
-          ie.Key.ELEMENT_SCROLL_BEHAVIOR
-        ]
+        caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.ELEMENT_SCROLL_BEHAVIOR]
         assert.strictEqual(caps, ie.Behavior.TOP)
         await driver.quit()
       })
@@ -87,9 +79,7 @@ test.suite(
         driver = await env.builder().setIeOptions(options).build()
 
         let caps = await driver.getCapabilities()
-        caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
-          ie.Key.BROWSER_COMMAND_LINE_SWITCHES
-        ]
+        caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.BROWSER_COMMAND_LINE_SWITCHES]
         assert.strictEqual(caps, '-k -private')
         await driver.quit()
       })
@@ -104,5 +94,5 @@ test.suite(
       })
     })
   },
-  { browsers: ['internet explorer'] }
+  { browsers: ['internet explorer'] },
 )

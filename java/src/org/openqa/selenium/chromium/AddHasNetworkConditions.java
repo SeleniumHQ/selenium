@@ -82,7 +82,7 @@ public class AddHasNetworkConditions
         networkConditions.setDownloadThroughput(
             ((Number) result.getOrDefault(ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT, -1))
                 .intValue());
-        networkConditions.setDownloadThroughput(
+        networkConditions.setUploadThroughput(
             ((Number) result.getOrDefault(ChromiumNetworkConditions.UPLOAD_THROUGHPUT, -1))
                 .intValue());
         return networkConditions;

@@ -34,7 +34,7 @@ import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 
 public class ProfilesIni {
-  private Map<String, File> profiles;
+  private final Map<String, File> profiles;
 
   public ProfilesIni() {
     File appData = locateAppDataDirectory(Platform.getCurrent());

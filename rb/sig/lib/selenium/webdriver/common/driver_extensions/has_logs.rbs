@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasLogs
+        @logs: untyped
+
+        def logs: () -> untyped
+      end
+    end
+  end
+end

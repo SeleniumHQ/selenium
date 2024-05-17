@@ -1,0 +1,140 @@
+---
+path: ".gem_rbs_collection"
+gems:
+- name: addressable
+  version: '2.8'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: ast
+  version: '2.4'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: bigdecimal
+  version: '0'
+  source:
+    type: stdlib
+- name: cgi
+  version: '0'
+  source:
+    type: stdlib
+- name: fileutils
+  version: '0'
+  source:
+    type: stdlib
+- name: hashdiff
+  version: '1.1'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: json
+  version: '0'
+  source:
+    type: stdlib
+- name: logger
+  version: '0'
+  source:
+    type: stdlib
+- name: monitor
+  version: '0'
+  source:
+    type: stdlib
+- name: optparse
+  version: '0'
+  source:
+    type: stdlib
+- name: parallel
+  version: '1.20'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: parser
+  version: '3.2'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: rack
+  version: '2.2'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: rainbow
+  version: '3.0'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: rake
+  version: '13.0'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: regexp_parser
+  version: '2.8'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: ripper
+  version: '0'
+  source:
+    type: stdlib
+- name: rubocop
+  version: '1.57'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: rubocop-ast
+  version: '1.30'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: tempfile
+  version: '0'
+  source:
+    type: stdlib
+- name: uri
+  version: '0'
+  source:
+    type: stdlib
+- name: yard
+  version: '0.9'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+gemfile_lock_path: Gemfile.lock

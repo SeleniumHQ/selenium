@@ -1,4 +1,4 @@
-﻿namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
+namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 {
     using Newtonsoft.Json;
 

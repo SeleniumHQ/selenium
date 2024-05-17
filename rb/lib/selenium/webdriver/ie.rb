@@ -20,9 +20,10 @@
 module Selenium
   module WebDriver
     module IE
-      autoload :Driver, 'selenium/webdriver/ie/driver'
-      autoload :Options, 'selenium/webdriver/ie/options'
-      autoload :Service, 'selenium/webdriver/ie/service'
+      autoload :Features, 'selenium/webdriver/ie/features'
+      autoload :Driver,   'selenium/webdriver/ie/driver'
+      autoload :Options,  'selenium/webdriver/ie/options'
+      autoload :Service,  'selenium/webdriver/ie/service'
     end # IE
   end # WebDriver
 end # Selenium

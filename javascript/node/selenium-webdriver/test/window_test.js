@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const test = require('../lib/test')
 const { By } = require('..')
 const { UnknownCommandError } = require('../lib/error')
@@ -75,7 +75,7 @@ test.suite(function (env) {
     assert.strictEqual(await driver.getTitle(), 'We Arrive Here')
   })
 
-  xit('can set the window position of the current window', async function () {
+  it('can set the window position of the current window', async function () {
     let { x, y } = await driver.manage().window().getRect()
     let newX = x + 10
     let newY = y + 10
@@ -90,7 +90,7 @@ test.suite(function (env) {
     await driver.wait(forPositionToBe(newX, newY), 1000)
   })
 
-  xit('can set the window position from a frame', async function () {
+  it('can set the window position from a frame', async function () {
     await driver.get(test.Pages.iframePage)
 
     let frame = await driver.findElement(By.name('iframe1-name'))
@@ -113,19 +113,12 @@ test.suite(function (env) {
       newHandle = await driver.switchTo().newWindow()
     } catch (ex) {
       if (ex instanceof UnknownCommandError) {
-        console.warn(
-          Error(
-            `${env.browser.name}: aborting test due to unsupported command: ${ex}`
-          ).stack
-        )
+        console.warn(Error(`${env.browser.name}: aborting test due to unsupported command: ${ex}`).stack)
         return
       }
     }
 
-    assert.strictEqual(
-      (await driver.getAllWindowHandles()).length,
-      originalHandles.length + 1
-    )
+    assert.strictEqual((await driver.getAllWindowHandles()).length, originalHandles.length + 1)
     assert.notEqual(originalHandle, newHandle)
   })
 

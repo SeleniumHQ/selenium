@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const path = require('path')
+const assert = require('node:assert')
+const path = require('node:path')
 const io = require('../io')
 const cmd = require('../lib/command')
 const remote = require('../remote')
@@ -72,9 +72,7 @@ describe('FileDetector', function () {
 
   it('returns the original path if it is a directory', function () {
     return io.tmpDir().then((dir) => {
-      return new remote.FileDetector()
-        .handleFile(new ExplodingDriver(), dir)
-        .then((f) => assert.strictEqual(f, dir))
+      return new remote.FileDetector().handleFile(new ExplodingDriver(), dir).then((f) => assert.strictEqual(f, dir))
     })
   })
 
@@ -85,14 +83,11 @@ describe('FileDetector', function () {
           new (class FakeDriver {
             execute(command) {
               assert.strictEqual(command.getName(), cmd.Name.UPLOAD_FILE)
-              assert.strictEqual(
-                typeof command.getParameters()['file'],
-                'string'
-              )
+              assert.strictEqual(typeof command.getParameters()['file'], 'string')
               return Promise.resolve('success!')
             }
           })(),
-          theFile
+          theFile,
         )
         .then((f) => assert.strictEqual(f, 'success!'))
     })

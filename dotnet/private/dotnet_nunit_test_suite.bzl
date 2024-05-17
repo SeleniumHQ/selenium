@@ -32,6 +32,10 @@ _BROWSERS = {
         "args": [
             "--params=ActiveDriverConfig=Edge",
         ] + select({
+            "@selenium//common:use_pinned_linux_edge": [
+                "--params=DriverServiceLocation=$(location @linux_edgedriver//:msedgedriver)",
+                "--params=BrowserLocation=$(location @linux_edge//:opt/microsoft/msedge/microsoft-edge)",
+            ],
             "@selenium//common:use_pinned_macos_edge": [
                 "--params=DriverServiceLocation=$(location @mac_edgedriver//:msedgedriver)",
                 "\"--params=BrowserLocation=$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge\"",
@@ -42,7 +46,7 @@ _BROWSERS = {
             ],
         }),
         "data": edge_data,
-        "tags": ["skip-remote"],
+        "tags": [],
     },
     "firefox": {
         "args": [

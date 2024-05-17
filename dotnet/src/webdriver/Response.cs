@@ -16,11 +16,11 @@
 // limitations under the License.
 // </copyright>
 
+using Newtonsoft.Json;
+using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Newtonsoft.Json;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -103,10 +103,6 @@ namespace OpenQA.Selenium
                         this.responseValue = valueDictionary["value"];
                     }
                 }
-                else if (valueDictionary.ContainsKey("error"))
-                {
-                    this.responseStatus = WebDriverError.ResultFromError(valueDictionary["error"].ToString());
-                }
             }
         }
 
@@ -146,6 +142,44 @@ namespace OpenQA.Selenium
         {
             Dictionary<string, object> deserializedResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
             Response response = new Response(deserializedResponse);
+            return response;
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="Response"/> from a JSON-encoded string.
+        /// </summary>
+        /// <param name="value">The JSON string to deserialize into a <see cref="Response"/>.</param>
+        /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
+        public static Response FromErrorJson(string value)
+        {
+            Dictionary<string, object> deserializedResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
+
+            var response = new Response();
+
+            if (!deserializedResponse.TryGetValue("value", out var valueObject))
+            {
+                throw new WebDriverException($"The 'value' property was not found in the response:{Environment.NewLine}{value}");
+            }
+
+            if (valueObject is not Dictionary<string, object> valueDictionary)
+            {
+                throw new WebDriverException($"The 'value' property is not a dictionary of <string, object>{Environment.NewLine}{value}");
+            }
+
+            response.Value = valueDictionary;
+
+            if (!valueDictionary.TryGetValue("error", out var errorObject))
+            {
+                throw new WebDriverException($"The 'value > error' property was not found in the response:{Environment.NewLine}{value}");
+            }
+
+            if (errorObject is not string)
+            {
+                throw new WebDriverException($"The 'value > error' property is not a string{Environment.NewLine}{value}");
+            }
+
+            response.Status = WebDriverError.ResultFromError(errorObject.ToString());
+
             return response;
         }
 

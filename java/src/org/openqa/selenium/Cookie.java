@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 public class Cookie implements Serializable {
@@ -255,12 +256,12 @@ public class Cookie implements Serializable {
 
   @Override
   public String toString() {
+    SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+    sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
     return name
         + "="
         + value
-        + (expiry == null
-            ? ""
-            : "; expires=" + new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss z").format(expiry))
+        + (expiry == null ? "" : "; expires=" + sdf.format(expiry))
         + ("".equals(path) ? "" : "; path=" + path)
         + (domain == null ? "" : "; domain=" + domain)
         + (isSecure ? ";secure;" : "")

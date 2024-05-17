@@ -13,7 +13,8 @@
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
-// under the License
+// under the License.
+
 package org.openqa.selenium.bidi.script;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ public class DateLocalValue extends LocalValue {
 
   private final String value;
 
-  public DateLocalValue(String value) {
+  DateLocalValue(String value) {
     this.value = value;
   }
 

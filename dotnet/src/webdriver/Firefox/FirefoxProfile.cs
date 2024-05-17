@@ -16,14 +16,12 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.IO.Compression;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Remote;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 
 namespace OpenQA.Selenium.Firefox
 {

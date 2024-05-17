@@ -18,11 +18,14 @@
 package org.openqa.selenium.grid.jmx;
 
 import java.lang.management.ManagementFactory;
+import java.util.logging.Logger;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 public class JMXHelper {
+
+  private static final Logger LOG = Logger.getLogger(JMXHelper.class.getName());
 
   public MBean register(Object bean) {
     MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -33,7 +36,7 @@ public class JMXHelper {
     } catch (InstanceAlreadyExistsException t) {
       return mBean;
     } catch (Throwable t) {
-      t.printStackTrace();
+      LOG.severe("Error during execution: " + t.getMessage());
       return null;
     }
   }

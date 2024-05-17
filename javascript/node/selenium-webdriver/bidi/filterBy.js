@@ -21,13 +21,9 @@ class FilterBy {
   }
 
   static logLevel(level) {
-    if (
-      level === undefined ||
-      (level != undefined &&
-        !['debug', 'error', 'info', 'warning'].includes(level))
-    ) {
+    if (level === undefined || (level != undefined && !['debug', 'error', 'info', 'warning'].includes(level))) {
       throw Error(
-        `Please pass valid log level. Valid log levels are 'debug', 'error', 'info' and 'warning'. Received: ${level}`
+        `Please pass valid log level. Valid log levels are 'debug', 'error', 'info' and 'warning'. Received: ${level}`,
       )
     }
 

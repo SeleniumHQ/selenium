@@ -1,0 +1,13 @@
+module Selenium
+  module WebDriver
+    module Keys
+      KEYS: Hash[Symbol, String]
+
+      def self.[]: (untyped key) -> untyped
+
+      def self.encode: (untyped keys) -> untyped
+
+      def self.encode_key: (untyped key) -> untyped
+    end
+  end
+end

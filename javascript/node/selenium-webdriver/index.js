@@ -41,7 +41,7 @@ const webdriver = require('./lib/webdriver')
 const select = require('./lib/select')
 const LogInspector = require('./bidi/logInspector')
 const BrowsingContext = require('./bidi/browsingContext')
-const BrowsingConextInspector = require('./bidi/browsingContextInspector')
+const BrowsingContextInspector = require('./bidi/browsingContextInspector')
 const ScriptManager = require('./bidi/scriptManager')
 const NetworkInspector = require('./bidi/networkInspector')
 
@@ -596,10 +596,20 @@ class Builder {
 
     browser = capabilities.get(Capability.BROWSER_NAME)
 
+    /**
+     * If browser is not defined in forBrowser, check if browserOptions are defined to pick the browserName
+     */
+    if (!browser) {
+      const options =
+        this.chromeOptions_ || this.firefoxOptions_ || this.ieOptions_ || this.safariOptions_ || this.edgeOptions_
+      if (options) {
+        browser = options['map_'].get(Capability.BROWSER_NAME)
+      }
+    }
+
     if (typeof browser !== 'string') {
       throw TypeError(
-        `Target browser must be a string, but is <${typeof browser}>;` +
-          ' did you forget to call forBrowser()?'
+        `Target browser must be a string, but is <${typeof browser}>;` + ' did you forget to call forBrowser()?',
       )
     }
 
@@ -620,24 +630,9 @@ class Builder {
       capabilities.merge(this.edgeOptions_)
     }
 
-    checkOptions(
-      capabilities,
-      'chromeOptions',
-      chrome.Options,
-      'setChromeOptions'
-    )
-    checkOptions(
-      capabilities,
-      'moz:firefoxOptions',
-      firefox.Options,
-      'setFirefoxOptions'
-    )
-    checkOptions(
-      capabilities,
-      'safari.options',
-      safari.Options,
-      'setSafariOptions'
-    )
+    checkOptions(capabilities, 'chromeOptions', chrome.Options, 'setChromeOptions')
+    checkOptions(capabilities, 'moz:firefoxOptions', firefox.Options, 'setFirefoxOptions')
+    checkOptions(capabilities, 'safari.options', safari.Options, 'setSafariOptions')
 
     // Check for a remote browser.
     let url = this.url_
@@ -653,9 +648,7 @@ class Builder {
 
     if (url) {
       this.log_.fine('Creating session on remote server')
-      let client = Promise.resolve(url).then(
-        (url) => new _http.HttpClient(url, this.agent_, this.proxy_)
-      )
+      let client = Promise.resolve(url).then((url) => new _http.HttpClient(url, this.agent_, this.proxy_))
       let executor = new _http.Executor(client)
 
       if (browser === Browser.CHROME) {
@@ -708,11 +701,7 @@ class Builder {
         return createDriver(safari.Driver, capabilities)
 
       default:
-        throw new Error(
-          'Do not know how to build driver: ' +
-            browser +
-            '; did you forget to call usingServer(url)?'
-        )
+        throw new Error('Do not know how to build driver: ' + browser + '; did you forget to call usingServer(url)?')
     }
   }
 }
@@ -720,7 +709,7 @@ class Builder {
 /**
  * In the 3.x releases, the various browser option classes
  * (e.g. firefox.Options) had to be manually set as an option using the
- * Capabilties class:
+ * Capabilities class:
  *
  *     let ffo = new firefox.Options();
  *     // Configure firefox options...
@@ -769,7 +758,7 @@ function checkOptions(caps, key, optionType, setMethod) {
       'Options class extends Capabilities and should not be set as key ' +
         `"${key}"; set browser-specific options with ` +
         `Builder.${setMethod}(). For more information, see the ` +
-        'documentation attached to the function that threw this error'
+        'documentation attached to the function that threw this error',
     )
   }
 }
@@ -802,6 +791,6 @@ exports.until = until
 exports.Select = select.Select
 exports.LogInspector = LogInspector
 exports.BrowsingContext = BrowsingContext
-exports.BrowsingConextInspector = BrowsingConextInspector
+exports.BrowsingContextInspector = BrowsingContextInspector
 exports.ScriptManager = ScriptManager
 exports.NetworkInspector = NetworkInspector

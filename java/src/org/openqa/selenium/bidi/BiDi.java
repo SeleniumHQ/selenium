@@ -29,12 +29,9 @@ public class BiDi implements Closeable {
 
   private final Duration timeout = Duration.ofSeconds(30);
   private final Connection connection;
-  private final BiDiSessionStatus status;
 
   public BiDi(Connection connection) {
     this.connection = Require.nonNull("WebSocket connection", connection);
-    this.status =
-        send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
   }
 
   @Override
@@ -65,7 +62,7 @@ public class BiDi implements Closeable {
     connection.addListener(event, handler);
   }
 
-  <X> void addListener(String browsingContextId, Event<X> event, Consumer<X> handler) {
+  public <X> void addListener(String browsingContextId, Event<X> event, Consumer<X> handler) {
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Browsing context id", browsingContextId);
     Require.nonNull("Handler to call", handler);
@@ -82,7 +79,7 @@ public class BiDi implements Closeable {
     connection.addListener(event, handler);
   }
 
-  <X> void addListener(Set<String> browsingContextIds, Event<X> event, Consumer<X> handler) {
+  public <X> void addListener(Set<String> browsingContextIds, Event<X> event, Consumer<X> handler) {
     Require.nonNull("List of browsing context ids", browsingContextIds);
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
@@ -119,6 +116,6 @@ public class BiDi implements Closeable {
   }
 
   public BiDiSessionStatus getBidiSessionStatus() {
-    return status;
+    return send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
   }
 }

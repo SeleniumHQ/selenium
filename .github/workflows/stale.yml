@@ -10,16 +10,24 @@ permissions:
 
 jobs:
   stale:
+    if: github.repository_owner == 'seleniumhq'
     permissions:
       issues: write  # for actions/stale to close stale issues
       pull-requests: write  # for actions/stale to close stale PRs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v8
+      - uses: actions/stale@v9
         with:
           stale-issue-message: 'This issue is stale because it has been open 280 days with no activity. Remove stale label or comment or this will be closed in 14 days.'
           close-issue-message: 'This issue was closed because it has been stalled for 14 days with no activity.'
           stale-issue-label: 'I-stale'
           days-before-stale: 280
           days-before-close: 14
-          operations-per-run: 200
+      - uses: actions/stale@v9
+        with:
+          close-issue-message: 'This issue was closed because we did not receive any additional information after 14 days.'
+          stale-issue-label: 'R-awaiting answer'
+          days-before-stale: -1
+          days-before-close: 14
+          labels-to-add-when-unstale: 'needs-triaging'
+

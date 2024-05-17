@@ -1,0 +1,27 @@
+module Selenium
+  module WebDriver
+    module HTML5
+      class SessionStorage
+        @bridge: untyped
+
+        include Enumerable[untyped]
+
+        include SharedWebStorage
+
+        def []: (untyped key) -> untyped
+
+        def []=: (untyped key, untyped value) -> untyped
+
+        def delete: (untyped key) -> untyped
+
+        def clear: () -> untyped
+
+        def size: () -> untyped
+
+        def keys: () -> untyped
+
+        def initialize: (untyped bridge) -> void
+      end
+    end
+  end
+end

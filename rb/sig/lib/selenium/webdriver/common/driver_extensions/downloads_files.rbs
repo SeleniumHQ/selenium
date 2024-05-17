@@ -1,0 +1,9 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module DownloadsFiles
+        def download_path=: (untyped path) -> untyped
+      end
+    end
+  end
+end

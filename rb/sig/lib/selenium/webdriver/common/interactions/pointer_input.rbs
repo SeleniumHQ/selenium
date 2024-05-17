@@ -1,0 +1,29 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      class PointerInput < InputDevice
+        @kind: untyped
+
+        @type: untyped
+
+        KIND: { mouse: :mouse, pen: :pen, touch: :touch }
+
+        attr_reader kind: untyped
+
+        def initialize: (untyped kind, ?name: untyped?) -> void
+
+        def encode: () -> untyped
+
+        def assert_kind: (untyped pointer) -> untyped
+
+        def create_pointer_move: (?duration: Symbol | String | Integer, ?x: Integer, ?y: Integer, ?origin: untyped?, **untyped opts) -> untyped
+
+        def create_pointer_down: (untyped button, **untyped opts) -> untyped
+
+        def create_pointer_up: (untyped button, **untyped opts) -> untyped
+
+        def create_pointer_cancel: () -> untyped
+      end
+    end
+  end
+end

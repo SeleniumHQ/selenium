@@ -1,8 +1,8 @@
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Collections.ObjectModel;
-using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -37,7 +37,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldThrowNoSuchWindowException() {
+        public void ShouldThrowNoSuchWindowException()
+        {
             driver.Url = xhtmlTestPage;
             String current = driver.CurrentWindowHandle;
             try
@@ -318,7 +319,7 @@ namespace OpenQA.Selenium
             // There should be two windows. We should also see each of the window titles at least once.
             Assert.AreEqual(2, allWindowHandles.Count);
 
-           foreach(string handle in allWindowHandles)
+            foreach (string handle in allWindowHandles)
             {
                 if (handle != mainHandle)
                 {

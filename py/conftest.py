@@ -36,7 +36,6 @@ drivers = (
     "remote",
     "safari",
     "webkitgtk",
-    "chromiumedge",
     "wpewebkit",
 )
 
@@ -50,12 +49,36 @@ def pytest_addoption(parser):
         metavar="DRIVER",
         help="driver to run tests against ({})".format(", ".join(drivers)),
     )
-    parser.addoption("--browser-binary", action="store", dest="binary", help="location of the browser binary")
     parser.addoption(
-        "--driver-binary", action="store", dest="executable", help="location of the service executable binary"
+        "--browser-binary",
+        action="store",
+        dest="binary",
+        help="location of the browser binary",
     )
-    parser.addoption("--browser-args", action="store", dest="args", help="arguments to start the browser with")
-    parser.addoption("--headless", action="store", dest="headless", help="Allow tests to run in headless")
+    parser.addoption(
+        "--driver-binary",
+        action="store",
+        dest="executable",
+        help="location of the service executable binary",
+    )
+    parser.addoption(
+        "--browser-args",
+        action="store",
+        dest="args",
+        help="arguments to start the browser with",
+    )
+    parser.addoption(
+        "--headless",
+        action="store",
+        dest="headless",
+        help="Allow tests to run in headless",
+    )
+    parser.addoption(
+        "--use-lan-ip",
+        action="store_true",
+        dest="use_lan_ip",
+        help="Whether to start test server with lan ip instead of localhost",
+    )
 
 
 def pytest_ignore_collect(path, config):
@@ -74,10 +97,8 @@ driver_instance = None
 def driver(request):
     kwargs = {}
 
-    try:
-        driver_class = request.param.capitalize()
-    except AttributeError:
-        raise Exception("This test requires a --driver to be specified.")
+    # browser can be changed with `--driver=firefox` as an argument or to addopts in pytest.ini
+    driver_class = getattr(request, "param", "Chrome").capitalize()
 
     # skip tests if not available on the platform
     _platform = platform.system()
@@ -120,11 +141,14 @@ def driver(request):
             options = get_options(driver_class, request.config)
         if driver_class == "Remote":
             options = get_options("Firefox", request.config) or webdriver.FirefoxOptions()
+            options.set_capability("moz:firefoxOptions", {})
+            options.enable_downloads = True
         if driver_class == "WebKitGTK":
             options = get_options(driver_class, request.config)
         if driver_class == "Edge":
             options = get_options(driver_class, request.config)
-        if driver_class == "WPEWebKit":
+        if driver_class.lower() == "wpewebkit":
+            driver_class = "WPEWebKit"
             options = get_options(driver_class, request.config)
         if driver_path is not None:
             kwargs["service"] = get_service(driver_class, driver_path)
@@ -144,16 +168,13 @@ def get_options(driver_class, config):
     headless = bool(config.option.headless)
     options = None
 
-    if driver_class == "ChromiumEdge":
-        options = getattr(webdriver, "EdgeOptions")()
-
     if browser_path or browser_args:
         if not options:
             options = getattr(webdriver, f"{driver_class}Options")()
         if driver_class == "WebKitGTK":
             options.overlay_scrollbars_enabled = False
         if browser_path is not None:
-            options.binary_location = browser_path
+            options.binary_location = browser_path.strip("'")
         if browser_args is not None:
             for arg in browser_args.split():
                 options.add_argument(arg)
@@ -246,7 +267,18 @@ def server(request):
     except Exception:
         print("Starting the Selenium server")
         process = subprocess.Popen(
-            ["java", "-jar", _path, "standalone", "--port", "4444", "--selenium-manager", "true"]
+            [
+                "java",
+                "-jar",
+                _path,
+                "standalone",
+                "--port",
+                "4444",
+                "--selenium-manager",
+                "true",
+                "--enable-managed-downloads",
+                "true",
+            ]
         )
         print(f"Selenium server running as process: {process.pid}")
         assert wait_for_server(url, 10), f"Timed out waiting for Selenium server at {url}"
@@ -258,8 +290,10 @@ def server(request):
 
 
 @pytest.fixture(autouse=True, scope="session")
-def webserver():
-    webserver = SimpleWebServer(host=get_lan_ip())
+def webserver(request):
+    host = get_lan_ip() if request.config.getoption("use_lan_ip") else "0.0.0.0"
+
+    webserver = SimpleWebServer(host=host)
     webserver.start()
     yield webserver
     webserver.stop()
@@ -270,3 +304,32 @@ def edge_service():
     from selenium.webdriver.edge.service import Service as EdgeService
 
     return EdgeService
+
+
+@pytest.fixture(scope="function")
+def driver_executable(request):
+    return request.config.option.executable
+
+
+@pytest.fixture(scope="function")
+def clean_service(request):
+    try:
+        driver_class = request.config.option.drivers[0].capitalize()
+    except AttributeError:
+        raise Exception("This test requires a --driver to be specified.")
+
+    yield get_service(driver_class, request.config.option.executable)
+
+
+@pytest.fixture(scope="function")
+def clean_driver(request):
+    try:
+        driver_class = request.config.option.drivers[0].capitalize()
+    except AttributeError:
+        raise Exception("This test requires a --driver to be specified.")
+
+    driver_reference = getattr(webdriver, driver_class)
+    yield driver_reference
+
+    if request.node.get_closest_marker("no_driver_after_test"):
+        driver_reference = None

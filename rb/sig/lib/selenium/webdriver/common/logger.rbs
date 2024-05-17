@@ -1,0 +1,42 @@
+module Selenium
+  module WebDriver
+    class Logger
+
+      @allowed: Array[Symbol]
+      @first_warning: bool
+
+      @ignored: Array[Symbol]
+      @logger: ::Logger
+
+      def initialize: (?::String progname, ?default_level: Symbol? default_level, ?ignored: Array[Symbol]? ignored, ?allowed: Array[Symbol]? allowed) -> void
+
+      def level=: (Symbol level) -> Symbol
+
+      def output=: (String io) -> ::Logger
+
+      def io: () -> IO
+
+      def ignore: (*Symbol | Array[Symbol] ids) -> Array[Symbol]
+
+      def allow: (*Symbol | Array[Symbol] ids) -> Array[Symbol]
+
+      def debug: (String ?message, ?id: Symbol | Array[Symbol] id) ?{ () -> void  } -> void
+
+      def info: (String message, ?id: Symbol | Array[Symbol] id) ?{ () -> void } -> void
+
+      def error: (String message, ?id: Symbol | Array[Symbol] id) ?{ () -> void } -> void
+
+      def warn: (String message, ?id: Symbol | Array[Symbol] id) ?{ () -> void } -> void
+
+      def deprecate: (String old, ?String? new, ?id: Symbol | Array[Symbol] id, ?reference: String reference) { () -> void } -> (void)
+
+      def debug?: () -> bool
+
+      private
+
+      def create_logger: (String name, level: Symbol level) -> ::Logger
+
+      def discard_or_log: (Symbol level, String message, (Symbol | Array[::Symbol]) | [(Symbol | Array[Symbol])] id) ?{ () -> void } -> (void)
+    end
+  end
+end

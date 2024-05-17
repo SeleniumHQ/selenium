@@ -34,6 +34,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::env;
 use std::path::{Path, PathBuf};
+use std::sync::mpsc;
+use std::sync::mpsc::{Receiver, Sender};
 
 pub const EDGE_NAMES: &[&str] = &[
     "edge",
@@ -61,6 +63,9 @@ pub struct EdgeManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub tx: Sender<String>,
+    pub rx: Receiver<String>,
+    pub download_browser: bool,
     pub browser_url: Option<String>,
 }
 
@@ -75,12 +80,16 @@ impl EdgeManager {
         let config = ManagerConfig::default(static_browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
+        let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(EdgeManager {
             browser_name: static_browser_name,
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::new(),
+            tx,
+            rx,
+            download_browser: false,
             browser_url: None,
         }))
     }
@@ -107,25 +116,25 @@ impl SeleniumManager for EdgeManager {
         if self.is_webview2() {
             HashMap::from([(
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"Microsoft\EdgeWebView\Application"#,
+                r"Microsoft\EdgeWebView\Application",
             )])
         } else {
             HashMap::from([
                 (
                     BrowserPath::new(WINDOWS, STABLE),
-                    r#"Microsoft\Edge\Application\msedge.exe"#,
+                    r"Microsoft\Edge\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(WINDOWS, BETA),
-                    r#"Microsoft\Edge Beta\Application\msedge.exe"#,
+                    r"Microsoft\Edge Beta\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(WINDOWS, DEV),
-                    r#"Microsoft\Edge Dev\Application\msedge.exe"#,
+                    r"Microsoft\Edge Dev\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(WINDOWS, NIGHTLY),
-                    r#"Microsoft\Edge SxS\Application\msedge.exe"#,
+                    r"Microsoft\Edge SxS\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(MACOS, STABLE),
@@ -158,20 +167,20 @@ impl SeleniumManager for EdgeManager {
             let arch = self.get_arch();
             if X32.is(arch) {
                 (
-                    r#"HKLM\SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"#,
+                    r"HKLM\SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
                     REG_PV_ARG,
                     "",
                 )
             } else {
                 (
-                    r#"HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"#,
+                    r"HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
                     REG_PV_ARG,
                     "",
                 )
             }
         } else {
             (
-                r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
+                r"HKCU\Software\Microsoft\Edge\BLBeacon",
                 REG_VERSION_ARG,
                 DASH_DASH_VERSION,
             )
@@ -218,11 +227,10 @@ impl SeleniumManager for EdgeManager {
                     ));
                     let latest_driver_version = read_version_from_link(
                         self.get_http_client(),
-                        latest_stable_url,
+                        &latest_stable_url,
                         self.get_logger(),
                     )?;
-                    major_browser_version =
-                        self.get_major_version(latest_driver_version.as_str())?;
+                    major_browser_version = self.get_major_version(&latest_driver_version)?;
                     self.log.debug(format!(
                         "Latest {} major version is {}",
                         &self.driver_name, major_browser_version
@@ -240,7 +248,7 @@ impl SeleniumManager for EdgeManager {
                     &self.driver_name, driver_url
                 ));
                 let driver_version =
-                    read_version_from_link(self.get_http_client(), driver_url, self.get_logger())?;
+                    read_version_from_link(self.get_http_client(), &driver_url, self.get_logger())?;
 
                 let driver_ttl = self.get_ttl();
                 if driver_ttl > 0 && !major_browser_version.is_empty() {
@@ -321,6 +329,14 @@ impl SeleniumManager for EdgeManager {
         self.log = log;
     }
 
+    fn get_sender(&self) -> &Sender<String> {
+        &self.tx
+    }
+
+    fn get_receiver(&self) -> &Receiver<String> {
+        &self.rx
+    }
+
     fn get_platform_label(&self) -> &str {
         let os = self.get_os();
         let arch = self.get_arch();
@@ -363,7 +379,7 @@ impl SeleniumManager for EdgeManager {
         ));
 
         let edge_products =
-            parse_json_from_url::<Vec<EdgeProduct>>(self.get_http_client(), edge_updates_url)?;
+            parse_json_from_url::<Vec<EdgeProduct>>(self.get_http_client(), &edge_updates_url)?;
 
         let edge_channel = if self.is_beta(browser_version) {
             "Beta"
@@ -431,7 +447,15 @@ impl SeleniumManager for EdgeManager {
             return self.unavailable_discovery();
         }
 
-        let release = releases.first().unwrap();
+        let releases_with_artifacts: Vec<&Release> = releases
+            .into_iter()
+            .filter(|r| !r.artifacts.is_empty())
+            .collect();
+        if releases_with_artifacts.is_empty() {
+            return self.unavailable_discovery();
+        }
+
+        let release = releases_with_artifacts.first().unwrap();
         let artifacts: Vec<&Artifact> = release
             .artifacts
             .iter()
@@ -518,6 +542,14 @@ impl SeleniumManager for EdgeManager {
             "msedge"
         };
         Ok(Some(browser_label))
+    }
+
+    fn is_download_browser(&self) -> bool {
+        self.download_browser
+    }
+
+    fn set_download_browser(&mut self, download_browser: bool) {
+        self.download_browser = download_browser;
     }
 }
 

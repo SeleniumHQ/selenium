@@ -23,7 +23,18 @@ import org.openqa.selenium.internal.Require;
 /** Used to identify a browser based on its name. */
 public interface Browser {
 
-  Browser CHROME = () -> "chrome";
+  Browser CHROME =
+      new Browser() {
+        @Override
+        public String browserName() {
+          return "chrome";
+        }
+
+        @Override
+        public boolean is(String browserName) {
+          return Browser.super.is(browserName) || "chrome-headless-shell".equals(browserName);
+        }
+      };
   Browser EDGE =
       new Browser() {
         @Override
@@ -33,24 +44,13 @@ public interface Browser {
 
         @Override
         public boolean is(String browserName) {
-          return browserName().equals(browserName) || "msedge".equals(browserName);
+          return Browser.super.is(browserName) || "msedge".equals(browserName);
         }
       };
   Browser HTMLUNIT = () -> "htmlunit";
   Browser IE = () -> "internet explorer";
   Browser FIREFOX = () -> "firefox";
-  Browser OPERA =
-      new Browser() {
-        @Override
-        public String browserName() {
-          return "opera";
-        }
-
-        @Override
-        public boolean is(String browserName) {
-          return browserName().equals(browserName);
-        }
-      };
+  Browser OPERA = () -> "opera";
   Browser SAFARI =
       new Browser() {
         @Override
@@ -58,21 +58,12 @@ public interface Browser {
           return "safari";
         }
 
-        public boolean is(String browserName) {
-          return browserName().equals(browserName) || "Safari".equals(browserName);
-        }
-      };
-  Browser SAFARI_TECH_PREVIEW =
-      new Browser() {
         @Override
-        public String browserName() {
-          return "Safari Technology Preview";
-        }
-
         public boolean is(String browserName) {
-          return browserName().equals(browserName);
+          return Browser.super.is(browserName) || "Safari".equals(browserName);
         }
       };
+  Browser SAFARI_TECH_PREVIEW = () -> "Safari Technology Preview";
 
   String browserName();
 

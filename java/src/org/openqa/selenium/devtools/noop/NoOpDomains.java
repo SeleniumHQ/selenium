@@ -28,7 +28,7 @@ import org.openqa.selenium.devtools.idealized.target.Target;
 
 public class NoOpDomains implements Domains {
 
-  private static BuildInfo INFO = new BuildInfo();
+  private static final BuildInfo INFO = new BuildInfo();
 
   private static final String WARNING =
       String.format(

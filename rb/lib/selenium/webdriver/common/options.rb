@@ -24,6 +24,8 @@ module Selenium
                        set_window_rect timeouts unhandled_prompt_behavior strict_file_interactability
                        web_socket_url].freeze
 
+      GRID_OPTIONS = %i[enable_downloads].freeze
+
       class << self
         attr_reader :driver_path
 
@@ -57,7 +59,7 @@ module Selenium
               @options[key]
             end
 
-            define_method "#{key}=" do |value|
+            define_method :"#{key}=" do |value|
               @options[key] = value
             end
           end
@@ -104,6 +106,8 @@ module Selenium
       def as_json(*)
         options = @options.dup
 
+        downloads = options.delete(:enable_downloads)
+        options['se:downloadsEnabled'] = downloads unless downloads.nil?
         w3c_options = process_w3c_options(options)
 
         browser_options = self.class::CAPABILITIES.each_with_object({}) do |(capability_alias, capability_name), hash|
@@ -173,7 +177,7 @@ module Selenium
       end
 
       def camel_case(str)
-        str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
+        str.gsub(/_([a-z])/) { Regexp.last_match(1)&.upcase }
       end
     end # Options
   end # WebDriver

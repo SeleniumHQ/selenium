@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  browser-tests:
+  browser-tests-windows:
     name: Browser Tests
     uses: ./.github/workflows/bazel.yml
     strategy:
@@ -13,14 +13,45 @@ jobs:
       matrix:
         include:
           - os: windows
+    with:
+      name: Browser Tests (chrome, ${{ matrix.os }})
+      os: ${{ matrix.os }}
+      browser: chrome
+      cache-key: java-${{ matrix.os }}-tests
+      # rules_jvm_external is not fully hermetic
+      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
+      java-version: 17
+      run: |
+        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest `
+            //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest `
+            //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest `
+            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest `
+            //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest `
+            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
+
+  browser-tests-macos:
+    name: Browser Tests
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
           - os: macos
     with:
       name: Browser Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
       browser: chrome
       cache-key: java-${{ matrix.os }}-tests
-      run: >
-        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
+      # rules_jvm_external is not fully hermetic
+      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
+      java-version: 17
+      run: |
+        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote \
+            //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest \
+          //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest \
+            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest \
+            //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest \
+            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
 
   remote-tests:
     name: Remote Tests
@@ -29,12 +60,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows
           - os: macos
     with:
       name: Remote Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
       browser: chrome
       cache-key: java-${{ matrix.os }}-remote-tests
-      run: >
-        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+      # rules_jvm_external is not fully hermetic
+      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
+      java-version: 17
+      run: |
+        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote

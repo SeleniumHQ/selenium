@@ -15,12 +15,15 @@
 # specific language governing permissions and limitations
 # under the License.
 """The WebDriver implementation."""
+import base64
 import contextlib
 import copy
+import os
 import pkgutil
 import types
 import typing
 import warnings
+import zipfile
 from abc import ABCMeta
 from base64 import b64decode
 from base64 import urlsafe_b64encode
@@ -38,7 +41,6 @@ from selenium.common.exceptions import NoSuchCookieException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
@@ -90,11 +92,12 @@ def _create_caps(caps):
 
 
 def get_remote_connection(capabilities, command_executor, keep_alive, ignore_local_proxy=False):
-    from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+    from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
+    from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
     from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
     from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
-    candidates = [RemoteConnection, ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
+    candidates = [ChromeRemoteConnection, EdgeRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
     handler = next((c for c in candidates if c.browser_name == capabilities.get("browserName")), RemoteConnection)
 
     return handler(command_executor, keep_alive=keep_alive, ignore_proxy=ignore_local_proxy)
@@ -160,10 +163,10 @@ class WebDriver(BaseWebDriver):
 
     def __init__(
         self,
-        command_executor="http://127.0.0.1:4444",
-        keep_alive=True,
-        file_detector=None,
-        options: Union[BaseOptions, List[BaseOptions]] = None,
+        command_executor: Union[str, RemoteConnection] = "http://127.0.0.1:4444",
+        keep_alive: bool = True,
+        file_detector: Optional[FileDetector] = None,
+        options: Optional[Union[BaseOptions, List[BaseOptions]]] = None,
     ) -> None:
         """Create a new driver that will issue commands using the wire
         protocol.
@@ -768,12 +771,6 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.FIND_ELEMENTS, {"using": by, "value": value})["value"] or []
 
     @property
-    def desired_capabilities(self) -> dict:
-        """Returns the drivers current desired capabilities being used."""
-        warnings.warn("desired_capabilities is deprecated. Please call capabilities.", DeprecationWarning, stacklevel=2)
-        return self.caps
-
-    @property
     def capabilities(self) -> dict:
         """Returns the drivers current capabilities being used."""
         return self.caps
@@ -877,7 +874,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: size[k] for k in ("width", "height")}
 
-    def set_window_position(self, x, y, windowHandle: str = "current") -> dict:
+    def set_window_position(self, x: float, y: float, windowHandle: str = "current") -> dict:
         """Sets the x,y position of the current window. (window.moveTo)
 
         :Args:
@@ -993,12 +990,6 @@ class WebDriver(BaseWebDriver):
             raise WebDriverException("You can only set the orientation to 'LANDSCAPE' and 'PORTRAIT'")
 
     @property
-    def application_cache(self):
-        """Returns a ApplicationCache Object to interact with the browser app
-        cache."""
-        return ApplicationCache(self)
-
-    @property
     def log_types(self):
         """Gets a list of the available log types. This only works with w3c
         compliant browsers.
@@ -1055,7 +1046,7 @@ class WebDriver(BaseWebDriver):
         _firefox = False
         if self.caps.get("browserName") == "chrome":
             debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
-        elif self.caps.get("browserName") == "msedge":
+        elif self.caps.get("browserName") == "MicrosoftEdge":
             debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
         else:
             _firefox = True
@@ -1132,3 +1123,40 @@ class WebDriver(BaseWebDriver):
         verified: True if the authenticator will pass user verification, False otherwise.
         """
         self.execute(Command.SET_USER_VERIFIED, {"authenticatorId": self._authenticator_id, "isUserVerified": verified})
+
+    def get_downloadable_files(self) -> dict:
+        """Retrieves the downloadable files as a map of file names and their
+        corresponding URLs."""
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
+        return self.execute(Command.GET_DOWNLOADABLE_FILES)["value"]["names"]
+
+    def download_file(self, file_name: str, target_directory: str) -> None:
+        """Downloads a file with the specified file name to the target
+        directory.
+
+        file_name: The name of the file to download.
+        target_directory: The path to the directory to save the downloaded file.
+        """
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
+        if not os.path.exists(target_directory):
+            os.makedirs(target_directory)
+
+        contents = self.execute(Command.DOWNLOAD_FILE, {"name": file_name})["value"]["contents"]
+
+        target_file = os.path.join(target_directory, file_name)
+        with open(target_file, "wb") as file:
+            file.write(base64.b64decode(contents))
+
+        with zipfile.ZipFile(target_file, "r") as zip_ref:
+            zip_ref.extractall(target_directory)
+
+    def delete_downloadable_files(self) -> None:
+        """Deletes all downloadable files."""
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
+        self.execute(Command.DELETE_DOWNLOADABLE_FILES)

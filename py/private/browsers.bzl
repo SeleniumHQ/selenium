@@ -24,19 +24,19 @@ chrome_args = select({
         "--driver-binary=$(location @mac_chromedriver//:chromedriver)",
         "--browser-binary=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
     ],
-    "@selenium//common:use_local_chromedriver": [
-        "--driver-binary=$(location @selenium//common:chromedriver)",
-    ],
     "//conditions:default": [],
 }) + headless_args
 
 edge_args = select({
+    "@selenium//common:use_pinned_linux_edge": [
+        "--driver-binary=$(location @linux_edgedriver//:msedgedriver)",
+        "--browser-binary=$(location @linux_edge//:opt/microsoft/msedge/microsoft-edge)",
+        "--browser-args=--disable-dev-shm-usage",
+        "--browser-args=--no-sandbox",
+    ],
     "@selenium//common:use_pinned_macos_edge": [
         "--driver-binary=$(location @mac_edgedriver//:msedgedriver)",
         "--browser-binary='$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge'",
-    ],
-    "@selenium//common:use_local_msedgedriver": [
-        "--driver-binary=$(location @selenium//common:msedgedriver)",
     ],
     "//conditions:default": [],
 }) + headless_args
@@ -50,9 +50,6 @@ firefox_args = select({
         "--driver-binary=$(location @mac_geckodriver//:geckodriver)",
         "--browser-binary=$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
     ],
-    "@selenium//common:use_local_geckodriver": [
-        "--driver-binary=$(location @selenium//common:geckodriver)",
-    ],
     "//conditions:default": [],
 }) + headless_args
 
@@ -65,7 +62,7 @@ BROWSERS = {
     "edge": {
         "args": ["--driver=edge"] + edge_args,
         "data": edge_data,
-        "tags": COMMON_TAGS + ["edge", "skip-remote"],
+        "tags": COMMON_TAGS + ["edge"],
     },
     "firefox": {
         "args": ["--driver=firefox"] + firefox_args,

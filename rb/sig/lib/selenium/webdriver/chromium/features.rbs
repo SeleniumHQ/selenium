@@ -1,0 +1,42 @@
+module Selenium
+  module WebDriver
+    module Chromium
+      module Features
+        include _Bridge
+
+        CHROMIUM_COMMANDS: Hash[Symbol, Array[Symbol | String]]
+
+        def commands: (Symbol command) -> Array[Symbol | String]
+
+        def launch_app: (String id) -> String
+
+        def cast_sinks: () -> Array[String]
+
+        def cast_sink_to_use=: (String name) -> untyped
+
+        def cast_issue_message: () -> String
+
+        def start_cast_tab_mirroring: (String name) -> untyped
+
+        def start_cast_desktop_mirroring: (String name) -> untyped
+
+        def stop_casting: (String name) -> untyped
+
+        def set_permission: (String name, String value) -> untyped
+
+        def network_conditions: () -> Hash[untyped, untyped]
+
+        def network_conditions=: (Hash[Symbol | String, Integer | bool] conditions) -> untyped
+
+        def delete_network_conditions: () -> untyped
+
+        def send_command: (Hash[String | Symbol, untyped] command_params) -> untyped
+
+        def available_log_types: () -> Array[Symbol]
+
+        def log: (Symbol type) -> Array[Hash[String, untyped]] |
+          (Symbol type) -> Array[LogEntry]
+      end
+    end
+  end
+end

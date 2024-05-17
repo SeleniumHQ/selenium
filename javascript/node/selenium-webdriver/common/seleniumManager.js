@@ -21,11 +21,10 @@
  *  Wrapper for getting information from the Selenium Manager binaries
  */
 
-const { platform } = require('process')
-const path = require('path')
-const fs = require('fs')
-const spawnSync = require('child_process').spawnSync
-const { Capability } = require('../lib/capabilities')
+const { platform } = require('node:process')
+const path = require('node:path')
+const fs = require('node:fs')
+const spawnSync = require('node:child_process').spawnSync
 const logging = require('../lib/logging')
 
 const log_ = logging.getLogger(logging.Type.DRIVER)
@@ -43,8 +42,7 @@ function getBinary() {
     linux: 'linux',
   }[platform]
 
-  const file =
-    directory === 'windows' ? 'selenium-manager.exe' : 'selenium-manager'
+  const file = directory === 'windows' ? 'selenium-manager.exe' : 'selenium-manager'
 
   let seleniumManagerBasePath = path.join(__dirname, '..', '/bin')
 
@@ -64,40 +62,12 @@ function getBinary() {
 
 /**
  * Determines the path of the correct driver
- * @param {Capabilities} options browser options to fetch the driver
+ * @param {string[]} args arguments to invoke Selenium Manager
  * @returns {{browserPath: string, driverPath: string}} path of the driver and
  * browser location
  */
 
-function driverLocation(options) {
-  let args = ['--browser', options.getBrowserName(), '--output', 'json']
-
-  if (options.getBrowserVersion() && options.getBrowserVersion() !== '') {
-    args.push('--browser-version', options.getBrowserVersion())
-  }
-
-  const vendorOptions =
-    options.get('goog:chromeOptions') ||
-    options.get('ms:edgeOptions') ||
-    options.get('moz:firefoxOptions')
-  if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== '') {
-    args.push('--browser-path', path.resolve(vendorOptions.binary))
-  }
-
-  const proxyOptions = options.getProxy()
-
-  // Check if proxyOptions exists and has properties
-  if (proxyOptions && Object.keys(proxyOptions).length > 0) {
-    const httpProxy = proxyOptions['httpProxy']
-    const sslProxy = proxyOptions['sslProxy']
-
-    if (httpProxy !== undefined) {
-      args.push('--proxy', httpProxy)
-    } else if (sslProxy !== undefined) {
-      args.push('--proxy', sslProxy)
-    }
-  }
-
+function binaryPaths(args) {
   const smBinary = getBinary()
   const spawnResult = spawnSync(smBinary, args)
   let output
@@ -115,21 +85,12 @@ function driverLocation(options) {
         errorMessage = e.toString()
       }
     }
-    throw new Error(
-      `Error executing command for ${smBinary} with ${args}: ${errorMessage}`
-    )
+    throw new Error(`Error executing command for ${smBinary} with ${args}: ${errorMessage}`)
   }
   try {
     output = JSON.parse(spawnResult.stdout.toString())
   } catch (e) {
-    throw new Error(
-      `Error executing command for ${smBinary} with ${args}: ${e.toString()}`
-    )
-  }
-
-  // Once driverPath is available, delete browserVersion from payload
-  if (output.result.driver_path) {
-    options.delete(Capability.BROWSER_VERSION)
+    throw new Error(`Error executing command for ${smBinary} with ${args}: ${e.toString()}`)
   }
 
   logOutput(output)
@@ -151,4 +112,4 @@ function logOutput(output) {
 }
 
 // PUBLIC API
-module.exports = { driverLocation }
+module.exports = { binaryPaths }

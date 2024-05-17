@@ -1,0 +1,20 @@
+module Selenium
+  module WebDriver
+    module KeyActions
+      include _ActionBuilder
+      include _Clickable
+
+      def key_down: (*Symbol | String | Element args, ?device: Symbol | String?) -> KeyActions
+
+      def key_up: (*Symbol | String | Element args, ?device: Symbol | String?) -> KeyActions
+
+      def send_keys: (*untyped args, ?device: Symbol | String?) -> self
+
+      private
+
+      def key_action: (*Symbol | String | Element args, ?action: Symbol | String?, ?device: Symbol | String?) -> self
+
+      def key_input: (?Symbol | String? name) -> untyped
+    end
+  end
+end

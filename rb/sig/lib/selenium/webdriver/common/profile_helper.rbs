@@ -1,0 +1,31 @@
+module Selenium
+  module WebDriver
+    module ProfileHelper
+      include _Profile
+
+      def self.included: (untyped base) -> untyped
+
+      def self.decoded: (untyped json) -> untyped
+
+      def encoded: () -> untyped
+
+      def as_json: (*untyped) -> Hash[String, untyped]
+
+      def to_json: (*untyped) -> untyped
+
+      private
+
+      def create_tmp_copy: (untyped directory) -> untyped
+
+      def verify_model: (untyped model) -> untyped?
+
+      module ClassMethods
+        def from_json: (untyped json) -> untyped
+
+        def new: (untyped directory) -> untyped
+
+        def decoded: (untyped json) -> untyped
+      end
+    end
+  end
+end

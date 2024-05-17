@@ -1,0 +1,51 @@
+module Selenium
+  module WebDriver
+    class ChildProcess
+      @command: untyped
+
+      @detach: untyped
+
+      @pid: untyped
+
+      @status: untyped
+
+      @io: untyped
+
+      TimeoutError: untyped
+
+      SIGTERM: String
+
+      SIGKILL: String
+
+      POLL_INTERVAL: Float
+
+      attr_accessor detach: untyped
+
+      attr_writer io: untyped
+
+      def self.build: (*untyped command) -> untyped
+
+      def initialize: (*untyped command) -> void
+
+      def io: () -> untyped
+
+      def start: () -> untyped
+
+      def stop: (?Integer timeout) -> untyped
+
+      def alive?: () -> untyped
+
+      def exited?: () -> (false | untyped)
+
+      def poll_for_exit: (untyped timeout) -> untyped
+
+      def wait: () -> (nil | untyped)
+
+      private
+
+      def terminate: (untyped pid) -> untyped
+
+      def kill: (untyped pid) -> untyped
+    end
+  end
+end

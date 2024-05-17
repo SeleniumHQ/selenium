@@ -48,7 +48,7 @@ module Selenium
             @capabilities[key]
           end
 
-          define_method "#{key}=" do |value|
+          define_method :"#{key}=" do |value|
             @capabilities[key] = value
           end
         end
@@ -99,7 +99,7 @@ module Selenium
           end
 
           def camel_case(str_or_sym)
-            str_or_sym.to_s.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
+            str_or_sym.to_s.gsub(/_([a-z])/) { Regexp.last_match(1)&.upcase }
           end
 
           private

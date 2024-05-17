@@ -38,7 +38,7 @@ java_test_suite(
         "//java/test/org/openqa/selenium:helpers",
         "//java/test/org/openqa/selenium/build",
         artifact("org.assertj:assertj-core"),
-        artifact("net.sourceforge.htmlunit:htmlunit-core-js"),
+        artifact("org.htmlunit:htmlunit-core-js"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
     ] + JUNIT5_DEPS,
 )

@@ -30,7 +30,7 @@ import browserVersion from '../../util/browser-version'
 import Grid from '@mui/material/Grid';
 import { experimentalStyled as styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
-import InfoIcon from '@mui/icons-material/Info'
+import { Info as InfoIcon } from '@mui/icons-material'
 import { useState } from 'react'
 import Typography from '@mui/material/Typography'
 

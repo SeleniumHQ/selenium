@@ -27,6 +27,8 @@ use anyhow::Error;
 use reqwest::Client;
 use std::collections::HashMap;
 use std::path::PathBuf;
+use std::sync::mpsc;
+use std::sync::mpsc::{Receiver, Sender};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -51,6 +53,9 @@ pub struct IExplorerManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub tx: Sender<String>,
+    pub rx: Receiver<String>,
+    pub download_browser: bool,
     pub driver_url: Option<String>,
 }
 
@@ -62,12 +67,16 @@ impl IExplorerManager {
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
         config.os = WINDOWS.to_str_vector().first().unwrap().to_string();
+        let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(IExplorerManager {
             browser_name,
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::new(),
+            tx,
+            rx,
+            download_browser: false,
             driver_url: None,
         }))
     }
@@ -93,13 +102,13 @@ impl SeleniumManager for IExplorerManager {
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
         HashMap::from([(
             BrowserPath::new(WINDOWS, STABLE),
-            r#"Internet Explorer\iexplore.exe"#,
+            r"Internet Explorer\iexplore.exe",
         )])
     }
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
-            r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
+            r"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer",
             REG_VERSION_ARG,
             "",
         )
@@ -132,7 +141,7 @@ impl SeleniumManager for IExplorerManager {
 
                 let selenium_releases = parse_json_from_url::<Vec<SeleniumRelease>>(
                     self.get_http_client(),
-                    MIRROR_URL.to_string(),
+                    MIRROR_URL,
                 )?;
 
                 let filtered_releases: Vec<SeleniumRelease> = selenium_releases
@@ -231,6 +240,14 @@ impl SeleniumManager for IExplorerManager {
         self.log = log;
     }
 
+    fn get_sender(&self) -> &Sender<String> {
+        &self.tx
+    }
+
+    fn get_receiver(&self) -> &Receiver<String> {
+        &self.rx
+    }
+
     fn get_platform_label(&self) -> &str {
         "win32"
     }
@@ -266,5 +283,13 @@ impl SeleniumManager for IExplorerManager {
         _browser_version: &str,
     ) -> Result<Option<&str>, Error> {
         self.unavailable_download()
+    }
+
+    fn is_download_browser(&self) -> bool {
+        self.download_browser
+    }
+
+    fn set_download_browser(&mut self, download_browser: bool) {
+        self.download_browser = download_browser;
     }
 }

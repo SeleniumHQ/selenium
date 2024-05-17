@@ -18,7 +18,7 @@
 'use strict'
 
 const jszip = require('jszip')
-const path = require('path')
+const path = require('node:path')
 
 const io = require('./index')
 const { InvalidArgumentError } = require('../lib/error')
@@ -46,19 +46,14 @@ class Zip {
   addFile(filePath, zipPath = path.basename(filePath)) {
     let add = io
       .read(filePath)
-      .then((buffer) =>
-        this.z_.file(
-          /** @type {string} */ (zipPath.replace(/\\/g, '/')),
-          buffer
-        )
-      )
+      .then((buffer) => this.z_.file(/** @type {string} */ (zipPath.replace(/\\/g, '/')), buffer))
     this.pendingAdds_.add(add)
     return add.then(
       () => this.pendingAdds_.delete(add),
       (e) => {
         this.pendingAdds_.delete(add)
         throw e
-      }
+      },
     )
   }
 
@@ -83,12 +78,7 @@ class Zip {
         if (spec.dir) {
           archive.folder(spec.path)
         } else {
-          files.push(
-            this.addFile(
-              path.join(dirPath, spec.path),
-              path.join(zipPath, spec.path)
-            )
-          )
+          files.push(this.addFile(path.join(dirPath, spec.path), path.join(zipPath, spec.path)))
         }
       })
 
@@ -118,15 +108,11 @@ class Zip {
   getFile(path) {
     let file = this.z_.file(path)
     if (!file) {
-      return Promise.reject(
-        new InvalidArgumentError(`No such file in zip archive: ${path}`)
-      )
+      return Promise.reject(new InvalidArgumentError(`No such file in zip archive: ${path}`))
     }
 
     if (file.dir) {
-      return Promise.reject(
-        new InvalidArgumentError(`The requested file is a directory: ${path}`)
-      )
+      return Promise.reject(new InvalidArgumentError(`The requested file is a directory: ${path}`))
     }
 
     return Promise.resolve(file.async('nodebuffer'))
@@ -144,15 +130,9 @@ class Zip {
    */
   toBuffer(compression = 'STORE') {
     if (compression !== 'STORE' && compression !== 'DEFLATE') {
-      return Promise.reject(
-        new InvalidArgumentError(
-          `compression must be one of {STORE, DEFLATE}, got ${compression}`
-        )
-      )
+      return Promise.reject(new InvalidArgumentError(`compression must be one of {STORE, DEFLATE}, got ${compression}`))
     }
-    return Promise.resolve(
-      this.z_.generateAsync({ compression, type: 'nodebuffer' })
-    )
+    return Promise.resolve(this.z_.generateAsync({ compression, type: 'nodebuffer' }))
   }
 }
 
@@ -210,9 +190,7 @@ function unzip(src, dst) {
     }
 
     function writeFile(relPath, file) {
-      return file
-        .async('nodebuffer')
-        .then((buffer) => io.write(path.join(dst, relPath), buffer))
+      return file.async('nodebuffer').then((buffer) => io.write(path.join(dst, relPath), buffer))
     }
   })
 }

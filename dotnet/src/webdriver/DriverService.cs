@@ -16,6 +16,8 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal.Logging;
+using OpenQA.Selenium.Remote;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -23,7 +25,6 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
 {
@@ -41,6 +42,7 @@ namespace OpenQA.Selenium
         private bool isDisposed;
         private Process driverServiceProcess;
         private TimeSpan initializationTimeout = TimeSpan.FromSeconds(20);
+        private readonly static ILogger logger = Log.GetLogger<DriverService>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverService"/> class.
@@ -48,14 +50,13 @@ namespace OpenQA.Selenium
         /// <param name="servicePath">The full path to the directory containing the executable providing the service to drive the browser.</param>
         /// <param name="port">The port on which the driver executable should listen.</param>
         /// <param name="driverServiceExecutableName">The file name of the driver service executable.</param>
-        /// <param name="driverServiceDownloadUrl">This parameter is no longer used; kept for backwards compatibility.</param>
         /// <exception cref="ArgumentException">
         /// If the path specified is <see langword="null"/> or an empty string.
         /// </exception>
         /// <exception cref="DriverServiceNotFoundException">
         /// If the specified driver service executable does not exist in the specified directory.
         /// </exception>
-        protected DriverService(string servicePath, int port, string driverServiceExecutableName, Uri driverServiceDownloadUrl = null)
+        protected DriverService(string servicePath, int port, string driverServiceExecutableName)
         {
             this.driverServicePath = servicePath;
             this.driverServiceExecutableName = driverServiceExecutableName;
@@ -216,6 +217,7 @@ namespace OpenQA.Selenium
             get
             {
                 bool isInitialized = false;
+
                 try
                 {
                     using (var httpClient = new HttpClient())
@@ -236,7 +238,10 @@ namespace OpenQA.Selenium
                 }
                 catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
                 {
-                    Console.WriteLine(ex.Message);
+                    if (logger.IsEnabled(LogEventLevel.Trace))
+                    {
+                        logger.Trace(ex.ToString());
+                    }
                 }
 
                 return isInitialized;
@@ -270,7 +275,7 @@ namespace OpenQA.Selenium
             }
             else
             {
-                this.driverServiceProcess.StartInfo.FileName = DriverFinder.FullPath(this.GetDefaultDriverOptions());
+                this.driverServiceProcess.StartInfo.FileName = new DriverFinder(this.GetDefaultDriverOptions()).GetDriverPath();
             }
 
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;

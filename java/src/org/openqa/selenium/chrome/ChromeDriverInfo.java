@@ -21,11 +21,11 @@ import static org.openqa.selenium.remote.Browser.CHROME;
 
 import com.google.auto.service.AutoService;
 import java.util.Optional;
+import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chromium.ChromiumDriverInfo;
 import org.openqa.selenium.remote.CapabilityType;
@@ -33,6 +33,7 @@ import org.openqa.selenium.remote.service.DriverFinder;
 
 @AutoService(WebDriverInfo.class)
 public class ChromeDriverInfo extends ChromiumDriverInfo {
+  private static final Logger LOG = Logger.getLogger(ChromeDriverInfo.class.getName());
 
   @Override
   public String getDisplayName() {
@@ -56,28 +57,19 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public boolean isSupportingBiDi() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean isAvailable() {
-    try {
-      DriverFinder.getPath(ChromeDriverService.createDefaultService(), getCanonicalCapabilities());
-      return true;
-    } catch (IllegalStateException | WebDriverException e) {
-      return false;
-    }
+    return new DriverFinder(ChromeDriverService.createDefaultService(), getCanonicalCapabilities())
+        .isAvailable();
   }
 
   @Override
   public boolean isPresent() {
-    try {
-      DriverFinder.getPath(
-          ChromeDriverService.createDefaultService(), getCanonicalCapabilities(), true);
-      return true;
-    } catch (IllegalStateException | WebDriverException e) {
-      return false;
-    }
+    return new DriverFinder(ChromeDriverService.createDefaultService(), getCanonicalCapabilities())
+        .isPresent();
   }
 
   @Override

@@ -59,7 +59,6 @@ remote_commands = {
     Command.CLEAR_ELEMENT: ("POST", "/session/$sessionId/element/$id/clear"),
     Command.GET_ELEMENT_TEXT: ("GET", "/session/$sessionId/element/$id/text"),
     Command.SEND_KEYS_TO_ELEMENT: ("POST", "/session/$sessionId/element/$id/value"),
-    Command.UPLOAD_FILE: ("POST", "/session/$sessionId/se/file"),
     Command.GET_ELEMENT_TAG_NAME: ("GET", "/session/$sessionId/element/$id/name"),
     Command.IS_ELEMENT_SELECTED: ("GET", "/session/$sessionId/element/$id/selected"),
     Command.IS_ELEMENT_ENABLED: ("GET", "/session/$sessionId/element/$id/enabled"),
@@ -122,6 +121,10 @@ remote_commands = {
         "/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials",
     ),
     Command.SET_USER_VERIFIED: ("POST", "/session/$sessionId/webauthn/authenticator/$authenticatorId/uv"),
+    Command.UPLOAD_FILE: ("POST", "/session/$sessionId/se/file"),
+    Command.GET_DOWNLOADABLE_FILES: ("GET", "/session/$sessionId/se/files"),
+    Command.DOWNLOAD_FILE: ("POST", "/session/$sessionId/se/files"),
+    Command.DELETE_DOWNLOADABLE_FILES: ("DELETE", "/session/$sessionId/se/files"),
 }
 
 
@@ -294,6 +297,8 @@ class RemoteConnection:
                 del params[word]
         data = utils.dump_json(params)
         url = f"{self._url}{path}"
+        trimmed = self._trim_large_entries(params)
+        LOGGER.debug("%s %s %s", command_info[0], url, str(trimmed))
         return self._request(command_info[0], url, body=data)
 
     def _request(self, method, url, body=None):
@@ -307,7 +312,6 @@ class RemoteConnection:
         :Returns:
           A dictionary with the server's parsed JSON response.
         """
-        LOGGER.debug("%s %s %s", method, url, body)
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self.keep_alive)
         response = None
@@ -357,3 +361,21 @@ class RemoteConnection:
         """Clean up resources when finished with the remote_connection."""
         if hasattr(self, "_conn"):
             self._conn.clear()
+
+    def _trim_large_entries(self, input_dict, max_length=100):
+        """Truncate string values in a dictionary if they exceed max_length.
+
+        :param dict: Dictionary with potentially large values
+        :param max_length: Maximum allowed length of string values
+        :return: Dictionary with truncated string values
+        """
+        output_dictionary = {}
+        for key, value in input_dict.items():
+            if isinstance(value, dict):
+                output_dictionary[key] = self._trim_large_entries(value, max_length)
+            elif isinstance(value, str) and len(value) > max_length:
+                output_dictionary[key] = value[:max_length] + "..."
+            else:
+                output_dictionary[key] = value
+
+        return output_dictionary

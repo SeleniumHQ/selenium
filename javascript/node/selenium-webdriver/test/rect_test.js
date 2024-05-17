@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const { By } = require('..')
 const test = require('../lib/test')
 
@@ -41,9 +41,7 @@ test.suite(function (env) {
         'height: 25px;width:35px;background: green;}' +
         '</style><div>Hello</div>'
 
-      await driver.get(
-        test.Pages.echoPage + `?html=${encodeURIComponent(html)}`
-      )
+      await driver.get(test.Pages.echoPage + `?html=${encodeURIComponent(html)}`)
       const el = await driver.findElement(By.css('div'))
       const rect = await el.getRect()
       assert.deepStrictEqual(rect, { width: 35, height: 25, x: 40, y: 50 })

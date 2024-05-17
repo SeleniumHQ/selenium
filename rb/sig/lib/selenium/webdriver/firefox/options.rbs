@@ -1,0 +1,43 @@
+module Selenium
+  module WebDriver
+    module Firefox
+      class Options < WebDriver::Options
+        @debugger_address: untyped
+
+        @profile: untyped
+
+        attr_accessor debugger_address: untyped
+
+        KEY: String
+
+        CAPABILITIES: Hash[Symbol, String]
+
+        BROWSER: String
+
+        attr_reader profile: untyped
+
+        def initialize: (?log_level: untyped?, **untyped opts) -> void
+
+        def add_argument: (untyped arg) -> untyped
+
+        def add_preference: (untyped name, untyped value) -> untyped
+
+        def profile=: (untyped profile) -> untyped
+
+        def log_level: () -> untyped
+
+        def log_level=: (untyped level) -> untyped
+
+        def enable_android: (?package: ::String, ?serial_number: untyped?, ?activity: untyped?, ?intent_arguments: untyped?) -> untyped
+
+        private
+
+        def process_browser_options: (untyped browser_options) -> untyped
+
+        def process_profile: (untyped profile) -> untyped
+
+        def camelize?: (untyped key) -> untyped
+      end
+    end
+  end
+end

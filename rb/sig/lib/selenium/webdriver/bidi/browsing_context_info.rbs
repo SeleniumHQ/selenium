@@ -1,0 +1,25 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class BrowsingContextInfo
+        @id: untyped
+
+        @url: untyped
+
+        @children: untyped
+
+        @parent_browsing_context: untyped
+
+        attr_accessor id: untyped
+
+        attr_accessor url: untyped
+
+        attr_accessor children: untyped
+
+        attr_accessor parent_browsing_context: untyped
+
+        def initialize: (id: untyped, url: untyped, children: untyped, parent_context: untyped) -> void
+      end
+    end
+  end
+end

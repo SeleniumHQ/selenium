@@ -226,6 +226,11 @@ namespace OpenQA.Selenium
         /// <summary>
         /// The element does not have a shadow root.
         /// </summary>
-        NoSuchShadowRoot = 65
+        NoSuchShadowRoot = 65,
+
+        /// <summary>
+        /// The referenced shadow root is no longer attached to the DOM.
+        /// </summary>
+        DetachedShadowRoot = 66,
     }
 }

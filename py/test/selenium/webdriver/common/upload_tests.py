@@ -58,6 +58,7 @@ def test_can_upload_two_files(driver, pages, get_local_path):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_chrome
+@pytest.mark.xfail_edge
 @pytest.mark.xfail_safari
 def test_file_is_uploaded_to_remote_machine_on_select(driver, pages, get_local_path):
     uploaded_files = []
