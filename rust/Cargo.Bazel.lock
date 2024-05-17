@@ -1,5 +1,5 @@
 {
-  "checksum": "56fdaab3fc8fbbad2fa1adba945c9339107eb008d5b9fc5e22503e02f134349e",
+  "checksum": "7ba5523124b319cc49b8f1967d6dcc549b55f07c5684cb2abc0c8fa75cae21e3",
   "crates": {
     "addr2line 0.21.0": {
       "name": "addr2line",
@@ -532,14 +532,14 @@
       ],
       "license_file": "LICENSE-APACHE"
     },
-    "anyhow 1.0.83": {
+    "anyhow 1.0.84": {
       "name": "anyhow",
-      "version": "1.0.83",
+      "version": "1.0.84",
       "package_url": "https://github.com/dtolnay/anyhow",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/anyhow/1.0.83/download",
-          "sha256": "25bdb32cbbdce2b519a9cd7df3a678443100e265d5e25ca763b7572a5104f5f3"
+          "url": "https://static.crates.io/crates/anyhow/1.0.84/download",
+          "sha256": "18b8795de6d09abb2b178fa5a9e3bb10da935750f33449a132b328b9391b2c6a"
         }
       },
       "targets": [
@@ -584,7 +584,7 @@
         "deps": {
           "common": [
             {
-              "id": "anyhow 1.0.83",
+              "id": "anyhow 1.0.84",
               "target": "build_script_build"
             },
             {
@@ -595,7 +595,7 @@
           "selects": {}
         },
         "edition": "2018",
-        "version": "1.0.83"
+        "version": "1.0.84"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -1978,10 +1978,6 @@
             {
               "id": "jobserver 0.1.31",
               "target": "jobserver"
-            },
-            {
-              "id": "libc 0.2.154",
-              "target": "libc"
             },
             {
               "id": "once_cell 1.19.0",
@@ -13531,7 +13527,7 @@
         "deps": {
           "common": [
             {
-              "id": "anyhow 1.0.83",
+              "id": "anyhow 1.0.84",
               "target": "anyhow"
             },
             {
@@ -13619,7 +13615,7 @@
               "target": "walkdir"
             },
             {
-              "id": "zip 1.2.3",
+              "id": "zip 1.3.0",
               "target": "zip"
             }
           ],
@@ -20769,14 +20765,14 @@
       ],
       "license_file": "LICENSE-APACHE"
     },
-    "zip 1.2.3": {
+    "zip 1.3.0": {
       "name": "zip",
-      "version": "1.2.3",
+      "version": "1.3.0",
       "package_url": "https://github.com/zip-rs/zip2.git",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/zip/1.2.3/download",
-          "sha256": "c700ea425e148de30c29c580c1f9508b93ca57ad31c9f4e96b83c194c37a7a8f"
+          "url": "https://static.crates.io/crates/zip/1.3.0/download",
+          "sha256": "f1f4a27345eb6f7aa7bd015ba7eb4175fa4e1b462a29874b779e0bbcf96c6ac7"
         }
       },
       "targets": [
@@ -20837,7 +20833,7 @@
               "target": "thiserror"
             },
             {
-              "id": "zip 1.2.3",
+              "id": "zip 1.3.0",
               "target": "build_script_build"
             }
           ],
@@ -20866,7 +20862,7 @@
           ],
           "selects": {}
         },
-        "version": "1.2.3"
+        "version": "1.3.0"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -21614,7 +21610,7 @@
     ]
   },
   "direct_deps": [
-    "anyhow 1.0.83",
+    "anyhow 1.0.84",
     "apple-flat-package 0.18.0",
     "bzip2 0.4.4",
     "clap 4.5.4",
@@ -21636,7 +21632,7 @@
     "tokio 1.37.0",
     "toml 0.8.13",
     "walkdir 2.5.0",
-    "zip 1.2.3"
+    "zip 1.3.0"
   ],
   "direct_dev_deps": [
     "assert_cmd 2.0.14",
