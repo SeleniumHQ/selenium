@@ -85,4 +85,4 @@ jobs:
       name: Integration Tests (remote)
       browser: firefox
       cache-key: py-remote
-      run: bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
+      run: bazel test --flaky_test_attempts 3 //py:test-remote
