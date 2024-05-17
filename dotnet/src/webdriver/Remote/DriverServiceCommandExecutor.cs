@@ -18,6 +18,7 @@
 
 using System;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -94,7 +95,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A response from the browser</returns>
         public Response Execute(Command commandToExecute)
         {
-            return Task.Run(() => this.ExecuteAsync(commandToExecute)).ConfigureAwait(false).GetAwaiter().GetResult();
+            return AsyncHelper.RunSync(() => this.ExecuteAsync(commandToExecute));
         }
 
         /// <summary>

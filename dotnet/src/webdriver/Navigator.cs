@@ -18,6 +18,7 @@
 
 using System;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Internal;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium
@@ -43,7 +44,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public void Back()
         {
-            Task.Run(this.BackAsync).ConfigureAwait(false).GetAwaiter().GetResult();
+            AsyncHelper.RunSync(this.BackAsync);
         }
 
         /// <summary>
