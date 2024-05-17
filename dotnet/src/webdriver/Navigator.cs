@@ -47,7 +47,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Move back a single entry in the browser's history.
+        /// Move back a single entry in the browser's history asynchronously.
         /// </summary>
         /// <returns>A task object representing the asynchronous operation</returns>
         public async Task BackAsync()

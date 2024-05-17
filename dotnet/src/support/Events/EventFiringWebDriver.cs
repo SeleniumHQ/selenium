@@ -843,15 +843,24 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Move the browser back
+            /// Move the browser back a
             /// </summary>
             public void Back()
+            {
+                Task.Run(this.BackAsync).ConfigureAwait(false).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Move the browser back asynchronously
+            /// </summary>
+            /// <returns>A task object representing the asynchronous operation</returns>
+            public async Task BackAsync()
             {
                 try
                 {
                     WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver);
                     this.parentDriver.OnNavigatingBack(e);
-                    this.wrappedNavigation.Back();
+                    await this.wrappedNavigation.BackAsync();
                     this.parentDriver.OnNavigatedBack(e);
                 }
                 catch (Exception ex)
@@ -859,11 +868,6 @@ namespace OpenQA.Selenium.Support.Events
                     this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
                     throw;
                 }
-            }
-
-            public Task BackAsync()
-            {
-                throw new NotImplementedException();
             }
 
             /// <summary>
