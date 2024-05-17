@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.Events
 {
@@ -843,11 +844,11 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Move the browser back a
+            /// Move the browser back
             /// </summary>
             public void Back()
             {
-                Task.Run(this.BackAsync).ConfigureAwait(false).GetAwaiter().GetResult();
+                AsyncHelper.RunSync(this.BackAsync);
             }
 
             /// <summary>
