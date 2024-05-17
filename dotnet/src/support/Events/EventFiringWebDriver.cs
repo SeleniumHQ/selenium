@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Support.Events
 {
@@ -858,6 +859,11 @@ namespace OpenQA.Selenium.Support.Events
                     this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
                     throw;
                 }
+            }
+
+            public Task BackAsync()
+            {
+                throw new NotImplementedException();
             }
 
             /// <summary>
