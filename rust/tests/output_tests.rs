@@ -16,7 +16,7 @@
 // under the License.
 
 use assert_cmd::Command;
-use selenium_manager::logger::{JsonOutput, DRIVER_PATH};
+use selenium_manager::logger::{JsonOutput, MinimalJson, DRIVER_PATH};
 use std::path::Path;
 use std::str;
 
@@ -38,7 +38,7 @@ fn json_output_test() {
     let output_code = json.result.code;
     assert_eq!(output_code, 0);
 
-    let driver = Path::new(&json.result.message);
+    let driver = Path::new(&json.result.driver_path);
     assert!(driver.exists());
 }
 
@@ -54,4 +54,26 @@ fn shell_output_test() {
     let output = str::from_utf8(stdout).unwrap();
     println!("{}", output);
     assert!(output.contains(DRIVER_PATH));
+}
+
+#[test]
+fn mixed_output_test() {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    cmd.args(["--browser", "chrome", "--output", "mixed"])
+        .assert()
+        .success()
+        .code(0);
+
+    let stdout = &cmd.unwrap().stdout;
+    let output = str::from_utf8(stdout).unwrap();
+    println!("stdout: {}", output);
+
+    let json: MinimalJson = serde_json::from_str(output).unwrap();
+    let driver = Path::new(&json.driver_path);
+    assert!(driver.exists());
+
+    let stderr = &cmd.unwrap().stderr;
+    let err_output = str::from_utf8(stderr).unwrap();
+    println!("stderr: {}", err_output);
+    assert!(!err_output.is_empty());
 }
