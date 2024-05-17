@@ -25,7 +25,7 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Encapsulates methods for working with asynchronous tasks.
     /// </summary>
-    internal static class AsyncHelper
+    public static class AsyncHelper
     {
         private static readonly TaskFactory _myTaskFactory = new TaskFactory(CancellationToken.None,
             TaskCreationOptions.None, TaskContinuationOptions.None, TaskScheduler.Default);
