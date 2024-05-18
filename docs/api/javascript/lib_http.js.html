@@ -1,0 +1,580 @@
+<!DOCTYPE html><html lang="en" style="font-size:16px"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Source: lib/http.js</title><!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]--><script src="scripts/third-party/hljs.js" defer="defer"></script><script src="scripts/third-party/hljs-line-num.js" defer="defer"></script><script src="scripts/third-party/popper.js" defer="defer"></script><script src="scripts/third-party/tippy.js" defer="defer"></script><script src="scripts/third-party/tocbot.min.js"></script><script>var baseURL="/",locationPathname="";baseURL=(locationPathname=document.location.pathname).substr(0,locationPathname.lastIndexOf("/")+1)</script><link rel="stylesheet" href="styles/clean-jsdoc-theme.min.css"><svg aria-hidden="true" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display:none"><defs><symbol id="copy-icon" viewbox="0 0 488.3 488.3"><g><path d="M314.25,85.4h-227c-21.3,0-38.6,17.3-38.6,38.6v325.7c0,21.3,17.3,38.6,38.6,38.6h227c21.3,0,38.6-17.3,38.6-38.6V124    C352.75,102.7,335.45,85.4,314.25,85.4z M325.75,449.6c0,6.4-5.2,11.6-11.6,11.6h-227c-6.4,0-11.6-5.2-11.6-11.6V124    c0-6.4,5.2-11.6,11.6-11.6h227c6.4,0,11.6,5.2,11.6,11.6V449.6z"/><path d="M401.05,0h-227c-21.3,0-38.6,17.3-38.6,38.6c0,7.5,6,13.5,13.5,13.5s13.5-6,13.5-13.5c0-6.4,5.2-11.6,11.6-11.6h227    c6.4,0,11.6,5.2,11.6,11.6v325.7c0,6.4-5.2,11.6-11.6,11.6c-7.5,0-13.5,6-13.5,13.5s6,13.5,13.5,13.5c21.3,0,38.6-17.3,38.6-38.6    V38.6C439.65,17.3,422.35,0,401.05,0z"/></g></symbol><symbol id="search-icon" viewBox="0 0 512 512"><g><g><path d="M225.474,0C101.151,0,0,101.151,0,225.474c0,124.33,101.151,225.474,225.474,225.474    c124.33,0,225.474-101.144,225.474-225.474C450.948,101.151,349.804,0,225.474,0z M225.474,409.323    c-101.373,0-183.848-82.475-183.848-183.848S124.101,41.626,225.474,41.626s183.848,82.475,183.848,183.848    S326.847,409.323,225.474,409.323z"/></g></g><g><g><path d="M505.902,476.472L386.574,357.144c-8.131-8.131-21.299-8.131-29.43,0c-8.131,8.124-8.131,21.306,0,29.43l119.328,119.328    c4.065,4.065,9.387,6.098,14.715,6.098c5.321,0,10.649-2.033,14.715-6.098C514.033,497.778,514.033,484.596,505.902,476.472z"/></g></g></symbol><symbol id="font-size-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M11.246 15H4.754l-2 5H.6L7 4h2l6.4 16h-2.154l-2-5zm-.8-2L8 6.885 5.554 13h4.892zM21 12.535V12h2v8h-2v-.535a4 4 0 1 1 0-6.93zM19 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></symbol><symbol id="add-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"/></symbol><symbol id="minus-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 11h14v2H5z"/></symbol><symbol id="dark-theme-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.979 6.979 0 0 0 10 7zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12z"/></symbol><symbol id="light-theme-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></symbol><symbol id="reset-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.537 19.567A9.961 9.961 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10c0 2.136-.67 4.116-1.81 5.74L17 12h3a8 8 0 1 0-2.46 5.772l.997 1.795z"/></symbol><symbol id="down-icon" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.7803 6.21967C13.0732 6.51256 13.0732 6.98744 12.7803 7.28033L8.53033 11.5303C8.23744 11.8232 7.76256 11.8232 7.46967 11.5303L3.21967 7.28033C2.92678 6.98744 2.92678 6.51256 3.21967 6.21967C3.51256 5.92678 3.98744 5.92678 4.28033 6.21967L8 9.93934L11.7197 6.21967C12.0126 5.92678 12.4874 5.92678 12.7803 6.21967Z"></path></symbol><symbol id="codepen-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16.5 13.202L13 15.535v3.596L19.197 15 16.5 13.202zM14.697 12L12 10.202 9.303 12 12 13.798 14.697 12zM20 10.869L18.303 12 20 13.131V10.87zM19.197 9L13 4.869v3.596l3.5 2.333L19.197 9zM7.5 10.798L11 8.465V4.869L4.803 9 7.5 10.798zM4.803 15L11 19.131v-3.596l-3.5-2.333L4.803 15zM4 13.131L5.697 12 4 10.869v2.262zM2 9a1 1 0 0 1 .445-.832l9-6a1 1 0 0 1 1.11 0l9 6A1 1 0 0 1 22 9v6a1 1 0 0 1-.445.832l-9 6a1 1 0 0 1-1.11 0l-9-6A1 1 0 0 1 2 15V9z"/></symbol><symbol id="close-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></symbol><symbol id="menu-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/></symbol></defs></svg></head><body data-theme="dark"><div class="sidebar-container"><div class="sidebar" id="sidebar"><a href="/" class="sidebar-title sidebar-title-anchor">Selenium WebDriver JavaScript API</a><div class="sidebar-items-container"><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-modules"><div>Modules</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="module-selenium-webdriver_chrome.html">selenium-webdriver/chrome</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chromium.html">selenium-webdriver/chromium</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_edge.html">selenium-webdriver/edge</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox.html">selenium-webdriver/firefox</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_ie.html">selenium-webdriver/ie</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_safari.html">selenium-webdriver/safari</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-classes"><div>Classes</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="Actions.html">Actions</a></div><div class="sidebar-section-children"><a href="Alert.html">Alert</a></div><div class="sidebar-section-children"><a href="AlertPromise.html">AlertPromise</a></div><div class="sidebar-section-children"><a href="BaseLogEntry.html">BaseLogEntry</a></div><div class="sidebar-section-children"><a href="BaseParameters.html">BaseParameters</a></div><div class="sidebar-section-children"><a href="BeforeRequestSent.html">BeforeRequestSent</a></div><div class="sidebar-section-children"><a href="BoxClipRectangle.html">BoxClipRectangle</a></div><div class="sidebar-section-children"><a href="global.html#Browser">Browser</a></div><div class="sidebar-section-children"><a href="BrowsingContext.html">BrowsingContext</a></div><div class="sidebar-section-children"><a href="BrowsingContextInfo.html">BrowsingContextInfo</a></div><div class="sidebar-section-children"><a href="BrowsingContextInspector.html">BrowsingContextInspector</a></div><div class="sidebar-section-children"><a href="BrowsingContextPartitionDescriptor.html">BrowsingContextPartitionDescriptor</a></div><div class="sidebar-section-children"><a href="Build.html">Build</a></div><div class="sidebar-section-children"><a href="Builder.html">Builder</a></div><div class="sidebar-section-children"><a href="By.html">By</a></div><div class="sidebar-section-children"><a href="BytesValue.html">BytesValue</a></div><div class="sidebar-section-children"><a href="Capabilities.html">Capabilities</a></div><div class="sidebar-section-children"><a href="CaptureScreenshotParameters.html">CaptureScreenshotParameters</a></div><div class="sidebar-section-children"><a href="ChannelValue.html">ChannelValue</a></div><div class="sidebar-section-children"><a href="ClipRectangle.html">ClipRectangle</a></div><div class="sidebar-section-children"><a href="Command.html">Command</a></div><div class="sidebar-section-children"><a href="Command.html">Command</a></div><div class="sidebar-section-children"><a href="Condition.html">Condition</a></div><div class="sidebar-section-children"><a href="ConsoleLogEntry.html">ConsoleLogEntry</a></div><div class="sidebar-section-children"><a href="ContinueRequestParameters.html">ContinueRequestParameters</a></div><div class="sidebar-section-children"><a href="ContinueResponseParameters.html">ContinueResponseParameters</a></div><div class="sidebar-section-children"><a href="Cookie.html">Cookie</a></div><div class="sidebar-section-children"><a href="CookieFilter.html">CookieFilter</a></div><div class="sidebar-section-children"><a href="CreateContextParameters.html">CreateContextParameters</a></div><div class="sidebar-section-children"><a href="Credential.html">Credential</a></div><div class="sidebar-section-children"><a href="DetachedShadowRootError.html">DetachedShadowRootError</a></div><div class="sidebar-section-children"><a href="Device.html">Device</a></div><div class="sidebar-section-children"><a href="DriverService.html">DriverService</a></div><div class="sidebar-section-children"><a href="DriverService.Builder.html">Builder</a></div><div class="sidebar-section-children"><a href="ElementClickInterceptedError.html">ElementClickInterceptedError</a></div><div class="sidebar-section-children"><a href="ElementClipRectangle.html">ElementClipRectangle</a></div><div class="sidebar-section-children"><a href="ElementNotInteractableError.html">ElementNotInteractableError</a></div><div class="sidebar-section-children"><a href="ElementNotSelectableError.html">ElementNotSelectableError</a></div><div class="sidebar-section-children"><a href="Entry.html">Entry</a></div><div class="sidebar-section-children"><a href="Environment.html">Environment</a></div><div class="sidebar-section-children"><a href="EvaluateResultException.html">EvaluateResultException</a></div><div class="sidebar-section-children"><a href="EvaluateResultSuccess.html">EvaluateResultSuccess</a></div><div class="sidebar-section-children"><a href="ExceptionDetails.html">ExceptionDetails</a></div><div class="sidebar-section-children"><a href="Executor.html">Executor</a></div><div class="sidebar-section-children"><a href="FetchError.html">FetchError</a></div><div class="sidebar-section-children"><a href="FetchTimingInfo.html">FetchTimingInfo</a></div><div class="sidebar-section-children"><a href="FileDetector.html">FileDetector</a></div><div class="sidebar-section-children"><a href="FileDetector.html">FileDetector</a></div><div class="sidebar-section-children"><a href="GenericLogEntry.html">GenericLogEntry</a></div><div class="sidebar-section-children"><a href="Header.html">Header</a></div><div class="sidebar-section-children"><a href="HttpClient.html">HttpClient</a></div><div class="sidebar-section-children"><a href="HttpResponse.html">HttpResponse</a></div><div class="sidebar-section-children"><a href="Index_.html">Index</a></div><div class="sidebar-section-children"><a href="Initiator.html">Initiator</a></div><div class="sidebar-section-children"><a href="Input.html">Input</a></div><div class="sidebar-section-children"><a href="InsecureCertificateError.html">InsecureCertificateError</a></div><div class="sidebar-section-children"><a href="InvalidArgumentError.html">InvalidArgumentError</a></div><div class="sidebar-section-children"><a href="InvalidCharacterError.html">InvalidCharacterError</a></div><div class="sidebar-section-children"><a href="InvalidCookieDomainError.html">InvalidCookieDomainError</a></div><div class="sidebar-section-children"><a href="InvalidCoordinatesError.html">InvalidCoordinatesError</a></div><div class="sidebar-section-children"><a href="InvalidElementStateError.html">InvalidElementStateError</a></div><div class="sidebar-section-children"><a href="InvalidSelectorError.html">InvalidSelectorError</a></div><div class="sidebar-section-children"><a href="JavascriptError.html">JavascriptError</a></div><div class="sidebar-section-children"><a href="JavascriptLogEntry.html">JavascriptLogEntry</a></div><div class="sidebar-section-children"><a href="Keyboard.html">Keyboard</a></div><div class="sidebar-section-children"><a href="Level.html">Level</a></div><div class="sidebar-section-children"><a href="LocalValue.html">LocalValue</a></div><div class="sidebar-section-children"><a href="Locator.html">Locator</a></div><div class="sidebar-section-children"><a href="LogManager.html">LogManager</a></div><div class="sidebar-section-children"><a href="Logger.html">Logger</a></div><div class="sidebar-section-children"><a href="Message.html">Message</a></div><div class="sidebar-section-children"><a href="MoveTargetOutOfBoundsError.html">MoveTargetOutOfBoundsError</a></div><div class="sidebar-section-children"><a href="NavigateResult.html">NavigateResult</a></div><div class="sidebar-section-children"><a href="NavigationInfo.html">NavigationInfo</a></div><div class="sidebar-section-children"><a href="Network.html">Network</a></div><div class="sidebar-section-children"><a href="NetworkInspector.html">NetworkInspector</a></div><div class="sidebar-section-children"><a href="NoSuchAlertError.html">NoSuchAlertError</a></div><div class="sidebar-section-children"><a href="NoSuchCookieError.html">NoSuchCookieError</a></div><div class="sidebar-section-children"><a href="NoSuchElementError.html">NoSuchElementError</a></div><div class="sidebar-section-children"><a href="NoSuchFrameError.html">NoSuchFrameError</a></div><div class="sidebar-section-children"><a href="NoSuchSessionError.html">NoSuchSessionError</a></div><div class="sidebar-section-children"><a href="NoSuchShadowRootError.html">NoSuchShadowRootError</a></div><div class="sidebar-section-children"><a href="NoSuchWindowError.html">NoSuchWindowError</a></div><div class="sidebar-section-children"><a href="PartialCookie.html">PartialCookie</a></div><div class="sidebar-section-children"><a href="PartitionDescriptor.html">PartitionDescriptor</a></div><div class="sidebar-section-children"><a href="PartitionKey.html">PartitionKey</a></div><div class="sidebar-section-children"><a href="Pointer.html">Pointer</a></div><div class="sidebar-section-children"><a href="Preferences.html">Preferences</a></div><div class="sidebar-section-children"><a href="PrintResult.html">PrintResult</a></div><div class="sidebar-section-children"><a href="ProvideResponseParameters.html">ProvideResponseParameters</a></div><div class="sidebar-section-children"><a href="RealmInfo.html">RealmInfo</a></div><div class="sidebar-section-children"><a href="ReferenceValue.html">ReferenceValue</a></div><div class="sidebar-section-children"><a href="RegExpValue.html">RegExpValue</a></div><div class="sidebar-section-children"><a href="RelativeBy.html">RelativeBy</a></div><div class="sidebar-section-children"><a href="RemoteValue.html">RemoteValue</a></div><div class="sidebar-section-children"><a href="Request.html">Request</a></div><div class="sidebar-section-children"><a href="RequestData.html">RequestData</a></div><div class="sidebar-section-children"><a href="Response.html">Response</a></div><div class="sidebar-section-children"><a href="ResponseData.html">ResponseData</a></div><div class="sidebar-section-children"><a href="ResponseStarted.html">ResponseStarted</a></div><div class="sidebar-section-children"><a href="Result.html">Result</a></div><div class="sidebar-section-children"><a href="ScriptManager.html">ScriptManager</a></div><div class="sidebar-section-children"><a href="ScriptTimeoutError.html">ScriptTimeoutError</a></div><div class="sidebar-section-children"><a href="Select.html">Select</a></div><div class="sidebar-section-children"><a href="SeleniumServer.html">SeleniumServer</a></div><div class="sidebar-section-children"><a href="SerializationOptions.html">SerializationOptions</a></div><div class="sidebar-section-children"><a href="Server.html">Server</a></div><div class="sidebar-section-children"><a href="Session.html">Session</a></div><div class="sidebar-section-children"><a href="SessionNotCreatedError.html">SessionNotCreatedError</a></div><div class="sidebar-section-children"><a href="ShadowRoot.html">ShadowRoot</a></div><div class="sidebar-section-children"><a href="ShadowRootPromise.html">ShadowRootPromise</a></div><div class="sidebar-section-children"><a href="Source.html">Source</a></div><div class="sidebar-section-children"><a href="StaleElementReferenceError.html">StaleElementReferenceError</a></div><div class="sidebar-section-children"><a href="Storage.html">Storage</a></div><div class="sidebar-section-children"><a href="StorageKeyPartitionDescriptor.html">StorageKeyPartitionDescriptor</a></div><div class="sidebar-section-children"><a href="TimeoutError.html">TimeoutError</a></div><div class="sidebar-section-children"><a href="UnableToCaptureScreenError.html">UnableToCaptureScreenError</a></div><div class="sidebar-section-children"><a href="UnableToSetCookieError.html">UnableToSetCookieError</a></div><div class="sidebar-section-children"><a href="UnexpectedAlertOpenError.html">UnexpectedAlertOpenError</a></div><div class="sidebar-section-children"><a href="UnknownCommandError.html">UnknownCommandError</a></div><div class="sidebar-section-children"><a href="UnknownMethodError.html">UnknownMethodError</a></div><div class="sidebar-section-children"><a href="UnsupportedOperationError.html">UnsupportedOperationError</a></div><div class="sidebar-section-children"><a href="UrlPattern.html">UrlPattern</a></div><div class="sidebar-section-children"><a href="VirtualAuthenticatorOptions.html">VirtualAuthenticatorOptions</a></div><div class="sidebar-section-children"><a href="WebDriver.html">WebDriver</a></div><div class="sidebar-section-children"><a href="WebDriverError.html">WebDriverError</a></div><div class="sidebar-section-children"><a href="WebElement.html">WebElement</a></div><div class="sidebar-section-children"><a href="WebElementCondition.html">WebElementCondition</a></div><div class="sidebar-section-children"><a href="WebElementPromise.html">WebElementPromise</a></div><div class="sidebar-section-children"><a href="Wheel.html">Wheel</a></div><div class="sidebar-section-children"><a href="WindowRealmInfo.html">WindowRealmInfo</a></div><div class="sidebar-section-children"><a href="Zip.html">Zip</a></div><div class="sidebar-section-children"><a href="createDriver-thenableWebDriverProxy.html">thenableWebDriverProxy</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chrome-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chrome-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chrome-ServiceBuilder.html">ServiceBuilder</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chromium-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chromium-Extensions.html">Extensions</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chromium-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chromium-ServiceBuilder.html">ServiceBuilder</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_edge-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_edge-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_edge-ServiceBuilder.html">ServiceBuilder</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox-AddonFormatError.html">AddonFormatError</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox-Channel.html">Channel</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox-ServiceBuilder.html">ServiceBuilder</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_ie-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_ie-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_ie-ServiceBuilder.html">ServiceBuilder</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_safari-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_safari-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_safari-ServiceBuilder.html">ServiceBuilder</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-interfaces"><div>Interfaces</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="Action.html">Action</a></div><div class="sidebar-section-children"><a href="Client.html">Client</a></div><div class="sidebar-section-children"><a href="global.html#Config">Config</a></div><div class="sidebar-section-children"><a href="Executor.html">Executor</a></div><div class="sidebar-section-children"><a href="ISelect.html">ISelect</a></div><div class="sidebar-section-children"><a href="IWebDriver.html">IWebDriver</a></div><div class="sidebar-section-children"><a href="global.html#ManualConfig">ManualConfig</a></div><div class="sidebar-section-children"><a href="Options.html">Options</a></div><div class="sidebar-section-children"><a href="Options.Cookie.html">Cookie</a></div><div class="sidebar-section-children"><a href="global.html#PacConfig">PacConfig</a></div><div class="sidebar-section-children"><a href="SeleniumServer.Options.html">Options</a></div><div class="sidebar-section-children"><a href="ServiceOptions.html">ServiceOptions</a></div><div class="sidebar-section-children"><a href="SuiteOptions.html">SuiteOptions</a></div><div class="sidebar-section-children"><a href="TargetBrowser.html">TargetBrowser</a></div><div class="sidebar-section-children"><a href="ThenableWebDriver.html">ThenableWebDriver</a></div><div class="sidebar-section-children"><a href="Timeouts.html">Timeouts</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-global"><div>Global</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="global.html#Atom">Atom</a></div><div class="sidebar-section-children"><a href="global.html#Browser">Browser</a></div><div class="sidebar-section-children"><a href="global.html#Button">Button</a></div><div class="sidebar-section-children"><a href="global.html#ByHash">ByHash</a></div><div class="sidebar-section-children"><a href="global.html#Capability">Capability</a></div><div class="sidebar-section-children"><a href="global.html#CommandLineFlag">CommandLineFlag</a></div><div class="sidebar-section-children"><a href="global.html#CommandSpec">CommandSpec</a></div><div class="sidebar-section-children"><a href="global.html#CommandTransformer">CommandTransformer</a></div><div class="sidebar-section-children"><a href="global.html#Config">Config</a></div><div class="sidebar-section-children"><a href="global.html#ErrorCode">ErrorCode</a></div><div class="sidebar-section-children"><a href="global.html#EvaluateResultType">EvaluateResultType</a></div><div class="sidebar-section-children"><a href="global.html#INTERNAL_COMPUTE_OFFSET_SCRIPT">INTERNAL_COMPUTE_OFFSET_SCRIPT</a></div><div class="sidebar-section-children"><a href="global.html#InterceptPhase">InterceptPhase</a></div><div class="sidebar-section-children"><a href="global.html#Key">Key</a></div><div class="sidebar-section-children"><a href="global.html#ManualConfig">ManualConfig</a></div><div class="sidebar-section-children"><a href="global.html#Name">Name</a></div><div class="sidebar-section-children"><a href="global.html#NonPrimitiveType">NonPrimitiveType</a></div><div class="sidebar-section-children"><a href="global.html#Origin">Origin</a></div><div class="sidebar-section-children"><a href="global.html#Origin">Origin</a></div><div class="sidebar-section-children"><a href="global.html#PacConfig">PacConfig</a></div><div class="sidebar-section-children"><a href="global.html#PageLoadStrategy">PageLoadStrategy</a></div><div class="sidebar-section-children"><a href="global.html#Platform">Platform</a></div><div class="sidebar-section-children"><a href="global.html#PrimitiveType">PrimitiveType</a></div><div class="sidebar-section-children"><a href="global.html#Protocol">Protocol</a></div><div class="sidebar-section-children"><a href="global.html#RealmType">RealmType</a></div><div class="sidebar-section-children"><a href="global.html#RemoteReferenceType">RemoteReferenceType</a></div><div class="sidebar-section-children"><a href="global.html#RemoteType">RemoteType</a></div><div class="sidebar-section-children"><a href="global.html#RequestOptions">RequestOptions</a></div><div class="sidebar-section-children"><a href="global.html#ResultOwnership">ResultOwnership</a></div><div class="sidebar-section-children"><a href="global.html#SameSite">SameSite</a></div><div class="sidebar-section-children"><a href="global.html#SpecialNumberType">SpecialNumberType</a></div><div class="sidebar-section-children"><a href="global.html#StdIoOptions">StdIoOptions</a></div><div class="sidebar-section-children"><a href="global.html#THENABLE_DRIVERS">THENABLE_DRIVERS</a></div><div class="sidebar-section-children"><a href="global.html#Transport">Transport</a></div><div class="sidebar-section-children"><a href="global.html#Type">Type</a></div><div class="sidebar-section-children"><a href="global.html#Type">Type</a></div><div class="sidebar-section-children"><a href="global.html#Type">Type</a></div><div class="sidebar-section-children"><a href="global.html#Type">Type</a></div><div class="sidebar-section-children"><a href="global.html#USER_AGENT">USER_AGENT</a></div><div class="sidebar-section-children"><a href="global.html#UserPromptHandler">UserPromptHandler</a></div><div class="sidebar-section-children"><a href="global.html#W3C_COMMAND_MAP">W3C_COMMAND_MAP</a></div><div class="sidebar-section-children"><a href="global.html#ableToSwitchToFrame">ableToSwitchToFrame</a></div><div class="sidebar-section-children"><a href="global.html#addConsoleHandler">addConsoleHandler</a></div><div class="sidebar-section-children"><a href="global.html#alertIsPresent">alertIsPresent</a></div><div class="sidebar-section-children"><a href="global.html#arraysEqual">arraysEqual</a></div><div class="sidebar-section-children"><a href="global.html#binaryPaths">binaryPaths</a></div><div class="sidebar-section-children"><a href="global.html#buildPath">buildPath</a></div><div class="sidebar-section-children"><a href="global.html#buildRequest">buildRequest</a></div><div class="sidebar-section-children"><a href="global.html#builtTargets">builtTargets</a></div><div class="sidebar-section-children"><a href="global.html#check">check</a></div><div class="sidebar-section-children"><a href="global.html#checkCodePoint">checkCodePoint</a></div><div class="sidebar-section-children"><a href="global.html#checkLegacyResponse">checkLegacyResponse</a></div><div class="sidebar-section-children"><a href="global.html#checkOptions">checkOptions</a></div><div class="sidebar-section-children"><a href="global.html#checkedCall">checkedCall</a></div><div class="sidebar-section-children"><a href="global.html#checkedNodeCall">checkedNodeCall</a></div><div class="sidebar-section-children"><a href="global.html#color">color</a></div><div class="sidebar-section-children"><a href="global.html#consoleHandler">consoleHandler</a></div><div class="sidebar-section-children"><a href="global.html#copy">copy</a></div><div class="sidebar-section-children"><a href="global.html#copyDir">copyDir</a></div><div class="sidebar-section-children"><a href="global.html#createDriver">createDriver</a></div><div class="sidebar-section-children"><a href="global.html#delayed">delayed</a></div><div class="sidebar-section-children"><a href="global.html#direct">direct</a></div><div class="sidebar-section-children"><a href="global.html#elementIsDisabled">elementIsDisabled</a></div><div class="sidebar-section-children"><a href="global.html#elementIsEnabled">elementIsEnabled</a></div><div class="sidebar-section-children"><a href="global.html#elementIsNotSelected">elementIsNotSelected</a></div><div class="sidebar-section-children"><a href="global.html#elementIsNotVisible">elementIsNotVisible</a></div><div class="sidebar-section-children"><a href="global.html#elementIsSelected">elementIsSelected</a></div><div class="sidebar-section-children"><a href="global.html#elementIsVisible">elementIsVisible</a></div><div class="sidebar-section-children"><a href="global.html#elementLocated">elementLocated</a></div><div class="sidebar-section-children"><a href="global.html#elementTextContains">elementTextContains</a></div><div class="sidebar-section-children"><a href="global.html#elementTextIs">elementTextIs</a></div><div class="sidebar-section-children"><a href="global.html#elementTextMatches">elementTextMatches</a></div><div class="sidebar-section-children"><a href="global.html#elementsLocated">elementsLocated</a></div><div class="sidebar-section-children"><a href="global.html#encodeError">encodeError</a></div><div class="sidebar-section-children"><a href="global.html#ensureFileDetectorsAreEnabled">ensureFileDetectorsAreEnabled</a></div><div class="sidebar-section-children"><a href="global.html#escapeCss">escapeCss</a></div><div class="sidebar-section-children"><a href="global.html#exec">exec</a></div><div class="sidebar-section-children"><a href="global.html#executeCommand">executeCommand</a></div><div class="sidebar-section-children"><a href="global.html#exists">exists</a></div><div class="sidebar-section-children"><a href="global.html#extractId">extractId</a></div><div class="sidebar-section-children"><a href="global.html#filter">filter</a></div><div class="sidebar-section-children"><a href="global.html#filterNonW3CCaps">filterNonW3CCaps</a></div><div class="sidebar-section-children"><a href="global.html#findFreePort">findFreePort</a></div><div class="sidebar-section-children"><a href="global.html#findInPath">findInPath</a></div><div class="sidebar-section-children"><a href="global.html#formatSpawnArgs">formatSpawnArgs</a></div><div class="sidebar-section-children"><a href="global.html#fromWireValue">fromWireValue</a></div><div class="sidebar-section-children"><a href="global.html#fullyResolveKeys">fullyResolveKeys</a></div><div class="sidebar-section-children"><a href="global.html#fullyResolved">fullyResolved</a></div><div class="sidebar-section-children"><a href="global.html#getAddress">getAddress</a></div><div class="sidebar-section-children"><a href="global.html#getAvailableBrowsers">getAvailableBrowsers</a></div><div class="sidebar-section-children"><a href="global.html#getBinary">getBinary</a></div><div class="sidebar-section-children"><a href="global.html#getBinaryPaths">getBinaryPaths</a></div><div class="sidebar-section-children"><a href="global.html#getBrowsersToTestFromEnv">getBrowsersToTestFromEnv</a></div><div class="sidebar-section-children"><a href="global.html#getBrowsingContextInstance">getBrowsingContextInstance</a></div><div class="sidebar-section-children"><a href="global.html#getIPAddress">getIPAddress</a></div><div class="sidebar-section-children"><a href="global.html#getJavaPath">getJavaPath</a></div><div class="sidebar-section-children"><a href="global.html#getLevel">getLevel</a></div><div class="sidebar-section-children"><a href="global.html#getLogInspectorInstance">getLogInspectorInstance</a></div><div class="sidebar-section-children"><a href="global.html#getLogger">getLogger</a></div><div class="sidebar-section-children"><a href="global.html#getLoopbackAddress">getLoopbackAddress</a></div><div class="sidebar-section-children"><a href="global.html#getRequestOptions">getRequestOptions</a></div><div class="sidebar-section-children"><a href="global.html#getStatus">getStatus</a></div><div class="sidebar-section-children"><a href="global.html#getTestHook">getTestHook</a></div><div class="sidebar-section-children"><a href="global.html#headersToString">headersToString</a></div><div class="sidebar-section-children"><a href="global.html#ignore">ignore</a></div><div class="sidebar-section-children"><a href="global.html#init">init</a></div><div class="sidebar-section-children"><a href="global.html#installConsoleHandler">installConsoleHandler</a></div><div class="sidebar-section-children"><a href="global.html#isErrorResponse">isErrorResponse</a></div><div class="sidebar-section-children"><a href="global.html#isFree">isFree</a></div><div class="sidebar-section-children"><a href="global.html#isId">isId</a></div><div class="sidebar-section-children"><a href="global.html#isIdle">isIdle</a></div><div class="sidebar-section-children"><a href="global.html#isObject">isObject</a></div><div class="sidebar-section-children"><a href="global.html#isPromise">isPromise</a></div><div class="sidebar-section-children"><a href="global.html#isRetryableNetworkError">isRetryableNetworkError</a></div><div class="sidebar-section-children"><a href="global.html#isSelenium3x">isSelenium3x</a></div><div class="sidebar-section-children"><a href="global.html#legacyTimeout">legacyTimeout</a></div><div class="sidebar-section-children"><a href="global.html#load">load</a></div><div class="sidebar-section-children"><a href="global.html#locate">locate</a></div><div class="sidebar-section-children"><a href="global.html#locateWith">locateWith</a></div><div class="sidebar-section-children"><a href="global.html#manual">manual</a></div><div class="sidebar-section-children"><a href="global.html#map">map</a></div><div class="sidebar-section-children"><a href="global.html#mkdir">mkdir</a></div><div class="sidebar-section-children"><a href="global.html#mkdirp">mkdirp</a></div><div class="sidebar-section-children"><a href="global.html#of">of</a></div><div class="sidebar-section-children"><a href="global.html#pac">pac</a></div><div class="sidebar-section-children"><a href="global.html#pad">pad</a></div><div class="sidebar-section-children"><a href="global.html#parseHttpResponse">parseHttpResponse</a></div><div class="sidebar-section-children"><a href="global.html#path">path</a></div><div class="sidebar-section-children"><a href="global.html#projectRoot">projectRoot</a></div><div class="sidebar-section-children"><a href="global.html#read">read</a></div><div class="sidebar-section-children"><a href="global.html#removeConsoleHandler">removeConsoleHandler</a></div><div class="sidebar-section-children"><a href="global.html#requireAtom">requireAtom</a></div><div class="sidebar-section-children"><a href="global.html#resolveCommandLineFlags">resolveCommandLineFlags</a></div><div class="sidebar-section-children"><a href="global.html#resolveWaitMessage">resolveWaitMessage</a></div><div class="sidebar-section-children"><a href="global.html#rmDir">rmDir</a></div><div class="sidebar-section-children"><a href="global.html#sendIndex">sendIndex</a></div><div class="sidebar-section-children"><a href="global.html#sendRequest">sendRequest</a></div><div class="sidebar-section-children"><a href="global.html#serialize">serialize</a></div><div class="sidebar-section-children"><a href="global.html#setFileDetector">setFileDetector</a></div><div class="sidebar-section-children"><a href="global.html#shouldRetryRequest">shouldRetryRequest</a></div><div class="sidebar-section-children"><a href="global.html#socks">socks</a></div><div class="sidebar-section-children"><a href="global.html#splitHostAndPort">splitHostAndPort</a></div><div class="sidebar-section-children"><a href="global.html#stalenessOf">stalenessOf</a></div><div class="sidebar-section-children"><a href="global.html#start">start</a></div><div class="sidebar-section-children"><a href="global.html#startSeleniumServer">startSeleniumServer</a></div><div class="sidebar-section-children"><a href="global.html#stat">stat</a></div><div class="sidebar-section-children"><a href="global.html#stop">stop</a></div><div class="sidebar-section-children"><a href="global.html#suite">suite</a></div><div class="sidebar-section-children"><a href="global.html#suite">suite</a></div><div class="sidebar-section-children"><a href="global.html#system">system</a></div><div class="sidebar-section-children"><a href="global.html#thenFinally">thenFinally</a></div><div class="sidebar-section-children"><a href="global.html#throwDecodedError">throwDecodedError</a></div><div class="sidebar-section-children"><a href="global.html#titleContains">titleContains</a></div><div class="sidebar-section-children"><a href="global.html#titleIs">titleIs</a></div><div class="sidebar-section-children"><a href="global.html#titleMatches">titleMatches</a></div><div class="sidebar-section-children"><a href="global.html#tmpDir">tmpDir</a></div><div class="sidebar-section-children"><a href="global.html#tmpFile">tmpFile</a></div><div class="sidebar-section-children"><a href="global.html#toExecuteAtomCommand">toExecuteAtomCommand</a></div><div class="sidebar-section-children"><a href="global.html#toMap">toMap</a></div><div class="sidebar-section-children"><a href="global.html#toWireValue">toWireValue</a></div><div class="sidebar-section-children"><a href="global.html#tryParse">tryParse</a></div><div class="sidebar-section-children"><a href="global.html#unlink">unlink</a></div><div class="sidebar-section-children"><a href="global.html#unzip">unzip</a></div><div class="sidebar-section-children"><a href="global.html#url">url</a></div><div class="sidebar-section-children"><a href="global.html#urlContains">urlContains</a></div><div class="sidebar-section-children"><a href="global.html#urlIs">urlIs</a></div><div class="sidebar-section-children"><a href="global.html#urlMatches">urlMatches</a></div><div class="sidebar-section-children"><a href="global.html#waitForServer">waitForServer</a></div><div class="sidebar-section-children"><a href="global.html#waitForUrl">waitForUrl</a></div><div class="sidebar-section-children"><a href="global.html#walkDir">walkDir</a></div><div class="sidebar-section-children"><a href="global.html#whereIs">whereIs</a></div><div class="sidebar-section-children"><a href="global.html#withTagName">withTagName</a></div><div class="sidebar-section-children"><a href="global.html#write">write</a></div></div></div></div></div><div class="navbar-container" id="VuAckcnZhf"><nav class="navbar"><div class="navbar-left-items"><div class="navbar-item"><a id="github" href="https://github.com/SeleniumHQ/selenium" target="">GitHub</a></div><div class="navbar-item"><a id="npm" href="https://www.npmjs.com/package/selenium-webdriver" target="">npm</a></div></div><div class="navbar-right-items"><div class="navbar-right-item"><button class="icon-button search-button" aria-label="open-search"><svg><use xlink:href="#search-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button theme-toggle" aria-label="toggle-theme"><svg><use class="theme-svg-use" xlink:href="#light-theme-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button font-size" aria-label="change-font-size"><svg><use xlink:href="#font-size-icon"></use></svg></button></div></div><nav></nav></nav></div><div class="toc-container"><div class="toc-content"><span class="bold">On this page</span><div id="eed4d2a0bfd64539bb9df78095dec881"></div></div></div><div class="body-wrapper"><div class="main-content"><div class="main-wrapper"><section id="source-page" class="source-page"><header><h1 id="title" class="has-anchor">lib_http.js</h1></header><article><pre class="prettyprint source lang-js"><code>// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+/**
+ * @fileoverview Defines an environment agnostic {@linkplain cmd.Executor
+ * command executor} that communicates with a remote end using JSON over HTTP.
+ *
+ * Clients should implement the {@link Client} interface, which is used by
+ * the {@link Executor} to send commands to the remote end.
+ */
+
+'use strict'
+
+const path = require('node:path')
+const cmd = require('./command')
+const error = require('./error')
+const logging = require('./logging')
+const promise = require('./promise')
+const { Session } = require('./session')
+const webElement = require('./webelement')
+const { isObject } = require('./util')
+
+const log_ = logging.getLogger(`${logging.Type.DRIVER}.http`)
+
+const getAttribute = requireAtom('get-attribute.js', '//javascript/node/selenium-webdriver/lib/atoms:get-attribute.js')
+const isDisplayed = requireAtom('is-displayed.js', '//javascript/node/selenium-webdriver/lib/atoms:is-displayed.js')
+const findElements = requireAtom('find-elements.js', '//javascript/node/selenium-webdriver/lib/atoms:find-elements.js')
+
+/**
+ * @param {string} module
+ * @param {string} bazelTarget
+ * @return {!Function}
+ */
+function requireAtom(module, bazelTarget) {
+  try {
+    return require('./atoms/' + module)
+  } catch (ex) {
+    try {
+      const file = bazelTarget.slice(2).replace(':', '/')
+      log_.log(`../../../bazel-bin/${file}`)
+      return require(path.resolve(`../../../bazel-bin/${file}`))
+    } catch (ex2) {
+      log_.severe(ex2)
+      throw Error(
+        `Failed to import atoms module ${module}. If running in dev mode, you` +
+          ` need to run \`bazel build ${bazelTarget}\` from the project` +
+          `root: ${ex}`,
+      )
+    }
+  }
+}
+
+/**
+ * Converts a headers map to a HTTP header block string.
+ * @param {!Map&lt;string, string>} headers The map to convert.
+ * @return {string} The headers as a string.
+ */
+function headersToString(headers) {
+  const ret = []
+  headers.forEach(function (value, name) {
+    ret.push(`${name.toLowerCase()}: ${value}`)
+  })
+  return ret.join('\n')
+}
+
+/**
+ * Represents a HTTP request message. This class is a "partial" request and only
+ * defines the path on the server to send a request to. It is each client's
+ * responsibility to build the full URL for the final request.
+ * @final
+ */
+class Request {
+  /**
+   * @param {string} method The HTTP method to use for the request.
+   * @param {string} path The path on the server to send the request to.
+   * @param {Object=} opt_data This request's non-serialized JSON payload data.
+   */
+  constructor(method, path, opt_data) {
+    this.method = /** string */ method
+    this.path = /** string */ path
+    this.data = /** Object */ opt_data
+    this.headers = /** !Map&lt;string, string> */ new Map([['Accept', 'application/json; charset=utf-8']])
+  }
+
+  /** @override */
+  toString() {
+    let ret = `${this.method} ${this.path} HTTP/1.1\n`
+    ret += headersToString(this.headers) + '\n\n'
+    if (this.data) {
+      ret += JSON.stringify(this.data)
+    }
+    return ret
+  }
+}
+
+/**
+ * Represents a HTTP response message.
+ * @final
+ */
+class Response {
+  /**
+   * @param {number} status The response code.
+   * @param {!Object&lt;string>} headers The response headers. All header names
+   *     will be converted to lowercase strings for consistent lookups.
+   * @param {string} body The response body.
+   */
+  constructor(status, headers, body) {
+    this.status = /** number */ status
+    this.body = /** string */ body
+    this.headers = /** !Map&lt;string, string>*/ new Map()
+    for (let header in headers) {
+      this.headers.set(header.toLowerCase(), headers[header])
+    }
+  }
+
+  /** @override */
+  toString() {
+    let ret = `HTTP/1.1 ${this.status}\n${headersToString(this.headers)}\n\n`
+    if (this.body) {
+      ret += this.body
+    }
+    return ret
+  }
+}
+
+/** @enum {!Function} */
+const Atom = {
+  GET_ATTRIBUTE: getAttribute,
+  IS_DISPLAYED: isDisplayed,
+  FIND_ELEMENTS: findElements,
+}
+
+function post(path) {
+  return resource('POST', path)
+}
+
+function del(path) {
+  return resource('DELETE', path)
+}
+
+function get(path) {
+  return resource('GET', path)
+}
+
+function resource(method, path) {
+  return { method: method, path: path }
+}
+
+/** @typedef {{method: string, path: string}} */
+var CommandSpec
+
+/** @typedef {function(!cmd.Command): !cmd.Command} */
+var CommandTransformer
+
+class InternalTypeError extends TypeError {}
+
+/**
+ * @param {!cmd.Command} command The initial command.
+ * @param {Atom} atom The name of the atom to execute.
+ * @param params
+ * @return {!Command} The transformed command to execute.
+ */
+function toExecuteAtomCommand(command, atom, name, ...params) {
+  if (typeof atom !== 'function') {
+    throw new InternalTypeError('atom is not a function: ' + typeof atom)
+  }
+
+  return new cmd.Command(cmd.Name.EXECUTE_SCRIPT)
+    .setParameter('sessionId', command.getParameter('sessionId'))
+    .setParameter('script', `/* ${name} */return (${atom}).apply(null, arguments)`)
+    .setParameter(
+      'args',
+      params.map((param) => command.getParameter(param)),
+    )
+}
+
+/** @const {!Map&lt;string, (CommandSpec|CommandTransformer)>} */
+const W3C_COMMAND_MAP = new Map([
+  // Session management.
+  [cmd.Name.NEW_SESSION, post('/session')],
+  [cmd.Name.QUIT, del('/session/:sessionId')],
+
+  // Server status.
+  [cmd.Name.GET_SERVER_STATUS, get('/status')],
+
+  // timeouts
+  [cmd.Name.GET_TIMEOUT, get('/session/:sessionId/timeouts')],
+  [cmd.Name.SET_TIMEOUT, post('/session/:sessionId/timeouts')],
+
+  // Navigation.
+  [cmd.Name.GET_CURRENT_URL, get('/session/:sessionId/url')],
+  [cmd.Name.GET, post('/session/:sessionId/url')],
+  [cmd.Name.GO_BACK, post('/session/:sessionId/back')],
+  [cmd.Name.GO_FORWARD, post('/session/:sessionId/forward')],
+  [cmd.Name.REFRESH, post('/session/:sessionId/refresh')],
+
+  // Page inspection.
+  [cmd.Name.GET_PAGE_SOURCE, get('/session/:sessionId/source')],
+  [cmd.Name.GET_TITLE, get('/session/:sessionId/title')],
+
+  // Script execution.
+  [cmd.Name.EXECUTE_SCRIPT, post('/session/:sessionId/execute/sync')],
+  [cmd.Name.EXECUTE_ASYNC_SCRIPT, post('/session/:sessionId/execute/async')],
+
+  // Frame selection.
+  [cmd.Name.SWITCH_TO_FRAME, post('/session/:sessionId/frame')],
+  [cmd.Name.SWITCH_TO_FRAME_PARENT, post('/session/:sessionId/frame/parent')],
+
+  // Window management.
+  [cmd.Name.GET_CURRENT_WINDOW_HANDLE, get('/session/:sessionId/window')],
+  [cmd.Name.CLOSE, del('/session/:sessionId/window')],
+  [cmd.Name.SWITCH_TO_WINDOW, post('/session/:sessionId/window')],
+  [cmd.Name.SWITCH_TO_NEW_WINDOW, post('/session/:sessionId/window/new')],
+  [cmd.Name.GET_WINDOW_HANDLES, get('/session/:sessionId/window/handles')],
+  [cmd.Name.GET_WINDOW_RECT, get('/session/:sessionId/window/rect')],
+  [cmd.Name.SET_WINDOW_RECT, post('/session/:sessionId/window/rect')],
+  [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/maximize')],
+  [cmd.Name.MINIMIZE_WINDOW, post('/session/:sessionId/window/minimize')],
+  [cmd.Name.FULLSCREEN_WINDOW, post('/session/:sessionId/window/fullscreen')],
+
+  // Actions.
+  [cmd.Name.ACTIONS, post('/session/:sessionId/actions')],
+  [cmd.Name.CLEAR_ACTIONS, del('/session/:sessionId/actions')],
+  [cmd.Name.PRINT_PAGE, post('/session/:sessionId/print')],
+
+  // Locating elements.
+  [cmd.Name.GET_ACTIVE_ELEMENT, get('/session/:sessionId/element/active')],
+  [cmd.Name.FIND_ELEMENT, post('/session/:sessionId/element')],
+  [cmd.Name.FIND_ELEMENTS, post('/session/:sessionId/elements')],
+  [
+    cmd.Name.FIND_ELEMENTS_RELATIVE,
+    (cmd) => {
+      return toExecuteAtomCommand(cmd, Atom.FIND_ELEMENTS, 'findElements', 'args')
+    },
+  ],
+  [cmd.Name.FIND_CHILD_ELEMENT, post('/session/:sessionId/element/:id/element')],
+  [cmd.Name.FIND_CHILD_ELEMENTS, post('/session/:sessionId/element/:id/elements')],
+  // Element interaction.
+  [cmd.Name.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
+  [cmd.Name.GET_DOM_ATTRIBUTE, get('/session/:sessionId/element/:id/attribute/:name')],
+  [
+    cmd.Name.GET_ELEMENT_ATTRIBUTE,
+    (cmd) => {
+      return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'getAttribute', 'id', 'name')
+    },
+  ],
+  [cmd.Name.GET_ELEMENT_PROPERTY, get('/session/:sessionId/element/:id/property/:name')],
+  [cmd.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get('/session/:sessionId/element/:id/css/:propertyName')],
+  [cmd.Name.GET_ELEMENT_RECT, get('/session/:sessionId/element/:id/rect')],
+  [cmd.Name.CLEAR_ELEMENT, post('/session/:sessionId/element/:id/clear')],
+  [cmd.Name.CLICK_ELEMENT, post('/session/:sessionId/element/:id/click')],
+  [cmd.Name.SEND_KEYS_TO_ELEMENT, post('/session/:sessionId/element/:id/value')],
+  [cmd.Name.GET_ELEMENT_TEXT, get('/session/:sessionId/element/:id/text')],
+  [cmd.Name.GET_COMPUTED_ROLE, get('/session/:sessionId/element/:id/computedrole')],
+  [cmd.Name.GET_COMPUTED_LABEL, get('/session/:sessionId/element/:id/computedlabel')],
+  [cmd.Name.IS_ELEMENT_ENABLED, get('/session/:sessionId/element/:id/enabled')],
+  [cmd.Name.IS_ELEMENT_SELECTED, get('/session/:sessionId/element/:id/selected')],
+
+  [
+    cmd.Name.IS_ELEMENT_DISPLAYED,
+    (cmd) => {
+      return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'isDisplayed', 'id')
+    },
+  ],
+
+  // Cookie management.
+  [cmd.Name.GET_ALL_COOKIES, get('/session/:sessionId/cookie')],
+  [cmd.Name.ADD_COOKIE, post('/session/:sessionId/cookie')],
+  [cmd.Name.DELETE_ALL_COOKIES, del('/session/:sessionId/cookie')],
+  [cmd.Name.GET_COOKIE, get('/session/:sessionId/cookie/:name')],
+  [cmd.Name.DELETE_COOKIE, del('/session/:sessionId/cookie/:name')],
+
+  // Alert management.
+  [cmd.Name.ACCEPT_ALERT, post('/session/:sessionId/alert/accept')],
+  [cmd.Name.DISMISS_ALERT, post('/session/:sessionId/alert/dismiss')],
+  [cmd.Name.GET_ALERT_TEXT, get('/session/:sessionId/alert/text')],
+  [cmd.Name.SET_ALERT_TEXT, post('/session/:sessionId/alert/text')],
+
+  // Screenshots.
+  [cmd.Name.SCREENSHOT, get('/session/:sessionId/screenshot')],
+  [cmd.Name.TAKE_ELEMENT_SCREENSHOT, get('/session/:sessionId/element/:id/screenshot')],
+
+  // Shadow Root
+  [cmd.Name.GET_SHADOW_ROOT, get('/session/:sessionId/element/:id/shadow')],
+  [cmd.Name.FIND_ELEMENT_FROM_SHADOWROOT, post('/session/:sessionId/shadow/:id/element')],
+  [cmd.Name.FIND_ELEMENTS_FROM_SHADOWROOT, post('/session/:sessionId/shadow/:id/elements')],
+  // Log extensions.
+  [cmd.Name.GET_LOG, post('/session/:sessionId/se/log')],
+  [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/se/log/types')],
+
+  // Server Extensions
+  [cmd.Name.UPLOAD_FILE, post('/session/:sessionId/se/file')],
+
+  // Virtual Authenticator
+  [cmd.Name.ADD_VIRTUAL_AUTHENTICATOR, post('/session/:sessionId/webauthn/authenticator')],
+  [cmd.Name.REMOVE_VIRTUAL_AUTHENTICATOR, del('/session/:sessionId/webauthn/authenticator/:authenticatorId')],
+  [cmd.Name.ADD_CREDENTIAL, post('/session/:sessionId/webauthn/authenticator/:authenticatorId/credential')],
+  [cmd.Name.GET_CREDENTIALS, get('/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials')],
+  [
+    cmd.Name.REMOVE_CREDENTIAL,
+    del('/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials/:credentialId'),
+  ],
+  [cmd.Name.REMOVE_ALL_CREDENTIALS, del('/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials')],
+  [cmd.Name.SET_USER_VERIFIED, post('/session/:sessionId/webauthn/authenticator/:authenticatorId/uv')],
+
+  [cmd.Name.GET_DOWNLOADABLE_FILES, get('/session/:sessionId/se/files')],
+  [cmd.Name.DOWNLOAD_FILE, post(`/session/:sessionId/se/files`)],
+  [cmd.Name.DELETE_DOWNLOADABLE_FILES, del(`/session/:sessionId/se/files`)],
+])
+
+/**
+ * Handles sending HTTP messages to a remote end.
+ *
+ * @interface
+ */
+class Client {
+  /**
+   * Sends a request to the server. The client will automatically follow any
+   * redirects returned by the server, fulfilling the returned promise with the
+   * final response.
+   *
+   * @param {!Request} httpRequest The request to send.
+   * @return {!Promise&lt;Response>} A promise that will be fulfilled with the
+   *     server's response.
+   */
+  send(httpRequest) {}
+}
+
+/**
+ * @param {Map&lt;string, CommandSpec>} customCommands
+ *     A map of custom command definitions.
+ * @param {!cmd.Command} command The command to resolve.
+ * @return {!Request} A promise that will resolve with the
+ *     command to execute.
+ */
+function buildRequest(customCommands, command) {
+  log_.finest(() => `Translating command: ${command.getName()}`)
+  let spec = customCommands &amp;&amp; customCommands.get(command.getName())
+  if (spec) {
+    return toHttpRequest(spec)
+  }
+
+  spec = W3C_COMMAND_MAP.get(command.getName())
+  if (typeof spec === 'function') {
+    log_.finest(() => `Transforming command for W3C: ${command.getName()}`)
+    let newCommand = spec(command)
+    return buildRequest(customCommands, newCommand)
+  } else if (spec) {
+    return toHttpRequest(spec)
+  }
+  throw new error.UnknownCommandError('Unrecognized command: ' + command.getName())
+
+  /**
+   * @param {CommandSpec} resource
+   * @return {!Request}
+   */
+  function toHttpRequest(resource) {
+    log_.finest(() => `Building HTTP request: ${JSON.stringify(resource)}`)
+    let parameters = command.getParameters()
+    let path = buildPath(resource.path, parameters)
+    return new Request(resource.method, path, parameters)
+  }
+}
+
+const CLIENTS = /** !WeakMap&lt;!Executor, !(Client|IThenable&lt;!Client>)> */ new WeakMap()
+
+/**
+ * A command executor that communicates with the server using JSON over HTTP.
+ *
+ * By default, each instance of this class will use the legacy wire protocol
+ * from [Selenium project][json]. The executor will automatically switch to the
+ * [W3C wire protocol][w3c] if the remote end returns a compliant response to
+ * a new session command.
+ *
+ * [json]: https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
+ * [w3c]: https://w3c.github.io/webdriver/webdriver-spec.html
+ *
+ * @implements {cmd.Executor}
+ */
+class Executor {
+  /**
+   * @param {!(Client|IThenable&lt;!Client>)} client The client to use for sending
+   *     requests to the server, or a promise-like object that will resolve
+   *     to the client.
+   */
+  constructor(client) {
+    CLIENTS.set(this, client)
+
+    /** @private {Map&lt;string, CommandSpec>} */
+    this.customCommands_ = null
+
+    /** @private {!logging.Logger} */
+    this.log_ = logging.getLogger(`${logging.Type.DRIVER}.http.Executor`)
+  }
+
+  /**
+   * Defines a new command for use with this executor. When a command is sent,
+   * the {@code path} will be preprocessed using the command's parameters; any
+   * path segments prefixed with ":" will be replaced by the parameter of the
+   * same name. For example, given "/person/:name" and the parameters
+   * "{name: 'Bob'}", the final command path will be "/person/Bob".
+   *
+   * @param {string} name The command name.
+   * @param {string} method The HTTP method to use when sending this command.
+   * @param {string} path The path to send the command to, relative to
+   *     the WebDriver server's command root and of the form
+   *     "/path/:variable/segment".
+   */
+  defineCommand(name, method, path) {
+    if (!this.customCommands_) {
+      this.customCommands_ = new Map()
+    }
+    this.customCommands_.set(name, { method, path })
+  }
+
+  /** @override */
+  async execute(command) {
+    let request = buildRequest(this.customCommands_, command)
+    this.log_.finer(() => `>>> ${request.method} ${request.path}`)
+
+    let client = CLIENTS.get(this)
+    if (promise.isPromise(client)) {
+      client = await client
+      CLIENTS.set(this, client)
+    }
+
+    let response = await client.send(request)
+    this.log_.finer(() => `>>>\n${request}\n&lt;&lt;&lt;\n${response}`)
+
+    let httpResponse = /** @type {!Response} */ (response)
+
+    let { isW3C, value } = parseHttpResponse(command, httpResponse)
+
+    if (command.getName() === cmd.Name.NEW_SESSION) {
+      if (!value || !value.sessionId) {
+        throw new error.WebDriverError(`Unable to parse new session response: ${response.body}`)
+      }
+
+      // The remote end is a W3C compliant server if there is no `status`
+      // field in the response.
+      if (command.getName() === cmd.Name.NEW_SESSION) {
+        this.w3c = this.w3c || isW3C
+      }
+
+      // No implementations use the `capabilities` key yet...
+      let capabilities = value.capabilities || value.value
+      return new Session(/** @type {{sessionId: string}} */ (value).sessionId, capabilities)
+    }
+
+    return typeof value === 'undefined' ? null : value
+  }
+}
+
+/**
+ * @param {string} str .
+ * @return {?} .
+ */
+function tryParse(str) {
+  try {
+    return JSON.parse(str)
+    /*eslint no-unused-vars: "off"*/
+  } catch (ignored) {
+    // Do nothing.
+  }
+}
+
+/**
+ * Callback used to parse {@link Response} objects from a
+ * {@link HttpClient}.
+ *
+ * @param {!cmd.Command} command The command the response is for.
+ * @param {!Response} httpResponse The HTTP response to parse.
+ * @return {{isW3C: boolean, value: ?}} An object describing the parsed
+ *     response. This object will have two fields: `isW3C` indicates whether
+ *     the response looks like it came from a remote end that conforms with the
+ *     W3C WebDriver spec, and `value`, the actual response value.
+ * @throws {WebDriverError} If the HTTP response is an error.
+ */
+function parseHttpResponse(command, httpResponse) {
+  if (httpResponse.status &lt; 200) {
+    // This should never happen, but throw the raw response so users report it.
+    throw new error.WebDriverError(`Unexpected HTTP response:\n${httpResponse}`)
+  }
+
+  let parsed = tryParse(httpResponse.body)
+
+  if (parsed &amp;&amp; typeof parsed === 'object') {
+    let value = parsed.value
+    let isW3C = isObject(value) &amp;&amp; typeof parsed.status === 'undefined'
+
+    if (!isW3C) {
+      error.checkLegacyResponse(parsed)
+
+      // Adjust legacy new session responses to look like W3C to simplify
+      // later processing.
+      if (command.getName() === cmd.Name.NEW_SESSION) {
+        value = parsed
+      }
+    } else if (httpResponse.status > 399) {
+      error.throwDecodedError(value)
+    }
+
+    return { isW3C, value }
+  }
+
+  if (parsed !== undefined) {
+    return { isW3C: false, value: parsed }
+  }
+
+  let value = httpResponse.body.replace(/\r\n/g, '\n')
+
+  // 404 represents an unknown command; anything else > 399 is a generic unknown
+  // error.
+  if (httpResponse.status === 404) {
+    throw new error.UnsupportedOperationError(command.getName() + ': ' + value)
+  } else if (httpResponse.status >= 400) {
+    throw new error.WebDriverError(value)
+  }
+
+  return { isW3C: false, value: value || null }
+}
+
+/**
+ * Builds a fully qualified path using the given set of command parameters. Each
+ * path segment prefixed with ':' will be replaced by the value of the
+ * corresponding parameter. All parameters spliced into the path will be
+ * removed from the parameter map.
+ * @param {string} path The original resource path.
+ * @param {!Object&lt;*>} parameters The parameters object to splice into the path.
+ * @return {string} The modified path.
+ */
+function buildPath(path, parameters) {
+  let pathParameters = path.match(/\/:(\w+)\b/g)
+  if (pathParameters) {
+    for (let i = 0; i &lt; pathParameters.length; ++i) {
+      let key = pathParameters[i].substring(2) // Trim the /:
+      if (key in parameters) {
+        let value = parameters[key]
+        if (webElement.isId(value)) {
+          // When inserting a WebElement into the URL, only use its ID value,
+          // not the full JSON.
+          value = webElement.extractId(value)
+        }
+        path = path.replace(pathParameters[i], '/' + value)
+        delete parameters[key]
+      } else {
+        throw new error.InvalidArgumentError('Missing required parameter: ' + key)
+      }
+    }
+  }
+  return path
+}
+
+// PUBLIC API
+
+module.exports = {
+  Executor,
+  Client,
+  Request,
+  Response,
+  // Exported for testing.
+  buildPath,
+}
+</code></pre></article></section></div></div></div><div class="search-container" id="PkfLWpAbet" style="display:none"><div class="wrapper" id="iCxFxjkHbP"><button class="icon-button search-close-button" id="VjLlGakifb" aria-label="close search"><svg><use xlink:href="#close-icon"></use></svg></button><div class="search-box-c"><svg><use xlink:href="#search-icon"></use></svg> <input type="text" id="vpcKVYIppa" class="search-input" placeholder="Search..." autofocus></div><div class="search-result-c" id="fWwVHRuDuN"><span class="search-result-c-text">Type anything to view search result</span></div></div></div><div class="mobile-menu-icon-container"><button class="icon-button" id="mobile-menu" data-isopen="false" aria-label="menu"><svg><use xlink:href="#menu-icon"></use></svg></button></div><div id="mobile-sidebar" class="mobile-sidebar-container"><div class="mobile-sidebar-wrapper"><a href="/" class="sidebar-title sidebar-title-anchor">Selenium WebDriver JavaScript API</a><div class="mobile-nav-links"><div class="navbar-item"><a id="github-mobile" href="https://github.com/SeleniumHQ/selenium" target="">GitHub</a></div><div class="navbar-item"><a id="npm-mobile" href="https://www.npmjs.com/package/selenium-webdriver" target="">npm</a></div></div><div class="mobile-sidebar-items-c"><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-modules"><div>Modules</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="module-selenium-webdriver_chrome.html">selenium-webdriver/chrome</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chromium.html">selenium-webdriver/chromium</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_edge.html">selenium-webdriver/edge</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox.html">selenium-webdriver/firefox</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_ie.html">selenium-webdriver/ie</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_safari.html">selenium-webdriver/safari</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-classes"><div>Classes</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="Actions.html">Actions</a></div><div class="sidebar-section-children"><a href="Alert.html">Alert</a></div><div class="sidebar-section-children"><a href="AlertPromise.html">AlertPromise</a></div><div class="sidebar-section-children"><a href="BaseLogEntry.html">BaseLogEntry</a></div><div class="sidebar-section-children"><a href="BaseParameters.html">BaseParameters</a></div><div class="sidebar-section-children"><a href="BeforeRequestSent.html">BeforeRequestSent</a></div><div class="sidebar-section-children"><a href="BoxClipRectangle.html">BoxClipRectangle</a></div><div class="sidebar-section-children"><a href="global.html#Browser">Browser</a></div><div class="sidebar-section-children"><a href="BrowsingContext.html">BrowsingContext</a></div><div class="sidebar-section-children"><a href="BrowsingContextInfo.html">BrowsingContextInfo</a></div><div class="sidebar-section-children"><a href="BrowsingContextInspector.html">BrowsingContextInspector</a></div><div class="sidebar-section-children"><a href="BrowsingContextPartitionDescriptor.html">BrowsingContextPartitionDescriptor</a></div><div class="sidebar-section-children"><a href="Build.html">Build</a></div><div class="sidebar-section-children"><a href="Builder.html">Builder</a></div><div class="sidebar-section-children"><a href="By.html">By</a></div><div class="sidebar-section-children"><a href="BytesValue.html">BytesValue</a></div><div class="sidebar-section-children"><a href="Capabilities.html">Capabilities</a></div><div class="sidebar-section-children"><a href="CaptureScreenshotParameters.html">CaptureScreenshotParameters</a></div><div class="sidebar-section-children"><a href="ChannelValue.html">ChannelValue</a></div><div class="sidebar-section-children"><a href="ClipRectangle.html">ClipRectangle</a></div><div class="sidebar-section-children"><a href="Command.html">Command</a></div><div class="sidebar-section-children"><a href="Command.html">Command</a></div><div class="sidebar-section-children"><a href="Condition.html">Condition</a></div><div class="sidebar-section-children"><a href="ConsoleLogEntry.html">ConsoleLogEntry</a></div><div class="sidebar-section-children"><a href="ContinueRequestParameters.html">ContinueRequestParameters</a></div><div class="sidebar-section-children"><a href="ContinueResponseParameters.html">ContinueResponseParameters</a></div><div class="sidebar-section-children"><a href="Cookie.html">Cookie</a></div><div class="sidebar-section-children"><a href="CookieFilter.html">CookieFilter</a></div><div class="sidebar-section-children"><a href="CreateContextParameters.html">CreateContextParameters</a></div><div class="sidebar-section-children"><a href="Credential.html">Credential</a></div><div class="sidebar-section-children"><a href="DetachedShadowRootError.html">DetachedShadowRootError</a></div><div class="sidebar-section-children"><a href="Device.html">Device</a></div><div class="sidebar-section-children"><a href="DriverService.html">DriverService</a></div><div class="sidebar-section-children"><a href="DriverService.Builder.html">Builder</a></div><div class="sidebar-section-children"><a href="ElementClickInterceptedError.html">ElementClickInterceptedError</a></div><div class="sidebar-section-children"><a href="ElementClipRectangle.html">ElementClipRectangle</a></div><div class="sidebar-section-children"><a href="ElementNotInteractableError.html">ElementNotInteractableError</a></div><div class="sidebar-section-children"><a href="ElementNotSelectableError.html">ElementNotSelectableError</a></div><div class="sidebar-section-children"><a href="Entry.html">Entry</a></div><div class="sidebar-section-children"><a href="Environment.html">Environment</a></div><div class="sidebar-section-children"><a href="EvaluateResultException.html">EvaluateResultException</a></div><div class="sidebar-section-children"><a href="EvaluateResultSuccess.html">EvaluateResultSuccess</a></div><div class="sidebar-section-children"><a href="ExceptionDetails.html">ExceptionDetails</a></div><div class="sidebar-section-children"><a href="Executor.html">Executor</a></div><div class="sidebar-section-children"><a href="FetchError.html">FetchError</a></div><div class="sidebar-section-children"><a href="FetchTimingInfo.html">FetchTimingInfo</a></div><div class="sidebar-section-children"><a href="FileDetector.html">FileDetector</a></div><div class="sidebar-section-children"><a href="FileDetector.html">FileDetector</a></div><div class="sidebar-section-children"><a href="GenericLogEntry.html">GenericLogEntry</a></div><div class="sidebar-section-children"><a href="Header.html">Header</a></div><div class="sidebar-section-children"><a href="HttpClient.html">HttpClient</a></div><div class="sidebar-section-children"><a href="HttpResponse.html">HttpResponse</a></div><div class="sidebar-section-children"><a href="Index_.html">Index</a></div><div class="sidebar-section-children"><a href="Initiator.html">Initiator</a></div><div class="sidebar-section-children"><a href="Input.html">Input</a></div><div class="sidebar-section-children"><a href="InsecureCertificateError.html">InsecureCertificateError</a></div><div class="sidebar-section-children"><a href="InvalidArgumentError.html">InvalidArgumentError</a></div><div class="sidebar-section-children"><a href="InvalidCharacterError.html">InvalidCharacterError</a></div><div class="sidebar-section-children"><a href="InvalidCookieDomainError.html">InvalidCookieDomainError</a></div><div class="sidebar-section-children"><a href="InvalidCoordinatesError.html">InvalidCoordinatesError</a></div><div class="sidebar-section-children"><a href="InvalidElementStateError.html">InvalidElementStateError</a></div><div class="sidebar-section-children"><a href="InvalidSelectorError.html">InvalidSelectorError</a></div><div class="sidebar-section-children"><a href="JavascriptError.html">JavascriptError</a></div><div class="sidebar-section-children"><a href="JavascriptLogEntry.html">JavascriptLogEntry</a></div><div class="sidebar-section-children"><a href="Keyboard.html">Keyboard</a></div><div class="sidebar-section-children"><a href="Level.html">Level</a></div><div class="sidebar-section-children"><a href="LocalValue.html">LocalValue</a></div><div class="sidebar-section-children"><a href="Locator.html">Locator</a></div><div class="sidebar-section-children"><a href="LogManager.html">LogManager</a></div><div class="sidebar-section-children"><a href="Logger.html">Logger</a></div><div class="sidebar-section-children"><a href="Message.html">Message</a></div><div class="sidebar-section-children"><a href="MoveTargetOutOfBoundsError.html">MoveTargetOutOfBoundsError</a></div><div class="sidebar-section-children"><a href="NavigateResult.html">NavigateResult</a></div><div class="sidebar-section-children"><a href="NavigationInfo.html">NavigationInfo</a></div><div class="sidebar-section-children"><a href="Network.html">Network</a></div><div class="sidebar-section-children"><a href="NetworkInspector.html">NetworkInspector</a></div><div class="sidebar-section-children"><a href="NoSuchAlertError.html">NoSuchAlertError</a></div><div class="sidebar-section-children"><a href="NoSuchCookieError.html">NoSuchCookieError</a></div><div class="sidebar-section-children"><a href="NoSuchElementError.html">NoSuchElementError</a></div><div class="sidebar-section-children"><a href="NoSuchFrameError.html">NoSuchFrameError</a></div><div class="sidebar-section-children"><a href="NoSuchSessionError.html">NoSuchSessionError</a></div><div class="sidebar-section-children"><a href="NoSuchShadowRootError.html">NoSuchShadowRootError</a></div><div class="sidebar-section-children"><a href="NoSuchWindowError.html">NoSuchWindowError</a></div><div class="sidebar-section-children"><a href="PartialCookie.html">PartialCookie</a></div><div class="sidebar-section-children"><a href="PartitionDescriptor.html">PartitionDescriptor</a></div><div class="sidebar-section-children"><a href="PartitionKey.html">PartitionKey</a></div><div class="sidebar-section-children"><a href="Pointer.html">Pointer</a></div><div class="sidebar-section-children"><a href="Preferences.html">Preferences</a></div><div class="sidebar-section-children"><a href="PrintResult.html">PrintResult</a></div><div class="sidebar-section-children"><a href="ProvideResponseParameters.html">ProvideResponseParameters</a></div><div class="sidebar-section-children"><a href="RealmInfo.html">RealmInfo</a></div><div class="sidebar-section-children"><a href="ReferenceValue.html">ReferenceValue</a></div><div class="sidebar-section-children"><a href="RegExpValue.html">RegExpValue</a></div><div class="sidebar-section-children"><a href="RelativeBy.html">RelativeBy</a></div><div class="sidebar-section-children"><a href="RemoteValue.html">RemoteValue</a></div><div class="sidebar-section-children"><a href="Request.html">Request</a></div><div class="sidebar-section-children"><a href="RequestData.html">RequestData</a></div><div class="sidebar-section-children"><a href="Response.html">Response</a></div><div class="sidebar-section-children"><a href="ResponseData.html">ResponseData</a></div><div class="sidebar-section-children"><a href="ResponseStarted.html">ResponseStarted</a></div><div class="sidebar-section-children"><a href="Result.html">Result</a></div><div class="sidebar-section-children"><a href="ScriptManager.html">ScriptManager</a></div><div class="sidebar-section-children"><a href="ScriptTimeoutError.html">ScriptTimeoutError</a></div><div class="sidebar-section-children"><a href="Select.html">Select</a></div><div class="sidebar-section-children"><a href="SeleniumServer.html">SeleniumServer</a></div><div class="sidebar-section-children"><a href="SerializationOptions.html">SerializationOptions</a></div><div class="sidebar-section-children"><a href="Server.html">Server</a></div><div class="sidebar-section-children"><a href="Session.html">Session</a></div><div class="sidebar-section-children"><a href="SessionNotCreatedError.html">SessionNotCreatedError</a></div><div class="sidebar-section-children"><a href="ShadowRoot.html">ShadowRoot</a></div><div class="sidebar-section-children"><a href="ShadowRootPromise.html">ShadowRootPromise</a></div><div class="sidebar-section-children"><a href="Source.html">Source</a></div><div class="sidebar-section-children"><a href="StaleElementReferenceError.html">StaleElementReferenceError</a></div><div class="sidebar-section-children"><a href="Storage.html">Storage</a></div><div class="sidebar-section-children"><a href="StorageKeyPartitionDescriptor.html">StorageKeyPartitionDescriptor</a></div><div class="sidebar-section-children"><a href="TimeoutError.html">TimeoutError</a></div><div class="sidebar-section-children"><a href="UnableToCaptureScreenError.html">UnableToCaptureScreenError</a></div><div class="sidebar-section-children"><a href="UnableToSetCookieError.html">UnableToSetCookieError</a></div><div class="sidebar-section-children"><a href="UnexpectedAlertOpenError.html">UnexpectedAlertOpenError</a></div><div class="sidebar-section-children"><a href="UnknownCommandError.html">UnknownCommandError</a></div><div class="sidebar-section-children"><a href="UnknownMethodError.html">UnknownMethodError</a></div><div class="sidebar-section-children"><a href="UnsupportedOperationError.html">UnsupportedOperationError</a></div><div class="sidebar-section-children"><a href="UrlPattern.html">UrlPattern</a></div><div class="sidebar-section-children"><a href="VirtualAuthenticatorOptions.html">VirtualAuthenticatorOptions</a></div><div class="sidebar-section-children"><a href="WebDriver.html">WebDriver</a></div><div class="sidebar-section-children"><a href="WebDriverError.html">WebDriverError</a></div><div class="sidebar-section-children"><a href="WebElement.html">WebElement</a></div><div class="sidebar-section-children"><a href="WebElementCondition.html">WebElementCondition</a></div><div class="sidebar-section-children"><a href="WebElementPromise.html">WebElementPromise</a></div><div class="sidebar-section-children"><a href="Wheel.html">Wheel</a></div><div class="sidebar-section-children"><a href="WindowRealmInfo.html">WindowRealmInfo</a></div><div class="sidebar-section-children"><a href="Zip.html">Zip</a></div><div class="sidebar-section-children"><a href="createDriver-thenableWebDriverProxy.html">thenableWebDriverProxy</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chrome-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chrome-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chrome-ServiceBuilder.html">ServiceBuilder</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chromium-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chromium-Extensions.html">Extensions</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chromium-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_chromium-ServiceBuilder.html">ServiceBuilder</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_edge-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_edge-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_edge-ServiceBuilder.html">ServiceBuilder</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox-AddonFormatError.html">AddonFormatError</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox-Channel.html">Channel</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_firefox-ServiceBuilder.html">ServiceBuilder</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_ie-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_ie-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_ie-ServiceBuilder.html">ServiceBuilder</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_safari-Driver.html">Driver</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_safari-Options.html">Options</a></div><div class="sidebar-section-children"><a href="module-selenium-webdriver_safari-ServiceBuilder.html">ServiceBuilder</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-interfaces"><div>Interfaces</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="Action.html">Action</a></div><div class="sidebar-section-children"><a href="Client.html">Client</a></div><div class="sidebar-section-children"><a href="global.html#Config">Config</a></div><div class="sidebar-section-children"><a href="Executor.html">Executor</a></div><div class="sidebar-section-children"><a href="ISelect.html">ISelect</a></div><div class="sidebar-section-children"><a href="IWebDriver.html">IWebDriver</a></div><div class="sidebar-section-children"><a href="global.html#ManualConfig">ManualConfig</a></div><div class="sidebar-section-children"><a href="Options.html">Options</a></div><div class="sidebar-section-children"><a href="Options.Cookie.html">Cookie</a></div><div class="sidebar-section-children"><a href="global.html#PacConfig">PacConfig</a></div><div class="sidebar-section-children"><a href="SeleniumServer.Options.html">Options</a></div><div class="sidebar-section-children"><a href="ServiceOptions.html">ServiceOptions</a></div><div class="sidebar-section-children"><a href="SuiteOptions.html">SuiteOptions</a></div><div class="sidebar-section-children"><a href="TargetBrowser.html">TargetBrowser</a></div><div class="sidebar-section-children"><a href="ThenableWebDriver.html">ThenableWebDriver</a></div><div class="sidebar-section-children"><a href="Timeouts.html">Timeouts</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-global"><div>Global</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="global.html#Atom">Atom</a></div><div class="sidebar-section-children"><a href="global.html#Browser">Browser</a></div><div class="sidebar-section-children"><a href="global.html#Button">Button</a></div><div class="sidebar-section-children"><a href="global.html#ByHash">ByHash</a></div><div class="sidebar-section-children"><a href="global.html#Capability">Capability</a></div><div class="sidebar-section-children"><a href="global.html#CommandLineFlag">CommandLineFlag</a></div><div class="sidebar-section-children"><a href="global.html#CommandSpec">CommandSpec</a></div><div class="sidebar-section-children"><a href="global.html#CommandTransformer">CommandTransformer</a></div><div class="sidebar-section-children"><a href="global.html#Config">Config</a></div><div class="sidebar-section-children"><a href="global.html#ErrorCode">ErrorCode</a></div><div class="sidebar-section-children"><a href="global.html#EvaluateResultType">EvaluateResultType</a></div><div class="sidebar-section-children"><a href="global.html#INTERNAL_COMPUTE_OFFSET_SCRIPT">INTERNAL_COMPUTE_OFFSET_SCRIPT</a></div><div class="sidebar-section-children"><a href="global.html#InterceptPhase">InterceptPhase</a></div><div class="sidebar-section-children"><a href="global.html#Key">Key</a></div><div class="sidebar-section-children"><a href="global.html#ManualConfig">ManualConfig</a></div><div class="sidebar-section-children"><a href="global.html#Name">Name</a></div><div class="sidebar-section-children"><a href="global.html#NonPrimitiveType">NonPrimitiveType</a></div><div class="sidebar-section-children"><a href="global.html#Origin">Origin</a></div><div class="sidebar-section-children"><a href="global.html#Origin">Origin</a></div><div class="sidebar-section-children"><a href="global.html#PacConfig">PacConfig</a></div><div class="sidebar-section-children"><a href="global.html#PageLoadStrategy">PageLoadStrategy</a></div><div class="sidebar-section-children"><a href="global.html#Platform">Platform</a></div><div class="sidebar-section-children"><a href="global.html#PrimitiveType">PrimitiveType</a></div><div class="sidebar-section-children"><a href="global.html#Protocol">Protocol</a></div><div class="sidebar-section-children"><a href="global.html#RealmType">RealmType</a></div><div class="sidebar-section-children"><a href="global.html#RemoteReferenceType">RemoteReferenceType</a></div><div class="sidebar-section-children"><a href="global.html#RemoteType">RemoteType</a></div><div class="sidebar-section-children"><a href="global.html#RequestOptions">RequestOptions</a></div><div class="sidebar-section-children"><a href="global.html#ResultOwnership">ResultOwnership</a></div><div class="sidebar-section-children"><a href="global.html#SameSite">SameSite</a></div><div class="sidebar-section-children"><a href="global.html#SpecialNumberType">SpecialNumberType</a></div><div class="sidebar-section-children"><a href="global.html#StdIoOptions">StdIoOptions</a></div><div class="sidebar-section-children"><a href="global.html#THENABLE_DRIVERS">THENABLE_DRIVERS</a></div><div class="sidebar-section-children"><a href="global.html#Transport">Transport</a></div><div class="sidebar-section-children"><a href="global.html#Type">Type</a></div><div class="sidebar-section-children"><a href="global.html#Type">Type</a></div><div class="sidebar-section-children"><a href="global.html#Type">Type</a></div><div class="sidebar-section-children"><a href="global.html#Type">Type</a></div><div class="sidebar-section-children"><a href="global.html#USER_AGENT">USER_AGENT</a></div><div class="sidebar-section-children"><a href="global.html#UserPromptHandler">UserPromptHandler</a></div><div class="sidebar-section-children"><a href="global.html#W3C_COMMAND_MAP">W3C_COMMAND_MAP</a></div><div class="sidebar-section-children"><a href="global.html#ableToSwitchToFrame">ableToSwitchToFrame</a></div><div class="sidebar-section-children"><a href="global.html#addConsoleHandler">addConsoleHandler</a></div><div class="sidebar-section-children"><a href="global.html#alertIsPresent">alertIsPresent</a></div><div class="sidebar-section-children"><a href="global.html#arraysEqual">arraysEqual</a></div><div class="sidebar-section-children"><a href="global.html#binaryPaths">binaryPaths</a></div><div class="sidebar-section-children"><a href="global.html#buildPath">buildPath</a></div><div class="sidebar-section-children"><a href="global.html#buildRequest">buildRequest</a></div><div class="sidebar-section-children"><a href="global.html#builtTargets">builtTargets</a></div><div class="sidebar-section-children"><a href="global.html#check">check</a></div><div class="sidebar-section-children"><a href="global.html#checkCodePoint">checkCodePoint</a></div><div class="sidebar-section-children"><a href="global.html#checkLegacyResponse">checkLegacyResponse</a></div><div class="sidebar-section-children"><a href="global.html#checkOptions">checkOptions</a></div><div class="sidebar-section-children"><a href="global.html#checkedCall">checkedCall</a></div><div class="sidebar-section-children"><a href="global.html#checkedNodeCall">checkedNodeCall</a></div><div class="sidebar-section-children"><a href="global.html#color">color</a></div><div class="sidebar-section-children"><a href="global.html#consoleHandler">consoleHandler</a></div><div class="sidebar-section-children"><a href="global.html#copy">copy</a></div><div class="sidebar-section-children"><a href="global.html#copyDir">copyDir</a></div><div class="sidebar-section-children"><a href="global.html#createDriver">createDriver</a></div><div class="sidebar-section-children"><a href="global.html#delayed">delayed</a></div><div class="sidebar-section-children"><a href="global.html#direct">direct</a></div><div class="sidebar-section-children"><a href="global.html#elementIsDisabled">elementIsDisabled</a></div><div class="sidebar-section-children"><a href="global.html#elementIsEnabled">elementIsEnabled</a></div><div class="sidebar-section-children"><a href="global.html#elementIsNotSelected">elementIsNotSelected</a></div><div class="sidebar-section-children"><a href="global.html#elementIsNotVisible">elementIsNotVisible</a></div><div class="sidebar-section-children"><a href="global.html#elementIsSelected">elementIsSelected</a></div><div class="sidebar-section-children"><a href="global.html#elementIsVisible">elementIsVisible</a></div><div class="sidebar-section-children"><a href="global.html#elementLocated">elementLocated</a></div><div class="sidebar-section-children"><a href="global.html#elementTextContains">elementTextContains</a></div><div class="sidebar-section-children"><a href="global.html#elementTextIs">elementTextIs</a></div><div class="sidebar-section-children"><a href="global.html#elementTextMatches">elementTextMatches</a></div><div class="sidebar-section-children"><a href="global.html#elementsLocated">elementsLocated</a></div><div class="sidebar-section-children"><a href="global.html#encodeError">encodeError</a></div><div class="sidebar-section-children"><a href="global.html#ensureFileDetectorsAreEnabled">ensureFileDetectorsAreEnabled</a></div><div class="sidebar-section-children"><a href="global.html#escapeCss">escapeCss</a></div><div class="sidebar-section-children"><a href="global.html#exec">exec</a></div><div class="sidebar-section-children"><a href="global.html#executeCommand">executeCommand</a></div><div class="sidebar-section-children"><a href="global.html#exists">exists</a></div><div class="sidebar-section-children"><a href="global.html#extractId">extractId</a></div><div class="sidebar-section-children"><a href="global.html#filter">filter</a></div><div class="sidebar-section-children"><a href="global.html#filterNonW3CCaps">filterNonW3CCaps</a></div><div class="sidebar-section-children"><a href="global.html#findFreePort">findFreePort</a></div><div class="sidebar-section-children"><a href="global.html#findInPath">findInPath</a></div><div class="sidebar-section-children"><a href="global.html#formatSpawnArgs">formatSpawnArgs</a></div><div class="sidebar-section-children"><a href="global.html#fromWireValue">fromWireValue</a></div><div class="sidebar-section-children"><a href="global.html#fullyResolveKeys">fullyResolveKeys</a></div><div class="sidebar-section-children"><a href="global.html#fullyResolved">fullyResolved</a></div><div class="sidebar-section-children"><a href="global.html#getAddress">getAddress</a></div><div class="sidebar-section-children"><a href="global.html#getAvailableBrowsers">getAvailableBrowsers</a></div><div class="sidebar-section-children"><a href="global.html#getBinary">getBinary</a></div><div class="sidebar-section-children"><a href="global.html#getBinaryPaths">getBinaryPaths</a></div><div class="sidebar-section-children"><a href="global.html#getBrowsersToTestFromEnv">getBrowsersToTestFromEnv</a></div><div class="sidebar-section-children"><a href="global.html#getBrowsingContextInstance">getBrowsingContextInstance</a></div><div class="sidebar-section-children"><a href="global.html#getIPAddress">getIPAddress</a></div><div class="sidebar-section-children"><a href="global.html#getJavaPath">getJavaPath</a></div><div class="sidebar-section-children"><a href="global.html#getLevel">getLevel</a></div><div class="sidebar-section-children"><a href="global.html#getLogInspectorInstance">getLogInspectorInstance</a></div><div class="sidebar-section-children"><a href="global.html#getLogger">getLogger</a></div><div class="sidebar-section-children"><a href="global.html#getLoopbackAddress">getLoopbackAddress</a></div><div class="sidebar-section-children"><a href="global.html#getRequestOptions">getRequestOptions</a></div><div class="sidebar-section-children"><a href="global.html#getStatus">getStatus</a></div><div class="sidebar-section-children"><a href="global.html#getTestHook">getTestHook</a></div><div class="sidebar-section-children"><a href="global.html#headersToString">headersToString</a></div><div class="sidebar-section-children"><a href="global.html#ignore">ignore</a></div><div class="sidebar-section-children"><a href="global.html#init">init</a></div><div class="sidebar-section-children"><a href="global.html#installConsoleHandler">installConsoleHandler</a></div><div class="sidebar-section-children"><a href="global.html#isErrorResponse">isErrorResponse</a></div><div class="sidebar-section-children"><a href="global.html#isFree">isFree</a></div><div class="sidebar-section-children"><a href="global.html#isId">isId</a></div><div class="sidebar-section-children"><a href="global.html#isIdle">isIdle</a></div><div class="sidebar-section-children"><a href="global.html#isObject">isObject</a></div><div class="sidebar-section-children"><a href="global.html#isPromise">isPromise</a></div><div class="sidebar-section-children"><a href="global.html#isRetryableNetworkError">isRetryableNetworkError</a></div><div class="sidebar-section-children"><a href="global.html#isSelenium3x">isSelenium3x</a></div><div class="sidebar-section-children"><a href="global.html#legacyTimeout">legacyTimeout</a></div><div class="sidebar-section-children"><a href="global.html#load">load</a></div><div class="sidebar-section-children"><a href="global.html#locate">locate</a></div><div class="sidebar-section-children"><a href="global.html#locateWith">locateWith</a></div><div class="sidebar-section-children"><a href="global.html#manual">manual</a></div><div class="sidebar-section-children"><a href="global.html#map">map</a></div><div class="sidebar-section-children"><a href="global.html#mkdir">mkdir</a></div><div class="sidebar-section-children"><a href="global.html#mkdirp">mkdirp</a></div><div class="sidebar-section-children"><a href="global.html#of">of</a></div><div class="sidebar-section-children"><a href="global.html#pac">pac</a></div><div class="sidebar-section-children"><a href="global.html#pad">pad</a></div><div class="sidebar-section-children"><a href="global.html#parseHttpResponse">parseHttpResponse</a></div><div class="sidebar-section-children"><a href="global.html#path">path</a></div><div class="sidebar-section-children"><a href="global.html#projectRoot">projectRoot</a></div><div class="sidebar-section-children"><a href="global.html#read">read</a></div><div class="sidebar-section-children"><a href="global.html#removeConsoleHandler">removeConsoleHandler</a></div><div class="sidebar-section-children"><a href="global.html#requireAtom">requireAtom</a></div><div class="sidebar-section-children"><a href="global.html#resolveCommandLineFlags">resolveCommandLineFlags</a></div><div class="sidebar-section-children"><a href="global.html#resolveWaitMessage">resolveWaitMessage</a></div><div class="sidebar-section-children"><a href="global.html#rmDir">rmDir</a></div><div class="sidebar-section-children"><a href="global.html#sendIndex">sendIndex</a></div><div class="sidebar-section-children"><a href="global.html#sendRequest">sendRequest</a></div><div class="sidebar-section-children"><a href="global.html#serialize">serialize</a></div><div class="sidebar-section-children"><a href="global.html#setFileDetector">setFileDetector</a></div><div class="sidebar-section-children"><a href="global.html#shouldRetryRequest">shouldRetryRequest</a></div><div class="sidebar-section-children"><a href="global.html#socks">socks</a></div><div class="sidebar-section-children"><a href="global.html#splitHostAndPort">splitHostAndPort</a></div><div class="sidebar-section-children"><a href="global.html#stalenessOf">stalenessOf</a></div><div class="sidebar-section-children"><a href="global.html#start">start</a></div><div class="sidebar-section-children"><a href="global.html#startSeleniumServer">startSeleniumServer</a></div><div class="sidebar-section-children"><a href="global.html#stat">stat</a></div><div class="sidebar-section-children"><a href="global.html#stop">stop</a></div><div class="sidebar-section-children"><a href="global.html#suite">suite</a></div><div class="sidebar-section-children"><a href="global.html#suite">suite</a></div><div class="sidebar-section-children"><a href="global.html#system">system</a></div><div class="sidebar-section-children"><a href="global.html#thenFinally">thenFinally</a></div><div class="sidebar-section-children"><a href="global.html#throwDecodedError">throwDecodedError</a></div><div class="sidebar-section-children"><a href="global.html#titleContains">titleContains</a></div><div class="sidebar-section-children"><a href="global.html#titleIs">titleIs</a></div><div class="sidebar-section-children"><a href="global.html#titleMatches">titleMatches</a></div><div class="sidebar-section-children"><a href="global.html#tmpDir">tmpDir</a></div><div class="sidebar-section-children"><a href="global.html#tmpFile">tmpFile</a></div><div class="sidebar-section-children"><a href="global.html#toExecuteAtomCommand">toExecuteAtomCommand</a></div><div class="sidebar-section-children"><a href="global.html#toMap">toMap</a></div><div class="sidebar-section-children"><a href="global.html#toWireValue">toWireValue</a></div><div class="sidebar-section-children"><a href="global.html#tryParse">tryParse</a></div><div class="sidebar-section-children"><a href="global.html#unlink">unlink</a></div><div class="sidebar-section-children"><a href="global.html#unzip">unzip</a></div><div class="sidebar-section-children"><a href="global.html#url">url</a></div><div class="sidebar-section-children"><a href="global.html#urlContains">urlContains</a></div><div class="sidebar-section-children"><a href="global.html#urlIs">urlIs</a></div><div class="sidebar-section-children"><a href="global.html#urlMatches">urlMatches</a></div><div class="sidebar-section-children"><a href="global.html#waitForServer">waitForServer</a></div><div class="sidebar-section-children"><a href="global.html#waitForUrl">waitForUrl</a></div><div class="sidebar-section-children"><a href="global.html#walkDir">walkDir</a></div><div class="sidebar-section-children"><a href="global.html#whereIs">whereIs</a></div><div class="sidebar-section-children"><a href="global.html#withTagName">withTagName</a></div><div class="sidebar-section-children"><a href="global.html#write">write</a></div></div></div><div class="mobile-navbar-actions"><div class="navbar-right-item"><button class="icon-button search-button" aria-label="open-search"><svg><use xlink:href="#search-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button theme-toggle" aria-label="toggle-theme"><svg><use class="theme-svg-use" xlink:href="#light-theme-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button font-size" aria-label="change-font-size"><svg><use xlink:href="#font-size-icon"></use></svg></button></div></div></div></div><script type="text/javascript" src="scripts/core.min.js"></script><script src="scripts/search.min.js" defer="defer"></script><script src="scripts/third-party/fuse.js" defer="defer"></script><script type="text/javascript">var tocbotInstance=tocbot.init({tocSelector:"#eed4d2a0bfd64539bb9df78095dec881",contentSelector:".main-content",headingSelector:"h1, h2, h3",hasInnerContainers:!0,scrollContainer:".main-content",headingsOffset:130,onClick:bringLinkToView})</script></body></html>

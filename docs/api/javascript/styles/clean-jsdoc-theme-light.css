@@ -1,0 +1,482 @@
+.light ::selection {
+	background: #ffce76;
+	color: #1d1919;
+
+}
+
+/* stylelint-disable-next-line selector-no-qualifying-type,rule-empty-line-before */
+body.light {
+	background-color: #fff;
+	color: #111;
+
+}
+
+.light a,
+.light a:active {
+	color: #007bff;
+
+}
+
+.light hr {
+	color: #f7f7f7;
+
+}
+
+.light h1,
+.light h2,
+.light h3,
+.light h4,
+.light h5,
+.light h6 {
+	color: #111;
+
+}
+
+.light .sidebar {
+	background-color: #f7f7f7;
+	color: #222;
+
+}
+
+.light .sidebar-title {
+	color: #222;
+
+}
+
+.light .sidebar-section-title {
+	color: #222;
+
+}
+
+.light .sidebar-section-title:hover,
+.light .sidebar-section-title.active {
+	background: #eee;
+}
+
+
+.light .with-arrow {
+	fill: #111;
+
+}
+
+.light .sidebar-section-children-container {
+	background: #eee;
+}
+
+.light .sidebar-section-children.active {
+	background: #ccc;
+}
+
+
+
+
+.light .sidebar-section-children a:hover {
+	background: #e0e0e0;
+
+}
+
+.light .sidebar-section-children a {
+	color: #111;
+
+}
+
+.light .navbar-container {
+	background: #fff;
+
+}
+
+.light .icon-button svg,
+.light .navbar-item a {
+	color: #222;
+	fill: #222;
+
+}
+
+.light .tippy-box {
+	background: #eee;
+	color: #111;
+
+}
+
+.light .tippy-arrow {
+	color: #f1f1f1;
+
+}
+
+/* stylelint-disable-next-line selector-max-compound-selectors,rule-empty-line-before */
+.light .font-size-tooltip .icon-button svg {
+	fill: #111;
+
+}
+
+/* stylelint-disable-next-line selector-max-compound-selectors, rule-empty-line-before */
+.light .font-size-tooltip .icon-button.disabled svg {
+	fill: #999;
+
+}
+
+.light .icon-button:hover {
+	background: #ddd;
+
+}
+
+.light .icon-button:active {
+	background: #ccc;
+
+}
+
+.light .navbar-item a:active {
+	background-color: #eee;
+	color: #333;
+
+}
+
+.light .navbar-item:hover {
+	background: #f7f7f7;
+
+}
+
+.light .footer {
+	background: #f7f7f7;
+	color: #111;
+
+}
+
+.light .footer a {
+	color: #111;
+
+}
+
+.light .toc-link {
+	color: #999;
+	font-size: 0.875rem;
+	transition: color 0.3s;
+
+}
+
+.light .toc-link.is-active-link {
+	color: #111;
+
+}
+
+.light .has-anchor .link-anchor {
+	color: #ddd;
+
+}
+
+.light .has-anchor .link-anchor:hover {
+	color: #ccc;
+
+}
+
+.light .signature-attributes {
+	color: #aaa;
+
+}
+
+.light .ancestors {
+	color: #999;
+
+}
+
+.light .ancestors a {
+	color: #999 !important;
+
+}
+
+.light .important {
+	color: #ee1313;
+
+}
+
+.light .type-signature {
+	color: #00918e;
+
+}
+
+.light .name,
+.light .name a {
+	color: #293a80;
+
+}
+
+.light .details {
+	background: #f9f9f9;
+	color: #101010;
+
+}
+
+.light .member-item-container strong,
+.light .method-member-container strong {
+	color: #000;
+
+}
+
+.light .prettyprint {
+	background: #f7f7f7;
+
+}
+
+.light .pre-div {
+	background: #f7f7f7;
+
+}
+
+.light .hljs .hljs-ln-numbers {
+	color: #aaa;
+
+}
+
+.light .hljs .selected {
+	background: #ccc;
+
+}
+
+/* stylelint-disable-next-line selector-no-qualifying-type,rule-empty-line-before */
+.light table.hljs-ln td {
+	background: none;
+
+}
+
+/* stylelint-disable-next-line selector-max-compound-selectors,rule-empty-line-before */
+.light .hljs .selected .hljs-ln-numbers {
+	color: #444;
+
+}
+
+.light .pre-top-bar-container {
+	background-color: #eee;
+
+}
+
+.light .prettyprint code {
+	background-color: #f7f7f7;
+
+}
+
+.light table .name,
+.light .params .name,
+.light .props .name,
+.light .name code {
+	color: #4d4e53;
+
+}
+
+.light table td,
+.light .params td {
+	background: #f7f7f7;
+
+}
+
+/* stylelint-disable-next-line selector-max-compound-selectors,rule-empty-line-before */
+.light table thead th,
+.light .params thead th,
+.light .props thead th {
+	background-color: #eee;
+	color: #111;
+
+}
+
+/* stylelint-disable */
+.light table .params thead tr,
+.light .params .params thead tr,
+.light .props .props thead tr {
+	background-color: #eee;
+	color: #111;
+
+}
+
+.light .disabled {
+	color: #454545;
+
+}
+
+.light .code-lang-name {
+	color: #ff0000;
+
+}
+
+.light .tooltip {
+	background: #ffce76;
+	color: #000;
+
+}
+
+/* Code */
+
+.light .hljs-comment,
+.light .hljs-quote {
+	color: #a0a1a7;
+
+}
+
+.light .hljs-doctag,
+.light .hljs-keyword,
+.light .hljs-formula {
+	color: #a626a4;
+
+}
+
+.light .hljs-section,
+.light .hljs-name,
+.light .hljs-selector-tag,
+.light .hljs-deletion,
+.light .hljs-subst {
+	color: #e45649;
+
+}
+
+.light .hljs-literal {
+	color: #0184bb;
+
+}
+
+.light .hljs-string,
+.light .hljs-regexp,
+.light .hljs-addition,
+.light .hljs-attribute,
+.light .hljs-meta .hljs-string {
+	color: #50a14f;
+
+}
+
+.light .hljs-attr,
+.light .hljs-variable,
+.light .hljs-template-variable,
+.light .hljs-type,
+.light .hljs-selector-class,
+.light .hljs-selector-attr,
+.light .hljs-selector-pseudo,
+.light .hljs-number {
+	color: #986801;
+
+}
+
+.light .hljs-symbol,
+.light .hljs-bullet,
+.light .hljs-link,
+.light .hljs-meta,
+.light .hljs-selector-id,
+.light .hljs-title {
+	color: #4078f2;
+
+}
+
+.light .hljs-built_in,
+.light .hljs-title.class_,
+.light .hljs-class .hljs-title {
+	color: #c18401;
+
+}
+
+.light .hljs-emphasis {
+	font-style: italic;
+
+}
+
+.light .hljs-strong {
+	font-weight: bold;
+
+}
+
+.light .hljs-link {
+	text-decoration: underline;
+
+}
+
+/* Code Ends */
+
+.light blockquote {
+	background: #eee;
+	color: #111;
+
+}
+
+.light code {
+	background: #ddd;
+	color: #000;
+
+}
+
+.light .search-container {
+	background: rgba(0, 0, 0, 0.1);
+
+}
+
+.light .search-close-button svg {
+	fill: #f00;
+
+}
+
+.light .search-container .wrapper {
+	background: #eee;
+
+}
+
+.light .search-result-c {
+	color: #aaa;
+
+}
+
+.light .search-box-c svg {
+	fill: #333;
+
+}
+
+.light .search-input {
+	background: #f7f7f7;
+	color: #111;
+
+}
+
+.light .search-result-item {
+	background: #f7f7f7;
+
+}
+
+.light .search-result-item:hover {
+	background: #e9e9e9;
+
+}
+
+.light .search-result-item:active {
+	background: #f7f7f7;
+
+}
+
+.light .search-result-item-title {
+	color: #111;
+
+}
+
+.light .search-result-item-p {
+	color: #aaa;
+
+}
+
+.light .mobile-menu-icon-container .icon-button {
+	background: #e5e5e5;
+
+}
+
+.light .mobile-sidebar-container {
+	background: #fff;
+
+}
+
+.light .mobile-sidebar-wrapper {
+	background: #f7f7f7;
+
+}
+
+.light .child-tutorial {
+	border-color: #aaa;
+	color: #222;
+
+}
+
+.light .child-tutorial:hover {
+	background: #ccc;
+
+}
+
