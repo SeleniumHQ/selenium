@@ -73,13 +73,15 @@
  * {@link ./builder.Builder selenium-webdriver.Builder}.
  *
  * [WebDriver (Chromium)]: https://docs.microsoft.com/en-us/microsoft-edge/webdriver-chromium
+ *
+ * @module selenium-webdriver/edge
  */
 
-'use strict'
+"use strict";
 
-const { Browser } = require('./lib/capabilities')
-const chromium = require('./chromium')
-const EDGE_CAPABILITY_KEY = 'ms:edgeOptions'
+const { Browser } = require("./lib/capabilities");
+const chromium = require("./chromium");
+const EDGE_CAPABILITY_KEY = "ms:edgeOptions";
 
 /** @type {remote.DriverService} */
 
@@ -89,90 +91,91 @@ const EDGE_CAPABILITY_KEY = 'ms:edgeOptions'
  * server in a child process.
  */
 class ServiceBuilder extends chromium.ServiceBuilder {
-  /**
-   * @param {string=} opt_exe Path to the server executable to use. If omitted,
-   *     the builder will attempt to locate the msedgedriver on the current
-   *     PATH.
-   * @throws {Error} If provided executable does not exist, or the msedgedriver
-   *     cannot be found on the PATH.
-   */
-  constructor(opt_exe) {
-    super(opt_exe)
-    this.setLoopback(true)
-  }
+	/**
+	 * @param {string=} opt_exe Path to the server executable to use. If omitted,
+	 *     the builder will attempt to locate the msedgedriver on the current
+	 *     PATH.
+	 * @throws {Error} If provided executable does not exist, or the msedgedriver
+	 *     cannot be found on the PATH.
+	 */
+	constructor (opt_exe) {
+		super(opt_exe);
+		this.setLoopback(true);
+	}
 }
 
 /**
  * Class for managing edge chromium specific options.
  */
 class Options extends chromium.Options {
-  /**
-   * Sets the path to the edge binary to use
-   *
-   * The binary path be absolute or relative to the msedgedriver server
-   * executable, but it must exist on the machine that will launch edge chromium.
-   *
-   * @param {string} path The path to the msedgedriver binary to use.
-   * @return {!Options} A self reference.
-   */
-  setEdgeChromiumBinaryPath(path) {
-    return this.setBinaryPath(path)
-  }
+	/**
+	 * Sets the path to the edge binary to use
+	 *
+	 * The binary path be absolute or relative to the msedgedriver server
+	 * executable, but it must exist on the machine that will launch edge chromium.
+	 *
+	 * @param {string} path The path to the msedgedriver binary to use.
+	 * @return {!Options} A self reference.
+	 */
+	setEdgeChromiumBinaryPath (path) {
+		return this.setBinaryPath(path);
+	}
 
-  /**
-   * Changes the browser name to 'webview2' to enable
-   * <a href="https://learn.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver">
-   *   test automation of WebView2 apps with Microsoft Edge WebDriver
-   * </a>
-   *
-   * @param {boolean} enable  flag to enable or disable the 'webview2' usage
-   */
-  useWebView(enable) {
-    const browserName = enable ? 'webview2' : Browser.EDGE
-    return this.setBrowserName(browserName)
-  }
+	/**
+	 * Changes the browser name to 'webview2' to enable
+	 * <a href="https://learn.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver">
+	 *   test automation of WebView2 apps with Microsoft Edge WebDriver
+	 * </a>
+	 *
+	 * @param {boolean} enable  flag to enable or disable the 'webview2' usage
+	 */
+	useWebView (enable) {
+		const browserName = enable ? "webview2" : Browser.EDGE;
+		return this.setBrowserName(browserName);
+	}
 }
 
 /**
  * Creates a new WebDriver client for Microsoft's Edge.
  */
 class Driver extends chromium.Driver {
-  /**
-   * Creates a new browser session for Microsoft's Edge browser.
-   *
-   * @param {(Capabilities|Options)=} opt_config The configuration options.
-   * @param {remote.DriverService=} opt_serviceExecutor The service to use; will create
-   *     a new Legacy or Chromium service based on {@linkplain Options} by default.
-   * @return {!Driver} A new driver instance.
-   */
-  static createSession(opt_config, opt_serviceExecutor) {
-    let caps = opt_config || new Options()
-    return /** @type {!Driver} */ (super.createSession(caps, opt_serviceExecutor, 'ms', EDGE_CAPABILITY_KEY))
-  }
+	/**
+	 * Creates a new browser session for Microsoft's Edge browser.
+	 *
+	 * @param {(Capabilities|Options)=} opt_config The configuration options.
+	 * @param {remote.DriverService=} opt_serviceExecutor The service to use; will create
+	 *     a new Legacy or Chromium service based on {@linkplain Options} by default.
+	 * @return {!Driver} A new driver instance.
+	 */
+	static createSession (opt_config, opt_serviceExecutor) {
+		let caps = opt_config || new Options();
+		return /** @type {!Driver} */ (super.createSession(caps,
+			opt_serviceExecutor, "ms", EDGE_CAPABILITY_KEY));
+	}
 
-  /**
-   * returns new instance of edge driver service
-   * @returns {remote.DriverService}
-   */
-  static getDefaultService() {
-    return new ServiceBuilder().build()
-  }
+	/**
+	 * returns new instance of edge driver service
+	 * @returns {remote.DriverService}
+	 */
+	static getDefaultService () {
+		return new ServiceBuilder().build();
+	}
 
-  /**
-   * This function is a no-op as file detectors are not supported by this
-   * implementation.
-   * @override
-   */
-  setFileDetector() {}
+	/**
+	 * This function is a no-op as file detectors are not supported by this
+	 * implementation.
+	 * @override
+	 */
+	setFileDetector () {}
 }
 
-Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE
-Options.prototype.CAPABILITY_KEY = EDGE_CAPABILITY_KEY
+Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE;
+Options.prototype.CAPABILITY_KEY = EDGE_CAPABILITY_KEY;
 
 // PUBLIC API
 
 module.exports = {
-  Driver,
-  Options,
-  ServiceBuilder,
-}
+	Driver,
+	Options,
+	ServiceBuilder
+};

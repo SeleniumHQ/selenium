@@ -118,13 +118,15 @@
  * [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
  * [android]: https://chromedriver.chromium.org/getting-started/getting-started---android
  * [webview]: https://developer.chrome.com/multidevice/webview/overview
+ *
+ * @module selenium-webdriver/chrome
  */
 
-'use strict'
+"use strict";
 
-const { Browser } = require('./lib/capabilities')
-const chromium = require('./chromium')
-const CHROME_CAPABILITY_KEY = 'goog:chromeOptions'
+const { Browser } = require("./lib/capabilities");
+const chromium = require("./chromium");
+const CHROME_CAPABILITY_KEY = "goog:chromeOptions";
 
 /** @type {remote.DriverService} */
 
@@ -134,104 +136,105 @@ const CHROME_CAPABILITY_KEY = 'goog:chromeOptions'
  * server in a child process.
  */
 class ServiceBuilder extends chromium.ServiceBuilder {
-  /**
-   * @param {string=} opt_exe Path to the server executable to use. If omitted,
-   *     the builder will attempt to locate the chromedriver on the current
-   *     PATH. If the chromedriver is not available in path, selenium-manager will
-   *     download the chromedriver
-   * @throws {Error} If provided executable does not exist, or the chromedriver
-   *     cannot be found on the PATH.
-   */
-  constructor(opt_exe) {
-    super(opt_exe)
-  }
+	/**
+	 * @param {string=} opt_exe Path to the server executable to use. If omitted,
+	 *     the builder will attempt to locate the chromedriver on the current
+	 *     PATH. If the chromedriver is not available in path, selenium-manager will
+	 *     download the chromedriver
+	 * @throws {Error} If provided executable does not exist, or the chromedriver
+	 *     cannot be found on the PATH.
+	 */
+	constructor (opt_exe) {
+		super(opt_exe);
+	}
 }
 
 /**
  * Class for managing ChromeDriver specific options.
  */
 class Options extends chromium.Options {
-  /**
-   * Sets the path to the Chrome binary to use. On Mac OS X, this path should
-   * reference the actual Chrome executable, not just the application binary
-   * (e.g. "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome").
-   *
-   * The binary path be absolute or relative to the chromedriver server
-   * executable, but it must exist on the machine that will launch Chrome.
-   *
-   * @param {string} path The path to the Chrome binary to use.
-   * @return {!Options} A self reference.
-   */
-  setChromeBinaryPath(path) {
-    return this.setBinaryPath(path)
-  }
+	/**
+	 * Sets the path to the Chrome binary to use. On Mac OS X, this path should
+	 * reference the actual Chrome executable, not just the application binary
+	 * (e.g. "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome").
+	 *
+	 * The binary path be absolute or relative to the chromedriver server
+	 * executable, but it must exist on the machine that will launch Chrome.
+	 *
+	 * @param {string} path The path to the Chrome binary to use.
+	 * @return {!Options} A self reference.
+	 */
+	setChromeBinaryPath (path) {
+		return this.setBinaryPath(path);
+	}
 
-  /**
-   * Configures the ChromeDriver to launch Chrome on Android via adb. This
-   * function is shorthand for
-   * {@link #androidPackage options.androidPackage('com.android.chrome')}.
-   * @return {!Options} A self reference.
-   */
-  androidChrome() {
-    return this.androidPackage('com.android.chrome')
-  }
+	/**
+	 * Configures the ChromeDriver to launch Chrome on Android via adb. This
+	 * function is shorthand for
+	 * {@link #androidPackage options.androidPackage('com.android.chrome')}.
+	 * @return {!Options} A self reference.
+	 */
+	androidChrome () {
+		return this.androidPackage("com.android.chrome");
+	}
 
-  /**
-   * Sets the path to Chrome's log file. This path should exist on the machine
-   * that will launch Chrome.
-   * @param {string} path Path to the log file to use.
-   * @return {!Options} A self reference.
-   */
-  setChromeLogFile(path) {
-    return this.setBrowserLogFile(path)
-  }
+	/**
+	 * Sets the path to Chrome's log file. This path should exist on the machine
+	 * that will launch Chrome.
+	 * @param {string} path Path to the log file to use.
+	 * @return {!Options} A self reference.
+	 */
+	setChromeLogFile (path) {
+		return this.setBrowserLogFile(path);
+	}
 
-  /**
-   * Sets the directory to store Chrome minidumps in. This option is only
-   * supported when ChromeDriver is running on Linux.
-   * @param {string} path The directory path.
-   * @return {!Options} A self reference.
-   */
-  setChromeMinidumpPath(path) {
-    return this.setBrowserMinidumpPath(path)
-  }
+	/**
+	 * Sets the directory to store Chrome minidumps in. This option is only
+	 * supported when ChromeDriver is running on Linux.
+	 * @param {string} path The directory path.
+	 * @return {!Options} A self reference.
+	 */
+	setChromeMinidumpPath (path) {
+		return this.setBrowserMinidumpPath(path);
+	}
 }
 
 /**
  * Creates a new WebDriver client for Chrome.
  */
 class Driver extends chromium.Driver {
-  /**
-   * Creates a new session with the ChromeDriver.
-   *
-   * @param {(Capabilities|Options)=} opt_config The configuration options.
-   * @param {(remote.DriverService|http.Executor)=} opt_serviceExecutor Either
-   *     a  DriverService to use for the remote end, or a preconfigured executor
-   *     for an externally managed endpoint. If neither is provided, the
-   *     {@linkplain ##getDefaultService default service} will be used by
-   *     default.
-   * @return {!Driver} A new driver instance.
-   */
-  static createSession(opt_config, opt_serviceExecutor) {
-    let caps = opt_config || new Options()
-    return /** @type {!Driver} */ (super.createSession(caps, opt_serviceExecutor, 'goog', CHROME_CAPABILITY_KEY))
-  }
+	/**
+	 * Creates a new session with the ChromeDriver.
+	 *
+	 * @param {(Capabilities|Options)=} opt_config The configuration options.
+	 * @param {(remote.DriverService|http.Executor)=} opt_serviceExecutor Either
+	 *     a  DriverService to use for the remote end, or a preconfigured executor
+	 *     for an externally managed endpoint. If neither is provided, the
+	 *     {@linkplain ##getDefaultService default service} will be used by
+	 *     default.
+	 * @return {!Driver} A new driver instance.
+	 */
+	static createSession (opt_config, opt_serviceExecutor) {
+		let caps = opt_config || new Options();
+		return /** @type {!Driver} */ (super.createSession(caps,
+			opt_serviceExecutor, "goog", CHROME_CAPABILITY_KEY));
+	}
 
-  /**
-   * returns new instance chrome driver service
-   * @returns {remote.DriverService}
-   */
-  static getDefaultService() {
-    return new ServiceBuilder().build()
-  }
+	/**
+	 * returns new instance chrome driver service
+	 * @returns {remote.DriverService}
+	 */
+	static getDefaultService () {
+		return new ServiceBuilder().build();
+	}
 }
 
-Options.prototype.CAPABILITY_KEY = CHROME_CAPABILITY_KEY
-Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME
+Options.prototype.CAPABILITY_KEY = CHROME_CAPABILITY_KEY;
+Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME;
 
 // PUBLIC API
 module.exports = {
-  Driver,
-  Options,
-  ServiceBuilder,
-}
+	Driver,
+	Options,
+	ServiceBuilder
+};
