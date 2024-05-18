@@ -861,7 +861,7 @@ namespace OpenQA.Selenium.Support.Events
                 {
                     WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver);
                     this.parentDriver.OnNavigatingBack(e);
-                    await this.wrappedNavigation.BackAsync();
+                    await this.wrappedNavigation.BackAsync().ConfigureAwait(false);
                     this.parentDriver.OnNavigatedBack(e);
                 }
                 catch (Exception ex)
