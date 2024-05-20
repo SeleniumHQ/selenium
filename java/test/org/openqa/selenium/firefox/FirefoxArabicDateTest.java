@@ -15,11 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.edge;
+package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.assertj.core.api.Assertions.assertThat;
-
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.Locale;
 
@@ -28,7 +27,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.junit.jupiter.api.Test;
 
-public class EdgeArabicDateTest extends JupiterTestBase {
+public class FirefoxArabicDateTest extends JupiterTestBase {
 
     @Test
     @NoDriverBeforeTest
@@ -37,14 +36,14 @@ public class EdgeArabicDateTest extends JupiterTestBase {
         Locale.setDefault(arabicLocal);
 
         int port = PortProber.findFreePort();
-        EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
+        GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
         builder.usingPort(port);
-        EdgeDriverService service = builder.build();
+        GeckoDriverService service = builder.build();
 
-        localDriver = EdgeDriver.builder().withDriverService(service).build();
+        localDriver = FirefoxDriver.builder().withDriverService(service).build();
         localDriver.get(pages.simpleTestPage);
-        assertThat(localDriver.getTitle()).isEqualTo("Hello WebDriver");
-
+        assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
+        
         Locale.setDefault(Locale.US);
 
     }
