@@ -1,5 +1,5 @@
 {
-  "checksum": "4d83767705cfa527c346635638cdd221c0daade435b4b4602fc98f9269a0ece5",
+  "checksum": "14dbf17d9e872e55d0e978b15ce60660603017dfddf7a924539a1085d1255e3f",
   "crates": {
     "addr2line 0.21.0": {
       "name": "addr2line",
@@ -520,14 +520,14 @@
       ],
       "license_file": "LICENSE-APACHE"
     },
-    "anyhow 1.0.84": {
+    "anyhow 1.0.86": {
       "name": "anyhow",
-      "version": "1.0.84",
+      "version": "1.0.86",
       "package_url": "https://github.com/dtolnay/anyhow",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/anyhow/1.0.84/download",
-          "sha256": "18b8795de6d09abb2b178fa5a9e3bb10da935750f33449a132b328b9391b2c6a"
+          "url": "https://static.crates.io/crates/anyhow/1.0.86/download",
+          "sha256": "b3d1d046238990b9cf5bcde22a3fb3584ee5cf65fb2765f454ed428c7a0063da"
         }
       },
       "targets": [
@@ -571,7 +571,7 @@
         "deps": {
           "common": [
             {
-              "id": "anyhow 1.0.84",
+              "id": "anyhow 1.0.86",
               "target": "build_script_build"
             },
             {
@@ -582,7 +582,7 @@
           "selects": {}
         },
         "edition": "2018",
-        "version": "1.0.84"
+        "version": "1.0.86"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -11542,7 +11542,7 @@
         "deps": {
           "common": [
             {
-              "id": "anyhow 1.0.84",
+              "id": "anyhow 1.0.86",
               "target": "anyhow"
             },
             {
@@ -19114,7 +19114,7 @@
     ]
   },
   "direct_deps": [
-    "anyhow 1.0.84",
+    "anyhow 1.0.86",
     "apple-flat-package 0.18.0",
     "bzip2 0.4.4",
     "clap 4.5.4",
