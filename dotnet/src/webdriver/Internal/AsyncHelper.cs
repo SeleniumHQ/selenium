@@ -35,7 +35,7 @@ namespace OpenQA.Selenium.Internal
             return _myTaskFactory.StartNew(() =>
             {
                 return func();
-            }).Unwrap().ConfigureAwait(false).GetAwaiter().GetResult();
+            }).Unwrap().GetAwaiter().GetResult();
         }
 
         public static void RunSync(Func<Task> func)
@@ -43,7 +43,7 @@ namespace OpenQA.Selenium.Internal
             _myTaskFactory.StartNew(() =>
             {
                 return func();
-            }).Unwrap().ConfigureAwait(false).GetAwaiter().GetResult();
+            }).Unwrap().GetAwaiter().GetResult();
         }
     }
 }
