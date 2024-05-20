@@ -286,6 +286,11 @@ namespace OpenQA.Selenium.Remote
                 if (_logger.IsEnabled(LogEventLevel.Trace))
                 {
                     _logger.Trace($">> {requestMessage}");
+                    if (requestMessage.Content != null)
+                    {
+                        string content = await requestMessage.Content.ReadAsStringAsync();
+                        _logger.Trace($">> Body: {content}");
+                    }
                 }
 
                 using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage).ConfigureAwait(false))
@@ -293,6 +298,8 @@ namespace OpenQA.Selenium.Remote
                     if (_logger.IsEnabled(LogEventLevel.Trace))
                     {
                         _logger.Trace($"<< {responseMessage}");
+                        string responseBody = await responseMessage.Content.ReadAsStringAsync();
+                        _logger.Trace($"<< Body: {responseBody}");
                     }
 
                     HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
@@ -304,6 +311,7 @@ namespace OpenQA.Selenium.Remote
                 }
             }
         }
+
 
         private Response CreateResponse(HttpResponseInfo responseInfo)
         {
