@@ -11,7 +11,7 @@ importlib-metadata==6.8.0
 inflection==0.5.1
 iniconfig==2.0.0
 more-itertools==10.1.0
-multidict==6.0.2
+multidict==6.0.5
 outcome==1.3.0
 packaging==23.2
 pluggy==1.3.0
