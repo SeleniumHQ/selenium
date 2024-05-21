@@ -67,7 +67,7 @@ namespace OpenQA.Selenium.Environment
             {
                 browser = Browser.Chrome;
                 options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);
-                options.UseWebSocketUrl = true;
+                options.UseWebSocketUrl = System.Environment.GetEnvironmentVariable("WEBDRIVER_BIDI") == "true";
 
                 var chromeOptions = (ChromeOptions)options;
                 chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
