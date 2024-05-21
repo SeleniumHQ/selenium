@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    module Safari
+      class Service < WebDriver::Service
+        DEFAULT_PORT: Integer
+
+        EXECUTABLE: String
+
+        SHUTDOWN_SUPPORTED: bool
+
+        def initialize: (?path: untyped?, ?port: untyped?, ?log: untyped?, ?args: untyped?) -> void
+
+        def log=: (*untyped) -> untyped
+      end
+    end
+  end
+end

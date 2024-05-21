@@ -85,7 +85,7 @@ public class ErrorCodec {
           new W3CError("unable to capture screen", ScreenshotException.class, 500),
           new W3CError("unable to set cookie", UnableToSetCookieException.class, 500),
           new W3CError("unexpected alert open", UnhandledAlertException.class, 500),
-          new W3CError("unsupported operation", UnsupportedCommandException.class, 404),
+          new W3CError("unsupported operation", UnsupportedCommandException.class, 500),
           new W3CError("unknown command", UnsupportedCommandException.class, 404),
           new W3CError("unknown method", UnsupportedCommandException.class, 405),
           new W3CError("unknown error", WebDriverException.class, 500));
@@ -113,6 +113,23 @@ public class ErrorCodec {
       throwable.printStackTrace(printWriter);
     }
 
+    if (throwable instanceof UnhandledAlertException) {
+      String text = ((UnhandledAlertException) throwable).getAlertText();
+      if (text != null) {
+        return Map.of(
+            "value",
+            Map.of(
+                "error",
+                err.w3cErrorString,
+                "message",
+                message,
+                "stacktrace",
+                stacktrace.toString(),
+                "data",
+                Map.of("text", text)));
+      }
+    }
+
     return Map.of(
         "value",
         Map.of(
@@ -127,12 +144,12 @@ public class ErrorCodec {
 
   public WebDriverException decode(Map<String, Object> response) {
     if (!(response.get("value") instanceof Map)) {
-      throw new IllegalArgumentException("Unable to find mapping for " + response.toString());
+      throw new IllegalArgumentException("Unable to find mapping for " + response);
     }
 
     Map<?, ?> value = (Map<?, ?>) response.get("value");
     if (!(value.get("error") instanceof String)) {
-      throw new IllegalArgumentException("Unable to find mapping for " + response.toString());
+      throw new IllegalArgumentException("Unable to find mapping for " + response);
     }
 
     String error = (String) value.get("error");

@@ -1,6 +1,6 @@
-using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Internal;
+using System;
 
 namespace OpenQA.Selenium
 {
@@ -34,14 +34,14 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldThrowAnExceptionWhenSameSiteIsWrong()
         {
-            Assert.That(() => new ReturnedCookie("name", "value", "" , "/", DateTime.Now, true, true, "Wrong"), Throws.InstanceOf<ArgumentException>());
+            Assert.That(() => new ReturnedCookie("name", "value", "", "/", DateTime.Now, true, true, "Wrong"), Throws.InstanceOf<ArgumentException>());
         }
 
         [Test]
         public void CookiesShouldAllowOptionalParametersToBeSet()
         {
             DateTime expiry = DateTime.Now;
-            Cookie cookie = new Cookie ("name", "value", "test.com", "/", expiry, true, true, "None");
+            Cookie cookie = new Cookie("name", "value", "test.com", "/", expiry, true, true, "None");
             Assert.That(cookie.Domain, Is.EqualTo("test.com"));
             Assert.That(cookie.Path, Is.EqualTo("/"));
             Assert.That(cookie.IsHttpOnly, Is.True);

@@ -18,6 +18,7 @@
 package org.openqa.selenium.print;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.internal.Require;
 
@@ -71,6 +72,11 @@ public class PrintOptions {
     }
   }
 
+  public void setPageRanges(List<String> ranges) {
+    this.pageRanges = new String[ranges.size()];
+    this.pageRanges = ranges.toArray(this.pageRanges);
+  }
+
   public void setBackground(boolean background) {
     this.background = Require.nonNull("background", background);
   }
@@ -116,7 +122,7 @@ public class PrintOptions {
 
   public Map<String, Object> toMap() {
     final Map<String, Object> options = new HashMap<>(7);
-    options.put("page", getPageSize());
+    options.put("page", getPageSize().toMap());
     options.put("orientation", getOrientation().toString());
     options.put("scale", getScale());
     options.put("shrinkToFit", getShrinkToFit());
@@ -125,7 +131,7 @@ public class PrintOptions {
     if (effectivePageRanges != null) {
       options.put("pageRanges", effectivePageRanges);
     }
-    options.put("margin", getPageMargin());
+    options.put("margin", getPageMargin().toMap());
 
     return options;
   }

@@ -1,0 +1,88 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/BlockLength -- Disable due to the steep configuration not matching rubocop expectations
+target :lib do
+  signature 'sig', '.gem_rbs_collection/rubyzip' # Signature directory
+  check 'lib' # Directory name
+  # Total amount of errors ignore 66 in 31 files
+  ignore(
+    # Ignore line 166 due to UDP RBS issue
+    'lib/selenium/webdriver/common/platform.rb',
+    # Ignore due to webmock gem not having RBS signatures
+    'lib/selenium/webdriver/remote/http/curb.rb',
+    # Ignore due to line 71, there is one last error where RBS thinks backtrace is nil
+    'lib/selenium/webdriver/remote/response.rb',
+    # Ignore due to Errno::EACCES error
+    'lib/selenium/webdriver/support/color.rb',
+    'lib/selenium/webdriver/common/port_prober.rb',
+    # Ignore due to error overloading
+    'lib/selenium/webdriver/common/socket_poller.rb',
+    # Ignore due to Parser on line 611
+    'lib/selenium/webdriver/remote/bridge.rb',
+    # Ignore due to error on line 101 with block
+    'lib/selenium/webdriver/devtools/network_interceptor.rb',
+    # Ignore due to error on line 21 with overloading issues
+    'lib/selenium/webdriver/common/virtual_authenticator/credential.rb',
+    # Ignore due to error with the Zipper RBS
+    'lib/selenium/webdriver/common/zipper.rb',
+    # Ignore due to error on line 117 with the debug? method
+    'lib/selenium/webdriver/common/selenium_manager.rb',
+    # Ignore due to line 230 with the overloading issues
+    'lib/selenium/webdriver/common/action_builder.rb',
+    # Ignore due to CAPABILITIES not able to be found on line 55
+    'lib/selenium/webdriver/common/options.rb',
+    # Ignore due to strftime error in RBS on line 188
+    'lib/selenium/webdriver/common/logger.rb',
+    # Ignore due to error with Process
+    'lib/selenium/webdriver/common/child_process.rb',
+    # Ignore due to Net::HTTP not being found on line 49
+    'lib/selenium/webdriver/chromium/driver.rb',
+    # Ignore due to error on line 37 with include?
+    'lib/selenium/webdriver/support/guards/guard_condition.rb',
+    # Ignore due to positional argument error on line 69
+    'lib/selenium/webdriver/common/socket_lock.rb',
+    # Ignore due to is_a? bot error on line 70
+    'lib/selenium/webdriver/remote/driver.rb',
+    # Ignore due to line 118 causing an error with URI & Net::HTTP
+    'lib/selenium/server.rb',
+    # Ignore due to overloading issue on line 84
+    'lib/selenium/webdriver/chromium/features.rb',
+    # Ignore due to line 59 with the same URI & Net::HTTP issue
+    'lib/selenium/webdriver/firefox/driver.rb',
+    # Ignore due to line 27 with overloading issue
+    'lib/selenium/webdriver/bidi/log/console_log_entry.rb',
+    # Ignore due to line 89 with overloading issue
+    'lib/selenium/webdriver.rb',
+    # Ignore due to line 37 with overloading issue
+    'lib/selenium/webdriver/common/interactions/wheel_input.rb',
+    # Cannot override last error on line 71
+    'lib/selenium/webdriver/common/wait.rb',
+    # Cannot override params on line 83
+    'lib/selenium/webdriver/bidi/log_inspector.rb',
+    # Kwargs issue on line 74
+    'lib/selenium/webdriver/common/driver.rb',
+    # issue with the Zipper RBS library on line 54
+    'lib/selenium/webdriver/firefox/extension.rb',
+    # Ignored due to return of last match in line 57 and 59
+    'lib/selenium/webdriver/firefox/profiles_ini.rb',
+    # Ignored due to error on line 100 of response being nillable
+    'lib/selenium/webdriver/remote/http/default.rb'
+  )
+
+  # Standard libraries used in the project
+  library(
+    'base64',
+    'date',
+    'erb',
+    'find',
+    'forwardable',
+    'ipaddr',
+    'net-http',
+    'openssl',
+    'tmpdir',
+    'securerandom',
+    'uri',
+    'zlib'
+  )
+end
+# rubocop:enable Metrics/BlockLength

@@ -15,6 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * Represents the types of realms.
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-RealmType.
+ * @enum
+ */
 const RealmType = {
   AUDIO_WORKLET: 'audio-worklet',
   DEDICATED_WORKER: 'dedicated-worker',
@@ -28,15 +33,23 @@ const RealmType = {
   findByName(name) {
     return (
       Object.values(this).find((type) => {
-        return (
-          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
-        )
+        return typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
       }) || null
     )
   },
 }
 
+/**
+ * Represents information about a realm.
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-RealmInfo.
+ */
 class RealmInfo {
+  /**
+   * Constructs a new RealmInfo object.
+   * @param {string} realmId - The ID of the realm.
+   * @param {string} origin - The origin of the realm.
+   * @param {string} realmType - The type of the realm.
+   */
   constructor(realmId, origin, realmType) {
     this.realmId = realmId
     this.origin = origin
@@ -72,20 +85,26 @@ class RealmInfo {
     }
 
     if (realmType === RealmType.WINDOW) {
-      return new WindowRealmInfo(
-        realmId,
-        origin,
-        realmType,
-        browsingContext,
-        sandbox
-      )
+      return new WindowRealmInfo(realmId, origin, realmType, browsingContext, sandbox)
     }
 
     return new RealmInfo(realmId, origin, realmType)
   }
 }
 
+/**
+ * Represents information about a window realm.
+ * @extends RealmInfo
+ */
 class WindowRealmInfo extends RealmInfo {
+  /**
+   * Constructs a new instance of the WindowRealmInfo class.
+   * @param {string} realmId - The ID of the realm.
+   * @param {string} origin - The origin of the realm.
+   * @param {string} realmType - The type of the realm.
+   * @param {string} browsingContext - The browsing context of the realm.
+   * @param {string|null} sandbox - The sandbox of the realm (optional).
+   */
   constructor(realmId, origin, realmType, browsingContext, sandbox = null) {
     super(realmId, origin, realmType)
     this.browsingContext = browsingContext
@@ -96,4 +115,5 @@ class WindowRealmInfo extends RealmInfo {
 module.exports = {
   RealmInfo,
   RealmType,
+  WindowRealmInfo,
 }

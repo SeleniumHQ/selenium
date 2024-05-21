@@ -484,10 +484,7 @@ ERROR_CODE_TO_TYPE.forEach((value, key) => {
  */
 function encodeError(err) {
   let type = WebDriverError
-  if (
-    err instanceof WebDriverError &&
-    TYPE_TO_ERROR_CODE.has(err.constructor)
-  ) {
+  if (err instanceof WebDriverError && TYPE_TO_ERROR_CODE.has(err.constructor)) {
     type = err.constructor
   }
 
@@ -541,11 +538,7 @@ function throwDecodedError(data) {
  */
 function checkLegacyResponse(responseObj) {
   // Handle the legacy Selenium error response format.
-  if (
-    isObject(responseObj) &&
-    typeof responseObj.status === 'number' &&
-    responseObj.status !== 0
-  ) {
+  if (isObject(responseObj) && typeof responseObj.status === 'number' && responseObj.status !== 0) {
     const { status, value } = responseObj
 
     let ctor = LEGACY_ERROR_CODE_TO_TYPE.get(status) || WebDriverError

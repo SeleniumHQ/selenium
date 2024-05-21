@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const { Browser, By, WebElement, error } = require('..')
 const { Pages, ignore, suite } = require('../lib/test')
 
@@ -47,10 +47,7 @@ suite(function (env) {
         .catch(function (e) {
           // The java WebDriver server adds a bunch of crap to error messages.
           // Error message will just be "JavaScript error" for IE.
-          assert.ok(
-            /.*(JavaScript error|boom).*/.test(e.message),
-            `Unexpected error: ${e.message}`
-          )
+          assert.ok(/.*(JavaScript error|boom).*/.test(e.message), `Unexpected error: ${e.message}`)
         })
     })
 
@@ -107,21 +104,16 @@ suite(function (env) {
       })
 
       it('can return an array of primitives', function () {
-        return execute('var x; return [1, false, null, 3.14, x]').then(
-          verifyJson([1, false, null, 3.14, null])
-        )
+        return execute('var x; return [1, false, null, 3.14, x]').then(verifyJson([1, false, null, 3.14, null]))
       })
 
       it('can return nested arrays', function () {
         return execute('return [[1, 2, [3]]]').then(verifyJson([[1, 2, [3]]]))
       })
 
-      ignore(env.browsers(Browser.INTERNET_EXPLORER)).it(
-        'can return empty object literal',
-        function () {
-          return execute('return {}').then(verifyJson({}))
-        }
-      )
+      ignore(env.browsers(Browser.INTERNET_EXPLORER)).it('can return empty object literal', function () {
+        return execute('return {}').then(verifyJson({}))
+      })
 
       it('can return object literals', function () {
         return execute('return {a: 1, b: false, c: null}').then((result) => {
@@ -133,15 +125,11 @@ suite(function (env) {
       })
 
       it('can return complex object literals', function () {
-        return execute('return {a:{b: "hello"}}').then(
-          verifyJson({ a: { b: 'hello' } })
-        )
+        return execute('return {a:{b: "hello"}}').then(verifyJson({ a: { b: 'hello' } }))
       })
 
       it('can return dom elements as web elements', async function () {
-        let result = await execute(
-          'return document.querySelector(".header.host")'
-        )
+        let result = await execute('return document.querySelector(".header.host")')
         assert.ok(result instanceof WebElement)
 
         let text = await result.getText()
@@ -150,8 +138,7 @@ suite(function (env) {
 
       it('can return array of dom elements', async function () {
         let result = await execute(
-          'var nodes = document.querySelectorAll(".request,.host");' +
-            'return [nodes[0], nodes[1]];'
+          'var nodes = document.querySelectorAll(".request,.host");' + 'return [nodes[0], nodes[1]];',
         )
         assert.strictEqual(result.length, 2)
 
@@ -163,9 +150,7 @@ suite(function (env) {
       })
 
       it('can return a NodeList as an array of web elements', async function () {
-        let result = await execute(
-          'return document.querySelectorAll(".request,.host");'
-        )
+        let result = await execute('return document.querySelectorAll(".request,.host");')
 
         assert.strictEqual(result.length, 2)
 
@@ -200,28 +185,19 @@ suite(function (env) {
       })
 
       it('can pass null arguments', async function () {
-        assert.strictEqual(
-          await execute('return arguments[0] === null', null),
-          true
-        )
+        assert.strictEqual(await execute('return arguments[0] === null', null), true)
         assert.strictEqual(await execute('return arguments[0]', null), null)
       })
 
       it('passes undefined as a null argument', async function () {
         var x
-        assert.strictEqual(
-          await execute('return arguments[0] === null', x),
-          true
-        )
+        assert.strictEqual(await execute('return arguments[0] === null', x), true)
         assert.strictEqual(await execute('return arguments[0]', x), null)
       })
 
       it('can pass multiple arguments', async function () {
         assert.strictEqual(await execute('return arguments.length'), 0)
-        assert.strictEqual(
-          await execute('return arguments.length', 1, 'a', false),
-          3
-        )
+        assert.strictEqual(await execute('return arguments.length', 1, 'a', false), 3)
       })
 
       ignore(env.browsers(Browser.FIREFOX, Browser.SAFARI)).it(
@@ -233,24 +209,18 @@ suite(function (env) {
           assert.strictEqual(val[0], 1)
           assert.strictEqual(val[1], 'a')
           assert.strictEqual(val[2], false)
-        }
+        },
       )
 
       it('can pass object literal', async function () {
-        let result = await execute(
-          'return [typeof arguments[0], arguments[0].a]',
-          { a: 'hello' }
-        )
+        let result = await execute('return [typeof arguments[0], arguments[0].a]', { a: 'hello' })
         assert.strictEqual(result[0], 'object')
         assert.strictEqual(result[1], 'hello')
       })
 
       it('WebElement arguments are passed as DOM elements', async function () {
         let el = await driver.findElement(By.tagName('div'))
-        let result = await execute(
-          'return arguments[0].tagName.toLowerCase();',
-          el
-        )
+        let result = await execute('return arguments[0].tagName.toLowerCase();', el)
         assert.strictEqual(result, 'div')
       })
 
@@ -288,7 +258,7 @@ suite(function (env) {
               }
               return ret
             },
-            ['fa', 'fe', 'fi']
+            ['fa', 'fe', 'fi'],
           ).then(verifyJson(['fa', 'fe', 'fi']))
         })
 
@@ -301,7 +271,7 @@ suite(function (env) {
               }
               return ret
             },
-            { words: [{ word: 'fa' }, { word: 'fe' }, { word: 'fi' }] }
+            { words: [{ word: 'fa' }, { word: 'fe' }, { word: 'fi' }] },
           ).then(verifyJson(['fa', 'fe', 'fi']))
         })
 
@@ -310,12 +280,12 @@ suite(function (env) {
             var input = ['fa', 'fe', 'fi']
             return execute(function (thearray) {
               var ret = []
+
               function build_response(thearray, ret) {
                 ret.push(thearray.shift())
-                return (
-                  (!thearray.length && ret) || build_response(thearray, ret)
-                )
+                return (!thearray.length && ret) || build_response(thearray, ret)
               }
+
               return build_response(thearray, ret)
             }, input).then(verifyJson(input))
           })
@@ -326,13 +296,13 @@ suite(function (env) {
             }
             return execute(function (thing) {
               var ret = []
+
               function build_response(thing, ret) {
                 var item = thing.words.shift()
                 ret.push(item.word)
-                return (
-                  (!thing.words.length && ret) || build_response(thing, ret)
-                )
+                return (!thing.words.length && ret) || build_response(thing, ret)
               }
+
               return build_response(thing, ret)
             }, input).then(verifyJson(['fa', 'fe', 'fi']))
           })

@@ -37,10 +37,8 @@ function isPromise(value) {
   try {
     // Use array notation so the Closure compiler does not obfuscate away our
     // contract.
-    return (
-      (typeof value === 'object' || typeof value === 'function') &&
-      typeof value['then'] === 'function'
-    )
+    return (typeof value === 'object' || typeof value === 'function') && typeof value['then'] === 'function'
+    /*eslint no-unused-vars: "off"*/
   } catch (ex) {
     return false
   }

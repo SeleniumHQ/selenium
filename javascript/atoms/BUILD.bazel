@@ -119,10 +119,10 @@ closure_js_library(
     deps = [
         ":bot",
         ":color",
+        ":css",
         ":domcore",
         ":json",
         ":useragent",
-        ":xpath",
         "@io_bazel_rules_closure//closure/library",
     ],
 )
@@ -239,7 +239,7 @@ closure_js_library(
     name = "locators",
     srcs = glob(
         ["locators/*.js"],
-        exclude = ["locators/xpath.js"],
+        exclude = ["locators/css.js"],
     ),
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
@@ -250,11 +250,12 @@ closure_js_library(
     ],
     deps = [
         ":bot",
+        ":css",
         ":dom",
         ":errors",
         ":json",
         ":useragent",
-        ":xpath",
+        "//third_party/js/wgxpath",
         "@io_bazel_rules_closure//closure/library",
     ],
 )
@@ -289,8 +290,8 @@ closure_js_library(
 )
 
 closure_js_library(
-    name = "xpath",
-    srcs = ["locators/xpath.js"],
+    name = "css",
+    srcs = ["locators/css.js"],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
@@ -300,7 +301,7 @@ closure_js_library(
     deps = [
         ":bot",
         ":errors",
-        "//third_party/js/wgxpath",
+        ":useragent",
         "@io_bazel_rules_closure//closure/library",
     ],
 )
@@ -331,6 +332,7 @@ closure_js_deps(
         ":action",
         ":bot",
         ":color",
+        ":css",
         ":devices",
         ":dom",
         ":domcore",
@@ -343,7 +345,6 @@ closure_js_deps(
         ":test_util",
         ":useragent",
         ":window",
-        ":xpath",
     ],
 )
 

@@ -1,0 +1,9 @@
+// https://containers.dev/implementors/json_reference/
+
+{
+  "name": "selenium-devcontainer",
+  "build": {
+    "dockerfile": "../scripts/dev-image/Dockerfile"
+  },
+  "runArgs": ["--name", "selenium_devcontainer"]
+}

@@ -1,38 +1,37 @@
-load("@rules_ruby//ruby:defs.bzl", "rb_library", "rb_test")
-load("//rb/spec/integration:configuration.bzl", "ENV", "TAGS")
-
-package(default_visibility = ["//rb:__subpackages__"])
+load("@rules_ruby//ruby:defs.bzl", "rb_library")
+load("//rb/spec:tests.bzl", "rb_integration_test")
 
 rb_library(
     name = "spec_helper",
     testonly = True,
-    srcs = glob([
+    srcs = [
         "spec_helper.rb",
         "spec_support.rb",
-        "spec_support/**/*",
-    ]),
+    ] + glob(["spec_support/**/*"]),
     data = [
         "//rb:manager-linux",
         "//rb:manager-macos",
         "//rb:manager-windows",
-    ] + select({
-        "//rb/spec/integration:remote": ["//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar"],
-        "//conditions:default": [],
-    }),
-    deps = ["@bundle"],
+    ],
+    visibility = ["//rb/spec:__subpackages__"],
+    deps = [
+        "//rb/lib:selenium-webdriver",
+        "//rb/lib/selenium:devtools",
+        "//rb/lib/selenium:server",
+        "//rb/lib/selenium:webdriver",
+        "//rb/lib/selenium/webdriver:atoms",
+        "//rb/lib/selenium/webdriver:common",
+        "//rb/lib/selenium/webdriver:remote",
+        "//rb/spec:rspec_matchers",
+        "@bundle",
+    ],
 )
 
 [
-    rb_test(
+    rb_integration_test(
         name = file[:-8],
-        size = "large",
         srcs = [file],
-        args = ["rb/spec/"],
-        env = ENV,
-        main = "@bundle//:bin/rspec",
-        tags = TAGS,
         deps = [
-            ":spec_helper",
             "//rb/lib/selenium/webdriver:common",
         ],
     )
@@ -47,70 +46,32 @@ rb_library(
     )
 ]
 
-rb_test(
+rb_integration_test(
     name = "bidi",
-    size = "large",
     srcs = ["bidi_spec.rb"],
-    args = ["rb/spec/"],
-    env = ENV,
-    main = "@bundle//:bin/rspec",
-    tags = TAGS + ["exclusive-if-local"],
+    tags = ["exclusive-if-local"],
     deps = [
-        ":spec_helper",
         "//rb/lib/selenium/devtools",
         "//rb/lib/selenium/webdriver:bidi",
     ],
 )
 
-rb_test(
+rb_integration_test(
     name = "devtools",
-    size = "large",
     srcs = ["devtools_spec.rb"],
-    args = ["rb/spec/"],
-    env = ENV,
-    main = "@bundle//:bin/rspec",
-    tags = TAGS + ["exclusive-if-local"],
+    tags = ["exclusive-if-local"],
     deps = [
-        ":spec_helper",
         "//rb/lib/selenium/devtools",
         "//rb/lib/selenium/webdriver:bidi",
     ],
 )
 
-rb_test(
+rb_integration_test(
     name = "driver",
-    size = "large",
     srcs = ["driver_spec.rb"],
-    args = ["rb/spec/"],
-    env = ENV,
-    main = "@bundle//:bin/rspec",
-    tags = TAGS,
-    deps = [
-        ":spec_helper",
-        "//rb/lib/selenium/webdriver:chrome",
-        "//rb/lib/selenium/webdriver:edge",
-        "//rb/lib/selenium/webdriver:firefox",
-        "//rb/lib/selenium/webdriver:ie",
-        "//rb/lib/selenium/webdriver:remote",
-        "//rb/lib/selenium/webdriver:safari",
-    ],
 )
 
-rb_test(
+rb_integration_test(
     name = "element",
-    size = "large",
     srcs = ["element_spec.rb"],
-    args = ["rb/spec/"],
-    env = ENV,
-    main = "@bundle//:bin/rspec",
-    tags = TAGS,
-    deps = [
-        ":spec_helper",
-        "//rb/lib/selenium/webdriver:chrome",
-        "//rb/lib/selenium/webdriver:edge",
-        "//rb/lib/selenium/webdriver:firefox",
-        "//rb/lib/selenium/webdriver:ie",
-        "//rb/lib/selenium/webdriver:remote",
-        "//rb/lib/selenium/webdriver:safari",
-    ],
 )

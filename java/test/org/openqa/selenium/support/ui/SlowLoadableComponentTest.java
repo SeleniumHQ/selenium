@@ -78,7 +78,7 @@ class SlowLoadableComponentTest {
 
   private static class SlowLoading extends SlowLoadableComponent<SlowLoading> {
 
-    private int counts;
+    private final int counts;
     private long loopCount;
 
     public SlowLoading(Clock clock, int timeOutInSeconds, int counts) {

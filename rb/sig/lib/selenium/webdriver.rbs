@@ -1,0 +1,34 @@
+module Selenium
+  module WebDriver
+    class Point
+      attr_reader x: Integer
+      attr_reader y: Integer
+
+      def initialize: (Integer x, Integer y) -> void
+    end
+
+    class Dimension
+      attr_reader width: Integer
+      attr_reader height: Integer
+
+      def initialize: (Integer width, Integer height) -> void
+    end
+
+    class Rectangle
+      attr_reader x: Integer
+      attr_reader y: Integer
+      attr_reader width: Integer
+      attr_reader height: Integer
+
+      def initialize: (Integer x, Integer y, Integer width, Integer height) -> void
+    end
+
+    @root: String
+
+    def self.root: () -> String
+
+    def self.for: (*untyped args) -> untyped
+
+    def self.logger: (**String | Symbol opts) -> WebDriver::Logger
+  end
+end

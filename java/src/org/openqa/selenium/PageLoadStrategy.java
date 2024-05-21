@@ -22,7 +22,7 @@ public enum PageLoadStrategy {
   EAGER("eager"),
   NORMAL("normal");
 
-  private String text;
+  private final String text;
 
   PageLoadStrategy(String text) {
     this.text = text;

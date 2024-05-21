@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const error = require('../lib/error')
 const test = require('../lib/test')
 const { Browser, By, until } = require('..')
@@ -141,13 +141,10 @@ test.suite(function (env) {
           throw Error('Should have timed out on page load')
         },
         function (e) {
-          if (
-            !(e instanceof error.ScriptTimeoutError) &&
-            !(e instanceof error.TimeoutError)
-          ) {
+          if (!(e instanceof error.ScriptTimeoutError) && !(e instanceof error.TimeoutError)) {
             throw Error('Unexpected error response: ' + e)
           }
-        }
+        },
       )
     })
   })

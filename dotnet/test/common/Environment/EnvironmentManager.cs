@@ -1,10 +1,11 @@
 using Bazel;
-using System;
-using System.Reflection;
-using System.IO;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OpenQA.Selenium.Internal;
+using System;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -23,10 +24,10 @@ namespace OpenQA.Selenium.Environment
         private EnvironmentManager()
         {
             string dataFilePath;
+            var runfiles = Runfiles.Create();
             try
             {
-                var runfiles = Runfiles.Create();
-                dataFilePath = runfiles.Rlocation("selenium/dotnet/test/common/appconfig.json");
+                dataFilePath = runfiles.Rlocation("_main/dotnet/test/common/appconfig.json");
             }
             catch (FileNotFoundException)
             {
@@ -58,17 +59,18 @@ namespace OpenQA.Selenium.Environment
             this.driverFactory = new DriverFactory(driverServiceLocation, browserLocation);
             this.driverFactory.DriverStarting += OnDriverStarting;
 
-            Assembly driverAssembly = null;
-            try
+            // Search for the driver type in the all assemblies,
+            // bazel uses unpredictable assembly names to execute tests
+            driverType = AppDomain.CurrentDomain.GetAssemblies()
+                .Reverse()
+                .Select(assembly => assembly.GetType(driverConfig.DriverTypeName))
+                .FirstOrDefault(t => t != null);
+
+            if (driverType == null)
             {
-                driverAssembly = Assembly.Load(driverConfig.AssemblyName);
-            }
-            catch (FileNotFoundException)
-            {
-                driverAssembly = Assembly.GetExecutingAssembly();
+                throw new ArgumentOutOfRangeException($"Unable to find driver type {driverConfig.DriverTypeName}");
             }
 
-            driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
             browser = driverConfig.BrowserValue;
             remoteCapabilities = driverConfig.RemoteCapabilities;
 
@@ -134,7 +136,31 @@ namespace OpenQA.Selenium.Environment
             }
             else
             {
-                projectRoot += "/selenium";
+                projectRoot += "/_main";
+            }
+
+            // Find selenium-manager binary.
+            try
+            {
+                string managerFilePath = "";
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    managerFilePath = runfiles.Rlocation("_main/dotnet/src/webdriver/manager/windows/selenium-manager.exe");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    managerFilePath = runfiles.Rlocation("_main/dotnet/src/webdriver/manager/linux/selenium-manager");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    managerFilePath = runfiles.Rlocation("_main/dotnet/src/webdriver/manager/macos/selenium-manager");
+                }
+
+                System.Environment.SetEnvironmentVariable("SE_MANAGER_PATH", managerFilePath);
+            }
+            catch (FileNotFoundException)
+            {
+                // Use the default one.
             }
 
             webServer = new TestWebServer(projectRoot, webServerConfig);

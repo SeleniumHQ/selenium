@@ -29,9 +29,9 @@ public class ByIdOrName extends By implements Serializable {
 
   private static final long serialVersionUID = 3986638402799576701L;
 
-  private By idFinder;
-  private By nameFinder;
-  private String idOrName;
+  private final By idFinder;
+  private final By nameFinder;
+  private final String idOrName;
 
   public ByIdOrName(String idOrName) {
     this.idOrName = idOrName;

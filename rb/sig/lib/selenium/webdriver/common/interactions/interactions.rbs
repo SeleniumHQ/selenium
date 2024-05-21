@@ -1,0 +1,27 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      KEY: Symbol
+
+      POINTER: Symbol
+
+      NONE: Symbol
+
+      WHEEL: Symbol
+
+      def self.key: (?untyped? name) -> untyped
+
+      def self.pointer: (?Symbol kind, ?name: untyped?) -> untyped
+
+      def self.mouse: (?name: untyped?) -> untyped
+
+      def self.pen: (?name: untyped?) -> untyped
+
+      def self.touch: (?name: untyped?) -> untyped
+
+      def self.none: (?untyped? name) -> untyped
+
+      def self.wheel: (?untyped? name) -> untyped
+    end
+  end
+end

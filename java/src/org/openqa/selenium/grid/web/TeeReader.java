@@ -50,9 +50,4 @@ class TeeReader extends Reader {
       sink.close();
     }
   }
-
-  @Override
-  public boolean markSupported() {
-    return false;
-  }
 }

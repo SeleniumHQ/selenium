@@ -166,10 +166,17 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
 
   private final List<WebDriverListener> listeners;
 
+  /**
+   * @param listeners the listeners to notify about events happening in the decorated WebDriver
+   */
   public EventFiringDecorator(WebDriverListener... listeners) {
     this.listeners = Arrays.asList(listeners);
   }
 
+  /**
+   * @param targetClass the class of the WebDriver to be decorated
+   * @param listeners the listeners to notify about events happening in the decorated WebDriver
+   */
   public EventFiringDecorator(Class<T> targetClass, WebDriverListener... listeners) {
     super(targetClass);
     this.listeners = Arrays.asList(listeners);
@@ -223,6 +230,9 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
         listener.beforeAnyOptionsCall((WebDriver.Options) target.getOriginal(), method, args);
       } else if (target.getOriginal() instanceof WebDriver.Timeouts) {
         listener.beforeAnyTimeoutsCall((WebDriver.Timeouts) target.getOriginal(), method, args);
+      } else if (target.getOriginal() instanceof WebDriver.TargetLocator) {
+        listener.beforeAnyTargetLocatorCall(
+            (WebDriver.TargetLocator) target.getOriginal(), method, args);
       } else if (target.getOriginal() instanceof WebDriver.Window) {
         listener.beforeAnyWindowCall((WebDriver.Window) target.getOriginal(), method, args);
       }
@@ -280,6 +290,9 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
         listener.afterAnyOptionsCall((WebDriver.Options) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Timeouts) {
         listener.afterAnyTimeoutsCall((WebDriver.Timeouts) target.getOriginal(), method, args, res);
+      } else if (target.getOriginal() instanceof WebDriver.TargetLocator) {
+        listener.afterAnyTargetLocatorCall(
+            (WebDriver.TargetLocator) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Window) {
         listener.afterAnyWindowCall((WebDriver.Window) target.getOriginal(), method, args, res);
       }

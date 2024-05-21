@@ -1,7 +1,7 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -14,7 +14,8 @@ namespace OpenQA.Selenium.Interactions
             ActionBuilder actionBuilder = new ActionBuilder();
 
             var pointerInputDevice = new PointerInputDevice(PointerKind.Pen);
-            var properties = new PointerInputDevice.PointerEventProperties() {
+            var properties = new PointerInputDevice.PointerEventProperties()
+            {
                 Width = 10,
                 Height = 11,
                 Pressure = 0.5,
@@ -35,8 +36,8 @@ namespace OpenQA.Selenium.Interactions
             Assert.AreEqual("pointer", dictionary["type"]);
             Assert.NotNull(dictionary["id"]);
             Assert.NotNull(dictionary["parameters"]);
-            var parameters = new Dictionary<string, object> {{"pointerType", "pen"}};
-            CollectionAssert.AreEquivalent(parameters, (IEnumerable) dictionary["parameters"]);
+            var parameters = new Dictionary<string, object> { { "pointerType", "pen" } };
+            CollectionAssert.AreEquivalent(parameters, (IEnumerable)dictionary["parameters"]);
 
             var events = new Dictionary<string, object>
             {
@@ -52,8 +53,8 @@ namespace OpenQA.Selenium.Interactions
                 {"type", "pointerDown"},
                 {"button", 0}
             };
-            var actions = (IList<Object>) dictionary["actions"];
-            CollectionAssert.AreEquivalent(events, (IEnumerable) actions[0]);
+            var actions = (IList<Object>)dictionary["actions"];
+            CollectionAssert.AreEquivalent(events, (IEnumerable)actions[0]);
         }
     }
 }

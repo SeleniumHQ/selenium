@@ -27,12 +27,11 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
-import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +41,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.Contents;
 
 @Tag("UnitTests")
 class NewSessionPayloadTest {
@@ -57,7 +57,8 @@ class NewSessionPayloadTest {
     }
 
     String json = new Json().toJson(caps);
-    try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
+    try (NewSessionPayload payload =
+        NewSessionPayload.create(Contents.string(json, StandardCharsets.UTF_8))) {
       assertEquals(singleton(Dialect.W3C), payload.getDownstreamDialects());
     }
   }
@@ -197,23 +198,6 @@ class NewSessionPayloadTest {
   }
 
   @Test
-  void doesNotForwardRequiredCapabilitiesAsTheseAreVeryLegacy() throws IOException {
-    try (NewSessionPayload payload =
-        NewSessionPayload.create(
-            ImmutableMap.of(
-                "capabilities",
-                EMPTY_MAP,
-                "requiredCapabilities",
-                singletonMap("key", "so it's not empty")))) {
-      StringBuilder toParse = new StringBuilder();
-      payload.writeTo(toParse);
-      Map<String, Object> seen = new Json().toType(toParse.toString(), MAP_TYPE);
-
-      assertNull(seen.get("requiredCapabilities"));
-    }
-  }
-
-  @Test
   void shouldPreserveMetadata() throws IOException {
     Map<String, Object> raw =
         ImmutableMap.of(
@@ -263,8 +247,7 @@ class NewSessionPayloadTest {
   void keysUsedForStoringCapabilitiesAreIgnoredFromMetadata() {
     Map<String, Object> raw =
         ImmutableMap.of(
-            "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
-            "desiredCapabilities", emptyMap());
+            "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")));
 
     try (NewSessionPayload payload = NewSessionPayload.create(raw)) {
       Map<String, Object> seen = payload.getMetadata();
@@ -281,7 +264,8 @@ class NewSessionPayloadTest {
     }
 
     String json = new Json().toJson(source);
-    try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
+    try (NewSessionPayload payload =
+        NewSessionPayload.create(Contents.string(json, StandardCharsets.UTF_8))) {
       fromDisk = payload.stream().collect(toList());
     }
 

@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const fs = require('fs')
+const assert = require('node:assert')
+const fs = require('node:fs')
 const io = require('../io')
 const remote = require('../remote')
 const test = require('../lib/test')
@@ -50,70 +50,54 @@ test.suite(function (env) {
     }
   })
 
-  test
-    .ignore(env.browsers(Browser.SAFARI))
-    .it('can upload multiple files', async function () {
-      driver.setFileDetector(new remote.FileDetector())
+  test.ignore(env.browsers(Browser.SAFARI)).it('can upload multiple files', async function () {
+    driver.setFileDetector(new remote.FileDetector())
 
-      await driver.get(Pages.uploadPage)
+    await driver.get(Pages.uploadPage)
 
-      var fp1 = await io.tmpFile().then(function (fp) {
-        fs.writeFileSync(fp, FILE_HTML)
-        return fp
-      })
-
-      var fp2 = await io.tmpFile().then(function (fp) {
-        fs.writeFileSync(fp, FILE_HTML_2)
-        return fp
-      })
-
-      await driver.findElement(By.id('upload')).sendKeys(fp1 + '\n' + fp2)
-      await driver.findElement(By.id('go')).click()
-
-      // Uploading files across a network may take a while, even if they're small.
-      var label = await driver.findElement(By.id('upload_label'))
-      await driver.wait(
-        until.elementIsNotVisible(label),
-        10 * 1000,
-        'File took longer than 10 seconds to upload!'
-      )
-
-      var frame = await driver.findElement(By.id('upload_target'))
-      await driver.switchTo().frame(frame)
-      const txt = await driver.findElement(By.css('body')).getText()
-      assert.match(txt, new RegExp(fp1.split('/').pop()))
-      assert.match(txt, new RegExp(fp2.split('/').pop()))
+    var fp1 = await io.tmpFile().then(function (fp) {
+      fs.writeFileSync(fp, FILE_HTML)
+      return fp
     })
 
-  test
-    .ignore(env.browsers(Browser.SAFARI))
-    .it('can upload files', async function () {
-      driver.setFileDetector(new remote.FileDetector())
-
-      await driver.get(Pages.uploadPage)
-
-      var fp = await io.tmpFile().then(function (fp) {
-        fs.writeFileSync(fp, FILE_HTML)
-        return fp
-      })
-
-      await driver.findElement(By.id('upload')).sendKeys(fp)
-      await driver.findElement(By.id('go')).click()
-      // Uploading files across a network may take a while, even if they're small.
-      var label = await driver.findElement(By.id('upload_label'))
-      await driver.wait(
-        until.elementIsNotVisible(label),
-        10 * 1000,
-        'File took longer than 10 seconds to upload!'
-      )
-
-      var frame = await driver.findElement(By.id('upload_target'))
-      await driver.switchTo().frame(frame)
-      const txt = await driver.findElement(By.css('body')).getText()
-      assert.strictEqual(
-        txt,
-        fp.split('/').pop(),
-        `The document contained ${await driver.getPageSource()}`
-      )
+    var fp2 = await io.tmpFile().then(function (fp) {
+      fs.writeFileSync(fp, FILE_HTML_2)
+      return fp
     })
+
+    await driver.findElement(By.id('upload')).sendKeys(fp1 + '\n' + fp2)
+    await driver.findElement(By.id('go')).click()
+
+    // Uploading files across a network may take a while, even if they're small.
+    var label = await driver.findElement(By.id('upload_label'))
+    await driver.wait(until.elementIsNotVisible(label), 10 * 1000, 'File took longer than 10 seconds to upload!')
+
+    var frame = await driver.findElement(By.id('upload_target'))
+    await driver.switchTo().frame(frame)
+    const txt = await driver.findElement(By.css('body')).getText()
+    assert.match(txt, new RegExp(fp1.split('/').pop()))
+    assert.match(txt, new RegExp(fp2.split('/').pop()))
+  })
+
+  test.ignore(env.browsers(Browser.SAFARI)).it('can upload files', async function () {
+    driver.setFileDetector(new remote.FileDetector())
+
+    await driver.get(Pages.uploadPage)
+
+    var fp = await io.tmpFile().then(function (fp) {
+      fs.writeFileSync(fp, FILE_HTML)
+      return fp
+    })
+
+    await driver.findElement(By.id('upload')).sendKeys(fp)
+    await driver.findElement(By.id('go')).click()
+    // Uploading files across a network may take a while, even if they're small.
+    var label = await driver.findElement(By.id('upload_label'))
+    await driver.wait(until.elementIsNotVisible(label), 10 * 1000, 'File took longer than 10 seconds to upload!')
+
+    var frame = await driver.findElement(By.id('upload_target'))
+    await driver.switchTo().frame(frame)
+    const txt = await driver.findElement(By.css('body')).getText()
+    assert.strictEqual(txt, fp.split('/').pop(), `The document contained ${await driver.getPageSource()}`)
+  })
 })

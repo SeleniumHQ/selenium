@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    module Edge
+      class Driver < Chromium::Driver
+        include LocalDriver
+
+        def initialize: (?options: untyped?, ?service: untyped?, ?url: untyped?, **untyped opts) -> void
+
+        def browser: () -> :edge
+
+        private
+
+        def devtools_address: () -> String
+      end
+    end
+  end
+end

@@ -62,6 +62,7 @@ class WebDriverWaitTest {
   void shouldIncludeRemoteInfoForWrappedDriverTimeout() throws IOException {
     Capabilities caps = new MutableCapabilities();
     Response response = new Response(new SessionId("foo"));
+    response.setState("success");
     response.setValue(caps.asMap());
     CommandExecutor executor = mock(CommandExecutor.class);
     when(executor.execute(any(Command.class))).thenReturn(response);

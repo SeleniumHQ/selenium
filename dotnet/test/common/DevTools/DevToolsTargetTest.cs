@@ -1,17 +1,18 @@
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V119;
+    using CurrentCdpVersion = V125;
 
     [TestFixture]
+    [IgnoreBrowser(Selenium.Browser.Edge, "While CDP 125 is released for Edge")]
     public class DevToolsTargetTest : DevToolsTestFixture
     {
-        private int id = 123;
+        private int id = 125;
 
         [Test]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]

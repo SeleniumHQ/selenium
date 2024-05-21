@@ -36,7 +36,6 @@ drivers = (
     "remote",
     "safari",
     "webkitgtk",
-    "chromiumedge",
     "wpewebkit",
 )
 
@@ -74,6 +73,12 @@ def pytest_addoption(parser):
         dest="headless",
         help="Allow tests to run in headless",
     )
+    parser.addoption(
+        "--use-lan-ip",
+        action="store_true",
+        dest="use_lan_ip",
+        help="Whether to start test server with lan ip instead of localhost",
+    )
 
 
 def pytest_ignore_collect(path, config):
@@ -92,10 +97,8 @@ driver_instance = None
 def driver(request):
     kwargs = {}
 
-    try:
-        driver_class = request.param.capitalize()
-    except AttributeError:
-        raise Exception("This test requires a --driver to be specified.")
+    # browser can be changed with `--driver=firefox` as an argument or to addopts in pytest.ini
+    driver_class = getattr(request, "param", "Chrome").capitalize()
 
     # skip tests if not available on the platform
     _platform = platform.system()
@@ -144,7 +147,8 @@ def driver(request):
             options = get_options(driver_class, request.config)
         if driver_class == "Edge":
             options = get_options(driver_class, request.config)
-        if driver_class == "WPEWebKit":
+        if driver_class.lower() == "wpewebkit":
+            driver_class = "WPEWebKit"
             options = get_options(driver_class, request.config)
         if driver_path is not None:
             kwargs["service"] = get_service(driver_class, driver_path)
@@ -164,16 +168,13 @@ def get_options(driver_class, config):
     headless = bool(config.option.headless)
     options = None
 
-    if driver_class == "ChromiumEdge":
-        options = getattr(webdriver, "EdgeOptions")()
-
     if browser_path or browser_args:
         if not options:
             options = getattr(webdriver, f"{driver_class}Options")()
         if driver_class == "WebKitGTK":
             options.overlay_scrollbars_enabled = False
         if browser_path is not None:
-            options.binary_location = browser_path
+            options.binary_location = browser_path.strip("'")
         if browser_args is not None:
             for arg in browser_args.split():
                 options.add_argument(arg)
@@ -289,8 +290,10 @@ def server(request):
 
 
 @pytest.fixture(autouse=True, scope="session")
-def webserver():
-    webserver = SimpleWebServer(host=get_lan_ip())
+def webserver(request):
+    host = get_lan_ip() if request.config.getoption("use_lan_ip") else "0.0.0.0"
+
+    webserver = SimpleWebServer(host=host)
     webserver.start()
     yield webserver
     webserver.stop()

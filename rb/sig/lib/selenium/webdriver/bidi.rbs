@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      @ws: untyped
+
+      @session: untyped
+
+      def initialize: (url: untyped) -> void
+
+      def close: () -> untyped
+
+      def callbacks: () -> untyped
+
+      def session: () -> untyped
+
+      def send_cmd: (untyped method, **untyped params) -> untyped
+
+      def error_message: (untyped message) -> ::String
+    end
+  end
+end

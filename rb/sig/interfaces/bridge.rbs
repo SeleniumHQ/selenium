@@ -1,0 +1,3 @@
+interface _Bridge
+  def execute: (untyped command, ?Hash[untyped, untyped] opts, ?untyped? command_hash) -> untyped
+end

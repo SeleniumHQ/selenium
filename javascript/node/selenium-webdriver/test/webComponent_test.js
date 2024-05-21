@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const { By, error } = require('..')
 const test = require('../lib/test')
 const Pages = test.Pages
@@ -37,9 +37,7 @@ test.suite(
 
       it('can get Shadow Root', async function () {
         await driver.get(Pages.webComponents)
-        let element = await driver.findElement(
-          By.css('custom-checkbox-element')
-        )
+        let element = await driver.findElement(By.css('custom-checkbox-element'))
         await element.getShadowRoot()
         // If an error is not thrown then test passes
       })
@@ -52,18 +50,13 @@ test.suite(
           await element.getShadowRoot()
           assert.fail('Error should have been thrown')
         } catch (e) {
-          assert.ok(
-            e instanceof error.NoSuchShadowRootError,
-            `The error is ${typeof e}`
-          )
+          assert.ok(e instanceof error.NoSuchShadowRootError, `The error is ${typeof e}`)
         }
       })
 
       it('can find element below a shadow root', async function () {
         await driver.get(Pages.webComponents)
-        let element = await driver.findElement(
-          By.css('custom-checkbox-element')
-        )
+        let element = await driver.findElement(By.css('custom-checkbox-element'))
         let shadowRoot = await element.getShadowRoot()
         await shadowRoot.findElement(By.css('input'))
         // test passes if no error throw
@@ -71,9 +64,7 @@ test.suite(
 
       it('can find elements below a shadow root', async function () {
         await driver.get(Pages.webComponents)
-        let element = await driver.findElement(
-          By.css('custom-checkbox-element')
-        )
+        let element = await driver.findElement(By.css('custom-checkbox-element'))
         let shadowRoot = await element.getShadowRoot()
         let actual = await shadowRoot.findElements(By.css('input'))
         assert.strictEqual(actual.length, 1)
@@ -81,17 +72,12 @@ test.suite(
 
       it('can return a shadowRoot from executeScript', async function () {
         await driver.get(Pages.webComponents)
-        let element = await driver.findElement(
-          By.css('custom-checkbox-element')
-        )
+        let element = await driver.findElement(By.css('custom-checkbox-element'))
         let shadowRoot = await element.getShadowRoot()
-        let executeShadow = await driver.executeScript(
-          'return arguments[0].shadowRoot',
-          element
-        )
+        let executeShadow = await driver.executeScript('return arguments[0].shadowRoot', element)
         assert.strictEqual(executeShadow.getId(), shadowRoot.getId())
       })
     })
   },
-  { browsers: ['chrome'] }
+  { browsers: ['chrome'] },
 )

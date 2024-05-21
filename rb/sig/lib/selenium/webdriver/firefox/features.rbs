@@ -1,0 +1,25 @@
+module Selenium
+  module WebDriver
+    module Firefox
+      module Features
+        include _Bridge
+        COMMANDS: Hash[Symbol, Array[Symbol | String]]
+        FIREFOX_COMMANDS: Hash[Symbol, Array[Symbol | String]]
+
+        def command_list: -> untyped
+
+        def commands: (untyped command) -> untyped
+
+        def install_addon: (untyped path, untyped temporary) -> untyped
+
+        def uninstall_addon: (untyped id) -> untyped
+
+        def full_screenshot: () -> untyped
+
+        def context=: (untyped context) -> untyped
+
+        def context: () -> untyped
+      end
+    end
+  end
+end

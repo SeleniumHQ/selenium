@@ -119,20 +119,21 @@ class VirtualAuthenticatorOptions {
  * @see https://w3c.github.io/webauthn/#credential-parameters
  */
 class Credential {
-  constructor(
-    credentialId,
-    isResidentCredential,
-    rpId,
-    userHandle,
-    privateKey,
-    signCount
-  ) {
+  constructor(credentialId, isResidentCredential, rpId, userHandle, privateKey, signCount) {
     this._id = credentialId
     this._isResidentCredential = isResidentCredential
     this._rpId = rpId
     this._userHandle = userHandle
     this._privateKey = privateKey
     this._signCount = signCount
+  }
+
+  static createResidentCredential(id, rpId, userHandle, privateKey, signCount) {
+    return new Credential(id, true, rpId, userHandle, privateKey, signCount)
+  }
+
+  static createNonResidentCredential(id, rpId, privateKey, signCount) {
+    return new Credential(id, false, rpId, null, privateKey, signCount)
   }
 
   id() {
@@ -176,10 +177,6 @@ class Credential {
     return new Credential(id, true, rpId, userHandle, privateKey, signCount)
   }
 
-  static createResidentCredential(id, rpId, userHandle, privateKey, signCount) {
-    return new Credential(id, true, rpId, userHandle, privateKey, signCount)
-  }
-
   /**
    * Creates a non-resident (i.e. stateless) credential.
    * @param id Unique base64 encoded string.
@@ -193,10 +190,6 @@ class Credential {
     return new Credential(id, false, rpId, null, privateKey, signCount)
   }
 
-  static createNonResidentCredential(id, rpId, privateKey, signCount) {
-    return new Credential(id, false, rpId, null, privateKey, signCount)
-  }
-
   toDict() {
     let credentialData = {
       credentialId: Buffer.from(this._id).toString('base64url'),
@@ -207,9 +200,7 @@ class Credential {
     }
 
     if (this.userHandle() != null) {
-      credentialData['userHandle'] = Buffer.from(this._userHandle).toString(
-        'base64url'
-      )
+      credentialData['userHandle'] = Buffer.from(this._userHandle).toString('base64url')
     }
 
     return credentialData
@@ -222,9 +213,7 @@ class Credential {
     let id = new Uint8Array(Buffer.from(data['credentialId'], 'base64url'))
     let isResidentCredential = data['isResidentCredential']
     let rpId = data['rpId']
-    let privateKey = Buffer.from(data['privateKey'], 'base64url').toString(
-      'binary'
-    )
+    let privateKey = Buffer.from(data['privateKey'], 'base64url').toString('binary')
     let signCount = data['signCount']
     let userHandle
 
@@ -233,14 +222,7 @@ class Credential {
     } else {
       userHandle = null
     }
-    return new Credential(
-      id,
-      isResidentCredential,
-      rpId,
-      userHandle,
-      privateKey,
-      signCount
-    )
+    return new Credential(id, isResidentCredential, rpId, userHandle, privateKey, signCount)
   }
 }
 

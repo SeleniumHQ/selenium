@@ -16,12 +16,12 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.DevTools.V85.Fetch;
+using OpenQA.Selenium.DevTools.V85.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V85.Fetch;
-using OpenQA.Selenium.DevTools.V85.Network;
 
 namespace OpenQA.Selenium.DevTools.V85
 {
@@ -255,11 +255,11 @@ namespace OpenQA.Selenium.DevTools.V85
                 var bodyResponse = await fetch.GetResponseBody(new Fetch.GetResponseBodyCommandSettings() { RequestId = responseData.RequestId }).ConfigureAwait(false);
                 if (bodyResponse.Base64Encoded)
                 {
-                    responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(bodyResponse.Body));
+                    responseData.Content = new HttpResponseContent(Convert.FromBase64String(bodyResponse.Body));
                 }
                 else
                 {
-                    responseData.Body = bodyResponse.Body;
+                    responseData.Content = new HttpResponseContent(bodyResponse.Body);
                 }
             }
         }

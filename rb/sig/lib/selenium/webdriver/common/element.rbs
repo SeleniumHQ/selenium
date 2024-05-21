@@ -1,0 +1,88 @@
+module Selenium
+  module WebDriver
+    class Element
+      ELEMENT_KEY: ::String
+
+      include SearchContext
+
+      include TakesScreenshot
+
+      def initialize: (Remote::Bridge | Support::EventFiringBridge bridge, String id) -> void
+
+      def inspect: () -> untyped
+
+      def ==: (untyped other) -> bool
+
+      alias eql? ==
+
+      def hash: () -> Integer
+
+      def click: () -> untyped
+
+      def tag_name: () -> untyped
+
+      def attribute: (String | Symbol name) -> String?
+
+      def dom_attribute: (String name) -> String?
+
+      def property: (String name) -> String?
+
+      def aria_role: () -> String
+
+      def accessible_name: () -> String
+
+      def text: () -> String
+
+      def send_keys: (*untyped args) -> untyped
+
+      alias send_key send_keys
+
+      def clear: () -> bool
+
+      def enabled?: () -> bool
+
+      def selected?: () -> bool
+
+      def displayed?: () -> bool
+
+      def submit: () -> untyped
+
+      def css_value: (String prop) -> untyped
+
+      alias style css_value
+
+      def location: () -> WebDriver::Point
+
+      def rect: () -> WebDriver::Rectangle
+
+      def location_once_scrolled_into_view: () -> WebDriver::Point
+
+      def size: () -> WebDriver::Dimension
+
+      def shadow_root: () -> WebDriver::ShadowRoot
+
+      alias first find_element
+
+      alias all find_elements
+
+      #
+      #   element['class'] or element[:class] #=> "someclass"
+      #
+      alias [] attribute
+
+      def ref: () -> ::Array[:element | untyped]
+
+      def to_json: () -> untyped
+
+      def as_json: () -> untyped
+
+      private
+
+      attr_reader bridge: Remote::Bridge
+
+      def selectable?: () -> bool
+
+      def screenshot: () -> untyped
+    end
+  end
+end

@@ -29,7 +29,7 @@ namespace OpenQA.Selenium
         private readonly string requestId;
         private readonly string responseUrl;
         private readonly long responseStatusCode;
-        private readonly string responseBody;
+        private readonly HttpResponseContent responseContent;
         private readonly string responseResourceType;
         private readonly Dictionary<string, string> responseHeaders = new Dictionary<string, string>();
 
@@ -42,7 +42,7 @@ namespace OpenQA.Selenium
             this.requestId = responseData.RequestId;
             this.responseUrl = responseData.Url;
             this.responseStatusCode = responseData.StatusCode;
-            this.responseBody = responseData.Body;
+            this.responseContent = responseData.Content;
             this.responseResourceType = responseData.ResourceType;
             foreach (KeyValuePair<string, string> header in responseData.Headers)
             {
@@ -68,7 +68,15 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the body of the network response.
         /// </summary>
-        public string ResponseBody => this.responseBody;
+        /// <remarks>
+        /// This property is an alias for <see cref="ResponseContent"/>.ReadAsString() to keep backward compatibility.
+        /// </remarks>
+        public string ResponseBody => this.ResponseContent?.ReadAsString();
+
+        /// <summary>
+        /// Gets the content of the network response.
+        /// </summary>
+        public HttpResponseContent ResponseContent => this.responseContent;
 
         /// <summary>
         /// Gets the type of resource of the network response.

@@ -1,0 +1,27 @@
+module Selenium
+  module WebDriver
+    class SocketLock
+      @port: untyped
+
+      @server: untyped
+
+      @timeout: untyped
+
+      def initialize: (untyped port, untyped timeout) -> void
+
+      def locked: () { () -> untyped } -> untyped
+
+      private
+
+      def lock: () -> untyped?
+
+      def current_time: () -> untyped
+
+      def release: () -> untyped
+
+      def can_lock?: () -> untyped
+
+      def did_lock?: () -> untyped
+    end
+  end
+end

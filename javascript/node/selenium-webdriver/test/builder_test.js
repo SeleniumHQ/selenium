@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 
 const chrome = require('../chrome')
 const edge = require('../edge')
@@ -49,20 +49,12 @@ test.suite(function (env) {
         driver = env.builder().build()
 
         const want = BROWSER_MAP.get(env.browser.name)
-        assert.ok(
-          driver instanceof want,
-          `want ${want.name}, but got ${driver.name}`
-        )
+        assert.ok(driver instanceof want, `want ${want.name}, but got ${driver.name}`)
         assert.strictEqual(typeof driver.then, 'function')
 
         return (
           driver
-            .then((d) =>
-              assert.ok(
-                d instanceof want,
-                `want ${want.name}, but got ${d.name}`
-              )
-            )
+            .then((d) => assert.ok(d instanceof want, `want ${want.name}, but got ${d.name}`))
             // Load something so the safari driver doesn't crash from starting and
             // stopping in short time.
             .then(() => driver.get(Pages.echoPage))
@@ -79,10 +71,7 @@ test.suite(function (env) {
 
       it(env.browser.name, async function () {
         let timeouts = { implicit: 0, pageLoad: 1000, script: 1000 }
-        driver = new Builder()
-          .setCapability('timeouts', timeouts)
-          .forBrowser(env.browser.name)
-          .build()
+        driver = new Builder().setCapability('timeouts', timeouts).forBrowser(env.browser.name).build()
 
         let caps = await getCaps(driver)
         assert.deepEqual(caps.get('timeouts'), timeouts)
@@ -99,9 +88,7 @@ test.suite(function (env) {
       function test(key, options) {
         it(key, async function () {
           let builder = new Builder().withCapabilities(
-            new Capabilities()
-              .set('browserName', 'fake-browser-should-not-try-to-start')
-              .set(key, new options())
+            new Capabilities().set('browserName', 'fake-browser-should-not-try-to-start').set(key, new options()),
           )
           try {
             let driver = await builder.build()

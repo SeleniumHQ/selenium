@@ -1,5 +1,10 @@
-require 'pp'
+# frozen_string_literal: true
+
+require 'English'
 require 'open3'
+require 'rake'
+require 'io/wait'
+require_relative 'selenium_rake/checks'
 
 module Bazel
   def self.execute(kind, args, target, &block)
@@ -11,27 +16,25 @@ module Bazel
     end
 
     cmd = %w[bazel] + [kind, target] + (args || [])
+    cmd_out = ''
+    cmd_exit_code = 0
 
     if SeleniumRake::Checks.windows?
-      cmd = cmd + ["2>&1"]
+      cmd += ['2>&1']
       cmd_line = cmd.join(' ')
       cmd_out = `#{cmd_line}`.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
-      cmd_exit_code = $?.success?
+      puts cmd_out if verbose
+      cmd_exit_code = $CHILD_STATUS
     else
       Open3.popen2e(*cmd) do |stdin, stdouts, wait|
         is_running = true
         stdin.close
-        cmd_out = ''
         while is_running
           begin
-            pipes = IO.select([stdouts])
-            if pipes.empty?
-              is_running = false
-            else
-              line = stdouts.readpartial(512)
-              cmd_out << line
-              STDOUT.print line if verbose
-            end
+            stdouts.wait_readable
+            line = stdouts.readpartial(512)
+            cmd_out += line
+            $stdout.print line if verbose
           rescue EOFError
             is_running = false
           end
@@ -40,13 +43,12 @@ module Bazel
       end
     end
 
-    puts cmd_out if verbose
-
-    raise "#{cmd.join(' ')} failed with exit code: #{cmd_exit_code}" unless cmd_exit_code
+    raise "#{cmd.join(' ')} failed with exit code: #{cmd_exit_code}\nOutput: #{cmd_out}" if cmd_exit_code != 0
 
     block&.call(cmd_out)
-    out_artifact = Regexp.last_match(1) if cmd_out =~ %r{\s+(bazel-bin/\S+)}
+    return unless cmd_out =~ %r{\s+(bazel-bin/\S+)}
 
+    out_artifact = Regexp.last_match(1)
     puts "#{target} -> #{out_artifact}" if out_artifact
     out_artifact
   end

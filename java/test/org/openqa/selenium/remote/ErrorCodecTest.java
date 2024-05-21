@@ -54,7 +54,7 @@ import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 @Tag("UnitTests")
 public class ErrorCodecTest {
 
-  private ErrorCodec errorCodec = ErrorCodec.createDefault();
+  private final ErrorCodec errorCodec = ErrorCodec.createDefault();
 
   @Test
   void encodeW3cSpecExceptions() {

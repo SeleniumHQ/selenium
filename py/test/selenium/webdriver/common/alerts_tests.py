@@ -141,7 +141,7 @@ def test_setting_the_value_of_an_alert_throws(driver, pages):
 @pytest.mark.xfail_chrome(
     condition=sys.platform == "darwin", reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=26", run=False
 )
-@pytest.mark.xfail_chromiumedge(
+@pytest.mark.xfail_edge(
     condition=sys.platform == "darwin", reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=26", run=False
 )
 def test_alert_should_not_allow_additional_commands_if_dimissed(driver, pages):
@@ -250,7 +250,7 @@ def test_should_handle_alert_on_page_load_using_get(driver, pages):
 
 
 @pytest.mark.xfail_chrome(reason="Non W3C conformant")
-@pytest.mark.xfail_chromiumedge(reason="Non W3C conformant")
+@pytest.mark.xfail_edge(reason="Non W3C conformant")
 def test_should_handle_alert_on_page_before_unload(driver, pages):
     pages.load("pageWithOnBeforeUnloadMessage.html")
 
@@ -293,6 +293,7 @@ def test_alert_should_not_allow_additional_commands_if_dismissed(driver, pages):
 @pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
 @pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
 @pytest.mark.xfail_chrome
+@pytest.mark.xfail_edge
 def test_unexpected_alert_present_exception_contains_alert_text(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()

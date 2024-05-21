@@ -24,14 +24,15 @@ use selenium_manager::config::{BooleanKey, StringKey, CACHE_PATH_KEY};
 use selenium_manager::grid::GridManager;
 use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
 use selenium_manager::metadata::clear_metadata;
-use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::TTL_SEC;
 use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
+use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use std::backtrace::{Backtrace, BacktraceStatus};
 use std::path::Path;
 use std::process::exit;
+use std::sync::mpsc::Receiver;
 
 /// Automated driver management for Selenium
 #[derive(Parser, Debug)]
@@ -76,7 +77,8 @@ struct Cli {
     #[clap(long, value_parser)]
     browser_mirror_url: Option<String>,
 
-    /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like)
+    /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), SHELL (Unix-like),
+    /// or MIXED (INFO, WARN, DEBUG, etc. to stderr and minimal JSON to stdout)
     #[clap(long, value_parser, default_value = "LOGGER")]
     output: String,
 
@@ -121,6 +123,10 @@ struct Cli {
     #[clap(long)]
     trace: bool,
 
+    /// Level for output messages. The possible values are: info, debug, trace, warn, error
+    #[clap(long)]
+    log_level: Option<String>,
+
     /// Offline mode (i.e., disabling network requests and downloads)
     #[clap(long)]
     offline: bool,
@@ -132,6 +138,15 @@ struct Cli {
     /// Avoid to download browser (even when browser-version is specified)
     #[clap(long)]
     avoid_browser_download: bool,
+
+    /// Selenium language bindings that invokes Selenium Manager (e.g., Java, JavaScript, Python,
+    /// DotNet, Ruby)
+    #[clap(long)]
+    language_binding: Option<String>,
+
+    /// Avoid sends usage statistics to plausible.io
+    #[clap(long)]
+    avoid_stats: bool,
 }
 
 fn main() {
@@ -141,7 +156,8 @@ fn main() {
 
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
-    let log = Logger::create(&cli.output, debug, trace);
+    let log_level = StringKey(vec!["log-level"], &cli.log_level.unwrap_or_default()).get_value();
+    let log = Logger::create(&cli.output, debug, trace, &log_level);
     let grid = cli.grid;
     let mut browser_name: String = cli.browser.unwrap_or_default();
     let mut driver_name: String = cli.driver.unwrap_or_default();
@@ -197,6 +213,11 @@ fn main() {
     selenium_manager.set_avoid_browser_download(cli.avoid_browser_download);
     selenium_manager.set_cache_path(cache_path.clone());
     selenium_manager.set_offline(cli.offline);
+    selenium_manager.set_language_binding(cli.language_binding.unwrap_or_default());
+    let sm_version = clap::crate_version!();
+    let selenium_version = sm_version.strip_prefix(SM_BETA_LABEL).unwrap_or(sm_version);
+    selenium_manager.set_selenium_version(selenium_version.to_string());
+    selenium_manager.set_avoid_stats(cli.avoid_stats);
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(selenium_manager.get_logger(), &cache_path);
@@ -208,10 +229,16 @@ fn main() {
     selenium_manager
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .and_then(|_| selenium_manager.stats())
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
-            log_driver_and_browser_path(log, &driver_path, selenium_manager.get_browser_path());
+            log_driver_and_browser_path(
+                log,
+                &driver_path,
+                &selenium_manager.get_browser_path_or_latest_from_cache(),
+                selenium_manager.get_receiver(),
+            );
             flush_and_exit(OK, log, None);
         })
         .unwrap_or_else(|err| {
@@ -219,28 +246,40 @@ fn main() {
             if let Some(best_driver_from_cache) =
                 selenium_manager.find_best_driver_from_cache().unwrap()
             {
-                log.warn(format!(
-                    "There was an error managing {} ({}); using driver found in the cache",
-                    selenium_manager.get_browser_name(),
-                    err
-                ));
+                log.debug_or_warn(
+                    format!(
+                        "There was an error managing {} ({}); using driver found in the cache",
+                        selenium_manager.get_driver_name(),
+                        err
+                    ),
+                    selenium_manager.is_offline(),
+                );
                 log_driver_and_browser_path(
                     log,
                     &best_driver_from_cache,
-                    selenium_manager.get_browser_path(),
+                    &selenium_manager.get_browser_path_or_latest_from_cache(),
+                    selenium_manager.get_receiver(),
                 );
                 flush_and_exit(OK, log, Some(err));
             } else if selenium_manager.is_offline() {
-                log.warn(err.to_string());
+                log.warn(&err);
                 flush_and_exit(OK, log, Some(err));
             } else {
-                log.error(err.to_string());
+                log.error(&err);
                 flush_and_exit(DATAERR, log, Some(err));
             }
         });
 }
 
-fn log_driver_and_browser_path(log: &Logger, driver_path: &Path, browser_path: &str) {
+fn log_driver_and_browser_path(
+    log: &Logger,
+    driver_path: &Path,
+    browser_path: &str,
+    receiver: &Receiver<String>,
+) {
+    if let Ok(err) = receiver.try_recv() {
+        log.warn(err);
+    }
     if driver_path.exists() {
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
     } else {

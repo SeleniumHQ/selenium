@@ -24,8 +24,8 @@ const chrome = require('../../chrome')
 const { Browser, By, until } = require('../../')
 const remote = require('../../remote')
 
-const assert = require('assert')
-const fs = require('fs')
+const assert = require('node:assert')
+const fs = require('node:fs')
 const io = require('../../io')
 
 const Pages = test.Pages
@@ -108,10 +108,7 @@ describe('Capabilities', function () {
         ['abc', 'def'],
       ])
       let caps = new Capabilities(m)
-      assert.deepStrictEqual(
-        { one: 123, abc: 'def' },
-        caps[Symbols.serialize]()
-      )
+      assert.deepStrictEqual({ one: 123, abc: 'def' }, caps[Symbols.serialize]())
     })
 
     it('does not omit capabilities set to a false-like value', function () {
@@ -120,10 +117,7 @@ describe('Capabilities', function () {
       caps.set('number', 0)
       caps.set('string', '')
 
-      assert.deepStrictEqual(
-        { bool: false, number: 0, string: '' },
-        caps[Symbols.serialize]()
-      )
+      assert.deepStrictEqual({ bool: false, number: 0, string: '' }, caps[Symbols.serialize]())
     })
 
     it('omits capabilities with a null value', function () {
@@ -173,51 +167,41 @@ test.suite(function (env) {
         if (driver) {
           return driver.quit()
         }
-      }
+      },
     )
 
   test
     .ignore(env.browsers(Browser.SAFARI, Browser.FIREFOX))
-    .it(
-      'Should upload files to a non interactable file input',
-      async function () {
-        const LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet'
-        const FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>'
+    .it('Should upload files to a non interactable file input', async function () {
+      const LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet'
+      const FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>'
 
-        let fp = await io.tmpFile().then(function (fp) {
-          fs.writeFileSync(fp, FILE_HTML)
-          return fp
-        })
+      let fp = await io.tmpFile().then(function (fp) {
+        fs.writeFileSync(fp, FILE_HTML)
+        return fp
+      })
 
-        const options = new chrome.Options()
-        options.setStrictFileInteractability(false)
-        const driver = env.builder().setChromeOptions(options).build()
+      const options = new chrome.Options()
+      options.setStrictFileInteractability(false)
+      const driver = env.builder().setChromeOptions(options).build()
 
-        driver.setFileDetector(new remote.FileDetector())
-        await driver.get(Pages.uploadInvisibleTestPage)
+      driver.setFileDetector(new remote.FileDetector())
+      await driver.get(Pages.uploadInvisibleTestPage)
 
-        const input1 = await driver.findElement(By.id('upload'))
-        input1.sendKeys(fp)
-        await driver.findElement(By.id('go')).click()
+      const input1 = await driver.findElement(By.id('upload'))
+      input1.sendKeys(fp)
+      await driver.findElement(By.id('go')).click()
 
-        // Uploading files across a network may take a while, even if they're really small
-        let label = await driver.findElement(By.id('upload_label'))
-        await driver.wait(
-          until.elementIsNotVisible(label),
-          10 * 1000,
-          'File took longer than 10 seconds to upload!'
-        )
+      // Uploading files across a network may take a while, even if they're really small
+      let label = await driver.findElement(By.id('upload_label'))
+      await driver.wait(until.elementIsNotVisible(label), 10 * 1000, 'File took longer than 10 seconds to upload!')
 
-        const frame = await driver.findElement(By.id('upload_target'))
-        await driver.switchTo().frame(frame)
-        assert.strictEqual(
-          await driver.findElement(By.css('body')).getText(),
-          fp.split('/').pop()
-        )
+      const frame = await driver.findElement(By.id('upload_target'))
+      await driver.switchTo().frame(frame)
+      assert.strictEqual(await driver.findElement(By.css('body')).getText(), fp.split('/').pop())
 
-        if (driver) {
-          return driver.quit()
-        }
+      if (driver) {
+        return driver.quit()
       }
-    )
+    })
 })

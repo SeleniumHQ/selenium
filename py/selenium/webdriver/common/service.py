@@ -56,10 +56,10 @@ class Service(ABC):
     ) -> None:
         if isinstance(log_output, str):
             self.log_output = open(log_output, "a+", encoding="utf-8")
-        elif log_output is subprocess.STDOUT:
+        elif log_output == subprocess.STDOUT:
             self.log_output = None
-        elif log_output is None or log_output is subprocess.DEVNULL:
-            self.log_output = open(os.devnull, "wb")
+        elif log_output is None or log_output == subprocess.DEVNULL:
+            self.log_output = subprocess.DEVNULL
         else:
             self.log_output = log_output
 
@@ -102,10 +102,10 @@ class Service(ABC):
             self.assert_process_still_running()
             if self.is_connectable():
                 break
-
+            # sleep increasing: 0.01, 0.06, 0.11, 0.16, 0.21, 0.26, 0.31, 0.36, 0.41, 0.46, 0.5
+            sleep(min(0.01 + 0.05 * count, 0.5))
             count += 1
-            sleep(0.5)
-            if count == 60:
+            if count == 70:
                 raise WebDriverException(f"Can not connect to the Service {self._path}")
 
     def assert_process_still_running(self) -> None:
@@ -135,7 +135,7 @@ class Service(ABC):
     def stop(self) -> None:
         """Stops the service."""
 
-        if self.log_output != PIPE:
+        if self.log_output not in {PIPE, subprocess.DEVNULL}:
             if isinstance(self.log_output, IOBase):
                 self.log_output.close()
             elif isinstance(self.log_output, int):

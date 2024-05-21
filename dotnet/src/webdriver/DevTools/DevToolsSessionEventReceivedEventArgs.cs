@@ -16,8 +16,8 @@
 // limitations under the License.
 // </copyright>
 
-using System;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace OpenQA.Selenium.DevTools
 {

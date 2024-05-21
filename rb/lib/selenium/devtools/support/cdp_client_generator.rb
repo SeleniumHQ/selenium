@@ -26,8 +26,9 @@ module Selenium
     module Support
       class CDPClientGenerator
         # Input JSON files are generated from PDL tasks.
-        DOMAIN_TEMPLATE_PATH = File.expand_path('cdp/domain.rb.erb', __dir__)
-        LOADER_TEMPLATE_PATH = File.expand_path('cdp/loader.rb.erb', __dir__)
+        DIR = __dir__ || ''
+        DOMAIN_TEMPLATE_PATH = File.expand_path('cdp/domain.rb.erb', DIR)
+        LOADER_TEMPLATE_PATH = File.expand_path('cdp/loader.rb.erb', DIR)
 
         RESERVED_KEYWORDS = %w[end].freeze
 
@@ -39,9 +40,9 @@ module Selenium
           @version = version
 
           browser_protocol_path = opts.delete(:browser_protocol_path) do
-            File.expand_path('cdp/browser_protocol.json', __dir__)
+            File.expand_path('cdp/browser_protocol.json', DIR)
           end
-          js_protocol_path = opts.delete(:js_protocol_path) { File.expand_path('cdp/js_protocol.json', __dir__) }
+          js_protocol_path = opts.delete(:js_protocol_path) { File.expand_path('cdp/js_protocol.json', DIR) }
 
           raise ArgumentError, "Invalid arguments: #{opts.keys}" unless opts.empty?
 
@@ -98,12 +99,12 @@ module Selenium
 end
 
 if $PROGRAM_NAME == __FILE__
-  browser_protocol_path, js_protocol_path, output_dir, loader_path, version = *ARGV
+  browser_protocol_path, js_protocol_path, loader_path, version = *ARGV
 
   Selenium::DevTools::Support::CDPClientGenerator.new.call(
     browser_protocol_path: browser_protocol_path,
     js_protocol_path: js_protocol_path,
-    output_dir: output_dir,
+    output_dir: loader_path&.sub(/\.rb$/, ''),
     loader_path: loader_path,
     version: version
   )

@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -205,6 +206,7 @@ class CookieImplementationTest extends JupiterTestBase {
   @Test
   @Ignore(SAFARI)
   @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(EDGE)
   @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
@@ -301,6 +303,7 @@ class CookieImplementationTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(EDGE)
   @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testShouldWalkThePathToDeleteACookie() {
     Cookie cookie1 = new Cookie.Builder("fish", "cod").build();
@@ -348,6 +351,7 @@ class CookieImplementationTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(EDGE)
   @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testCookieEqualityAfterSetAndGet() {
     driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
@@ -394,6 +398,7 @@ class CookieImplementationTest extends JupiterTestBase {
   @Ignore(IE)
   @Ignore(SAFARI)
   @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(EDGE)
   @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void canHandleSecureCookie() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
@@ -412,6 +417,7 @@ class CookieImplementationTest extends JupiterTestBase {
   @Ignore(IE)
   @Ignore(SAFARI)
   @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(EDGE)
   @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testRetainsCookieSecure() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
@@ -430,6 +436,7 @@ class CookieImplementationTest extends JupiterTestBase {
   @Test
   @Ignore(SAFARI)
   @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(EDGE)
   @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void canHandleHttpOnlyCookie() {
     Cookie addedCookie =
@@ -445,6 +452,7 @@ class CookieImplementationTest extends JupiterTestBase {
   @Test
   @Ignore(SAFARI)
   @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(EDGE)
   @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =

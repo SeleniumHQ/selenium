@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.html5;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,7 +25,13 @@ import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 
-/** Executes the commands to access HTML5 sessionStorage on the remote webdriver server. */
+/**
+ * Executes the commands to access HTML5 sessionStorage on the remote webdriver server.
+ *
+ * @deprecated LocalStorage can be managed by executing JavaScript. @see #executeScript(String,
+ *     Object...)
+ */
+@Deprecated
 public class RemoteSessionStorage implements SessionStorage {
   private final ExecuteMethod executeMethod;
 
@@ -36,7 +41,7 @@ public class RemoteSessionStorage implements SessionStorage {
 
   @Override
   public String getItem(String key) {
-    Map<String, String> args = ImmutableMap.of("key", key);
+    Map<String, String> args = Map.of("key", key);
     return (String) executeMethod.execute(DriverCommand.GET_SESSION_STORAGE_ITEM, args);
   }
 
@@ -50,14 +55,14 @@ public class RemoteSessionStorage implements SessionStorage {
 
   @Override
   public void setItem(String key, String value) {
-    Map<String, String> args = ImmutableMap.of("key", key, "value", value);
+    Map<String, String> args = Map.of("key", key, "value", value);
     executeMethod.execute(DriverCommand.SET_SESSION_STORAGE_ITEM, args);
   }
 
   @Override
   public String removeItem(String key) {
     String value = getItem(key);
-    Map<String, String> args = ImmutableMap.of("key", key);
+    Map<String, String> args = Map.of("key", key);
     executeMethod.execute(DriverCommand.REMOVE_SESSION_STORAGE_ITEM, args);
     return value;
   }

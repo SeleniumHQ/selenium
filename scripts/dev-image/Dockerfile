@@ -17,7 +17,7 @@ RUN apt-get update -qqy && \
                         git-all \
                         ca-certificates \
                         libssl-dev openssl \
-                        openjdk-11-jdk \
+                        openjdk-17-jdk \
                         ruby-full && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 

@@ -1,4 +1,83 @@
-4.15.0 (unreleased)
+4.21.1 (2024-05-16)
+=========================
+
+* Fixed missing Chrome binary error in Rails system tests.
+
+4.21.0 (2024-05-16)
+=========================
+
+* Add CDP for Chrome 125 and remove 122
+* Initial extensibility points for Appium
+  * Support registering extra headers in HTTP client
+  * Support overriding User-Agent in HTTP client
+  * Support registering extra bridge commands
+  * Support overriding default locator conversion
+  * Support registering custom finders for SearchContext
+  * Support using custom element classes
+
+4.20.1 (2024-04-25)
+=========================
+
+* Returned accidentally removed DriverFinder.path and deprecated it.
+
+4.20.0 (2024-04-24)
+=========================
+
+* Add CDP for Chrome 124 and remove 121
+* Making Selenium Manager a thin wrapper (#13386)
+  * This change has been made to make it easier to maintain and improve, the interface has
+  changed and if users were invoking it, they might experience issues. Selenium Manager is
+  still in beta and these type of changes are expected.
+
+4.19.0 (2024-03-27)
+=========================
+
+* Add CDP for Chrome 123 and remove 120
+* Avoid over-escaping browser path (#13632)
+* Add full RBS support (#13234)
+
+4.18.1 (2024-02-19)
+=========================
+
+* Add CDP for Chrome 122 and remove 119
+
+4.18.0 (2024-02-19)
+=========================
+
+* Update documentation link in readme (#13570)
+* make suggested updates from rubocop
+
+4.17.0 (2024-01-22)
+=========================
+
+* Logger defaults output to stderr instead of stdout
+* Fully support Chrome 120+ old headless mode (#13271)
+* Add ruby to Selenium Manager input for tracking (see #13288)
+* Define default command_list (fixes #13307)
+* Fix issues with incorrectly named edge browser
+* Check for whether driver supports full page screenshots to error (#12799)
+* Add CDP for Chrome 121 and remove 118
+
+4.16.0 (2023-12-06)
+=========================
+
+Ruby:
+* Add RBS files to Ruby (#12844)
+* Convert binary locations for cygwin (#12618)
+* Allow Selenium Manager to work with Unix (#13161)
+* Extend RBS support for logger and log entry (#13192)
+* Update rules_ruby to the latest version (#13235)
+
+BiDi:
+  * Released selenium-devtools 0.120.0 (supports CDP v85, v118, v119, v120)
+
+Chrome:
+* Fix http proxy configuration for chrome (#13093)
+
+Firefox:
+* Delete 'lock' file in FF profile (#13090)
+
+4.15.0 (2023-11-01)
 =========================
 
 * Do not set browser binary in selenium manager if it is an empty string (#12738)

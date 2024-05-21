@@ -1,10 +1,10 @@
-using System.Net.Sockets;
-using System.Net;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
 using System.Text;
-using System.IO;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -105,25 +105,21 @@ namespace OpenQA.Selenium.Environment
         public string CreateInlinePage(InlinePage page)
         {
             Uri createPageUri = new Uri(new Uri(WhereIs(string.Empty)), "createPage");
-            Dictionary<string, object> payloadDictionary = new Dictionary<string, object>();
-            payloadDictionary["content"] = page.ToString();
+
+            Dictionary<string, object> payloadDictionary = new Dictionary<string, object>
+            {
+                ["content"] = page.ToString()
+            };
+
             string commandPayload = JsonConvert.SerializeObject(payloadDictionary);
-            byte[] data = Encoding.UTF8.GetBytes(commandPayload);
 
-            HttpWebRequest request = HttpWebRequest.Create(createPageUri) as HttpWebRequest;
-            request.Method = "POST";
-            request.ContentType = "application/json;charset=utf8";
-            request.ServicePoint.Expect100Continue = false;
-            Stream requestStream = request.GetRequestStream();
-            requestStream.Write(data, 0, data.Length);
-            requestStream.Close();
+            using var httpClient = new HttpClient();
 
-            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            // StreamReader.Close also closes the underlying stream.
-            Stream responseStream = response.GetResponseStream();
-            StreamReader responseStreamReader = new StreamReader(responseStream, Encoding.UTF8);
-            string responseString = responseStreamReader.ReadToEnd();
-            responseStreamReader.Close();
+            var postHttpContent = new StringContent(commandPayload, Encoding.UTF8, "application/json");
+
+            using var response = httpClient.PostAsync(createPageUri, postHttpContent).GetAwaiter().GetResult();
+
+            var responseString = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
             // The response string from the Java remote server has trailing null
             // characters. This is due to the fix for issue 288.

@@ -1,1 +1,7 @@
 # BUILD file required (even if empty) so bazel can load .bzl extensions in this directory.
+
+load("@npm//javascript/node/selenium-webdriver:prettier/package_json.bzl", prettier_bin = "bin")
+
+prettier_bin.prettier_binary(
+    name = "prettier",
+)

@@ -17,9 +17,26 @@
 import typing
 from abc import ABCMeta
 from abc import abstractmethod
+from enum import Enum
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy
+
+
+class PageLoadStrategy(str, Enum):
+    """Enum of possible page load strategies.
+
+    Selenium support following strategies:
+        * normal (default) - waits for all resources to download
+        * eager - DOM access is ready, but other resources like images may still be loading
+        * none - does not block `WebDriver` at all
+
+    Docs: https://www.selenium.dev/documentation/webdriver/drivers/options/#pageloadstrategy.
+    """
+
+    normal = "normal"
+    eager = "eager"
+    none = "none"
 
 
 class _BaseOptionsDescriptor:
@@ -348,8 +365,9 @@ class BaseOptions(metaclass=ABCMeta):
         super().__init__()
         self._caps = self.default_capabilities
         self._proxy = None
-        self.set_capability("pageLoadStrategy", "normal")
+        self.set_capability("pageLoadStrategy", PageLoadStrategy.normal)
         self.mobile_options = None
+        self._ignore_local_proxy = False
 
     @property
     def capabilities(self):
@@ -387,6 +405,11 @@ class BaseOptions(metaclass=ABCMeta):
     def default_capabilities(self):
         """Return minimal capabilities necessary as a dictionary."""
 
+    def ignore_local_proxy_environment_variables(self) -> None:
+        """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
+        being picked up and used."""
+        self._ignore_local_proxy = True
+
 
 class ArgOptions(BaseOptions):
     BINARY_LOCATION_ERROR = "Binary Location Must be a String"
@@ -394,14 +417,13 @@ class ArgOptions(BaseOptions):
     def __init__(self) -> None:
         super().__init__()
         self._arguments = []
-        self._ignore_local_proxy = False
 
     @property
     def arguments(self):
         """:Returns: A list of arguments needed for the browser."""
         return self._arguments
 
-    def add_argument(self, argument):
+    def add_argument(self, argument) -> None:
         """Adds an argument to the list.
 
         :Args:
@@ -415,7 +437,7 @@ class ArgOptions(BaseOptions):
     def ignore_local_proxy_environment_variables(self) -> None:
         """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
         being picked up and used."""
-        self._ignore_local_proxy = True
+        super().ignore_local_proxy_environment_variables()
 
     def to_capabilities(self):
         return self._caps

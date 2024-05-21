@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const test = require('../lib/test')
 const { Browser, By, error, until } = require('..')
 const Pages = test.Pages
@@ -34,21 +34,17 @@ test.suite(function (env) {
   // Element never goes stale in Safari.
   test
     .ignore(env.browsers(Browser.SAFARI))
-    .it(
-      'dynamically removing elements from the DOM trigger a ' +
-        'StaleElementReferenceError',
-      async function () {
-        await driver.get(Pages.javascriptPage)
+    .it('dynamically removing elements from the DOM trigger a ' + 'StaleElementReferenceError', async function () {
+      await driver.get(Pages.javascriptPage)
 
-        var toBeDeleted = await driver.findElement(By.id('deleted'))
-        assert.strictEqual(await toBeDeleted.getTagName(), 'p')
+      var toBeDeleted = await driver.findElement(By.id('deleted'))
+      assert.strictEqual(await toBeDeleted.getTagName(), 'p')
 
-        await driver.findElement(By.id('delete')).click()
-        await driver.wait(until.stalenessOf(toBeDeleted), 5000)
-      }
-    )
+      await driver.findElement(By.id('delete')).click()
+      await driver.wait(until.stalenessOf(toBeDeleted), 5000)
+    })
 
-  xit('an element found in a different frame is stale', async function () {
+  it('an element found in a different frame is stale', async function () {
     await driver.get(Pages.missedJsReferencePage)
 
     var frame = await driver.findElement(By.css('iframe[name="inner"]'))
@@ -57,10 +53,7 @@ test.suite(function (env) {
     var el = await driver.findElement(By.id('oneline'))
     await driver.switchTo().defaultContent()
     return el.getText().then(assert.fail, function (e) {
-      assert.ok(
-        e instanceof error.StaleElementReferenceError,
-        `The error is ${JSON.stringify(e)}`
-      )
+      assert.ok(e instanceof error.NoSuchElementError)
     })
   })
 })

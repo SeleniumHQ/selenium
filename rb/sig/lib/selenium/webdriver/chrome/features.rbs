@@ -1,0 +1,16 @@
+module Selenium
+  module WebDriver
+    module Chrome
+      module Features
+        include WebDriver::Chromium::Features
+
+        CHROME_COMMANDS: untyped
+        COMMANDS: Array[Symbol | String]
+
+        def command_list: -> untyped
+
+        def commands: (Symbol command) -> Array[Symbol | String]
+      end
+    end
+  end
+end

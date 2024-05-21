@@ -22,7 +22,7 @@ const RESPONSE_TIMEOUT = 1000 * 30
 
 class Index extends EventEmitter {
   id = 0
-  isConnected = false
+  connected = false
   events = []
   browsingContexts = []
 
@@ -30,12 +30,37 @@ class Index extends EventEmitter {
    * Create a new websocket connection
    * @param _webSocketUrl
    */
-  constructor (_webSocketUrl) {
+  constructor(_webSocketUrl) {
     super()
-    this.isConnected = false
+    this.connected = false
     this._ws = new WebSocket(_webSocketUrl)
     this._ws.on('open', () => {
-      this.isConnected = true
+      this.connected = true
+    })
+  }
+
+  /**
+   * @returns {WebSocket}
+   */
+  get socket() {
+    return this._ws
+  }
+
+  /**
+   * @returns {boolean|*}
+   */
+  get isConnected() {
+    return this.connected
+  }
+
+  /**
+   * Get Bidi Status
+   * @returns {Promise<*>}
+   */
+  get status() {
+    return this.send({
+      method: 'session.status',
+      params: {},
     })
   }
 
@@ -43,9 +68,9 @@ class Index extends EventEmitter {
    * Resolve connection
    * @returns {Promise<unknown>}
    */
-  async waitForConnection () {
+  async waitForConnection() {
     return new Promise((resolve) => {
-      if (this.isConnected) {
+      if (this.connected) {
         resolve()
       } else {
         this._ws.once('open', () => {
@@ -56,26 +81,12 @@ class Index extends EventEmitter {
   }
 
   /**
-   * @returns {WebSocket}
-   */
-  get socket () {
-    return this._ws
-  }
-
-  /**
-   * @returns {boolean|*}
-   */
-  get isConnected () {
-    return this.isConnected
-  }
-
-  /**
    * Sends a bidi request
    * @param params
    * @returns {Promise<unknown>}
    */
-  async send (params) {
-    if (!this.isConnected) {
+  async send(params) {
+    if (!this.connected) {
       await this.waitForConnection()
     }
 
@@ -98,6 +109,7 @@ class Index extends EventEmitter {
             resolve(payload)
           }
         } catch (err) {
+          // eslint-disable-next-line no-undef
           log.error(`Failed parse message: ${err.message}`)
         }
       }
@@ -112,8 +124,8 @@ class Index extends EventEmitter {
    * @param browsingContexts
    * @returns {Promise<void>}
    */
-  async subscribe (events, browsingContexts) {
-    function toArray (arg) {
+  async subscribe(events, browsingContexts) {
+    function toArray(arg) {
       if (arg === undefined) {
         return []
       }
@@ -125,16 +137,15 @@ class Index extends EventEmitter {
     const contextsArray = toArray(browsingContexts)
 
     const params = {
-      method: 'session.subscribe', params: {},
+      method: 'session.subscribe',
+      params: {},
     }
 
-    if (eventsArray.length && eventsArray.some(
-      event => typeof event !== 'string')) {
+    if (eventsArray.length && eventsArray.some((event) => typeof event !== 'string')) {
       throw new TypeError('events should be string or string array')
     }
 
-    if (contextsArray.length && contextsArray.some(
-      context => typeof context !== 'string')) {
+    if (contextsArray.length && contextsArray.some((context) => typeof context !== 'string')) {
       throw new TypeError('browsingContexts should be string or string array')
     }
 
@@ -155,24 +166,24 @@ class Index extends EventEmitter {
    * @param browsingContexts
    * @returns {Promise<void>}
    */
-  async unsubscribe (events, browsingContexts) {
+  async unsubscribe(events, browsingContexts) {
     if (typeof events === 'string') {
-      this.events = this.events.filter(event => event !== events)
+      this.events = this.events.filter((event) => event !== events)
     } else if (Array.isArray(events)) {
-      this.events = this.events.filter(event => !events.includes(event))
+      this.events = this.events.filter((event) => !events.includes(event))
     }
 
     if (typeof browsingContexts === 'string') {
       this.browsingContexts.pop()
     } else if (Array.isArray(browsingContexts)) {
-      this.browsingContexts =
-        this.browsingContexts.filter(id => !browsingContexts.includes(id))
+      this.browsingContexts = this.browsingContexts.filter((id) => !browsingContexts.includes(id))
     }
 
     const params = {
-      method: 'session.unsubscribe', params: {
+      method: 'session.unsubscribe',
+      params: {
         events: this.events,
-      }
+      },
     }
 
     if (this.browsingContexts.length > 0) {
@@ -183,20 +194,10 @@ class Index extends EventEmitter {
   }
 
   /**
-   * Get Bidi Status
-   * @returns {Promise<*>}
-   */
-  get status () {
-    return this.send({
-      method: 'session.status', params: {}
-    })
-  }
-
-  /**
    * Close ws connection.
    * @returns {Promise<unknown>}
    */
-  close () {
+  close() {
     const closeWebSocket = (callback) => {
       // don't close if it's already closed
       if (this._ws.readyState === 3) {
@@ -211,7 +212,7 @@ class Index extends EventEmitter {
         this._ws.close()
       }
     }
-    return new Promise((fulfill, reject) => {
+    return new Promise((fulfill, _) => {
       closeWebSocket(fulfill)
     })
   }

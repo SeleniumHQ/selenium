@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
-using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -317,7 +316,7 @@ namespace OpenQA.Selenium.Interactions
             Assert.AreEqual(originalTitle, driver.Title, "Should not have navigated away.");
 
             string originalHandle = driver.CurrentWindowHandle;
-            foreach(string newHandle in driver.WindowHandles)
+            foreach (string newHandle in driver.WindowHandles)
             {
                 if (newHandle != originalHandle)
                 {

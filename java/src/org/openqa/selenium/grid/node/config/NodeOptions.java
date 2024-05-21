@@ -117,7 +117,7 @@ public class NodeOptions {
     }
 
     Optional<String> hubAddress = config.get(NODE_SECTION, "hub");
-    if (!hubAddress.isPresent()) {
+    if (hubAddress.isEmpty()) {
       return Optional.empty();
     }
 
@@ -160,6 +160,21 @@ public class NodeOptions {
 
   public boolean isManagedDownloadsEnabled() {
     return config.getBool(NODE_SECTION, "enable-managed-downloads").orElse(Boolean.FALSE);
+  }
+
+  public String getGridSubPath() {
+    return normalizeSubPath(getPublicGridUri().map(URI::getPath).orElse(""));
+  }
+
+  public static String normalizeSubPath(String prefix) {
+    prefix = prefix.trim();
+    if (!prefix.startsWith("/")) {
+      prefix = "/" + prefix; // Prefix with a '/' if absent.
+    }
+    if (prefix.endsWith("/")) {
+      prefix = prefix.substring(0, prefix.length() - 1); // Remove the trailing '/' if present.
+    }
+    return prefix;
   }
 
   public Node getNode() {
@@ -227,7 +242,7 @@ public class NodeOptions {
         ImmutableMultimap.builder();
 
     addDriverFactoriesFromConfig(sessionFactories);
-    addDriverConfigs(factoryFactory, sessionFactories);
+    addDriverConfigs(factoryFactory, sessionFactories, maxSessions);
     addSpecificDrivers(allDrivers, sessionFactories);
     addDetectedDrivers(allDrivers, sessionFactories);
 
@@ -343,7 +358,8 @@ public class NodeOptions {
 
   private void addDriverConfigs(
       Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory,
-      ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+      ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories,
+      int maxSessions) {
 
     Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
 
@@ -354,6 +370,10 @@ public class NodeOptions {
         .ifPresent(
             drivers -> {
               List<Map<String, String>> configList = new ArrayList<>();
+              if (drivers.isEmpty()) {
+                // This is the case when the configuration is provided through the CLI.
+                config.getAll(NODE_SECTION, "driver-configuration").ifPresent(drivers::add);
+              }
 
               // iterate over driver configurations
               for (List<String> driver : drivers) {
@@ -454,9 +474,7 @@ public class NodeOptions {
 
                     int driverMaxSessions =
                         Integer.parseInt(
-                            thisConfig.getOrDefault(
-                                "max-sessions",
-                                String.valueOf(info.getMaximumSimultaneousSessions())));
+                            thisConfig.getOrDefault("max-sessions", String.valueOf(maxSessions)));
                     Require.positive("Driver max sessions", driverMaxSessions);
 
                     WebDriverInfo driverInfoConfig =
@@ -507,7 +525,7 @@ public class NodeOptions {
               sessionFactories.putAll(capabilities, entry.getValue());
             });
 
-    if (sessionFactories.build().size() == 0) {
+    if (sessionFactories.build().isEmpty()) {
       String logMessage = "No drivers have been configured or have been found on PATH";
       LOG.warning(logMessage);
       throw new ConfigException(logMessage);
@@ -517,7 +535,7 @@ public class NodeOptions {
   private void addSpecificDrivers(
       Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
       ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
-    if (!config.getAll(NODE_SECTION, "driver-implementation").isPresent()) {
+    if (config.getAll(NODE_SECTION, "driver-implementation").isEmpty()) {
       return;
     }
 
@@ -548,7 +566,7 @@ public class NodeOptions {
             .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
             .findFirst();
 
-    if (!first.isPresent()) {
+    if (first.isEmpty()) {
       throw new ConfigException("No drivers were found for %s", drivers.toString());
     }
 

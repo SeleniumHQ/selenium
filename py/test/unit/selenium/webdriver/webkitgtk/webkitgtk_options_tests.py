@@ -17,6 +17,7 @@
 
 import pytest
 
+from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.webkitgtk.options import Options
 
 
@@ -61,7 +62,7 @@ def test_starts_with_default_capabilities(options):
     from selenium.webdriver import DesiredCapabilities
 
     caps = DesiredCapabilities.WEBKITGTK.copy()
-    caps.update({"pageLoadStrategy": "normal"})
+    caps.update({"pageLoadStrategy": PageLoadStrategy.normal})
     assert options._caps == caps
 
 

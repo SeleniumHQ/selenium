@@ -32,9 +32,9 @@ const Symbols = require('./symbols')
 const cdp = require('../devtools/CDPConnection')
 const WebSocket = require('ws')
 const http = require('../http/index')
-const fs = require('fs')
+const fs = require('node:fs')
 const { Capabilities } = require('./capabilities')
-const path = require('path')
+const path = require('node:path')
 const { NoSuchElementError } = require('./error')
 const cdpTargets = ['page', 'browser']
 const { Credential } = require('./virtual_authenticator')
@@ -42,6 +42,7 @@ const webElement = require('./webelement')
 const { isObject } = require('./util')
 const BIDI = require('../bidi')
 const { PinnedScript } = require('./pinnedScript')
+const JSZip = require('jszip')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -147,11 +148,7 @@ async function toWireValue(obj) {
     return value
   }
 
-  if (
-    typeof value === 'boolean' ||
-    typeof value === 'number' ||
-    typeof value === 'string'
-  ) {
+  if (typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string') {
     return value
   }
 
@@ -235,9 +232,7 @@ function fromWireValue(driver, value) {
  * @return {string} The resolved message
  */
 function resolveWaitMessage(message) {
-  return message
-    ? `${typeof message === 'function' ? message() : message}\n`
-    : ''
+  return message ? `${typeof message === 'function' ? message() : message}\n` : ''
 }
 
 /**
@@ -466,7 +461,7 @@ class IWebDriver {
     condition, // eslint-disable-line
     timeout = undefined, // eslint-disable-line
     message = undefined, // eslint-disable-line
-    pollTimeout = undefined // eslint-disable-line
+    pollTimeout = undefined, // eslint-disable-line
   ) {}
 
   /**
@@ -775,8 +770,8 @@ class WebDriver {
       this.session_ = Promise.reject(
         new error.NoSuchSessionError(
           'This driver instance does not have a valid session ID ' +
-            '(did you call WebDriver.quit()?) and may no longer be used.'
-        )
+            '(did you call WebDriver.quit()?) and may no longer be used.',
+        ),
       )
 
       // Only want the session rejection to bubble if accessed.
@@ -803,14 +798,12 @@ class WebDriver {
       return this.execute(
         new command.Command(command.Name.EXECUTE_SCRIPT)
           .setParameter('script', script.executionScript())
-          .setParameter('args', args)
+          .setParameter('args', args),
       )
     }
 
     return this.execute(
-      new command.Command(command.Name.EXECUTE_SCRIPT)
-        .setParameter('script', script)
-        .setParameter('args', args)
+      new command.Command(command.Name.EXECUTE_SCRIPT).setParameter('script', script).setParameter('args', args),
     )
   }
 
@@ -824,14 +817,12 @@ class WebDriver {
       return this.execute(
         new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT)
           .setParameter('script', script.executionScript())
-          .setParameter('args', args)
+          .setParameter('args', args),
       )
     }
 
     return this.execute(
-      new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT)
-        .setParameter('script', script)
-        .setParameter('args', args)
+      new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT).setParameter('script', script).setParameter('args', args),
     )
   }
 
@@ -859,20 +850,14 @@ class WebDriver {
             let timeoutMessage = resolveWaitMessage(message)
             reject(
               new error.TimeoutError(
-                `${timeoutMessage}Timed out waiting for promise to resolve after ${
-                  Date.now() - start
-                }ms`
-              )
+                `${timeoutMessage}Timed out waiting for promise to resolve after ${Date.now() - start}ms`,
+              ),
             )
           } catch (ex) {
             reject(
               new error.TimeoutError(
-                `${
-                  ex.message
-                }\nTimed out waiting for promise to resolve after ${
-                  Date.now() - start
-                }ms`
-              )
+                `${ex.message}\nTimed out waiting for promise to resolve after ${Date.now() - start}ms`,
+              ),
             )
           }
         }, timeout)
@@ -886,7 +871,7 @@ class WebDriver {
           function (error) {
             clearTimer()
             reject(error)
-          }
+          },
         )
       })
     }
@@ -898,13 +883,11 @@ class WebDriver {
     }
 
     if (typeof fn !== 'function') {
-      throw TypeError(
-        'Wait condition must be a promise-like object, function, or a ' +
-          'Condition object'
-      )
+      throw TypeError('Wait condition must be a promise-like object, function, or a ' + 'Condition object')
     }
 
     const driver = this
+
     function evaluateCondition() {
       return new Promise((resolve, reject) => {
         try {
@@ -925,17 +908,9 @@ class WebDriver {
           } else if (timeout && elapsed >= timeout) {
             try {
               let timeoutMessage = resolveWaitMessage(message)
-              reject(
-                new error.TimeoutError(
-                  `${timeoutMessage}Wait timed out after ${elapsed}ms`
-                )
-              )
+              reject(new error.TimeoutError(`${timeoutMessage}Wait timed out after ${elapsed}ms`))
             } catch (ex) {
-              reject(
-                new error.TimeoutError(
-                  `${ex.message}\nWait timed out after ${elapsed}ms`
-                )
-              )
+              reject(new error.TimeoutError(`${ex.message}\nWait timed out after ${elapsed}ms`))
             }
           } else {
             setTimeout(pollCondition, pollTimeout)
@@ -951,12 +926,11 @@ class WebDriver {
         result.then(function (value) {
           if (!(value instanceof WebElement)) {
             throw TypeError(
-              'WebElementCondition did not resolve to a WebElement: ' +
-                Object.prototype.toString.call(value)
+              'WebElementCondition did not resolve to a WebElement: ' + Object.prototype.toString.call(value),
             )
           }
           return value
-        })
+        }),
       )
     }
     return result
@@ -969,9 +943,7 @@ class WebDriver {
 
   /** @override */
   getWindowHandle() {
-    return this.execute(
-      new command.Command(command.Name.GET_CURRENT_WINDOW_HANDLE)
-    )
+    return this.execute(new command.Command(command.Name.GET_CURRENT_WINDOW_HANDLE))
   }
 
   /** @override */
@@ -1010,9 +982,7 @@ class WebDriver {
     let cmd = null
 
     if (locator instanceof RelativeBy) {
-      cmd = new command.Command(
-        command.Name.FIND_ELEMENTS_RELATIVE
-      ).setParameter('args', locator.marshall())
+      cmd = new command.Command(command.Name.FIND_ELEMENTS_RELATIVE).setParameter('args', locator.marshall())
     } else {
       locator = by.checkedLocator(locator)
     }
@@ -1041,9 +1011,7 @@ class WebDriver {
   async normalize_(webElementPromise) {
     let result = await webElementPromise
     if (result.length === 0) {
-      throw new NoSuchElementError(
-        'Cannot locate an element with provided parameters'
-      )
+      throw new NoSuchElementError('Cannot locate an element with provided parameters')
     } else {
       return result[0]
     }
@@ -1071,9 +1039,7 @@ class WebDriver {
   async findElements(locator) {
     let cmd = null
     if (locator instanceof RelativeBy) {
-      cmd = new command.Command(
-        command.Name.FIND_ELEMENTS_RELATIVE
-      ).setParameter('args', locator.marshall())
+      cmd = new command.Command(command.Name.FIND_ELEMENTS_RELATIVE).setParameter('args', locator.marshall())
     } else {
       locator = by.checkedLocator(locator)
     }
@@ -1215,9 +1181,7 @@ class WebDriver {
     let self = this
     resultObj = self.validatePrintPageParams(keys, params)
 
-    return this.execute(
-      new command.Command(command.Name.PRINT_PAGE).setParameters(resultObj)
-    )
+    return this.execute(new command.Command(command.Name.PRINT_PAGE).setParameters(resultObj))
   }
 
   /**
@@ -1231,9 +1195,7 @@ class WebDriver {
 
     if (process.env.SELENIUM_REMOTE_URL) {
       const host = new URL(process.env.SELENIUM_REMOTE_URL).host
-      const sessionId = await this.getSession().then((session) =>
-        session.getId()
-      )
+      const sessionId = await this.getSession().then((session) => session.getId())
       debuggerUrl = `ws://${host}/session/${sessionId}/se/cdp`
     } else {
       const seCdp = caps['map_'].get('se:cdp')
@@ -1247,9 +1209,7 @@ class WebDriver {
     this._wsUrl = await this.getWsUrl(debuggerUrl, target, caps)
     return new Promise((resolve, reject) => {
       try {
-        this._wsConnection = new WebSocket(
-          this._wsUrl.replace('localhost', '127.0.0.1')
-        )
+        this._wsConnection = new WebSocket(this._wsUrl.replace('localhost', '127.0.0.1'))
         this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
       } catch (err) {
         reject(err)
@@ -1268,11 +1228,7 @@ class WebDriver {
             const page = targets.find((info) => info.type === 'page')
             if (page) {
               this.targetID = page.targetId
-              this._cdpConnection.execute(
-                'Target.attachToTarget',
-                { targetId: this.targetID, flatten: true },
-                null
-              )
+              this._cdpConnection.execute('Target.attachToTarget', { targetId: this.targetID, flatten: true }, null)
             } else {
               reject('Unable to find Page target.')
             }
@@ -1324,10 +1280,7 @@ class WebDriver {
     let path
     if (target === 'page' && caps['map_'].get('browserName') !== 'firefox') {
       path = '/json'
-    } else if (
-      target === 'page' &&
-      caps['map_'].get('browserName') === 'firefox'
-    ) {
+    } else if (target === 'page' && caps['map_'].get('browserName') === 'firefox') {
       path = '/json/list'
     } else {
       path = '/json/version'
@@ -1379,14 +1332,14 @@ class WebDriver {
       {
         handleAuthRequests: true,
       },
-      null
+      null,
     )
     await connection.execute(
       'Network.setCacheDisabled',
       {
         cacheDisabled: true,
       },
-      null
+      null,
     )
   }
 
@@ -1424,9 +1377,10 @@ class WebDriver {
       {
         cacheDisabled: true,
       },
-      null
+      null,
     )
   }
+
   /**
    *
    * @param connection
@@ -1500,7 +1454,7 @@ class WebDriver {
       {
         name: '__webdriver_attribute',
       },
-      null
+      null,
     )
 
     let mutationListener = ''
@@ -1508,18 +1462,10 @@ class WebDriver {
       // Depending on what is running the code it could appear in 2 different places which is why we try
       // here and then the other location
       mutationListener = fs
-        .readFileSync(
-          './javascript/node/selenium-webdriver/lib/atoms/mutation-listener.js',
-          'utf-8'
-        )
+        .readFileSync('./javascript/node/selenium-webdriver/lib/atoms/mutation-listener.js', 'utf-8')
         .toString()
     } catch {
-      mutationListener = fs
-        .readFileSync(
-          path.resolve(__dirname, './atoms/mutation-listener.js'),
-          'utf-8'
-        )
-        .toString()
+      mutationListener = fs.readFileSync(path.resolve(__dirname, './atoms/mutation-listener.js'), 'utf-8').toString()
     }
 
     this.executeScript(mutationListener)
@@ -1529,7 +1475,7 @@ class WebDriver {
       {
         source: mutationListener,
       },
-      null
+      null,
     )
 
     this._wsConnection.on('message', async (message) => {
@@ -1571,15 +1517,12 @@ class WebDriver {
       {
         expression: pinnedScript.creationScript(),
       },
-      null
+      null,
     )
 
-    let result = await connection.send(
-      'Page.addScriptToEvaluateOnNewDocument',
-      {
-        source: pinnedScript.creationScript(),
-      }
-    )
+    let result = await connection.send('Page.addScriptToEvaluateOnNewDocument', {
+      source: pinnedScript.creationScript(),
+    })
 
     pinnedScript.scriptId = result['result']['identifier']
 
@@ -1608,7 +1551,7 @@ class WebDriver {
         {
           expression: script.removalScript(),
         },
-        null
+        null,
       )
 
       await connection.execute(
@@ -1616,7 +1559,7 @@ class WebDriver {
         {
           identifier: script.scriptId,
         },
-        null
+        null,
       )
 
       delete this.pinnedScripts_[script.handle]
@@ -1637,9 +1580,7 @@ class WebDriver {
    */
   async addVirtualAuthenticator(options) {
     this.authenticatorId_ = await this.execute(
-      new command.Command(command.Name.ADD_VIRTUAL_AUTHENTICATOR).setParameters(
-        options.toDict()
-      )
+      new command.Command(command.Name.ADD_VIRTUAL_AUTHENTICATOR).setParameters(options.toDict()),
     )
   }
 
@@ -1649,9 +1590,10 @@ class WebDriver {
    */
   async removeVirtualAuthenticator() {
     await this.execute(
-      new command.Command(
-        command.Name.REMOVE_VIRTUAL_AUTHENTICATOR
-      ).setParameter('authenticatorId', this.authenticatorId_)
+      new command.Command(command.Name.REMOVE_VIRTUAL_AUTHENTICATOR).setParameter(
+        'authenticatorId',
+        this.authenticatorId_,
+      ),
     )
     this.authenticatorId_ = null
   }
@@ -1663,9 +1605,7 @@ class WebDriver {
   async addCredential(credential) {
     credential = credential.toDict()
     credential['authenticatorId'] = this.authenticatorId_
-    await this.execute(
-      new command.Command(command.Name.ADD_CREDENTIAL).setParameters(credential)
-    )
+    await this.execute(new command.Command(command.Name.ADD_CREDENTIAL).setParameters(credential))
   }
 
   /**
@@ -1674,10 +1614,7 @@ class WebDriver {
    */
   async getCredentials() {
     let credential_data = await this.execute(
-      new command.Command(command.Name.GET_CREDENTIALS).setParameter(
-        'authenticatorId',
-        this.virtualAuthenticatorId()
-      )
+      new command.Command(command.Name.GET_CREDENTIALS).setParameter('authenticatorId', this.virtualAuthenticatorId()),
     )
     var credential_list = []
     for (var i = 0; i < credential_data.length; i++) {
@@ -1699,7 +1636,7 @@ class WebDriver {
     await this.execute(
       new command.Command(command.Name.REMOVE_CREDENTIAL)
         .setParameter('credentialId', credential_id)
-        .setParameter('authenticatorId', this.authenticatorId_)
+        .setParameter('authenticatorId', this.authenticatorId_),
     )
   }
 
@@ -1708,10 +1645,7 @@ class WebDriver {
    */
   async removeAllCredentials() {
     await this.execute(
-      new command.Command(command.Name.REMOVE_ALL_CREDENTIALS).setParameter(
-        'authenticatorId',
-        this.authenticatorId_
-      )
+      new command.Command(command.Name.REMOVE_ALL_CREDENTIALS).setParameter('authenticatorId', this.authenticatorId_),
     )
   }
 
@@ -1723,8 +1657,59 @@ class WebDriver {
     await this.execute(
       new command.Command(command.Name.SET_USER_VERIFIED)
         .setParameter('authenticatorId', this.authenticatorId_)
-        .setParameter('isUserVerified', verified)
+        .setParameter('isUserVerified', verified),
     )
+  }
+
+  async getDownloadableFiles() {
+    const caps = await this.getCapabilities()
+    if (!caps['map_'].get('se:downloadsEnabled')) {
+      throw new error.WebDriverError('Downloads must be enabled in options')
+    }
+
+    return (await this.execute(new command.Command(command.Name.GET_DOWNLOADABLE_FILES))).names
+  }
+
+  async downloadFile(fileName, targetDirectory) {
+    const caps = await this.getCapabilities()
+    if (!caps['map_'].get('se:downloadsEnabled')) {
+      throw new Error('Downloads must be enabled in options')
+    }
+
+    const response = await this.execute(new command.Command(command.Name.DOWNLOAD_FILE).setParameter('name', fileName))
+
+    const base64Content = response.contents
+
+    if (!targetDirectory.endsWith('/')) {
+      targetDirectory += '/'
+    }
+
+    fs.mkdirSync(targetDirectory, { recursive: true })
+    const zipFilePath = path.join(targetDirectory, `${fileName}.zip`)
+    fs.writeFileSync(zipFilePath, Buffer.from(base64Content, 'base64'))
+
+    const zipData = fs.readFileSync(zipFilePath)
+    await JSZip.loadAsync(zipData)
+      .then((zip) => {
+        // Iterate through each file in the zip archive
+        Object.keys(zip.files).forEach(async (fileName) => {
+          const fileData = await zip.files[fileName].async('nodebuffer')
+          fs.writeFileSync(`${targetDirectory}/${fileName}`, fileData)
+          console.log(`File extracted: ${fileName}`)
+        })
+      })
+      .catch((error) => {
+        console.error('Error unzipping file:', error)
+      })
+  }
+
+  async deleteDownloadableFiles() {
+    const caps = await this.getCapabilities()
+    if (!caps['map_'].get('se:downloadsEnabled')) {
+      throw new error.WebDriverError('Downloads must be enabled in options')
+    }
+
+    return await this.execute(new command.Command(command.Name.DELETE_DOWNLOADABLE_FILES))
   }
 }
 
@@ -1756,9 +1741,7 @@ class Navigation {
    *     has been loaded.
    */
   to(url) {
-    return this.driver_.execute(
-      new command.Command(command.Name.GET).setParameter('url', url)
-    )
+    return this.driver_.execute(new command.Command(command.Name.GET).setParameter('url', url))
   }
 
   /**
@@ -1842,9 +1825,7 @@ class Options {
 
     // We do not allow ';' in value.
     if (/;/.test(value)) {
-      throw new error.InvalidArgumentError(
-        'Invalid cookie value "' + value + '"'
-      )
+      throw new error.InvalidArgumentError('Invalid cookie value "' + value + '"')
     }
 
     if (typeof expiry === 'number') {
@@ -1856,14 +1837,12 @@ class Options {
 
     if (sameSite && !['Strict', 'Lax', 'None'].includes(sameSite)) {
       throw new error.InvalidArgumentError(
-        `Invalid sameSite cookie value '${sameSite}'. It should be one of "Lax", "Strict" or "None"`
+        `Invalid sameSite cookie value '${sameSite}'. It should be one of "Lax", "Strict" or "None"`,
       )
     }
 
     if (sameSite === 'None' && !secure) {
-      throw new error.InvalidArgumentError(
-        'Invalid cookie configuration: SameSite=None must be Secure'
-      )
+      throw new error.InvalidArgumentError('Invalid cookie configuration: SameSite=None must be Secure')
     }
 
     return this.driver_.execute(
@@ -1876,7 +1855,7 @@ class Options {
         httpOnly: !!httpOnly,
         expiry: expiry,
         sameSite: sameSite,
-      })
+      }),
     )
   }
 
@@ -1887,9 +1866,7 @@ class Options {
    *     when all cookies have been deleted.
    */
   deleteAllCookies() {
-    return this.driver_.execute(
-      new command.Command(command.Name.DELETE_ALL_COOKIES)
-    )
+    return this.driver_.execute(new command.Command(command.Name.DELETE_ALL_COOKIES))
   }
 
   /**
@@ -1901,9 +1878,7 @@ class Options {
    *     when the cookie has been deleted.
    */
   deleteCookie(name) {
-    return this.driver_.execute(
-      new command.Command(command.Name.DELETE_COOKIE).setParameter('name', name)
-    )
+    return this.driver_.execute(new command.Command(command.Name.DELETE_COOKIE).setParameter('name', name))
   }
 
   /**
@@ -1914,9 +1889,7 @@ class Options {
    *     resolved with the cookies visible to the current browsing context.
    */
   getCookies() {
-    return this.driver_.execute(
-      new command.Command(command.Name.GET_ALL_COOKIES)
-    )
+    return this.driver_.execute(new command.Command(command.Name.GET_ALL_COOKIES))
   }
 
   /**
@@ -1931,15 +1904,10 @@ class Options {
    */
   async getCookie(name) {
     try {
-      const cookie = await this.driver_.execute(
-        new command.Command(command.Name.GET_COOKIE).setParameter('name', name)
-      )
+      const cookie = await this.driver_.execute(new command.Command(command.Name.GET_COOKIE).setParameter('name', name))
       return cookie
     } catch (err) {
-      if (
-        !(err instanceof error.UnknownCommandError) &&
-        !(err instanceof error.UnsupportedOperationError)
-      ) {
+      if (!(err instanceof error.UnknownCommandError) && !(err instanceof error.UnsupportedOperationError)) {
         throw err
       }
 
@@ -2000,17 +1968,16 @@ class Options {
     let cmd = new command.Command(command.Name.SET_TIMEOUT)
 
     let valid = false
+
     function setParam(key, value) {
       if (value === null || typeof value === 'number') {
         valid = true
         cmd.setParameter(key, value)
       } else if (typeof value !== 'undefined') {
-        throw TypeError(
-          'invalid timeouts configuration:' +
-            ` expected "${key}" to be a number, got ${typeof value}`
-        )
+        throw TypeError('invalid timeouts configuration:' + ` expected "${key}" to be a number, got ${typeof value}`)
       }
     }
+
     setParam('implicit', implicit)
     setParam('pageLoad', pageLoad)
     setParam('script', script)
@@ -2056,11 +2023,7 @@ class Options {
  * @return {!Promise<void>}
  */
 function legacyTimeout(driver, type, ms) {
-  return driver.execute(
-    new command.Command(command.Name.SET_TIMEOUT)
-      .setParameter('type', type)
-      .setParameter('ms', ms)
-  )
+  return driver.execute(new command.Command(command.Name.SET_TIMEOUT).setParameter('type', type).setParameter('ms', ms))
 }
 
 /**
@@ -2170,9 +2133,7 @@ class Window {
    *     A promise that will resolve to the window rect of the current window.
    */
   getRect() {
-    return this.driver_.execute(
-      new command.Command(command.Name.GET_WINDOW_RECT)
-    )
+    return this.driver_.execute(new command.Command(command.Name.GET_WINDOW_RECT))
   }
 
   /**
@@ -2196,7 +2157,7 @@ class Window {
         y,
         width,
         height,
-      })
+      }),
     )
   }
 
@@ -2210,10 +2171,7 @@ class Window {
    */
   maximize() {
     return this.driver_.execute(
-      new command.Command(command.Name.MAXIMIZE_WINDOW).setParameter(
-        'windowHandle',
-        'current'
-      )
+      new command.Command(command.Name.MAXIMIZE_WINDOW).setParameter('windowHandle', 'current'),
     )
   }
 
@@ -2226,9 +2184,7 @@ class Window {
    *     has completed.
    */
   minimize() {
-    return this.driver_.execute(
-      new command.Command(command.Name.MINIMIZE_WINDOW)
-    )
+    return this.driver_.execute(new command.Command(command.Name.MINIMIZE_WINDOW))
   }
 
   /**
@@ -2242,9 +2198,7 @@ class Window {
    * @see <https://fullscreen.spec.whatwg.org/#fullscreen-an-element>
    */
   fullscreen() {
-    return this.driver_.execute(
-      new command.Command(command.Name.FULLSCREEN_WINDOW)
-    )
+    return this.driver_.execute(new command.Command(command.Name.FULLSCREEN_WINDOW))
   }
 
   /**
@@ -2254,9 +2208,7 @@ class Window {
    */
   async getSize(windowHandle = 'current') {
     if (windowHandle !== 'current') {
-      this.log_.warning(
-        `Only 'current' window is supported for W3C compatible browsers.`
-      )
+      this.log_.warning(`Only 'current' window is supported for W3C compatible browsers.`)
     }
 
     const rect = await this.getRect()
@@ -2272,14 +2224,9 @@ class Window {
    * @param windowHandle
    * @returns {Promise<void>}
    */
-  async setSize(
-    { x = 0, y = 0, width = 0, height = 0 },
-    windowHandle = 'current'
-  ) {
+  async setSize({ x = 0, y = 0, width = 0, height = 0 }, windowHandle = 'current') {
     if (windowHandle !== 'current') {
-      this.log_.warning(
-        `Only 'current' window is supported for W3C compatible browsers.`
-      )
+      this.log_.warning(`Only 'current' window is supported for W3C compatible browsers.`)
     }
 
     await this.setRect({ x, y, width, height })
@@ -2321,19 +2268,11 @@ class Logs {
    *   type.
    */
   get(type) {
-    let cmd = new command.Command(command.Name.GET_LOG).setParameter(
-      'type',
-      type
-    )
+    let cmd = new command.Command(command.Name.GET_LOG).setParameter('type', type)
     return this.driver_.execute(cmd).then(function (entries) {
       return entries.map(function (entry) {
         if (!(entry instanceof logging.Entry)) {
-          return new logging.Entry(
-            entry['level'],
-            entry['message'],
-            entry['timestamp'],
-            entry['type']
-          )
+          return new logging.Entry(entry['level'], entry['message'], entry['timestamp'], entry['type'])
         }
         return entry
       })
@@ -2346,9 +2285,7 @@ class Logs {
    *     promise that will resolve to a list of available log types.
    */
   getAvailableLogTypes() {
-    return this.driver_.execute(
-      new command.Command(command.Name.GET_AVAILABLE_LOG_TYPES)
-    )
+    return this.driver_.execute(new command.Command(command.Name.GET_AVAILABLE_LOG_TYPES))
   }
 }
 
@@ -2380,9 +2317,7 @@ class TargetLocator {
    * @return {!WebElementPromise} The active element.
    */
   activeElement() {
-    const id = this.driver_.execute(
-      new command.Command(command.Name.GET_ACTIVE_ELEMENT)
-    )
+    const id = this.driver_.execute(new command.Command(command.Name.GET_ACTIVE_ELEMENT))
     return new WebElementPromise(this.driver_, id)
   }
 
@@ -2394,9 +2329,7 @@ class TargetLocator {
    *     when the driver has changed focus to the default content.
    */
   defaultContent() {
-    return this.driver_.execute(
-      new command.Command(command.Name.SWITCH_TO_FRAME).setParameter('id', null)
-    )
+    return this.driver_.execute(new command.Command(command.Name.SWITCH_TO_FRAME).setParameter('id', null))
   }
 
   /**
@@ -2420,17 +2353,10 @@ class TargetLocator {
   frame(id) {
     let frameReference = id
     if (typeof id === 'string') {
-      frameReference = this.driver_
-        .findElement({ id })
-        .catch((_) => this.driver_.findElement({ name: id }))
+      frameReference = this.driver_.findElement({ id }).catch((_) => this.driver_.findElement({ name: id }))
     }
 
-    return this.driver_.execute(
-      new command.Command(command.Name.SWITCH_TO_FRAME).setParameter(
-        'id',
-        frameReference
-      )
-    )
+    return this.driver_.execute(new command.Command(command.Name.SWITCH_TO_FRAME).setParameter('id', frameReference))
   }
 
   /**
@@ -2442,9 +2368,7 @@ class TargetLocator {
    *     has completed.
    */
   parentFrame() {
-    return this.driver_.execute(
-      new command.Command(command.Name.SWITCH_TO_FRAME_PARENT)
-    )
+    return this.driver_.execute(new command.Command(command.Name.SWITCH_TO_FRAME_PARENT))
   }
 
   /**
@@ -2466,7 +2390,7 @@ class TargetLocator {
         // "name" supports the legacy drivers. "handle" is the W3C
         // compliant parameter.
         .setParameter('name', nameOrHandle)
-        .setParameter('handle', nameOrHandle)
+        .setParameter('handle', nameOrHandle),
     )
   }
 
@@ -2484,12 +2408,7 @@ class TargetLocator {
   newWindow(typeHint) {
     const driver = this.driver_
     return this.driver_
-      .execute(
-        new command.Command(command.Name.SWITCH_TO_NEW_WINDOW).setParameter(
-          'type',
-          typeHint
-        )
-      )
+      .execute(new command.Command(command.Name.SWITCH_TO_NEW_WINDOW).setParameter('type', typeHint))
       .then(function (response) {
         return driver.switchTo().window(response.handle)
       })
@@ -2504,15 +2423,13 @@ class TargetLocator {
    * @return {!AlertPromise} The open alert.
    */
   alert() {
-    const text = this.driver_.execute(
-      new command.Command(command.Name.GET_ALERT_TEXT)
-    )
+    const text = this.driver_.execute(new command.Command(command.Name.GET_ALERT_TEXT))
     const driver = this.driver_
     return new AlertPromise(
       driver,
       text.then(function (text) {
         return new Alert(driver, text)
-      })
+      }),
     )
   }
 }
@@ -2560,9 +2477,7 @@ class WebElement {
    * @return {!Object} The element ID for use with WebDriver's wire protocol.
    */
   static buildId(id, noLegacy = false) {
-    return noLegacy
-      ? { [ELEMENT_ID_KEY]: id }
-      : { [ELEMENT_ID_KEY]: id, [LEGACY_ELEMENT_ID_KEY]: id }
+    return noLegacy ? { [ELEMENT_ID_KEY]: id } : { [ELEMENT_ID_KEY]: id, [LEGACY_ELEMENT_ID_KEY]: id }
   }
 
   /**
@@ -2789,26 +2704,20 @@ class WebElement {
       return this.execute_(
         new command.Command(command.Name.SEND_KEYS_TO_ELEMENT)
           .setParameter('text', keys.join(''))
-          .setParameter('value', keys)
+          .setParameter('value', keys),
       )
     }
 
     try {
-      keys = await this.driver_.fileDetector_.handleFile(
-        this.driver_,
-        keys.join('')
-      )
+      keys = await this.driver_.fileDetector_.handleFile(this.driver_, keys.join(''))
     } catch (ex) {
-      this.log_.severe(
-        'Error trying parse string as a file with file detector; sending keys instead' +
-          ex
-      )
+      this.log_.severe('Error trying parse string as a file with file detector; sending keys instead' + ex)
     }
 
     return this.execute_(
       new command.Command(command.Name.SEND_KEYS_TO_ELEMENT)
         .setParameter('text', keys)
-        .setParameter('value', keys.split(''))
+        .setParameter('value', keys.split('')),
     )
   }
 
@@ -2838,9 +2747,7 @@ class WebElement {
    */
   getCssValue(cssStyleProperty) {
     const name = command.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY
-    return this.execute_(
-      new command.Command(name).setParameter('propertyName', cssStyleProperty)
-    )
+    return this.execute_(new command.Command(name).setParameter('propertyName', cssStyleProperty))
   }
 
   /**
@@ -2873,12 +2780,7 @@ class WebElement {
    *     either a string or null.
    */
   getAttribute(attributeName) {
-    return this.execute_(
-      new command.Command(command.Name.GET_ELEMENT_ATTRIBUTE).setParameter(
-        'name',
-        attributeName
-      )
-    )
+    return this.execute_(new command.Command(command.Name.GET_ELEMENT_ATTRIBUTE).setParameter('name', attributeName))
   }
 
   /**
@@ -2903,12 +2805,7 @@ class WebElement {
    */
 
   getDomAttribute(attributeName) {
-    return this.execute_(
-      new command.Command(command.Name.GET_DOM_ATTRIBUTE).setParameter(
-        'name',
-        attributeName
-      )
-    )
+    return this.execute_(new command.Command(command.Name.GET_DOM_ATTRIBUTE).setParameter('name', attributeName))
   }
 
   /**
@@ -2918,12 +2815,7 @@ class WebElement {
    *     resolved with the element's property value
    */
   getProperty(propertyName) {
-    return this.execute_(
-      new command.Command(command.Name.GET_ELEMENT_PROPERTY).setParameter(
-        'name',
-        propertyName
-      )
-    )
+    return this.execute_(new command.Command(command.Name.GET_ELEMENT_PROPERTY).setParameter('name', propertyName))
   }
 
   /**
@@ -2966,6 +2858,7 @@ class WebElement {
   getAccessibleName() {
     return this.execute_(new command.Command(command.Name.GET_COMPUTED_LABEL))
   }
+
   /**
    * Returns an object describing an element's location, in pixels relative to
    * the document element, and the element's size in pixels.
@@ -3051,9 +2944,7 @@ class WebElement {
    *     resolved to the screenshot as a base-64 encoded PNG.
    */
   takeScreenshot() {
-    return this.execute_(
-      new command.Command(command.Name.TAKE_ELEMENT_SCREENSHOT)
-    )
+    return this.execute_(new command.Command(command.Name.TAKE_ELEMENT_SCREENSHOT))
   }
 }
 
@@ -3138,11 +3029,7 @@ class ShadowRoot {
    * @return {boolean} whether the object is a valid encoded WebElement ID.
    */
   static isId(obj) {
-    return (
-      obj &&
-      typeof obj === 'object' &&
-      typeof obj[SHADOW_ROOT_ID_KEY] === 'string'
-    )
+    return obj && typeof obj === 'object' && typeof obj[SHADOW_ROOT_ID_KEY] === 'string'
   }
 
   /**
@@ -3348,12 +3235,7 @@ class Alert {
    *     when this command has completed.
    */
   sendKeys(text) {
-    return this.driver_.execute(
-      new command.Command(command.Name.SET_ALERT_TEXT).setParameter(
-        'text',
-        text
-      )
-    )
+    return this.driver_.execute(new command.Command(command.Name.SET_ALERT_TEXT).setParameter('text', text))
   }
 }
 

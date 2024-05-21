@@ -17,9 +17,9 @@
 
 'use strict'
 
-const assert = require('assert')
-const fs = require('fs')
-const path = require('path')
+const assert = require('node:assert')
+const fs = require('node:fs')
+const path = require('node:path')
 
 const chrome = require('../../chrome')
 const by = require('../../lib/by')
@@ -34,10 +34,7 @@ test.suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env
-        .builder()
-        .setChromeOptions(new chrome.Options().headless())
-        .build()
+      driver = await env.builder().setChromeOptions(new chrome.Options().addArguments('-headless')).build()
     })
     afterEach(async () => await driver.quit())
 
@@ -58,19 +55,11 @@ test.suite(
       await driver.get(test.Pages.echoPage)
       assert.strictEqual(await driver.getCurrentUrl(), test.Pages.echoPage)
 
-      let history = await driver.sendAndGetDevToolsCommand(
-        'Page.getNavigationHistory'
-      )
+      let history = await driver.sendAndGetDevToolsCommand('Page.getNavigationHistory')
       assert(history)
       assert(history.currentIndex >= 2)
-      assert.strictEqual(
-        history.entries[history.currentIndex].url,
-        test.Pages.echoPage
-      )
-      assert.strictEqual(
-        history.entries[history.currentIndex - 1].url,
-        test.Pages.ajaxyPage
-      )
+      assert.strictEqual(history.entries[history.currentIndex].url, test.Pages.echoPage)
+      assert.strictEqual(history.entries[history.currentIndex - 1].url, test.Pages.ajaxyPage)
     })
 
     it('sends Page.enable command using devtools', async function () {
@@ -86,13 +75,9 @@ test.suite(
         assert(!err)
       })
 
-      cdpConnection.execute(
-        'Page.navigate',
-        { url: 'chrome://newtab/' },
-        function (_res, err) {
-          assert(!err)
-        }
-      )
+      cdpConnection.execute('Page.navigate', { url: 'chrome://newtab/' }, function (_res, err) {
+        assert(!err)
+      })
     })
 
     describe('JS CDP events', function () {
@@ -107,12 +92,7 @@ test.suite(
       it('calls the event listener for js exceptions', async function () {
         const cdpConnection = await driver.createCDPConnection('page')
         await driver.onLogException(cdpConnection, function (event) {
-          assert.strictEqual(
-            event['exceptionDetails']['stackTrace']['callFrames'][0][
-              'functionName'
-            ],
-            'onmouseover'
-          )
+          assert.strictEqual(event['exceptionDetails']['stackTrace']['callFrames'][0]['functionName'], 'onmouseover')
         })
         await driver.get(test.Pages.javascriptPage)
         let element = driver.findElement({ id: 'throwing-mouseover' })
@@ -174,14 +154,8 @@ test.suite(
         const downloadPath = path.join(dir, 'download.bin')
         await driver.wait(() => io.exists(downloadPath), 5000)
 
-        const goldenPath = path.join(
-          __dirname,
-          '../../lib/test/data/chrome/download.bin'
-        )
-        assert.strictEqual(
-          fs.readFileSync(downloadPath, 'binary'),
-          fs.readFileSync(goldenPath, 'binary')
-        )
+        const goldenPath = path.join(__dirname, '../../lib/test/data/chrome/download.bin')
+        assert.strictEqual(fs.readFileSync(downloadPath, 'binary'), fs.readFileSync(goldenPath, 'binary'))
       })
 
       it('throws if path is not a directory', async function () {
@@ -294,5 +268,5 @@ test.suite(
       })
     })
   },
-  { browsers: ['chrome'] }
+  { browsers: ['chrome'] },
 )

@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 import base64
-import logging
 import os
 import warnings
 import zipfile
@@ -29,8 +28,6 @@ from .options import Options
 from .remote_connection import FirefoxRemoteConnection
 from .service import Service
 
-logger = logging.getLogger(__name__)
-
 
 class WebDriver(RemoteWebDriver):
     """Controls the GeckoDriver and allows you to drive the browser."""
@@ -42,7 +39,7 @@ class WebDriver(RemoteWebDriver):
         self,
         options: Options = None,
         service: Service = None,
-        keep_alive=True,
+        keep_alive: bool = True,
     ) -> None:
         """Creates a new instance of the Firefox driver. Starts the service and
         then creates new instance of Firefox driver.
@@ -56,27 +53,37 @@ class WebDriver(RemoteWebDriver):
         self.service = service if service else Service()
         options = options if options else Options()
 
-        self.service.path = DriverFinder.get_path(self.service, options)
+        finder = DriverFinder(self.service, options)
+        if finder.get_browser_path():
+            options.binary_location = finder.get_browser_path()
+            options.browser_version = None
+
+        self.service.path = finder.get_driver_path()
         self.service.start()
 
         executor = FirefoxRemoteConnection(
             remote_server_addr=self.service.service_url,
-            ignore_proxy=options._ignore_local_proxy,
             keep_alive=keep_alive,
+            ignore_proxy=options._ignore_local_proxy,
         )
-        super().__init__(command_executor=executor, options=options)
+
+        try:
+            super().__init__(command_executor=executor, options=options)
+        except Exception:
+            self.quit()
+            raise
 
         self._is_remote = False
 
     def quit(self) -> None:
-        """Quits the driver and close every associated window."""
+        """Closes the browser and shuts down the GeckoDriver executable."""
         try:
             super().quit()
         except Exception:
             # We don't care about the message because something probably has gone wrong
             pass
-
-        self.service.stop()
+        finally:
+            self.service.stop()
 
     def set_context(self, context) -> None:
         self.execute("SET_CONTEXT", {"context": context})
@@ -120,7 +127,10 @@ class WebDriver(RemoteWebDriver):
 
         if os.path.isdir(path):
             fp = BytesIO()
-            path_root = len(path) + 1  # account for trailing slash
+            # filter all trailing slash found in path
+            path = os.path.normpath(path)
+            # account for trailing slash that will be added by os.walk()
+            path_root = len(path) + 1
             with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED) as zipped:
                 for base, _, files in os.walk(path):
                     for fyle in files:

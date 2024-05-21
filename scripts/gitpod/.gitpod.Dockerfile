@@ -1,7 +1,7 @@
 # Used to create a development image for working on Selenium
 
 # You can find the new timestamped tags here: https://hub.docker.com/r/gitpod/workspace-full/tags
-FROM gitpod/workspace-full:2022-06-20-19-54-55
+FROM gitpod/workspace-full:2024-02-19-11-51-41
 
 USER root
 
@@ -10,8 +10,8 @@ USER root
 # So we can install browsers and browser drivers later
 RUN wget https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
     && dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/google-chrome.gpg && \
+    echo "deb [signed-by=/etc/apt/trusted.gpg.d/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
 RUN mkdir -p /home/gitpod/selenium /var/run/supervisor /var/log/supervisor && \
   chmod -R 777 /var/run/supervisor /var/log/supervisor
 
@@ -21,7 +21,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -qqy && \
     apt-get -qy install python-is-python3 \
-                        dotnet-sdk-5.0 \
+                        dotnet-sdk-6.0 \
                         supervisor \
                         x11vnc \
                         fluxbox \
@@ -50,7 +50,7 @@ RUN wget -nv -O /tmp/noVNC.zip "https://github.com/novnc/noVNC/archive/refs/tags
 
 # Bazel
 
-RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/bazelisk-linux-amd64 -o /usr/bin/bazelisk && \
+RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.19.0/bazelisk-linux-amd64 -o /usr/bin/bazelisk && \
     chmod 755 /usr/bin/bazelisk && \
     ln -sf /usr/bin/bazelisk /usr/bin/bazel
 

@@ -20,7 +20,8 @@ package org.openqa.selenium.devtools;
 import static com.google.common.net.MediaType.XHTML_UTF_8;
 import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.testing.Safely.safelyCall;
@@ -35,7 +36,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -244,6 +247,37 @@ class NetworkInterceptorTest extends JupiterTestBase {
         new NetworkInterceptor(driver, (Filter) next -> next)) {
       driver.get(appServer.whereIs("/redirect"));
 
+      String body = driver.findElement(By.tagName("body")).getText();
+      assertThat(body).contains("Hello, World!");
+    }
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  void shouldProceedAsNormalIfRequestResultInAnKnownErrorAndExceptionNotCaughtByFilter() {
+    Filter filter = next -> next;
+    try (NetworkInterceptor ignored = new NetworkInterceptor(driver, filter)) {
+      assertThatExceptionOfType(WebDriverException.class)
+          .isThrownBy(() -> driver.get("http://localhost:" + PortProber.findFreePort()));
+    }
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  void shouldPassResponseBackToBrowserIfRequestResultsInAnKnownErrorAndExceptionCaughtByFilter() {
+    Filter filter =
+        next ->
+            req -> {
+              try {
+                return next.execute(req);
+              } catch (RequestFailedException e) {
+                return new HttpResponse()
+                    .setStatus(200)
+                    .setContent(Contents.utf8String("Hello, World!"));
+              }
+            };
+    try (NetworkInterceptor ignored = new NetworkInterceptor(driver, filter)) {
+      driver.get("http://localhost:" + PortProber.findFreePort());
       String body = driver.findElement(By.tagName("body")).getText();
       assertThat(body).contains("Hello, World!");
     }

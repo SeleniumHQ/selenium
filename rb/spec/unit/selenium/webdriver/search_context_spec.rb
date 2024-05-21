@@ -89,6 +89,22 @@ module Selenium
           }.to raise_error(ArgumentError, 'cannot find elements by :foo')
         end
       end
+
+      context 'when extra finders are registered' do
+        around do |example|
+          described_class.extra_finders = {accessibility_id: 'accessibility id'}
+          example.call
+        ensure
+          described_class.extra_finders = nil
+        end
+
+        it 'finds element' do
+          allow(bridge).to receive(:find_element_by).with('accessibility id', 'foo', nil).and_return(element)
+
+          expect(search_context.find_element(accessibility_id: 'foo')).to eq(element)
+          expect(bridge).to have_received(:find_element_by).with('accessibility id', 'foo', nil)
+        end
+      end
     end
   end # WebDriver
 end # Selenium

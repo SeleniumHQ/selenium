@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 
 namespace OpenQA.Selenium
 {
@@ -58,7 +59,17 @@ namespace OpenQA.Selenium
         /// <param name="url">String of where you want the browser to go to</param>
         public void GoToUrl(string url)
         {
-            this.driver.Url = url;
+            if (url == null)
+            {
+                throw new ArgumentNullException(nameof(url), "URL cannot be null.");
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>
+            {
+                { "url", url }
+            };
+            this.driver.InternalExecute(DriverCommand.Get, parameters);
+
         }
 
         /// <summary>
@@ -72,7 +83,7 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException(nameof(url), "URL cannot be null.");
             }
 
-            this.driver.Url = url.ToString();
+            this.GoToUrl(url.ToString());
         }
 
         /// <summary>

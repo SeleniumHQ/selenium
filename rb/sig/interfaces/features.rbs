@@ -1,0 +1,3 @@
+interface _Features
+  def upload_if_necessary: (untyped keys) -> untyped
+end

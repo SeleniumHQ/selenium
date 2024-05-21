@@ -1,0 +1,3 @@
+interface _Commands
+  def commands: (untyped command) -> untyped
+end

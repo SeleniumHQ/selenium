@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const safari = require('../safari')
 const test = require('../lib/test')
 
@@ -40,5 +40,5 @@ test.suite(
       })
     })
   },
-  { browsers: ['safari'] }
+  { browsers: ['safari'] },
 )

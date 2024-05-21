@@ -19,7 +19,6 @@ package org.openqa.selenium.bidi.network;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
@@ -32,7 +31,6 @@ public class RequestData {
 
   private final List<Header> headers;
 
-  // TODO: add from json method there
   private final List<Cookie> cookies;
 
   private final long headersSize;

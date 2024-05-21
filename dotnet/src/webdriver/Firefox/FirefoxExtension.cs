@@ -16,14 +16,13 @@
 // limitations under the License.
 // </copyright>
 
+using Newtonsoft.Json.Linq;
+using OpenQA.Selenium.Internal;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Xml;
-using Newtonsoft.Json.Linq;
-using OpenQA.Selenium.Internal;
 
 
 

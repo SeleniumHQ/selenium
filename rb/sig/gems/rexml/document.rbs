@@ -1,0 +1,7 @@
+module REXML
+  class Document
+    def initialize: (untyped element) -> void
+
+    def root: () -> untyped
+  end
+end
