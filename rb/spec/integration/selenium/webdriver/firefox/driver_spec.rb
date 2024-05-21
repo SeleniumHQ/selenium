@@ -108,9 +108,10 @@ module Selenium
             expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
 
-          it 'install and uninstall signed directory', except: { browser: :firefox,
-          platform: :windows,
-                                                                reason: 'signature must be different for windows, skipping everywhere until Firefox 127 is released'} do
+          it 'install and uninstall signed directory', except: {browser: :firefox,
+                                                                platform: :windows,
+                                                                reason: 'signature must be different for windows,
+                                                                skipping everywhere until Firefox 127 is released'} do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed/", __dir__)
             id = driver.install_addon(ext)
 
