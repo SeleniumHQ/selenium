@@ -286,6 +286,7 @@ namespace OpenQA.Selenium.Remote
                 if (_logger.IsEnabled(LogEventLevel.Trace))
                 {
                     _logger.Trace($">> {requestMessage}");
+
                     if (requestMessage.Content != null)
                     {
                         string content = await requestMessage.Content.ReadAsStringAsync();
@@ -298,8 +299,12 @@ namespace OpenQA.Selenium.Remote
                     if (_logger.IsEnabled(LogEventLevel.Trace))
                     {
                         _logger.Trace($"<< {responseMessage}");
-                        string responseBody = await responseMessage.Content.ReadAsStringAsync();
-                        _logger.Trace($"<< Body: {responseBody}");
+
+                        if (responseMessage.StatusCode != HttpStatusCode.OK || responseMessage.StatusCode != HttpStatusCode.Created)
+                        {
+                            string responseBody = await responseMessage.Content.ReadAsStringAsync();
+                            _logger.Trace($"<< Response Body: {responseBody}");
+                        }
                     }
 
                     HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
