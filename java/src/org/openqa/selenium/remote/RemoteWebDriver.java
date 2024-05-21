@@ -32,7 +32,6 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -514,7 +513,7 @@ public class RemoteWebDriver
     String currentName = Thread.currentThread().getName();
     Thread.currentThread()
         .setName(
-          new Formatter(Locale.US).format("Forwarding %s on session %s to remote", command.getName(), sessionId).toString());
+          String.format(Locale.US,"Forwarding %s on session %s to remote", command.getName(), sessionId));
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
@@ -728,7 +727,7 @@ public class RemoteWebDriver
         && toLog instanceof Response) {
       Response responseToLog = (Response) toLog;
       Response copyToLog = new Response(new SessionId((responseToLog).getSessionId()));
-      copyToLog.setValue(new Formatter(Locale.US).format("*%s response suppressed*", commandName).toString());
+      copyToLog.setValue(String.format(Locale.US,"*%s response suppressed*", commandName));
       copyToLog.setState(responseToLog.getState());
       text = String.valueOf(copyToLog);
     }
@@ -759,11 +758,11 @@ public class RemoteWebDriver
       LOG.log(
           Level.WARNING,
           () ->
-          new Formatter(Locale.US).format(
+          String.format(Locale.US,
                   "Support for Legacy Capabilities is deprecated; You are sending the following"
                       + " invalid capabilities: %s; Please update to W3C Syntax:"
                       + " https://www.selenium.dev/blog/2022/legacy-protocol-support/",
-                  invalid).toString());
+                  invalid));
     }
   }
 
@@ -817,9 +816,9 @@ public class RemoteWebDriver
       platformName = "unknown";
     }
 
-      return new Formatter(Locale.US).format(
+    String.format(Locale.US,
           "%s: %s on %s (%s)",
-          getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId()).toString();
+          getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId());
   }
 
   public enum When {

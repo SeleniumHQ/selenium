@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -279,40 +278,38 @@ public class EdgeDriverService extends DriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
-      try (Formatter formatter = new Formatter(Locale.US)) {
-        args.add((formatter.format("--port=%d", getPort()).toString()));
+      args.add((String.format(Locale.US,"--port=%d", getPort())));
 
-        // Readable timestamp and append logs only work if log path is specified in args
-        // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
-        if (getLogFile() != null) {
-          args.add(formatter.format("--log-path=%s", getLogFile().getAbsolutePath()).toString());
-          if (Boolean.TRUE.equals(readableTimestamp)) {
-            args.add("--readable-timestamp");
-          }
-          if (Boolean.TRUE.equals(appendLog)) {
-            args.add("--append-log");
-          }
-          withLogOutput(
-              OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
+      // Readable timestamp and append logs only work if log path is specified in args
+      // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
+      if (getLogFile() != null) {
+        args.add(String.format(Locale.US,"--log-path=%s", getLogFile().getAbsolutePath()));
+        if (Boolean.TRUE.equals(readableTimestamp)) {
+          args.add("--readable-timestamp");
         }
+        if (Boolean.TRUE.equals(appendLog)) {
+          args.add("--append-log");
+        }
+        withLogOutput(
+            OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
+      }
 
-        if (logLevel != null) {
-          args.add(formatter.format("--log-level=%s", logLevel.toString().toUpperCase()).toString());
-        }
-        if (Boolean.TRUE.equals(silent)) {
-          args.add("--silent");
-        }
-        if (Boolean.TRUE.equals(verbose)) {
-          args.add("--verbose");
-        }
-        if (allowedListIps != null) {
-          args.add(formatter.format("--allowed-ips=%s", allowedListIps).toString());
-        }
-        if (Boolean.TRUE.equals(disableBuildCheck)) {
-          args.add("--disable-build-check");
-        }
+      if (logLevel != null) {
+        args.add(String.format(Locale.US,"--log-level=%s", logLevel.toString().toUpperCase()));
+      }
+      if (Boolean.TRUE.equals(silent)) {
+        args.add("--silent");
+      }
+      if (Boolean.TRUE.equals(verbose)) {
+        args.add("--verbose");
+      }
+      if (allowedListIps != null) {
+        args.add(String.format(Locale.US,"--allowed-ips=%s", allowedListIps));
+      }
+      if (Boolean.TRUE.equals(disableBuildCheck)) {
+        args.add("--disable-build-check");
+      }
 
-    }
     return List.copyOf(args);
   }
 

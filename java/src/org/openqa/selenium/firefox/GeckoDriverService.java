@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -221,15 +220,15 @@ public class GeckoDriverService extends FirefoxDriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
-      args.add(new Formatter(Locale.US).format("--port=%d", getPort()).toString());
+      args.add(String.format(Locale.US,"--port=%d", getPort()));
 
       int wsPort = PortProber.findFreePort();
-      args.add(new Formatter(Locale.US).format("--websocket-port=%d", wsPort).toString());
+      args.add(String.format(Locale.US,"--websocket-port=%d", wsPort));
 
       args.add("--allow-origins");
-      args.add(new Formatter(Locale.US).format("http://127.0.0.1:%d", wsPort).toString());
-      args.add(new Formatter(Locale.US).format("http://localhost:%d", wsPort).toString());
-      args.add(new Formatter(Locale.US).format("http://[::1]:%d", wsPort).toString());
+      args.add(String.format(Locale.US,"http://127.0.0.1:%d", wsPort));
+      args.add(String.format(Locale.US,"http://localhost:%d", wsPort));
+      args.add(String.format(Locale.US,"http://[::1]:%d", wsPort));
 
       if (logLevel != null) {
         args.add("--log");
@@ -247,6 +246,7 @@ public class GeckoDriverService extends FirefoxDriverService {
         args.add("--allow-hosts");
         args.addAll(Arrays.asList(allowHosts.split(" ")));
       }
+      
       return unmodifiableList(args);
     }
 
