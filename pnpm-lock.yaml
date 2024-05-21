@@ -78,11 +78,11 @@ importers:
         specifier: 7.24.1
         version: 7.24.1(@babel/core@7.24.5)
       '@testing-library/jest-dom':
-        specifier: 6.4.2
-        version: 6.4.2(@types/jest@29.5.12)
+        specifier: 6.4.5
+        version: 6.4.5(@types/jest@29.5.12)
       '@testing-library/react':
-        specifier: 14.2.2
-        version: 14.2.2(react-dom@18.2.0)(react@18.2.0)
+        specifier: 14.3.1
+        version: 14.3.1(react-dom@18.2.0)(react@18.2.0)
       '@testing-library/user-event':
         specifier: 14.5.2
         version: 14.5.2(@testing-library/dom@10.1.0)
@@ -1314,8 +1314,8 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@testing-library/jest-dom@6.4.2(@types/jest@29.5.12):
-    resolution: {integrity: sha512-CzqH0AFymEMG48CpzXFriYYkOjk6ZGPCLMhW9e9jg3KMCn5OfJecF8GtGW7yGfR/IgCe3SX8BSwjdzI6BBbZLw==}
+  /@testing-library/jest-dom@6.4.5(@types/jest@29.5.12):
+    resolution: {integrity: sha512-AguB9yvTXmCnySBP1lWjfNNUwpbElsaQ567lt2VdGqAdHtpieLgjmcVyv1q7PMIvLbgpDdkWV5Ydv3FEejyp2A==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
     peerDependencies:
       '@jest/globals': '>= 28'
@@ -1346,8 +1346,8 @@ packages:
       redent: 3.0.0
     dev: true
 
-  /@testing-library/react@14.2.2(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-SOUuM2ysCvjUWBXTNfQ/ztmnKDmqaiPV3SvoIuyxMUca45rbSWWAT/qB8CUs/JQ/ux/8JFs9DNdFQ3f6jH3crA==}
+  /@testing-library/react@14.3.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-H99XjUhWQw0lTgyMN05W3xQG1Nh4lq574D8keFf1dDoNTJgp66VbJozRaczoF+wsiaPJNt/TcnfpLGufGxSrZQ==}
     engines: {node: '>=14'}
     peerDependencies:
       react: ^18.0.0
