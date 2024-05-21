@@ -513,7 +513,7 @@ public class RemoteWebDriver
     String currentName = Thread.currentThread().getName();
     Thread.currentThread()
         .setName(
-          String.format(Locale.US,"Forwarding %s on session %s to remote", command.getName(), sessionId));
+            String.format(Locale.US,"Forwarding %s on session %s to remote", command.getName(), sessionId));
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
@@ -758,7 +758,7 @@ public class RemoteWebDriver
       LOG.log(
           Level.WARNING,
           () ->
-          String.format(Locale.US,
+              String.format(Locale.US,
                   "Support for Legacy Capabilities is deprecated; You are sending the following"
                       + " invalid capabilities: %s; Please update to W3C Syntax:"
                       + " https://www.selenium.dev/blog/2022/legacy-protocol-support/",
@@ -816,9 +816,9 @@ public class RemoteWebDriver
       platformName = "unknown";
     }
 
-    String.format(Locale.US,
-          "%s: %s on %s (%s)",
-          getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId());
+    return String.format(Locale.US,
+        "%s: %s on %s (%s)",
+        getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId());
   }
 
   public enum When {

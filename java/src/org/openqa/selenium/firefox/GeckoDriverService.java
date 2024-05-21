@@ -246,7 +246,6 @@ public class GeckoDriverService extends FirefoxDriverService {
         args.add("--allow-hosts");
         args.addAll(Arrays.asList(allowHosts.split(" ")));
       }
-      
       return unmodifiableList(args);
     }
 

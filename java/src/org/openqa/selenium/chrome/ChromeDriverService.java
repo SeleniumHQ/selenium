@@ -288,7 +288,7 @@ public class ChromeDriverService extends DriverService {
 
     // Readable timestamp and append logs only work if log path is specified in args
     // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
-    if (getLogFile() != null) {
+      if (getLogFile() != null) {
         args.add(String.format(Locale.US,"--log-path=%s", getLogFile().getAbsolutePath()));
         if (Boolean.TRUE.equals(readableTimestamp)) {
           args.add("--readable-timestamp");
@@ -298,7 +298,7 @@ public class ChromeDriverService extends DriverService {
         }
         withLogOutput(
             OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
-    }
+      }
 
       if (logLevel != null) {
         args.add(String.format(Locale.US,"--log-level=%s", logLevel.toString().toUpperCase()));
@@ -310,8 +310,8 @@ public class ChromeDriverService extends DriverService {
         args.add("--disable-build-check");
       }
 
-    return unmodifiableList(args);
-  }
+      return unmodifiableList(args);
+    }
 
     @Override
     protected ChromeDriverService createDriverService(

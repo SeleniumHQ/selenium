@@ -310,8 +310,8 @@ public class EdgeDriverService extends DriverService {
         args.add("--disable-build-check");
       }
 
-    return List.copyOf(args);
-  }
+      return List.copyOf(args);
+    }
 
     @Override
     protected EdgeDriverService createDriverService(
