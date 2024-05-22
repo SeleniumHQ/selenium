@@ -1,7 +1,7 @@
 module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.3.2")
-bazel_dep(name = "aspect_bazel_lib", version = "2.5.3")
+bazel_dep(name = "aspect_bazel_lib", version = "2.7.3")
 bazel_dep(name = "aspect_rules_esbuild", version = "0.18.0")
 bazel_dep(name = "aspect_rules_js", version = "1.41.1")
 bazel_dep(name = "aspect_rules_ts", version = "2.1.0")
