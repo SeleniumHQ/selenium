@@ -300,7 +300,7 @@ namespace OpenQA.Selenium.Remote
                     {
                         _logger.Trace($"<< {responseMessage}");
 
-                        if ((int)responseMessage.StatusCode < 200 || (int)responseMessage.StatusCode > 299)
+                        if ((int)responseMessage.StatusCode < 200 || (int)responseMessage.StatusCode > 399)
                         {
                             string responseBody = await responseMessage.Content.ReadAsStringAsync();
                             _logger.Trace($"<< Response Body: {responseBody}");
