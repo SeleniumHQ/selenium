@@ -23,8 +23,6 @@ import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,8 +60,6 @@ class DragAndDropTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void testDragAndDropRelative() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
@@ -79,8 +75,6 @@ class DragAndDropTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
     WebElement img1 = driver.findElement(By.id("test1"));
@@ -91,8 +85,6 @@ class DragAndDropTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
@@ -112,8 +104,6 @@ class DragAndDropTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
@@ -134,8 +124,6 @@ class DragAndDropTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void testElementInDiv() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
@@ -145,8 +133,6 @@ class DragAndDropTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   // BiDi in Chrome does not throw an error in case of target out of bounds
@@ -174,8 +160,6 @@ class DragAndDropTest extends JupiterTestBase {
   // window, otherwise we are stuck with a small window for the rest of the tests.
   // TODO(dawagner): Remove @NoDriverAfterTest when we can reliably do window resizing
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
@@ -195,8 +179,6 @@ class DragAndDropTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
 
@@ -227,8 +209,6 @@ class DragAndDropTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @Ignore(FIREFOX)
   @NotYetImplemented(CHROME)

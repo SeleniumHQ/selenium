@@ -57,8 +57,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void testBasicKeyboardInput() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -72,8 +70,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(SAFARI)
   public void testSendingKeyDownOnly() {
     driver.get(appServer.whereIs("key_logger.html"));
@@ -94,8 +90,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(SAFARI)
   public void testSendingKeyUp() {
     driver.get(appServer.whereIs("key_logger.html"));
@@ -123,8 +117,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(SAFARI)
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
 
@@ -150,8 +142,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testSendingKeysToActiveElement() {
     driver.get(pages.bodyTypingPage);
@@ -163,8 +153,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(SAFARI)
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
@@ -179,8 +167,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canGenerateKeyboardShortcuts() {
     driver.get(appServer.whereIs("keyboard_shortcut.html"));
 
@@ -210,8 +196,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testSelectionSelectBySymbol() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -237,8 +221,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @Ignore(IE)
   public void testSelectionSelectByWord() {
     assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "MacOS has alternative keyboard");
@@ -267,8 +249,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void testSelectionSelectAll() {
     assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "MacOS has alternative keyboard");
 
