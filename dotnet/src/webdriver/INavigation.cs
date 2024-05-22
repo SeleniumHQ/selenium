@@ -45,6 +45,12 @@ namespace OpenQA.Selenium
         void Forward();
 
         /// <summary>
+        /// Move a single "item" forward in the browser's history.
+        /// </summary>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        Task ForwardAsync();
+
+        /// <summary>
         ///  Load a new web page in the current browser window.
         /// </summary>
         /// <param name="url">The URL to load. It is best to use a fully qualified URL</param>
@@ -62,6 +68,13 @@ namespace OpenQA.Selenium
         /// <summary>
         ///  Load a new web page in the current browser window.
         /// </summary>
+        /// <param name="url">The URL to load. It is best to use a fully qualified URL</param>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        Task GoToUrlAsync(string url);
+
+        /// <summary>
+        ///  Load a new web page in the current browser window.
+        /// </summary>
         /// <param name="url">The URL to load.</param>
         /// <remarks>
         /// Calling the <see cref="GoToUrl(System.Uri)"/> method will load a new web page in the current browser window.
@@ -75,8 +88,21 @@ namespace OpenQA.Selenium
         void GoToUrl(Uri url);
 
         /// <summary>
+        ///  Load a new web page in the current browser window.
+        /// </summary>
+        /// <param name="url">The URL to load.</param>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        Task GoToUrlAsync(Uri url);
+
+        /// <summary>
         /// Refreshes the current page.
         /// </summary>
         void Refresh();
+
+        /// <summary>
+        /// Refreshes the current page.
+        /// </summary>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        Task RefreshAsync();
     }
 }

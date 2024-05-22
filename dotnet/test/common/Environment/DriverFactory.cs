@@ -114,6 +114,8 @@ namespace OpenQA.Selenium.Environment
             {
                 browser = Browser.Firefox;
                 options = GetDriverOptions<FirefoxOptions>(driverType, driverOptions);
+                options.UseWebSocketUrl = System.Environment.GetEnvironmentVariable("WEBDRIVER_BIDI") == "true";
+
                 service = CreateService<FirefoxDriverService>();
                 if (!string.IsNullOrEmpty(this.browserBinaryLocation))
                 {

@@ -26,6 +26,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Threading.Tasks;
 using WebDriverBiDi;
+using WebDriverBiDi.BrowsingContext;
 
 namespace OpenQA.Selenium
 {
@@ -47,6 +48,7 @@ namespace OpenQA.Selenium
         private SessionId sessionId;
         private String authenticatorId;
         private List<string> registeredCommands = new List<string>();
+        private string browsingContextId = string.Empty;
         private BiDiDriver biDiDriver;
 
         /// <summary>
@@ -662,6 +664,8 @@ namespace OpenQA.Selenium
                 this.biDiDriver = new BiDiDriver(DefaultCommandTimeout);
                 string webSocketUrl = this.capabilities.GetCapability("webSocketUrl").ToString();
                 AsyncHelper.RunSync(() => this.biDiDriver.StartAsync(webSocketUrl));
+                GetTreeCommandResult tree = AsyncHelper.RunSync(() => this.biDiDriver.BrowsingContext.GetTreeAsync(new GetTreeCommandParameters()));
+                this.browsingContextId = tree.ContextTree[0].BrowsingContextId;
             }
         }
 
@@ -1045,6 +1049,8 @@ namespace OpenQA.Selenium
         /// Gets the virtual authenticator ID for this WebDriver instance.
         /// </summary>
         public string AuthenticatorId { get; }
+
+        internal string BrowsingContextId => browsingContextId;
 
         internal BiDiDriver BiDiDriver => biDiDriver;
 

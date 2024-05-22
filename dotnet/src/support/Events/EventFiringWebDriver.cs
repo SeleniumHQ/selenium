@@ -852,7 +852,7 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Move the browser back asynchronously
+            /// Move the browser backward as an asynchronous task
             /// </summary>
             /// <returns>A task object representing the asynchronous operation</returns>
             public async Task BackAsync()
@@ -876,11 +876,20 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public void Forward()
             {
+                AsyncHelper.RunSync(this.ForwardAsync);
+            }
+
+            /// <summary>
+            /// Move the browser forward as an asynchronous task
+            /// </summary>
+            /// <returns>A task object representing the asynchronous operation</returns>
+            public async Task ForwardAsync()
+            {
                 try
                 {
                     WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver);
                     this.parentDriver.OnNavigatingForward(e);
-                    this.wrappedNavigation.Forward();
+                    await this.wrappedNavigation.ForwardAsync().ConfigureAwait(false);
                     this.parentDriver.OnNavigatedForward(e);
                 }
                 catch (Exception ex)
@@ -890,31 +899,22 @@ namespace OpenQA.Selenium.Support.Events
                 }
             }
 
+
             /// <summary>
-            /// Navigate to a url for your test
+            /// Navigate to a url
             /// </summary>
             /// <param name="url">String of where you want the browser to go to</param>
             public void GoToUrl(string url)
             {
-                try
-                {
-                    WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver, url);
-                    this.parentDriver.OnNavigating(e);
-                    this.wrappedNavigation.GoToUrl(url);
-                    this.parentDriver.OnNavigated(e);
-                }
-                catch (Exception ex)
-                {
-                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
-                    throw;
-                }
+                AsyncHelper.RunSync(() => this.GoToUrlAsync(url));
             }
 
             /// <summary>
-            /// Navigate to a url for your test
+            /// Navigate to a url as an asynchronous task
             /// </summary>
-            /// <param name="url">Uri object of where you want the browser to go to</param>
-            public void GoToUrl(Uri url)
+            /// <param name="url">String of where you want the browser to go to</param>
+            /// <returns>A task object representing the asynchronous operation</returns>
+            public async Task GoToUrlAsync(string url)
             {
                 if (url == null)
                 {
@@ -923,9 +923,9 @@ namespace OpenQA.Selenium.Support.Events
 
                 try
                 {
-                    WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver, url.ToString());
+                    WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver, url);
                     this.parentDriver.OnNavigating(e);
-                    this.wrappedNavigation.GoToUrl(url);
+                    await this.wrappedNavigation.GoToUrlAsync(url).ConfigureAwait(false);
                     this.parentDriver.OnNavigated(e);
                 }
                 catch (Exception ex)
@@ -936,13 +936,46 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
+            /// Navigate to a url
+            /// </summary>
+            /// <param name="url">Uri object of where you want the browser to go to</param>
+            public void GoToUrl(Uri url)
+            {
+                AsyncHelper.RunSync(() => this.GoToUrlAsync(url));
+            }
+
+            /// <summary>
+            /// Navigate to a url as an asynchronous task
+            /// </summary>
+            /// <param name="url">Uri object of where you want the browser to go to</param>
+            /// <returns>A task object representing the asynchronous operation</returns>
+            public async Task GoToUrlAsync(Uri url)
+            {
+                if (url == null)
+                {
+                    throw new ArgumentNullException(nameof(url), "url cannot be null");
+                }
+
+                await this.GoToUrlAsync(url.ToString()).ConfigureAwait(false);
+            }
+
+            /// <summary>
             /// Refresh the browser
             /// </summary>
             public void Refresh()
             {
+                AsyncHelper.RunSync(this.RefreshAsync);
+            }
+
+            /// <summary>
+            /// Refresh the browser as an asynchronous task
+            /// </summary>
+            /// <returns>A task object representing the asynchronous operation</returns>
+            public async Task RefreshAsync()
+            {
                 try
                 {
-                    this.wrappedNavigation.Refresh();
+                    await this.wrappedNavigation.RefreshAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -950,6 +983,7 @@ namespace OpenQA.Selenium.Support.Events
                     throw;
                 }
             }
+
         }
 
         /// <summary>

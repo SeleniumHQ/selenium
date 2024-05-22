@@ -20,6 +20,7 @@ using System;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Internal;
 using System.Collections.Generic;
+using WebDriverBiDi.BrowsingContext;
 
 namespace OpenQA.Selenium
 {
@@ -48,12 +49,22 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Move back a single entry in the browser's history asynchronously.
+        /// Move back a single entry in the browser's history as an asynchronous task.
         /// </summary>
         /// <returns>A task object representing the asynchronous operation</returns>
         public async Task BackAsync()
         {
-            await this.driver.InternalExecuteAsync(DriverCommand.GoBack, null);
+            if (this.driver.BiDiDriver != null)
+            {
+                var traverseHistoryCommandParameters =
+                    new TraverseHistoryCommandParameters(driver.BrowsingContextId, -1);
+                await this.driver.BiDiDriver.BrowsingContext.TraverseHistoryAsync(traverseHistoryCommandParameters)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                await this.driver.InternalExecuteAsync(DriverCommand.GoBack, null).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -61,40 +72,85 @@ namespace OpenQA.Selenium
         /// </summary>
         public void Forward()
         {
-            this.driver.InternalExecute(DriverCommand.GoForward, null);
+            AsyncHelper.RunSync(this.ForwardAsync);
         }
 
         /// <summary>
-        /// Navigate to a url for your test
+        /// Move the browser forward as an asynchronous task
+        /// </summary>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        public async Task ForwardAsync()
+        {
+            if (this.driver.BiDiDriver != null)
+            {
+                var traverseHistoryCommandParameters =
+                    new TraverseHistoryCommandParameters(driver.BrowsingContextId, 1);
+                await this.driver.BiDiDriver.BrowsingContext.TraverseHistoryAsync(traverseHistoryCommandParameters)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                await this.driver.InternalExecuteAsync(DriverCommand.GoForward, null).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Navigate to a url
         /// </summary>
         /// <param name="url">String of where you want the browser to go to</param>
         public void GoToUrl(string url)
         {
-            if (url == null)
-            {
-                throw new ArgumentNullException(nameof(url), "URL cannot be null.");
-            }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>
-            {
-                { "url", url }
-            };
-            this.driver.InternalExecute(DriverCommand.Get, parameters);
-
+            AsyncHelper.RunSync(() => this.GoToUrlAsync(url));
         }
 
         /// <summary>
-        /// Navigate to a url for your test
+        /// Navigate to a url as an asynchronous task
         /// </summary>
-        /// <param name="url">Uri object of where you want the browser to go to</param>
-        public void GoToUrl(Uri url)
+        /// <param name="url">String of where you want the browser to go to</param>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        public async Task GoToUrlAsync(string url)
         {
             if (url == null)
             {
                 throw new ArgumentNullException(nameof(url), "URL cannot be null.");
             }
 
-            this.GoToUrl(url.ToString());
+            if (this.driver.BiDiDriver != null)
+            {
+                await driver.BiDiDriver.BrowsingContext.NavigateAsync(new NavigateCommandParameters(driver.BrowsingContextId, url)).ConfigureAwait(false);
+            }
+            else
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>
+                {
+                    { "url", url }
+                };
+                this.driver.InternalExecute(DriverCommand.Get, parameters);
+            }
+        }
+
+        /// <summary>
+        /// Navigate to a url
+        /// </summary>
+        /// <param name="url">Uri object of where you want the browser to go to</param>
+        public void GoToUrl(Uri url)
+        {
+            AsyncHelper.RunSync(() => this.GoToUrlAsync(url));
+        }
+
+        /// <summary>
+        /// Navigate to a url as an asynchronous task
+        /// </summary>
+        /// <param name="url">Uri of where you want the browser to go to</param>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        public async Task GoToUrlAsync(Uri url)
+        {
+            if (url == null)
+            {
+                throw new ArgumentNullException(nameof(url), "URL cannot be null.");
+            }
+
+            await this.GoToUrlAsync(url.ToString()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -102,8 +158,25 @@ namespace OpenQA.Selenium
         /// </summary>
         public void Refresh()
         {
-            // driver.SwitchTo().DefaultContent();
-            this.driver.InternalExecute(DriverCommand.Refresh, null);
+            AsyncHelper.RunSync(this.RefreshAsync);
+        }
+
+        /// <summary>
+        /// Refresh the browser as an asynchronous task
+        /// </summary>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        public async Task RefreshAsync()
+        {
+            if (this.driver.BiDiDriver != null)
+            {
+                var reloadCommandParameters =
+                    new ReloadCommandParameters(driver.BrowsingContextId);
+                await this.driver.BiDiDriver.BrowsingContext.ReloadAsync(reloadCommandParameters).ConfigureAwait(false);
+            }
+            else
+            {
+                await this.driver.InternalExecuteAsync(DriverCommand.Refresh, null).ConfigureAwait(false);
+            }
         }
     }
 }
