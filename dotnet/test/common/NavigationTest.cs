@@ -97,19 +97,6 @@ namespace OpenQA.Selenium
             Assert.AreEqual("Fish and chips!", changedDiv.Text);
             driver.Navigate().Refresh();
 
-            WaitFor(() =>
-            {
-                try
-                {
-                    var text = changedDiv.Text;
-                    return false;
-                }
-                catch (StaleElementReferenceException)
-                {
-                    return true;
-                }
-            }, "Page did not refresh");
-
             changedDiv = driver.FindElement(By.Id("dynamo"));
             Assert.AreEqual("What's for dinner?", changedDiv.Text);
         }

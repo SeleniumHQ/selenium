@@ -30,6 +30,14 @@ namespace OpenQA.Selenium
     internal class Navigator : INavigation
     {
         private WebDriver driver;
+        private static readonly Dictionary<string, ReadinessState> PageLoadStrategyMapper = new()
+        {
+            {"normal", ReadinessState.Complete},
+            {"default", ReadinessState.Complete},
+            {"eager", ReadinessState.Interactive},
+            {"none", ReadinessState.None}
+        };
+        private ReadinessState readinessState;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Navigator"/> class
@@ -38,6 +46,7 @@ namespace OpenQA.Selenium
         public Navigator(WebDriver driver)
         {
             this.driver = driver;
+            this.readinessState = PageLoadStrategyMapper[(string)driver.Capabilities.GetCapability("pageLoadStrategy")];
         }
 
         /// <summary>
@@ -117,7 +126,11 @@ namespace OpenQA.Selenium
 
             if (this.driver.BiDiDriver != null)
             {
-                await driver.BiDiDriver.BrowsingContext.NavigateAsync(new NavigateCommandParameters(driver.BrowsingContextId, url)).ConfigureAwait(false);
+                NavigateCommandParameters navigateCommandParameters = new NavigateCommandParameters(driver.BrowsingContextId, url)
+                    {
+                        Wait = this.readinessState
+                    };
+                await driver.BiDiDriver.BrowsingContext.NavigateAsync(navigateCommandParameters).ConfigureAwait(false);
             }
             else
             {
@@ -170,7 +183,10 @@ namespace OpenQA.Selenium
             if (this.driver.BiDiDriver != null)
             {
                 var reloadCommandParameters =
-                    new ReloadCommandParameters(driver.BrowsingContextId);
+                    new ReloadCommandParameters(driver.BrowsingContextId)
+                    {
+                        Wait =  this.readinessState
+                    };
                 await this.driver.BiDiDriver.BrowsingContext.ReloadAsync(reloadCommandParameters).ConfigureAwait(false);
             }
             else
