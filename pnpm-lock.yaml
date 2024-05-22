@@ -11,8 +11,8 @@ importers:
   javascript/grid-ui:
     dependencies:
       '@apollo/client':
-        specifier: 3.9.9
-        version: 3.9.9(@types/react@18.2.72)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: 3.10.4
+        version: 3.10.4(@types/react@18.2.72)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@emotion/react':
         specifier: 11.11.4
         version: 11.11.4(@types/react@18.2.72)(react@18.2.0)
@@ -181,8 +181,8 @@ packages:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  /@apollo/client@3.9.9(@types/react@18.2.72)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-/sMecU/M0WK9knrguts1lSLV8xFKzIgOMVb4mi6MOxgJXjliDB8PvOtmXhTqh2cVMMR4TzXgOnb+af/690zlQw==}
+  /@apollo/client@3.10.4(@types/react@18.2.72)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-51gk0xOwN6Ls1EbTG5svFva1kdm2APHYTzmFhaAdvUQoJFDxfc0UwQgDxGptzH84vkPlo1qunY1FuboyF9LI3Q==}
     peerDependencies:
       graphql: ^15.0.0 || ^16.0.0
       graphql-ws: ^5.5.5
@@ -210,7 +210,7 @@ packages:
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      rehackt: 0.0.6(@types/react@18.2.72)(react@18.2.0)
+      rehackt: 0.1.0(@types/react@18.2.72)(react@18.2.0)
       response-iterator: 0.2.6
       symbol-observable: 4.0.0
       ts-invariant: 0.10.3
@@ -4572,8 +4572,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /rehackt@0.0.6(@types/react@18.2.72)(react@18.2.0):
-    resolution: {integrity: sha512-l3WEzkt4ntlEc/IB3/mF6SRgNHA6zfQR7BlGOgBTOmx7IJJXojDASav+NsgXHFjHn+6RmwqsGPFgZpabWpeOdw==}
+  /rehackt@0.1.0(@types/react@18.2.72)(react@18.2.0):
+    resolution: {integrity: sha512-7kRDOuLHB87D/JESKxQoRwv4DzbIdwkAGQ7p6QKGdVlY1IZheUnVhlk/4UZlNUVxdAXpyxikE3URsG067ybVzw==}
     peerDependencies:
       '@types/react': '*'
       react: '*'
