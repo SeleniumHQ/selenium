@@ -16,10 +16,10 @@
 // limitations under the License.
 // </copyright>
 
+using System.Net.Http;
+using System.Threading.Tasks;
 using OpenQA.Selenium.Internal.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {

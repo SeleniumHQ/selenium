@@ -248,7 +248,8 @@ namespace OpenQA.Selenium.Remote
 
             this.client.Timeout = this.serverResponseTimeout;
 
-            this.client.Interceptors.Add(new ResponseLoggerInterceptor(_logger));
+            var responseLogger = new ResponseLoggerInterceptor(_logger);
+            this.client.Interceptors.Add(responseLogger);
         }
 
         private async Task<HttpResponseInfo> MakeHttpRequest(HttpRequestInfo requestInfo)
