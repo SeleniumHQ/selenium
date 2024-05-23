@@ -313,7 +313,6 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
-
         private Response CreateResponse(HttpResponseInfo responseInfo)
         {
             Response response = new Response();
