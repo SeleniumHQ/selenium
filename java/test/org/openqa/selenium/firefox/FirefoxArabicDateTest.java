@@ -40,8 +40,8 @@ public class FirefoxArabicDateTest extends JupiterTestBase {
         builder.usingPort(port);
         GeckoDriverService service = builder.build();
 
-        localDriver = FirefoxDriver.builder().withDriverService(service).build();
-        localDriver.get(pages.simpleTestPage);
+        driver = new FirefoxDriver(service, (FirefoxOptions) FIREFOX.getCapabilities());
+        driver.get(pages.simpleTestPage);
         assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
         
         Locale.setDefault(Locale.US);
