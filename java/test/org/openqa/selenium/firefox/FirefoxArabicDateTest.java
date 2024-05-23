@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.Locale;
-
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
@@ -45,7 +44,5 @@ public class FirefoxArabicDateTest extends JupiterTestBase {
         assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
         
         Locale.setDefault(Locale.US);
-
     }
-    
 }
