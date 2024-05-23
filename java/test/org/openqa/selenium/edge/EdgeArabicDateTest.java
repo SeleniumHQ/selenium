@@ -17,12 +17,10 @@
 
 package org.openqa.selenium.edge;
 
-import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 import java.util.Locale;
-
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
@@ -41,12 +39,10 @@ public class EdgeArabicDateTest extends JupiterTestBase {
         builder.usingPort(port);
         EdgeDriverService service = builder.build();
 
-        localDriver = EdgeDriver.builder().withDriverService(service).build();
-        localDriver.get(pages.simpleTestPage);
-        assertThat(localDriver.getTitle()).isEqualTo("Hello WebDriver");
+        driver = new EdgeDriver(service, (EdgeOptions) EDGE.getCapabilities());
+        driver.get(pages.simpleTestPage);
+        assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
 
         Locale.setDefault(Locale.US);
-
     }
-    
 }

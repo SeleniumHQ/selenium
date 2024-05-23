@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
 import java.util.Locale;
-
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
@@ -40,9 +39,9 @@ public class ChromeArabicDateTest extends JupiterTestBase {
         builder.usingPort(port);
         ChromeDriverService service = builder.build();
 
-        localDriver = ChromeDriver.builder().withDriverService(service).build();
-        localDriver.get(pages.simpleTestPage);
-        assertThat(localDriver.getTitle()).isEqualTo("Hello WebDriver");
+        driver = new ChromeDriver(service, (ChromeOptions) CHROME.getCapabilities());
+        driver.get(pages.simpleTestPage);
+        assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
 
         Locale.setDefault(Locale.US);
     }
