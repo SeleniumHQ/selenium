@@ -30,8 +30,7 @@ module Selenium
         # do nothing
       end
 
-      it 'gets session status', except: {browser: %i[edge],
-                                         reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4676'} do
+      it 'gets session status' do
         status = driver.bidi.session.status
         expect(status).to respond_to(:ready)
         expect(status.message).not_to be_empty
@@ -61,9 +60,7 @@ module Selenium
         )
       end
 
-      it 'does not close BiDi session if at least one window is opened',
-         except: {browser: %i[edge],
-                  reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4676'} do
+      it 'does not close BiDi session if at least one window is opened' do
         status = driver.bidi.session.status
         expect(status.ready).to be false
         expect(status.message).to be_a String
@@ -79,9 +76,7 @@ module Selenium
         expect(status_after_closing.message).to be_a String
       end
 
-      it 'closes BiDi session if last window is closed',
-         except: {browser: %i[edge],
-                  reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4676'} do
+      it 'closes BiDi session if last window is closed' do
         status = driver.bidi.session.status
         expect(status.ready).to be false
         expect(status.message).to be_a String
