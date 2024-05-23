@@ -298,6 +298,11 @@ namespace OpenQA.Selenium.Remote
 
                 using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage).ConfigureAwait(false))
                 {
+                    if (_logger.IsEnabled(LogEventLevel.Trace))
+                    {
+                        _logger.Trace($"<< {responseMessage}");
+                    }
+
                     HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
                     httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
                     httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType?.ToString();
