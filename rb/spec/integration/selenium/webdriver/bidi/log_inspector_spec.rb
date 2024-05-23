@@ -27,83 +27,93 @@ module Selenium
 
         it 'can listen to console log' do
           reset_driver!(web_socket_url: true) do |driver|
-            log_entry = nil
+            log_entries = []
             log_inspector = described_class.new(driver)
-            log_inspector.on_console_entry { |log| log_entry = log }
+            log_inspector.on_console_entry { |log| log_entries << log }
 
             driver.navigate.to url_for(page)
             driver.find_element(id: 'consoleLog').click
-            wait.until { !log_entry.nil? }
+            log_entry = wait.until { log_entries.find { _1.text == 'Hello, world!' } }
 
             expect(log_entry).to have_attributes(
               text: 'Hello, world!',
               realm: nil,
               type: 'console',
               level: LogInspector::LOG_LEVEL[:INFO],
-              method: 'log'
+              method: 'log',
+              args: [{
+                'type' => 'string',
+                'value' => 'Hello, world!'
+              }]
             )
-            expect(log_entry.args.size).to eq(1)
           end
         end
 
         it 'can listen to console log with different consumers' do
           reset_driver!(web_socket_url: true) do |driver|
-            log_entry = nil
+            log_entries1 = []
+            log_entries2 = []
             log_inspector = described_class.new(driver)
-            log_inspector.on_console_entry { |log| log_entry = log }
-
-            log_entry_text = nil
-            log_inspector.on_console_entry { |log| log_entry_text = log.text }
+            log_inspector.on_console_entry { |log| log_entries1 << log }
+            log_inspector.on_console_entry { |log| log_entries2 << log }
 
             driver.navigate.to url_for(page)
             driver.find_element(id: 'consoleLog').click
-            wait.until { !log_entry.nil? }
+            log_entry1 = wait.until { log_entries1.find { _1.text == 'Hello, world!' } }
+            log_entry2 = wait.until { log_entries2.find { _1.text == 'Hello, world!' } }
 
-            expect(log_entry).to have_attributes(
-              text: 'Hello, world!',
-              realm: nil,
-              type: 'console',
-              level: LogInspector::LOG_LEVEL[:INFO],
-              method: 'log'
+            expect([log_entry1, log_entry2]).to all(
+              have_attributes(
+                text: 'Hello, world!',
+                realm: nil,
+                type: 'console',
+                level: LogInspector::LOG_LEVEL[:INFO],
+                method: 'log',
+                args: [{
+                  'type' => 'string',
+                  'value' => 'Hello, world!'
+                }]
+              )
             )
-            expect(log_entry.args.size).to eq(1)
-            expect(log_entry_text).to eq('Hello, world!')
           end
         end
 
         it 'can filter console info level log' do
           reset_driver!(web_socket_url: true) do |driver|
-            log_entry = nil
+            log_entries = []
             log_inspector = described_class.new(driver)
-            log_inspector.on_console_entry(FilterBy.log_level('info')) { |log| log_entry = log }
+            log_inspector.on_console_entry(FilterBy.log_level('info')) { |log| log_entries << log }
 
             driver.navigate.to url_for(page)
             driver.find_element(id: 'consoleLog').click
-            wait.until { !log_entry.nil? }
+            log_entry = wait.until { log_entries.find { _1.text == 'Hello, world!' } }
 
             expect(log_entry).to have_attributes(
               text: 'Hello, world!',
               realm: nil,
               type: 'console',
               level: LogInspector::LOG_LEVEL[:INFO],
-              method: 'log'
+              method: 'log',
+              args: [{
+                'type' => 'string',
+                'value' => 'Hello, world!'
+              }]
             )
-            expect(log_entry.args.size).to eq(1)
           end
         end
 
         it 'can filter console log' do
           reset_driver!(web_socket_url: true) do |driver|
-            log_entry = nil
+            log_entries = []
             log_inspector = described_class.new(driver)
-            log_inspector.on_console_entry(FilterBy.log_level('error')) { |log| log_entry = log }
+            log_inspector.on_console_entry(FilterBy.log_level('error')) { |log| log_entries << log }
 
             driver.navigate.to url_for(page)
             # Generating info level log but we are filtering by error level
             wait.until { driver.find_element(id: 'consoleLog').displayed? }
             driver.find_element(id: 'consoleLog').click
 
-            expect(log_entry).to be_nil
+            expect(log_entries).to be_empty
           end
         end
 
@@ -178,29 +188,31 @@ module Selenium
 
         it 'can listen to any log' do
           reset_driver!(web_socket_url: true) do |driver|
-            log_entry = nil
+            log_entries = []
             log_inspector = described_class.new(driver)
-            log_inspector.on_log { |log| log_entry = log }
+            log_inspector.on_log { |log| log_entries << log }
 
             driver.navigate.to url_for(page)
             driver.find_element(id: 'consoleError').click
-            wait.until { !log_entry.nil? }
+            log_entry = wait.until { log_entries.find { _1['text'] == 'I am console error' } }
 
-            expect(log_entry['text']).to eq('I am console error')
-            expect(log_entry['type']).to eq('console')
-            expect(log_entry['method']).to eq(LogInspector::LOG_LEVEL[:ERROR])
+            expect(log_entry).to include(
+              'text' => 'I am console error',
+              'type' => 'console',
+              'level' => LogInspector::LOG_LEVEL[:ERROR]
+            )
           end
         end
 
         it 'can filter any log' do
           reset_driver!(web_socket_url: true) do |driver|
-            log_entry = nil
+            log_entries = []
             log_inspector = described_class.new(driver)
-            log_inspector.on_log(FilterBy.log_level('info')) { |log| log_entry = log }
+            log_inspector.on_log(FilterBy.log_level('info')) { |log| log_entries << log }
 
             driver.navigate.to url_for(page)
             driver.find_element(id: 'consoleLog').click
-            wait.until { !log_entry.nil? }
+            log_entry = wait.until { log_entries.find { _1['text'] == 'Hello, world!' } }
 
             expect(log_entry['text']).to eq('Hello, world!')
             expect(log_entry['realm']).to be_nil
