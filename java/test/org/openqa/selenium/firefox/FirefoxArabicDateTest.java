@@ -21,28 +21,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.Locale;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.junit.jupiter.api.Test;
 
 public class FirefoxArabicDateTest extends JupiterTestBase {
 
-    @Test
-    @NoDriverBeforeTest
-    void shouldLaunchSuccessfullyWithArabicDate() {
-        Locale arabicLocal = new Locale("ar", "EG");
-        Locale.setDefault(arabicLocal);
+  @Test
+  @NoDriverBeforeTest
+  void shouldLaunchSuccessfullyWithArabicDate() {
+    Locale arabicLocal = new Locale("ar", "EG");
+    Locale.setDefault(arabicLocal);
 
-        int port = PortProber.findFreePort();
-        GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
-        builder.usingPort(port);
-        GeckoDriverService service = builder.build();
+    int port = PortProber.findFreePort();
+    GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
+    builder.usingPort(port);
+    GeckoDriverService service = builder.build();
 
-        driver = new FirefoxDriver(service, (FirefoxOptions) FIREFOX.getCapabilities());
-        driver.get(pages.simpleTestPage);
-        assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
+    driver = new FirefoxDriver(service, (FirefoxOptions) FIREFOX.getCapabilities());
+    driver.get(pages.simpleTestPage);
+    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
 
-        Locale.setDefault(Locale.US);
-    }
+    Locale.setDefault(Locale.US);
+  }
 }

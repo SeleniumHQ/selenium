@@ -513,7 +513,8 @@ public class RemoteWebDriver
     String currentName = Thread.currentThread().getName();
     Thread.currentThread()
         .setName(
-            String.format(Locale.US,"Forwarding %s on session %s to remote", command.getName(), sessionId));
+            String.format(
+                Locale.US, "Forwarding %s on session %s to remote", command.getName(), sessionId));
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
@@ -727,7 +728,7 @@ public class RemoteWebDriver
         && toLog instanceof Response) {
       Response responseToLog = (Response) toLog;
       Response copyToLog = new Response(new SessionId((responseToLog).getSessionId()));
-      copyToLog.setValue(String.format(Locale.US,"*%s response suppressed*", commandName));
+      copyToLog.setValue(String.format(Locale.US, "*%s response suppressed*", commandName));
       copyToLog.setState(responseToLog.getState());
       text = String.valueOf(copyToLog);
     }
@@ -758,7 +759,8 @@ public class RemoteWebDriver
       LOG.log(
           Level.WARNING,
           () ->
-              String.format(Locale.US,
+              String.format(
+                  Locale.US,
                   "Support for Legacy Capabilities is deprecated; You are sending the following"
                       + " invalid capabilities: %s; Please update to W3C Syntax:"
                       + " https://www.selenium.dev/blog/2022/legacy-protocol-support/",
@@ -816,9 +818,13 @@ public class RemoteWebDriver
       platformName = "unknown";
     }
 
-    return String.format(Locale.US,
+    return String.format(
+        Locale.US,
         "%s: %s on %s (%s)",
-        getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId());
+        getClass().getSimpleName(),
+        caps.getBrowserName(),
+        platformName,
+        getSessionId());
   }
 
   public enum When {

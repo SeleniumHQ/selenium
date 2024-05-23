@@ -21,28 +21,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
 import java.util.Locale;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.junit.jupiter.api.Test;
 
 public class ChromeArabicDateTest extends JupiterTestBase {
-    
-    @Test
-    @NoDriverBeforeTest
-    void shouldLaunchSuccessfullyWithArabicDate() {
-        Locale arabicLocal = new Locale("ar", "EG");
-        Locale.setDefault(arabicLocal);
 
-        int port = PortProber.findFreePort();
-        ChromeDriverService.Builder builder = new ChromeDriverService.Builder();
-        builder.usingPort(port);
-        ChromeDriverService service = builder.build();
+  @Test
+  @NoDriverBeforeTest
+  void shouldLaunchSuccessfullyWithArabicDate() {
+    Locale arabicLocal = new Locale("ar", "EG");
+    Locale.setDefault(arabicLocal);
 
-        driver = new ChromeDriver(service, (ChromeOptions) CHROME.getCapabilities());
-        driver.get(pages.simpleTestPage);
-        assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
+    int port = PortProber.findFreePort();
+    ChromeDriverService.Builder builder = new ChromeDriverService.Builder();
+    builder.usingPort(port);
+    ChromeDriverService service = builder.build();
 
-        Locale.setDefault(Locale.US);
-    }
+    driver = new ChromeDriver(service, (ChromeOptions) CHROME.getCapabilities());
+    driver.get(pages.simpleTestPage);
+    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
+
+    Locale.setDefault(Locale.US);
+  }
 }

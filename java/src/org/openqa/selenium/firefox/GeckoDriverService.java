@@ -220,15 +220,15 @@ public class GeckoDriverService extends FirefoxDriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
-      args.add(String.format(Locale.US,"--port=%d", getPort()));
+      args.add(String.format(Locale.US, "--port=%d", getPort()));
 
       int wsPort = PortProber.findFreePort();
-      args.add(String.format(Locale.US,"--websocket-port=%d", wsPort));
+      args.add(String.format(Locale.US, "--websocket-port=%d", wsPort));
 
       args.add("--allow-origins");
-      args.add(String.format(Locale.US,"http://127.0.0.1:%d", wsPort));
-      args.add(String.format(Locale.US,"http://localhost:%d", wsPort));
-      args.add(String.format(Locale.US,"http://[::1]:%d", wsPort));
+      args.add(String.format(Locale.US, "http://127.0.0.1:%d", wsPort));
+      args.add(String.format(Locale.US, "http://localhost:%d", wsPort));
+      args.add(String.format(Locale.US, "http://[::1]:%d", wsPort));
 
       if (logLevel != null) {
         args.add("--log");

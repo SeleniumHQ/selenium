@@ -138,7 +138,7 @@ public class DriverService implements Closeable {
   }
 
   protected URL getUrl(int port) throws IOException {
-    return new URL(String.format(Locale.US,"http://localhost:%d", port));
+    return new URL(String.format(Locale.US, "http://localhost:%d", port));
   }
 
   protected Capabilities getDefaultDriverOptions() {
@@ -199,7 +199,8 @@ public class DriverService implements Closeable {
         }
         this.executable = new DriverFinder(this, getDefaultDriverOptions()).getDriverPath();
       }
-      LOG.fine(String.format(Locale.US,"Starting driver at %s with %s", this.executable, this.args));
+      LOG.fine(
+          String.format(Locale.US, "Starting driver at %s with %s", this.executable, this.args));
 
       ExternalProcess.Builder builder =
           ExternalProcess.builder().command(this.executable, args).copyOutputTo(getOutputStream());
