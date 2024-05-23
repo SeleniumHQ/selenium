@@ -247,6 +247,8 @@ namespace OpenQA.Selenium.Remote
             }
 
             this.client.Timeout = this.serverResponseTimeout;
+
+            this.client.Interceptors.Add(new ResponseLoggerInterceptor(_logger));
         }
 
         private async Task<HttpResponseInfo> MakeHttpRequest(HttpRequestInfo requestInfo)
@@ -296,17 +298,6 @@ namespace OpenQA.Selenium.Remote
 
                 using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage).ConfigureAwait(false))
                 {
-                    if (_logger.IsEnabled(LogEventLevel.Trace))
-                    {
-                        _logger.Trace($"<< {responseMessage}");
-
-                        if ((int)responseMessage.StatusCode < 200 || (int)responseMessage.StatusCode > 399)
-                        {
-                            string responseBody = await responseMessage.Content.ReadAsStringAsync();
-                            _logger.Trace($"<< Response Body: {responseBody}");
-                        }
-                    }
-
                     HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
                     httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
                     httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType?.ToString();
