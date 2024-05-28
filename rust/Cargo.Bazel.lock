@@ -1,5 +1,5 @@
 {
-  "checksum": "c9f229f2c98cf8c0252a7a0c5e11fb9f93217ba30ce0500a63a3929a611fcffd",
+  "checksum": "04a1eca75c3bc7e40664cb50d32e9c8c7b13d073ac5ef331a323ae2a42d1da72",
   "crates": {
     "addr2line 0.21.0": {
       "name": "addr2line",
@@ -1977,6 +1977,10 @@
             {
               "id": "jobserver 0.1.31",
               "target": "jobserver"
+            },
+            {
+              "id": "libc 0.2.154",
+              "target": "libc"
             },
             {
               "id": "once_cell 1.19.0",
