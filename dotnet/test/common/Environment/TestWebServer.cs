@@ -49,7 +49,14 @@ namespace OpenQA.Selenium.Environment
                 catch (FileNotFoundException)
                 {
                     var baseDirectory = AppContext.BaseDirectory;
-                    standaloneTestJar = Path.Combine(baseDirectory, "../../../../../../bazel-bin/java/test/org/openqa/selenium/environment/appserver_deploy.jar");
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        standaloneTestJar = Path.Combine(baseDirectory, "../../../../../../bazel-bin/java/test/org/openqa/selenium/environment/appserver.exe");
+                    }
+                    else
+                    {
+                        standaloneTestJar = Path.Combine(baseDirectory, "../../../../../../bazel-bin/java/test/org/openqa/selenium/environment/appserver_deploy.jar");
+                    }
                 }
 
                 Console.Write("Standalone jar is " + standaloneTestJar);
