@@ -168,6 +168,7 @@ jobs:
     if: github.event_name != 'schedule'
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
+      MACOSX_DEPLOYMENT_TARGET: '10.12'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
@@ -200,6 +201,7 @@ jobs:
     if: github.event_name != 'schedule'
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
+      MACOSX_DEPLOYMENT_TARGET: '10.12'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
