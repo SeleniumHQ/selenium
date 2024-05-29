@@ -138,7 +138,7 @@ class InternetExplorerDriverTest extends JupiterTestBase {
     // Intentionally wait to make sure hover DOES NOT persist.
     Thread.sleep(1000);
 
-    wait.until(d -> item.getText().equals(""));
+    wait.until(d -> item.getText().isEmpty());
 
     assertThat(item.getText()).isEmpty();
   }
