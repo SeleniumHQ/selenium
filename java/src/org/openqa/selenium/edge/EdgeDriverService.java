@@ -277,13 +277,15 @@ public class EdgeDriverService extends DriverService {
 
     @Override
     protected List<String> createArgs() {
+      Locale.setDefault(Locale.US);
+
       List<String> args = new ArrayList<>();
-      args.add(String.format(Locale.US, "--port=%d", getPort()));
+      args.add(String.format("--port=%d", getPort()));
 
       // Readable timestamp and append logs only work if log path is specified in args
       // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
       if (getLogFile() != null) {
-        args.add(String.format(Locale.US, "--log-path=%s", getLogFile().getAbsolutePath()));
+        args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
         if (Boolean.TRUE.equals(readableTimestamp)) {
           args.add("--readable-timestamp");
         }
@@ -295,7 +297,7 @@ public class EdgeDriverService extends DriverService {
       }
 
       if (logLevel != null) {
-        args.add(String.format(Locale.US, "--log-level=%s", logLevel.toString().toUpperCase()));
+        args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
       }
       if (Boolean.TRUE.equals(silent)) {
         args.add("--silent");
@@ -304,7 +306,7 @@ public class EdgeDriverService extends DriverService {
         args.add("--verbose");
       }
       if (allowedListIps != null) {
-        args.add(String.format(Locale.US, "--allowed-ips=%s", allowedListIps));
+        args.add(String.format("--allowed-ips=%s", allowedListIps));
       }
       if (Boolean.TRUE.equals(disableBuildCheck)) {
         args.add("--disable-build-check");
