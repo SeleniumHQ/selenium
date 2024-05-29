@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using WebDriverBiDi;
 
 namespace OpenQA.Selenium
 {
@@ -13,10 +14,20 @@ namespace OpenQA.Selenium
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void ShouldNotHaveProblemNavigatingWithNoPagesBrowsed()
         {
-            INavigation navigation;
-            navigation = driver.Navigate();
-            navigation.Back();
-            navigation.Forward();
+             INavigation navigation = driver.Navigate();
+
+            if (((WebDriver)driver).Capabilities.HasCapability("webSocketUrl"))
+            {
+                var ex1 = Assert.Throws<WebDriverBiDiException>(() => navigation.Back());
+                Assert.True(ex1!.Message.Contains("no such history entry"));
+                var ex2 = Assert.Throws<WebDriverBiDiException>(() => navigation.Forward());
+                Assert.True(ex2!.Message.Contains("no such history entry"));
+            }
+            else
+            {
+                Assert.DoesNotThrow(() => navigation.Back());
+                Assert.DoesNotThrow(() => navigation.Forward());
+            }
         }
 
         [Test]
@@ -25,8 +36,8 @@ namespace OpenQA.Selenium
             INavigation navigation;
             navigation = driver.Navigate();
 
-            driver.Url = macbethPage;
-            driver.Url = simpleTestPage;
+            navigation.GoToUrl(macbethPage);
+            navigation.GoToUrl(simpleTestPage);
 
             navigation.Back();
             Assert.AreEqual(macbethTitle, driver.Title);
@@ -96,8 +107,18 @@ namespace OpenQA.Selenium
         public Task ShouldNotHaveProblemNavigatingWithNoPagesBrowsedAsync()
         {
             var navigation = driver.Navigate();
-            Assert.DoesNotThrowAsync(async () => await navigation.BackAsync());
-            Assert.DoesNotThrowAsync(async () => await navigation.ForwardAsync());
+            if (((WebDriver)driver).Capabilities.HasCapability("webSocketUrl"))
+            {
+                var ex1 = Assert.ThrowsAsync<WebDriverBiDiException>(async () => await navigation.BackAsync());
+                Assert.True(ex1!.Message.Contains("no such history entry"));
+                var ex2 = Assert.ThrowsAsync<WebDriverBiDiException>(async () => await navigation.ForwardAsync());
+                Assert.True(ex2!.Message.Contains("no such history entry"));
+            }
+            else
+            {
+                Assert.DoesNotThrow(() => navigation.Back());
+                Assert.DoesNotThrow(() =>navigation.Forward());
+            }
             return Task.CompletedTask;
         }
 
@@ -141,9 +162,9 @@ namespace OpenQA.Selenium
             var navigation = driver.Navigate();
 
             navigation.GoToUrlAsync(new Uri(macbethPage));
-            Assert.AreEqual(driver.Title, macbethTitle);
-            navigation.GoToUrl(new Uri(simpleTestPage));
-            Assert.AreEqual(simpleTestTitle, driver.Title);
+            Assert.AreEqual(macbethTitle, driver.Title);
+            navigation.GoToUrlAsync(new Uri(simpleTestPage));
+            Assert.AreEqual(driver.Title, simpleTestTitle);
         }
 
         [Test]
