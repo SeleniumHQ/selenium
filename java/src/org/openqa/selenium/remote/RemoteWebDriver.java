@@ -35,7 +35,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -513,8 +512,7 @@ public class RemoteWebDriver
     String currentName = Thread.currentThread().getName();
     Thread.currentThread()
         .setName(
-            String.format(
-                "Forwarding %s on session %s to remote", command.getName(), sessionId));
+            String.format("Forwarding %s on session %s to remote", command.getName(), sessionId));
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
@@ -819,10 +817,7 @@ public class RemoteWebDriver
 
     return String.format(
         "%s: %s on %s (%s)",
-        getClass().getSimpleName(),
-        caps.getBrowserName(),
-        platformName,
-        getSessionId());
+        getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId());
   }
 
   public enum When {

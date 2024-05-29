@@ -31,7 +31,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -199,8 +198,7 @@ public class DriverService implements Closeable {
         }
         this.executable = new DriverFinder(this, getDefaultDriverOptions()).getDriverPath();
       }
-      LOG.fine(
-          String.format("Starting driver at %s with %s", this.executable, this.args));
+      LOG.fine(String.format("Starting driver at %s with %s", this.executable, this.args));
 
       ExternalProcess.Builder builder =
           ExternalProcess.builder().command(this.executable, args).copyOutputTo(getOutputStream());
