@@ -197,6 +197,7 @@ jobs:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
           SLACK_COLOR: ${{ needs.javascript.status }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
