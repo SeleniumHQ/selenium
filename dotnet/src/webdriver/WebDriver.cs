@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium
 {
@@ -556,7 +557,25 @@ namespace OpenQA.Selenium
         /// <returns>WebDriver Response</returns>
         internal Response InternalExecute(string driverCommandToExecute, Dictionary<string, object> parameters)
         {
-            return this.Execute(driverCommandToExecute, parameters);
+            return Task.Run(() => this.InternalExecuteAsync(driverCommandToExecute, parameters)).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Executes commands with the driver asynchronously
+        /// </summary>
+        /// <param name="driverCommandToExecute">Command that needs executing</param>
+        /// <param name="parameters">Parameters needed for the command</param>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        internal Task<Response> InternalExecuteAsync(string driverCommandToExecute,
+            Dictionary<string, object> parameters)
+        {
+            return this.ExecuteAsync(driverCommandToExecute, parameters);
+        }
+
+        internal Response Execute(string driverCommandToExecute,
+            Dictionary<string, object> parameters)
+        {
+            return Task.Run(() => this.ExecuteAsync(driverCommandToExecute, parameters)).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -565,7 +584,7 @@ namespace OpenQA.Selenium
         /// <param name="driverCommandToExecute">A <see cref="DriverCommand"/> value representing the command to execute.</param>
         /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
         /// <returns>A <see cref="Response"/> containing information about the success or failure of the command and any data returned by the command.</returns>
-        protected virtual Response Execute(string driverCommandToExecute, Dictionary<string, object> parameters)
+        protected virtual async Task<Response> ExecuteAsync(string driverCommandToExecute, Dictionary<string, object> parameters)
         {
             Command commandToExecute = new Command(this.sessionId, driverCommandToExecute, parameters);
 
@@ -573,7 +592,7 @@ namespace OpenQA.Selenium
 
             try
             {
-                commandResponse = this.executor.Execute(commandToExecute);
+                commandResponse = await this.executor.ExecuteAsync(commandToExecute).ConfigureAwait(false);
             }
             catch (System.Net.Http.HttpRequestException e)
             {
