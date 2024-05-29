@@ -30,6 +30,13 @@ namespace OpenQA.Selenium
     {
         private WebDriver driver;
         private string browsingContextId;
+        private static readonly Dictionary<string, ReadinessState> PageLoadStrategyMapper = new()
+        {
+            {"normal", ReadinessState.Complete},
+            {"eager", ReadinessState.Interactive},
+            {"none", ReadinessState.None}
+        };
+        private ReadinessState readinessState;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Navigator"/> class
@@ -40,6 +47,9 @@ namespace OpenQA.Selenium
             this.driver = driver;
             // TODO: store the value of the current window's context id on the driver object
             this.browsingContextId = driver.CurrentWindowHandle;
+
+            string strategyCap = driver.Capabilities.GetCapability("pageLoadStrategy") as string;
+            this.readinessState = strategyCap == null ? ReadinessState.Complete : PageLoadStrategyMapper[strategyCap];
         }
 
         /// <summary>
@@ -119,7 +129,11 @@ namespace OpenQA.Selenium
 
             if (this.driver.BiDiDriver != null)
             {
-                await driver.BiDiDriver.BrowsingContext.NavigateAsync(new NavigateCommandParameters(this.browsingContextId, url)).ConfigureAwait(false);
+                NavigateCommandParameters navigateCommandParameters = new NavigateCommandParameters(this.browsingContextId, url)
+                    {
+                        Wait = this.readinessState
+                    };
+                await driver.BiDiDriver.BrowsingContext.NavigateAsync(navigateCommandParameters).ConfigureAwait(false);
             }
             else
             {
@@ -172,7 +186,10 @@ namespace OpenQA.Selenium
             if (this.driver.BiDiDriver != null)
             {
                 var reloadCommandParameters =
-                    new ReloadCommandParameters(this.browsingContextId);
+                    new ReloadCommandParameters(this.browsingContextId)
+                    {
+                        Wait =  this.readinessState
+                    };
                 await this.driver.BiDiDriver.BrowsingContext.ReloadAsync(reloadCommandParameters).ConfigureAwait(false);
             }
             else
