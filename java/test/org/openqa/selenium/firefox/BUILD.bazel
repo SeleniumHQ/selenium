@@ -9,7 +9,6 @@ LARGE_TESTS = [
     "FirefoxDriverPreferenceTest.java",
     "FirefoxDriverConcurrentTest.java",
     "TakesFullPageScreenshotTest.java",
-    "FirefoxArabicDateTest.java",
 ]
 
 REMOTE_TESTS = [

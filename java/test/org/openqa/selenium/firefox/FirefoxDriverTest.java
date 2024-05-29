@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.Duration;
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mockito.ArgumentMatchers;
@@ -50,6 +51,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -266,6 +268,24 @@ class FirefoxDriverTest extends JupiterTestBase {
     assertThat(context.getContext()).isEqualTo(FirefoxCommandContext.CONTENT);
     context.setContext(FirefoxCommandContext.CHROME);
     assertThat(context.getContext()).isEqualTo(FirefoxCommandContext.CHROME);
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  void shouldLaunchSuccessfullyWithArabicDate() {
+    Locale arabicLocal = new Locale("ar", "EG");
+    Locale.setDefault(arabicLocal);
+
+    int port = PortProber.findFreePort();
+    GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
+    builder.usingPort(port);
+    GeckoDriverService service = builder.build();
+
+    driver = new FirefoxDriver(service, (FirefoxOptions) FIREFOX.getCapabilities());
+    driver.get(pages.simpleTestPage);
+    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
+
+    Locale.setDefault(Locale.US);
   }
 
   private static class CustomFirefoxProfile extends FirefoxProfile {}

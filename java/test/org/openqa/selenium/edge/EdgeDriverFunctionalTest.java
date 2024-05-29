@@ -26,6 +26,7 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -38,6 +39,7 @@ import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.chromium.HasPermissions;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.testing.Ignore;
@@ -192,5 +194,23 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
     cdp.executeCdpCommand("Page.navigate", parameters);
 
     assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  void shouldLaunchSuccessfullyWithArabicDate() {
+    Locale arabicLocal = new Locale("ar", "EG");
+    Locale.setDefault(arabicLocal);
+
+    int port = PortProber.findFreePort();
+    EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
+    builder.usingPort(port);
+    EdgeDriverService service = builder.build();
+
+    driver = new EdgeDriver(service, (EdgeOptions) EDGE.getCapabilities());
+    driver.get(pages.simpleTestPage);
+    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
+
+    Locale.setDefault(Locale.US);
   }
 }
