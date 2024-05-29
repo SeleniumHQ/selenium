@@ -50,7 +50,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_COLOR: ${{ needs.ruby.status }}
-          SLACKIFY_MARKDOWN: true
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Nightly Ruby ${{ needs.ruby.result }}
@@ -81,7 +80,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_COLOR: ${{ needs.python.status }}
-          SLACKIFY_MARKDOWN: true
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Nightly Python ${{ needs.python.result }}
@@ -109,7 +107,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_COLOR: ${{ needs.java.status }}
-          SLACKIFY_MARKDOWN: true
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Nightly Java ${{ needs.java.result }}
@@ -139,7 +136,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_COLOR: ${{ needs.dotnet.status }}
-          SLACKIFY_MARKDOWN: true
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Nightly .NET ${{ needs.dotnet.result }}
@@ -168,7 +164,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_COLOR: ${{ needs.grid.status }}
-          SLACKIFY_MARKDOWN: true
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Nightly Grid ${{ needs.grid.result }}
@@ -186,9 +181,9 @@ jobs:
       run: |
         sed -i 's|https://registry.npmjs.org/|https://npm.pkg.github.com|g' javascript/node/selenium-webdriver/package.json
         sed -i 's|"name": "selenium-webdriver"|"name": "@seleniumhq/selenium-webdriver"|g' javascript/node/selenium-webdriver/package.json
-        echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
-        echo "@seleniumhq:registry=https://npm.pkg.github.com" >> .npmrc
-        echo "always-auth=true" >> .npmrc
+        echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+        echo "@seleniumhq:registry=https://npm.pkg.github.com" >> ~/.npmrc
+        echo "always-auth=true" >> ~/.npmrc
         ./go "node:version[nightly]"
         ./go node:release
     secrets: inherit
@@ -203,7 +198,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_COLOR: ${{ needs.javascript.status }}
-          SLACKIFY_MARKDOWN: true
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Nightly JavaScript ${{ needs.javascript.result }}
