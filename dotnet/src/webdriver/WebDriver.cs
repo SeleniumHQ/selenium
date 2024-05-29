@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Threading.Tasks;
+using WebDriverBiDi;
 
 namespace OpenQA.Selenium
 {
@@ -46,6 +47,7 @@ namespace OpenQA.Selenium
         private SessionId sessionId;
         private String authenticatorId;
         private List<string> registeredCommands = new List<string>();
+        private BiDiDriver biDiDriver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriver"/> class.
@@ -187,6 +189,14 @@ namespace OpenQA.Selenium
         public SessionId SessionId
         {
             get { return this.sessionId; }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="BiDiDriver"/> for the current session of this driver.
+        /// </summary>
+        internal BiDiDriver BiDiDriver
+        {
+            get { return this.biDiDriver; }
         }
 
         /// <summary>
@@ -654,6 +664,13 @@ namespace OpenQA.Selenium
             ReturnedCapabilities returnedCapabilities = new ReturnedCapabilities(rawCapabilities);
             this.capabilities = returnedCapabilities;
             this.sessionId = new SessionId(response.SessionId);
+
+            if (!string.IsNullOrEmpty((string)this.capabilities.GetCapability("webSocketUrl")))
+            {
+                this.biDiDriver = new BiDiDriver(DefaultCommandTimeout);
+                string webSocketUrl = this.capabilities.GetCapability("webSocketUrl").ToString();
+                Task.Run(() => this.biDiDriver.StartAsync(webSocketUrl)).GetAwaiter().GetResult();
+            }
         }
 
         /// <summary>
