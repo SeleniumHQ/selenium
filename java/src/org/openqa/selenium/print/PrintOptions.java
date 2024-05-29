@@ -67,9 +67,8 @@ public class PrintOptions {
 
     this.pageRanges[0] = firstRange;
 
-    for (int i = 1; i < ranges.length; i++) {
-      this.pageRanges[i] = ranges[i - 1];
-    }
+    if (ranges.length - 1 >= 0)
+      System.arraycopy(ranges, 0, this.pageRanges, 1, ranges.length - 1);
   }
 
   public void setPageRanges(List<String> ranges) {
