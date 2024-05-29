@@ -49,6 +49,7 @@ jobs:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
           SLACK_COLOR: ${{ needs.ruby.status }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
@@ -79,6 +80,7 @@ jobs:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
           SLACK_COLOR: ${{ needs.python.status }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
@@ -106,6 +108,7 @@ jobs:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
           SLACK_COLOR: ${{ needs.java.status }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
@@ -135,6 +138,7 @@ jobs:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
           SLACK_COLOR: ${{ needs.dotnet.status }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
@@ -163,6 +167,7 @@ jobs:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
           SLACK_COLOR: ${{ needs.grid.status }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
