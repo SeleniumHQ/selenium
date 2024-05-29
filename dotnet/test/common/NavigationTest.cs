@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System;
+using WebDriverBiDi;
 
 namespace OpenQA.Selenium
 {
@@ -12,10 +13,20 @@ namespace OpenQA.Selenium
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void ShouldNotHaveProblemNavigatingWithNoPagesBrowsed()
         {
-            INavigation navigation;
-            navigation = driver.Navigate();
-            navigation.Back();
-            navigation.Forward();
+             INavigation navigation = driver.Navigate();
+
+            if (((WebDriver)driver).Capabilities.HasCapability("webSocketUrl"))
+            {
+                var ex1 = Assert.Throws<WebDriverBiDiException>(() => navigation.Back());
+                Assert.True(ex1!.Message.Contains("no such history entry"));
+                var ex2 = Assert.Throws<WebDriverBiDiException>(() => navigation.Forward());
+                Assert.True(ex2!.Message.Contains("no such history entry"));
+            }
+            else
+            {
+                navigation.Back();
+                navigation.Forward();
+            }
         }
 
         [Test]
@@ -40,7 +51,7 @@ namespace OpenQA.Selenium
             INavigation navigation;
             navigation = driver.Navigate();
             Assert.That(() => navigation.GoToUrl((Uri)null), Throws.InstanceOf<ArgumentNullException>());
-            // new Uri("") and new Uri("isidsji30342??éåµñ©æ") 
+            // new Uri("") and new Uri("isidsji30342??éåµñ©æ")
             // throw an exception, so we needn't worry about them.
         }
 
@@ -89,6 +100,5 @@ namespace OpenQA.Selenium
             changedDiv = driver.FindElement(By.Id("dynamo"));
             Assert.AreEqual("What's for dinner?", changedDiv.Text);
         }
-
     }
 }
