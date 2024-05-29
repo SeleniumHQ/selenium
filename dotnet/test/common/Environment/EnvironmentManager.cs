@@ -24,9 +24,10 @@ namespace OpenQA.Selenium.Environment
         private EnvironmentManager()
         {
             string dataFilePath;
-            var runfiles = Runfiles.Create();
+            Runfiles runfiles = null;
             try
             {
+                runfiles = Runfiles.Create();
                 dataFilePath = runfiles.Rlocation("_main/dotnet/test/common/appconfig.json");
             }
             catch (FileNotFoundException)
@@ -143,6 +144,8 @@ namespace OpenQA.Selenium.Environment
             try
             {
                 string managerFilePath = "";
+                runfiles ??= Runfiles.Create();
+
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     managerFilePath = runfiles.Rlocation("_main/dotnet/src/webdriver/manager/windows/selenium-manager.exe");
