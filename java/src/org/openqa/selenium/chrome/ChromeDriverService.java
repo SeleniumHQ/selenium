@@ -284,7 +284,7 @@ public class ChromeDriverService extends DriverService {
     @Override
     protected List<String> createArgs() {
       Locale.setDefault(Locale.US);
-      
+
       List<String> args = new ArrayList<>();
       args.add(String.format("--port=%d", getPort()));
 
