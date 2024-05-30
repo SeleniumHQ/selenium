@@ -67,7 +67,7 @@ public class PrintOptions {
 
     this.pageRanges[0] = firstRange;
 
-    if (ranges.length - 1 >= 0)
+    if (ranges.length>0)
       System.arraycopy(ranges, 0, this.pageRanges, 1, ranges.length - 1);
   }
 
