@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Intercepts an HTTP response and logs the response body if the status code is not in the 2xx.
+        /// Intercepts an HTTP response and logs the response body if the status code is not between 2xx = 3xx.
         /// </summary>
         /// <param name="response">The HTTP response message to intercept.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
