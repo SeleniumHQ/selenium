@@ -163,7 +163,7 @@ class SessionQueueGridWithTimeoutTest {
     try {
       Callable<HttpResponse> sessionCreationTask = () -> createSession(caps);
       List<Future<HttpResponse>> futureList =
-          fixedThreadPoolService.invokeAll(Arrays.asList(sessionCreationTask));
+          fixedThreadPoolService.invokeAll(List.of(sessionCreationTask));
 
       for (Future<HttpResponse> future : futureList) {
         HttpResponse httpResponse = future.get(10, SECONDS);
