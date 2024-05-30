@@ -113,18 +113,21 @@ copy_file(
     name = "manager-linux",
     src = "//common/manager:selenium-manager-linux",
     out = "manager/linux/selenium-manager",
+    visibility = ["//dotnet/test/common:__pkg__"],
 )
 
 copy_file(
     name = "manager-macos",
     src = "//common/manager:selenium-manager-macos",
     out = "manager/macos/selenium-manager",
+    visibility = ["//dotnet/test/common:__pkg__"],
 )
 
 copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "manager/windows/selenium-manager.exe",
+    visibility = ["//dotnet/test/common:__pkg__"],
 )
 
 nuget_pack(

@@ -117,7 +117,7 @@ namespace OpenQA.Selenium.Environment
                 service = CreateService<FirefoxDriverService>();
                 if (!string.IsNullOrEmpty(this.browserBinaryLocation))
                 {
-                    ((FirefoxOptions)options).BrowserExecutableLocation = this.browserBinaryLocation;
+                    ((FirefoxOptions)options).BinaryLocation = this.browserBinaryLocation;
                 }
                 if (enableLogging)
                 {

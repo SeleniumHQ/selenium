@@ -186,6 +186,11 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
     return (T) this;
   }
 
+  public T enableBiDi() {
+    setCapability("webSocketUrl", true);
+    return (T) this;
+  }
+
   /**
    * Sets an experimental option. Useful for new ChromeDriver options not yet exposed through the
    * {@link ChromiumOptions} API.

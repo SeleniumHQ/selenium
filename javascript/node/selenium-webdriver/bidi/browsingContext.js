@@ -500,21 +500,18 @@ class BrowsingContext {
    *
    * @param {Locator} locator - The locator object used to locate the nodes.
    * @param {number} [maxNodeCount] - The maximum number of nodes to locate (optional).
-   * @param {string} [ownership] - The ownership type of the nodes (optional).
    * @param {string} [sandbox] - The sandbox name for locating nodes (optional).
    * @param {SerializationOptions} [serializationOptions] - The serialization options for locating nodes (optional).
    * @param {ReferenceValue[]} [startNodes] - The array of start nodes for locating nodes (optional).
    * @returns {Promise<RemoteValue[]>} - A promise that resolves to the arrays of located nodes.
    * @throws {Error} - If the locator is not an instance of Locator.
    * @throws {Error} - If the serializationOptions is provided but not an instance of SerializationOptions.
-   * @throws {Error} - If the ownership is provided but not 'root' or 'none'.
    * @throws {Error} - If the startNodes is provided but not an array of ReferenceValue objects.
    * @throws {Error} - If any of the startNodes is not an instance of ReferenceValue.
    */
   async locateNodes(
     locator,
     maxNodeCount = undefined,
-    ownership = undefined,
     sandbox = undefined,
     serializationOptions = undefined,
     startNodes = undefined,
@@ -525,10 +522,6 @@ class BrowsingContext {
 
     if (serializationOptions !== undefined && !(serializationOptions instanceof SerializationOptions)) {
       throw Error(`Pass in SerializationOptions object. Received: ${serializationOptions} `)
-    }
-
-    if (ownership !== undefined && !['root', 'none'].includes(ownership)) {
-      throw Error(`Valid types are 'root' and 'none. Received: ${ownership}`)
     }
 
     if (startNodes !== undefined && !Array.isArray(startNodes)) {
@@ -549,7 +542,6 @@ class BrowsingContext {
         context: this._id,
         locator: Object.fromEntries(locator.toMap()),
         maxNodeCount: maxNodeCount,
-        ownership: ownership,
         sandbox: sandbox,
         serializationOptions: serializationOptions,
         startNodes: startNodes,
@@ -574,20 +566,13 @@ class BrowsingContext {
    * Locates a single node in the browsing context.
    *
    * @param {Locator} locator - The locator used to find the node.
-   * @param {string} [ownership] - The ownership of the node (optional).
    * @param {string} [sandbox] - The sandbox of the node (optional).
    * @param {SerializationOptions} [serializationOptions] - The serialization options for the node (optional).
    * @param {Array} [startNodes] - The starting nodes for the search (optional).
    * @returns {Promise<RemoteValue>} - A promise that resolves to the located node.
    */
-  async locateNode(
-    locator,
-    ownership = undefined,
-    sandbox = undefined,
-    serializationOptions = undefined,
-    startNodes = undefined,
-  ) {
-    const elements = await this.locateNodes(locator, 1, ownership, sandbox, serializationOptions, startNodes)
+  async locateNode(locator, sandbox = undefined, serializationOptions = undefined, startNodes = undefined) {
+    const elements = await this.locateNodes(locator, 1, sandbox, serializationOptions, startNodes)
     return elements[0]
   }
 

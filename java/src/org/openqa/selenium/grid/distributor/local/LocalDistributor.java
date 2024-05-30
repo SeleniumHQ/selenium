@@ -314,6 +314,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
               status.getNodeId(),
               status.getExternalUri(),
               registrationSecret,
+              status.getSessionTimeout(),
               capabilities);
 
       add(remoteNode);
@@ -807,6 +808,9 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
                 .count();
 
         if (unmatchableCount == request.getDesiredCapabilities().size()) {
+          LOG.info(
+              "No nodes support the capabilities in the request: "
+                  + request.getDesiredCapabilities());
           SessionNotCreatedException exception =
               new SessionNotCreatedException("No nodes support the capabilities in the request");
           sessionQueue.complete(request.getRequestId(), Either.left(exception));
@@ -852,7 +856,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         // not stall
         if (!isSessionValid && response.isRight()) {
           LOG.log(
-              Debug.getDebugLogLevel(),
+              Level.INFO,
               "Session for request {0} has been created but it has timed out, stopping it to avoid"
                   + " stalled browser",
               reqId.toString());

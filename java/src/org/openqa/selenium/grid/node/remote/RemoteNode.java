@@ -22,6 +22,7 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -60,6 +62,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -83,13 +86,15 @@ public class RemoteNode extends Node implements Closeable {
       NodeId id,
       URI externalUri,
       Secret registrationSecret,
+      Duration sessionTimeout,
       Collection<Capabilities> capabilities) {
-    super(tracer, id, externalUri, registrationSecret);
+    super(tracer, id, externalUri, registrationSecret, sessionTimeout);
     this.externalUri = Require.nonNull("External URI", externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 
-    this.client =
-        Require.nonNull("HTTP client factory", clientFactory).createClient(fromUri(externalUri));
+    ClientConfig clientConfig =
+        defaultConfig().readTimeout(this.getSessionTimeout()).baseUrl(fromUri(externalUri));
+    this.client = Require.nonNull("HTTP client factory", clientFactory).createClient(clientConfig);
 
     this.healthCheck = new RemoteCheck();
 

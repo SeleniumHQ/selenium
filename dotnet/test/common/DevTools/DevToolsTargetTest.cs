@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V124;
+    using CurrentCdpVersion = V125;
 
     [TestFixture]
+    [IgnoreBrowser(Selenium.Browser.Edge, "While CDP 125 is released for Edge")]
     public class DevToolsTargetTest : DevToolsTestFixture
     {
-        private int id = 124;
+        private int id = 125;
 
         [Test]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -254,7 +255,18 @@ public class ExternalProcess {
    * @return stdout and stderr as String in Charset.defaultCharset() encoding
    */
   public String getOutput() {
-    return outputStream.toString();
+    return getOutput(Charset.defaultCharset());
+  }
+
+  /**
+   * The last N bytes of the combined stdout and stderr as String, the value of N is set while
+   * building the OsProcess.
+   *
+   * @param encoding the encoding to decode the stream
+   * @return stdout and stderr as String in the given encoding
+   */
+  public String getOutput(Charset encoding) {
+    return outputStream.toString(encoding);
   }
 
   public boolean isAlive() {

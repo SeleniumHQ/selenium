@@ -77,7 +77,8 @@ struct Cli {
     #[clap(long, value_parser)]
     browser_mirror_url: Option<String>,
 
-    /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like)
+    /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), SHELL (Unix-like),
+    /// or MIXED (INFO, WARN, DEBUG, etc. to stderr and minimal JSON to stdout)
     #[clap(long, value_parser, default_value = "LOGGER")]
     output: String,
 
