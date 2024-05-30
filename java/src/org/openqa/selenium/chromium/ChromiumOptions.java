@@ -252,8 +252,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
       return null;
     }
 
-    Map<String, Object> options = new TreeMap<>();
-    experimentalOptions.forEach(options::put);
+    Map<String, Object> options = new TreeMap<>(experimentalOptions);
 
     if (binary != null) {
       options.put("binary", binary);
