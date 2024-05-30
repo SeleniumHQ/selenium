@@ -28,15 +28,14 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     public class ResponseLoggerInterceptor : IHttpInterceptor
     {
-        private readonly ILogger _logger;
+        private static readonly ILogger _logger = Log.GetLogger<ResponseLoggerInterceptor>();
 
         /// <summary>
         /// Initializes a new instance of the ResponseLoggerInterceptor with logger.
         /// </summary>
         /// <param name="logger">Internal logger to be used for logging responses.</param>
-        public ResponseLoggerInterceptor(ILogger logger)
+        public ResponseLoggerInterceptor()
         {
-            _logger = logger;
         }
 
         /// <summary>
