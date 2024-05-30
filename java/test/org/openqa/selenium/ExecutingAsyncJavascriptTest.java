@@ -28,7 +28,6 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

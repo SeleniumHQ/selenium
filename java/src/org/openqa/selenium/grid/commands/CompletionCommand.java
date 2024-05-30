@@ -127,8 +127,7 @@ public class CompletionCommand implements CliCommand {
         .forEach(
             cmd -> {
               out.printf(
-                "        '%s:%s'%n",
-                  cmd.getName(), cmd.getDescription().replace("'", "'\\''"));
+                  "        '%s:%s'%n", cmd.getName(), cmd.getDescription().replace("'", "'\\''"));
             });
 
     out.println("      )");
@@ -170,7 +169,7 @@ public class CompletionCommand implements CliCommand {
 
                     if (opt.flags().size() == 1) {
                       out.printf(
-                        "    '%s[%s]%s'%n",
+                          "    '%s[%s]%s'%n",
                           opt.flags().iterator().next(), quotedDesc, getZshType(opt));
                     } else {
                       out.print("    '");
