@@ -248,7 +248,7 @@ namespace OpenQA.Selenium.Remote
 
             this.client.Timeout = this.serverResponseTimeout;
 
-            var responseLogger = new ResponseLoggerInterceptor(_logger);
+            var responseLogger = new ResponseLoggerInterceptor();
             this.client.Interceptors.Add(responseLogger);
         }
 
