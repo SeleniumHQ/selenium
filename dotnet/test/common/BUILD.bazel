@@ -103,3 +103,39 @@ dotnet_nunit_test_suite(
         framework("nuget", "NUnit"),
     ],
 )
+
+dotnet_bidi_test_suite(
+    name = "BiDiTests",
+    size = "large",
+    srcs = glob([
+        "**/BiDi/*Test.cs",
+    ]) + [
+        ":assembly-fixtures",
+    ],
+    out = "WebDriver.Common.Tests",
+    browsers = [
+        # The first browser in this list is assumed to be the one that should
+        # be used by default.
+        "firefox",
+        "edge",
+        "chrome",
+    ],
+    data = [
+        ":test-data",
+    ],
+    target_frameworks = ["net7.0"],
+    targeting_packs = [
+        framework("nuget", "Microsoft.NETCore.App.Ref"),
+    ],
+    deps = [
+        ":fixtures",
+        "//dotnet/src/webdriver",
+        framework("nuget", "BenderProxy"),
+        framework("nuget", "Newtonsoft.Json"),
+        framework("nuget", "NUnit"),
+        framework("nuget", "WebDriverBiDi"),
+    ],
+    env = {
+        "WEBDRIVER_BIDI": "true",
+    }
+)
