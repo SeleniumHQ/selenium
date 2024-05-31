@@ -69,10 +69,13 @@ csharp_library(
 dotnet_nunit_test_suite(
     name = "AllTests",
     size = "large",
-    srcs = glob([
-        "**/*Test.cs",
-        "**/*Tests.cs",
-    ]) + [
+    srcs = glob(
+        [
+            "**/*Test.cs",
+            "**/*Tests.cs",
+        ],
+        exclude = ["test/common/BiDi/*.cs"],
+    ) + [
         ":assembly-fixtures",
     ],
     out = "WebDriver.Common.Tests",

@@ -58,6 +58,11 @@ namespace OpenQA.Selenium
             throw new NotImplementedException();
         }
 
+        public IScript Script()
+        {
+            throw new NotImplementedException();
+        }
+
         public ITargetLocator SwitchTo()
         {
             throw new NotImplementedException();

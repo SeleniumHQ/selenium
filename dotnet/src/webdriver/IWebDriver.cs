@@ -116,6 +116,14 @@ namespace OpenQA.Selenium
         INavigation Navigate();
 
         /// <summary>
+        /// Provides access to WebDriverBiDi events for Script and Logs.
+        /// </summary>
+        /// <returns>An <see cref="IScript"/> object allowing the user to access
+        /// WebDriverBiDi events.</returns>
+        [Obsolete("This method is in beta and may change in future releases.")]
+        IScript Script();
+
+        /// <summary>
         /// Instructs the driver to send future commands to a different frame or window.
         /// </summary>
         /// <returns>An <see cref="ITargetLocator"/> object which can be used to select

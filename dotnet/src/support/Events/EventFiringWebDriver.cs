@@ -334,6 +334,17 @@ namespace OpenQA.Selenium.Support.Events
         }
 
         /// <summary>
+        /// Provides access to WebDriverBiDi events in script and log domains.
+        /// </summary>
+        /// <returns>An <see cref="IScript"/> object allowing the user to access
+        /// WebDriverBiDi events.</returns>
+        [Obsolete("This method is in beta and may change in future releases.")]
+        public IScript Script()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Instructs the driver to send future commands to a different frame or window.
         /// </summary>
         /// <returns>An <see cref="ITargetLocator"/> object which can be used to select

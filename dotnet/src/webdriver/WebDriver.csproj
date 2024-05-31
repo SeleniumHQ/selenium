@@ -53,7 +53,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="WebDriverBiDi" Version="0.0.1" />
+    <PackageReference Include="WebDriverBiDi" Version="0.0.3" />
   </ItemGroup>
 
   <PropertyGroup>
