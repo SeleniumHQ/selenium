@@ -28,6 +28,7 @@ import static org.openqa.selenium.remote.http.Route.post;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.net.URI;
+import java.time.Duration;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -116,13 +117,16 @@ public abstract class Node implements HasReadyState, Routable {
   protected final Tracer tracer;
   private final NodeId id;
   private final URI uri;
+  private final Duration sessionTimeout;
   private final Route routes;
   protected boolean draining;
 
-  protected Node(Tracer tracer, NodeId id, URI uri, Secret registrationSecret) {
+  protected Node(
+      Tracer tracer, NodeId id, URI uri, Secret registrationSecret, Duration sessionTimeout) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("URI", uri);
+    this.sessionTimeout = Require.positive("Session timeout", sessionTimeout);
     Require.nonNull("Registration secret", registrationSecret);
 
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
@@ -245,6 +249,10 @@ public abstract class Node implements HasReadyState, Routable {
   public abstract NodeStatus getStatus();
 
   public abstract HealthCheck getHealthCheck();
+
+  public Duration getSessionTimeout() {
+    return sessionTimeout;
+  }
 
   public boolean isDraining() {
     return draining;

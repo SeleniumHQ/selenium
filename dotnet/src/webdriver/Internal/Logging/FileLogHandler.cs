@@ -22,6 +22,17 @@ namespace OpenQA.Selenium.Internal.Logging
         /// </summary>
         /// <param name="filePath">The path of the log file.</param>
         public FileLogHandler(string filePath)
+            : this(filePath, overwrite: true)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileLogHandler"/> class with the specified file path.
+        /// </summary>
+        /// <param name="filePath">The path of the log file.</param>
+        /// <param name="overwrite">Specifies whether the file should be overwritten if it exists on the disk.</param>
+        public FileLogHandler(string filePath, bool overwrite)
         {
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentException("File log path cannot be null or empty.", nameof(filePath));
 
@@ -31,8 +42,9 @@ namespace OpenQA.Selenium.Internal.Logging
                 Directory.CreateDirectory(directory);
             }
 
-            _fileStream = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-            _fileStream.Seek(0, SeekOrigin.End);
+            var fileMode = overwrite ? FileMode.Create : FileMode.Append;
+
+            _fileStream = File.Open(filePath, fileMode, FileAccess.Write, FileShare.Read);
             _streamWriter = new StreamWriter(_fileStream, System.Text.Encoding.UTF8)
             {
                 AutoFlush = true

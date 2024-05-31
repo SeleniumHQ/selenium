@@ -109,12 +109,13 @@ public class OneShotNode extends Node {
       EventBus events,
       Secret registrationSecret,
       Duration heartbeatPeriod,
+      Duration sessionTimeout,
       NodeId id,
       URI uri,
       URI gridUri,
       Capabilities stereotype,
       WebDriverInfo driverInfo) {
-    super(tracer, id, uri, registrationSecret);
+    super(tracer, id, uri, registrationSecret, Require.positive(sessionTimeout));
 
     this.heartbeatPeriod = heartbeatPeriod;
     this.events = Require.nonNull("Event bus", events);
@@ -169,6 +170,7 @@ public class OneShotNode extends Node {
         eventOptions.getEventBus(),
         secretOptions.getRegistrationSecret(),
         nodeOptions.getHeartbeatPeriod(),
+        nodeOptions.getSessionTimeout(),
         new NodeId(UUID.randomUUID()),
         serverOptions.getExternalUri(),
         nodeOptions
@@ -376,6 +378,7 @@ public class OneShotNode extends Node {
                     : new Session(sessionId, getUri(), stereotype, capabilities, Instant.now()))),
         isDraining() ? DRAINING : UP,
         heartbeatPeriod,
+        getSessionTimeout(),
         getNodeVersion(),
         getOsInfo());
   }

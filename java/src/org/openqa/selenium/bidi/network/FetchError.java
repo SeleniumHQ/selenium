@@ -41,7 +41,7 @@ public class FetchError extends BaseParameters {
 
   public static FetchError fromJsonMap(Map<String, Object> jsonMap) {
     try (StringReader baseParameterReader = new StringReader(JSON.toJson(jsonMap));
-        JsonInput baseParamsInput = JSON.newInput(baseParameterReader); ) {
+        JsonInput baseParamsInput = JSON.newInput(baseParameterReader)) {
       String errorText = JSON.toJson(jsonMap.get("errorText"));
       return new FetchError(BaseParameters.fromJson(baseParamsInput), errorText);
     }

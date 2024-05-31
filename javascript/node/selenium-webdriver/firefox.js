@@ -103,6 +103,8 @@
  *
  * [geckodriver release]: https://github.com/mozilla/geckodriver/releases/
  * [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
+ *
+ * @module selenium-webdriver/firefox
  */
 
 'use strict'

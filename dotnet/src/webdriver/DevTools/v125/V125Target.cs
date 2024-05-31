@@ -1,4 +1,4 @@
-// <copyright file="V122Target.cs" company="WebDriver Committers">
+// <copyright file="V125Target.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,26 +16,26 @@
 // limitations under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V122.Target;
+using OpenQA.Selenium.DevTools.V125.Target;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.DevTools.V122
+namespace OpenQA.Selenium.DevTools.V125
 {
     /// <summary>
-    /// Class providing functionality for manipulating targets for version 122 of the DevTools Protocol
+    /// Class providing functionality for manipulating targets for version 125 of the DevTools Protocol
     /// </summary>
-    public class V122Target : DevTools.Target
+    public class V125Target : DevTools.Target
     {
         private TargetAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V122Target"/> class.
+        /// Initializes a new instance of the <see cref="V125Target"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Target domain.</param>
-        public V122Target(TargetAdapter adapter)
+        public V125Target(TargetAdapter adapter)
         {
             this.adapter = adapter;
             adapter.DetachedFromTarget += OnDetachedFromTarget;

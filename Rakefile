@@ -99,7 +99,7 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v122:v122.publish
+  //java/src/org/openqa/selenium/devtools/v125:v125.publish
   //java/src/org/openqa/selenium/devtools/v123:v123.publish
   //java/src/org/openqa/selenium/devtools/v124:v124.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
@@ -507,9 +507,20 @@ namespace :node do
   desc 'Release Node npm package'
   task deploy: :release
 
-  desc 'Generate Node documentation — currently not working'
+  desc 'Generate Node documentation'
   task :docs, [:skip_update] do |_task, arguments|
-    puts "WARNING — Cannot currently update API Docs for JavaScript bindings"
+    FileUtils.rm_rf('build/docs/api/javascript/')
+    begin
+      sh 'npm run generate-docs --prefix javascript/node/selenium-webdriver || true', verbose: true
+    rescue StandardError
+      puts 'Ensure that npm is installed on your system'
+      raise
+    end
+
+    unless arguments[:skip_update]
+      puts "Updating JavaScript documentation"
+      puts update_gh_pages ? "JavaScript Docs updated!" : "JavaScript Doc update cancelled"
+    end
   end
 
   desc 'Update JavaScript changelog'
@@ -860,7 +871,11 @@ namespace :dotnet do
   task :docs, [:skip_update] do |_task, arguments|
     FileUtils.rm_rf('build/docs/api/dotnet/')
     begin
-      sh 'dotnet tool update -g docfx'
+      # Pinning to 2.75.3 to avoid breaking changes in newer versions
+      # See https://github.com/dotnet/docfx/issues/9855
+      sh 'dotnet tool uninstall --global docfx || true'
+      sh 'dotnet tool install --global --version 2.75.3 docfx'
+      # sh 'dotnet tool update -g docfx'
     rescue StandardError
       puts 'Please ensure that .NET SDK is installed.'
       raise
@@ -1304,7 +1319,7 @@ def update_gh_pages
     retry
   end
 
-  %w[java rb py dotnet].each do |language|
+  %w[java rb py dotnet javascript].each do |language|
     if Dir.exist?("build/docs/api/#{language}") && !Dir.empty?("build/docs/api/#{language}")
       puts "Deleting #{language} directory in docs/api since corresponding directory in build/docs/api is not empty"
       FileUtils.rm_rf("docs/api/#{language}")

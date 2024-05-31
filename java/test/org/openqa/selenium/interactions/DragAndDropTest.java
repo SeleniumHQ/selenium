@@ -43,7 +43,7 @@ class DragAndDropTest extends JupiterTestBase {
     try {
       Thread.sleep(ms);
     } catch (InterruptedException e) {
-      throw new RuntimeException("Interrupted: " + e.toString());
+      throw new RuntimeException("Interrupted: " + e);
     }
   }
 

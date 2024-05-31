@@ -1,3 +1,10 @@
+v4.21.0
+======
+
+* Add CDP for Chrome 125 and remove 122
+* Overwrite internal log file if it already exists (#13900)
+* Align binary location property for FirefoxOptions with other options (#13901)
+
 v4.20.0
 ======
 
