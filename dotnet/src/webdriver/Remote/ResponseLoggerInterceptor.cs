@@ -45,10 +45,9 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task InterceptAsync(HttpResponseMessage response)
         {
-            var responseBodyStr = await response.Content.ReadAsStringAsync();
-
             if ((int)response.StatusCode < 200 || (int)response.StatusCode > 399)
             {
+                var responseBodyStr = await response.Content.ReadAsStringAsync();
                 _logger.Debug($"Response Body:{Environment.NewLine}{responseBodyStr}{Environment.NewLine}");
             }
         }
