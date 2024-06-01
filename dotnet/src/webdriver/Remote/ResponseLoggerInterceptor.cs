@@ -26,35 +26,33 @@ namespace OpenQA.Selenium.Remote
     /// <summary>
     /// Interceptor for logging HTTP responses.
     /// </summary>
-    public class ResponseLoggerInterceptor : IHttpInterceptor
+    public class ResponseLoggerInterceptor : DelegatingHandler
     {
         private static readonly ILogger _logger = Log.GetLogger<ResponseLoggerInterceptor>();
 
-        /// <summary>
-        /// Initializes a new instance of the ResponseLoggerInterceptor with logger.
-        /// </summary>
-        /// <param name="logger">Internal logger to be used for logging responses.</param>
-        public ResponseLoggerInterceptor()
+        public ResponseLoggerInterceptor(HttpMessageHandler innerHandler)
+            : base(innerHandler)
         {
         }
 
-        /// <summary>
-        /// Intercepts an HTTP response and logs the response body if the status code is not between 2xx = 3xx.
-        /// </summary>
-        /// <param name="response">The HTTP response message to intercept.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task InterceptAsync(HttpResponseMessage response)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if ((int)response.StatusCode < 200 || (int)response.StatusCode > 399)
+            if (request.Content != null)
             {
-                var responseBodyStr = await response.Content.ReadAsStringAsync();
-                _logger.Debug($"Response Body:{Environment.NewLine}{responseBodyStr}{Environment.NewLine}");
+                string requestContent = await request.Content.ReadAsStringAsync();
+                _logger.Trace($">> Body: {requestContent}");
             }
+
+            HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+
+            if (response.Content != null)
+            {
+                string responseContent = await response.Content.ReadAsStringAsync();
+                _logger.Trace($"<< Body: {responseContent}");
+            }
+
+            return response;
         }
     }
 
-    public interface IHttpInterceptor
-    {
-        Task InterceptAsync(HttpResponseMessage response);
-    }
 }

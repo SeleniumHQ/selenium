@@ -237,7 +237,9 @@ namespace OpenQA.Selenium.Remote
 
             httpClientHandler.Proxy = this.Proxy;
 
-            this.client = new HttpClient(httpClientHandler);
+            // Use the custom LoggingHandler
+            var loggingHandler = new ResponseLoggerInterceptor(httpClientHandler);
+            this.client = new HttpClient(loggingHandler);
             this.client.DefaultRequestHeaders.UserAgent.ParseAdd(this.UserAgent);
             this.client.DefaultRequestHeaders.Accept.ParseAdd(RequestAcceptHeader);
             this.client.DefaultRequestHeaders.ExpectContinue = false;
@@ -247,9 +249,6 @@ namespace OpenQA.Selenium.Remote
             }
 
             this.client.Timeout = this.serverResponseTimeout;
-
-            var responseLogger = new ResponseLoggerInterceptor();
-            this.client.Interceptors.Add(responseLogger);
         }
 
         private async Task<HttpResponseInfo> MakeHttpRequest(HttpRequestInfo requestInfo)
