@@ -288,12 +288,6 @@ namespace OpenQA.Selenium.Remote
                 if (_logger.IsEnabled(LogEventLevel.Trace))
                 {
                     _logger.Trace($">> {requestMessage}");
-
-                    if (requestMessage.Content != null)
-                    {
-                        string content = await requestMessage.Content.ReadAsStringAsync();
-                        _logger.Trace($">> Body: {content}");
-                    }
                 }
 
                 using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage).ConfigureAwait(false))

@@ -45,7 +45,7 @@ namespace OpenQA.Selenium.Remote
 
             HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
 
-            if (response.Content != null)
+            if ((int)response.StatusCode < 200 || (int)response.StatusCode > 399)
             {
                 string responseContent = await response.Content.ReadAsStringAsync();
                 _logger.Trace($"<< Body: {responseContent}");
