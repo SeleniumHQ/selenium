@@ -3,7 +3,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module FedCM
-      describe Account, exclusive: {browser: :chrome} do
+      describe Dialog, exclusive: {browser: :chrome} do
         def trigger_fed_cm
           driver.execute_script('triggerFedCm()')
         end

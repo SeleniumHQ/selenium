@@ -1,0 +1,30 @@
+module Selenium
+  module WebDriver
+    module FedCM
+      class Account
+        LOGIN_STATE_SIGNIN: untyped
+        LOGIN_STATE_SIGNUP: untyped
+
+        @account_id: untyped
+        @email: untyped
+        @given_name: untyped
+        @idp_config_url: untyped
+        @login_state: untyped
+        @name: untyped
+        @picture_url: untyped
+        @privacy_policy_url: untyped
+        @terms_of_service_url: untyped
+
+        attr_reader account_id: untyped
+        attr_reader email: untyped
+        attr_reader given_name: untyped
+        attr_reader idp_config_url: untyped
+        attr_reader login_state: untyped
+        attr_reader name: untyped
+        attr_reader picture_url: untyped
+        attr_reader privacy_policy_url: untyped
+        attr_reader terms_of_service_url: untyped
+      end
+    end
+  end
+end

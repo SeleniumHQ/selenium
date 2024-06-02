@@ -1,0 +1,10 @@
+module Selenium
+  module WebDriver
+    module FedCM
+      module Dialog
+        DIALOG_TYPE_ACCOUNT_LIST: untyped
+        DIALOG_TYPE_AUTO_REAUTH: untyped
+      end
+    end
+  end
+end

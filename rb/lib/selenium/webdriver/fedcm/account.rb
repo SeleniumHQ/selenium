@@ -1,12 +1,12 @@
 module Selenium
   module WebDriver
     module FedCM
-      # Represents an account displayed in a FedCM account list.
+      # Represents an account displayed in a FedCm account list.
       # See: https://fedidcg.github.io/FedCM/#dictdef-identityprovideraccount
       #      https://fedidcg.github.io/FedCM/#webdriver-accountlist
       class Account
-        LOGIN_STATE_SIGNIN = "SignIn"
-        LOGIN_STATE_SIGNUP = "SignUp"
+        LOGIN_STATE_SIGNIN = 'SignIn'.freeze
+        LOGIN_STATE_SIGNUP = 'SignUp'.freeze
 
         attr_reader :account_id, :email, :name, :given_name, :picture_url,
                     :idp_config_url, :login_state, :terms_of_service_url, :privacy_policy_url
@@ -25,7 +25,7 @@ module Selenium
           @terms_of_service_url = args[:termsOfServiceUrl]
           @privacy_policy_url = args[:privacyPolicyUrl]
         end
-      end
-    end
-  end
-end
+      end # Account
+    end # FedCM
+  end # WebDriver
+end # Selenium

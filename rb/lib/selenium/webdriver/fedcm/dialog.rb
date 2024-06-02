@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module Selenium
   module WebDriver
     module FedCM
       module Dialog
-        DIALOG_TYPE_ACCOUNT_LIST = "AccountChooser".freeze
-        DIALOG_TYPE_AUTO_REAUTH = "AutoReauthn".freeze
+        DIALOG_TYPE_ACCOUNT_LIST = 'AccountChooser'
+        DIALOG_TYPE_AUTO_REAUTH = 'AutoReauthn'
 
         # Closes the dialog as if the user had clicked X.
         def cancel
@@ -40,7 +42,7 @@ module Selenium
         def accounts
           raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
         end
-      end
-    end
-  end
-end
+      end # Dialog
+    end # FedCM
+  end # WebDriver
+end # Selenium
