@@ -20,6 +20,12 @@
 module Selenium
   module WebDriver
     class DriverFinder
+      def self.path(options, service_class)
+        WebDriver.logger.deprecate('DriverFinder.path(options, service_class)',
+                                   'DriverFinder.new(options, service).driver_path')
+        new(options, service_class.new).driver_path
+      end
+
       def initialize(options, service)
         @options = options
         @service = service
@@ -53,7 +59,14 @@ module Selenium
             formatted = {driver_path: Platform.cygwin_path(output['driver_path'], only_cygwin: true),
                          browser_path: Platform.cygwin_path(output['browser_path'], only_cygwin: true)}
             Platform.assert_executable(formatted[:driver_path])
-            Platform.assert_executable(formatted[:browser_path])
+
+            browser_path = formatted[:browser_path]
+            Platform.assert_executable(browser_path)
+            if @options.respond_to?(:binary) && @options.binary.nil?
+              @options.binary = browser_path
+              @options.browser_version = nil
+            end
+
             formatted
           end
         rescue StandardError => e

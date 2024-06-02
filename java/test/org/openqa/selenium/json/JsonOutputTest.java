@@ -419,7 +419,7 @@ class JsonOutputTest {
   @Test
   void shouldConvertDatesToMillisecondsInUtcTime() {
     String jsonStr = convert(new Date(0));
-    assertThat(valueOf(jsonStr).intValue()).isZero();
+    assertThat(valueOf(jsonStr)).isZero();
   }
 
   @Test

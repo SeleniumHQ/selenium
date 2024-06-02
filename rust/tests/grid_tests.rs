@@ -43,7 +43,7 @@ fn grid_latest_test() {
     let output_code = json.result.code;
     assert_eq!(output_code, 0);
 
-    let jar = Path::new(&json.result.message);
+    let jar = Path::new(&json.result.driver_path);
     assert!(jar.exists());
 
     let jar_name = jar.file_name().unwrap().to_str().unwrap();
@@ -66,7 +66,7 @@ fn grid_version_test(#[case] grid_version: &str) {
     println!("{}", output);
 
     let json: JsonOutput = serde_json::from_str(output).unwrap();
-    let jar = Path::new(&json.result.message);
+    let jar = Path::new(&json.result.driver_path);
     let jar_name = jar.file_name().unwrap().to_str().unwrap();
     assert!(jar_name.contains(grid_version));
 }

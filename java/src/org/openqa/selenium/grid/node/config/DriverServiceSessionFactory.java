@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.openqa.selenium.Capabilities;
@@ -212,7 +213,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
             "Error while creating session with the driver service. "
                 + "Stopping driver service: "
                 + e.getMessage();
-        LOG.warning(errorMessage);
+        LOG.log(Level.WARNING, errorMessage, e);
 
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
@@ -225,12 +226,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
       EXCEPTION.accept(attributeMap, e);
       String errorMessage =
           "Error while creating session with the driver service. " + e.getMessage();
-      LOG.warning(errorMessage);
+      LOG.log(Level.WARNING, errorMessage, e);
 
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
-      return Either.left(new SessionNotCreatedException(e.getMessage()));
+      return Either.left(new SessionNotCreatedException(errorMessage));
     } finally {
       span.close();
     }
@@ -325,14 +326,16 @@ public class DriverServiceSessionFactory implements SessionFactory {
           Map<String, Object> vendorOptions =
               (Map<String, Object>) options.getCapability(vendorOptionsCapability);
           vendorOptions.put("binary", browserPath);
-          return new PersistentCapabilities(options)
-              .setCapability(vendorOptionsCapability, vendorOptions)
-              .setCapability("browserVersion", null);
+          MutableCapabilities toReturn = new MutableCapabilities(options);
+          toReturn.setCapability(vendorOptionsCapability, vendorOptions);
+          toReturn.setCapability("browserVersion", (String) null);
+          return new PersistentCapabilities(toReturn);
         } catch (Exception e) {
-          LOG.warning(
+          LOG.log(
+              Level.WARNING,
               String.format(
-                  "Exception while setting the browser binary path. %s: %s",
-                  options, e.getMessage()));
+                  "Exception while setting the browser binary path. Options: %s", options),
+              e);
         }
       }
     }

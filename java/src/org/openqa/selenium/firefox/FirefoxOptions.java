@@ -294,6 +294,11 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return this;
   }
 
+  public FirefoxOptions enableBiDi() {
+    setCapability("webSocketUrl", true);
+    return this;
+  }
+
   @Override
   protected Set<String> getExtraCapabilityNames() {
     Set<String> names = new TreeSet<>();

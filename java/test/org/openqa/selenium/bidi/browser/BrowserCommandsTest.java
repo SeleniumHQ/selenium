@@ -29,7 +29,6 @@ import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 class BrowserCommandsTest extends JupiterTestBase {
 
@@ -44,8 +43,6 @@ class BrowserCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canCreateAUserContext() {
     String userContext = browser.createUserContext();
 
@@ -55,8 +52,6 @@ class BrowserCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canGetUserContexts() {
     String userContext1 = browser.createUserContext();
     String userContext2 = browser.createUserContext();
@@ -69,8 +64,6 @@ class BrowserCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canRemoveUserContext() {
     String userContext1 = browser.createUserContext();
     String userContext2 = browser.createUserContext();

@@ -45,6 +45,7 @@ import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.NetworkInterceptor;
+import org.openqa.selenium.devtools.RequestFailedException;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
@@ -200,6 +201,17 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
         pausedRequest -> {
           try {
             String id = getRequestId(pausedRequest);
+
+            if (hasErrorResponse(pausedRequest)) {
+              CompletableFuture<HttpResponse> future = pendingResponses.remove(id);
+              if (future == null) {
+                devTools.send(continueWithoutModification(pausedRequest));
+              } else {
+                future.completeExceptionally(new RequestFailedException());
+              }
+              return;
+            }
+
             Either<HttpRequest, HttpResponse> message = createSeMessages(pausedRequest);
 
             if (message.isRight()) {
@@ -237,6 +249,11 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
                             pendingResponses.remove(id);
                             return STOP_PROCESSING;
                           } catch (ExecutionException e) {
+                            if (e.getCause() instanceof RequestFailedException) {
+                              // Throwing here will give the user's filter a chance to intercept
+                              // the failure and handle it.
+                              throw (RequestFailedException) e.getCause();
+                            }
                             if (fetchEnabled.get()) {
                               LOG.log(WARNING, e, () -> "Unable to process request");
                             }
@@ -254,6 +271,10 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
             }
 
             devTools.send(fulfillRequest(pausedRequest, forBrowser));
+          } catch (RequestFailedException e) {
+            // If the exception reaches here, we know the user's filter has not handled it and the
+            // browser should continue its normal error handling.
+            devTools.send(continueWithoutModification(pausedRequest));
           } catch (TimeoutException e) {
             if (fetchEnabled.get()) {
               throw e;
@@ -347,6 +368,8 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   protected abstract String getRequestId(REQUESTPAUSED pausedReq);
 
   protected abstract Either<HttpRequest, HttpResponse> createSeMessages(REQUESTPAUSED pausedReq);
+
+  protected abstract boolean hasErrorResponse(REQUESTPAUSED pausedReq);
 
   protected abstract Command<Void> continueWithoutModification(REQUESTPAUSED pausedReq);
 

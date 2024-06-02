@@ -163,7 +163,7 @@ jobs:
 
   macos-stable:
     name: "MacOS Stable"
-    runs-on: macos-latest
+    runs-on: macos-13
     needs: tests
     if: github.event_name != 'schedule'
     env:
@@ -195,7 +195,7 @@ jobs:
 
   macos-debug:
     name: "MacOS Debug"
-    runs-on: macos-latest
+    runs-on: macos-13
     needs: tests
     if: github.event_name != 'schedule'
     env:

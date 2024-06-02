@@ -18,6 +18,9 @@ filegroup(
     data = [
         "appconfig.json",
         "//common/src/web",
+        "//dotnet/src/webdriver:manager-linux",
+        "//dotnet/src/webdriver:manager-macos",
+        "//dotnet/src/webdriver:manager-windows",
         "//java/test/org/openqa/selenium/environment:appserver",
         "//java/test/org/openqa/selenium/environment:keystore",
         "//javascript/atoms",
@@ -39,6 +42,9 @@ csharp_library(
             "**/*Tests.cs",
         ],
     ),
+    data = [
+        "//common/manager:selenium-manager-macos",
+    ],
     target_frameworks = ["net7.0"],
     targeting_packs = [
         framework("nuget", "Microsoft.NETCore.App.Ref"),
@@ -53,6 +59,12 @@ csharp_library(
         framework("nuget", "NUnit"),
     ],
 )
+
+# copy_file(
+#     name = "manager-macos",
+#     src = "//common/manager:selenium-manager-macos",
+#     out = "manager/macos/selenium-manager",
+# )
 
 dotnet_nunit_test_suite(
     name = "AllTests",

@@ -20,6 +20,7 @@ const { BrowsingContextInfo } = require('./browsingContextTypes')
 const { SerializationOptions, ReferenceValue, RemoteValue } = require('./protocolValue')
 const { WebElement } = require('../lib/webdriver')
 const { CaptureScreenshotParameters } = require('./captureScreenshotParameters')
+const { CreateContextParameters } = require('./createContextParameters')
 
 /**
  * Represents the locator to locate nodes in the browsing context.
@@ -110,9 +111,17 @@ class BrowsingContext {
     return this._id
   }
 
-  async init({ browsingContextId, type, referenceContext }) {
+  async init({ browsingContextId = undefined, type = undefined, createParameters = undefined }) {
     if (!(await this._driver.getCapabilities()).get('webSocketUrl')) {
       throw Error('WebDriver instance must support BiDi protocol')
+    }
+
+    if (browsingContextId === undefined && type === undefined && createParameters === undefined) {
+      throw Error('Either BrowsingContextId or Type or CreateParameters must be provided')
+    }
+
+    if (type === undefined && createParameters !== undefined) {
+      throw Error('Type must be provided with CreateParameters')
     }
 
     if (type !== undefined && !['window', 'tab'].includes(type)) {
@@ -122,22 +131,33 @@ class BrowsingContext {
     this.bidi = await this._driver.getBidi()
     this._id =
       browsingContextId === undefined
-        ? (await this.create(type, referenceContext))['result']['context']
+        ? (await this.create(type, createParameters))['result']['context']
         : browsingContextId
   }
 
   /**
-   * Creates a browsing context for the given type and referenceContext
+   * Creates a browsing context for the given type with the given parameters
    */
-  async create(type, referenceContext) {
+  async create(type, createParameters = undefined) {
+    if (createParameters !== undefined && (!createParameters) instanceof CreateContextParameters) {
+      throw Error(`Pass in the instance of CreateContextParameters. Received: ${createParameters}`)
+    }
+
+    let parameters = new Map()
+    parameters.set('type', type)
+
+    if (createParameters !== undefined) {
+      createParameters.asMap().forEach((value, key) => {
+        parameters.set(key, value)
+      })
+    }
+
     const params = {
       method: 'browsingContext.create',
-      params: {
-        type: type,
-        referenceContext: referenceContext,
-      },
+      params: Object.fromEntries(parameters),
     }
-    return await this.bidi.send(params)
+    const res = await this.bidi.send(params)
+    return res
   }
 
   /**
@@ -480,21 +500,18 @@ class BrowsingContext {
    *
    * @param {Locator} locator - The locator object used to locate the nodes.
    * @param {number} [maxNodeCount] - The maximum number of nodes to locate (optional).
-   * @param {string} [ownership] - The ownership type of the nodes (optional).
    * @param {string} [sandbox] - The sandbox name for locating nodes (optional).
    * @param {SerializationOptions} [serializationOptions] - The serialization options for locating nodes (optional).
    * @param {ReferenceValue[]} [startNodes] - The array of start nodes for locating nodes (optional).
    * @returns {Promise<RemoteValue[]>} - A promise that resolves to the arrays of located nodes.
    * @throws {Error} - If the locator is not an instance of Locator.
    * @throws {Error} - If the serializationOptions is provided but not an instance of SerializationOptions.
-   * @throws {Error} - If the ownership is provided but not 'root' or 'none'.
    * @throws {Error} - If the startNodes is provided but not an array of ReferenceValue objects.
    * @throws {Error} - If any of the startNodes is not an instance of ReferenceValue.
    */
   async locateNodes(
     locator,
     maxNodeCount = undefined,
-    ownership = undefined,
     sandbox = undefined,
     serializationOptions = undefined,
     startNodes = undefined,
@@ -505,10 +522,6 @@ class BrowsingContext {
 
     if (serializationOptions !== undefined && !(serializationOptions instanceof SerializationOptions)) {
       throw Error(`Pass in SerializationOptions object. Received: ${serializationOptions} `)
-    }
-
-    if (ownership !== undefined && !['root', 'none'].includes(ownership)) {
-      throw Error(`Valid types are 'root' and 'none. Received: ${ownership}`)
     }
 
     if (startNodes !== undefined && !Array.isArray(startNodes)) {
@@ -529,7 +542,6 @@ class BrowsingContext {
         context: this._id,
         locator: Object.fromEntries(locator.toMap()),
         maxNodeCount: maxNodeCount,
-        ownership: ownership,
         sandbox: sandbox,
         serializationOptions: serializationOptions,
         startNodes: startNodes,
@@ -554,20 +566,13 @@ class BrowsingContext {
    * Locates a single node in the browsing context.
    *
    * @param {Locator} locator - The locator used to find the node.
-   * @param {string} [ownership] - The ownership of the node (optional).
    * @param {string} [sandbox] - The sandbox of the node (optional).
    * @param {SerializationOptions} [serializationOptions] - The serialization options for the node (optional).
    * @param {Array} [startNodes] - The starting nodes for the search (optional).
    * @returns {Promise<RemoteValue>} - A promise that resolves to the located node.
    */
-  async locateNode(
-    locator,
-    ownership = undefined,
-    sandbox = undefined,
-    serializationOptions = undefined,
-    startNodes = undefined,
-  ) {
-    const elements = await this.locateNodes(locator, 1, ownership, sandbox, serializationOptions, startNodes)
+  async locateNode(locator, sandbox = undefined, serializationOptions = undefined, startNodes = undefined) {
+    const elements = await this.locateNodes(locator, 1, sandbox, serializationOptions, startNodes)
     return elements[0]
   }
 
@@ -635,12 +640,15 @@ class PrintResult {
  * @param driver
  * @param browsingContextId The browsing context of current window/tab
  * @param type "window" or "tab"
- * @param referenceContext To get a browsing context for this reference if passed
+ * @param createParameters The parameters for creating a new browsing context
  * @returns {Promise<BrowsingContext>}
  */
-async function getBrowsingContextInstance(driver, { browsingContextId, type, referenceContext }) {
+async function getBrowsingContextInstance(
+  driver,
+  { browsingContextId = undefined, type = undefined, createParameters = undefined },
+) {
   let instance = new BrowsingContext(driver)
-  await instance.init({ browsingContextId, type, referenceContext })
+  await instance.init({ browsingContextId, type, createParameters })
   return instance
 }
 

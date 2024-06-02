@@ -70,7 +70,7 @@ on:
 jobs:
   bazel:
     name: ${{ inputs.name }}
-    runs-on: ${{ inputs.os }}-latest
+    runs-on: ${{ inputs.os == 'macos' && 'macos-13' || format('{0}-latest', inputs.os) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
@@ -116,7 +116,7 @@ jobs:
           node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
         if: inputs.caching
-        uses: bazel-contrib/setup-bazel@0.8.1
+        uses: bazel-contrib/setup-bazel@0.8.4
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
@@ -130,7 +130,7 @@ jobs:
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: bazel-contrib/setup-bazel@0.8.1
+        uses: bazel-contrib/setup-bazel@0.8.4
         with:
           bazelrc: common --color=yes
       - name: Setup Fluxbox and Xvfb

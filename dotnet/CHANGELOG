@@ -1,3 +1,21 @@
+v4.21.0
+======
+
+* Add CDP for Chrome 125 and remove 122
+* Overwrite internal log file if it already exists (#13900)
+* Align binary location property for FirefoxOptions with other options (#13901)
+
+v4.20.0
+======
+
+* Add CDP for Chrome 124 and remove 121
+* Use correct devtools session id after reinitialization (#13768)
+* Making Selenium Manager a thin wrapper (#13833)
+  * This change has been made to make it easier to maintain and improve, the interface has
+  changed and if users were invoking it, they might experience issues. Selenium Manager is
+  still in beta and these type of changes are expected.
+* Nightly dotnet builds are now pushed to GitHub packages
+
 v4.19.0
 ======
 

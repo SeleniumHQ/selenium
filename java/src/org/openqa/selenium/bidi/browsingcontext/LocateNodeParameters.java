@@ -38,7 +38,6 @@ public class LocateNodeParameters {
   private LocateNodeParameters(Builder builder) {
     this.locator = builder.locator;
     this.maxNodeCount = Optional.ofNullable(builder.maxNodeCount);
-    this.ownership = Optional.ofNullable(builder.ownership);
     this.sandbox = Optional.ofNullable(builder.sandbox);
     this.serializationOptions = Optional.ofNullable(builder.serializationOptions);
     this.startNodes = Optional.ofNullable(builder.startNodes);
@@ -50,11 +49,6 @@ public class LocateNodeParameters {
 
   public LocateNodeParameters setMaxNodeCount(long maxNodeCount) {
     this.maxNodeCount = Optional.of(maxNodeCount);
-    return this;
-  }
-
-  public LocateNodeParameters setOwnership(ResultOwnership ownership) {
-    this.ownership = Optional.of(ownership);
     return this;
   }
 
@@ -78,7 +72,6 @@ public class LocateNodeParameters {
 
     map.put("locator", locator.toMap());
     maxNodeCount.ifPresent(value -> map.put("maxNodeCount", value));
-    ownership.ifPresent(value -> map.put("ownership", value.toString()));
     sandbox.ifPresent(value -> map.put("sandbox", value));
     serializationOptions.ifPresent(value -> map.put("serializationOptions", value.toJson()));
     startNodes.ifPresent(
@@ -101,7 +94,6 @@ public class LocateNodeParameters {
 
     private final Locator locator;
     private Long maxNodeCount = null;
-    private ResultOwnership ownership;
     private String sandbox;
     private SerializationOptions serializationOptions;
     private List<RemoteReference> startNodes;
@@ -112,11 +104,6 @@ public class LocateNodeParameters {
 
     public Builder setMaxNodeCount(long maxNodeCount) {
       this.maxNodeCount = maxNodeCount;
-      return this;
-    }
-
-    public Builder setOwnership(ResultOwnership ownership) {
-      this.ownership = ownership;
       return this;
     }
 
