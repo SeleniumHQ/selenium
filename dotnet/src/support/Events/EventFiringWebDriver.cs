@@ -847,7 +847,7 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public void Back()
             {
-                Task.Run(this.BackAsync).GetAwaiter().GetResult();
+                Task.Run(async () => await this.BackAsync().ConfigureAwait(false)).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -875,7 +875,7 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public void Forward()
             {
-                Task.Run(this.ForwardAsync).GetAwaiter().GetResult();
+                Task.Run(async () => await this.ForwardAsync().ConfigureAwait(false)).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -904,7 +904,7 @@ namespace OpenQA.Selenium.Support.Events
             /// <param name="url">String of where you want the browser to go to</param>
             public void GoToUrl(string url)
             {
-                Task.Run(() => this.GoToUrlAsync(url)).GetAwaiter().GetResult();
+                Task.Run(() => this.GoToUrlAsync(url).ConfigureAwait(false)).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -939,7 +939,7 @@ namespace OpenQA.Selenium.Support.Events
             /// <param name="url">Uri object of where you want the browser to go to</param>
             public void GoToUrl(Uri url)
             {
-                Task.Run(() => this.GoToUrlAsync(url)).GetAwaiter().GetResult();
+                Task.Run(() => this.GoToUrlAsync(url).ConfigureAwait(false)).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -962,7 +962,7 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public void Refresh()
             {
-                Task.Run(this.RefreshAsync).GetAwaiter().GetResult();
+                Task.Run(async () => await this.RefreshAsync().ConfigureAwait(false)).GetAwaiter().GetResult();
             }
 
             /// <summary>
