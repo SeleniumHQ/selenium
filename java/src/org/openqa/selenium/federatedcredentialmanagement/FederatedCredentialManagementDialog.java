@@ -29,6 +29,11 @@ public interface FederatedCredentialManagementDialog {
   String DIALOG_TYPE_ACCOUNT_LIST = "AccountChooser";
   String DIALOG_TYPE_AUTO_REAUTH = "AutoReauthn";
 
+  String BUTTON_CONFIRM_IDP_LOGIN_CONTINUE = "ConfirmIdpLoginContinue";
+  // The following buttons need an account index.
+  String BUTTON_TERMS_OF_SERVICE = "TermsOfService";
+  String BUTTON_PRIVACY_POLICY = "PrivacyPolicy";
+
   /** Closes the dialog as if the user had clicked X. */
   void cancelDialog();
 
@@ -58,4 +63,19 @@ public interface FederatedCredentialManagementDialog {
    * <p>If this is an auto reauth dialog, returns the single account that is being signed in.
    */
   List<FederatedCredentialManagementAccount> getAccounts();
+
+  /**
+   * Clicks a button on the dialog.
+   *
+   * @param button The button to click.
+   */
+  void clickButton(String button);
+
+  /**
+   * Clicks a button on the dialog that requires an account index.
+   *
+   * @param button The button to click.
+   * @param index The account index, if needed by the specified button.
+   */
+  void clickButton(String button, int index);
 }

@@ -138,4 +138,35 @@ class FederatedCredentialManagementTest extends JupiterTestBase {
     response = jsAwareDriver.executeScript("return await promise");
     assertThat(response).asInstanceOf(MAP).containsEntry("token", "a token");
   }
+
+  @Test
+  @NotYetImplemented(
+      value = CHROME,
+      reason = "https://github.com/SeleniumHQ/selenium/pull/12096#issuecomment-2017760822")
+  void testClickDialogButton() {
+    fedcmDriver.setDelayEnabled(false);
+    assertNull(fedcmDriver.getFederatedCredentialManagementDialog());
+
+    Object response = triggerFedCm();
+
+    waitForDialog();
+
+    FederatedCredentialManagementDialog dialog =
+        fedcmDriver.getFederatedCredentialManagementDialog();
+
+    assertEquals("Sign in to localhost with localhost", dialog.getTitle());
+    assertEquals("AccountChooser", dialog.getDialogType());
+
+    int windowCount = localDriver.getWindowHandles().size();
+    dialog.clickButton(dialog.BUTTON_PRIVACY_POLICY, 1);
+    WebDriverWait wait = new WebDriverWait(localDriver, Duration.ofSeconds(5));
+    wait.until(
+        driver ->
+            driver.getWindowHandles().size() > windowCount);
+
+    dialog.selectAccount(0);
+
+    response = jsAwareDriver.executeScript("return await promise");
+    assertThat(response).asInstanceOf(MAP).containsEntry("token", "a token");
+  }
 }
