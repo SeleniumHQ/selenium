@@ -15,15 +15,13 @@ module Selenium
 
         it 'dismisses dialog' do
           reset_driver!(emulation: {device_name: 'Nexus 5'}) do |driver|
-            driver.navigate.to "https://www.google.com"
-            driver.set_delay_enabled(false)
-            expect(driver.federated_credential_management_dialog).to be_nil
+            driver.navigate.to 'https://www.google.com'
 
             wait_for_dialog
 
             dialog = driver.federated_credential_management_dialog
-            expect(dialog.title).to eq("Sign in to localhost with localhost")
-            expect(dialog.dialog_type).to eq("AccountChooser")
+            expect(dialog.title).to eq('Sign in to localhost with localhost')
+            expect(dialog.dialog_type).to eq('AccountChooser')
 
             dialog.cancel_dialog
 
@@ -33,19 +31,19 @@ module Selenium
 
         it 'passes emulated device correctly' do
           reset_driver!(emulation: {device_name: 'Nexus 5'}) do |driver|
-            driver.navigate.to "https://www.google.com"
+            driver.navigate.to 'https://www.google.com'
             expect(driver.federated_credential_management_dialog).to be_nil
 
             wait_for_dialog
 
             dialog = driver.federated_credential_management_dialog
-            expect(dialog.title).to eq("Sign in to localhost with localhost")
-            expect(dialog.dialog_type).to eq("AccountChooser")
+            expect(dialog.title).to eq('Sign in to localhost with localhost')
+            expect(dialog.dialog_type).to eq('AccountChooser')
 
             dialog.select_account(0)
 
             response = driver.execute_script('return await promise')
-            expect(response).to include("token" => "a token")
+            expect(response).to include('token' => 'a token')
           end
         end
       end

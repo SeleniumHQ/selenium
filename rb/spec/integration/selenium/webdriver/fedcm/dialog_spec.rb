@@ -16,7 +16,6 @@ module Selenium
         it 'dismisses dialog' do
           reset_driver!(emulation: {device_name: 'Nexus 5'}) do |driver|
             driver.navigate.to "https://www.google.com"
-            driver.set_delay_enabled(false)
             expect(driver.federated_credential_management_dialog).to be_nil
 
             wait_for_dialog
