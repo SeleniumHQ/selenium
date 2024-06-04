@@ -58,7 +58,9 @@ module Selenium
       end
 
       def remove_callback(event, id)
-        @callbacks[event].delete_if { |callback| callback.object_id == id }
+        return unless callbacks[event].reject! { |callback| callback.object_id == id }
+
+        raise Error::WebDriverError, "Callback with ID #{id} does not exist for event #{event}"
       end
 
       def send_cmd(**payload)

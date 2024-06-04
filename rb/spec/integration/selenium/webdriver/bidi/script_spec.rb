@@ -104,6 +104,12 @@ module Selenium
         expect(log_entry.text).to eq 'Error: Not working'
         expect(log_entry.stack_trace).not_to be_empty
       end
+
+      it 'errors removing non-existent handler' do
+        expect {
+          driver.script.remove_console_message_handler(0)
+        }.to raise_error(Error::WebDriverError, /Callback with ID 0 does not exist/)
+      end
     end
   end
 end
