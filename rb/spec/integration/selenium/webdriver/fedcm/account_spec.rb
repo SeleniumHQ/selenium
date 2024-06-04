@@ -4,6 +4,8 @@ module Selenium
   module WebDriver
     module FedCM
       describe Account, exclusive: {browser: :chrome} do
+        let(:url) { 'https://fedcm-rp-demo.glitch.me/' }
+
         def trigger_fed_cm
           driver.execute_script('triggerFedCm()')
         end
@@ -14,8 +16,8 @@ module Selenium
         end
 
         it 'dismisses dialog' do
-          reset_driver!(emulation: {device_name: 'Nexus 5'}) do |driver|
-            driver.navigate.to 'https://www.google.com'
+          reset_driver! do |driver|
+            driver.navigate.to url
 
             wait_for_dialog
 
@@ -30,8 +32,8 @@ module Selenium
         end
 
         it 'passes emulated device correctly' do
-          reset_driver!(emulation: {device_name: 'Nexus 5'}) do |driver|
-            driver.navigate.to 'https://www.google.com'
+          reset_driver! do |driver|
+            driver.navigate.to url
             expect(driver.federated_credential_management_dialog).to be_nil
 
             wait_for_dialog

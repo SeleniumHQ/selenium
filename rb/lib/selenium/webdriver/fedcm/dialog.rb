@@ -28,7 +28,7 @@ module Selenium
 
         # Returns the title of the dialog.
         def title
-          raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
+          @bridge.fedcm_title
         end
 
         # Returns the subtitle of the dialog or nil if none.

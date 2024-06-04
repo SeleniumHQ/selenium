@@ -4,6 +4,8 @@ module Selenium
       module Dialog
         DIALOG_TYPE_ACCOUNT_LIST: untyped
         DIALOG_TYPE_AUTO_REAUTH: untyped
+
+        def open?: -> untyped
       end
     end
   end
