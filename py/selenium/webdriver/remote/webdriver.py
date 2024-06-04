@@ -20,6 +20,7 @@ import contextlib
 import copy
 import os
 import pkgutil
+import tempfile
 import types
 import typing
 import warnings
@@ -1147,12 +1148,13 @@ class WebDriver(BaseWebDriver):
 
         contents = self.execute(Command.DOWNLOAD_FILE, {"name": file_name})["value"]["contents"]
 
-        target_file = os.path.join(target_directory, file_name)
-        with open(target_file, "wb") as file:
-            file.write(base64.b64decode(contents))
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            zip_file = os.path.join(tmp_dir, file_name + ".zip")
+            with open(zip_file, "wb") as file:
+                file.write(base64.b64decode(contents))
 
-        with zipfile.ZipFile(target_file, "r") as zip_ref:
-            zip_ref.extractall(target_directory)
+            with zipfile.ZipFile(zip_file, "r") as zip_ref:
+                zip_ref.extractall(target_directory)
 
     def delete_downloadable_files(self) -> None:
         """Deletes all downloadable files."""
