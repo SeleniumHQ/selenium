@@ -283,7 +283,7 @@ fn log_driver_and_browser_path(
     if driver_path.exists() {
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
     } else {
-        log.error(format!("Driver unavailable: {}", DRIVER_PATH));
+        log.error(format!("Driver unavailable: {}", driver_path.display()));
         flush_and_exit(UNAVAILABLE, log, None);
     }
     if !browser_path.is_empty() {

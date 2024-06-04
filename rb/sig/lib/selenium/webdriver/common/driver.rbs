@@ -5,7 +5,6 @@ module Selenium
 
       include TakesScreenshot
 
-      @bidi: untyped
       @devtools: untyped
       @navigate: untyped
 
