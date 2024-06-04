@@ -214,11 +214,11 @@ module Selenium
         rescue *QUIT_ERRORS
           nil
         ensure
-          @bidi.close
+          @bidi&.close
         end
 
         def close
-          execute(:close_window).tap { |handles| @bidi.close if handles.empty? }
+          execute(:close_window).tap { |handles| @bidi&.close if handles.empty? }
         end
 
         def refresh

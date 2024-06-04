@@ -71,8 +71,8 @@ module Selenium
       def initialize(bridge: nil, listener: nil, **opts)
         @devtools = nil
         bridge ||= create_bridge(**opts)
-        add_extensions(bridge.browser)
         @bridge = listener ? Support::EventFiringBridge.new(bridge, listener) : bridge
+        add_extensions(@bridge.browser)
       end
 
       def inspect
@@ -180,7 +180,7 @@ module Selenium
       #
 
       def close
-        bridge.close
+        bridge&.close
       end
 
       #
