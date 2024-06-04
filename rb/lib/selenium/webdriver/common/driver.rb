@@ -106,7 +106,9 @@ module Selenium
 
       def script(*args)
         if args.any?
-          # Maintain legacy alias
+          WebDriver.logger.deprecate('`Driver#script` as an alias for `#execute_script`',
+                                     '`Driver#execute_script`',
+                                     id: :driver_script)
           execute_script(*args)
         else
           @script ||= WebDriver::Script.new(bridge)
