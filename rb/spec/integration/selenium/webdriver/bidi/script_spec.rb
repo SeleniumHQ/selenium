@@ -34,10 +34,10 @@ module Selenium
       end
 
       it 'logs console messages' do
-        log_entries = []
-
-        driver.script.add_console_message_handler { |log| log_entries << log }
         driver.navigate.to url_for('bidi/logEntryAdded.html')
+
+        log_entries = []
+        driver.script.add_console_message_handler { |log| log_entries << log }
 
         driver.find_element(id: 'jsException').click
         driver.find_element(id: 'consoleLog').click
@@ -53,13 +53,14 @@ module Selenium
       end
 
       it 'logs multiple console messages' do
-        log_entries = []
-
-        driver.script.add_console_message_handler { |log| log_entries << log }
-        driver.script.add_console_message_handler { |log| log_entries << log }
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
+        log_entries = []
+        driver.script.add_console_message_handler { |log| log_entries << log }
+        driver.script.add_console_message_handler { |log| log_entries << log }
+
         driver.find_element(id: 'jsException').click
+        driver.find_element(id: 'consoleLog').click
         driver.find_element(id: 'consoleLog').click
 
         wait.until { log_entries.size > 1 }
@@ -67,16 +68,18 @@ module Selenium
       end
 
       it 'logs removes console message handler' do
-        log_entries = []
+        driver.navigate.to url_for('bidi/logEntryAdded.html')
 
+        log_entries = []
         id = driver.script.add_console_message_handler { |log| log_entries << log }
         driver.script.add_console_message_handler { |log| log_entries << log }
-        driver.navigate.to url_for('bidi/logEntryAdded.html')
+
         driver.find_element(id: 'consoleLog').click
 
         wait.until { log_entries.size > 1 }
 
         driver.script.remove_console_message_handler(id)
+
         driver.find_element(id: 'consoleLog').click
 
         wait.until { log_entries.size > 2 }
@@ -84,10 +87,11 @@ module Selenium
       end
 
       it 'logs javascript errors' do
-        log_entries = []
-
-        driver.script.add_javascript_error_handler { |log| log_entries << log }
         driver.navigate.to url_for('bidi/logEntryAdded.html')
+
+        log_entries = []
+        driver.script.add_javascript_error_handler { |log| log_entries << log }
+
         driver.find_element(id: 'consoleLog').click
         driver.find_element(id: 'jsException').click
 
