@@ -56,6 +56,7 @@ RSpec.configure do |c|
     guards.add_condition(:ci, WebDriver::Platform.ci)
     guards.add_condition(:platform, WebDriver::Platform.os)
     guards.add_condition(:headless, !ENV['HEADLESS'].nil?)
+    guards.add_condition(:bidi, !ENV['WEBDRIVER_BIDI'].nil?)
 
     results = guards.disposition
     send(*results) if results

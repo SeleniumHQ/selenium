@@ -22,9 +22,8 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     class BiDi
-      describe BrowsingContext, only: {browser: %i[chrome edge firefox]} do
-        before { reset_driver!(web_socket_url: true) }
-        after { quit_driver }
+      describe BrowsingContext, exclusive: {bidi: true}, only: {browser: %i[chrome edge firefox]} do
+        after { reset_driver! }
 
         it 'can create a browsing context for given id' do
           id = driver.window_handle

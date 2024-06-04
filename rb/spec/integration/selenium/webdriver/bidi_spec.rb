@@ -21,17 +21,11 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe BiDi, only: {browser: %i[chrome edge firefox]} do
-      before { reset_driver!(web_socket_url: true) }
-
-      after do
-        quit_driver
-      rescue Selenium::WebDriver::Error::InvalidSessionIdError
-        # do nothing
-      end
+    describe BiDi, exclusive: {bidi: true}, only: {browser: %i[chrome edge firefox]} do
+      after { reset_driver! }
 
       it 'errors when bidi not enabled' do
-        reset_driver! do |driver|
+        reset_driver!(web_socket_url: false) do |driver|
           expect { driver.bidi }.to raise_error(WebDriver::Error::WebDriverError)
         end
       end
