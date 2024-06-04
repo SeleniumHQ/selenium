@@ -20,38 +20,19 @@
 module Selenium
   module WebDriver
     class BiDi
-      autoload :Session, 'selenium/webdriver/bidi/session'
-      autoload :LogInspector, 'selenium/webdriver/bidi/log_inspector'
-      autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context'
-      autoload :ScriptManager, 'selenium/webdriver/bidi/script_manager'
+      class ReferenceValue
+        def initialize(handle: nil, share_id: nil)
+          @handle = handle
+          @share_id = share_id
+        end
 
-      def initialize(url:)
-        @ws = WebSocketConnection.new(url: url)
-      end
-
-      def close
-        @ws.close
-      end
-
-      def callbacks
-        @ws.callbacks
-      end
-
-      def session
-        @session ||= Session.new(self)
-      end
-
-      def send_cmd(method, **params)
-        data = {method: method, params: params.compact}
-        message = @ws.send_cmd(**data)
-        raise Error::WebDriverError, error_message(message) if message['error']
-
-        message['result']
-      end
-
-      def error_message(message)
-        "#{message['error']}: #{message['message']}\n#{message['stacktrace']}"
-      end
+        def as_map
+          {
+            handle: @handle,
+            shareId: @share_id
+          }
+        end
+      end # ReferenceValue
     end # BiDi
   end # WebDriver
 end # Selenium

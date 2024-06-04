@@ -20,38 +20,21 @@
 module Selenium
   module WebDriver
     class BiDi
-      autoload :Session, 'selenium/webdriver/bidi/session'
-      autoload :LogInspector, 'selenium/webdriver/bidi/log_inspector'
-      autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context'
-      autoload :ScriptManager, 'selenium/webdriver/bidi/script_manager'
+      module PrimitiveType
+        UNDEFINED = 'undefined'
+        NULL = 'null'
+        STRING = 'string'
+        NUMBER = 'number'
+        SPECIAL_NUMBER = 'number'
+        BOOLEAN = 'boolean'
+        BIGINT = 'bigint'
 
-      def initialize(url:)
-        @ws = WebSocketConnection.new(url: url)
-      end
-
-      def close
-        @ws.close
-      end
-
-      def callbacks
-        @ws.callbacks
-      end
-
-      def session
-        @session ||= Session.new(self)
-      end
-
-      def send_cmd(method, **params)
-        data = {method: method, params: params.compact}
-        message = @ws.send_cmd(**data)
-        raise Error::WebDriverError, error_message(message) if message['error']
-
-        message['result']
-      end
-
-      def error_message(message)
-        "#{message['error']}: #{message['message']}\n#{message['stacktrace']}"
-      end
+        def self.find_by_name(name)
+          PrimitiveType.constants.each do |type|
+            return PrimitiveType.const_get(type) if name.casecmp?(PrimitiveType.const_get(type))
+          end; nil
+        end
+      end # PrimitiveType
     end # BiDi
   end # WebDriver
 end # Selenium

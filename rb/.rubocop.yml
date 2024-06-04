@@ -66,6 +66,9 @@ Metrics/ModuleLength:
     - 'lib/selenium/webdriver/common/platform.rb'
     - 'spec/**/*'
 
+Metrics/ParameterLists:
+  Enabled: false
+
 Metrics/PerceivedComplexity:
   Max: 9
   Exclude:
