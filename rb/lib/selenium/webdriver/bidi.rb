@@ -33,7 +33,18 @@ module Selenium
       end
 
       def callbacks
+        WebDriver.logger.deprecate('BiDi#callbacks to add a callback to the list of callbacks',
+                                   'BiDi#add_callback(event, &block)', id: :callbacks)
+
         @ws.callbacks
+      end
+
+      def add_callback(event, &block)
+        @ws.add_callback(event, &block)
+      end
+
+      def remove_callback(event, id)
+        @ws.remove_callback(event, id)
       end
 
       def session

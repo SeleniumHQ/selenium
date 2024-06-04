@@ -100,6 +100,20 @@ module Selenium
       end
 
       #
+      # @return [Script]
+      # @see Script
+      #
+
+      def script(*args)
+        if args.any?
+          # Maintain legacy alias
+          execute_script(*args)
+        else
+          @script ||= WebDriver::Script.new(bridge)
+        end
+      end
+
+      #
       # @return [TargetLocator]
       # @see TargetLocator
       #
@@ -261,12 +275,6 @@ module Selenium
       #
 
       alias all find_elements
-
-      #
-      #   driver.script('function() { ... };')
-      #
-
-      alias script execute_script
 
       # Get the first element matching the given selector. If given a
       # String or Symbol, it will be used as the id of the element.

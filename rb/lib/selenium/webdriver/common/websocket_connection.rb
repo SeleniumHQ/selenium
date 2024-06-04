@@ -40,6 +40,8 @@ module Selenium
 
         process_handshake
         @socket_thread = attach_socket_listener
+        @track_callbacks = Hash.new { |callbacks, event| callbacks[event] = {} }
+        @track_callbacks_id = 0
       end
 
       def close
@@ -50,6 +52,18 @@ module Selenium
 
       def callbacks
         @callbacks ||= Hash.new { |callbacks, event| callbacks[event] = [] }
+      end
+
+      def add_callback(event, &block)
+        @track_callbacks[event][@track_callbacks_id] = block
+        callbacks[event] << block
+        @track_callbacks_id += 1
+        @track_callbacks_id - 1
+      end
+
+      def remove_callback(event, id)
+        call = @track_callbacks[id]
+        @callbacks[event].delete(call)
       end
 
       def send_cmd(**payload)

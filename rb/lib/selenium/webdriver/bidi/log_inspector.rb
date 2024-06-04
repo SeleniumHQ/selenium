@@ -92,7 +92,7 @@ module Selenium
 
         def on(event, &block)
           event = EVENTS[event] if event.is_a?(Symbol)
-          @bidi.callbacks["log.#{event}"] << block
+          @bidi.add_callback("log.#{event}", &block)
         end
 
         def check_valid_filter(filter_by)
