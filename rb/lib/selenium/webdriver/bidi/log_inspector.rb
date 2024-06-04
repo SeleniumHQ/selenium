@@ -41,6 +41,10 @@ module Selenium
         }.freeze
 
         def initialize(driver, browsing_context_ids = nil)
+          WebDriver.logger.deprecate('LogInspector class',
+                                     'Script class with driver.script',
+                                     id: :log_inspector)
+
           unless driver.capabilities.web_socket_url
             raise Error::WebDriverError,
                   'WebDriver instance must support BiDi protocol'

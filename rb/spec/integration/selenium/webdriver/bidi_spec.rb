@@ -46,29 +46,6 @@ module Selenium
         expect(status.message).not_to be_empty
       end
 
-      it 'can navigate and listen to errors' do
-        log_entries = []
-        log_inspector = BiDi::LogInspector.new(driver)
-        log_inspector.on_javascript_exception { |log| log_entries << log }
-
-        browsing_context = BiDi::BrowsingContext.new(driver: driver, browsing_context_id: driver.window_handle)
-        info = browsing_context.navigate(url: url_for('/bidi/logEntryAdded.html'))
-
-        expect(browsing_context.id).not_to be_nil
-        expect(info.navigation_id).not_to be_nil
-        expect(info.url).to include('/bidi/logEntryAdded.html')
-
-        js_exception = wait.until { driver.find_element(id: 'jsException') }
-        js_exception.click
-
-        log_entry = wait.until { log_entries.find { _1.text == 'Error: Not working' } }
-        expect(log_entry).to have_attributes(
-          text: 'Error: Not working',
-          type: 'javascript',
-          level: BiDi::LogInspector::LOG_LEVEL[:ERROR]
-        )
-      end
-
       it 'does not close BiDi session if at least one window is opened' do
         status = driver.bidi.session.status
         expect(status.ready).to be false
