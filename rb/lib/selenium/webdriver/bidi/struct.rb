@@ -19,27 +19,22 @@
 
 module Selenium
   module WebDriver
-    class Script
-      def initialize(bridge)
-        @log_handler = BiDi::LogHandler.new(bridge.bidi)
-      end
+    class BiDi
+      class Struct < ::Struct
+        def self.new(*args, &block)
+          super(*args) do
+            define_method(:initialize) do |**kwargs|
+              converted_kwargs = kwargs.transform_keys { |key| camel_to_snake(key.to_s).to_sym }
+              super(*converted_kwargs.values_at(*self.class.members))
+            end
+            class_eval(&block) if block
+          end
+        end
 
-      # @return [int] id of the handler
-      def add_console_message_handler(&block)
-        @log_handler.add_message_handler('console', &block)
+        def camel_to_snake(camel_str)
+          camel_str.gsub(/([A-Z])/, '_\1').downcase
+        end
       end
-
-      # @return [int] id of the handler
-      def add_javascript_error_handler(&block)
-        @log_handler.add_message_handler('javascript', &block)
-      end
-
-      # @param [int] id of the handler previously added
-      def remove_console_message_handler(id)
-        @log_handler.remove_message_handler(id)
-      end
-
-      alias remove_javascript_error_handler remove_console_message_handler
-    end # Script
+    end # BiDi
   end # WebDriver
 end # Selenium

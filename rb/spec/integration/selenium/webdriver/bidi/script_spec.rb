@@ -29,7 +29,7 @@ module Selenium
         reset_driver! do |driver|
           expect {
             driver.script
-          }.to raise_error(WebDriver::Error::WebDriverError, /Script methods requires enabling BiDi/)
+          }.to raise_error(WebDriver::Error::WebDriverError, /this operation requires enabling BiDi/)
         end
       end
 
@@ -44,10 +44,12 @@ module Selenium
 
         wait.until { log_entries.any? }
         expect(log_entries.size).to eq(1)
-        expect(log_entries.first).to include('level' => 'info',
-                                             'method' => 'log',
-                                             'text' => 'Hello, world!',
-                                             'type' => 'console')
+        log_entry = log_entries.first
+        expect(log_entry).to be_a BiDi::LogHandler::ConsoleLogEntry
+        expect(log_entry.level).to eq 'info'
+        expect(log_entry.method).to eq 'log'
+        expect(log_entry.text).to eq 'Hello, world!'
+        expect(log_entry.type).to eq 'console'
       end
 
       it 'logs multiple console messages' do
@@ -64,7 +66,7 @@ module Selenium
         expect(log_entries.size).to eq(2)
       end
 
-      it 'logs removes console message hander' do
+      it 'logs removes console message handler' do
         log_entries = []
 
         id = driver.script.add_console_message_handler { |log| log_entries << log }
@@ -72,8 +74,9 @@ module Selenium
         driver.navigate.to url_for('bidi/logEntryAdded.html')
         driver.find_element(id: 'consoleLog').click
 
-        driver.script.remove_console_message_hander(id)
+        wait.until { log_entries.size > 1 }
 
+        driver.script.remove_console_message_handler(id)
         driver.find_element(id: 'consoleLog').click
 
         wait.until { log_entries.size > 2 }
@@ -90,9 +93,12 @@ module Selenium
 
         wait.until { log_entries.any? }
         expect(log_entries.size).to eq(1)
-        expect(log_entries.first).to include('level' => 'error',
-                                             'text' => 'Error: Not working',
-                                             'type' => 'javascript')
+        log_entry = log_entries.first
+        expect(log_entry).to be_a BiDi::LogHandler::JavaScriptLogEntry
+        expect(log_entry.level).to eq 'error'
+        expect(log_entry.type).to eq 'javascript'
+        expect(log_entry.text).to eq 'Error: Not working'
+        expect(log_entry.stack_trace).not_to be_empty
       end
     end
   end

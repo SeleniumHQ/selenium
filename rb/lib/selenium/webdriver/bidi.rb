@@ -22,7 +22,9 @@ module Selenium
     class BiDi
       autoload :Session, 'selenium/webdriver/bidi/session'
       autoload :LogInspector, 'selenium/webdriver/bidi/log_inspector'
+      autoload :LogHandler, 'selenium/webdriver/bidi/log_handler'
       autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context'
+      autoload :Struct, 'selenium/webdriver/bidi/struct'
 
       def initialize(url:)
         @ws = WebSocketConnection.new(url: url)
@@ -33,7 +35,8 @@ module Selenium
       end
 
       def callbacks
-        WebDriver.logger.deprecate('BiDi#callbacks to add a callback to the list of callbacks',
+        # TODO: make WebSocketConnection#callbacks read-only
+        WebDriver.logger.deprecate('`BiDi#callbacks << event` to add a callback to the list of callbacks',
                                    'BiDi#add_callback(event, &block)', id: :callbacks)
 
         @ws.callbacks
