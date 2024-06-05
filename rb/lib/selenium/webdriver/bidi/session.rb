@@ -29,7 +29,7 @@ module Selenium
 
         def status
           status = @bidi.send_cmd('session.status')
-          Status.new(status['ready'], status['message'])
+          Status.new(**status)
         end
 
         def subscribe(events, browsing_contexts = nil)
