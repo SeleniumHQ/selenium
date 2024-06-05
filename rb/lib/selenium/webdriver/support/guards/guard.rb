@@ -36,7 +36,7 @@ module Selenium
             @messages[:unknown] = 'TODO: Investigate why this is failing and file a bug report'
             @type = type
 
-            @reason = @guarded[:reason]
+            @guarded[:reason] ||= 'No reason given'
           end
 
           def message
@@ -45,10 +45,8 @@ module Selenium
                         "Bug Filed: #{@tracker}/#{@reason}"
                       when Symbol
                         @messages[@reason]
-                      when String
-                        @reason
                       else
-                        'no reason given'
+                        "Guarded by #{guarded};"
                       end
 
             case @type
