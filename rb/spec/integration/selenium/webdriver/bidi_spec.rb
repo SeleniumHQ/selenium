@@ -36,10 +36,6 @@ module Selenium
         end
       end
 
-      it '#callbacks throws deprecation' do
-        expect { driver.bidi.callbacks }.to have_deprecated(:callbacks)
-      end
-
       it 'gets session status' do
         status = driver.bidi.session.status
         expect(status).to respond_to(:ready)

@@ -35,10 +35,6 @@ module Selenium
       end
 
       def callbacks
-        # TODO: make WebSocketConnection#callbacks read-only
-        WebDriver.logger.deprecate('`BiDi#callbacks << event` to add a callback to the list of callbacks',
-                                   'BiDi#add_callback(event, &block)', id: :callbacks)
-
         @ws.callbacks
       end
 
