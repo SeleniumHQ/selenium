@@ -27,7 +27,7 @@ module Selenium
         #
 
         class Guard
-          attr_reader :guarded, :type, :messages, :reason
+          attr_reader :guarded, :type, :messages, :reason, :tracker
 
           def initialize(guarded, type, guards = nil)
             @guarded = guarded
@@ -36,22 +36,21 @@ module Selenium
             @messages[:unknown] = 'TODO: Investigate why this is failing and file a bug report'
             @type = type
 
-            @reason = @guarded.delete(:reason)
+            @reason = @guarded[:reason] || 'No reason given'
+            @guarded[:reason] = @reason
           end
 
           def message
-            details = case @reason
+            details = case reason
                       when Integer
-                        "Bug Filed: #{@tracker}/#{@reason}"
+                        "Bug Filed: #{tracker}/#{reason}"
                       when Symbol
-                        @messages[@reason]
-                      when String
-                        @reason
+                        messages[reason]
                       else
-                        'no reason given'
+                        "Guarded by #{guarded};"
                       end
 
-            case @type
+            case type
             when :exclude
               "Test skipped because it breaks test run; #{details}"
             when :flaky
