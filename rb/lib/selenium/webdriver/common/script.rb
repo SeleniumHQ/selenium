@@ -19,33 +19,27 @@
 
 module Selenium
   module WebDriver
-    class BiDi
-      class Session
-        Status = Struct.new(:ready, :message)
+    class Script
+      def initialize(bridge)
+        @log_handler = BiDi::LogHandler.new(bridge.bidi)
+      end
 
-        def initialize(bidi)
-          @bidi = bidi
-        end
+      # @return [int] id of the handler
+      def add_console_message_handler(&block)
+        @log_handler.add_message_handler('console', &block)
+      end
 
-        def status
-          status = @bidi.send_cmd('session.status')
-          Status.new(**status)
-        end
+      # @return [int] id of the handler
+      def add_javascript_error_handler(&block)
+        @log_handler.add_message_handler('javascript', &block)
+      end
 
-        def subscribe(events, browsing_contexts = nil)
-          opts = {events: Array(events)}
-          opts[:browsing_contexts] = Array(browsing_contexts) if browsing_contexts
+      # @param [int] id of the handler previously added
+      def remove_console_message_handler(id)
+        @log_handler.remove_message_handler(id)
+      end
 
-          @bidi.send_cmd('session.subscribe', **opts)
-        end
-
-        def unsubscribe(events, browsing_contexts = nil)
-          opts = {events: Array(events)}
-          opts[:browsing_contexts] = Array(browsing_contexts) if browsing_contexts
-
-          @bidi.send_cmd('session.unsubscribe', **opts)
-        end
-      end # Session
-    end # BiDi
+      alias remove_javascript_error_handler remove_console_message_handler
+    end # Script
   end # WebDriver
 end # Selenium

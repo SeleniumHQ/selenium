@@ -8,6 +8,7 @@ module Selenium
       @devtools: untyped
       @navigate: untyped
 
+      @script: untyped
       @service_manager: untyped
 
       def self.for: (untyped browser, Hash[untyped, untyped] opts) -> untyped
