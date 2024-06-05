@@ -20,32 +20,21 @@
 module Selenium
   module WebDriver
     class BiDi
-      class Session
-        Status = Struct.new(:ready, :message)
-
-        def initialize(bidi)
-          @bidi = bidi
+      class Struct < ::Struct
+        def self.new(*args, &block)
+          super(*args) do
+            define_method(:initialize) do |**kwargs|
+              converted_kwargs = kwargs.transform_keys { |key| camel_to_snake(key.to_s).to_sym }
+              super(*converted_kwargs.values_at(*self.class.members))
+            end
+            class_eval(&block) if block
+          end
         end
 
-        def status
-          status = @bidi.send_cmd('session.status')
-          Status.new(**status)
+        def camel_to_snake(camel_str)
+          camel_str.gsub(/([A-Z])/, '_\1').downcase
         end
-
-        def subscribe(events, browsing_contexts = nil)
-          opts = {events: Array(events)}
-          opts[:browsing_contexts] = Array(browsing_contexts) if browsing_contexts
-
-          @bidi.send_cmd('session.subscribe', **opts)
-        end
-
-        def unsubscribe(events, browsing_contexts = nil)
-          opts = {events: Array(events)}
-          opts[:browsing_contexts] = Array(browsing_contexts) if browsing_contexts
-
-          @bidi.send_cmd('session.unsubscribe', **opts)
-        end
-      end # Session
+      end
     end # BiDi
   end # WebDriver
 end # Selenium
