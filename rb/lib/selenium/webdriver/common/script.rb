@@ -19,18 +19,27 @@
 
 module Selenium
   module WebDriver
-    module DriverExtensions
-      module HasBiDi
-        #
-        # Retrieves WebDriver BiDi connection.
-        #
-        # @return [BiDi]
-        #
+    class Script
+      def initialize(bridge)
+        @log_handler = BiDi::LogHandler.new(bridge.bidi)
+      end
 
-        def bidi
-          @bridge.bidi
-        end
-      end # HasBiDi
-    end # DriverExtensions
+      # @return [int] id of the handler
+      def add_console_message_handler(&block)
+        @log_handler.add_message_handler('console', &block)
+      end
+
+      # @return [int] id of the handler
+      def add_javascript_error_handler(&block)
+        @log_handler.add_message_handler('javascript', &block)
+      end
+
+      # @param [int] id of the handler previously added
+      def remove_console_message_handler(id)
+        @log_handler.remove_message_handler(id)
+      end
+
+      alias remove_javascript_error_handler remove_console_message_handler
+    end # Script
   end # WebDriver
 end # Selenium
