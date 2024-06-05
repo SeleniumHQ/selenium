@@ -61,7 +61,6 @@ module Selenium
 
         driver.find_element(id: 'jsException').click
         driver.find_element(id: 'consoleLog').click
-        driver.find_element(id: 'consoleLog').click
 
         wait.until { log_entries.size > 1 }
         expect(log_entries.size).to eq(2)
