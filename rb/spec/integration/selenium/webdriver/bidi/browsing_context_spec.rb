@@ -22,7 +22,8 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     class BiDi
-      describe BrowsingContext, exclusive: {bidi: true}, only: {browser: %i[chrome edge firefox]} do
+      describe BrowsingContext, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
+                                only: {browser: %i[chrome edge firefox]} do
         after { |example| reset_driver!(example: example) }
 
         it 'can create a browsing context for given id' do

@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Driver, exclusive: {browser: :firefox} do
+      describe Driver, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}] do
         let(:extensions) { '../../../../../../common/extensions/' }
 
         describe '#print_options' do

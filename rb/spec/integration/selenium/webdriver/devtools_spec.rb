@@ -21,7 +21,8 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe DevTools, exclusive: {browser: %i[chrome edge firefox]} do
+    describe DevTools, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'},
+                                   {browser: %i[chrome edge firefox]}] do
       after { |example| reset_driver!(example: example) }
 
       it 'sends commands' do

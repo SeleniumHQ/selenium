@@ -22,7 +22,8 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     class BiDi
-      describe LogInspector, exclusive: {bidi: true}, only: {browser: %i[chrome edge firefox]} do
+      describe LogInspector, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
+                             only: {browser: %i[chrome edge firefox]} do
         let(:page) { 'bidi/logEntryAdded.html' }
 
         it 'can listen to console log' do
