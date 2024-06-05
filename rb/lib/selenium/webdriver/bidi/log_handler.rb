@@ -43,7 +43,7 @@ module Selenium
         # @param [int] id of the handler previously added
         def remove_message_handler(id)
           @bidi.remove_callback('log.entryAdded', id)
-          unsubscribe_log_entry if @bidi.callbacks['log.entryAdded'].empty?
+          unsubscribe_log_entry if @log_entry_subscribed && @bidi.callbacks['log.entryAdded'].empty?
         end
 
         private
