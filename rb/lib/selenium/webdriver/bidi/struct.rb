@@ -32,8 +32,6 @@ module Selenium
             end
           end
 
-          private
-
           def camel_to_snake(camel_str)
             camel_str.gsub(/([A-Z])/, '_\1').downcase
           end
