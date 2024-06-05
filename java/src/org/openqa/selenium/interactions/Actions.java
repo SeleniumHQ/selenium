@@ -57,8 +57,7 @@ public class Actions {
   private Duration actionDuration;
 
   public Actions(WebDriver driver) {
-    this.driver = Require.nonNull("Driver", driver);
-    this.actionDuration = Duration.ofMillis(250);
+    this(driver, Duration.ofMillis(250));
   }
 
   public Actions(WebDriver driver, Duration duration) {
