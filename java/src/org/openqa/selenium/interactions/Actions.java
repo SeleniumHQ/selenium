@@ -54,9 +54,15 @@ public class Actions {
   private PointerInput activePointer;
   private KeyInput activeKeyboard;
   private WheelInput activeWheel;
+  private Duration actionDuration;
 
   public Actions(WebDriver driver) {
     this.driver = Require.nonNull("Driver", driver);
+  }
+
+  public Actions(WebDriver driver, Duration duration) {
+    this.driver = Require.nonNull("Driver", driver);
+    this.actionDuration = duration;
   }
 
   /**
