@@ -36,7 +36,7 @@ module Selenium
             @messages[:unknown] = 'TODO: Investigate why this is failing and file a bug report'
             @type = type
 
-            @reason = @guarded.delete(:reason)
+            @reason = @guarded[:reason]
           end
 
           def message
