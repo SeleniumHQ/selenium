@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe DevTools, exclusive: {browser: %i[chrome edge firefox]} do
-      after { reset_driver! }
+      after { |example| reset_driver!(example: example) }
 
       it 'sends commands' do
         driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))

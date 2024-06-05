@@ -64,7 +64,7 @@ RSpec.configure do |c|
 
   c.after do |example|
     result = example.execution_result
-    reset_driver! if result.exception || result.pending_exception
+    reset_driver! if example.exception || result.pending_exception
   end
 end
 

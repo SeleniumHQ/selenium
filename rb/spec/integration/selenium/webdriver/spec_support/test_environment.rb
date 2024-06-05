@@ -62,6 +62,9 @@ module Selenium
         end
 
         def reset_driver!(time: 0, **opts, &block)
+          # do not reset if the test was marked skipped
+          return if opts.delete(:example)&.metadata&.fetch(:skip, nil)
+
           quit_driver
           sleep time
           driver_instance(**opts, &block)

@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     describe Script, exclusive: {bidi: true}, only: {browser: %i[chrome edge firefox]} do
-      after { reset_driver! }
+      after { |example| reset_driver!(example: example) }
 
       it 'errors when bidi not enabled' do
         reset_driver!(web_socket_url: false) do |driver|
