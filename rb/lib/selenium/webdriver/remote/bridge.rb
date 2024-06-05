@@ -602,10 +602,6 @@ module Selenium
           execute :set_user_verified, {authenticatorId: authenticator_id}, {isUserVerified: verified}
         end
 
-        def fedcm_title
-          execute :get_fedcm_title
-        end
-
         def command_list
           COMMANDS
         end

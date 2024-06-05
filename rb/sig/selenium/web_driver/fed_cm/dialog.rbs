@@ -6,6 +6,10 @@ module Selenium
         DIALOG_TYPE_AUTO_REAUTH: untyped
 
         def open?: -> untyped
+
+        def title: -> untyped
+
+        def type: -> untyped
       end
     end
   end

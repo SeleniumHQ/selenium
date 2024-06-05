@@ -2,17 +2,17 @@ module Selenium
   module WebDriver
     module FedCM
       module Configuration
-        def execute_fedcm(cmd, **params)
-          @bridge.send_command(cmd: cmd, params: params)
-        end
+        FEDCM_COMMANDS = {
+          set_fedcm_delay: [:post, 'session/:session_id/fedcm/setdelayenabled'],
+          reset_fedcm_cooldown: [:post, 'session/:session_id/fedcm/resetcooldown']
+        }.freeze
 
         # Disables the promise rejection delay for FedCm.
         #
         # FedCm by default delays promise resolution in failure cases for privacy reasons.
         # This method allows turning it off to let tests run faster where this is not relevant.
         def set_delay_enabled(enabled)
-          # Implementation to disable the delay
-          # Placeholder for actual code to interact with browser APIs or other integrations.
+          execute :set_fedcm_delay, enabled: enabled
         end
 
         # Resets the FedCm dialog cooldown.
@@ -20,8 +20,7 @@ module Selenium
         # If a user agent triggers a cooldown when the account chooser is dismissed,
         # this method resets that cooldown so that the dialog can be triggered again immediately.
         def reset_cooldown
-          # Implementation to reset the cooldown
-          # Placeholder for actual code to interact with browser APIs or other integrations.
+          execute :reset_fedcm_cooldown
         end
 
         # Gets the currently open FedCm dialog, or nil if there is no dialog.
