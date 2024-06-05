@@ -58,9 +58,10 @@ module Selenium
       end
 
       def remove_callback(event, id)
-        return unless callbacks[event].reject! { |callback| callback.object_id == id }
+        return if callbacks[event].reject! { |callback| callback.object_id == id }
 
-        raise Error::WebDriverError, "Callback with ID #{id} does not exist for event #{event}"
+        ids = callbacks[event]&.map(&:object_id)
+        raise Error::WebDriverError, "Callback with ID #{id} does not exist for event #{event}: #{ids}"
       end
 
       def send_cmd(**payload)
