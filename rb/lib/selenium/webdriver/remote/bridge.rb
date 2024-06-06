@@ -213,10 +213,12 @@ module Selenium
           http.close
         rescue *QUIT_ERRORS
           nil
+        ensure
+          @bidi&.close
         end
 
         def close
-          execute :close_window
+          execute(:close_window).tap { |handles| @bidi&.close if handles.empty? }
         end
 
         def refresh
@@ -600,6 +602,13 @@ module Selenium
 
         def user_verified(verified, authenticator_id)
           execute :set_user_verified, {authenticatorId: authenticator_id}, {isUserVerified: verified}
+        end
+
+        def bidi
+          msg = 'this operation requires enabling BiDi by setting #web_socket_url to true in options class'
+          raise(WebDriver::Error::WebDriverError, msg) unless capabilities.web_socket_url
+
+          @bidi ||= Selenium::WebDriver::BiDi.new(url: capabilities[:web_socket_url])
         end
 
         def command_list

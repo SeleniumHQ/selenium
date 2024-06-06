@@ -1,14 +1,10 @@
 {
   "source": {
-    "include": [
-      "."
-    ],
+    "include": ["."],
     "includePattern": ".js$",
     "excludePattern": "(node_modules/|example)"
   },
-  "plugins": [
-    "plugins/markdown"
-  ],
+  "plugins": ["plugins/markdown"],
   "opts": {
     "encoding": "utf8",
     "readme": "./README.md",

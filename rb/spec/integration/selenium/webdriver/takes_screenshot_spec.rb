@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe TakesScreenshot do
+    describe TakesScreenshot, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       before do
         driver.navigate.to url_for('xhtmlTest.html')
       end
@@ -80,9 +80,7 @@ module Selenium
           driver.navigate.to url_for('printPage.html')
         end
 
-        after do
-          FileUtils.rm_rf(path)
-        end
+        after { FileUtils.rm_rf(path) }
 
         it 'takes viewport screenshot by default' do
           viewport_width = driver.execute_script('return window.innerWidth;')

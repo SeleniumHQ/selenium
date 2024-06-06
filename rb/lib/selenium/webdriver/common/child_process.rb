@@ -84,7 +84,7 @@ module Selenium
         return false unless @pid
 
         WebDriver.logger.debug("Checking if #{@pid} is exited:", id: :process)
-        _, @status = Process.waitpid2(@pid, Process::WNOHANG | Process::WUNTRACED) if @status.nil?
+        _, @status = waitpid2(@pid, Process::WNOHANG | Process::WUNTRACED) if @status.nil?
         return false if @status.nil?
 
         exit_code = @status.exitstatus || @status.termsig
@@ -105,7 +105,7 @@ module Selenium
       def wait
         return if exited?
 
-        _, @status = Process.waitpid2(@pid)
+        _, @status = waitpid2(@pid)
       end
 
       private
@@ -117,6 +117,12 @@ module Selenium
       def kill(pid)
         Process.kill(SIGKILL, pid)
       rescue Errno::ECHILD, Errno::ESRCH
+        # already dead
+      end
+
+      def waitpid2(pid, flags = 0)
+        Process.waitpid2(pid, flags)
+      rescue Errno::ECHILD
         # already dead
       end
     end # ChildProcess
