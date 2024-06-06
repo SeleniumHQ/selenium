@@ -17,23 +17,29 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'uri'
-require 'selenium/webdriver/remote/server_error'
-
 module Selenium
   module WebDriver
-    module Remote
-      autoload :Features,     'selenium/webdriver/remote/features'
-      autoload :Bridge,       'selenium/webdriver/remote/bridge'
-      autoload :BiDiBridge,   'selenium/webdriver/remote/bidi_bridge'
-      autoload :Driver,       'selenium/webdriver/remote/driver'
-      autoload :Response,     'selenium/webdriver/remote/response'
-      autoload :Capabilities, 'selenium/webdriver/remote/capabilities'
-
-      module Http
-        autoload :Common,  'selenium/webdriver/remote/http/common'
-        autoload :Default, 'selenium/webdriver/remote/http/default'
+    class Script
+      def initialize(bridge)
+        @log_handler = BiDi::LogHandler.new(bridge.bidi)
       end
-    end
-  end
-end
+
+      # @return [int] id of the handler
+      def add_console_message_handler(&block)
+        @log_handler.add_message_handler('console', &block)
+      end
+
+      # @return [int] id of the handler
+      def add_javascript_error_handler(&block)
+        @log_handler.add_message_handler('javascript', &block)
+      end
+
+      # @param [int] id of the handler previously added
+      def remove_console_message_handler(id)
+        @log_handler.remove_message_handler(id)
+      end
+
+      alias remove_javascript_error_handler remove_console_message_handler
+    end # Script
+  end # WebDriver
+end # Selenium

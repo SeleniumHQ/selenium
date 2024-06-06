@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Driver do
+    describe Driver, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       it_behaves_like 'driver that can be started concurrently', exclude: {browser: %i[safari safari_preview]}
 
       it 'creates default capabilities', exclude: {browser: %i[safari safari_preview]} do
@@ -243,7 +243,16 @@ module Selenium
         end
       end
 
-      describe 'execute script' do
+      describe '#script' do
+        it 'executes script with deprecation warning' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect {
+            expect(driver.script('return document.title;')).to eq('XHTML Test Page')
+          }.to have_deprecated(:driver_script)
+        end
+      end
+
+      describe '#execute_script' do
         it 'returns strings' do
           driver.navigate.to url_for('xhtmlTest.html')
           expect(driver.execute_script('return document.title;')).to eq('XHTML Test Page')
