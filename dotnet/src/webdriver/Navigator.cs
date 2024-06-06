@@ -43,7 +43,10 @@ namespace OpenQA.Selenium
         /// </summary>
         public void Back()
         {
-            Task.Run(async () => await this.BackAsync().ConfigureAwait(false)).GetAwaiter().GetResult();
+            Task.Run(async delegate
+            {
+                await this.BackAsync();
+            }).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -60,7 +63,10 @@ namespace OpenQA.Selenium
         /// </summary>
         public void Forward()
         {
-            Task.Run(async () => await this.ForwardAsync().ConfigureAwait(false)).GetAwaiter().GetResult();
+            Task.Run(async delegate
+            {
+                await this.ForwardAsync();
+            }).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -78,7 +84,10 @@ namespace OpenQA.Selenium
         /// <param name="url">String of where you want the browser to go to</param>
         public void GoToUrl(string url)
         {
-            Task.Run(async () => await this.GoToUrlAsync(url).ConfigureAwait(false)).GetAwaiter().GetResult();
+            Task.Run(async delegate
+            {
+                await this.GoToUrlAsync(url);
+            }).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -106,7 +115,10 @@ namespace OpenQA.Selenium
         /// <param name="url">Uri object of where you want the browser to go.</param>
         public void GoToUrl(Uri url)
         {
-            Task.Run(async () => await this.GoToUrlAsync(url).ConfigureAwait(false)).GetAwaiter().GetResult();
+            Task.Run(async delegate
+            {
+                await this.GoToUrlAsync(url);
+            }).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -129,7 +141,10 @@ namespace OpenQA.Selenium
         /// </summary>
         public void Refresh()
         {
-            Task.Run(async () => await this.RefreshAsync().ConfigureAwait(false)).GetAwaiter().GetResult();
+            Task.Run(async delegate
+            {
+                await this.RefreshAsync();
+            }).GetAwaiter().GetResult();
         }
 
         /// <summary>
