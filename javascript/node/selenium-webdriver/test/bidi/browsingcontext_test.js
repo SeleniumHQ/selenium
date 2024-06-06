@@ -414,7 +414,7 @@ suite(
         const result = await browsingContext.navigate(Pages.logEntryAdded, 'complete')
 
         await browsingContext.reload()
-        assert.equal(result.navigationId, null)
+        assert.notEqual(result.navigationId, null)
         assert(result.url.includes('/bidi/logEntryAdded.html'))
       })
 
