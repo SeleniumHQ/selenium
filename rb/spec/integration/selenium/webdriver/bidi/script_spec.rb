@@ -27,9 +27,8 @@ module Selenium
 
       it 'errors when bidi not enabled' do
         reset_driver!(web_socket_url: false) do |driver|
-          expect {
-            driver.script
-          }.to raise_error(WebDriver::Error::WebDriverError, /this operation requires enabling BiDi/)
+          msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
+          expect { driver.script }.to raise_error(WebDriver::Error::WebDriverError, msg)
         end
       end
 

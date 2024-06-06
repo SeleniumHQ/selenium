@@ -213,12 +213,10 @@ module Selenium
           http.close
         rescue *QUIT_ERRORS
           nil
-        ensure
-          @bidi&.close
         end
 
         def close
-          execute(:close_window).tap { |handles| @bidi&.close if handles.empty? }
+          execute :close_window
         end
 
         def refresh
@@ -605,10 +603,8 @@ module Selenium
         end
 
         def bidi
-          msg = 'this operation requires enabling BiDi by setting #web_socket_url to true in options class'
-          raise(WebDriver::Error::WebDriverError, msg) unless capabilities.web_socket_url
-
-          @bidi ||= Selenium::WebDriver::BiDi.new(url: capabilities[:web_socket_url])
+          msg = 'BiDi must be enabled by setting #web_socket_url to true in options class'
+          raise(WebDriver::Error::WebDriverError, msg)
         end
 
         def command_list
