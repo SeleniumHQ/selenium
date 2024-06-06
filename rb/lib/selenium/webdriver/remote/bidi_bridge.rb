@@ -29,6 +29,22 @@ module Selenium
           @bidi = Selenium::WebDriver::BiDi.new(url: socket_url)
         end
 
+        def get(url)
+          context_manager.navigate(url)
+        end
+
+        def go_back
+          context_manager.traverse_history(-1)
+        end
+
+        def go_forward
+          context_manager.traverse_history(1)
+        end
+
+        def refresh
+          context_manager.reload
+        end
+
         def quit
           super
         ensure
@@ -37,6 +53,12 @@ module Selenium
 
         def close
           execute(:close_window).tap { |handles| bidi.close if handles.empty? }
+        end
+
+        private
+
+        def context_manager
+          @context_manager ||= WebDriver::BiDi::ContextManager.new(self)
         end
       end # BiDiBridge
     end # Remote

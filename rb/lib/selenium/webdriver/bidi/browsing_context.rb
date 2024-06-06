@@ -33,6 +33,10 @@ module Selenium
         }.freeze
 
         def initialize(driver:, browsing_context_id: nil, type: nil, reference_context: nil)
+          WebDriver.logger.deprecate('BrowsingContext class',
+                                     'ContextManager or driver.navigate',
+                                     id: :browsing_context)
+
           unless driver.capabilities.web_socket_url
             raise Error::WebDriverError,
                   'WebDriver instance must support BiDi protocol'
