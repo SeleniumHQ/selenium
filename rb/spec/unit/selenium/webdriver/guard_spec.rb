@@ -77,7 +77,8 @@ module Selenium
             guards = described_class.new(example)
             guards.add_condition(:foo, false)
 
-            expect(guards.disposition).to eq [:pending, 'Test guarded; Guarded by {:foo=>false, :reason=>"No reason given"};']
+            expect(guards.disposition).to eq [:pending,
+                                              'Test guarded; Guarded by {:foo=>false, :reason=>"No reason given"};']
           end
 
           it 'is skipped without provided reason', exclusive: {foo: true} do |example|

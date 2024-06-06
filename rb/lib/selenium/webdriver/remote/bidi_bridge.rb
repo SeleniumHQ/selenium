@@ -17,23 +17,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'uri'
-require 'selenium/webdriver/remote/server_error'
-
 module Selenium
   module WebDriver
     module Remote
-      autoload :Features,     'selenium/webdriver/remote/features'
-      autoload :Bridge,       'selenium/webdriver/remote/bridge'
-      autoload :BiDiBridge,   'selenium/webdriver/remote/bidi_bridge'
-      autoload :Driver,       'selenium/webdriver/remote/driver'
-      autoload :Response,     'selenium/webdriver/remote/response'
-      autoload :Capabilities, 'selenium/webdriver/remote/capabilities'
+      class BiDiBridge < Bridge
+        attr_reader :bidi
 
-      module Http
-        autoload :Common,  'selenium/webdriver/remote/http/common'
-        autoload :Default, 'selenium/webdriver/remote/http/default'
-      end
-    end
-  end
-end
+        def create_session(capabilities)
+          super(capabilities)
+          socket_url = @capabilities[:web_socket_url]
+          @bidi = Selenium::WebDriver::BiDi.new(url: socket_url)
+        end
+
+        def quit
+          super
+        ensure
+          bidi.close
+        end
+
+        def close
+          execute(:close_window).tap { |handles| bidi.close if handles.empty? }
+        end
+      end # BiDiBridge
+    end # Remote
+  end # WebDriver
+end # Selenium
