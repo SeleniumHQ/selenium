@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Edge
-      describe Options, exclusive: {browser: :edge} do
+      describe Options, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :edge}] do
         it 'passes emulated device correctly' do
           reset_driver!(emulation: {device_name: 'Nexus 5'}) do |driver|
             ua = driver.execute_script 'return window.navigator.userAgent'

@@ -5,6 +5,7 @@ module Selenium
         include _CommandList
         include _Features
 
+        @bidi: WebDriver::BiDi
         @http: untyped
 
         @file_detector: untyped
