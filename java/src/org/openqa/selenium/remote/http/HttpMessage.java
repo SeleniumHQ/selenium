@@ -123,7 +123,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    * @return self
    */
   public M setHeader(String name, String value) {
-    return removeHeader(name).addHeader(name, value);
+    return removeHeader(name).addHeader(name.toLowerCase(), value);
   }
 
   /**
@@ -135,7 +135,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    * @return self
    */
   public M addHeader(String name, String value) {
-    headers.computeIfAbsent(name, (n) -> new ArrayList<>()).add(value);
+    headers.computeIfAbsent(name.toLowerCase(), (n) -> new ArrayList<>()).add(value);
     return self();
   }
 
