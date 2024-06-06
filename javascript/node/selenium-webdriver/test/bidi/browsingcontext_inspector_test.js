@@ -158,7 +158,7 @@ suite(
         assert(navigationInfo.url.includes('linkToAnchorOnThisPage'))
       })
 
-      xit('can listen to user prompt opened event', async function () {
+      it('can listen to user prompt opened event', async function () {
         let userpromptOpened = null
         const browsingConextInspector = await BrowsingContextInspector(driver)
 
@@ -180,7 +180,7 @@ suite(
         assert.equal(userpromptOpened.type, 'alert')
       })
 
-      xit('can listen to user prompt closed event', async function () {
+      it('can listen to user prompt closed event', async function () {
         let userpromptClosed = null
         const browsingConextInspector = await BrowsingContextInspector(driver)
 

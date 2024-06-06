@@ -82,7 +82,7 @@ suite(
         assert.notEqual(element.sharedId, undefined)
       })
 
-      xit('can locate node with xpath locator', async function () {
+      it('can locate node with xpath locator', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -116,7 +116,7 @@ suite(
         assert.notEqual(element.sharedId, undefined)
       })
 
-      xit('can locate node with max node count', async function () {
+      it('can locate node with max node count', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -128,7 +128,7 @@ suite(
         assert.strictEqual(elements.length, 4)
       })
 
-      xit('can locate node with given start nodes', async function () {
+      it('can locate node with given start nodes', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,

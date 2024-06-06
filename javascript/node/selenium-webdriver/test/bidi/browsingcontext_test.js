@@ -405,7 +405,7 @@ suite(
         assert.equal(result.includes(userText), false)
       })
 
-      xit('can reload a browsing context', async function () {
+      it('can reload a browsing context', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
