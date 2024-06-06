@@ -62,6 +62,9 @@ module Selenium
         end
 
         def reset_driver!(time: 0, **opts, &block)
+          # do not reset if the test was marked skipped
+          return if opts.delete(:example)&.metadata&.fetch(:skip, nil)
+
           quit_driver
           sleep time
           driver_instance(**opts, &block)
@@ -248,6 +251,7 @@ module Selenium
         end
 
         def chrome_options(args: [], **opts)
+          opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
           args << '--no-sandbox' if ENV['NO_SANDBOX']
@@ -256,6 +260,7 @@ module Selenium
         end
 
         def edge_options(args: [], **opts)
+          opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
           args << '--no-sandbox' if ENV['NO_SANDBOX']
@@ -264,6 +269,7 @@ module Selenium
         end
 
         def firefox_options(args: [], **opts)
+          opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
           args << '--headless' if ENV['HEADLESS']
           WebDriver::Options.firefox(args: args, **opts)

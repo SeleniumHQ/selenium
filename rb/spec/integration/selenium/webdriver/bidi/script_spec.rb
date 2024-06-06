@@ -21,12 +21,12 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Script, only: {browser: %i[chrome edge firefox]} do
-      before { reset_driver!(web_socket_url: true) }
-      after(:all) { quit_driver }
+    describe Script, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
+                     only: {browser: %i[chrome edge firefox]} do
+      after { |example| reset_driver!(example: example) }
 
       it 'errors when bidi not enabled' do
-        reset_driver! do |driver|
+        reset_driver!(web_socket_url: false) do |driver|
           expect {
             driver.script
           }.to raise_error(WebDriver::Error::WebDriverError, /this operation requires enabling BiDi/)
@@ -106,8 +106,8 @@ module Selenium
 
       it 'errors removing non-existent handler' do
         expect {
-          driver.script.remove_console_message_handler(0)
-        }.to raise_error(Error::WebDriverError, /Callback with ID 0 does not exist/)
+          driver.script.remove_console_message_handler(12345)
+        }.to raise_error(Error::WebDriverError, /Callback with ID 12345 does not exist/)
       end
     end
   end
