@@ -554,6 +554,10 @@ public class Actions {
     return this.activeWheel;
   }
 
+  public Duration getActionDuration() {
+    return this.actionDuration;
+  }
+
   /**
    * Generates a composite action containing all actions so far, ready to be performed (and resets
    * the internal builder state, so subsequent calls to this method will contain fresh sequences).
