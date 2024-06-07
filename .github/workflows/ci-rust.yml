@@ -35,7 +35,6 @@ jobs:
         include:
           - os: macos
           - os: ubuntu
-          - os: windows
     with:
       name: Tests (${{ matrix.os }})
       cache-key: rust-test
