@@ -7,9 +7,9 @@ module Selenium
 
       def parent_frame: () -> void
 
-      def new_window: (?::Symbol `type`) { (untyped) -> untyped } -> untyped
+      def new_window: (Symbol type) { (untyped) -> untyped } -> untyped
 
-      def window: (untyped id) ?{ () -> untyped } -> untyped
+      def window: (Integer id) ?{ () -> untyped } -> untyped
 
       def active_element: () -> Element
 

@@ -507,9 +507,20 @@ namespace :node do
   desc 'Release Node npm package'
   task deploy: :release
 
-  desc 'Generate Node documentation — currently not working'
+  desc 'Generate Node documentation'
   task :docs, [:skip_update] do |_task, arguments|
-    puts "WARNING — Cannot currently update API Docs for JavaScript bindings"
+    FileUtils.rm_rf('build/docs/api/javascript/')
+    begin
+      sh 'npm run generate-docs --prefix javascript/node/selenium-webdriver || true', verbose: true
+    rescue StandardError
+      puts 'Ensure that npm is installed on your system'
+      raise
+    end
+
+    unless arguments[:skip_update]
+      puts "Updating JavaScript documentation"
+      puts update_gh_pages ? "JavaScript Docs updated!" : "JavaScript Doc update cancelled"
+    end
   end
 
   desc 'Update JavaScript changelog'
@@ -1308,7 +1319,7 @@ def update_gh_pages
     retry
   end
 
-  %w[java rb py dotnet].each do |language|
+  %w[java rb py dotnet javascript].each do |language|
     if Dir.exist?("build/docs/api/#{language}") && !Dir.empty?("build/docs/api/#{language}")
       puts "Deleting #{language} directory in docs/api since corresponding directory in build/docs/api is not empty"
       FileUtils.rm_rf("docs/api/#{language}")

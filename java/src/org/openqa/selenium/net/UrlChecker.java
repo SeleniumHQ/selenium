@@ -18,7 +18,6 @@
 package org.openqa.selenium.net;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -55,7 +54,7 @@ public class UrlChecker {
 
   public void waitUntilAvailable(long timeout, TimeUnit unit, final URL... urls)
       throws TimeoutException {
-    long start = System.nanoTime();
+    long start = System.currentTimeMillis();
     LOG.fine("Waiting for " + Arrays.toString(urls));
     try {
       Future<Void> callback =
@@ -64,10 +63,7 @@ public class UrlChecker {
                 HttpURLConnection connection = null;
 
                 long sleepMillis = MIN_POLL_INTERVAL_MS;
-                while (true) {
-                  if (Thread.interrupted()) {
-                    throw new InterruptedException();
-                  }
+                while (!Thread.interrupted()) {
                   for (URL url : urls) {
                     try {
                       LOG.fine("Polling " + url);
@@ -87,13 +83,19 @@ public class UrlChecker {
                   sleepMillis =
                       (sleepMillis >= MAX_POLL_INTERVAL_MS) ? sleepMillis : sleepMillis * 2;
                 }
+                throw new InterruptedException();
               });
-      callback.get(timeout, unit);
+      try {
+        callback.get(timeout, unit);
+      } finally {
+        // if already completed cancel is ignored
+        callback.cancel(true);
+      }
     } catch (java.util.concurrent.TimeoutException e) {
       throw new TimeoutException(
           String.format(
               "Timed out waiting for %s to be available after %d ms",
-              Arrays.toString(urls), MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)),
+              Arrays.toString(urls), System.currentTimeMillis() - start),
           e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -105,7 +107,7 @@ public class UrlChecker {
 
   public void waitUntilUnavailable(long timeout, TimeUnit unit, final URL url)
       throws TimeoutException {
-    long start = System.nanoTime();
+    long start = System.currentTimeMillis();
     LOG.fine("Waiting for " + url);
     try {
       Future<Void> callback =
@@ -114,7 +116,7 @@ public class UrlChecker {
                 HttpURLConnection connection = null;
 
                 long sleepMillis = MIN_POLL_INTERVAL_MS;
-                while (true) {
+                while (!Thread.interrupted()) {
                   try {
                     LOG.fine("Polling " + url);
                     connection = connectToUrl(url);
@@ -133,13 +135,19 @@ public class UrlChecker {
                   sleepMillis =
                       (sleepMillis >= MAX_POLL_INTERVAL_MS) ? sleepMillis : sleepMillis * 2;
                 }
+                throw new InterruptedException();
               });
-      callback.get(timeout, unit);
+      try {
+        callback.get(timeout, unit);
+      } finally {
+        // if already completed cancel is ignored
+        callback.cancel(true);
+      }
     } catch (java.util.concurrent.TimeoutException e) {
       throw new TimeoutException(
           String.format(
               "Timed out waiting for %s to become unavailable after %d ms",
-              url, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)),
+              url, System.currentTimeMillis() - start),
           e);
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);

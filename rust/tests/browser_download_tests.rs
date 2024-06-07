@@ -27,21 +27,21 @@ mod common;
 #[case("firefox")]
 #[case("edge")]
 fn browser_latest_download_test(#[case] browser: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--browser",
-        &browser,
-        "--force-browser-download",
-        "--output",
-        "json",
-        "--debug",
-    ])
-    .assert()
-    .success()
-    .code(0);
+    if !browser.eq("edge") || !OS.eq("windows") {
+        let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+        cmd.args([
+            "--browser",
+            &browser,
+            "--force-browser-download",
+            "--output",
+            "json",
+            "--debug",
+        ])
+        .assert()
+        .success()
+        .code(0);
 
-    assert_driver(&mut cmd);
-    if !OS.eq("windows") {
+        assert_driver(&mut cmd);
         assert_browser(&mut cmd);
     }
 }

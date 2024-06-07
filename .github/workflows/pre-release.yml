@@ -68,7 +68,7 @@ jobs:
           fetch-tags: true
           ref: release-${{ github.event.inputs.version }}
       - name: Install Ruby
-        uses: ruby/setup-ruby@6615b4b8a02c78c4d711c06df4b8a20aa685a45d
+        uses: ruby/setup-ruby@d5fb7a202fc07872cb44f00ba8e6197b70cb0c55
         with:
           ruby-version: '3.1'
           working-directory: 'rb'

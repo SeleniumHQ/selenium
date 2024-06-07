@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium
 {
@@ -38,26 +39,63 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Move the browser back
+        /// Move back a single entry in the browser's history.
         /// </summary>
         public void Back()
         {
-            this.driver.InternalExecute(DriverCommand.GoBack, null);
+            Task.Run(async delegate
+            {
+                await this.BackAsync();
+            }).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Move the browser forward
+        /// Move back a single entry in the browser's history as an asynchronous task.
+        /// </summary>
+        /// <returns>A task object representing the asynchronous operation.</returns>
+        public async Task BackAsync()
+        {
+            await this.driver.InternalExecuteAsync(DriverCommand.GoBack, null).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Move a single "item" forward in the browser's history.
         /// </summary>
         public void Forward()
         {
-            this.driver.InternalExecute(DriverCommand.GoForward, null);
+            Task.Run(async delegate
+            {
+                await this.ForwardAsync();
+            }).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Navigate to a url for your test
+        /// Move a single "item" forward in the browser's history as an asynchronous task.
+        /// </summary>
+        /// <returns>A task object representing the asynchronous operation.</returns>
+        public async Task ForwardAsync()
+        {
+            await this.driver.InternalExecuteAsync(DriverCommand.GoForward, null).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Navigate to a url.
         /// </summary>
         /// <param name="url">String of where you want the browser to go to</param>
         public void GoToUrl(string url)
+        {
+            Task.Run(async delegate
+            {
+                await this.GoToUrlAsync(url);
+            }).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Navigate to a url as an asynchronous task.
+        /// </summary>
+        /// <param name="url">String of where you want the browser to go.</param>
+        /// <returns>A task object representing the asynchronous operation.</returns>
+        public async Task GoToUrlAsync(string url)
         {
             if (url == null)
             {
@@ -68,31 +106,55 @@ namespace OpenQA.Selenium
             {
                 { "url", url }
             };
-            this.driver.InternalExecute(DriverCommand.Get, parameters);
-
+            await this.driver.InternalExecuteAsync(DriverCommand.Get, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Navigate to a url for your test
+        /// Navigate to a url.
         /// </summary>
-        /// <param name="url">Uri object of where you want the browser to go to</param>
+        /// <param name="url">Uri object of where you want the browser to go.</param>
         public void GoToUrl(Uri url)
+        {
+            Task.Run(async delegate
+            {
+                await this.GoToUrlAsync(url);
+            }).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Navigate to a url as an asynchronous task.
+        /// </summary>
+        /// <param name="url">Uri object of where you want the browser to go.</param>
+        /// <returns>A task object representing the asynchronous operation.</returns>
+        public async Task GoToUrlAsync(Uri url)
         {
             if (url == null)
             {
                 throw new ArgumentNullException(nameof(url), "URL cannot be null.");
             }
 
-            this.GoToUrl(url.ToString());
+            await this.GoToUrlAsync(url.ToString()).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Refresh the browser
+        /// Reload the current page.
         /// </summary>
         public void Refresh()
         {
+            Task.Run(async delegate
+            {
+                await this.RefreshAsync();
+            }).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Reload the current page as an asynchronous task.
+        /// </summary>
+        /// <returns>A task object representing the asynchronous operation.</returns>
+        public async Task RefreshAsync()
+        {
             // driver.SwitchTo().DefaultContent();
-            this.driver.InternalExecute(DriverCommand.Refresh, null);
+            await this.driver.InternalExecuteAsync(DriverCommand.Refresh, null).ConfigureAwait(false);
         }
     }
 }
