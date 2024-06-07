@@ -43,7 +43,7 @@ class Options(ArgOptions):
         self._preferences: dict = {}
         # Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
         # https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
-        self._preferences["remote.active-protocols"] = 2
+        self._preferences["remote.active-protocols"] = 3
         self._profile = None
         self.log = Log()
 

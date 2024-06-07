@@ -248,7 +248,7 @@ class Options extends Capabilities {
     this.setBrowserName(Browser.FIREFOX)
     // Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
     // https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
-    this.setPreference('remote.active-protocols', 2)
+    this.setPreference('remote.active-protocols', 3)
   }
 
   /**
