@@ -2758,9 +2758,9 @@ dependencies = [
 
 [[package]]
 name = "zip"
-version = "1.3.0"
+version = "1.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1f4a27345eb6f7aa7bd015ba7eb4175fa4e1b462a29874b779e0bbcf96c6ac7"
+checksum = "1b7a5a9285bd4ee13bdeb3f8a4917eb46557e53f270c783849db8bef37b0ad00"
 dependencies = [
  "arbitrary",
  "crc32fast",
