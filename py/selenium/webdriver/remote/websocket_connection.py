@@ -67,9 +67,7 @@ class WebSocketConnection:
     def on(self, event, callback):
         if event not in self._callbacks:
             self._callbacks[event.event_class] = []
-        self._callbacks[event.event_class].append(
-            lambda params: callback(event.from_json(params))
-        )
+        self._callbacks[event.event_class].append(lambda params: callback(event.from_json(params)))
 
     def _serialize_command(self, command):
         return next(command)
@@ -77,9 +75,7 @@ class WebSocketConnection:
     def _deserialize_result(self, result, command):
         try:
             _ = command.send(result)
-            raise Exception(
-                "The command's generator function did not exit when expected!"
-            )
+            raise Exception("The command's generator function did not exit when expected!")
         except StopIteration as exit:
             return exit.value
 
@@ -96,15 +92,11 @@ class WebSocketConnection:
 
         def run_socket():
             if self.url.startswith("wss://"):
-                self._ws.run_forever(
-                    sslopt={"cert_reqs": CERT_NONE}, suppress_origin=True
-                )
+                self._ws.run_forever(sslopt={"cert_reqs": CERT_NONE}, suppress_origin=True)
             else:
                 self._ws.run_forever(suppress_origin=True)
 
-        self._ws = WebSocketApp(
-            self.url, on_open=on_open, on_message=on_message, on_error=on_error
-        )
+        self._ws = WebSocketApp(self.url, on_open=on_open, on_message=on_message, on_error=on_error)
         self._ws_thread = Thread(target=run_socket)
         self._ws_thread.start()
 
