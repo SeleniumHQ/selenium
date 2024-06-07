@@ -46,9 +46,6 @@ csharp_library(
         "//common/manager:selenium-manager-macos",
     ],
     target_frameworks = ["net7.0"],
-    targeting_packs = [
-        framework("nuget", "Microsoft.NETCore.App.Ref"),
-    ],
     visibility = [
         "//dotnet/test:__subpackages__",
     ],
@@ -89,9 +86,6 @@ dotnet_nunit_test_suite(
         ":test-data",
     ],
     target_frameworks = ["net7.0"],
-    targeting_packs = [
-        framework("nuget", "Microsoft.NETCore.App.Ref"),
-    ],
     deps = [
         ":fixtures",
         "//dotnet/src/webdriver",
