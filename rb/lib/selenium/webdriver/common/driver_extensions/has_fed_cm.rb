@@ -1,7 +1,7 @@
 module Selenium
   module WebDriver
-    module FedCM
-      module Configuration
+    module DriverExtensions
+      module HasFedCM
         FEDCM_COMMANDS = {
           set_fedcm_delay: [:post, 'session/:session_id/fedcm/setdelayenabled'],
           reset_fedcm_cooldown: [:post, 'session/:session_id/fedcm/resetcooldown']
@@ -23,12 +23,8 @@ module Selenium
           execute :reset_fedcm_cooldown
         end
 
-        # Gets the currently open FedCm dialog, or nil if there is no dialog.
-        #
-        # This can be used similar to WebDriverWait in Selenium to wait until a dialog appears.
-        def federated_credential_management_dialog
-          # Implementation to retrieve the dialog
-          # Placeholder for actual code to check the dialog's presence.
+        def fedcm
+          @fedcm ||= Dialog.new(self)
         end
       end
     end

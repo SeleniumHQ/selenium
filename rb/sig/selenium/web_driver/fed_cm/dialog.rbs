@@ -5,7 +5,23 @@ module Selenium
         DIALOG_TYPE_ACCOUNT_LIST: untyped
         DIALOG_TYPE_AUTO_REAUTH: untyped
 
+        FEDCM_COMMANDS: untyped
+
+        def cancel_fedcm_dialog: -> untyped
+
+        def fedcm_accounts: -> untyped
+
+        def fedcm_command_list: -> untyped
+
+        def fedcm_subtitle: -> untyped
+
+        def fedcm_title: -> untyped
+
+        def fedcm_type: -> untyped
+
         def open?: -> untyped
+
+        def select_fedcm_account: -> untyped
 
         def title: -> untyped
 
