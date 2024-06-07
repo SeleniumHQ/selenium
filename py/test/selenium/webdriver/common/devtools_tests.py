@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -16,24 +14,23 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import pytest
 
-require 'uri'
-require 'selenium/webdriver/remote/server_error'
+from selenium.webdriver.support.ui import WebDriverWait
 
-module Selenium
-  module WebDriver
-    module Remote
-      autoload :Features,     'selenium/webdriver/remote/features'
-      autoload :Bridge,       'selenium/webdriver/remote/bridge'
-      autoload :BiDiBridge,   'selenium/webdriver/remote/bidi_bridge'
-      autoload :Driver,       'selenium/webdriver/remote/driver'
-      autoload :Response,     'selenium/webdriver/remote/response'
-      autoload :Capabilities, 'selenium/webdriver/remote/capabilities'
 
-      module Http
-        autoload :Common,  'selenium/webdriver/remote/http/common'
-        autoload :Default, 'selenium/webdriver/remote/http/default'
-      end
-    end
-  end
-end
+@pytest.mark.xfail_safari
+def test_check_console_messages(driver, pages):
+    devtools, connection = driver.start_devtools()
+    console_api_calls = []
+
+    connection.execute(devtools.runtime.enable())
+    connection.on(devtools.runtime.ConsoleAPICalled, console_api_calls.append)
+    driver.execute_script("console.log('I love cheese')")
+    driver.execute_script("console.error('I love bread')")
+    WebDriverWait(driver, 5).until(lambda _: len(console_api_calls) == 2)
+
+    assert console_api_calls[0].type_ == "log"
+    assert console_api_calls[0].args[0].value == "I love cheese"
+    assert console_api_calls[1].type_ == "error"
+    assert console_api_calls[1].args[0].value == "I love bread"

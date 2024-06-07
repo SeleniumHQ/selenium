@@ -179,6 +179,7 @@ py_library(
         requirement("trio_websocket"),
         requirement("urllib3"),
         requirement("certifi"),
+        requirement("websocket-client"),
     ],
 )
 
@@ -263,6 +264,7 @@ py_wheel(
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
         "typing_extensions>=4.9.0",
+        "websocket-client>=1.8.0",
     ],
     strip_path_prefixes = [
         "py/",

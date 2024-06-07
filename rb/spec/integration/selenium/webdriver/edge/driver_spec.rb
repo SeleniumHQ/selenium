@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Edge
-      describe Driver, exclusive: {browser: :edge} do
+      describe Driver, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :edge}] do
         it 'gets and sets network conditions' do
           driver.network_conditions = {offline: false, latency: 56, throughput: 789}
           expect(driver.network_conditions).to eq(
