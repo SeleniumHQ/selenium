@@ -65,7 +65,7 @@ module Selenium
         expect(log_entries.size).to eq(2)
       end
 
-      it 'logs removes console message handler' do
+      it 'removes console message handler' do
         driver.navigate.to url_for('bidi/logEntryAdded.html')
 
         log_entries = []
