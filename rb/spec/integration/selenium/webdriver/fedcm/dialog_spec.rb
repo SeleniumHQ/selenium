@@ -5,13 +5,14 @@ module Selenium
     module FedCM
       describe Dialog, exclusive: {browser: :chrome} do
         let(:url) { 'https://fedcm-rp-demo.glitch.me/' }
+        let(:dialog) { driver.fedcm_dialog }
 
-        before(:each) do
+        before do
           driver.get(url)
         end
 
         it 'throws an error when dialog is not present' do
-          expect(driver.fedcm_dialog.title).to raise_error(NoSuchAlertError)
+          expect{ dialog.title }.to raise_error(Error::NoSuchAlertError)
         end
       end
     end # FedCm
