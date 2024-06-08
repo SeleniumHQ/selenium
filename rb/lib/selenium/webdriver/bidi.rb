@@ -24,7 +24,6 @@ module Selenium
       autoload :LogInspector, 'selenium/webdriver/bidi/log_inspector'
       autoload :LogHandler, 'selenium/webdriver/bidi/log_handler'
       autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context'
-      autoload :ContextManager, 'selenium/webdriver/bidi/context_manager'
       autoload :Struct, 'selenium/webdriver/bidi/struct'
 
       def initialize(url:)

@@ -30,19 +30,19 @@ module Selenium
         end
 
         def get(url)
-          context_manager.navigate(url)
+          browsing_context.navigate(url)
         end
 
         def go_back
-          context_manager.traverse_history(-1)
+          browsing_context.traverse_history(-1)
         end
 
         def go_forward
-          context_manager.traverse_history(1)
+          browsing_context.traverse_history(1)
         end
 
         def refresh
-          context_manager.reload
+          browsing_context.reload
         end
 
         def quit
@@ -57,8 +57,8 @@ module Selenium
 
         private
 
-        def context_manager
-          @context_manager ||= WebDriver::BiDi::ContextManager.new(self)
+        def browsing_context
+          @browsing_context ||= WebDriver::BiDi::BrowsingContext.new(self)
         end
       end # BiDiBridge
     end # Remote

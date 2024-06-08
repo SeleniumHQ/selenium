@@ -2,25 +2,21 @@ module Selenium
   module WebDriver
     class BiDi
       class BrowsingContext
-        @bidi: untyped
+        @bidi: BiDi
 
-        @id: untyped
+        READINESS_STATE: Hash[String, String]
 
-        attr_accessor id: untyped
+        def initialize: (Remote::Bridge bridge) -> void
 
-        READINESS_STATE: Hash[Symbol, String]
+        def navigate: (String url, String? context_id) -> void
 
-        def initialize: (driver: untyped, ?browsing_context_id: untyped?, ?type: untyped?, ?reference_context: untyped?) -> void
+        def traverse_history: (Integer delta, String? context_id) -> void
 
-        def navigate: (url: untyped, ?readiness_state: untyped?) -> untyped
+        def reload: (String? context_id, ?ignore_cache: bool) -> void
 
-        def get_tree: (?max_depth: untyped?) -> untyped
+        def close: (String? context_id) -> void
 
-        def close: () -> untyped
-
-        private
-
-        def create: (untyped type, untyped reference_context) -> untyped
+        def create: (?type: Symbol | String | nil, ?context_id: String | nil) -> String
       end
     end
   end

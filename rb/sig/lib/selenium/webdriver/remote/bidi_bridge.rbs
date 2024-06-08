@@ -1,0 +1,29 @@
+module Selenium
+  module WebDriver
+    module Remote
+      class BiDiBridge
+        @browsing_context: BiDi::BrowsingContext
+
+        attr_reader bidi: BiDi
+
+        def create_session: (untyped capabilities) -> void
+
+        def get: (String url) -> void
+
+        def go_back: () -> void
+
+        def go_forward: () -> void
+
+        def refresh: () -> void
+
+        def quit: () -> void
+
+        def close: () -> void
+
+        private
+
+        def browsing_context: () -> BiDi::BrowsingContext
+      end
+    end
+  end
+end
