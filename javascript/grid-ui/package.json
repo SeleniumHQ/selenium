@@ -47,7 +47,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/preset-react": "7.24.1",
+    "@babel/preset-react": "7.24.7",
     "@testing-library/jest-dom": "6.4.5",
     "@testing-library/react": "14.3.1",
     "@testing-library/user-event": "14.5.2",
