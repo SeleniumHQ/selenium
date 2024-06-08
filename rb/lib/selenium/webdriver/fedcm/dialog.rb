@@ -44,7 +44,7 @@ module Selenium
         #
         # If this is an auto reauth dialog, returns the single account that is being signed in.
         def accounts
-          @bridge.fedcm_account_list
+          @bridge.fedcm_account_list.map { |account| Account.new(**account) }
         end
       end # Dialog
     end # FedCM

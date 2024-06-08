@@ -15,15 +15,15 @@ module Selenium
         #
         # @param [Hash]
         def initialize(**args)
-          @account_id = args[:accountId]
-          @email = args[:email]
-          @name = args[:name]
-          @given_name = args[:givenName]
-          @picture_url = args[:pictureUrl]
-          @idp_config_url = args[:idpConfigUrl]
-          @login_state = args[:loginState]
-          @terms_of_service_url = args[:termsOfServiceUrl]
-          @privacy_policy_url = args[:privacyPolicyUrl]
+          @account_id = args['accountId']
+          @email = args['email']
+          @name = args['name']
+          @given_name = args['givenName']
+          @picture_url = args['pictureUrl']
+          @idp_config_url = args['idpConfigUrl']
+          @login_state = args['loginState']
+          @terms_of_service_url = args['termsOfServiceUrl']
+          @privacy_policy_url = args['privacyPolicyUrl']
         end
       end # Account
     end # FedCM
