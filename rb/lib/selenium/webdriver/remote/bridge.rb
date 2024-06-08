@@ -106,9 +106,9 @@ module Selenium
 
         def browser
           @browser ||= begin
-            name = @capabilities.browser_name
-            name ? name.tr(' -', '_').downcase.to_sym : 'unknown'
-          end
+                         name = @capabilities.browser_name
+                         name ? name.tr(' -', '_').downcase.to_sym : 'unknown'
+                       end
         end
 
         def status
@@ -116,7 +116,7 @@ module Selenium
         end
 
         def get(url)
-          execute :get, {}, {url: url}
+          execute :get, {}, { url: url }
         end
 
         #
@@ -144,7 +144,7 @@ module Selenium
         end
 
         def alert=(keys)
-          execute :send_alert_text, {}, {value: keys.chars, text: keys}
+          execute :send_alert_text, {}, { value: keys.chars, text: keys }
         end
 
         def alert_text
@@ -186,16 +186,16 @@ module Selenium
         #  and 'type' with the value of the created window type
         #
         def new_window(type)
-          execute :new_window, {}, {type: type}
+          execute :new_window, {}, { type: type }
         end
 
         def switch_to_window(name)
-          execute :switch_to_window, {}, {handle: name}
+          execute :switch_to_window, {}, { handle: name }
         end
 
         def switch_to_frame(id)
           id = find_element_by('id', id) if id.is_a? String
-          execute :switch_to_frame, {}, {id: id}
+          execute :switch_to_frame, {}, { id: id }
         end
 
         def switch_to_parent_frame
@@ -278,7 +278,7 @@ module Selenium
         end
 
         def set_window_rect(x: nil, y: nil, width: nil, height: nil)
-          params = {x: x, y: y, width: width, height: height}
+          params = { x: x, y: y, width: width, height: height }
           params.update(params) { |_k, v| Integer(v) unless v.nil? }
           execute :set_window_rect, {}, params
         end
@@ -353,12 +353,12 @@ module Selenium
         #
 
         def execute_script(script, *args)
-          result = execute :execute_script, {}, {script: script, args: args}
+          result = execute :execute_script, {}, { script: script, args: args }
           unwrap_script_result result
         end
 
         def execute_async_script(script, *args)
-          result = execute :execute_async_script, {}, {script: script, args: args}
+          result = execute :execute_async_script, {}, { script: script, args: args }
           unwrap_script_result result
         end
 
@@ -371,7 +371,7 @@ module Selenium
         end
 
         def add_cookie(cookie)
-          execute :add_cookie, {}, {cookie: cookie}
+          execute :add_cookie, {}, { cookie: cookie }
         end
 
         def delete_cookie(name)
@@ -397,10 +397,11 @@ module Selenium
         def action(async: false, devices: [], duration: 250)
           ActionBuilder.new self, async: async, devices: devices, duration: duration
         end
+
         alias actions action
 
         def send_actions(data)
-          execute :actions, {}, {actions: data}
+          execute :actions, {}, { actions: data }
         end
 
         def release_actions
@@ -408,7 +409,7 @@ module Selenium
         end
 
         def print_page(options = {})
-          execute :print_page, {}, {options: options}
+          execute :print_page, {}, { options: options }
         end
 
         def click_element(element)
@@ -418,7 +419,7 @@ module Selenium
         def send_keys_to_element(element, keys)
           keys = upload_if_necessary(keys) if @file_detector
           text = keys.join
-          execute :element_send_keys, {id: element}, {value: text.chars, text: text}
+          execute :element_send_keys, { id: element }, { value: text.chars, text: text }
         end
 
         def clear_element(element)
@@ -427,14 +428,14 @@ module Selenium
 
         def submit_element(element)
           script = "/* submitForm */ var form = arguments[0];\n" \
-                   "while (form.nodeName != \"FORM\" && form.parentNode) {\n  " \
-                   "form = form.parentNode;\n" \
-                   "}\n" \
-                   "if (!form) { throw Error('Unable to find containing form element'); }\n" \
-                   "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" \
-                   "var e = form.ownerDocument.createEvent('Event');\n" \
-                   "e.initEvent('submit', true, true);\n" \
-                   "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
+            "while (form.nodeName != \"FORM\" && form.parentNode) {\n  " \
+            "form = form.parentNode;\n" \
+            "}\n" \
+            "if (!form) { throw Error('Unable to find containing form element'); }\n" \
+            "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" \
+            "var e = form.ownerDocument.createEvent('Event');\n" \
+            "e.initEvent('submit', true, true);\n" \
+            "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
 
           execute_script(script, Bridge.element_class::ELEMENT_KEY => element)
         rescue Error::JavascriptError
@@ -536,11 +537,11 @@ module Selenium
           parent_type, parent_id = parent_ref
           id = case parent_type
                when :element
-                 execute :find_child_element, {id: parent_id}, {using: how, value: what.to_s}
+                 execute :find_child_element, { id: parent_id }, { using: how, value: what.to_s }
                when :shadow_root
-                 execute :find_shadow_child_element, {id: parent_id}, {using: how, value: what.to_s}
+                 execute :find_shadow_child_element, { id: parent_id }, { using: how, value: what.to_s }
                else
-                 execute :find_element, {}, {using: how, value: what.to_s}
+                 execute :find_element, {}, { using: how, value: what.to_s }
                end
 
           Bridge.element_class.new self, element_id_from(id)
@@ -554,11 +555,11 @@ module Selenium
           parent_type, parent_id = parent_ref
           ids = case parent_type
                 when :element
-                  execute :find_child_elements, {id: parent_id}, {using: how, value: what.to_s}
+                  execute :find_child_elements, { id: parent_id }, { using: how, value: what.to_s }
                 when :shadow_root
-                  execute :find_shadow_child_elements, {id: parent_id}, {using: how, value: what.to_s}
+                  execute :find_shadow_child_elements, { id: parent_id }, { using: how, value: what.to_s }
                 else
-                  execute :find_elements, {}, {using: how, value: what.to_s}
+                  execute :find_elements, {}, { using: how, value: what.to_s }
                 end
 
           ids.map { |id| Bridge.element_class.new self, element_id_from(id) }
@@ -579,27 +580,63 @@ module Selenium
         end
 
         def remove_virtual_authenticator(id)
-          execute :remove_virtual_authenticator, {authenticatorId: id}
+          execute :remove_virtual_authenticator, { authenticatorId: id }
         end
 
         def add_credential(credential, id)
-          execute :add_credential, {authenticatorId: id}, credential
+          execute :add_credential, { authenticatorId: id }, credential
         end
 
         def credentials(authenticator_id)
-          execute :get_credentials, {authenticatorId: authenticator_id}
+          execute :get_credentials, { authenticatorId: authenticator_id }
         end
 
         def remove_credential(credential_id, authenticator_id)
-          execute :remove_credential, {credentialId: credential_id, authenticatorId: authenticator_id}
+          execute :remove_credential, { credentialId: credential_id, authenticatorId: authenticator_id }
         end
 
         def remove_all_credentials(authenticator_id)
-          execute :remove_all_credentials, {authenticatorId: authenticator_id}
+          execute :remove_all_credentials, { authenticatorId: authenticator_id }
         end
 
         def user_verified(verified, authenticator_id)
-          execute :set_user_verified, {authenticatorId: authenticator_id}, {isUserVerified: verified}
+          execute :set_user_verified, { authenticatorId: authenticator_id }, { isUserVerified: verified }
+        end
+
+        #
+        # federated-credential management
+        #
+
+        def cancel_fedcm_dialog
+          execute :cancel_fedcm_dialog
+        end
+
+        def select_fedcm_account(index)
+          execute :select_fedcm_account, index: index
+        end
+
+        def fedcm_dialog_type
+          execute :get_fedcm_dialog_type
+        end
+
+        def fedcm_title
+          execute(:get_fedcm_title).fetch('title')
+        end
+
+        def fedcm_subtitle
+          execute(:get_fedcm_title).fetch('subtitle', nil)
+        end
+
+        def fedcm_account_list
+          execute :get_fedcm_account_list
+        end
+
+        def set_fedcm_delay(enabled)
+          execute :set_fedcm_delay, enabled: enabled
+        end
+
+        def reset_fedcm_cooldown
+          execute :reset_fedcm_cooldown
         end
 
         def command_list
@@ -664,10 +701,12 @@ module Selenium
         end
 
         def prepare_capabilities_payload(capabilities)
-          capabilities = {alwaysMatch: capabilities} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
-          {capabilities: capabilities}
+          capabilities = { alwaysMatch: capabilities } if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
+          { capabilities: capabilities }
         end
-      end # Bridge
+      end
+
+      # Bridge
     end # Remote
   end # WebDriver
 end # Selenium

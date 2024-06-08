@@ -168,9 +168,13 @@ module Selenium
           cancel_fedcm_dialog: [:post, 'session/:session_id/fedcm/canceldialog'],
           select_fedcm_account: [:post, 'session/:session_id/fedcm/selectaccount'],
           set_fedcm_delay: [:post, 'session/:session_id/fedcm/setdelayenabled'],
+          reset_fedcm_cooldown: [:post, 'session/:session_id/fedcm/resetcooldown'],
+          set_fedcm_delay: [:post, 'session/:session_id/fedcm/setdelayenabled'],
           reset_fedcm_cooldown: [:post, 'session/:session_id/fedcm/resetcooldown']
         }.freeze
-      end # Bridge
+      end
+
+      # Bridge
     end # Remote
   end # WebDriver
 end # Selenium

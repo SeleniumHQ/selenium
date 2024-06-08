@@ -13,38 +13,38 @@ module Selenium
 
         # Closes the dialog as if the user had clicked X.
         def cancel
-          @bridge.execute :cancel_fedcm_dialog
+          @bridge.cancel_fedcm_dialog
         end
 
         # Selects an account as if the user had clicked on it.
         #
         # @param [Integer] index The index of the account to select from the list returned by get_accounts.
         def select_account(index)
-          @bridge.execute :select_fedcm_account, index: index
+          @bridge.select_fedcm_account index
         end
 
         # Returns the type of the open dialog.
         #
         # One of DIALOG_TYPE_ACCOUNT_LIST and DIALOG_TYPE_AUTO_REAUTH.
         def type
-          @bridge.execute :get_fedcm_dialog_type
+          @bridge.fedcm_dialog_type
         end
 
         # Returns the title of the dialog.
         def title
-          @bridge.execute(:get_fedcm_title).fetch('title')
+          @bridge.fedcm_title
         end
 
         # Returns the subtitle of the dialog or nil if none.
         def subtitle
-          @bridge.execute(:get_fedcm_title).fetch('subtitle', nil)
+          @bridge.fedcm_subtitle
         end
 
         # Returns the accounts shown in the account chooser.
         #
         # If this is an auto reauth dialog, returns the single account that is being signed in.
         def accounts
-          @bridge.execute :get_fedcm_account_list
+          @bridge.fedcm_account_list
         end
       end # Dialog
     end # FedCM
