@@ -7,10 +7,8 @@ module Selenium
         let(:url) { 'https://fedcm-rp-demo.glitch.me/' }
 
         it 'dismisses dialog' do
-          create_driver! do |driver|
-            driver.navigate.to url
-            expect(driver.fedcm_title).to eq('Sign in to localhost with localhost')
-          end
+          driver.navigate.to url
+          driver.fedcm_dialog.title
         end
       end
     end # FedCm

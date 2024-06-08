@@ -1,7 +1,7 @@
 module Selenium
   module WebDriver
     module DriverExtensions
-      module HasFedCM
+      module HasFedCmDialog
         FEDCM_COMMANDS = {
           set_fedcm_delay: [:post, 'session/:session_id/fedcm/setdelayenabled'],
           reset_fedcm_cooldown: [:post, 'session/:session_id/fedcm/resetcooldown']
@@ -23,10 +23,10 @@ module Selenium
           execute :reset_fedcm_cooldown
         end
 
-        def fedcm
-          @fedcm ||= Dialog.new(self)
+        def fedcm_dialog
+          @fedcm_dialog ||= Selenium::WebDriver::FedCM::Dialog.new(@bridge)
         end
-      end
-    end
-  end
-end
+      end # HasFedCmDialog
+    end # DriverExtensions
+  end # WebDriver
+end # Selenium
