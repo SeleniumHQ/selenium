@@ -12,7 +12,7 @@ module Selenium
         end
 
         it 'throws an error when dialog is not present' do
-          expect{ dialog.title }.to raise_error(Error::NoSuchAlertError)
+          expect { dialog.title }.to raise_error(Error::NoSuchAlertError)
         end
       end
     end # FedCm
