@@ -3,7 +3,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module FedCM
-      describe Dialog, exclusive: { browser: :chrome } do
+      describe Dialog, exclusive: {browser: :chrome} do
         let(:url) { 'https://fedcm-rp-demo.glitch.me/' }
         let(:dialog) { driver.fedcm_dialog }
 
@@ -51,8 +51,7 @@ module Selenium
             wait.until { driver.current_url == url }
             wait.until { sign_out_button.displayed? }
             sign_out_button.click
-            wait.until { idp_button.displayed? }
-            sleep 5
+            driver.wait_for_fedcm_dialog
           end
 
           it 'returns the title' do
