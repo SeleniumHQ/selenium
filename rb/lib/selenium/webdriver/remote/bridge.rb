@@ -106,9 +106,9 @@ module Selenium
 
         def browser
           @browser ||= begin
-                         name = @capabilities.browser_name
-                         name ? name.tr(' -', '_').downcase.to_sym : 'unknown'
-                       end
+            name = @capabilities.browser_name
+            name ? name.tr(' -', '_').downcase.to_sym : 'unknown'
+          end
         end
 
         def status
@@ -397,7 +397,6 @@ module Selenium
         def action(async: false, devices: [], duration: 250)
           ActionBuilder.new self, async: async, devices: devices, duration: duration
         end
-
         alias actions action
 
         def send_actions(data)
@@ -428,14 +427,14 @@ module Selenium
 
         def submit_element(element)
           script = "/* submitForm */ var form = arguments[0];\n" \
-            "while (form.nodeName != \"FORM\" && form.parentNode) {\n  " \
-            "form = form.parentNode;\n" \
-            "}\n" \
-            "if (!form) { throw Error('Unable to find containing form element'); }\n" \
-            "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" \
-            "var e = form.ownerDocument.createEvent('Event');\n" \
-            "e.initEvent('submit', true, true);\n" \
-            "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
+                   "while (form.nodeName != \"FORM\" && form.parentNode) {\n  " \
+                   "form = form.parentNode;\n" \
+                   "}\n" \
+                   "if (!form) { throw Error('Unable to find containing form element'); }\n" \
+                   "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" \
+                   "var e = form.ownerDocument.createEvent('Event');\n" \
+                   "e.initEvent('submit', true, true);\n" \
+                   "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
 
           execute_script(script, Bridge.element_class::ELEMENT_KEY => element)
         rescue Error::JavascriptError
@@ -638,7 +637,7 @@ module Selenium
         def reset_fedcm_cooldown
           execute :reset_fedcm_cooldown
         end
-  
+
         def bidi
           msg = 'BiDi must be enabled by setting #web_socket_url to true in options class'
           raise(WebDriver::Error::WebDriverError, msg)
@@ -709,9 +708,7 @@ module Selenium
           capabilities = {alwaysMatch: capabilities} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
           {capabilities: capabilities}
         end
-      end
-
-      # Bridge
+      end # Bridge
     end # Remote
   end # WebDriver
 end # Selenium
