@@ -45,9 +45,6 @@ module Selenium
 
         attr_reader privacy_policy_url: String
 
-        # Initializes a new account with the provided attributes.
-        #
-        # @param [Hash]
         def initialize: (**untyped args) -> void
       end
     end
