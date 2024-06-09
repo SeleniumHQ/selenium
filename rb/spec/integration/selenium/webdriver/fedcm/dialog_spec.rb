@@ -38,18 +38,21 @@ module Selenium
         end
 
         context 'with dialog present' do
+          let(:wait) { Wait.new(timeout: 15) }
+
           before do
-            driver.find_element(id: 'idp').click
-            Wait.new.until { driver.find_element(xpath: '//input[@value="Continue"]').displayed? }
-            driver.find_element(xpath: '//input[@value="Continue"]').click
-            Wait.new.until { driver.find_element(xpath: '//input[@value="Sign-In"]').displayed? }
-            driver.find_element(xpath: '//input[@value="Sign-In"]').click
-            sleep 2
-            driver.get(url)
-            Wait.new(timeout: 15).until { driver.current_url == url }
-            Wait.new(timeout: 15).until { driver.find_element(xpath: '//*[@id="profile"]/mwc-button[1]').displayed? }
-            driver.find_element(xpath: '//*[@id="profile"]/mwc-button[1]').click
-            sleep 10
+            idp_button.click
+            wait.until { continue_button.displayed? }
+            continue_button.click
+            wait.until { sign_in_button.displayed? }
+            sign_in_button.click
+            wait.until { visit_rp_button.displayed? }
+            visit_rp_button.click
+            wait.until { driver.current_url == url }
+            wait.until { sign_out_button.displayed? }
+            sign_out_button.click
+            wait.until { idp_button.displayed? }
+            sleep 5
           end
 
           it 'returns the title' do
@@ -72,6 +75,14 @@ module Selenium
           it 'returns an account' do
             expect(dialog.select_account(0)).to eq 'Elisa Beckett'
           end
+
+          private
+
+          def idp_button = driver.find_element(id: 'idp')
+          def continue_button = driver.find_element(xpath: '//input[@value="Continue"]')
+          def sign_in_button = driver.find_element(xpath: '//input[@value="Sign-In"]')
+          def sign_out_button = driver.find_element(xpath: '//*[@id="profile"]/mwc-button[1]')
+          def visit_rp_button = driver.find_element(xpath: '//html/body/main/mwc-button[2]')
         end
       end
     end # FedCm
