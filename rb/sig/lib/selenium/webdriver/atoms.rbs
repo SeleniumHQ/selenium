@@ -4,13 +4,13 @@ module Selenium
       include _Bridge
       include _ExecuteScript
 
-      def atom_script: (untyped) -> untyped
+      def atom_script: (Symbol) -> String
 
       private
 
       def read_atom: (Symbol function) -> String
 
-      def execute_atom: (Symbol function_name, *untyped arguments) -> untyped
+      def execute_atom: (Symbol function_name, [Element | String | Symbol] arguments) -> [Element | Integer | Float | bool | nil | String | Array[untyped]]
     end
   end
 end

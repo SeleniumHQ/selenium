@@ -17,23 +17,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'uri'
-require 'selenium/webdriver/remote/server_error'
-
 module Selenium
   module WebDriver
-    module Remote
-      autoload :Features,     'selenium/webdriver/remote/features'
-      autoload :Bridge,       'selenium/webdriver/remote/bridge'
-      autoload :BiDiBridge,   'selenium/webdriver/remote/bidi_bridge'
-      autoload :Driver,       'selenium/webdriver/remote/driver'
-      autoload :Response,     'selenium/webdriver/remote/response'
-      autoload :Capabilities, 'selenium/webdriver/remote/capabilities'
+    class BiDi
+      class Struct < ::Struct
+        class << self
+          def new(*args, &block)
+            super(*args) do
+              define_method(:initialize) do |**kwargs|
+                converted_kwargs = kwargs.transform_keys { |key| self.class.camel_to_snake(key.to_s).to_sym }
+                super(*converted_kwargs.values_at(*self.class.members))
+              end
+              class_eval(&block) if block
+            end
+          end
 
-      module Http
-        autoload :Common,  'selenium/webdriver/remote/http/common'
-        autoload :Default, 'selenium/webdriver/remote/http/default'
+          def camel_to_snake(camel_str)
+            camel_str.gsub(/([A-Z])/, '_\1').downcase
+          end
+        end
       end
     end
-  end
-end
+
+    # BiDi
+  end # WebDriver
+end # Selenium

@@ -1,11 +1,11 @@
 module Selenium
   module WebDriver
     module Edge
-      self.@path: untyped
+      @path: String?
 
-      def self.path=: (untyped path) -> untyped
+      def self.path=: (String path) -> String
 
-      def self.path: () -> untyped
+      def self.path: () -> String?
     end
   end
 end

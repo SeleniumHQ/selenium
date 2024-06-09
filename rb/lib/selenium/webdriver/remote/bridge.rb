@@ -638,6 +638,11 @@ module Selenium
         def reset_fedcm_cooldown
           execute :reset_fedcm_cooldown
         end
+  
+        def bidi
+          msg = 'BiDi must be enabled by setting #web_socket_url to true in options class'
+          raise(WebDriver::Error::WebDriverError, msg)
+        end
 
         def command_list
           COMMANDS
