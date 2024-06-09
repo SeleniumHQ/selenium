@@ -6,7 +6,7 @@ module Selenium
         #
         # FedCm by default delays promise resolution in failure cases for privacy reasons.
         # This method allows turning it off to let tests run faster where this is not relevant.
-        def set_delay_enabled(enabled)
+        def delay_enabled(enabled)
           @bridge.set_fedcm_delay(enabled)
         end
 

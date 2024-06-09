@@ -1,51 +1,55 @@
-module FedCM
-  # Represents an account displayed in a FedCm account list.
-  # See: https://fedidcg.github.io/FedCM/#dictdef-identityprovideraccount
-  #      https://fedidcg.github.io/FedCM/#webdriver-accountlist
-  class Account
-    @account_id: untyped
+module Selenium
+  module WebDriver
+    module FedCM
+      # Represents an account displayed in a FedCm account list.
+      # See: https://fedidcg.github.io/FedCM/#dictdef-identityprovideraccount
+      #      https://fedidcg.github.io/FedCM/#webdriver-accountlist
+      class Account
+        @account_id: String
 
-    @email: untyped
+        @email: String
 
-    @name: untyped
+        @name: String
 
-    @given_name: untyped
+        @given_name: String
 
-    @picture_url: untyped
+        @picture_url: String
 
-    @idp_config_url: untyped
+        @idp_config_url: String
 
-    @login_state: untyped
+        @login_state: String
 
-    @terms_of_service_url: untyped
+        @terms_of_service_url: String
 
-    @privacy_policy_url: untyped
+        @privacy_policy_url: String
 
-    LOGIN_STATE_SIGNIN: "SignIn"
+        LOGIN_STATE_SIGNIN: String
 
-    LOGIN_STATE_SIGNUP: "SignUp"
+        LOGIN_STATE_SIGNUP: String
 
-    attr_reader account_id: untyped
+        attr_reader account_id: String
 
-    attr_reader email: untyped
+        attr_reader email: String
 
-    attr_reader name: untyped
+        attr_reader name: String
 
-    attr_reader given_name: untyped
+        attr_reader given_name: String
 
-    attr_reader picture_url: untyped
+        attr_reader picture_url: String
 
-    attr_reader idp_config_url: untyped
+        attr_reader idp_config_url: String
 
-    attr_reader login_state: untyped
+        attr_reader login_state: String
 
-    attr_reader terms_of_service_url: untyped
+        attr_reader terms_of_service_url: String
 
-    attr_reader privacy_policy_url: untyped
+        attr_reader privacy_policy_url: String
 
-    # Initializes a new account with the provided attributes.
-    #
-    # @param [Hash]
-    def initialize: (**untyped args) -> void
+        # Initializes a new account with the provided attributes.
+        #
+        # @param [Hash]
+        def initialize: (**untyped args) -> void
+      end
+    end
   end
 end

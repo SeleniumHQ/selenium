@@ -3,7 +3,7 @@
 # rubocop:disable Metrics/BlockLength -- Disable due to the steep configuration not matching rubocop expectations
 target :lib do
   signature 'sig', '.gem_rbs_collection/rubyzip' # Signature directory
-  check 'lib' # Directory name
+  check 'lib/selenium/webdriver/fedcm/account.rb' # Directory name
   # Total amount of errors ignore 66 in 31 files
   ignore(
     # Ignore line 166 due to UDP RBS issue

@@ -1,31 +1,24 @@
-module FedCM
-  module Dialog
-    DIALOG_TYPE_ACCOUNT_LIST: "AccountChooser"
+module Selenium
+  module WebDriver
+    module FedCM
+      class Dialog
+        DIALOG_TYPE_ACCOUNT_LIST: String
+        DIALOG_TYPE_AUTO_REAUTH: String
 
-    DIALOG_TYPE_AUTO_REAUTH: "AutoReauthn"
+        @bridge: Remote::Bridge
 
-    # Closes the dialog as if the user had clicked X.
-    def cancel: () -> untyped
+        def accounts: -> Array[Account]
 
-    # Selects an account as if the user had clicked on it.
-    #
-    # @param [Integer] index The index of the account to select from the list returned by get_accounts.
-    def select_account: (untyped index) -> untyped
+        def cancel: -> Remote::Response?
 
-    # Returns the type of the open dialog.
-    #
-    # One of DIALOG_TYPE_ACCOUNT_LIST and DIALOG_TYPE_AUTO_REAUTH.
-    def type: () -> untyped
+        def select_account: (Integer index) -> Remote::Response?
 
-    # Returns the title of the dialog.
-    def title: () -> untyped
+        def subtitle: -> (String | Remote::Response)
 
-    # Returns the subtitle of the dialog or nil if none.
-    def subtitle: () -> untyped
+        def title: -> (String | Remote::Response)
 
-    # Returns the accounts shown in the account chooser.
-    #
-    # If this is an auto reauth dialog, returns the single account that is being signed in.
-    def accounts: () -> untyped
+        def type: -> (String | Remote::Response)
+      end
+    end
   end
 end
