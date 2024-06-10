@@ -103,7 +103,7 @@ def test_first_match_when_2_different_option_types():
                     "browserName": "firefox",
                     "acceptInsecureCerts": True,
                     "moz:debuggerAddress": True,
-                    "moz:firefoxOptions": {"args": ["foo"], 'prefs': {'remote.active-protocols': 3}},
+                    "moz:firefoxOptions": {"args": ["foo"], "prefs": {"remote.active-protocols": 3}},
                 },
             ],
         }
