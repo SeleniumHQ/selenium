@@ -37,12 +37,11 @@ use crate::metadata::{
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
 use crate::shell::{
-    run_shell_command, run_shell_command_by_os, run_shell_command_with_log, split_lines, Command,
+    run_shell_command, run_shell_command_by_os, run_shell_command_with_log, Command,
 };
 use crate::stats::{send_stats_to_plausible, Props};
 use anyhow::anyhow;
 use anyhow::Error;
-use is_executable::IsExecutable;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -50,6 +49,7 @@ use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
 use std::{env, fs, thread};
 use walkdir::DirEntry;
+use which::which;
 
 pub mod chrome;
 pub mod config;
@@ -98,8 +98,6 @@ pub const ARCH_X86: &str = "x86";
 pub const ARCH_AMD64: &str = "amd64";
 pub const ARCH_ARM64: &str = "arm64";
 pub const ENV_PROCESSOR_ARCHITECTURE: &str = "PROCESSOR_ARCHITECTURE";
-pub const WHERE_COMMAND: &str = "where {}";
-pub const WHICH_COMMAND: &str = "which {}";
 pub const TTL_SEC: u64 = 3600;
 pub const UNAME_COMMAND: &str = "uname -{}";
 pub const ESCAPE_COMMAND: &str = "printf %q \"{}\"";
@@ -594,32 +592,10 @@ pub trait SeleniumManager {
     }
 
     fn execute_which_in_shell(&self, arg: &str) -> Option<String> {
-        let which_or_where = if WINDOWS.is(self.get_os()) {
-            WHERE_COMMAND
-        } else {
-            WHICH_COMMAND
-        };
-        let which_command = Command::new_single(format_one_arg(which_or_where, arg));
-        let path = match run_shell_command_by_os(self.get_os(), which_command) {
-            Ok(path) => {
-                let path_vector = split_lines(path.as_str());
-                if path_vector.len() == 1 {
-                    self.get_first_in_vector(path_vector)
-                } else {
-                    let exec_paths: Vec<&str> = path_vector
-                        .into_iter()
-                        .filter(|p| Path::new(p).is_executable())
-                        .collect();
-                    if exec_paths.is_empty() {
-                        None
-                    } else {
-                        self.get_first_in_vector(exec_paths)
-                    }
-                }
-            }
+        match which(arg) {
+            Ok(path) => Some(path_to_string(&path)),
             Err(_) => None,
-        };
-        path
+        }
     }
 
     fn get_first_in_vector(&self, vector: Vec<&str>) -> Option<String> {
