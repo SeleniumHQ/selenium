@@ -185,7 +185,7 @@ module Selenium
           it 'returns empty options by default' do
             expect(options.as_json).to eq('browserName' => 'firefox',
                                           'acceptInsecureCerts' => true,
-                                          'moz:firefoxOptions' => {'prefs'=>{'remote.active-protocols'=>3},
+                                          'moz:firefoxOptions' => {'prefs'=>{'remote.active-protocols'=>3}},
                                           'moz:debuggerAddress' => true)
           end
 
@@ -195,7 +195,7 @@ module Selenium
                                           'browserName' => 'firefox',
                                           'foo:bar' => {'foo' => 'bar'},
                                           'moz:debuggerAddress' => true,
-                                          'moz:firefoxOptions' => {'prefs'=>{'remote.active-protocols'=>3})
+                                          'moz:firefoxOptions' => {'prefs'=>{'remote.active-protocols'=>3}})
           end
 
           it 'converts to a json hash' do
