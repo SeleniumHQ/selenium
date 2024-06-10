@@ -5,9 +5,6 @@ csharp_binary(
     srcs = glob(["**/*.cs"]),
     # Used as a tool in our build, so just target one framework
     target_frameworks = ["net7.0"],
-    targeting_packs = [
-        framework("nuget", "Microsoft.NETCore.App.Ref"),
-    ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
