@@ -121,7 +121,7 @@ pub fn get_browser_version_from_metadata(
     if browser.is_empty() {
         None
     } else {
-        Some(browser.get(0).unwrap().browser_version.to_string())
+        Some(browser.first().unwrap().browser_version.to_string())
     }
 }
 
@@ -139,7 +139,7 @@ pub fn get_driver_version_from_metadata(
     if driver.is_empty() {
         None
     } else {
-        Some(driver.get(0).unwrap().driver_version.to_string())
+        Some(driver.first().unwrap().driver_version.to_string())
     }
 }
 
