@@ -34,6 +34,8 @@ module Selenium
 
         def cancel_fedcm_dialog: -> untyped
 
+        def click_fedcm_dialog_button: -> untyped
+
         def create_session: (untyped capabilities) -> untyped
 
         extend WebDriver::Chrome::Features

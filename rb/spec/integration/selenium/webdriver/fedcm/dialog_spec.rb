@@ -75,6 +75,15 @@ module Selenium
             expect(dialog.select_account(0)).to be_nil
           end
 
+          it 'clicks the dialog' do
+            expect(dialog.click).to be_nil
+          end
+
+          it 'cancels the dialog' do
+            dialog.cancel
+            expect { dialog.title }.to raise_error(Error::NoSuchAlertError)
+          end
+
           private
 
           def idp_button = driver.find_element(id: 'idp')

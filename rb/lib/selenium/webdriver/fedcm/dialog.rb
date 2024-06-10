@@ -12,6 +12,11 @@ module Selenium
         DIALOG_TYPE_AUTO_REAUTH = 'AutoReauthn'
 
         # Closes the dialog as if the user had clicked X.
+        def click
+          @bridge.click_fedcm_dialog_button
+        end
+
+        # Closes the dialog as if the user had clicked X.
         def cancel
           @bridge.cancel_fedcm_dialog
         end

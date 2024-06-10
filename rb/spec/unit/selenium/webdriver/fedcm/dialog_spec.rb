@@ -7,6 +7,13 @@ module Selenium
         let(:bridge) { instance_double(Selenium::WebDriver::Remote::Bridge) }
         let(:dialog) { described_class.new(bridge) }
 
+        describe '#click' do
+          it 'calls click_fedcm_dialog on the bridge' do
+            allow(bridge).to receive(:click_fedcm_dialog_button).and_return(nil)
+            expect(dialog.click).to be_nil
+          end
+        end
+
         describe '#cancel' do
           it 'calls cancel_fedcm_dialog on the bridge' do
             allow(bridge).to receive(:cancel_fedcm_dialog).and_return(nil)

@@ -11,6 +11,8 @@ module Selenium
 
         def cancel: -> Remote::Response?
 
+        def click: -> untyped
+
         def select_account: (Integer index) -> Remote::Response?
 
         def subtitle: -> (String | Remote::Response)
