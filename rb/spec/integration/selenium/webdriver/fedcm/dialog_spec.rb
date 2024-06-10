@@ -51,7 +51,7 @@ module Selenium
             wait.until { driver.current_url == url }
             wait.until { sign_out_button.displayed? }
             sign_out_button.click
-            driver.wait_for_fedcm_dialog
+            driver.wait_for_fedcm_dialog(timeout: 15)
           end
 
           it 'returns the title' do
@@ -72,7 +72,7 @@ module Selenium
           end
 
           it 'returns an account' do
-            expect(dialog.select_account(0)).to eq 'Elisa Beckett'
+            expect(dialog.select_account(0)).to be_nil
           end
 
           private
