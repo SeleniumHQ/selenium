@@ -639,7 +639,7 @@ module Selenium
         end
 
         def click_fedcm_dialog_button
-          execute :click_fedcm_dialog_button
+          execute :click_fedcm_dialog_button, 'dialogButton' => 'ConfirmIdpLoginContinue'
         end
 
         def bidi
