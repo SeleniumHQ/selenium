@@ -1,10 +1,10 @@
-require File.expand_path('../spec_helper', __dir__)
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module FedCM
       describe Dialog do
-        let(:bridge) { instance_double(Selenium::WebDriver::Remote::Bridge) }
+        let(:bridge) { instance_double(Remote::Bridge) }
         let(:dialog) { described_class.new(bridge) }
 
         describe '#click' do

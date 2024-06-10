@@ -41,7 +41,6 @@ module Selenium
     autoload :DevTools,   'selenium/webdriver/devtools'
     autoload :Edge,       'selenium/webdriver/edge'
     autoload :Firefox,    'selenium/webdriver/firefox'
-    autoload :FedCM,      'selenium/webdriver/fedcm'
     autoload :IE,         'selenium/webdriver/ie'
     autoload :Remote,     'selenium/webdriver/remote'
     autoload :Safari,     'selenium/webdriver/safari'

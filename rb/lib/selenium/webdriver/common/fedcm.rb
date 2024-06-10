@@ -3,8 +3,8 @@
 module Selenium
   module WebDriver
     module FedCM
-      autoload :Account, 'selenium/webdriver/fedcm/account'
-      autoload :Dialog, 'selenium/webdriver/fedcm/dialog'
+      autoload :Account, 'fedcm/account'
+      autoload :Dialog, 'fedcm/dialog'
     end # FedCM
   end # WebDriver
 end # Selenium

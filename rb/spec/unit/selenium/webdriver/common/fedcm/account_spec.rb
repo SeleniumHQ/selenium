@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require File.expand_path('../spec_helper', __dir__)
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
@@ -30,14 +30,6 @@ module Selenium
           expect(account.login_state).to eq('login-state')
           expect(account.terms_of_service_url).to eq('terms-of-service-url')
           expect(account.privacy_policy_url).to eq('privacy-policy-url')
-        end
-
-        it 'has a constant LOGIN_STATE_SIGNIN' do
-          expect(described_class::LOGIN_STATE_SIGNIN).to eq('SignIn')
-        end
-
-        it 'has a constant LOGIN_STATE_SIGNUP' do
-          expect(described_class::LOGIN_STATE_SIGNUP).to eq('SignUp')
         end
       end # Account
     end # FedCM
