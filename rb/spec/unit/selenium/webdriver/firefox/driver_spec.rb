@@ -79,8 +79,9 @@ module Selenium
           opts = {args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {acceptInsecureCerts: true,
                                                              browserName: 'firefox',
-                                                             'moz:firefoxOptions': {args: ['-f'],
-                                                                                    prefs: {'remote.active-protocols' => 3}},
+                                                             'moz:firefoxOptions': {
+                                                               args: ['-f'],
+                                                               prefs: {'remote.active-protocols' => 3}},
                                                              'moz:debuggerAddress': true}}})
           expect { described_class.new(options: Options.new(**opts)) }.not_to raise_exception
         end
