@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_browser, assert_driver, get_selenium_manager};
+use crate::common::get_selenium_manager;
 
 use rstest::rstest;
 
