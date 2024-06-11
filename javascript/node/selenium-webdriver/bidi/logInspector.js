@@ -66,7 +66,7 @@ class LogInspector {
   }
 
   removeCallback(id) {
-    for (const [eventType, callbacks] of this.listener) {
+    for (const [, callbacks] of this.listener) {
       if (callbacks.has(id)) {
         callbacks.delete(id)
       }
@@ -85,7 +85,7 @@ class LogInspector {
   invokeCallbacksWithFilter(eventType, data, filterLevel) {
     const callbacks = this.listener.get(eventType)
     if (callbacks) {
-      for (const [id, value] of callbacks) {
+      for (const [, value] of callbacks) {
         const callback = value.callback
         const filter = value.filter
         if (filterLevel === filter.getLevel()) {
