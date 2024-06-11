@@ -40,12 +40,8 @@ fn config_test(#[case] browser_name: String) {
     writer.flush().unwrap();
 
     let mut cmd = get_selenium_manager();
-    cmd.args([
-        "--trace",
-        "--cache-path",
-        tmp_dir.path().to_str().unwrap(),
-    ])
-    .assert()
-    .success()
-    .code(0);
+    cmd.args(["--trace", "--cache-path", tmp_dir.path().to_str().unwrap()])
+        .assert()
+        .success()
+        .code(0);
 }
