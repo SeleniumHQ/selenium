@@ -41,6 +41,7 @@ fn config_test(#[case] browser_name: String) {
 
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
+        "--debug",
         "--output",
         "json",
         "--cache-path",
