@@ -240,7 +240,7 @@ module Selenium
                                        'moz:debuggerAddress' => true,
                                        key => {'args' => %w[foo bar],
                                                'binary' => '/foo/bar',
-                                               'prefs' => {'foo' => 'bar', 'prefs'=>{'remote.active-protocols'=>3},
+                                               'prefs' => {'foo' => 'bar', 'remote.active-protocols'=>3},
                                                'env' => {'FOO' => 'bar'},
                                                'profile' => 'encoded_profile',
                                                'log' => {'level' => 'debug'},
