@@ -15,14 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use assert_cmd::Command;
+use crate::common::get_selenium_manager;
+
 use selenium_manager::logger::{JsonOutput, MinimalJson, DRIVER_PATH};
 use std::path::Path;
 use std::str;
 
+mod common;
+
 #[test]
 fn json_output_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args(["--browser", "chrome", "--output", "json"])
         .assert()
         .success()
@@ -44,7 +47,7 @@ fn json_output_test() {
 
 #[test]
 fn shell_output_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args(["--browser", "chrome", "--output", "shell"])
         .assert()
         .success()
@@ -58,7 +61,7 @@ fn shell_output_test() {
 
 #[test]
 fn mixed_output_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args(["--browser", "chrome", "--output", "mixed"])
         .assert()
         .success()
