@@ -27,7 +27,6 @@ flate2 = "1.0.30"
 tar = "0.4.40"
 infer = "0.15.0"
 exitcode = "1.1.2"
-is_executable = "1.0.1"
 toml = "0.8.13"
 bzip2 = "0.4.4"
 sevenz-rust = "0.6.0"
@@ -35,10 +34,12 @@ walkdir = "2.5.0"
 debpkg = "0.6.0"
 anyhow = { version = "1.0.84", default-features = false, features = ["backtrace", "std"] }
 apple-flat-package = "0.18.0"
+which = "6.0.1"
 
 [dev-dependencies]
 assert_cmd = "2.0.14"
 rstest = "0.19.0"
+is_executable = "1.0.1"
 
 [profile.release]
 opt-level = 'z'     # Optimize for size
