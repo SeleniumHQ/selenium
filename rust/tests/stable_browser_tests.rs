@@ -34,6 +34,7 @@ fn stable_browser_test(#[case] browser_name: String) {
         "stable",
         "--output",
         "json",
+        "--debug",
     ])
     .assert()
     .success()
