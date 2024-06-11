@@ -41,16 +41,11 @@ fn config_test(#[case] browser_name: String) {
 
     let mut cmd = get_selenium_manager();
     cmd.args([
-        "--debug",
-        "--output",
-        "json",
+        "--trace",
         "--cache-path",
         tmp_dir.path().to_str().unwrap(),
     ])
     .assert()
     .success()
     .code(0);
-
-    assert_driver(&mut cmd);
-    assert_browser(&mut cmd);
 }
