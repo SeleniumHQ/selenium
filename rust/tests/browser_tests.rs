@@ -15,8 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::assert_output;
-use assert_cmd::Command;
+use crate::common::{assert_output, get_selenium_manager};
+
 use exitcode::DATAERR;
 use rstest::rstest;
 use std::env::consts::OS;
@@ -39,7 +39,7 @@ fn browser_version_test(
     #[case] browser_version: String,
     #[case] driver_version: String,
 ) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args([
         "--browser",
         &browser,
@@ -79,7 +79,7 @@ fn wrong_parameters_test(
     #[case] driver_version: String,
     #[case] error_code: i32,
 ) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     let result = cmd
         .args([
             "--debug",
@@ -98,7 +98,7 @@ fn wrong_parameters_test(
 
 #[test]
 fn invalid_geckodriver_version_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     let result = cmd
         .args([
             "--browser",
@@ -142,7 +142,7 @@ fn invalid_geckodriver_version_test() {
 )]
 fn browser_path_test(#[case] os: String, #[case] browser: String, #[case] browser_path: String) {
     if OS.eq(&os) {
-        let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+        let mut cmd = get_selenium_manager();
         cmd.args(["--browser", &browser, "--browser-path", &browser_path])
             .assert()
             .success()

@@ -15,12 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use assert_cmd::Command;
+use crate::common::get_selenium_manager;
+
 use std::str;
+
+mod common;
 
 #[test]
 fn offline_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args(["--debug", "--browser", "chrome", "--offline"])
         .assert()
         .success()
