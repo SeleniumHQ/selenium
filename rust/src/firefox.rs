@@ -569,7 +569,11 @@ impl SeleniumManager for FirefoxManager {
             if X32.is(arch) {
                 platform_label = "linux-i686";
             } else if self.is_nightly(browser_version) {
-                platform_label = "linux64";
+                if ARM64.is(arch) {
+                    platform_label = "linux64-aarch64";
+                } else {
+                    platform_label = "linux64";
+                }
             } else {
                 platform_label = "linux-x86_64";
             }
