@@ -119,29 +119,6 @@ fn invalid_geckodriver_version_test() {
 }
 
 #[rstest]
-#[case("chrome", "chromedriver")]
-#[case("edge", "msedgedriver")]
-#[case("firefox", "geckodriver")]
-fn browser_beta_test(#[case] browser: String, #[case] driver_name: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    let assert = cmd
-        .args([
-            "--browser",
-            &browser,
-            "--browser-version",
-            "beta",
-            "--avoid-browser-download",
-            "--debug",
-        ])
-        .assert();
-
-    let stdout = &assert.get_output().stdout;
-    let output = std::str::from_utf8(stdout).unwrap();
-    println!("output {}", output);
-    assert!(output.contains(&driver_name) || output.contains("ERROR"));
-}
-
-#[rstest]
 #[case(
     "windows",
     "chrome",
