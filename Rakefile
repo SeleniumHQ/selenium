@@ -831,12 +831,12 @@ namespace :dotnet do
     Bazel.execute('build', args, '//dotnet:all')
   end
 
-  desc 'Create zipped assets for .NET for uploading to GitHub'
-  task :zip_assets, [:args] do |_task, arguments|
+  desc 'Package .NET bindings into zipped assets and stage for release'
+  task :package, [:args] do |_task, arguments|
     args = Array(arguments[:args]) || ['--stamp']
     Rake::Task['dotnet:build'].invoke(args)
     mkdir_p 'build/dist'
-    FileUtils.rm_f('build/dist/*dotnet*')
+    FileUtils.rm_f(Dir.glob('build/dist/*dotnet*'))
 
     FileUtils.copy('bazel-bin/dotnet/release.zip', "build/dist/selenium-dotnet-#{dotnet_version}.zip")
     FileUtils.chmod(0666, "build/dist/selenium-dotnet-#{dotnet_version}.zip")
@@ -847,8 +847,7 @@ namespace :dotnet do
   desc 'Upload nupkg files to Nuget'
   task :release, [:args] do |_task, arguments|
     args = Array(arguments[:args]) || ['--stamp']
-    Rake::Task['dotnet:build'].invoke(args)
-    Rake::Task['dotnet:zip_assets'].invoke(args)
+    Rake::Task['dotnet:package'].invoke(args)
 
     release_version = dotnet_version
     api_key = ENV.fetch('NUGET_API_KEY', nil)
