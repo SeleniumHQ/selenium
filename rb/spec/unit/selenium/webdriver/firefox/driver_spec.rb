@@ -81,7 +81,8 @@ module Selenium
                                                              browserName: 'firefox',
                                                              'moz:firefoxOptions': {
                                                                args: ['-f'],
-                                                               prefs: {'remote.active-protocols' => 3}},
+                                                               prefs: {'remote.active-protocols' => 3}
+                                                             },
                                                              'moz:debuggerAddress': true}}})
           expect { described_class.new(options: Options.new(**opts)) }.not_to raise_exception
         end
