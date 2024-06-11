@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::get_selenium_manager;
+use crate::common::{get_selenium_manager, get_stdout};
 
 use rstest::rstest;
 
@@ -44,4 +44,8 @@ fn config_test(#[case] browser_name: String) {
         .assert()
         .success()
         .code(0);
+
+    let stdout = get_stdout(&mut cmd);
+
+    assert!(!stdout.contains("WARN") && !stdout.contains("ERROR"));
 }
