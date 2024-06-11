@@ -332,23 +332,11 @@ task ios_driver: [
   '//javascript/webdriver/atoms/fragments:get_location_in_view:ios'
 ]
 
-desc 'Create zipped assets for Java for uploading to GitHub'
+# This task does not allow running RBE, to run stamped with RBE use
+# ./go java:package['--config=release']
+desc 'Create stamped zipped assets for Java for uploading to GitHub'
 task :'java-release-zip' do
-  Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium:client-zip')
-  Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium/grid:server-zip')
-  Bazel.execute('build', ['--stamp'], '//java/src/org/openqa/selenium/grid:executable-grid')
-  mkdir_p 'build/dist'
-  Dir.glob('build/dist/*{java,server}*').each { |file| FileUtils.rm_f(file) }
-
-  FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip',
-                 "build/dist/selenium-server-#{java_version}.zip")
-  FileUtils.chmod(0666, "build/dist/selenium-server-#{java_version}.zip")
-  FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/client-zip.zip',
-                 "build/dist/selenium-java-#{java_version}.zip")
-  FileUtils.chmod(0666, "build/dist/selenium-java-#{java_version}.zip")
-  FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/selenium',
-                 "build/dist/selenium-server-#{java_version}.jar")
-  FileUtils.chmod(0777, "build/dist/selenium-server-#{java_version}.jar")
+  Rake::Task['java:package'].invoke(['--stamp'])
 end
 
 task 'release-java': %i[java-release-zip publish-maven]
@@ -956,11 +944,25 @@ namespace :java do
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:grid')
   end
 
-  desc 'Package Java bindings and grid into releasable packages'
+  desc 'Package Java bindings and grid into releasable packages and stage for release'
   task :package, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || []
-    Rake::Task['java:build'].invoke(args)
-    Rake::Task['java-release-zip'].invoke
+    args = Array(arguments[:args]) || ['--stamp']
+    Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-zip')
+    Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:server-zip')
+    Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:executable-grid')
+
+    mkdir_p 'build/dist'
+    Dir.glob('build/dist/*{java,server}*').each { |file| FileUtils.rm_f(file) }
+
+    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip',
+                   "build/dist/selenium-server-#{java_version}.zip")
+    FileUtils.chmod(0666, "build/dist/selenium-server-#{java_version}.zip")
+    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/client-zip.zip',
+                   "build/dist/selenium-java-#{java_version}.zip")
+    FileUtils.chmod(0666, "build/dist/selenium-java-#{java_version}.zip")
+    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/selenium',
+                   "build/dist/selenium-server-#{java_version}.jar")
+    FileUtils.chmod(0777, "build/dist/selenium-server-#{java_version}.jar")
   end
 
   desc 'Deploy all jars to Maven'

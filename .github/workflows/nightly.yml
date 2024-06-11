@@ -151,9 +151,7 @@ jobs:
     with:
       name: Nightly Grid Release
       cache-key: grid-nightly
-      run: |
-        echo build --stamp >>.bazelrc.local
-        ./go java-release-zip
+      run: ./go java:package[--config=release]
       nightly-release-files: build/dist/*.*
   on-grid-failure:
     name: On Grid Failure
