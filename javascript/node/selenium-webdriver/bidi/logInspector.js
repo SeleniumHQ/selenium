@@ -21,16 +21,31 @@ const { ConsoleLogEntry, JavascriptLogEntry, GenericLogEntry } = require('./logE
 const LOG = {
   TYPE_CONSOLE: 'console',
   TYPE_JS_LOGS: 'javascript',
+  TYPE_JS_EXCEPTION: 'javascriptException',
+  TYPE_LOGS: 'logs',
+  TYPE_CONSOLE_FILTER: 'console_filter',
+  TYPE_JS_LOGS_FILTER: 'javascript_filter',
+  TYPE_JS_EXCEPTION_FILTER: 'javascriptException_filter',
+  TYPE_LOGS_FILTER: 'logs_filter',
 }
 
 class LogInspector {
   bidi
   ws
+  #callbackId = 0
 
   constructor(driver, browsingContextIds) {
     this._driver = driver
     this._browsingContextIds = browsingContextIds
-    this.listener = {}
+    this.listener = new Map()
+    this.listener.set(LOG.TYPE_CONSOLE, new Map())
+    this.listener.set(LOG.TYPE_JS_LOGS, new Map())
+    this.listener.set(LOG.TYPE_JS_EXCEPTION, new Map())
+    this.listener.set(LOG.TYPE_LOGS, new Map())
+    this.listener.set(LOG.TYPE_CONSOLE_FILTER, new Map())
+    this.listener.set(LOG.TYPE_JS_LOGS_FILTER, new Map())
+    this.listener.set(LOG.TYPE_JS_EXCEPTION_FILTER, new Map())
+    this.listener.set(LOG.TYPE_LOGS_FILTER, new Map())
   }
 
   /**
@@ -42,12 +57,41 @@ class LogInspector {
     await this.bidi.subscribe('log.entryAdded', this._browsingContextIds)
   }
 
-  /**
-   * @param kind
-   */
-  logListener(kind) {
-    if (!(kind in this.listener)) {
-      this.listener[kind] = []
+  addCallback(eventType, callback) {
+    const id = ++this.#callbackId
+
+    const eventCallbackMap = this.listener.get(eventType)
+    eventCallbackMap.set(id, callback)
+    return id
+  }
+
+  removeCallback(id) {
+    for (const [eventType, callbacks] of this.listener) {
+      if (callbacks.has(id)) {
+        callbacks.delete(id)
+      }
+    }
+  }
+
+  invokeCallbacks(eventType, data) {
+    const callbacks = this.listener.get(eventType)
+    if (callbacks) {
+      for (const [id, callback] of callbacks) {
+        callback(data)
+      }
+    }
+  }
+
+  invokeCallbacksWithFilter(eventType, data, filterLevel) {
+    const callbacks = this.listener.get(eventType)
+    if (callbacks) {
+      for (const [id, value] of callbacks) {
+        const callback = value.callback
+        const filter = value.filter
+        if (filterLevel === filter.getLevel()) {
+          callback(data)
+        }
+      }
     }
   }
 
@@ -55,11 +99,19 @@ class LogInspector {
    * Listen to Console logs
    * @param callback
    * @param filterBy
-   * @returns {Promise<void>}
+   * @returns {Promise<number>}
    */
   async onConsoleEntry(callback, filterBy = undefined) {
     if (filterBy !== undefined && !(filterBy instanceof FilterBy)) {
       throw Error(`Pass valid FilterBy object. Received: ${filterBy}`)
+    }
+
+    let id
+
+    if (filterBy !== undefined) {
+      id = this.addCallback(LOG.TYPE_CONSOLE_FILTER, { callback: callback, filter: filterBy })
+    } else {
+      id = this.addCallback(LOG.TYPE_CONSOLE, callback)
     }
 
     this.ws = await this.bidi.socket
@@ -81,25 +133,35 @@ class LogInspector {
 
         if (filterBy !== undefined) {
           if (params?.level === filterBy.getLevel()) {
-            callback(consoleEntry)
+            this.invokeCallbacksWithFilter(LOG.TYPE_CONSOLE_FILTER, consoleEntry, filterBy.getLevel())
           }
           return
         }
 
-        callback(consoleEntry)
+        this.invokeCallbacks(LOG.TYPE_CONSOLE, consoleEntry)
       }
     })
+
+    return id
   }
 
   /**
    * Listen to JS logs
    * @param callback
    * @param filterBy
-   * @returns {Promise<void>}
+   * @returns {Promise<number>}
    */
   async onJavascriptLog(callback, filterBy = undefined) {
     if (filterBy !== undefined && !(filterBy instanceof FilterBy)) {
       throw Error(`Pass valid FilterBy object. Received: ${filterBy}`)
+    }
+
+    let id
+
+    if (filterBy !== undefined) {
+      id = this.addCallback(LOG.TYPE_JS_LOGS_FILTER, { callback: callback, filter: filterBy })
+    } else {
+      id = this.addCallback(LOG.TYPE_JS_LOGS, callback)
     }
 
     this.ws = await this.bidi.socket
@@ -118,29 +180,26 @@ class LogInspector {
 
         if (filterBy !== undefined) {
           if (params?.level === filterBy.getLevel()) {
-            callback(jsEntry)
+            this.invokeCallbacksWithFilter(LOG.TYPE_JS_LOGS_FILTER, jsEntry, filterBy.getLevel())
           }
           return
         }
 
-        callback(jsEntry)
+        this.invokeCallbacks(LOG.TYPE_JS_LOGS, jsEntry)
       }
     })
+
+    return id
   }
 
   /**
    * Listen to JS Exceptions
    * @param callback
-   * @returns {Promise<void>}
+   * @returns {Promise<number>}
    */
   async onJavascriptException(callback) {
+    const id = this.addCallback(LOG.TYPE_JS_EXCEPTION, callback)
     this.ws = await this.bidi.socket
-    let enabled = LOG.TYPE_JS_EXCEPTION in this.listener || this.logListener(LOG.TYPE_JS_EXCEPTION)
-    this.listener[LOG.TYPE_JS_EXCEPTION].push(callback)
-
-    if (enabled) {
-      return
-    }
 
     this.ws.on('message', (event) => {
       const { params } = JSON.parse(Buffer.from(event.toString()))
@@ -153,22 +212,29 @@ class LogInspector {
           params.stackTrace,
         )
 
-        this.listener[LOG.TYPE_JS_EXCEPTION].forEach((listener) => {
-          listener(jsErrorEntry)
-        })
+        this.invokeCallbacks(LOG.TYPE_JS_EXCEPTION, jsErrorEntry)
       }
     })
+
+    return id
   }
 
   /**
    * Listen to any logs
    * @param callback
    * @param filterBy
-   * @returns {Promise<void>}
+   * @returns {Promise<number>}
    */
   async onLog(callback, filterBy = undefined) {
     if (filterBy !== undefined && !(filterBy instanceof FilterBy)) {
       throw Error(`Pass valid FilterBy object. Received: ${filterBy}`)
+    }
+
+    let id
+    if (filterBy !== undefined) {
+      id = this.addCallback(LOG.TYPE_LOGS_FILTER, { callback: callback, filter: filterBy })
+    } else {
+      id = this.addCallback(LOG.TYPE_LOGS, callback)
     }
 
     this.ws = await this.bidi.socket
@@ -191,7 +257,16 @@ class LogInspector {
           return
         }
 
-        callback(jsEntry)
+        if (filterBy !== undefined) {
+          if (params?.level === filterBy.getLevel()) {
+            {
+              this.invokeCallbacksWithFilter(LOG.TYPE_LOGS_FILTER, jsEntry, filterBy.getLevel())
+            }
+            return
+          }
+        }
+
+        this.invokeCallbacks(LOG.TYPE_LOGS, jsEntry)
         return
       }
 
@@ -209,12 +284,12 @@ class LogInspector {
 
         if (filterBy !== undefined) {
           if (params?.level === filterBy.getLevel()) {
-            callback(consoleEntry)
+            this.invokeCallbacksWithFilter(LOG.TYPE_LOGS_FILTER, consoleEntry, filterBy.getLevel())
           }
           return
         }
 
-        callback(consoleEntry)
+        this.invokeCallbacks(LOG.TYPE_LOGS, consoleEntry)
         return
       }
 
@@ -229,14 +304,19 @@ class LogInspector {
 
         if (filterBy !== undefined) {
           if (params?.level === filterBy.getLevel()) {
-            callback(genericEntry)
+            {
+              this.invokeCallbacksWithFilter(LOG.TYPE_LOGS_FILTER, genericEntry, filterBy.getLevel())
+            }
+            return
           }
-          return
         }
 
-        callback(genericEntry)
+        this.invokeCallbacks(LOG.TYPE_LOGS, genericEntry)
+        return
       }
     })
+
+    return id
   }
 
   /**
