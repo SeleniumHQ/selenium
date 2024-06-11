@@ -4,7 +4,7 @@ module Selenium
   module WebDriver
     module FedCM
       describe FedCM, only: {browser: :chrome} do
-        let(:url) { 'https://fedcm-rp-demo.glitch.me/' }
+        let(:url) { url_for('xhtmlTest.html') }
         let(:dialog) { driver.fedcm_dialog }
 
         before do
@@ -38,28 +38,12 @@ module Selenium
         end
 
         context 'with dialog present' do
-          let(:wait) { Wait.new(timeout: 15) }
-
-          before do
-            idp_button.click
-            wait.until { continue_button.displayed? }
-            continue_button.click
-            wait.until { sign_in_button.displayed? }
-            sign_in_button.click
-            wait.until { visit_rp_button.displayed? }
-            visit_rp_button.click
-            wait.until { driver.current_url == url }
-            wait.until { sign_out_button.displayed? }
-            sign_out_button.click
-            driver.wait_for_fedcm_dialog(timeout: 15)
-          end
-
           it 'returns the title' do
-            expect(dialog.title).to eq('Sign in to fedcm-rp-demo.glitch.me with fedcm-idp-demo.glitch.me')
+            expect(dialog.title).to eq('Test title')
           end
 
           it 'returns the subtitle' do
-            expect(dialog.subtitle).to be_nil
+            expect(dialog.subtitle).to eq('Test subtitle')
           end
 
           it 'returns the type' do
@@ -68,7 +52,7 @@ module Selenium
 
           it 'returns the accounts' do
             first_account = dialog.accounts.first
-            expect(first_account.name).to eq 'Elisa Beckett'
+            expect(first_account.name).to eq 'Test user'
           end
 
           it 'returns an account' do
@@ -83,14 +67,6 @@ module Selenium
             dialog.cancel
             expect { dialog.title }.to raise_error(Error::NoSuchAlertError)
           end
-
-          private
-
-          def idp_button = driver.find_element(id: 'idp')
-          def continue_button = driver.find_element(xpath: '//input[@value="Continue"]')
-          def sign_in_button = driver.find_element(xpath: '//input[@value="Sign-In"]')
-          def sign_out_button = driver.find_element(xpath: '//*[@id="profile"]/mwc-button[1]')
-          def visit_rp_button = driver.find_element(xpath: '//html/body/main/mwc-button[2]')
         end
       end
     end # FedCm
