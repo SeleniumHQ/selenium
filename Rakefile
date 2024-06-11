@@ -533,7 +533,6 @@ namespace :node do
   task :version, [:version] do |_task, arguments|
     bump_nightly = arguments[:version] === 'nightly'
     old_version = node_version
-    new_version = nil
 
     # There are three cases we want to deal with:
     # 1. Switching from a release build to a nightly one
@@ -1157,11 +1156,7 @@ namespace :all do
 
   desc 'Update everything in preparation for a release'
   task :prepare, [:channel] do |_task, arguments|
-    chrome_channel = if arguments[:channel].nil?
-                        'Stable'
-                     else
-                        arguments[:channel]
-                     end
+    chrome_channel = arguments[:channel] || 'Stable'
     args = Array(chrome_channel) ? ['--', "--chrome_channel=#{chrome_channel.capitalize}"] : []
     Bazel.execute('run', args, '//scripts:pinned_browsers')
     commit!('Update pinned browser versions', ['common/repositories.bzl'])
@@ -1351,16 +1346,6 @@ def restore_git(origin_reference)
   puts "Checking out originating branch/tag — #{origin_reference}"
   @git.checkout(origin_reference)
   false
-end
-
-def previous_version(version)
-  current = version.split(/\.|-/)
-  if current.size > 3
-    current.pop while current.size > 3
-  else
-    current[1] = (current[1].to_i - 1).to_s
-    current[2] = '0'
-  end
 end
 
 def previous_tag(current_version, language=nil)
