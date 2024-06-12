@@ -488,8 +488,12 @@ namespace :node do
   end
 
   desc 'Release Node npm package'
-  task :release do
-    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.publish')
+  task :release, [:args] do |_task, arguments|
+    args = Array(arguments[:args]) || ['--stamp']
+    nightly = args.delete('nightly')
+    Rake::Task['node:version'].invoke('nightly') if nightly
+
+    Bazel.execute('run', args, '//javascript/node/selenium-webdriver:selenium-webdriver.publish')
   end
 
   desc 'Release Node npm package'
@@ -549,8 +553,10 @@ namespace :py do
 
   desc 'Release Python wheel and sdist to pypi'
   task :release, [:args] do |_task, arguments|
-    nightly = arguments[:args].delete('nightly')
     args = Array(arguments[:args]) || ['--stamp']
+    nightly = args.delete('nightly')
+    Rake::Task['py:version'].invoke('nightly') if nightly
+
     command = nightly.nil? ? '//py:selenium-release' : '//py:selenium-release-nightly'
     Bazel.execute('run', args, command)
   end
@@ -717,8 +723,12 @@ namespace :rb do
   desc 'Push Ruby gems to rubygems'
   task :release, [:args] do |_task, arguments|
     args = Array(arguments[:args]) || ['--stamp']
-    Bazel.execute('run', args, '//rb:selenium-webdriver-release')
-    Bazel.execute('run', args, '//rb:selenium-devtools-release')
+    nightly = args.delete('nightly')
+    wd_target = nightly ? '//rb:selenium-webdriver-release' : '//rb:selenium-webdriver-release-nightly'
+    cdp_target = nightly ? '//rb:selenium-devtools-release' : '//rb:selenium-devtools-release-nightly'
+
+    Bazel.execute('run', args, wd_target)
+    Bazel.execute('run', args, cdp_target)
   end
 
   desc 'Generate Ruby documentation'
@@ -787,6 +797,9 @@ namespace :dotnet do
   desc 'Upload nupkg files to Nuget'
   task :release, [:args] do |_task, arguments|
     args = Array(arguments[:args]) || ['--stamp']
+    nightly = args.delete('nightly')
+    Rake::Task['dotnet:version'].invoke('nightly') if nightly
+
     Rake::Task['dotnet:package'].invoke(args)
 
     release_version = dotnet_version
