@@ -519,33 +519,9 @@ namespace :node do
 
   desc 'Update Node version'
   task :version, [:version] do |_task, arguments|
-    bump_nightly = arguments[:version] === 'nightly'
     old_version = node_version
-
-    # There are three cases we want to deal with:
-    # 1. Switching from a release build to a nightly one
-    # 2. Updating a nightly build for the next nightly build
-    # 3. Switching from nightlies to a release build.
-
-    if bump_nightly && old_version.include?('-nightly')
-      # This is the case where we are updating a nightly build to the next nightly build.
-      # This change is usually done by the CI system and never committed.
-      # The "-nightlyYmdHM" is removed to add a new timestamp.
-      new_version = old_version.gsub(/\-nightly\d+$/, '') + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
-    elsif bump_nightly
-      # This is the case after a production release and the version number is configured
-      # to start doing nightly builds.
-      new_version = old_version + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
-    else
-      if old_version.include?('-nightly')
-        # From a nightly build to a release build.
-        new_version = old_version.gsub(/\-nightly\d+$/, '')
-      else
-        # From a release build to a nightly build. We use npm version for this.
-        new_version = updated_version(old_version.gsub(/\-nightly\d+$/, ''), arguments[:version])
-        new_version = new_version + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
-      end
-    end
+    nightly = "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+    new_version = updated_version(old_version, arguments[:version], nightly)
 
     ['javascript/node/selenium-webdriver/package.json',
      'package-lock.json',
@@ -554,7 +530,7 @@ namespace :node do
       File.open(file, "w") { |f| f.puts text }
     end
 
-    Rake::Task['node:changelog'].invoke unless new_version.include?('-nightly') || bump_nightly
+    Rake::Task['node:changelog'].invoke unless new_version.include?(nightly)
   end
 end
 
@@ -648,32 +624,9 @@ namespace :py do
 
   desc 'Update Python version'
   task :version, [:version] do |_task, arguments|
-    bump_nightly = arguments[:version] === 'nightly'
     old_version = python_version
-    new_version = nil
-
-    # There are three cases we want to deal with:
-    # 1. Switching from a release build to a nightly one
-    # 2. Updating a nightly build for the next nightly build
-    # 3. Switching from nightlies to a release build.
-
-    if bump_nightly && old_version.include?('.dev')
-      # This is the case where we are updating a nightly build to the next nightly build.
-      # This change is usually done by the CI system and never committed.
-      # The ".dev" is removed to have the pushed package in TestPyPi be shown as latest.
-      new_version = old_version.gsub(/\.dev\d+$/, '') + + ".#{Time.now.strftime("%Y%m%d%H%M")}"
-    elsif bump_nightly
-      # This is the case after a production release and the version number is configured
-      # to start doing nightly builds.
-      new_version = old_version + ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
-    else
-      if old_version.include?('.dev')
-        new_version = old_version.gsub(/\.dev\d+$/, '')
-      else
-        new_version = updated_version(old_version.gsub(/\.dev\d+$/, ''), arguments[:version])
-        new_version = new_version + ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
-      end
-    end
+    nightly = ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
+    new_version = updated_version(old_version, arguments[:version], nightly)
 
     ['py/setup.py',
      'py/BUILD.bazel',
@@ -690,7 +643,7 @@ namespace :py do
     text = File.read('py/docs/source/conf.py').gsub(old_short_version, new_short_version)
     File.open('py/docs/source/conf.py', "w") { |f| f.puts text }
 
-    Rake::Task['py:changelog'].invoke unless new_version.include?('.dev') || bump_nightly
+    Rake::Task['py:changelog'].invoke unless new_version.include?(nightly)
   end
 
   desc 'Update Python Syntax'
@@ -790,14 +743,13 @@ namespace :rb do
   desc 'Update Ruby version'
   task :version, [:version] do |_task, arguments|
     old_version = ruby_version
-    new_version = updated_version(old_version, arguments[:version])
-    new_version += '.nightly' unless old_version.include?('nightly')
+    new_version = updated_version(old_version, arguments[:version], '.nightly')
 
     file = 'rb/lib/selenium/webdriver/version.rb'
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, "w") { |f| f.puts text }
 
-    Rake::Task['rb:changelog'].invoke unless new_version.include?('nightly')
+    Rake::Task['rb:changelog'].invoke unless new_version.include?('.nightly')
     sh 'cd rb && bundle --version && bundle update'
   end
 
@@ -896,38 +848,15 @@ namespace :dotnet do
 
   desc 'Update .NET version'
   task :version, [:version] do |_task, arguments|
-    bump_nightly = arguments[:version] === 'nightly'
     old_version = dotnet_version
-    new_version = nil
-
-    # There are three cases we want to deal with:
-    # 1. Switching from a release build to a nightly one
-    # 2. Updating a nightly build for the next nightly build
-    # 3. Switching from nightlies to a release build.
-
-    if bump_nightly && old_version.include?('-nightly')
-      # This is the case where we are updating a nightly build to the next nightly build.
-      # This change is usually done by the CI system and never committed.
-      # The "-nightlyYmdHM" is removed to add a new timestamp.
-      new_version = old_version.gsub(/\-nightly\d+$/, '') + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
-    elsif bump_nightly
-      # This is the case after a production release and the version number is configured
-      # to start doing nightly builds.
-      new_version = old_version + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
-    else
-      if old_version.include?('-nightly')
-        new_version = old_version.gsub(/\-nightly\d+$/, '')
-      else
-        new_version = updated_version(old_version.gsub(/\-nightly\d+$/, ''), arguments[:version])
-        new_version = new_version + "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
-      end
-    end
+    nightly = "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+    new_version = updated_version(old_version, arguments[:version], nightly)
 
     file = 'dotnet/selenium-dotnet-version.bzl'
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, "w") { |f| f.puts text }
 
-    Rake::Task['dotnet:changelog'].invoke unless new_version.include?('-nightly') || bump_nightly
+    Rake::Task['dotnet:changelog'].invoke unless new_version.include?(nightly)
   end
 end
 
@@ -1025,13 +954,12 @@ namespace :java do
   desc 'Update Java version'
   task :version, [:version] do |_task, arguments|
     old_version = java_version
-    new_version = updated_version(old_version, arguments[:version])
-    new_version += '-SNAPSHOT' unless old_version.include?('SNAPSHOT')
+    new_version = updated_version(old_version, arguments[:version], '-SNAPSHOT')
 
     file = 'java/version.bzl'
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, "w") { |f| f.puts text }
-    Rake::Task['java:changelog'].invoke if old_version.include?('SNAPSHOT')
+    Rake::Task['java:changelog'].invoke unless new_version.include?('-SNAPSHOT')
   end
 end
 
@@ -1069,16 +997,15 @@ namespace :rust do
                          else
                            old_version.split('.').tap(&:shift).append('0').join('.')
                          end
-    converted_version = updated_version(equivalent_version, arguments[:version])
-    new_version = converted_version.split('.').unshift("0").tap(&:pop).join('.')
-    new_version += '-nightly' unless old_version.include?('nightly')
+    updated = updated_version(equivalent_version, arguments[:version], '-nightly')
+    new_version = updated.split(/\.|-/).tap {|v| v.delete_at(2)}.unshift("0").join('.').gsub('.nightly', '-nightly')
 
     ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
       File.open(file, "w") { |f| f.puts text }
     end
 
-    Rake::Task['rust:changelog'].invoke unless new_version.include?('nightly')
+    Rake::Task['rust:changelog'].invoke unless new_version.include?('-nightly')
     Rake::Task['rust:update'].invoke
   end
 
@@ -1210,19 +1137,13 @@ namespace :all do
 
   desc 'Update all versions'
   task :version, [:version] do |_task, arguments|
-    version = arguments[:version]
-    if version == 'nightly'
-      Rake::Task['java:version'].invoke
-      Rake::Task['rb:version'].invoke
-      Rake::Task['rust:version'].invoke
-      Rake::Task['py:version'].invoke
-    else
-      Rake::Task['java:version'].invoke(version)
-      Rake::Task['rb:version'].invoke(version)
-      Rake::Task['node:version'].invoke(version)
-      Rake::Task['py:version'].invoke(version)
-      Rake::Task['dotnet:version'].invoke(version)
-    end
+    version = arguments[:version] || 'nightly'
+
+    Rake::Task['java:version'].invoke(version)
+    Rake::Task['rb:version'].invoke(version)
+    Rake::Task['node:version'].invoke(version)
+    Rake::Task['py:version'].invoke(version)
+    Rake::Task['dotnet:version'].invoke(version)
   end
 end
 
@@ -1263,20 +1184,18 @@ task :create_release_notes do
   puts "Release notes have been generated at: #{release_notes_file}"
 end
 
-def updated_version(current, desired = nil)
-  puts "Calculating "
-  version = desired ? desired.split('.') : current.split(/\.|-/)
-  if desired
-    # Allows user to pass in only major/minor versions
-    version << "0" while version.size < 3
-  elsif version.size > 3
-    # Assumes a pre-release version which means removing the pre-release portion
-    version.pop while version.size > 3
-  else
-    version[1] = (version[1].to_i + 1).to_s
-    version[2] = '0'
+def updated_version(current, desired = nil, nightly = nil)
+  if !desired.nil? && desired != 'nightly'
+    # If desired is present, return full 3 digit version
+    desired.split('.').tap {|v| v << 0 while v.size < 3}.join('.')
+  elsif current.split(/\.|-/).size > 3
+    # if current version is already nightly, just need to bump it; this will be noop for some languages
+    pattern = /-?\.?(nightly|SNAPSHOT|dev)\d*$/
+    current.gsub(pattern, nightly)
+  elsif current.split(/\.|-/).size == 3
+    # if current version is not nightly, need to bump the version and make nightly
+    "#{current.split(/\.|-/).tap { |i| (i[1] = i[1].to_i + 1) && (i[2] = 0) }.join('.')}#{nightly}"
   end
-  version.join('.')
 end
 
 def update_gh_pages
