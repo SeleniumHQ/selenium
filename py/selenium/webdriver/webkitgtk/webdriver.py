@@ -29,13 +29,12 @@ class WebDriver(RemoteWebDriver):
     """Controls the WebKitGTKDriver and allows you to drive the browser."""
 
     def __init__(
-        self,
-        executable_path=DEFAULT_EXECUTABLE_PATH,
-        port=0,
-        options=None,
-        desired_capabilities=None,
-        service_log_path=None,
-        keep_alive=False,
+      self,
+      executable_path=DEFAULT_EXECUTABLE_PATH,
+      port=0,
+      options=None,
+      service_log_path=None,
+      keep_alive=False,
     ):
         """Creates a new instance of the WebKitGTK driver.
 
@@ -49,22 +48,13 @@ class WebDriver(RemoteWebDriver):
          - service_log_path : Path to write service stdout and stderr output.
          - keep_alive : Whether to configure RemoteConnection to use HTTP keep-alive.
         """
-        if not options:
-            options = Options()
-            if not desired_capabilities:
-                desired_capabilities = options.to_capabilities()
-        else:
-            capabilities = options.to_capabilities()
-            if desired_capabilities:
-                capabilities.update(desired_capabilities)
-            desired_capabilities = capabilities
-
+        options = options if options else Options()
         self.service = Service(executable_path, port=port, log_path=service_log_path)
         self.service.path = DriverFinder(self.service, options).get_driver_path()
         self.service.start()
 
         super().__init__(
-            command_executor=self.service.service_url, desired_capabilities=desired_capabilities, keep_alive=keep_alive
+            command_executor=self.service.service_url, options=options, keep_alive=keep_alive
         )
         self._is_remote = False
 
