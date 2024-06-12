@@ -706,9 +706,12 @@ end
 namespace :rb do
   desc 'Generate Ruby gems'
   task :build, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || []
-    webdriver = args.reject! { |item| item == 'webdriver' }
-    devtools = args.reject! { |item| item == 'devtools' }
+    args = Array(arguments[:args])
+    puts "args #{args}"
+    webdriver = !args.delete('devtools')
+    puts "wd #{webdriver}"
+    devtools = !args.delete('webdriver')
+    puts "cdp #{devtools}"
     Bazel.execute('build', args, '//rb:selenium-webdriver') if webdriver
     Bazel.execute('build', args, '//rb:selenium-devtools') if devtools
   end
