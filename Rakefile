@@ -336,7 +336,7 @@ task ios_driver: [
 # ./go java:package['--config=release']
 desc 'Create stamped zipped assets for Java for uploading to GitHub'
 task :'java-release-zip' do
-  Rake::Task['java:package'].invoke(['--stamp'])
+  Rake::Task['java:package'].invoke('--stamp')
 end
 
 task 'release-java': %i[java-release-zip publish-maven]
@@ -478,8 +478,8 @@ namespace :node do
   end
 
   desc 'Build Node npm package'
-  task :build, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || []
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
     Bazel.execute('build', args, '//javascript/node/selenium-webdriver')
   end
 
@@ -488,8 +488,8 @@ namespace :node do
   end
 
   desc 'Release Node npm package'
-  task :release, [:args] do |_task, arguments|
-    args = Array(arguments[:args] || ['--stamp'])
+  task :release do |_task, arguments|
+    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['node:version'].invoke('nightly') if nightly
 
@@ -545,15 +545,15 @@ def python_version
 end
 namespace :py do
   desc 'Build Python wheel and sdist with optional arguments'
-  task :build, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || []
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
     Bazel.execute('build', args, '//py:selenium-wheel')
     Bazel.execute('build', args, '//py:selenium-sdist')
   end
 
   desc 'Release Python wheel and sdist to pypi'
-  task :release, [:args] do |_task, arguments|
-    args = Array(arguments[:args] || ['--stamp'])
+  task :release, do |_task, arguments|
+    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['py:version'].invoke('nightly') if nightly
 
@@ -705,15 +705,13 @@ def ruby_version
 end
 namespace :rb do
   desc 'Generate Ruby gems'
-  task :build, [:args] do |_task, arguments|
-    args = Array(arguments[:args])
-    puts "args #{args}"
-    webdriver = !args.delete('devtools')
-    puts "wd #{webdriver}"
-    devtools = !args.delete('webdriver')
-    puts "cdp #{devtools}"
-    Bazel.execute('build', args, '//rb:selenium-webdriver') if webdriver
-    Bazel.execute('build', args, '//rb:selenium-devtools') if devtools
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
+    webdriver = args.delete('webdriver')
+    devtools = args.delete('devtools')
+
+    Bazel.execute('build', args, '//rb:selenium-webdriver') if (webdriver || !devtools)
+    Bazel.execute('build', args, '//rb:selenium-devtools') if (devtools || !webdriver)
   end
 
   desc 'Update generated Ruby files for local development'
@@ -724,8 +722,8 @@ namespace :rb do
   end
 
   desc 'Push Ruby gems to rubygems'
-  task :release, [:args] do |_task, arguments|
-    args = Array(arguments[:args] || ['--stamp'])
+  task :release do |_task, arguments|
+    args = arguments.to_a.compact
     nightly = args.delete('nightly')
     wd_target = nightly ? '//rb:selenium-webdriver-release' : '//rb:selenium-webdriver-release-nightly'
     cdp_target = nightly ? '//rb:selenium-devtools-release' : '//rb:selenium-devtools-release-nightly'
@@ -767,8 +765,8 @@ namespace :rb do
   end
 
   desc 'Update Ruby Syntax'
-  task :lint, [:args] do |_task, arguments|
-    args = Array(arguments[:args] || ['--stamp'])
+  task :lint do |_task, arguments|
+    args = arguments.to_a.compact
     Bazel.execute('run', args, '//rb:lint')
   end
 end
@@ -780,15 +778,15 @@ def dotnet_version
 end
 namespace :dotnet do
   desc 'Build nupkg files'
-  task :build, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || []
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
     Bazel.execute('build', args, '//dotnet:all')
   end
 
   desc 'Package .NET bindings into zipped assets and stage for release'
-  task :package, [:args] do |_task, arguments|
-    args = Array(arguments[:args] || ['--stamp'])
-    Rake::Task['dotnet:build'].invoke(args)
+  task :package do |_task, arguments|
+    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    Rake::Task['dotnet:build'].invoke(*args)
     mkdir_p 'build/dist'
     FileUtils.rm_f(Dir.glob('build/dist/*dotnet*'))
 
@@ -799,12 +797,12 @@ namespace :dotnet do
   end
 
   desc 'Upload nupkg files to Nuget'
-  task :release, [:args] do |_task, arguments|
-    args = Array(arguments[:args] || ['--stamp'])
+  task :release do |_task, arguments|
+    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['dotnet:version'].invoke('nightly') if nightly
 
-    Rake::Task['dotnet:package'].invoke(args)
+    Rake::Task['dotnet:package'].invoke(*args)
 
     release_version = dotnet_version
     api_key = ENV.fetch('NUGET_API_KEY', nil)
@@ -879,20 +877,20 @@ end
 
 namespace :java do
   desc 'Build Java Client Jars'
-  task :build, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || []
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
     Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-combined')
   end
 
   desc 'Build Grid Jar'
-  task :grid, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || []
+  task :grid do |_task, arguments|
+    args = arguments.to_a.compact
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:grid')
   end
 
   desc 'Package Java bindings and grid into releasable packages and stage for release'
-  task :package, [:args] do |_task, arguments|
-    args = Array(arguments[:args] || ['--stamp'])
+  task :package do |_task, arguments|
+    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
     Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-zip')
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:server-zip')
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:executable-grid')
@@ -912,9 +910,9 @@ namespace :java do
   end
 
   desc 'Deploy all jars to Maven'
-  task :release, [:args] do |_task, arguments|
-    args = Array(arguments[:args] || ['--stamp'])
-    Rake::Task['java:package'].invoke(args)
+  task :release do |_task, arguments|
+    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    Rake::Task['java:package'].invoke(*args)
     Rake::Task['publish-maven'].invoke
   end
 
@@ -987,8 +985,8 @@ def rust_version
 end
 namespace :rust do
   desc 'Build Selenium Manager'
-  task :build, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || []
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
     Bazel.execute('build', args, '//rust:selenium-manager')
   end
 
@@ -1055,28 +1053,28 @@ namespace :all do
   end
 
   desc 'Build all artifacts for all language bindings'
-  task :build, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || []
-    Rake::Task['java:build'].invoke(args)
-    Rake::Task['py:build'].invoke(args)
-    Rake::Task['rb:build'].invoke(args)
-    Rake::Task['dotnet:build'].invoke(args)
-    Rake::Task['node:build'].invoke(args)
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
+    Rake::Task['java:build'].invoke(*args)
+    Rake::Task['py:build'].invoke(*args)
+    Rake::Task['rb:build'].invoke(*args)
+    Rake::Task['dotnet:build'].invoke(*args)
+    Rake::Task['node:build'].invoke(*args)
   end
 
   desc 'Release all artifacts for all language bindings'
-  task :release, [:args] do |_task, arguments|
+  task :release do |_task, arguments|
     Rake::Task['clean'].invoke
     tag = @git.add_tag("selenium-#{java_version}")
     @git.push('origin', tag.name)
 
-    args = Array(arguments[:args] || ['--stamp'])
-    Rake::Task['java:release'].invoke(args)
-    Rake::Task['py:release'].invoke(args)
-    Rake::Task['rb:release'].invoke(args)
-    Rake::Task['dotnet:release'].invoke(args)
-    Rake::Task['node:release'].invoke(args)
-    Rake::Task['create_release_notes'].invoke(args)
+    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    Rake::Task['java:release'].invoke(*args)
+    Rake::Task['py:release'].invoke(*args)
+    Rake::Task['rb:release'].invoke(*args)
+    Rake::Task['dotnet:release'].invoke(*args)
+    Rake::Task['node:release'].invoke(*args)
+    Rake::Task['create_release_notes'].invoke
     Rake::Task['all:docs'].invoke
     Rake::Task['all:version'].invoke('nightly')
 
