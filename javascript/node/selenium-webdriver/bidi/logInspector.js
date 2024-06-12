@@ -76,7 +76,7 @@ class LogInspector {
   invokeCallbacks(eventType, data) {
     const callbacks = this.listener.get(eventType)
     if (callbacks) {
-      for (const [id, callback] of callbacks) {
+      for (const [, callback] of callbacks) {
         callback(data)
       }
     }
