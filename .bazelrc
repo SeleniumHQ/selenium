@@ -101,7 +101,6 @@ test:ruby_debug --test_output=streamed --test_env=RUBY_DEBUG_FORK_MODE=parent --
 
 build:release --config=remote
 build:release --stamp
-build:release --remote_download_outputs=toplevel
 
 # RBE
 import %workspace%/.bazelrc.remote

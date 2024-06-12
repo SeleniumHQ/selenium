@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_browser, assert_driver};
-use assert_cmd::Command;
+use crate::common::{get_selenium_manager, get_stdout};
+
 use rstest::rstest;
-use std::env;
+
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use tempfile::Builder;
@@ -39,17 +39,13 @@ fn config_test(#[case] browser_name: String) {
         .unwrap();
     writer.flush().unwrap();
 
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--output",
-        "json",
-        "--cache-path",
-        tmp_dir.path().to_str().unwrap(),
-    ])
-    .assert()
-    .success()
-    .code(0);
+    let mut cmd = get_selenium_manager();
+    cmd.args(["--debug", "--cache-path", tmp_dir.path().to_str().unwrap()])
+        .assert()
+        .success()
+        .code(0);
 
-    assert_driver(&mut cmd);
-    assert_browser(&mut cmd);
+    let stdout = get_stdout(&mut cmd);
+
+    assert!(!stdout.contains("WARN") && !stdout.contains("ERROR"));
 }

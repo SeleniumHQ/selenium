@@ -15,8 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::assert_output;
-use assert_cmd::Command;
+use crate::common::{assert_output, get_selenium_manager, get_stdout};
+
 use exitcode::DATAERR;
 use rstest::rstest;
 use selenium_manager::logger::JsonOutput;
@@ -27,17 +27,14 @@ mod common;
 
 #[test]
 fn grid_latest_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args(["--grid", "--output", "json"])
         .assert()
         .success()
         .code(0);
 
-    let stdout = &cmd.unwrap().stdout;
-    let output = str::from_utf8(stdout).unwrap();
-    println!("{}", output);
-
-    let json: JsonOutput = serde_json::from_str(output).unwrap();
+    let stdout = get_stdout(&mut cmd);
+    let json: JsonOutput = serde_json::from_str(&stdout).unwrap();
     assert!(!json.logs.is_empty());
 
     let output_code = json.result.code;
@@ -55,17 +52,15 @@ fn grid_latest_test() {
 #[case("4.9.0")]
 #[case("4.10.0")]
 fn grid_version_test(#[case] grid_version: &str) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args(["--grid", grid_version, "--output", "json"])
         .assert()
         .success()
         .code(0);
 
-    let stdout = &cmd.unwrap().stdout;
-    let output = str::from_utf8(stdout).unwrap();
-    println!("{}", output);
+    let stdout = get_stdout(&mut cmd);
 
-    let json: JsonOutput = serde_json::from_str(output).unwrap();
+    let json: JsonOutput = serde_json::from_str(&stdout).unwrap();
     let jar = Path::new(&json.result.driver_path);
     let jar_name = jar.file_name().unwrap().to_str().unwrap();
     assert!(jar_name.contains(grid_version));
@@ -75,7 +70,7 @@ fn grid_version_test(#[case] grid_version: &str) {
 #[case("bad-version")]
 #[case("99.99.99")]
 fn grid_error_test(#[case] grid_version: &str) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     let result = cmd.args(["--grid", grid_version]).assert().try_success();
 
     assert_output(&mut cmd, result, vec!["There was an error"], DATAERR);
