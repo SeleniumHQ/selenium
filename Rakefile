@@ -489,7 +489,7 @@ namespace :node do
 
   desc 'Release Node npm package'
   task :release, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || ['--stamp']
+    args = Array(arguments[:args] || ['--stamp'])
     nightly = args.delete('nightly')
     Rake::Task['node:version'].invoke('nightly') if nightly
 
@@ -553,7 +553,7 @@ namespace :py do
 
   desc 'Release Python wheel and sdist to pypi'
   task :release, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || ['--stamp']
+    args = Array(arguments[:args] || ['--stamp'])
     nightly = args.delete('nightly')
     Rake::Task['py:version'].invoke('nightly') if nightly
 
@@ -722,7 +722,7 @@ namespace :rb do
 
   desc 'Push Ruby gems to rubygems'
   task :release, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || ['--stamp']
+    args = Array(arguments[:args] || ['--stamp'])
     nightly = args.delete('nightly')
     wd_target = nightly ? '//rb:selenium-webdriver-release' : '//rb:selenium-webdriver-release-nightly'
     cdp_target = nightly ? '//rb:selenium-devtools-release' : '//rb:selenium-devtools-release-nightly'
@@ -764,8 +764,9 @@ namespace :rb do
   end
 
   desc 'Update Ruby Syntax'
-  task :lint do
-    `cd rb && bundle exec rubocop -a`
+  task :lint, [:args] do |_task, arguments|
+    args = Array(arguments[:args] || ['--stamp'])
+    Bazel.execute('run', args, '//rb:lint')
   end
 end
 
@@ -783,7 +784,7 @@ namespace :dotnet do
 
   desc 'Package .NET bindings into zipped assets and stage for release'
   task :package, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || ['--stamp']
+    args = Array(arguments[:args] || ['--stamp'])
     Rake::Task['dotnet:build'].invoke(args)
     mkdir_p 'build/dist'
     FileUtils.rm_f(Dir.glob('build/dist/*dotnet*'))
@@ -796,7 +797,7 @@ namespace :dotnet do
 
   desc 'Upload nupkg files to Nuget'
   task :release, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || ['--stamp']
+    args = Array(arguments[:args] || ['--stamp'])
     nightly = args.delete('nightly')
     Rake::Task['dotnet:version'].invoke('nightly') if nightly
 
@@ -888,7 +889,7 @@ namespace :java do
 
   desc 'Package Java bindings and grid into releasable packages and stage for release'
   task :package, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || ['--stamp']
+    args = Array(arguments[:args] || ['--stamp'])
     Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-zip')
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:server-zip')
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:executable-grid')
@@ -909,7 +910,7 @@ namespace :java do
 
   desc 'Deploy all jars to Maven'
   task :release, [:args] do |_task, arguments|
-    args = Array(arguments[:args]) || ['--stamp']
+    args = Array(arguments[:args] || ['--stamp'])
     Rake::Task['java:package'].invoke(args)
     Rake::Task['publish-maven'].invoke
   end
@@ -1066,7 +1067,7 @@ namespace :all do
     tag = @git.add_tag("selenium-#{java_version}")
     @git.push('origin', tag.name)
 
-    args = Array(arguments[:args]) || ['--stamp']
+    args = Array(arguments[:args] || ['--stamp'])
     Rake::Task['java:release'].invoke(args)
     Rake::Task['py:release'].invoke(args)
     Rake::Task['rb:release'].invoke(args)
