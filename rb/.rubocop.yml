@@ -33,6 +33,7 @@ Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
     - 'selenium-*.gemspec'
+    - '../Rakefile*'
 
 Metrics/ClassLength:
   CountComments: false

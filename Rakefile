@@ -11,8 +11,6 @@ require 'open-uri'
 require 'git'
 require 'find'
 
-include Rake::DSL
-
 Rake.application.instance_variable_set(:@name, 'go')
 orig_verbose = verbose
 verbose(false)
@@ -271,16 +269,13 @@ ie_generator.generate_type_mapping(
 
 desc 'Generate Javadocs'
 task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
-  rm_rf 'build/docs/api/java'
-  mkdir_p 'build/docs/api/java'
-
+  FileUtils.rm_rf('build/docs/api/java')
+  FileUtils.mkdir_p('build/docs/api/java')
   out = 'bazel-bin/java/src/org/openqa/selenium/grid/all-javadocs.jar'
 
   cmd = %(cd build/docs/api/java && jar xf "../../../../#{out}" 2>&1)
   cmd = cmd.tr('/', '\\').tr(':', ';') if SeleniumRake::Checks.windows?
-
-  ok = system(cmd)
-  ok or raise 'could not unpack javadocs'
+  raise 'could not unpack javadocs' unless system(cmd)
 
   File.open('build/docs/api/java/stylesheet.css', 'a') do |file|
     file.write(<<~STYLE
@@ -341,28 +336,28 @@ end
 
 task 'release-java': %i[java-release-zip publish-maven]
 
+# TODO: just set the environment variables that maven is asking for
 def read_m2_user_pass
-  # First check env vars, then the settings.xml config inside .m2
-  user = nil
-  pass = nil
-  if ENV['SEL_M2_USER'] && ENV['SEL_M2_PASS']
+  user = ENV.fetch('SEL_M2_USER', nil)
+  pass = ENV.fetch('SEL_M2_PASS', nil)
+  if user && pass
     puts 'Fetching m2 user and pass from environment variables.'
-    user = ENV['SEL_M2_USER']
-    pass = ENV['SEL_M2_PASS']
     return [user, pass]
   end
+
+  puts 'Fetching m2 user and pass from /.m2/settings.xml.'
   settings = File.read("#{Dir.home}/.m2/settings.xml")
   found_section = false
   settings.each_line do |line|
     if !found_section
       found_section = line.include? '<id>sonatype-nexus-staging</id>'
-    elsif user.nil? && line.include?('<username>')
-      user = line.split('<username>')[1].split('</')[0]
-    elsif pass.nil? && line.include?('<password>')
-      pass = line.split('<password>')[1].split('</')[0]
+    elsif line.include?('<username>')
+      user = line[%r{<username>(.*?)</username>}, 1]
+    elsif line.include?('<password>')
+      pass = line[%r{<password>(.*?)</password>}, 1]
     end
+    break if user && pass
   end
-
   [user, pass]
 end
 
@@ -822,7 +817,9 @@ namespace :dotnet do
       api_key = ENV.fetch('GITHUB_TOKEN', nil)
       github_push_url = 'https://nuget.pkg.github.com/seleniumhq/index.json'
       push_destination = 'github'
-      sh "dotnet nuget add source --username seleniumhq --password #{api_key} --store-password-in-clear-text --name #{push_destination} #{github_push_url}"
+      flags = ['--username', 'seleniumhq', '--password', api_key, '--store-password-in-clear-text', '--name',
+               push_destination, github_push_url]
+      sh "dotnet nuget add source #{flags.join(' ')}"
     end
 
     ["./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
@@ -1049,7 +1046,7 @@ end
 namespace :all do
   desc 'Update all API Documentation'
   task :docs do
-    FileUtils.rm_rf('build/docs/api') if Dir.exist?('build/docs/api')
+    FileUtils.rm_rf('build/docs/api')
 
     Rake::Task['java:docs'].invoke(true)
     Rake::Task['py:docs'].invoke(true)
@@ -1222,12 +1219,14 @@ def updated_version(current, desired = nil, nightly = nil)
   end
 end
 
+# TODO: make this less insane
+# rubocop:disable all
 def update_gh_pages
   origin_reference = @git.current_branch
   origin_reference ||= begin
     # This allows updating docs from a tagged commit instead of a branch
     puts 'commit is not at HEAD, checking for matching tag'
-    tag = @git.tags.detect { |tag| tag.sha == @git.revparse('HEAD') }
+    tag = @git.tags.detect { |t| t.sha == @git.revparse('HEAD') }
     tag ? tag.name : raise(StandardError, 'Must be on a tagged commit or at the HEAD of a branch to update API Docs')
   end
 
@@ -1283,6 +1282,7 @@ def update_gh_pages
   @git.checkout(origin_reference)
   true
 end
+# rubocop:disable all
 
 def restore_git(origin_reference)
   puts 'Stashing docs changes for gh-pages'
