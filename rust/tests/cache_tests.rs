@@ -15,8 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::get_driver_path;
-use assert_cmd::Command;
+use crate::common::{get_driver_path, get_selenium_manager};
+
 use rstest::rstest;
 use std::fs;
 use std::path::Path;
@@ -28,7 +28,7 @@ mod common;
 #[case("../áèîö")]
 #[case("../テスト")]
 fn cache_path_test(#[case] tmp_cache_folder_name: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args([
         "--browser",
         "chrome",

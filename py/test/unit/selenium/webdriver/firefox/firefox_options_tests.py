@@ -79,7 +79,7 @@ def test_set_proxy_isnt_in_moz_prefix(options):
 
     caps = options.to_capabilities()
     assert caps["proxy"]["proxyType"] == "manual"
-    assert caps.get("moz:firefoxOptions") is None
+    assert caps.get("moz:firefoxOptions") == {"prefs": {"remote.active-protocols": 3}}
 
 
 def test_raises_exception_if_proxy_is_not_proxy_object(options):

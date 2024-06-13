@@ -21,9 +21,9 @@ const assert = require('node:assert')
 const fs = require('node:fs')
 const path = require('node:path')
 
-const io = require('../../io')
-const zip = require('../../io/zip')
-const { InvalidArgumentError } = require('../../lib/error')
+const io = require('selenium-webdriver/io')
+const zip = require('selenium-webdriver/io/zip')
+const { InvalidArgumentError } = require('selenium-webdriver/lib/error')
 const { locate } = require('../../lib/test/resources')
 
 const XPI_PATH = locate('common/extensions/webextensions-selenium-example.xpi')
