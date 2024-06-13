@@ -78,6 +78,8 @@ Metrics/PerceivedComplexity:
 Naming/FileName:
   Exclude:
     - 'lib/selenium-webdriver.rb'
+    - 'Rakefile'
+    - '../Rakefile'
 
 Naming/MethodParameterName:
   AllowedNames:

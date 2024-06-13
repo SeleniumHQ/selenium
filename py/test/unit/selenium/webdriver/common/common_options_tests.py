@@ -94,4 +94,4 @@ def test_set_socket_url():
     options = ArgOptions()
     options.web_socket_url = "socket_url"
     assert options.enable_bidi is True
-    assert options.web_socket_url is "socket_url"
+    assert options.web_socket_url == "socket_url"
