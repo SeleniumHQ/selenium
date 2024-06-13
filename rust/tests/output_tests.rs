@@ -15,24 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use assert_cmd::Command;
+use crate::common::{get_selenium_manager, get_stderr, get_stdout};
+
 use selenium_manager::logger::{JsonOutput, MinimalJson, DRIVER_PATH};
 use std::path::Path;
-use std::str;
+
+mod common;
 
 #[test]
 fn json_output_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args(["--browser", "chrome", "--output", "json"])
         .assert()
         .success()
         .code(0);
 
-    let stdout = &cmd.unwrap().stdout;
-    let output = str::from_utf8(stdout).unwrap();
-    println!("{}", output);
+    let stdout = get_stdout(&mut cmd);
 
-    let json: JsonOutput = serde_json::from_str(output).unwrap();
+    let json: JsonOutput = serde_json::from_str(&stdout).unwrap();
     assert!(!json.logs.is_empty());
 
     let output_code = json.result.code;
@@ -44,36 +44,29 @@ fn json_output_test() {
 
 #[test]
 fn shell_output_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args(["--browser", "chrome", "--output", "shell"])
         .assert()
         .success()
         .code(0);
 
-    let stdout = &cmd.unwrap().stdout;
-    let output = str::from_utf8(stdout).unwrap();
-    println!("{}", output);
-    assert!(output.contains(DRIVER_PATH));
+    let stdout = get_stdout(&mut cmd);
+    assert!(stdout.contains(DRIVER_PATH));
 }
 
 #[test]
 fn mixed_output_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args(["--browser", "chrome", "--output", "mixed"])
         .assert()
         .success()
         .code(0);
 
-    let stdout = &cmd.unwrap().stdout;
-    let output = str::from_utf8(stdout).unwrap();
-    println!("stdout: {}", output);
-
-    let json: MinimalJson = serde_json::from_str(output).unwrap();
+    let stdout = get_stdout(&mut cmd);
+    let json: MinimalJson = serde_json::from_str(&stdout).unwrap();
     let driver = Path::new(&json.driver_path);
     assert!(driver.exists());
 
-    let stderr = &cmd.unwrap().stderr;
-    let err_output = str::from_utf8(stderr).unwrap();
-    println!("stderr: {}", err_output);
-    assert!(!err_output.is_empty());
+    let stderr = get_stderr(&mut cmd);
+    assert!(!stderr.is_empty());
 }
