@@ -484,7 +484,8 @@ namespace :node do
   end
 
   task :'dry-run' do
-    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.publish  -- --dry-run=true')
+    Bazel.execute('run', ['--stamp'],
+                  '//javascript/node/selenium-webdriver:selenium-webdriver.publish  -- --dry-run=true')
   end
 
   desc 'Release Node npm package'
@@ -510,28 +511,29 @@ namespace :node do
     end
 
     unless arguments[:skip_update]
-      puts "Updating JavaScript documentation"
-      puts update_gh_pages ? "JavaScript Docs updated!" : "JavaScript Doc update cancelled"
+      puts 'Updating JavaScript documentation'
+      puts update_gh_pages ? 'JavaScript Docs updated!' : 'JavaScript Doc update cancelled'
     end
   end
 
   desc 'Update JavaScript changelog'
   task :changelog do
     header = "## #{node_version}"
-    update_changelog(node_version, 'javascript', 'javascript/node/selenium-webdriver/', 'javascript/node/selenium-webdriver/CHANGES.md', header)
+    update_changelog(node_version, 'javascript', 'javascript/node/selenium-webdriver/',
+                     'javascript/node/selenium-webdriver/CHANGES.md', header)
   end
 
   desc 'Update Node version'
   task :version, [:version] do |_task, arguments|
     old_version = node_version
-    nightly = "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+    nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
     new_version = updated_version(old_version, arguments[:version], nightly)
 
     ['javascript/node/selenium-webdriver/package.json',
      'package-lock.json',
      'javascript/node/selenium-webdriver/BUILD.bazel'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
-      File.open(file, "w") { |f| f.puts text }
+      File.open(file, 'w') { |f| f.puts text }
     end
 
     Rake::Task['node:changelog'].invoke unless new_version.include?(nightly)
@@ -580,13 +582,13 @@ namespace :py do
     dirs.each { |dir| FileUtils.rm_rf("#{lib_path}/common/#{dir}") }
 
     Find.find(bazel_bin_path) do |path|
-      if File.directory?(path) && dirs.any? {|dir| path.include?("common/#{dir}")}
+      if File.directory?(path) && dirs.any? { |dir| path.include?("common/#{dir}") }
         Find.prune
         next
       end
       next if File.directory?(path)
 
-      target_file = File.join(lib_path, path.sub(/^#{bazel_bin_path}\//, ''))
+      target_file = File.join(lib_path, path.sub(%r{^#{bazel_bin_path}/}, ''))
       if File.exist?(target_file)
         puts "Removing target file: #{target_file}"
         FileUtils.rm(target_file)
@@ -606,8 +608,8 @@ namespace :py do
     end
 
     unless arguments[:skip_update]
-      puts "Updating Python documentation"
-      puts update_gh_pages ? "Python Docs updated!" : "Python Doc update cancelled"
+      puts 'Updating Python documentation'
+      puts update_gh_pages ? 'Python Docs updated!' : 'Python Doc update cancelled'
     end
   end
 
@@ -631,7 +633,7 @@ namespace :py do
   desc 'Update Python version'
   task :version, [:version] do |_task, arguments|
     old_version = python_version
-    nightly = ".dev#{Time.now.strftime("%Y%m%d%H%M")}"
+    nightly = ".dev#{Time.now.strftime('%Y%m%d%H%M')}"
     new_version = updated_version(old_version, arguments[:version], nightly)
 
     ['py/setup.py',
@@ -639,15 +641,15 @@ namespace :py do
      'py/selenium/__init__.py',
      'py/selenium/webdriver/__init__.py',
      'py/docs/source/conf.py'].each do |file|
-        text = File.read(file).gsub(old_version, new_version)
-        File.open(file, "w") { |f| f.puts text }
+      text = File.read(file).gsub(old_version, new_version)
+      File.open(file, 'w') { |f| f.puts text }
     end
 
     old_short_version = old_version.split('.')[0..1].join('.')
     new_short_version = new_version.split('.')[0..1].join('.')
 
     text = File.read('py/docs/source/conf.py').gsub(old_short_version, new_short_version)
-    File.open('py/docs/source/conf.py', "w") { |f| f.puts text }
+    File.open('py/docs/source/conf.py', 'w') { |f| f.puts text }
 
     Rake::Task['py:changelog'].invoke unless new_version.include?(nightly)
   end
@@ -668,15 +670,15 @@ namespace :py do
       desc "Python #{browser} tests"
       task browser do
         Rake::Task['py:clean'].invoke
-        Bazel.execute('test', [],"//py:common-#{browser}")
-        Bazel.execute('test', [],"//py:test-#{browser}")
+        Bazel.execute('test', [], "//py:common-#{browser}")
+        Bazel.execute('test', [], "//py:test-#{browser}")
       end
     end
 
-    desc "Python Remote tests with Firefox"
+    desc 'Python Remote tests with Firefox'
     task :remote do
       Rake::Task['py:clean'].invoke
-      Bazel.execute('test', [],"//py:test-remote")
+      Bazel.execute('test', [], '//py:test-remote')
     end
   end
 
@@ -691,8 +693,8 @@ namespace :py do
       desc "Python #{browser} tests"
       task browser do
         Rake::Task['py:clean'].invoke
-        Bazel.execute('test', %w[--test_output all],"//py:common-#{browser}")
-        Bazel.execute('test', %w[--test_output all],"//py:test-#{browser}")
+        Bazel.execute('test', %w[--test_output all], "//py:common-#{browser}")
+        Bazel.execute('test', %w[--test_output all], "//py:test-#{browser}")
       end
     end
   end
@@ -710,11 +712,11 @@ namespace :rb do
     webdriver = args.delete('webdriver')
     devtools = args.delete('devtools')
     if args.include?('--config=remote') || args.include?('--config=release')
-      File.open('rb/.ruby-version', 'w') { | file | file.write('jruby-9.4.7.0') }
+      File.write('rb/.ruby-version', 'jruby-9.4.7.0')
     end
 
-    Bazel.execute('build', args, '//rb:selenium-webdriver') if (webdriver || !devtools)
-    Bazel.execute('build', args, '//rb:selenium-devtools') if (devtools || !webdriver)
+    Bazel.execute('build', args, '//rb:selenium-webdriver') if webdriver || !devtools
+    Bazel.execute('build', args, '//rb:selenium-devtools') if devtools || !webdriver
   end
 
   desc 'Update generated Ruby files for local development'
@@ -728,7 +730,7 @@ namespace :rb do
   task :release do |_task, arguments|
     args = arguments.to_a.compact
     if args.include?('--config=remote') || args.include?('--config=release')
-      File.open('rb/.ruby-version', 'w') { | file | file.write('jruby-9.4.7.0') }
+      File.write('rb/.ruby-version', 'jruby-9.4.7.0')
     end
 
     nightly = args.delete('nightly')
@@ -747,14 +749,14 @@ namespace :rb do
     FileUtils.cp_r('bazel-bin/rb/docs.sh.runfiles/_main/docs/api/rb/.', 'build/docs/api/rb')
 
     unless arguments[:skip_update]
-      puts "Updating Ruby documentation"
-      puts update_gh_pages ? "Ruby Docs updated!" : "Ruby Doc update cancelled"
+      puts 'Updating Ruby documentation'
+      puts update_gh_pages ? 'Ruby Docs updated!' : 'Ruby Doc update cancelled'
     end
   end
 
   desc 'Update Ruby changelog'
   task :changelog do
-    header = "#{ruby_version} (#{Time.now.strftime("%Y-%m-%d")})\n========================="
+    header = "#{ruby_version} (#{Time.now.strftime('%Y-%m-%d')})\n========================="
     update_changelog(ruby_version, 'rb', 'rb/lib/', 'rb/CHANGES', header)
   end
 
@@ -765,7 +767,7 @@ namespace :rb do
 
     file = 'rb/lib/selenium/webdriver/version.rb'
     text = File.read(file).gsub(old_version, new_version)
-    File.open(file, "w") { |f| f.puts text }
+    File.open(file, 'w') { |f| f.puts text }
 
     Rake::Task['rb:changelog'].invoke unless new_version.include?('.nightly')
     sh 'cd rb && bundle --version && bundle update'
@@ -798,9 +800,9 @@ namespace :dotnet do
     FileUtils.rm_f(Dir.glob('build/dist/*dotnet*'))
 
     FileUtils.copy('bazel-bin/dotnet/release.zip', "build/dist/selenium-dotnet-#{dotnet_version}.zip")
-    FileUtils.chmod(0666, "build/dist/selenium-dotnet-#{dotnet_version}.zip")
+    FileUtils.chmod(0o666, "build/dist/selenium-dotnet-#{dotnet_version}.zip")
     FileUtils.copy('bazel-bin/dotnet/strongnamed.zip', "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
-    FileUtils.chmod(0666, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
+    FileUtils.chmod(0o666, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
   end
 
   desc 'Upload nupkg files to Nuget'
@@ -857,8 +859,8 @@ namespace :dotnet do
     end
 
     unless arguments[:skip_update]
-      puts "Updating .NET documentation"
-      puts update_gh_pages ? ".NET Docs updated!" : ".NET Doc update cancelled"
+      puts 'Updating .NET documentation'
+      puts update_gh_pages ? '.NET Docs updated!' : '.NET Doc update cancelled'
     end
   end
 
@@ -871,12 +873,12 @@ namespace :dotnet do
   desc 'Update .NET version'
   task :version, [:version] do |_task, arguments|
     old_version = dotnet_version
-    nightly = "-nightly#{Time.now.strftime("%Y%m%d%H%M")}"
+    nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
     new_version = updated_version(old_version, arguments[:version], nightly)
 
     file = 'dotnet/selenium-dotnet-version.bzl'
     text = File.read(file).gsub(old_version, new_version)
-    File.open(file, "w") { |f| f.puts text }
+    File.open(file, 'w') { |f| f.puts text }
 
     Rake::Task['dotnet:changelog'].invoke unless new_version.include?(nightly)
   end
@@ -907,13 +909,13 @@ namespace :java do
 
     FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip',
                    "build/dist/selenium-server-#{java_version}.zip")
-    FileUtils.chmod(0666, "build/dist/selenium-server-#{java_version}.zip")
+    FileUtils.chmod(0o666, "build/dist/selenium-server-#{java_version}.zip")
     FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/client-zip.zip',
                    "build/dist/selenium-java-#{java_version}.zip")
-    FileUtils.chmod(0666, "build/dist/selenium-java-#{java_version}.zip")
+    FileUtils.chmod(0o666, "build/dist/selenium-java-#{java_version}.zip")
     FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/selenium',
                    "build/dist/selenium-server-#{java_version}.jar")
-    FileUtils.chmod(0777, "build/dist/selenium-server-#{java_version}.jar")
+    FileUtils.chmod(0o777, "build/dist/selenium-server-#{java_version}.jar")
   end
 
   desc 'Deploy all jars to Maven'
@@ -931,8 +933,8 @@ namespace :java do
     Rake::Task['javadocs'].invoke
 
     unless arguments[:skip_update]
-      puts "Updating Java documentation"
-      puts update_gh_pages ? "Java Docs updated!" : "Java Doc update cancelled"
+      puts 'Updating Java documentation'
+      puts update_gh_pages ? 'Java Docs updated!' : 'Java Doc update cancelled'
     end
   end
 
@@ -954,7 +956,7 @@ namespace :java do
     versions = output.scan(/(\S+) \[\S+ -> (\S+)\]/).to_h
     versions.each do |artifact, version|
       if artifact.match?('graphql')
-        puts "WARNING — Cannot automatically update graphql"
+        puts 'WARNING — Cannot automatically update graphql'
         next
       end
 
@@ -980,7 +982,7 @@ namespace :java do
 
     file = 'java/version.bzl'
     text = File.read(file).gsub(old_version, new_version)
-    File.open(file, "w") { |f| f.puts text }
+    File.open(file, 'w') { |f| f.puts text }
     Rake::Task['java:changelog'].invoke unless new_version.include?('-SNAPSHOT')
   end
 end
@@ -1020,11 +1022,11 @@ namespace :rust do
                            old_version.split('.').tap(&:shift).append('0').join('.')
                          end
     updated = updated_version(equivalent_version, arguments[:version], '-nightly')
-    new_version = updated.split(/\.|-/).tap {|v| v.delete_at(2)}.unshift("0").join('.').gsub('.nightly', '-nightly')
+    new_version = updated.split(/\.|-/).tap { |v| v.delete_at(2) }.unshift('0').join('.').gsub('.nightly', '-nightly')
 
     ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
-      File.open(file, "w") { |f| f.puts text }
+      File.open(file, 'w') { |f| f.puts text }
     end
 
     Rake::Task['rust:changelog'].invoke unless new_version.include?('-nightly')
@@ -1038,7 +1040,7 @@ namespace :rust do
     task :commit do
       @git.reset
       commit!("update Rust version to #{rust_version}",
-             ['rust/BUILD.bazel', 'rust/Cargo.Bazel.lock', 'rust/Cargo.lock', 'rust/Cargo.toml'])
+              ['rust/BUILD.bazel', 'rust/Cargo.Bazel.lock', 'rust/Cargo.lock', 'rust/Cargo.toml'])
       commit!('Rust Changelog', ['rust/CHANGELOG.md'])
     end
   end
@@ -1055,8 +1057,8 @@ namespace :all do
     Rake::Task['dotnet:docs'].invoke(true)
     Rake::Task['node:docs'].invoke(true)
 
-    puts "Updating All API Docs"
-    puts update_gh_pages ? "AP Docs updated!" : "API Doc update cancelled"
+    puts 'Updating All API Docs'
+    puts update_gh_pages ? 'AP Docs updated!' : 'API Doc update cancelled'
   end
 
   desc 'Build all artifacts for all language bindings'
@@ -1085,23 +1087,23 @@ namespace :all do
     Rake::Task['all:docs'].invoke
     Rake::Task['all:version'].invoke('nightly')
 
-    puts "Committing nightly version updates"
+    puts 'Committing nightly version updates'
     commit!('update versions to nightly', ['java/version.bzl',
-                                                'rb/lib/selenium/webdriver/version.rb',
-                                                'rb/Gemfile.lock',
-                                                'py/setup.py',
-                                                'py/BUILD.bazel',
-                                                'py/selenium/__init__.py',
-                                                'py/selenium/webdriver/__init__.py',
-                                                'py/docs/source/conf.py',
-                                                'rust/BUILD.bazel',
-                                                'rust/Cargo.Bazel.lock',
-                                                'rust/Cargo.lock',
-                                                'rust/Cargo.toml'])
+                                           'rb/lib/selenium/webdriver/version.rb',
+                                           'rb/Gemfile.lock',
+                                           'py/setup.py',
+                                           'py/BUILD.bazel',
+                                           'py/selenium/__init__.py',
+                                           'py/selenium/webdriver/__init__.py',
+                                           'py/docs/source/conf.py',
+                                           'rust/BUILD.bazel',
+                                           'rust/Cargo.Bazel.lock',
+                                           'rust/Cargo.lock',
+                                           'rust/Cargo.toml'])
 
     print 'Do you want to push the committed changes? (Y/n): '
-    response = STDIN.gets.chomp.downcase
-    @git.push if response == 'y' || response == 'yes'
+    response = $stdin.gets.chomp.downcase
+    @git.push if %w[y yes].include?(response)
   end
 
   desc 'Update everything in preparation for a release'
@@ -1113,18 +1115,18 @@ namespace :all do
 
     Bazel.execute('run', args, '//scripts:update_cdp')
     commit!('Update supported versions for Chrome DevTools',
-           ['common/devtools/',
-            'dotnet/src/webdriver/DevTools/',
-            'dotnet/src/webdriver/WebDriver.csproj',
-            'dotnet/test/common/DevTools/',
-            'dotnet/test/common/CustomDriverConfigs/',
-            'dotnet/selenium-dotnet-version.bzl',
-            'java/src/org/openqa/selenium/devtools/',
-            'javascript/node/selenium-webdriver/BUILD.bazel',
-            'py/BUILD.bazel',
-            'rb/lib/selenium/devtools/',
-            'rb/Gemfile.lock',
-            'Rakefile'])
+            ['common/devtools/',
+             'dotnet/src/webdriver/DevTools/',
+             'dotnet/src/webdriver/WebDriver.csproj',
+             'dotnet/test/common/DevTools/',
+             'dotnet/test/common/CustomDriverConfigs/',
+             'dotnet/selenium-dotnet-version.bzl',
+             'java/src/org/openqa/selenium/devtools/',
+             'javascript/node/selenium-webdriver/BUILD.bazel',
+             'py/BUILD.bazel',
+             'rb/lib/selenium/devtools/',
+             'rb/Gemfile.lock',
+             'Rakefile'])
 
     Bazel.execute('run', args, '//scripts:selenium_manager')
     commit!('Update selenium manager version', ['common/selenium_manager.bzl'])
@@ -1176,8 +1178,8 @@ end
 desc 'Create Release Notes for Minor Release'
 task :create_release_notes do
   range = "#{previous_tag(java_version)}...HEAD"
-  format = "* [\\`%h\\`](http://github.com/seleniumhq/selenium/commit/%H) - %s :: %aN"
-  git_log_command = %Q(git --no-pager log "#{range}" --pretty=format:"#{format}" --reverse)
+  format = '* [\\`%h\\`](http://github.com/seleniumhq/selenium/commit/%H) - %s :: %aN'
+  git_log_command = %(git --no-pager log "#{range}" --pretty=format:"#{format}" --reverse)
   git_log_output = `#{git_log_command}`
 
   release_notes = <<~RELEASE_NOTES
@@ -1209,7 +1211,7 @@ end
 def updated_version(current, desired = nil, nightly = nil)
   if !desired.nil? && desired != 'nightly'
     # If desired is present, return full 3 digit version
-    desired.split('.').tap {|v| v << 0 while v.size < 3}.join('.')
+    desired.split('.').tap { |v| v << 0 while v.size < 3 }.join('.')
   elsif current.split(/\.|-/).size > 3
     # if current version is already nightly, just need to bump it; this will be noop for some languages
     pattern = /-?\.?(nightly|SNAPSHOT|dev)\d*$/
@@ -1224,57 +1226,57 @@ def update_gh_pages
   origin_reference = @git.current_branch
   origin_reference ||= begin
     # This allows updating docs from a tagged commit instead of a branch
-    puts "commit is not at HEAD, checking for matching tag"
-    tag = @git.tags.detect {|tag| tag.sha == @git.revparse("HEAD") }
-    tag ? tag.name : raise(StandardError, "Must be on a tagged commit or at the HEAD of a branch to update API Docs")
+    puts 'commit is not at HEAD, checking for matching tag'
+    tag = @git.tags.detect { |tag| tag.sha == @git.revparse('HEAD') }
+    tag ? tag.name : raise(StandardError, 'Must be on a tagged commit or at the HEAD of a branch to update API Docs')
   end
 
-  puts "Checking out gh-pages"
+  puts 'Checking out gh-pages'
   begin
     @git.checkout('gh-pages')
-  rescue Git::FailedError => ex
+  rescue Git::FailedError => e
     # This happens when the working directory is not clean and things need to be stashed or committed
-    line = ex.message.lines[2].gsub("output: \"error: ", '')
+    line = e.message.lines[2].gsub('output: "error: ', '')
     puts line.gsub('\t', "\t").split('\n')[0...-2].join("\n")
     # TODO: we could offer to automatically fix with a stash, but there may be edge cases
-    print "Manually Fix and Retry? (Y/n):"
-    response = STDIN.gets.chomp.downcase
-    return false unless response == 'y' || response == 'yes'
+    print 'Manually Fix and Retry? (Y/n):'
+    response = $stdin.gets.chomp.downcase
+    return false unless %w[y yes].include?(response)
 
     retry
   end
 
-  puts "Updating gh-pages branch from upstream repository"
+  puts 'Updating gh-pages branch from upstream repository'
   begin
     @git.pull
-  rescue Git::FailedError => ex
+  rescue Git::FailedError => e
     # This happens when upstream is not already set
-    line = ex.message.lines[2].gsub("output: \"error: ", '')
+    line = e.message.lines[2].gsub('output: "error: ', '')
     puts line.gsub('\t', "\t").split('\n').delete_if(&:empty?)[-2...-1].join("\n")
-    print "Manually Fix and Retry? (Y/n):"
-    response = STDIN.gets.chomp.downcase
-    return restore_git(origin_reference) unless response == 'y' || response == 'yes'
+    print 'Manually Fix and Retry? (Y/n):'
+    response = $stdin.gets.chomp.downcase
+    return restore_git(origin_reference) unless %w[y yes].include?(response)
 
     retry
   end
 
   %w[java rb py dotnet javascript].each do |language|
-    if Dir.exist?("build/docs/api/#{language}") && !Dir.empty?("build/docs/api/#{language}")
-      puts "Deleting #{language} directory in docs/api since corresponding directory in build/docs/api is not empty"
-      FileUtils.rm_rf("docs/api/#{language}")
-      puts "Moving documentation files from untracked build directory to tracked docs directory"
-      FileUtils.mv("build/docs/api/#{language}", "docs/api/#{language}")
-    end
+    next unless Dir.exist?("build/docs/api/#{language}") && !Dir.empty?("build/docs/api/#{language}")
+
+    puts "Deleting #{language} directory in docs/api since corresponding directory in build/docs/api is not empty"
+    FileUtils.rm_rf("docs/api/#{language}")
+    puts 'Moving documentation files from untracked build directory to tracked docs directory'
+    FileUtils.mv("build/docs/api/#{language}", "docs/api/#{language}")
   end
 
   print 'Do you want to commit the changes? (Y/n): '
-  response = STDIN.gets.chomp.downcase
-  return restore_git(origin_reference) unless response == 'y' || response == 'yes'
+  response = $stdin.gets.chomp.downcase
+  return restore_git(origin_reference) unless %w[y yes].include?(response)
 
-  puts "Committing changes"
+  puts 'Committing changes'
   commit!('updating all API docs', ['docs/api/'])
 
-  puts "Pushing changes to upstream repository"
+  puts 'Pushing changes to upstream repository'
   @git.push
 
   puts "Checking out originating branch/tag — #{origin_reference}"
@@ -1283,36 +1285,36 @@ def update_gh_pages
 end
 
 def restore_git(origin_reference)
-  puts "Stashing docs changes for gh-pages"
-  Git::Stash.new(@git, "docs changes for gh-pages")
+  puts 'Stashing docs changes for gh-pages'
+  Git::Stash.new(@git, 'docs changes for gh-pages')
   puts "Checking out originating branch/tag — #{origin_reference}"
   @git.checkout(origin_reference)
   false
 end
 
-def previous_tag(current_version, language=nil)
+def previous_tag(current_version, language = nil)
   version = current_version.split(/\.|-/)
   if version.size > 3
-    puts "WARNING - Changelogs not updated when set to prerelease"
+    puts 'WARNING - Changelogs not updated when set to prerelease'
   elsif version[2].to_i > 1
     # specified as patch release
     patch_version = (version[2].to_i - 1).to_s
     "selenium-#{[[version[0]], version[1], patch_version].join('.')}-#{language}"
-  elsif version[2] == "1"
+  elsif version[2] == '1'
     # specified as patch release; special case
-    "selenium-#{[[version[0]], version[1], "0"].join('.')}"
+    "selenium-#{[[version[0]], version[1], '0'].join('.')}"
   else
     minor_version = (version[1].to_i - 1)
     tags = @git.tags.map(&:name)
-    tag = language ? tags.select { |tag| tag.match?(/selenium-4\.#{minor_version}.*-#{language}/) }.last : nil
-    tag || "selenium-#{[[version[0]], minor_version, "0"].join('.')}"
+    tag = language ? tags.reverse.find { |tag| tag.match?(/selenium-4\.#{minor_version}.*-#{language}/) } : nil
+    tag || "selenium-#{[[version[0]], minor_version, '0'].join('.')}"
   end
 end
 
 def update_changelog(version, language, path, changelog, header)
   tag = previous_tag(version, language)
   log = `git --no-pager log #{tag}...HEAD --pretty=format:">>> %B" --reverse #{path}`
-  commits = log.split(">>>").map { |entry|
+  commits = log.split('>>>').map { |entry|
     lines = entry.split("\n")
     lines.reject! { |line| line.match?(/^(----|Co-authored|Signed-off)/) || line.empty? }
     lines.join("\n")
@@ -1332,6 +1334,6 @@ def commit!(message, files = [], all: false)
     @git.add(file)
   end
   all ? @git.commit_all(message) : @git.commit(message)
-rescue Git::FailedError => ex
-  puts ex.message
+rescue Git::FailedError => e
+  puts e.message
 end
