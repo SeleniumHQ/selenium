@@ -120,24 +120,12 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    *       "allow-outdated-plugins");
    * </code></pre>
    *
-   * <p>Each argument may contain an option "--" prefix: "--foo" or "foo". Arguments with an
+   * <p>Each argument may contain an optional "--" prefix: "--foo" or "foo". Arguments with an
    * associated value should be delimited with an "=": "foo=bar".
    *
    * @param arguments The arguments to use when starting Chrome.
    */
   public T addArguments(List<String> arguments) {
-    /*
-     --remote-allow-origins is being added by default since Chrome 111. We need to check
-     if the argument already exists and then remove it.
-    */
-    String remoteAllowOrigins = "remote-allow-origins";
-    Optional<String> newArg =
-        arguments.stream().filter(arg -> arg.contains(remoteAllowOrigins)).findFirst();
-    Optional<String> existingArg =
-        args.stream().filter(arg -> arg.contains(remoteAllowOrigins)).findFirst();
-    if (newArg.isPresent() && existingArg.isPresent()) {
-      args.remove(existingArg.get());
-    }
     args.addAll(arguments);
     return (T) this;
   }
