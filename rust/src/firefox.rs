@@ -163,23 +163,23 @@ impl SeleniumManager for FirefoxManager {
             ),
             (
                 BrowserPath::new(MACOS, STABLE),
-                r#"/Applications/Firefox.app/Contents/MacOS/firefox"#,
+                "/Applications/Firefox.app/Contents/MacOS/firefox",
             ),
             (
                 BrowserPath::new(MACOS, BETA),
-                r#"/Applications/Firefox.app/Contents/MacOS/firefox"#,
+                "/Applications/Firefox.app/Contents/MacOS/firefox",
             ),
             (
                 BrowserPath::new(MACOS, DEV),
-                r#"/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox"#,
+                "/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox",
             ),
             (
                 BrowserPath::new(MACOS, NIGHTLY),
-                r#"/Applications/Firefox Nightly.app/Contents/MacOS/firefox"#,
+                "/Applications/Firefox Nightly.app/Contents/MacOS/firefox",
             ),
             (
                 BrowserPath::new(MACOS, ESR),
-                r#"/Applications/Firefox.app/Contents/MacOS/firefox"#,
+                "/Applications/Firefox.app/Contents/MacOS/firefox",
             ),
             (BrowserPath::new(LINUX, STABLE), "/usr/bin/firefox"),
             (BrowserPath::new(LINUX, BETA), "/usr/bin/firefox"),

@@ -165,7 +165,7 @@ pub fn uncompress_sfx(compressed_file: &str, target: &Path, log: &Logger) -> Res
 
     let zip_parent_str = path_to_string(zip_parent);
     let target_str = path_to_string(target);
-    let core_str = format!(r#"{}\core"#, zip_parent_str);
+    let core_str = format!(r"{}\core", zip_parent_str);
     log.trace(format!(
         "Moving extracted files and folders from {} to {}",
         core_str, target_str
