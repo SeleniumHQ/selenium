@@ -19,7 +19,6 @@ import http.client as http_client
 
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-
 from .options import Options
 from .service import Service
 
@@ -28,9 +27,9 @@ class WebDriver(RemoteWebDriver):
     """Controls the WPEWebKitDriver and allows you to drive the browser."""
 
     def __init__(
-        self,
-        options=None,
-        service: Service = None,
+      self,
+      options=None,
+      service: Service = None,
     ):
         """Creates a new instance of the WPEWebKit driver.
 
@@ -40,9 +39,8 @@ class WebDriver(RemoteWebDriver):
          - options : an instance of ``WPEWebKitOptions``
          - service : Service object for handling the browser driver if you need to pass extra details
         """
-        if not options:
-            options = Options()
 
+        options = options if options else Options()
         self.service = service if service else Service()
         self.service.path = DriverFinder(self.service, options).get_driver_path()
         self.service.start()
