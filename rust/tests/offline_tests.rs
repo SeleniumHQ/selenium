@@ -15,9 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::get_selenium_manager;
-
-use std::str;
+use crate::common::{get_selenium_manager, get_stdout};
 
 mod common;
 
@@ -29,8 +27,7 @@ fn offline_test() {
         .success()
         .code(0);
 
-    let stdout = &cmd.unwrap().stdout;
-    let output = str::from_utf8(stdout).unwrap();
-    println!("{output}");
-    assert!(output.contains("offline mode"));
+    let stdout = get_stdout(&mut cmd);
+
+    assert!(stdout.contains("offline mode"));
 }

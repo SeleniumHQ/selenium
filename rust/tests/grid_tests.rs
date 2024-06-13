@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_output, get_selenium_manager};
+use crate::common::{assert_output, get_selenium_manager, get_stdout};
 
 use exitcode::DATAERR;
 use rstest::rstest;
@@ -33,11 +33,8 @@ fn grid_latest_test() {
         .success()
         .code(0);
 
-    let stdout = &cmd.unwrap().stdout;
-    let output = str::from_utf8(stdout).unwrap();
-    println!("{}", output);
-
-    let json: JsonOutput = serde_json::from_str(output).unwrap();
+    let stdout = get_stdout(&mut cmd);
+    let json: JsonOutput = serde_json::from_str(&stdout).unwrap();
     assert!(!json.logs.is_empty());
 
     let output_code = json.result.code;
@@ -61,11 +58,9 @@ fn grid_version_test(#[case] grid_version: &str) {
         .success()
         .code(0);
 
-    let stdout = &cmd.unwrap().stdout;
-    let output = str::from_utf8(stdout).unwrap();
-    println!("{}", output);
+    let stdout = get_stdout(&mut cmd);
 
-    let json: JsonOutput = serde_json::from_str(output).unwrap();
+    let json: JsonOutput = serde_json::from_str(&stdout).unwrap();
     let jar = Path::new(&json.result.driver_path);
     let jar_name = jar.file_name().unwrap().to_str().unwrap();
     assert!(jar_name.contains(grid_version));

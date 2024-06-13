@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_output, get_selenium_manager};
+use crate::common::{assert_output, get_selenium_manager, get_stdout};
 
 use exitcode::DATAERR;
 use rstest::rstest;
@@ -54,15 +54,13 @@ fn browser_version_test(
     .success()
     .code(0);
 
-    let stdout = &cmd.unwrap().stdout;
-    let output = std::str::from_utf8(stdout).unwrap();
-    println!("{}", output);
+    let stdout = get_stdout(&mut cmd);
 
-    assert!(output.contains(&driver_name));
-    if !browser_version.is_empty() && output.contains("cache") {
-        assert!(output.contains(&driver_version));
+    assert!(stdout.contains(&driver_name));
+    if !browser_version.is_empty() && stdout.contains("cache") {
+        assert!(stdout.contains(&driver_version));
     }
-    assert!(!output.contains("Error sending stats"));
+    assert!(!stdout.contains("Error sending stats"));
 }
 
 #[rstest]
@@ -148,9 +146,8 @@ fn browser_path_test(#[case] os: String, #[case] browser: String, #[case] browse
             .success()
             .code(0);
 
-        let stdout = &cmd.unwrap().stdout;
-        let output = std::str::from_utf8(stdout).unwrap();
-        println!("{}", output);
-        assert!(!output.contains("WARN"));
+        let stdout = get_stdout(&mut cmd);
+
+        assert!(!stdout.contains("WARN"));
     }
 }
