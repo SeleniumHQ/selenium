@@ -74,10 +74,8 @@ pub const DEV: &str = "dev";
 pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
 pub const ESR: &str = "esr";
-pub const WMIC: &str = "wmic";
-pub const WMIC_DEFAULT_PATH: &str = r#"{}\System32\Wbem\WMIC.exe"#;
-pub const WMIC_COMMAND: &str = r#"{} datafile where name='{}' get Version /value"#;
-pub const WMIC_COMMAND_OS: &str = r#"{} os get osarchitecture"#;
+pub const WMIC_COMMAND: &str = r#"wmic datafile where name='{}' get Version /value"#;
+pub const WMIC_COMMAND_OS: &str = r#"wmic os get osarchitecture"#;
 pub const REG_VERSION_ARG: &str = "version";
 pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const REG_PV_ARG: &str = "pv";
@@ -95,7 +93,6 @@ pub const SINGLE_QUOTE: &str = "'";
 pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
 pub const ENV_PROGRAM_FILES_X86: &str = "PROGRAMFILES(X86)";
 pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
-pub const ENV_SYSTEMROOT: &str = "SYSTEMROOT";
 pub const ENV_X86: &str = " (x86)";
 pub const ARCH_X86: &str = "x86";
 pub const ARCH_AMD64: &str = "amd64";
@@ -1076,11 +1073,8 @@ pub trait SeleniumManager {
 
         if WINDOWS.is(self.get_os()) {
             if !escaped_browser_path.is_empty() {
-                let wmic_command = Command::new_single(format_two_args(
-                    WMIC_COMMAND,
-                    &get_wmic(),
-                    &escaped_browser_path,
-                ));
+                let wmic_command =
+                    Command::new_single(format_one_arg(WMIC_COMMAND, &escaped_browser_path));
                 commands.push(wmic_command);
             }
             if !self.is_browser_version_unstable() {
@@ -1553,19 +1547,6 @@ pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> St
         .replacen("{}", arg1, 1)
         .replacen("{}", arg2, 1)
         .replacen("{}", arg3, 1)
-}
-
-pub fn get_wmic() -> String {
-    let system_root = env::var(ENV_SYSTEMROOT).unwrap_or_default();
-    let wmic_default_path = format_one_arg(WMIC_DEFAULT_PATH, &system_root);
-    let wmic_path = Path::new(&wmic_default_path);
-    if !wmic_path.exists() {
-        return match which(WMIC) {
-            Ok(path) => path_to_string(&path),
-            Err(_) => WMIC.to_string(),
-        };
-    }
-    path_to_string(wmic_path)
 }
 
 // ----------------------------------------------------------
