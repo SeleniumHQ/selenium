@@ -107,7 +107,7 @@ impl SeleniumManager for GridManager {
 
     fn request_driver_version(&mut self) -> Result<String, Error> {
         let major_browser_version_binding = self.get_major_browser_version();
-        let major_browser_version = &major_browser_version_binding.as_str();
+        let major_browser_version = major_browser_version_binding.as_str();
         let cache_path = self.get_cache_path()?;
         let mut metadata = get_metadata(self.get_logger(), &cache_path);
 
