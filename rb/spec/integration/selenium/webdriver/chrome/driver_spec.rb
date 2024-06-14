@@ -134,6 +134,9 @@ module Selenium
 
           error = /network conditions must be set before it can be retrieved/
           expect { driver.network_conditions }.to raise_error(Error::UnknownError, error)
+
+          # Need to reset because https://bugs.chromium.org/p/chromedriver/issues/detail?id=4790
+          reset_driver!
         end
 
         # This requires cast sinks to run

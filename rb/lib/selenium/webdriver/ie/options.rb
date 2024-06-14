@@ -81,7 +81,7 @@ module Selenium
 
         def initialize(**opts)
           @args = (opts.delete(:args) || []).to_set
-          super(**opts)
+          super
 
           @options[:native_events] = true if @options[:native_events].nil?
         end
