@@ -4,27 +4,27 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@apollo/client": "^3.8.10",
-    "@emotion/react": "^11.11.3",
-    "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.15.6",
-    "@mui/material": "^5.15.6",
-    "@novnc/novnc": "^1.4.0",
-    "@types/jest": "^29.5.11",
-    "@types/node": "^20.11.6",
-    "@types/react": "^18.2.70",
-    "@types/react-dom": "^18.2.18",
-    "@types/react-modal": "^3.16.3",
-    "@types/react-router-dom": "^5.3.3",
-    "graphql": "^16.8.1",
-    "graphql.macro": "^1.4.2",
-    "path-browserify": "^1.0.1",
-    "pretty-ms": "^9.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-modal": "^3.16.1",
-    "react-router-dom": "^6.21.3",
-    "source-map-explorer": "^2.5.3"
+    "@apollo/client": "3.10.4",
+    "@emotion/react": "11.11.4",
+    "@emotion/styled": "11.11.5",
+    "@mui/icons-material": "5.15.18",
+    "@mui/material": "5.15.18",
+    "@novnc/novnc": "1.4.0",
+    "@types/jest": "29.5.12",
+    "@types/node": "20.12.12",
+    "@types/react": "18.2.72",
+    "@types/react-dom": "18.2.22",
+    "@types/react-modal": "3.16.3",
+    "@types/react-router-dom": "5.3.3",
+    "graphql": "16.8.1",
+    "graphql.macro": "1.4.2",
+    "path-browserify": "1.0.1",
+    "pretty-ms": "9.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-modal": "3.16.1",
+    "react-router-dom": "6.22.3",
+    "source-map-explorer": "2.5.3"
   },
   "scripts": {
     "build": "bazel build //javascript/grid-ui:bundle"
@@ -47,13 +47,13 @@
     ]
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.23.3",
-    "@testing-library/jest-dom": "^6.3.0",
-    "@testing-library/react": "^14.1.2",
-    "@testing-library/user-event": "^14.5.2",
+    "@babel/preset-react": "7.24.7",
+    "@testing-library/jest-dom": "6.4.5",
+    "@testing-library/react": "14.3.1",
+    "@testing-library/user-event": "14.5.2",
     "esbuild": "0.19.12",
-    "ts-standard": "^12.0.2",
-    "typescript": "^5.3.3"
+    "ts-standard": "12.0.2",
+    "typescript": "5.4.5"
   },
   "jest": {
     "testMatch": [

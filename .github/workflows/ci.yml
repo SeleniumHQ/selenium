@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 50
       - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.8.4
+        uses: bazel-contrib/setup-bazel@0.8.5
         with:
           bazelisk-cache: true
           cache-version: 2

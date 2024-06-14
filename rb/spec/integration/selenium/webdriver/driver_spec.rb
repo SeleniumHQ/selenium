@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Driver do
+    describe Driver, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       it_behaves_like 'driver that can be started concurrently', exclude: {browser: %i[safari safari_preview]}
 
       it 'creates default capabilities', exclude: {browser: %i[safari safari_preview]} do
@@ -147,10 +147,7 @@ module Selenium
           }.to raise_error(Error::NoSuchElementError, /errors#no-such-element-exception/)
         end
 
-        it 'raises if invalid locator',
-           except: {browser: %i[chrome edge],
-                    reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743'},
-           exclude: {browser: %i[safari safari_preview], reason: 'Safari TimeoutError'} do
+        it 'raises if invalid locator', exclude: {browser: %i[safari safari_preview], reason: 'Safari TimeoutError'} do
           driver.navigate.to url_for('xhtmlTest.html')
           expect {
             driver.find_element(xpath: '*?//-')
@@ -243,7 +240,16 @@ module Selenium
         end
       end
 
-      describe 'execute script' do
+      describe '#script' do
+        it 'executes script with deprecation warning' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect {
+            expect(driver.script('return document.title;')).to eq('XHTML Test Page')
+          }.to have_deprecated(:driver_script)
+        end
+      end
+
+      describe '#execute_script' do
         it 'returns strings' do
           driver.navigate.to url_for('xhtmlTest.html')
           expect(driver.execute_script('return document.title;')).to eq('XHTML Test Page')
