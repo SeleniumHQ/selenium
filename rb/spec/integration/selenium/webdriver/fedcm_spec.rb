@@ -7,14 +7,7 @@ module Selenium
         let(:dialog) { driver.fedcm_dialog }
 
         before do
-          quit_driver
-          options = Selenium::WebDriver::Chrome::Options.new
-          # options.accept_insecure_certs = true
-          options.add_argument('host-resolver-rules=MAP localhost:443')
-          options.add_argument('ignore-certificate-errors')
-
-          @driver = Selenium::WebDriver.for :chrome, options: options
-          @driver.navigate.to url_for('fedcm/fedcm.html')
+          driver.navigate.to url_for('fedcm/fedcm.html')
         end
 
         context 'without dialog present' do
@@ -45,11 +38,12 @@ module Selenium
 
         context 'with dialog present' do
           before do
-            @driver.execute_script('triggerFedCm()')
+            driver.execute_script('triggerFedCm();')
+            driver.wait_for_fedcm_dialog
           end
 
           it 'returns the title' do
-            expect(dialog.title).to eq('Sign in to fedcm-rp-demo.glitch.me with fedcm-idp-demo.glitch.me')
+            expect(dialog.title).to eq('Sign in to localhost with localhost')
           end
 
           it 'returns the subtitle' do
@@ -62,7 +56,7 @@ module Selenium
 
           it 'returns the accounts' do
             first_account = dialog.accounts.first
-            expect(first_account.name).to eq 'Elisa Beckett'
+            expect(first_account.name).to eq 'John Doe'
           end
 
           it 'returns an account' do
