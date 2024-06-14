@@ -35,9 +35,9 @@ jobs:
     with:
       name: Nightly Ruby Release
       cache-key: rb-nightly-${{ matrix.gem }}
-      env:
-        GEM_HOST_API_KEY: "Bearer $GITHUB_TOKEN"
-      run: ./go rb:release['nightly', '--config=release']
+      run: |
+        export GEM_HOST_API_KEY="Bearer $GITHUB_TOKEN"
+        ./go rb:release['nightly','--config=release']
   on-ruby-failure:
     name: On Ruby Failure
     runs-on: ubuntu-latest
@@ -63,7 +63,7 @@ jobs:
     with:
       name: Nightly Python Release
       cache-key: python-nightly
-      run: ./go py:release['nightly', '--config=release']
+      run: ./go py:release['nightly','--config=release']
     secrets: inherit
   on-python-failure:
     name: On Python Failure
@@ -118,7 +118,7 @@ jobs:
       name: Nightly DotNet Release
       cache-key: dotnet-nightly
       dotnet-version: '6.x'
-      run: ./go dotnet:release['nightly', '--config=release']
+      run: ./go dotnet:release['nightly','--config=release']
     secrets: inherit
   on-dotnet-failure:
     name: On .NET Failure
@@ -179,7 +179,7 @@ jobs:
         echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
         echo "@seleniumhq:registry=https://npm.pkg.github.com" >> ~/.npmrc
         echo "always-auth=true" >> ~/.npmrc
-        ./go node:release['nightly', '--config=release']
+        ./go node:release['nightly','--config=release']
     secrets: inherit
   on-javascript-failure:
     name: On JavaScript Failure

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{get_selenium_manager, get_stdout};
+use crate::common::{assert_browser, assert_driver, get_selenium_manager, get_stdout};
 
 use rstest::rstest;
 
@@ -40,12 +40,20 @@ fn config_test(#[case] browser_name: String) {
     writer.flush().unwrap();
 
     let mut cmd = get_selenium_manager();
-    cmd.args(["--debug", "--cache-path", tmp_dir.path().to_str().unwrap()])
-        .assert()
-        .success()
-        .code(0);
+    cmd.args([
+        "--output",
+        "json",
+        "--debug",
+        "--cache-path",
+        tmp_dir.path().to_str().unwrap(),
+    ])
+    .assert()
+    .success()
+    .code(0);
 
     let stdout = get_stdout(&mut cmd);
 
     assert!(!stdout.contains("WARN") && !stdout.contains("ERROR"));
+    assert_driver(&mut cmd);
+    assert_browser(&mut cmd);
 }

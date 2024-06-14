@@ -136,7 +136,7 @@ fn invalid_geckodriver_version_test() {
 #[case(
     "macos",
     "chrome",
-    r#"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"#
+    r"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 )]
 fn browser_path_test(#[case] os: String, #[case] browser: String, #[case] browser_path: String) {
     if OS.eq(&os) {
