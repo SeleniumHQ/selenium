@@ -138,7 +138,7 @@ class FirefoxProfileTest {
     profile.addExtension(InProject.locate(EXT_PATH).toFile());
     File profileDir = profile.layoutOnDisk();
     File extensionFile =
-        new File(profileDir, "extensions/webextensions-selenium-example@example.com.xpi");
+        new File(profileDir, "extensions/webextensions-selenium-example@0.1.xpi");
     assertThat(extensionFile).exists().isFile();
   }
 
@@ -149,7 +149,7 @@ class FirefoxProfileTest {
     profile.addExtension(unzippedExtension);
     File profileDir = profile.layoutOnDisk();
     File extensionDir =
-        new File(profileDir, "extensions/webextensions-selenium-example@example.com");
+        new File(profileDir, "extensions/webextensions-selenium-example@0.1");
     assertThat(extensionDir).exists();
   }
 
@@ -158,7 +158,7 @@ class FirefoxProfileTest {
     profile.addExtension(FirefoxProfileTest.class, EXT_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
     File extensionDir =
-        new File(profileDir, "extensions/webextensions-selenium-example@example.com.xpi");
+        new File(profileDir, "extensions/webextensions-selenium-example@0.1.xpi");
     assertThat(extensionDir).exists();
   }
 
