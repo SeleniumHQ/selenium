@@ -4,11 +4,17 @@ module Selenium
   module WebDriver
     module FedCM
       describe FedCM, only: {browser: :chrome} do
-        let(:url) { url_for('xhtmlTest.html') }
         let(:dialog) { driver.fedcm_dialog }
 
         before do
-          driver.get(url)
+          quit_driver
+          options = Selenium::WebDriver::Chrome::Options.new
+          # options.accept_insecure_certs = true
+          options.add_argument('host-resolver-rules=MAP localhost:443')
+          options.add_argument('ignore-certificate-errors')
+
+          @driver = Selenium::WebDriver.for :chrome, options: options
+          @driver.navigate.to url_for('fedcm/fedcm.html')
         end
 
         context 'without dialog present' do
@@ -38,12 +44,16 @@ module Selenium
         end
 
         context 'with dialog present' do
+          before do
+            @driver.execute_script('triggerFedCm()')
+          end
+
           it 'returns the title' do
-            expect(dialog.title).to eq('Test title')
+            expect(dialog.title).to eq('Sign in to fedcm-rp-demo.glitch.me with fedcm-idp-demo.glitch.me')
           end
 
           it 'returns the subtitle' do
-            expect(dialog.subtitle).to eq('Test subtitle')
+            expect(dialog.subtitle).to be_nil
           end
 
           it 'returns the type' do
@@ -52,7 +62,7 @@ module Selenium
 
           it 'returns the accounts' do
             first_account = dialog.accounts.first
-            expect(first_account.name).to eq 'Test user'
+            expect(first_account.name).to eq 'Elisa Beckett'
           end
 
           it 'returns an account' do
