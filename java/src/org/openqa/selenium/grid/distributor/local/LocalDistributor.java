@@ -714,37 +714,37 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
 
   @VisibleForTesting
   @ManagedAttribute(name = "NodeUpCount")
-  public long getUpNodeCount() {
-    return model.getSnapshot().stream()
+  public Long getUpNodeCount() {
+    return Long.valueOf(model.getSnapshot().stream()
         .filter(nodeStatus -> nodeStatus.getAvailability().equals(UP))
-        .count();
+        .count());
   }
 
   @VisibleForTesting
   @ManagedAttribute(name = "NodeDownCount")
-  public long getDownNodeCount() {
-    return model.getSnapshot().stream()
+  public Long getDownNodeCount() {
+    return Long.valueOf(model.getSnapshot().stream()
         .filter(nodeStatus -> !nodeStatus.getAvailability().equals(UP))
-        .count();
+        .count());
   }
 
   @VisibleForTesting
   @ManagedAttribute(name = "ActiveSlots")
-  public int getActiveSlots() {
-    return model.getSnapshot().stream()
+  public Integer getActiveSlots() {
+    return Integer.valueOf(model.getSnapshot().stream()
         .map(NodeStatus::getSlots)
         .flatMap(Collection::stream)
         .filter(slot -> slot.getSession() != null)
         .filter(slot -> !slot.getSession().getId().equals(RESERVED))
         .mapToInt(slot -> 1)
-        .sum();
+        .sum());
   }
 
   @VisibleForTesting
   @ManagedAttribute(name = "IdleSlots")
-  public int getIdleSlots() {
-    return (int)
-        (model.getSnapshot().stream().map(NodeStatus::getSlots).count() - getActiveSlots());
+  public Integer getIdleSlots() {
+    return 
+        Integer.valueOf(Long.valueOf((model.getSnapshot().stream().map(NodeStatus::getSlots).count() - getActiveSlots())).intValue());
   }
 
   @Override

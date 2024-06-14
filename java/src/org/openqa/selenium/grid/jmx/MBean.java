@@ -19,6 +19,8 @@ package org.openqa.selenium.grid.jmx;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -34,6 +36,7 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+import javax.management.RuntimeOperationsException;
 
 public class MBean implements DynamicMBean {
 
@@ -221,10 +224,12 @@ public class MBean implements DynamicMBean {
         return ((Map<?, ?>) res)
             .entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
+      } else if(res instanceof Number) {
+        return NumberFormat.getInstance().parse(res.toString());
       } else {
         return res.toString();
       }
-    } catch (IllegalAccessException | InvocationTargetException e) {
+    } catch (IllegalAccessException | InvocationTargetException | ParseException e) {
       LOG.severe("Error during execution: " + e.getMessage());
       return null;
     }
@@ -241,7 +246,30 @@ public class MBean implements DynamicMBean {
 
   @Override
   public AttributeList getAttributes(String[] attributes) {
-    return null;
+        // Check attributeNames to avoid NullPointerException later on
+    if (attributes == null) {
+        throw new RuntimeOperationsException(
+            new IllegalArgumentException(
+                "attributeNames[] cannot be null"),
+            "Cannot invoke a getter of " + this.getClass().getName());
+    }
+    AttributeList resultList = new AttributeList();
+
+    // if attributeNames is empty, return an empty result list
+    if (attributes.length == 0)
+            return resultList;
+        
+    // build the result attribute list
+    for (int i=0 ; i<attributes.length ; i++){
+        try {        
+            Object value = getAttribute((String) attributes[i]);
+            resultList.add(new Attribute(attributes[i],value));
+        } catch (Exception e) {
+            // print debug info but continue processing list
+            e.printStackTrace();
+        }
+    }
+    return(resultList);
   }
 
   @Override
