@@ -90,7 +90,7 @@ jobs:
     with:
       name: Nightly Java Release
       cache-key: java-nightly
-      run: ./go java:release[nightly,--config=release]
+      run: ./go publish-maven-snapshot
     secrets: inherit
   on-java-failure:
     name: On Java Failure
