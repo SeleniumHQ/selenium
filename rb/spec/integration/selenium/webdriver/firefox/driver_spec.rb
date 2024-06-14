@@ -44,10 +44,8 @@ module Selenium
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'prints full page', except: [{platform: :windows,
-                                           reason: 'Some issues with resolution?'},
-                                          {platform: :macosx,
-                                           reason: 'showing half resolution of what expected'}] do
+          it 'prints full page', except: {platform: :windows,
+                                          reason: 'Some issues with resolution?'} do
             viewport_width = driver.execute_script('return window.innerWidth;')
             viewport_height = driver.execute_script('return window.innerHeight;')
 
@@ -64,6 +62,7 @@ module Selenium
 
         describe '#install_addon' do
           it 'install and uninstall xpi file' do
+            Selenium::WebDriver.logger.level = :debug
             ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
             id = driver.install_addon(ext)
 
