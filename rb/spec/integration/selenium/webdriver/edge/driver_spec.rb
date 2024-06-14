@@ -43,6 +43,9 @@ module Selenium
             'upload_throughput' => -1
           )
           driver.delete_network_conditions
+
+          # Need to reset because https://bugs.chromium.org/p/chromedriver/issues/detail?id=4790
+          reset_driver!
         end
 
         it 'sets download path' do
