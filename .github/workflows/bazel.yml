@@ -70,7 +70,7 @@ on:
 jobs:
   bazel:
     name: ${{ inputs.name }}
-    runs-on: ${{ inputs.os == 'macos' && 'macos-13' || format('{0}-latest', inputs.os) }}
+    runs-on: ${{ inputs.os == 'macos' && 'macos-13' ||  inputs.os == 'windows' && 'windows-2019'  ||format('{0}-latest', inputs.os) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
@@ -91,10 +91,6 @@ jobs:
           rm "$env:ChromeWebDriver" -r -v
           rm "$env:EdgeWebDriver" -r -v
           rm "$env:GeckoWebDriver" -r -v
-      - name: Create .bazelrc file
-        if: inputs.os == 'windows'
-        run: |
-          echo "startup --output_user_root=D:/bzl" >> .bazelrc.local
       - name: Remove driver directories Non-Windows
         if: inputs.os != 'windows'
         run: |
