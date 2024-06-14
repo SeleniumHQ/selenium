@@ -197,7 +197,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "Chrome click is selecting second half of text")
+  @NotYetImplemented(value = CHROME, reason = "https://github.com/GoogleChromeLabs/chromium-bidi/issues/2321")
   public void testSelectionSelectBySymbol() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
