@@ -6,15 +6,15 @@ module Selenium
         #
         # FedCm by default delays promise resolution in failure cases for privacy reasons.
         # This method allows turning it off to let tests run faster where this is not relevant.
-        def delay_enabled(enabled)
-          @bridge.set_fedcm_delay(enabled)
+        def enable_fedcm_delay=(enable)
+          @bridge.set_fedcm_delay(enable)
         end
 
         # Resets the FedCm dialog cooldown.
         #
         # If a user agent triggers a cooldown when the account chooser is dismissed,
         # this method resets that cooldown so that the dialog can be triggered again immediately.
-        def reset_cooldown
+        def reset_fedcm_cooldown
           @bridge.reset_fedcm_cooldown
         end
 

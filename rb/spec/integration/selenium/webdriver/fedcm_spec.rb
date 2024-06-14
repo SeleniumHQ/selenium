@@ -60,7 +60,7 @@ module Selenium
           end
 
           it 'returns an account' do
-            expect(dialog.select_account(0)).to be_nil
+            expect(dialog.select_account(1)).to be_nil
           end
 
           it 'clicks the dialog' do
@@ -70,6 +70,14 @@ module Selenium
           it 'cancels the dialog' do
             dialog.cancel
             expect { dialog.title }.to raise_error(Error::NoSuchAlertError)
+          end
+
+          it 'sets the delay' do
+            expect(driver.enable_fedcm_delay = true).to be_nil
+          end
+
+          it 'resets the cooldown' do
+            expect(driver.reset_fedcm_cooldown).to be_nil
           end
         end
       end

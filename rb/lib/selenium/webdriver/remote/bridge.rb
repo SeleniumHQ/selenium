@@ -611,7 +611,7 @@ module Selenium
         end
 
         def select_fedcm_account(index)
-          execute :select_fedcm_account, 'accountIndex' => index
+          execute :select_fedcm_account, { accountIndex: index }
         end
 
         def fedcm_dialog_type
@@ -639,7 +639,7 @@ module Selenium
         end
 
         def click_fedcm_dialog_button
-          execute :click_fedcm_dialog_button, 'dialogButton' => 'ConfirmIdpLoginContinue'
+          execute :click_fedcm_dialog_button, dialogButton: 'ConfirmIdpLoginContinue'
         end
 
         def bidi
