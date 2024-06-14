@@ -91,6 +91,10 @@ jobs:
           rm "$env:ChromeWebDriver" -r -v
           rm "$env:EdgeWebDriver" -r -v
           rm "$env:GeckoWebDriver" -r -v
+      - name: Create .bazelrc file
+        if: inputs.os == 'windows'
+        run: |
+          echo "startup --output_user_root=D:/bzl" >> .bazelrc.local
       - name: Remove driver directories Non-Windows
         if: inputs.os != 'windows'
         run: |
