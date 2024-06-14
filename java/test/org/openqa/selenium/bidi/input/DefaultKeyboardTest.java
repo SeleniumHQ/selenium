@@ -197,7 +197,9 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "https://github.com/GoogleChromeLabs/chromium-bidi/issues/2321")
+  @NotYetImplemented(
+      value = CHROME,
+      reason = "https://github.com/GoogleChromeLabs/chromium-bidi/issues/2321")
   public void testSelectionSelectBySymbol() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -224,6 +226,9 @@ class DefaultKeyboardTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(
+      value = CHROME,
+      reason = "https://github.com/GoogleChromeLabs/chromium-bidi/issues/2321")
   public void testSelectionSelectByWord() {
     assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "MacOS has alternative keyboard");
 
