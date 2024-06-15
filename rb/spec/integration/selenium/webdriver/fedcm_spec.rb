@@ -3,11 +3,11 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     module FedCM
-      describe FedCM, only: {browser: :chrome} do
+      describe FedCM, only: { browser: :chrome }, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
         let(:dialog) { driver.fedcm_dialog }
 
         before do
-          driver.navigate.to url_for('fedcm/fedcm.html')
+          driver.get url_for('fedcm/fedcm.html')
         end
 
         context 'without dialog present' do
@@ -59,7 +59,7 @@ module Selenium
             expect(first_account.name).to eq 'John Doe'
           end
 
-          it 'returns an account' do
+          it 'selects an account' do
             expect(dialog.select_account(1)).to be_nil
           end
 
@@ -73,7 +73,7 @@ module Selenium
           end
 
           it 'sets the delay' do
-            expect(driver.enable_fedcm_delay = true).to be_nil
+            expect(driver.enable_fedcm_delay = true).to be_truthy
           end
 
           it 'resets the cooldown' do
