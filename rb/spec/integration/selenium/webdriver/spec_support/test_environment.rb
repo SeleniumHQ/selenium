@@ -272,7 +272,7 @@ module Selenium
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
           args << '--headless' if ENV['HEADLESS']
-          WebDriver::Options.firefox(args: args, **opts)
+          WebDriver::Options.firefox(browser_version: 'stable', args: args, **opts)
         end
 
         def ie_options(**opts)
