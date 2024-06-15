@@ -19,11 +19,11 @@
 
 const assert = require('node:assert')
 
-const By = require('../../lib/by').By
-const CommandName = require('../../lib/command').Name
-const error = require('../../lib/error')
-const until = require('../../lib/until')
-const webdriver = require('../../lib/webdriver')
+const By = require('selenium-webdriver/lib/by').By
+const CommandName = require('selenium-webdriver/lib/command').Name
+const error = require('selenium-webdriver/lib/error')
+const until = require('selenium-webdriver/lib/until')
+const webdriver = require('selenium-webdriver/lib/webdriver')
 const WebElement = webdriver.WebElement
 
 describe('until', function () {

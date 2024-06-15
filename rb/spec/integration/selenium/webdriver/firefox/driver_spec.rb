@@ -44,10 +44,8 @@ module Selenium
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'prints full page', except: [{platform: :windows,
-                                           reason: 'Some issues with resolution?'},
-                                          {platform: :macosx,
-                                           reason: 'showing half resolution of what expected'}] do
+          it 'prints full page', except: {platform: :windows,
+                                          reason: 'Some issues with resolution?'} do
             viewport_width = driver.execute_script('return window.innerWidth;')
             viewport_height = driver.execute_script('return window.innerHeight;')
 
@@ -64,10 +62,11 @@ module Selenium
 
         describe '#install_addon' do
           it 'install and uninstall xpi file' do
+            Selenium::WebDriver.logger.level = :debug
             ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
             id = driver.install_addon(ext)
 
-            expect(id).to eq 'webextensions-selenium-example@example.com'
+            expect(id).to eq 'webextensions-selenium-example-v3@example.com'
             driver.navigate.to url_for('blank.html')
 
             injected = driver.find_element(id: 'webextensions-selenium-example')
@@ -82,7 +81,7 @@ module Selenium
             ext = File.expand_path("#{extensions}/webextensions-selenium-example.zip", __dir__)
             id = driver.install_addon(ext)
 
-            expect(id).to eq 'webextensions-selenium-example@example.com'
+            expect(id).to eq 'webextensions-selenium-example-v3@example.com'
             driver.navigate.to url_for('blank.html')
 
             injected = driver.find_element(id: 'webextensions-selenium-example')
@@ -97,7 +96,7 @@ module Selenium
             ext = File.expand_path("#{extensions}/webextensions-selenium-example-unsigned.zip", __dir__)
             id = driver.install_addon(ext, true)
 
-            expect(id).to eq 'webextensions-selenium-example@example.com'
+            expect(id).to eq 'webextensions-selenium-example-v3@example.com'
             driver.navigate.to url_for('blank.html')
 
             injected = driver.find_element(id: 'webextensions-selenium-example')
@@ -108,12 +107,14 @@ module Selenium
             expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
 
-          it 'install and uninstall signed directory', except: {platform: :windows,
-                                                                reason: 'signature must be different for windows'} do
+          it 'install and uninstall signed directory', except: {browser: :firefox,
+                                                                platform: :windows,
+                                                                reason: 'signature must be different for windows,
+                                                                skipping everywhere until Firefox 127 is released'} do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed/", __dir__)
             id = driver.install_addon(ext)
 
-            expect(id).to eq 'webextensions-selenium-example@example.com'
+            expect(id).to eq 'webextensions-selenium-example-v3@example.com'
             driver.navigate.to url_for('blank.html')
 
             injected = driver.find_element(id: 'webextensions-selenium-example')
@@ -128,7 +129,7 @@ module Selenium
             ext = File.expand_path("#{extensions}/webextensions-selenium-example/", __dir__)
             id = driver.install_addon(ext, true)
 
-            expect(id).to eq 'webextensions-selenium-example@example.com'
+            expect(id).to eq 'webextensions-selenium-example-v3@example.com'
             driver.navigate.to url_for('blank.html')
 
             injected = driver.find_element(id: 'webextensions-selenium-example')
