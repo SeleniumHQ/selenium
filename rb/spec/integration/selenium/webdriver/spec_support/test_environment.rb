@@ -251,24 +251,27 @@ module Selenium
         end
 
         def chrome_options(args: [], **opts)
+          opts[:browser_version] = 'stable' if WebDriver::Platform.windows?
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
           args << '--no-sandbox' if ENV['NO_SANDBOX']
           args << '--disable-gpu'
-          WebDriver::Options.chrome(browser_version: 'stable', args: args, **opts)
+          WebDriver::Options.chrome(args: args, **opts)
         end
 
         def edge_options(args: [], **opts)
+          opts[:browser_version] = 'stable' if WebDriver::Platform.windows?
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
           args << '--no-sandbox' if ENV['NO_SANDBOX']
           args << '--disable-gpu'
-          WebDriver::Options.edge(browser_version: 'stable', args: args, **opts)
+          WebDriver::Options.edge(args: args, **opts)
         end
 
         def firefox_options(args: [], **opts)
+          opts[:browser_version] = 'stable' if WebDriver::Platform.windows?
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
           args << '--headless' if ENV['HEADLESS']
