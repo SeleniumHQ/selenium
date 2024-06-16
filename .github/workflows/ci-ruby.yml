@@ -94,6 +94,7 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}
+        --pin_browsers=true
         //rb/spec/...
 
   integration-tests-remote:
@@ -123,4 +124,5 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}-remote
+        --pin_browsers=true
         //rb/spec/...

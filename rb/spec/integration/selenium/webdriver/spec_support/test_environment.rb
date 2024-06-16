@@ -256,7 +256,7 @@ module Selenium
           args << '--headless=chrome' if ENV['HEADLESS']
           args << '--no-sandbox' if ENV['NO_SANDBOX']
           args << '--disable-gpu'
-          WebDriver::Options.chrome(browser_version: 'stable', args: args, **opts)
+          WebDriver::Options.chrome(args: args, **opts)
         end
 
         def edge_options(args: [], **opts)
@@ -265,14 +265,14 @@ module Selenium
           args << '--headless=chrome' if ENV['HEADLESS']
           args << '--no-sandbox' if ENV['NO_SANDBOX']
           args << '--disable-gpu'
-          WebDriver::Options.edge(browser_version: 'stable', args: args, **opts)
+          WebDriver::Options.edge(args: args, **opts)
         end
 
         def firefox_options(args: [], **opts)
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
           args << '--headless' if ENV['HEADLESS']
-          WebDriver::Options.firefox(browser_version: 'stable', args: args, **opts)
+          WebDriver::Options.firefox(args: args, **opts)
         end
 
         def ie_options(**opts)
