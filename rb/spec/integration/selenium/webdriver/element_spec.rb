@@ -568,16 +568,14 @@ module Selenium
       end
 
       it 'knows when two elements are not equal' do
-        reset_driver!(args: '--no-sandbox') do |driver|
-          driver.navigate.to url_for('simpleTest.html')
+        driver.navigate.to url_for('simpleTest.html')
 
-          elements = driver.find_elements(tag_name: 'p')
-          p1 = elements.fetch(0)
-          p2 = elements.fetch(1)
+        elements = driver.find_elements(tag_name: 'p')
+        p1 = elements.fetch(0)
+        p2 = elements.fetch(1)
 
-          expect(p1).not_to eq(p2)
-          expect(p1).not_to eql(p2)
-        end
+        expect(p1).not_to eq(p2)
+        expect(p1).not_to eql(p2)
       end
 
       it 'returns the same #hash for equal elements when found by Driver#find_element' do
