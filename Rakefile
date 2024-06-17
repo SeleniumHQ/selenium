@@ -706,9 +706,6 @@ namespace :rb do
     args = arguments.to_a.compact
     webdriver = args.delete('webdriver')
     devtools = args.delete('devtools')
-    if args.include?('--config=remote') || args.include?('--config=release')
-      File.write('rb/.ruby-version', 'jruby-9.4.7.0')
-    end
 
     Bazel.execute('build', args, '//rb:selenium-webdriver') if webdriver || !devtools
     Bazel.execute('build', args, '//rb:selenium-devtools') if devtools || !webdriver
@@ -724,16 +721,15 @@ namespace :rb do
   desc 'Push Ruby gems to rubygems'
   task :release do |_task, arguments|
     args = arguments.to_a.compact
-    if args.include?('--config=remote') || args.include?('--config=release')
-      File.write('rb/.ruby-version', 'jruby-9.4.7.0')
-    end
-
     nightly = args.delete('nightly')
-    wd_target = nightly ? '//rb:selenium-webdriver-release' : '//rb:selenium-webdriver-release-nightly'
-    cdp_target = nightly ? '//rb:selenium-devtools-release' : '//rb:selenium-devtools-release-nightly'
 
-    Bazel.execute('run', args, wd_target)
-    Bazel.execute('run', args, cdp_target)
+    if nightly
+      Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
+      Bazel.execute('run', args, '//rb:selenium-webdriver-release-nightly')
+    else
+      Bazel.execute('run', args, '//rb:selenium-webdriver-release')
+      Bazel.execute('run', args, '//rb:selenium-devtools-release')
+    end
   end
 
   desc 'Generate Ruby documentation'
@@ -918,8 +914,25 @@ namespace :java do
   desc 'Deploy all jars to Maven'
   task :release do |_task, arguments|
     args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    nightly = args.delete('nightly')
+    user, password = read_m2_user_pass
+    repo = nightly ? 'content/repositories/snapshots' : 'service/local/staging/deploy/maven2'
+    gpg = nightly ? 'false' : 'true'
+
+    Rake::Task['java:version'].invoke if nightly
     Rake::Task['java:package'].invoke(*args)
-    Rake::Task['publish-maven'].invoke
+
+    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('build', [], target) }
+    release_args = ['--stamp',
+                    '--define',
+                    "maven_repo=https://oss.sonatype.org/#{repo}",
+                    '--define',
+                    "maven_user=#{user}",
+                    '--define',
+                    "maven_password=#{password}",
+                    '--define',
+                    "gpg_sign=#{gpg}"]
+    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('run', release_args, target) }
   end
 
   desc 'Install jars to local m2 directory'
