@@ -928,7 +928,7 @@ namespace :java do
                     "maven_repo=https://oss.sonatype.org/#{repo}",
                     '--define',
                     "maven_user=#{user}",
-                    "--define",
+                    '--define',
                     "maven_password=#{password}",
                     '--define',
                     "gpg_sign=#{gpg}"]
