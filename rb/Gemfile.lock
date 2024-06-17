@@ -175,6 +175,7 @@ PLATFORMS
   universal-java-17
   universal-java-18
   x64-mingw32
+  x86_64-darwin-22
 
 DEPENDENCIES
   debug (~> 1.7)
@@ -194,4 +195,4 @@ DEPENDENCIES
   yard (~> 0.9.11, >= 0.9.36)
 
 BUNDLED WITH
-   2.5.6
+   2.2.33
