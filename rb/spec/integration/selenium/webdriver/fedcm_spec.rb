@@ -63,7 +63,7 @@ module Selenium
             expect(dialog.select_account(1)).to be_nil
           end
 
-          it 'clicks the dialog' do
+          it 'clicks the dialog', skip: 'Investigate IDP config issue' do
             expect(dialog.click).to be_nil
           end
 
