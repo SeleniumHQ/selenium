@@ -118,7 +118,7 @@ jobs:
       name: Nightly DotNet Release
       cache-key: dotnet-nightly
       dotnet-version: '6.x'
-      run: ./go dotnet:release['nightly','--config=release']
+      run: ./go dotnet:release[--stamp,nightly]
     secrets: inherit
   on-dotnet-failure:
     name: On .NET Failure
