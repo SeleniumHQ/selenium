@@ -914,8 +914,25 @@ namespace :java do
   desc 'Deploy all jars to Maven'
   task :release do |_task, arguments|
     args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    nightly = args.delete('nightly')
+    user, password = read_m2_user_pass
+    repo = nightly ? 'content/repositories/snapshots' : 'service/local/staging/deploy/maven2'
+    gpg = nightly ? 'false' : 'true'
+
+    Rake::Task['java:version'].invoke if nightly
     Rake::Task['java:package'].invoke(*args)
-    Rake::Task['publish-maven'].invoke
+
+    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('build', [], target) }
+    release_args = ['--stamp',
+                    '--define',
+                    "maven_repo=https://oss.sonatype.org/#{repo}",
+                    '--define',
+                    "maven_user=#{user}",
+                    '--define',
+                    "maven_password=#{password}",
+                    '--define',
+                    "gpg_sign=#{gpg}"]
+    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('run', release_args, target) }
   end
 
   desc 'Install jars to local m2 directory'
