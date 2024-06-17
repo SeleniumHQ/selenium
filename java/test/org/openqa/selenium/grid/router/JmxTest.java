@@ -27,6 +27,8 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.logging.Logger;
+
+import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
@@ -48,6 +50,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.MBean;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -84,6 +87,11 @@ class JmxTest {
 
       MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
       assertThat(attributeInfoArray).hasSize(3);
+
+      AttributeList attributeList = getAttributeList(name, attributeInfoArray);
+      assertThat(attributeList)
+        .isNotNull()
+        .hasSize(3);
 
       String uriValue = (String) beanServer.getAttribute(name, "Uri");
       assertThat(uriValue).isEqualTo(baseServerOptions.getExternalUri().toString());
@@ -130,23 +138,33 @@ class JmxTest {
       MBeanAttributeInfo[] attributeInfo = info.getAttributes();
       assertThat(attributeInfo).hasSize(9);
 
-      String currentSessions = (String) beanServer.getAttribute(name, "CurrentSessions");
-      assertThat(Integer.parseInt(currentSessions)).isZero();
+      AttributeList attributeList = getAttributeList(name, attributeInfo);
+      assertThat(attributeList)
+        .isNotNull()
+        .hasSize(9);
 
-      String maxSessions = (String) beanServer.getAttribute(name, "MaxSessions");
-      assertThat(Integer.parseInt(maxSessions)).isEqualTo(1);
+      Object currentSessions = beanServer.getAttribute(name, "CurrentSessions");
+      assertThat(currentSessions).isInstanceOf(Number.class);
+      assertThat(Integer.parseInt(currentSessions.toString())).isZero();
+
+      Object maxSessions = beanServer.getAttribute(name, "MaxSessions");
+      assertThat(maxSessions).isInstanceOf(Number.class);
+      assertThat(Integer.parseInt(maxSessions.toString())).isEqualTo(1);
 
       String status = (String) beanServer.getAttribute(name, "Status");
       assertThat(status).isEqualTo("UP");
 
-      String totalSlots = (String) beanServer.getAttribute(name, "TotalSlots");
-      assertThat(Integer.parseInt(totalSlots)).isEqualTo(1);
+      Object totalSlots = beanServer.getAttribute(name, "TotalSlots");
+      assertThat(totalSlots).isInstanceOf(Number.class);
+      assertThat(Integer.parseInt(totalSlots.toString())).isEqualTo(1);
 
-      String usedSlots = (String) beanServer.getAttribute(name, "UsedSlots");
-      assertThat(Integer.parseInt(usedSlots)).isZero();
+      Object usedSlots = beanServer.getAttribute(name, "UsedSlots");
+      assertThat(usedSlots).isInstanceOf(Number.class);
+      assertThat(Integer.parseInt(usedSlots.toString())).isZero();
 
-      String load = (String) beanServer.getAttribute(name, "Load");
-      assertThat(Float.parseFloat(load)).isEqualTo(0.0f);
+      Object load = beanServer.getAttribute(name, "Load");
+      assertThat(load).isInstanceOf(Number.class);
+      assertThat(Float.parseFloat(load.toString())).isEqualTo(0.0f);
 
       String remoteNodeUri = (String) beanServer.getAttribute(name, "RemoteNodeUri");
       assertThat(remoteNodeUri).isEqualTo(nodeUri.toString());
@@ -182,12 +200,19 @@ class JmxTest {
       MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
       assertThat(attributeInfoArray).hasSize(2);
 
-      String requestTimeout = (String) beanServer.getAttribute(name, "RequestTimeoutSeconds");
-      assertThat(Long.parseLong(requestTimeout))
+      AttributeList attributeList = getAttributeList(name, attributeInfoArray);
+      assertThat(attributeList)
+        .isNotNull()
+        .hasSize(2);
+
+      Object requestTimeout = beanServer.getAttribute(name, "RequestTimeoutSeconds");
+      assertThat(requestTimeout).isInstanceOf(Number.class);
+      assertThat(Long.parseLong(requestTimeout.toString()))
           .isEqualTo(newSessionQueueOptions.getRequestTimeoutSeconds());
 
-      String retryInterval = (String) beanServer.getAttribute(name, "RetryIntervalMilliseconds");
-      assertThat(Long.parseLong(retryInterval))
+      Object retryInterval = beanServer.getAttribute(name, "RetryIntervalMilliseconds");
+      assertThat(retryInterval).isInstanceOf(Number.class);
+      assertThat(Long.parseLong(retryInterval.toString()))
           .isEqualTo(newSessionQueueOptions.getRetryIntervalMilliseconds());
     } catch (InstanceNotFoundException
         | IntrospectionException
@@ -227,8 +252,14 @@ class JmxTest {
       MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
       assertThat(attributeInfoArray).hasSize(1);
 
-      String size = (String) beanServer.getAttribute(name, "NewSessionQueueSize");
-      assertThat(Integer.parseInt(size)).isZero();
+      AttributeList attributeList = getAttributeList(name, attributeInfoArray);
+      assertThat(attributeList)
+        .isNotNull()
+        .hasSize(1);
+
+      Object size = beanServer.getAttribute(name, "NewSessionQueueSize");
+      assertThat(size).isInstanceOf(Number.class);
+      assertThat(Integer.parseInt(size.toString())).isZero();
     } catch (InstanceNotFoundException
         | IntrospectionException
         | ReflectionException
@@ -290,21 +321,42 @@ class JmxTest {
       MBeanInfo info = beanServer.getMBeanInfo(name);
       assertThat(info).isNotNull();
 
-      String nodeUpCount = (String) beanServer.getAttribute(name, "NodeUpCount");
+      MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
+      assertThat(attributeInfoArray).hasSize(4);
+
+      AttributeList attributeList = getAttributeList(name, attributeInfoArray);
+      assertThat(attributeList)
+        .isNotNull()
+        .hasSize(4);
+
+      Object nodeUpCount = beanServer.getAttribute(name, "NodeUpCount");
       LOG.info("Node up count=" + nodeUpCount);
-      assertThat(Integer.parseInt(nodeUpCount)).isEqualTo(1);
+      assertThat(nodeUpCount).isInstanceOf(Number.class);
+      assertThat(Integer.parseInt(nodeUpCount.toString())).isEqualTo(1);
 
-      String nodeDownCount = (String) beanServer.getAttribute(name, "NodeDownCount");
+      Object nodeDownCount = beanServer.getAttribute(name, "NodeDownCount");
       LOG.info("Node down count=" + nodeDownCount);
-      assertThat(Integer.parseInt(nodeDownCount)).isZero();
+      assertThat(nodeDownCount).isInstanceOf(Number.class);
+      assertThat(Integer.parseInt(nodeDownCount.toString())).isZero();
 
-      String activeSlots = (String) beanServer.getAttribute(name, "ActiveSlots");
+      Object activeSlots = beanServer.getAttribute(name, "ActiveSlots");
       LOG.info("Active slots count=" + activeSlots);
-      assertThat(Integer.parseInt(activeSlots)).isZero();
+      assertThat(activeSlots).isInstanceOf(Number.class);
+      assertThat(Integer.parseInt(activeSlots.toString())).isZero();
 
-      String idleSlots = (String) beanServer.getAttribute(name, "IdleSlots");
+      Object idleSlots = beanServer.getAttribute(name, "IdleSlots");
       LOG.info("Idle slots count=" + idleSlots);
-      assertThat(Integer.parseInt(idleSlots)).isEqualTo(1);
+      assertThat(idleSlots).isInstanceOf(Number.class);
+      assertThat(Integer.parseInt(idleSlots.toString())).isEqualTo(1);
     }
+  }
+
+  private AttributeList getAttributeList(ObjectName name, MBeanAttributeInfo[] attributeInfoArray) throws InstanceNotFoundException, ReflectionException {
+    String[] attributeNames = new String[attributeInfoArray.length];
+    for (int i = 0; i < attributeInfoArray.length; i++) {
+      attributeNames[i] = attributeInfoArray[i].getName();
+    }
+
+    return beanServer.getAttributes(name, attributeNames);
   }
 }
