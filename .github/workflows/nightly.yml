@@ -63,7 +63,7 @@ jobs:
     with:
       name: Nightly Python Release
       cache-key: python-nightly
-      run: ./go py:release['nightly','--config=release']
+      run: ./go py:release[--stamp,nightly]
     secrets: inherit
   on-python-failure:
     name: On Python Failure
