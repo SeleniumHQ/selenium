@@ -38,10 +38,10 @@ py_binary(
     ],
     args = [
         "upload",
-        "$(location :selenium-wheel)",
-        "$(location :selenium-sdist)",
         "--repository",
         "testpypi",
+        "$(location :selenium-wheel)",
+        "$(location :selenium-sdist)",
     ],
     data = [
         ":selenium-sdist",
