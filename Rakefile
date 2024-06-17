@@ -554,7 +554,7 @@ namespace :py do
     nightly = args.delete('nightly')
     Rake::Task['py:version'].invoke('nightly') if nightly
 
-    command = nightly.nil? ? '//py:selenium-release' : '//py:selenium-release-nightly'
+    command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
     Bazel.execute('run', args, command)
   end
 
