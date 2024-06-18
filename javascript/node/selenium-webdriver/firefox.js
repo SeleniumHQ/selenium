@@ -103,12 +103,14 @@
  *
  * [geckodriver release]: https://github.com/mozilla/geckodriver/releases/
  * [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
+ *
+ * @module selenium-webdriver/firefox
  */
 
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('node:fs')
+const path = require('node:path')
 const Symbols = require('./lib/symbols')
 const command = require('./lib/command')
 const http = require('./http')
@@ -116,9 +118,9 @@ const io = require('./io')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const zip = require('./io/zip')
-const { Browser, Capabilities } = require('./lib/capabilities')
+const { Browser, Capabilities, Capability } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
-const { getPath } = require('./common/driverFinder')
+const { getBinaryPaths } = require('./common/driverFinder')
 const FIREFOX_CAPABILITY_KEY = 'moz:firefoxOptions'
 
 /**
@@ -244,6 +246,9 @@ class Options extends Capabilities {
   constructor(other) {
     super(other)
     this.setBrowserName(Browser.FIREFOX)
+    // Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
+    // https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
+    this.setPreference('remote.active-protocols', 3)
   }
 
   /**
@@ -541,7 +546,7 @@ class Driver extends webdriver.WebDriver {
       configureExecutor(executor)
     } else if (opt_executor instanceof remote.DriverService) {
       if (!opt_executor.getExecutable()) {
-        const { driverPath, browserPath } = getPath(caps)
+        const { driverPath, browserPath } = getBinaryPaths(caps)
         opt_executor.setExecutable(driverPath)
         firefoxBrowserPath = browserPath
       }
@@ -550,7 +555,7 @@ class Driver extends webdriver.WebDriver {
     } else {
       let service = new ServiceBuilder().build()
       if (!service.getExecutable()) {
-        const { driverPath, browserPath } = getPath(caps)
+        const { driverPath, browserPath } = getBinaryPaths(caps)
         service.setExecutable(driverPath)
         firefoxBrowserPath = browserPath
       }
@@ -566,6 +571,7 @@ class Driver extends webdriver.WebDriver {
       } else {
         caps.set(FIREFOX_CAPABILITY_KEY, { binary: firefoxBrowserPath })
       }
+      caps.delete(Capability.BROWSER_VERSION)
     }
 
     return /** @type {!Driver} */ (super.createSession(executor, caps, onQuit))

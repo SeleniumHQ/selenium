@@ -47,8 +47,6 @@ public class ScriptEventsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canListenToChannelMessage()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Script script = new Script(driver)) {
@@ -76,8 +74,6 @@ public class ScriptEventsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canListenToRealmCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Script script = new Script(driver)) {
@@ -94,8 +90,6 @@ public class ScriptEventsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)

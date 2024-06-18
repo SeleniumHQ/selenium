@@ -40,7 +40,7 @@ jobs:
       name: Tests (${{ matrix.os }})
       cache-key: rust-test
       os: ${{ matrix.os }}
-      run: bazel test --test_env=RUST_BACKTRACE=1 --flaky_test_attempts=3 //rust/...
+      run: bazel test --test_env=RUST_BACKTRACE=full --test_env=RUST_TEST_NOCAPTURE=1 --flaky_test_attempts=3 //rust/...
 
   windows-stable:
     name: "Windows Stable"
@@ -163,7 +163,7 @@ jobs:
 
   macos-stable:
     name: "MacOS Stable"
-    runs-on: macos-latest
+    runs-on: macos-13
     needs: tests
     if: github.event_name != 'schedule'
     env:
@@ -195,7 +195,7 @@ jobs:
 
   macos-debug:
     name: "MacOS Debug"
-    runs-on: macos-latest
+    runs-on: macos-13
     needs: tests
     if: github.event_name != 'schedule'
     env:

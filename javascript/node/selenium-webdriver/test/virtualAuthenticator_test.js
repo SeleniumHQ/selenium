@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const virtualAuthenticatorCredential = require('../lib/virtual_authenticator').Credential
 const virtualAuthenticatorOptions = require('../lib/virtual_authenticator').VirtualAuthenticatorOptions
 const Protocol = require('../lib/virtual_authenticator').Protocol

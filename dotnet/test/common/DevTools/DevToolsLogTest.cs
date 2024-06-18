@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V123;
+    using CurrentCdpVersion = V125;
 
     [TestFixture]
     public class DevToolsLogTest : DevToolsTestFixture

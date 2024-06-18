@@ -20,8 +20,6 @@ package org.openqa.selenium.bidi.network;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -44,8 +42,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canAddInterceptPhase() {
     try (Network network = new Network(driver)) {
@@ -56,8 +52,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canAddInterceptPhases() {
     try (Network network = new Network(driver)) {
@@ -70,8 +64,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canAddStringUrlPattern() {
     try (Network network = new Network(driver)) {
@@ -84,8 +76,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canAddStringUrlPatterns() {
     try (Network network = new Network(driver)) {
@@ -101,8 +91,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canAddUrlPattern() {
     try (Network network = new Network(driver)) {
@@ -122,8 +110,6 @@ class AddInterceptParametersTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canAddUrlPatterns() {
     try (Network network = new Network(driver)) {

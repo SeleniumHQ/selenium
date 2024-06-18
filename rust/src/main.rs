@@ -77,7 +77,8 @@ struct Cli {
     #[clap(long, value_parser)]
     browser_mirror_url: Option<String>,
 
-    /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like)
+    /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), SHELL (Unix-like),
+    /// or MIXED (INFO, WARN, DEBUG, etc. to stderr and minimal JSON to stdout)
     #[clap(long, value_parser, default_value = "LOGGER")]
     output: String,
 
@@ -177,8 +178,8 @@ fn main() {
             log.error(&err);
             flush_and_exit(DATAERR, &log, Some(err));
         })
-    } else if grid.is_some() {
-        GridManager::new(grid.as_ref().unwrap().to_string()).unwrap_or_else(|err| {
+    } else if let Some(grid_value) = &grid {
+        GridManager::new(grid_value.to_string()).unwrap_or_else(|err| {
             log.error(&err);
             flush_and_exit(DATAERR, &log, Some(err));
         })
@@ -245,11 +246,14 @@ fn main() {
             if let Some(best_driver_from_cache) =
                 selenium_manager.find_best_driver_from_cache().unwrap()
             {
-                log.warn(format!(
-                    "There was an error managing {} ({}); using driver found in the cache",
-                    selenium_manager.get_driver_name(),
-                    err
-                ));
+                log.debug_or_warn(
+                    format!(
+                        "There was an error managing {} ({}); using driver found in the cache",
+                        selenium_manager.get_driver_name(),
+                        err
+                    ),
+                    selenium_manager.is_offline(),
+                );
                 log_driver_and_browser_path(
                     log,
                     &best_driver_from_cache,
@@ -279,7 +283,7 @@ fn log_driver_and_browser_path(
     if driver_path.exists() {
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
     } else {
-        log.error(format!("Driver unavailable: {}", DRIVER_PATH));
+        log.error(format!("Driver unavailable: {}", driver_path.display()));
         flush_and_exit(UNAVAILABLE, log, None);
     }
     if !browser_path.is_empty() {

@@ -162,7 +162,6 @@ class FileDetector {
    * @package
    */
   handleFile(_driver, path) {
-    // eslint-disable-line
     return Promise.resolve(path)
   }
 }

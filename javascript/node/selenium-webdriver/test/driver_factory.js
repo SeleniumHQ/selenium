@@ -16,14 +16,13 @@
 // under the License.
 
 'use strict'
-const fs = require('fs')
-const os = require('os')
-const path = require('path')
-const { Browser } = require('../index')
-const { Environment } = require('../testing')
-const chrome = require('../chrome')
-const firefox = require('../firefox')
-// eslint-disable-next-line node/no-missing-require
+const fs = require('node:fs')
+const os = require('node:os')
+const path = require('node:path')
+const { Browser } = require('selenium-webdriver/index')
+const { Environment } = require('selenium-webdriver/testing')
+const chrome = require('selenium-webdriver/chrome')
+const firefox = require('selenium-webdriver/firefox')
 const { runfiles } = require('@bazel/runfiles')
 
 function GetBrowserForTests() {

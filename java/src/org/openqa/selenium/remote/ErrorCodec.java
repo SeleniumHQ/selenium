@@ -144,12 +144,12 @@ public class ErrorCodec {
 
   public WebDriverException decode(Map<String, Object> response) {
     if (!(response.get("value") instanceof Map)) {
-      throw new IllegalArgumentException("Unable to find mapping for " + response.toString());
+      throw new IllegalArgumentException("Unable to find mapping for " + response);
     }
 
     Map<?, ?> value = (Map<?, ?>) response.get("value");
     if (!(value.get("error") instanceof String)) {
-      throw new IllegalArgumentException("Unable to find mapping for " + response.toString());
+      throw new IllegalArgumentException("Unable to find mapping for " + response);
     }
 
     String error = (String) value.get("error");

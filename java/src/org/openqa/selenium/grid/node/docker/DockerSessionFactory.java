@@ -101,6 +101,8 @@ public class DockerSessionFactory implements SessionFactory {
   private final String networkName;
   private final boolean runningInDocker;
   private final Predicate<Capabilities> predicate;
+  private final Map<String, Object> hostConfig;
+  private final List<String> hostConfigKeys;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -115,7 +117,9 @@ public class DockerSessionFactory implements SessionFactory {
       DockerAssetsPath assetsPath,
       String networkName,
       boolean runningInDocker,
-      Predicate<Capabilities> predicate) {
+      Predicate<Capabilities> predicate,
+      Map<String, Object> hostConfig,
+      List<String> hostConfigKeys) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
@@ -129,6 +133,8 @@ public class DockerSessionFactory implements SessionFactory {
     this.assetsPath = assetsPath;
     this.runningInDocker = runningInDocker;
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
+    this.hostConfig = Require.nonNull("Container host config", hostConfig);
+    this.hostConfigKeys = Require.nonNull("Browser container host config keys", hostConfigKeys);
   }
 
   @Override
@@ -285,31 +291,44 @@ public class DockerSessionFactory implements SessionFactory {
             .env(browserContainerEnvVars)
             .shmMemorySize(browserContainerShmMemorySize)
             .network(networkName)
-            .devices(devices);
+            .devices(devices)
+            .applyHostConfig(hostConfig, hostConfigKeys);
     if (!runningInDocker) {
       containerConfig = containerConfig.map(Port.tcp(4444), Port.tcp(port));
     }
+    LOG.fine("Container config: " + containerConfig);
     return docker.create(containerConfig);
   }
 
   private Map<String, String> getBrowserContainerEnvVars(Capabilities sessionRequestCapabilities) {
-    Optional<Dimension> screenResolution =
-        ofNullable(getScreenResolution(sessionRequestCapabilities));
     Map<String, String> envVars = new HashMap<>();
-    if (screenResolution.isPresent()) {
-      envVars.put("SE_SCREEN_WIDTH", String.valueOf(screenResolution.get().getWidth()));
-      envVars.put("SE_SCREEN_HEIGHT", String.valueOf(screenResolution.get().getHeight()));
-    }
-    Optional<TimeZone> timeZone = ofNullable(getTimeZone(sessionRequestCapabilities));
-    timeZone.ifPresent(zone -> envVars.put("TZ", zone.getID()));
     // Passing env vars set to the child container
+    setEnvVarsToContainer(envVars);
+    // Capabilities set to env vars with higher precedence
+    setCapsToEnvVars(sessionRequestCapabilities, envVars);
+    return envVars;
+  }
+
+  private void setEnvVarsToContainer(Map<String, String> envVars) {
     Map<String, String> seEnvVars = System.getenv();
     seEnvVars.entrySet().stream()
         .filter(
             entry ->
                 entry.getKey().startsWith("SE_") || entry.getKey().equalsIgnoreCase("LANGUAGE"))
         .forEach(entry -> envVars.put(entry.getKey(), entry.getValue()));
-    return envVars;
+  }
+
+  private void setCapsToEnvVars(
+      Capabilities sessionRequestCapabilities, Map<String, String> envVars) {
+    Optional<Dimension> screenResolution =
+        ofNullable(getScreenResolution(sessionRequestCapabilities));
+    screenResolution.ifPresent(
+        dimension -> {
+          envVars.put("SE_SCREEN_WIDTH", String.valueOf(dimension.getWidth()));
+          envVars.put("SE_SCREEN_HEIGHT", String.valueOf(dimension.getHeight()));
+        });
+    Optional<TimeZone> timeZone = ofNullable(getTimeZone(sessionRequestCapabilities));
+    timeZone.ifPresent(zone -> envVars.put("TZ", zone.getID()));
   }
 
   private Container startVideoContainer(
@@ -349,15 +368,29 @@ public class DockerSessionFactory implements SessionFactory {
   private Map<String, String> getVideoContainerEnvVars(
       Capabilities sessionRequestCapabilities, String containerIp) {
     Map<String, String> envVars = new HashMap<>();
+    // Passing env vars set to the child container
+    setEnvVarsToContainer(envVars);
+    // Capabilities set to env vars with higher precedence
+    setCapsToEnvVars(sessionRequestCapabilities, envVars);
     envVars.put("DISPLAY_CONTAINER_NAME", containerIp);
-    Optional<Dimension> screenResolution =
-        ofNullable(getScreenResolution(sessionRequestCapabilities));
-    screenResolution.ifPresent(
-        dimension -> {
-          envVars.put("SE_SCREEN_WIDTH", String.valueOf(dimension.getWidth()));
-          envVars.put("SE_SCREEN_HEIGHT", String.valueOf(dimension.getHeight()));
-        });
+    Optional<String> testName = ofNullable(getTestName(sessionRequestCapabilities));
+    testName.ifPresent(name -> envVars.put("SE_VIDEO_FILE_NAME", String.format("%s.mp4", name)));
     return envVars;
+  }
+
+  private String getTestName(Capabilities sessionRequestCapabilities) {
+    Optional<Object> testName = ofNullable(sessionRequestCapabilities.getCapability("se:name"));
+    if (testName.isPresent()) {
+      String name = testName.get().toString();
+      if (!name.isEmpty()) {
+        name = name.replaceAll(" ", "_").replaceAll("[^a-zA-Z0-9_-]", "");
+        if (name.length() > 251) {
+          name = name.substring(0, 251);
+        }
+        return name;
+      }
+    }
+    return null;
   }
 
   private TimeZone getTimeZone(Capabilities sessionRequestCapabilities) {

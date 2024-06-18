@@ -17,8 +17,8 @@
 
 'use strict'
 
-const path = require('path')
-const url = require('url')
+const path = require('node:path')
+const url = require('node:url')
 
 const express = require('express')
 const multer = require('multer')
@@ -94,6 +94,7 @@ const Pages = (function () {
   addPage('scrollingPage', 'scrollingPage.html')
   addPage('selectableItemsPage', 'selectableItems.html')
   addPage('selectPage', 'selectPage.html')
+  addPage('selectSpacePage', 'select_space.html')
   addPage('simpleTestPage', 'simpleTest.html')
   addPage('simpleXmlDocument', 'simple.xml')
   addPage('sleepingPage', 'sleep')
@@ -165,7 +166,7 @@ function redirectToResultPage(_, response) {
 }
 
 function sendInifinitePage(request, response) {
-  // eslint-disable-next-line node/no-deprecated-api
+  // eslint-disable-next-line n/no-deprecated-api
   var pathname = url.parse(request.url).pathname
   var lastIndex = pathname.lastIndexOf('/')
   var pageNumber = lastIndex == -1 ? 'Unknown' : pathname.substring(lastIndex + 1)
@@ -213,7 +214,7 @@ function sendBasicAuth(request, response) {
 
 function sendDelayedResponse(request, response) {
   var duration = 0
-  // eslint-disable-next-line node/no-deprecated-api
+  // eslint-disable-next-line n/no-deprecated-api
   var query = url.parse(request.url).search.substr(1) || ''
   var match = query.match(/\btime=(\d+)/)
   if (match) {
@@ -301,7 +302,7 @@ function sendEcho(request, response) {
  * @param {!http.ServerResponse} response The response object.
  */
 function sendIndex(request, response) {
-  // eslint-disable-next-line node/no-deprecated-api
+  // eslint-disable-next-line n/no-deprecated-api
   var pathname = url.parse(request.url).pathname
 
   var host = request.headers.host

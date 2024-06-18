@@ -32,7 +32,7 @@
 
 'use strict'
 
-const { isatty } = require('tty')
+const { isatty } = require('node:tty')
 const chrome = require('../chrome')
 const edge = require('../edge')
 const firefox = require('../firefox')
@@ -41,7 +41,7 @@ const remote = require('../remote')
 const safari = require('../safari')
 const { Browser } = require('../lib/capabilities')
 const { Builder } = require('../index')
-const { getPath } = require('../common/driverFinder')
+const { getBinaryPaths } = require('../common/driverFinder')
 
 /**
  * Describes a browser targeted by a {@linkplain suite test suite}.
@@ -122,15 +122,15 @@ function getAvailableBrowsers() {
   info(`Searching for WebDriver executables installed on the current system...`)
 
   let targets = [
-    [getPath(new chrome.Options()), Browser.CHROME],
-    [getPath(new edge.Options()), Browser.EDGE],
-    [getPath(new firefox.Options()), Browser.FIREFOX],
+    [getBinaryPaths(new chrome.Options()), Browser.CHROME],
+    [getBinaryPaths(new edge.Options()), Browser.EDGE],
+    [getBinaryPaths(new firefox.Options()), Browser.FIREFOX],
   ]
   if (process.platform === 'win32') {
-    targets.push([getPath(new ie.Options()), Browser.INTERNET_EXPLORER])
+    targets.push([getBinaryPaths(new ie.Options()), Browser.INTERNET_EXPLORER])
   }
   if (process.platform === 'darwin') {
-    targets.push([getPath(new safari.Options()), Browser.SAFARI])
+    targets.push([getBinaryPaths(new safari.Options()), Browser.SAFARI])
   }
 
   let availableBrowsers = []
@@ -406,7 +406,6 @@ function suite(fn, options = undefined) {
 
           const startTimeout = 65 * 1000
 
-          // eslint-disable-next-line no-inner-declarations
           function startSelenium() {
             if (typeof this.timeout === 'function') {
               this.timeout(startTimeout) // For mocha.

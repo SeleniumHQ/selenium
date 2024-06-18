@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const firefox = require('../../firefox')
 const { Browser } = require('../../')
 const { Pages, suite } = require('../../lib/test')
@@ -126,32 +126,6 @@ suite(
 
         const elements = await browsingContext.locateNodes(Locator.css('div'), 4)
         assert.strictEqual(elements.length, 4)
-      })
-
-      it('can locate node with none ownership value', async function () {
-        const id = await driver.getWindowHandle()
-        const browsingContext = await BrowsingContext(driver, {
-          browsingContextId: id,
-        })
-
-        await driver.get(Pages.xhtmlTestPage)
-
-        const elements = await browsingContext.locateNodes(Locator.css('div'), undefined, 'none')
-        assert.strictEqual(elements.length, 13)
-        assert.strictEqual(elements[0].handle, null)
-      })
-
-      it('can locate node with root ownership value', async function () {
-        const id = await driver.getWindowHandle()
-        const browsingContext = await BrowsingContext(driver, {
-          browsingContextId: id,
-        })
-
-        await driver.get(Pages.xhtmlTestPage)
-
-        const elements = await browsingContext.locateNodes(Locator.css('div'), undefined, 'root')
-        assert.strictEqual(elements.length, 13)
-        assert.notEqual(elements[0].handle, null)
       })
 
       xit('can locate node with given start nodes', async function () {
