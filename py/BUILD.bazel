@@ -30,7 +30,6 @@ py_binary(
     ],
 )
 
-
 py_binary(
     name = "selenium-release-nightly",
     srcs = [
