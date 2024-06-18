@@ -336,69 +336,35 @@ end
 
 task 'release-java': %i[java-release-zip publish-maven]
 
-# TODO: just set the environment variables that maven is asking for
 def read_m2_user_pass
-  user = ENV.fetch('SEL_M2_USER', nil)
-  pass = ENV.fetch('SEL_M2_PASS', nil)
-  if user && pass
-    puts 'Fetching m2 user and pass from environment variables.'
-    return [user, pass]
-  end
+  ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
+  ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
 
-  puts 'Fetching m2 user and pass from /.m2/settings.xml.'
+  return if ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+
+  puts 'Maven environment variables not set, inspecting /.m2/settings.xml.'
   settings = File.read("#{Dir.home}/.m2/settings.xml")
   found_section = false
   settings.each_line do |line|
     if !found_section
       found_section = line.include? '<id>sonatype-nexus-staging</id>'
     elsif line.include?('<username>')
-      user = line[%r{<username>(.*?)</username>}, 1]
+      ENV['MAVEN_USER'] = line[%r{<username>(.*?)</username>}, 1]
     elsif line.include?('<password>')
-      pass = line[%r{<password>(.*?)</password>}, 1]
+      ENV['MAVEN_PASSWORD'] = line[%r{<password>(.*?)</password>}, 1]
     end
-    break if user && pass
+    break if ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
   end
-  [user, pass]
 end
 
 desc 'Publish all Java jars to Maven as stable release'
-task 'publish-maven': JAVA_RELEASE_TARGETS do
-  creds = read_m2_user_pass
-  JAVA_RELEASE_TARGETS.each do |p|
-    Bazel.execute('run',
-                  ['--stamp',
-                   '--define',
-                   'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2',
-                   '--define',
-                   "maven_user=#{creds[0]}",
-                   '--define',
-                   "maven_password=#{creds[1]}",
-                   '--define',
-                   'gpg_sign=true'],
-                  p)
-  end
+task 'publish-maven' do
+  Rake::Task['java:release'].invoke
 end
 
 desc 'Publish all Java jars to Maven as nightly release'
-task 'publish-maven-snapshot': JAVA_RELEASE_TARGETS do
-  creds = read_m2_user_pass
-  if java_version.end_with?('-SNAPSHOT')
-    JAVA_RELEASE_TARGETS.each do |p|
-      Bazel.execute('run',
-                    ['--stamp',
-                     '--define',
-                     'maven_repo=https://oss.sonatype.org/content/repositories/snapshots',
-                     '--define',
-                     "maven_user=#{creds[0]}",
-                     '--define',
-                     "maven_password=#{creds[1]}",
-                     '--define',
-                     'gpg_sign=false'],
-                    p)
-    end
-  else
-    puts 'No SNAPSHOT version configured. Targets will not be pushed to the snapshot repo in SonaType.'
-  end
+task 'publish-maven-snapshot' do
+  Rake::Task['java:release'].invoke('nightly')
 end
 
 desc 'Install jars to local m2 directory'
@@ -803,10 +769,9 @@ namespace :dotnet do
     Rake::Task['dotnet:version'].invoke('nightly') if nightly
     Rake::Task['dotnet:package'].invoke('--stamp')
 
-    release_version = dotnet_version
     api_key = ENV.fetch('NUGET_API_KEY', nil)
     push_destination = 'https://api.nuget.org/v3/index.json'
-    if release_version.include?('-nightly')
+    if nightly
       # Nightly builds are pushed to GitHub NuGet repository
       # This commands will run in GitHub Actions
       api_key = ENV.fetch('GITHUB_TOKEN', nil)
@@ -883,10 +848,10 @@ namespace :java do
     JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('build', args, target) }
   end
 
-  desc 'Build Grid Jar'
+  desc 'Build Grid Server'
   task :grid do |_task, arguments|
     args = arguments.to_a.compact
-    Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:grid')
+    Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:executable-grid')
   end
 
   desc 'Package Java bindings and grid into releasable packages and stage for release'
@@ -914,23 +879,16 @@ namespace :java do
   task :release do |_task, arguments|
     args = arguments.to_a.compact
     nightly = args.delete('nightly')
-    user, password = read_m2_user_pass
+
+    read_m2_user_pass
     repo = nightly ? 'content/repositories/snapshots' : 'service/local/staging/deploy/maven2'
-    gpg = nightly ? 'false' : 'true'
+    ENV['MAVEN_REPO'] = "https://oss.sonatype.org/#{repo}"
+    ENV['GPG_SIGN'] = (!nightly).to_s
 
     Rake::Task['java:version'].invoke if nightly
     Rake::Task['java:package'].invoke('--stamp')
     Rake::Task['java:build'].invoke('--stamp')
-    release_args = ['--stamp',
-                    '--define',
-                    "maven_repo=https://oss.sonatype.org/#{repo}",
-                    '--define',
-                    "maven_user=#{user}",
-                    '--define',
-                    "maven_password=#{password}",
-                    '--define',
-                    "gpg_sign=#{gpg}"]
-    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('run', release_args, target) }
+    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('run', ['--stamp'], target) }
   end
 
   desc 'Install jars to local m2 directory'
