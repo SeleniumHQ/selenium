@@ -9,17 +9,46 @@ load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "generate_devtools", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:import.bzl", "py_import")
-load("//py/private:release_selenium.bzl", "release_selenium")
 
-release_selenium(
+py_binary(
     name = "selenium-release",
+    srcs = [
+        "release-selenium.py",
+    ],
+    args = [
+        "upload",
+        "$(location :selenium-wheel)",
+        "$(location :selenium-sdist)",
+    ],
+    data = [
+        ":selenium-sdist",
+        ":selenium-wheel",
+    ],
+    main = "release-selenium.py",
+    deps = [
+        requirement("twine"),
+    ],
 )
 
-release_selenium(
+py_binary(
     name = "selenium-release-nightly",
-    additional_args = [
+    srcs = [
+        "release-selenium.py",
+    ],
+    args = [
+        "upload",
         "--repository",
         "testpypi",
+        "$(location :selenium-wheel)",
+        "$(location :selenium-sdist)",
+    ],
+    data = [
+        ":selenium-sdist",
+        ":selenium-wheel",
+    ],
+    main = "release-selenium.py",
+    deps = [
+        requirement("twine"),
     ],
 )
 
