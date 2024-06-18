@@ -18,7 +18,7 @@
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::shell::run_shell_command_by_os;
 use crate::{
-    default_cache_folder, format_one_arg, get_wmic, path_to_string, Command, REQUEST_TIMEOUT_SEC,
+    default_cache_folder, format_one_arg, path_to_string, Command, REQUEST_TIMEOUT_SEC,
     UNAME_COMMAND,
 };
 use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_SEC, WMIC_COMMAND_OS};
@@ -66,7 +66,7 @@ impl ManagerConfig {
 
         let self_os = OS;
         let self_arch = if WINDOWS.is(self_os) {
-            let wmic_command = Command::new_single(format_one_arg(WMIC_COMMAND_OS, &get_wmic()));
+            let wmic_command = Command::new_single(WMIC_COMMAND_OS.to_string());
             let wmic_output = run_shell_command_by_os(self_os, wmic_command).unwrap_or_default();
             if wmic_output.contains("32") {
                 ARCH_X86.to_string()

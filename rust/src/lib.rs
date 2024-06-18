@@ -74,10 +74,8 @@ pub const DEV: &str = "dev";
 pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
 pub const ESR: &str = "esr";
-pub const WMIC: &str = "wmic";
-pub const WMIC_DEFAULT_PATH: &str = r#"{}\System32\Wbem\WMIC.exe"#;
-pub const WMIC_COMMAND: &str = r#"{} datafile where name='{}' get Version /value"#;
-pub const WMIC_COMMAND_OS: &str = r#"{} os get osarchitecture"#;
+pub const WMIC_COMMAND: &str = "wmic datafile where name='{}' get Version /value";
+pub const WMIC_COMMAND_OS: &str = "wmic os get osarchitecture";
 pub const REG_VERSION_ARG: &str = "version";
 pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const REG_PV_ARG: &str = "pv";
@@ -90,12 +88,11 @@ pub const MSIEXEC_INSTALL_COMMAND: &str = "start /wait msiexec /i {} /qn ALLOWDO
 pub const WINDOWS_CHECK_ADMIN_COMMAND: &str = "net session";
 pub const DASH_VERSION: &str = "{}{}{} -v";
 pub const DASH_DASH_VERSION: &str = "{}{}{} --version";
-pub const DOUBLE_QUOTE: &str = "\"";
+pub const DOUBLE_QUOTE: &str = r#"""#;
 pub const SINGLE_QUOTE: &str = "'";
 pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
 pub const ENV_PROGRAM_FILES_X86: &str = "PROGRAMFILES(X86)";
 pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
-pub const ENV_SYSTEMROOT: &str = "SYSTEMROOT";
 pub const ENV_X86: &str = " (x86)";
 pub const ARCH_X86: &str = "x86";
 pub const ARCH_AMD64: &str = "amd64";
@@ -103,7 +100,7 @@ pub const ARCH_ARM64: &str = "arm64";
 pub const ENV_PROCESSOR_ARCHITECTURE: &str = "PROCESSOR_ARCHITECTURE";
 pub const TTL_SEC: u64 = 3600;
 pub const UNAME_COMMAND: &str = "uname -{}";
-pub const ESCAPE_COMMAND: &str = "printf %q \"{}\"";
+pub const ESCAPE_COMMAND: &str = r#"printf %q "{}""#;
 pub const SNAPSHOT: &str = "SNAPSHOT";
 pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
@@ -487,7 +484,7 @@ pub trait SeleniumManager {
                     }
                     if self.is_webview2() && PathBuf::from(self.get_browser_path()).is_dir() {
                         let browser_path = format!(
-                            r#"{}\{}\msedge{}"#,
+                            r"{}\{}\msedge{}",
                             self.get_browser_path(),
                             &self.get_browser_version(),
                             get_binary_extension(self.get_os())
@@ -618,7 +615,7 @@ pub trait SeleniumManager {
         if WINDOWS.is(os) {
             let command = Command::new_single(WINDOWS_CHECK_ADMIN_COMMAND.to_string());
             let output = run_shell_command_by_os(os, command).unwrap_or_default();
-            !output.is_empty() && !output.contains("error")
+            !output.is_empty() && !output.contains("error") && !output.contains("not recognized")
         } else {
             false
         }
@@ -1064,23 +1061,18 @@ pub trait SeleniumManager {
         cmd_version_arg: &str,
     ) -> Result<Option<String>, Error> {
         let mut browser_path = self.get_browser_path().to_string();
-        let mut escaped_browser_path = self.get_escaped_path(browser_path.to_string());
         if browser_path.is_empty() {
             if let Some(path) = self.detect_browser_path() {
                 browser_path = path_to_string(&path);
-                escaped_browser_path = self.get_escaped_path(browser_path.to_string());
             }
         }
+        let escaped_browser_path = self.get_escaped_path(browser_path.to_string());
 
         let mut commands = Vec::new();
-
         if WINDOWS.is(self.get_os()) {
             if !escaped_browser_path.is_empty() {
-                let wmic_command = Command::new_single(format_two_args(
-                    WMIC_COMMAND,
-                    &get_wmic(),
-                    &escaped_browser_path,
-                ));
+                let wmic_command =
+                    Command::new_single(format_one_arg(WMIC_COMMAND, &escaped_browser_path));
                 commands.push(wmic_command);
             }
             if !self.is_browser_version_unstable() {
@@ -1553,19 +1545,6 @@ pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> St
         .replacen("{}", arg1, 1)
         .replacen("{}", arg2, 1)
         .replacen("{}", arg3, 1)
-}
-
-pub fn get_wmic() -> String {
-    let system_root = env::var(ENV_SYSTEMROOT).unwrap_or_default();
-    let wmic_default_path = format_one_arg(WMIC_DEFAULT_PATH, &system_root);
-    let wmic_path = Path::new(&wmic_default_path);
-    if !wmic_path.exists() {
-        return match which(WMIC) {
-            Ok(path) => path_to_string(&path),
-            Err(_) => WMIC.to_string(),
-        };
-    }
-    path_to_string(wmic_path)
 }
 
 // ----------------------------------------------------------

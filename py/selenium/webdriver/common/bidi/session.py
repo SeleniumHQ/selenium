@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,18 +15,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
-module Selenium
-  module WebDriver
-    module Error
-      class ServerError < StandardError
-        def initialize(response)
-          if response.is_a? String
-            super
-          else
-            super("status code #{response.code}; payload #{response.payload}")
-          end
-        end
-      end # ServerError
-    end # Error
-  end # WebDriver
-end # Selenium
+
+def session_subscribe(*events, browsing_contexts=[]):
+    cmd_dict = {
+        "method": "session.subscribe",
+        "params": {
+            "events": events,
+        },
+    }
+    if browsing_contexts:
+        cmd_dict["params"]["browsingContexts"] = browsing_contexts
+    _ = yield cmd_dict
+    return None
+
+
+def session_unsubscribe(*events, browsing_contexts=[]):
+    cmd_dict = {
+        "method": "session.unsubscribe",
+        "params": {
+            "events": events,
+        },
+    }
+    if browsing_contexts:
+        cmd_dict["params"]["browsingContexts"] = browsing_contexts
+    _ = yield cmd_dict
+    return None
