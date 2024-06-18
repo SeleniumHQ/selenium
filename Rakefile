@@ -485,11 +485,11 @@ namespace :node do
 
   desc 'Release Node npm package'
   task :release do |_task, arguments|
-    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    args = arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['node:version'].invoke('nightly') if nightly
 
-    Bazel.execute('run', args, '//javascript/node/selenium-webdriver:selenium-webdriver.publish')
+    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.publish')
   end
 
   desc 'Release Node npm package'
@@ -550,12 +550,12 @@ namespace :py do
 
   desc 'Release Python wheel and sdist to pypi'
   task :release do |_task, arguments|
-    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    args = arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['py:version'].invoke('nightly') if nightly
 
     command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
-    Bazel.execute('run', args, command)
+    Bazel.execute('run', ['--stamp'], command)
   end
 
   desc 'generate and copy files required for local development'
@@ -725,10 +725,10 @@ namespace :rb do
 
     if nightly
       Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
-      Bazel.execute('run', args, '//rb:selenium-webdriver-release-nightly')
+      Bazel.execute('run', ['--stamp'], '//rb:selenium-webdriver-release-nightly')
     else
-      Bazel.execute('run', args, '//rb:selenium-webdriver-release')
-      Bazel.execute('run', args, '//rb:selenium-devtools-release')
+      Bazel.execute('run', ['--stamp'], '//rb:selenium-webdriver-release')
+      Bazel.execute('run', ['--stamp'], '//rb:selenium-devtools-release')
     end
   end
 
@@ -798,11 +798,10 @@ namespace :dotnet do
 
   desc 'Upload nupkg files to Nuget'
   task :release do |_task, arguments|
-    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    args = arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['dotnet:version'].invoke('nightly') if nightly
-
-    Rake::Task['dotnet:package'].invoke(*args)
+    Rake::Task['dotnet:package'].invoke('--stamp')
 
     release_version = dotnet_version
     api_key = ENV.fetch('NUGET_API_KEY', nil)
@@ -881,7 +880,7 @@ namespace :java do
   desc 'Build Java Client Jars'
   task :build do |_task, arguments|
     args = arguments.to_a.compact
-    Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-combined')
+    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('build', args, target) }
   end
 
   desc 'Build Grid Jar'
@@ -913,16 +912,15 @@ namespace :java do
 
   desc 'Deploy all jars to Maven'
   task :release do |_task, arguments|
-    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    args = arguments.to_a.compact
     nightly = args.delete('nightly')
     user, password = read_m2_user_pass
     repo = nightly ? 'content/repositories/snapshots' : 'service/local/staging/deploy/maven2'
     gpg = nightly ? 'false' : 'true'
 
     Rake::Task['java:version'].invoke if nightly
-    Rake::Task['java:package'].invoke(*args)
-
-    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('build', [], target) }
+    Rake::Task['java:package'].invoke('--stamp')
+    Rake::Task['java:build'].invoke('--stamp')
     release_args = ['--stamp',
                     '--define',
                     "maven_repo=https://oss.sonatype.org/#{repo}",
