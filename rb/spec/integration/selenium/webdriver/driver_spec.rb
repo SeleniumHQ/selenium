@@ -149,7 +149,7 @@ module Selenium
 
         it 'raises if invalid locator',
            except: {browser: :edge,
-                    platform: %i[windows linux],
+                    platform: :windows,
                     reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743'},
            exclude: {browser: %i[safari safari_preview], reason: 'Safari TimeoutError'} do
           driver.navigate.to url_for('xhtmlTest.html')
