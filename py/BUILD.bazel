@@ -30,7 +30,6 @@ py_binary(
     ],
 )
 
-
 py_binary(
     name = "selenium-release-nightly",
     srcs = [
@@ -38,10 +37,10 @@ py_binary(
     ],
     args = [
         "upload",
-        "$(location :selenium-wheel)",
-        "$(location :selenium-sdist)",
         "--repository",
         "testpypi",
+        "$(location :selenium-wheel)",
+        "$(location :selenium-sdist)",
     ],
     data = [
         ":selenium-sdist",
