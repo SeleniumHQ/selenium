@@ -144,27 +144,22 @@ class JmxTest {
         .hasSize(9);
 
       Object currentSessions = beanServer.getAttribute(name, "CurrentSessions");
-      assertThat(currentSessions).isInstanceOf(Number.class);
-      assertThat(Integer.parseInt(currentSessions.toString())).isZero();
+      assertNumberAttribute(currentSessions, 0);
 
       Object maxSessions = beanServer.getAttribute(name, "MaxSessions");
-      assertThat(maxSessions).isInstanceOf(Number.class);
-      assertThat(Integer.parseInt(maxSessions.toString())).isEqualTo(1);
+      assertNumberAttribute(maxSessions, 1);
 
       String status = (String) beanServer.getAttribute(name, "Status");
       assertThat(status).isEqualTo("UP");
 
       Object totalSlots = beanServer.getAttribute(name, "TotalSlots");
-      assertThat(totalSlots).isInstanceOf(Number.class);
-      assertThat(Integer.parseInt(totalSlots.toString())).isEqualTo(1);
+      assertNumberAttribute(totalSlots, 1);
 
       Object usedSlots = beanServer.getAttribute(name, "UsedSlots");
-      assertThat(usedSlots).isInstanceOf(Number.class);
-      assertThat(Integer.parseInt(usedSlots.toString())).isZero();
+      assertNumberAttribute(usedSlots, 0);
 
       Object load = beanServer.getAttribute(name, "Load");
-      assertThat(load).isInstanceOf(Number.class);
-      assertThat(Float.parseFloat(load.toString())).isEqualTo(0.0f);
+      assertNumberAttribute(attributeList, 0.0f);
 
       String remoteNodeUri = (String) beanServer.getAttribute(name, "RemoteNodeUri");
       assertThat(remoteNodeUri).isEqualTo(nodeUri.toString());
@@ -206,14 +201,10 @@ class JmxTest {
         .hasSize(2);
 
       Object requestTimeout = beanServer.getAttribute(name, "RequestTimeoutSeconds");
-      assertThat(requestTimeout).isInstanceOf(Number.class);
-      assertThat(Long.parseLong(requestTimeout.toString()))
-          .isEqualTo(newSessionQueueOptions.getRequestTimeoutSeconds());
+      assertNumberAttribute(requestTimeout, newSessionQueueOptions.getRequestTimeoutSeconds());
 
       Object retryInterval = beanServer.getAttribute(name, "RetryIntervalMilliseconds");
-      assertThat(retryInterval).isInstanceOf(Number.class);
-      assertThat(Long.parseLong(retryInterval.toString()))
-          .isEqualTo(newSessionQueueOptions.getRetryIntervalMilliseconds());
+      assertNumberAttribute(retryInterval, newSessionQueueOptions.getRetryIntervalMilliseconds());
     } catch (InstanceNotFoundException
         | IntrospectionException
         | ReflectionException
@@ -258,8 +249,7 @@ class JmxTest {
         .hasSize(1);
 
       Object size = beanServer.getAttribute(name, "NewSessionQueueSize");
-      assertThat(size).isInstanceOf(Number.class);
-      assertThat(Integer.parseInt(size.toString())).isZero();
+      assertNumberAttribute(size, 0);
     } catch (InstanceNotFoundException
         | IntrospectionException
         | ReflectionException
@@ -331,23 +321,19 @@ class JmxTest {
 
       Object nodeUpCount = beanServer.getAttribute(name, "NodeUpCount");
       LOG.info("Node up count=" + nodeUpCount);
-      assertThat(nodeUpCount).isInstanceOf(Number.class);
-      assertThat(Integer.parseInt(nodeUpCount.toString())).isEqualTo(1);
+      assertNumberAttribute(nodeUpCount, 1);
 
       Object nodeDownCount = beanServer.getAttribute(name, "NodeDownCount");
       LOG.info("Node down count=" + nodeDownCount);
-      assertThat(nodeDownCount).isInstanceOf(Number.class);
-      assertThat(Integer.parseInt(nodeDownCount.toString())).isZero();
+      assertNumberAttribute(nodeDownCount, 0);
 
       Object activeSlots = beanServer.getAttribute(name, "ActiveSlots");
       LOG.info("Active slots count=" + activeSlots);
-      assertThat(activeSlots).isInstanceOf(Number.class);
-      assertThat(Integer.parseInt(activeSlots.toString())).isZero();
+      assertNumberAttribute(activeSlots, 0);
 
       Object idleSlots = beanServer.getAttribute(name, "IdleSlots");
       LOG.info("Idle slots count=" + idleSlots);
-      assertThat(idleSlots).isInstanceOf(Number.class);
-      assertThat(Integer.parseInt(idleSlots.toString())).isEqualTo(1);
+      assertNumberAttribute(idleSlots, 1);
     }
   }
 
@@ -359,4 +345,25 @@ class JmxTest {
 
     return beanServer.getAttributes(name, attributeNames);
   }
+
+  private void assertCommonNumberAttributes(Object attribute) {
+    assertThat(attribute).isNotNull();
+    assertThat(attribute).isInstanceOf(Number.class);
+  }
+
+  private void assertNumberAttribute(Object attribute, int expectedValue) {
+    assertCommonNumberAttributes(attribute);
+    assertThat(Integer.parseInt(attribute.toString())).isEqualTo(expectedValue);
+  }
+
+  private void assertNumberAttribute(Object attribute, long expectedValue) {
+    assertCommonNumberAttributes(attribute);
+    assertThat(Long.parseLong(attribute.toString())).isEqualTo(expectedValue);
+  }
+
+  private void assertNumberAttribute(Object attribute, float expectedValue) {
+    assertCommonNumberAttributes(attribute);
+    assertThat(Float.parseFloat(attribute.toString())).isEqualTo(expectedValue);
+  }
+
 }

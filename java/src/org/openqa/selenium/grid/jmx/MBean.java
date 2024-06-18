@@ -225,11 +225,11 @@ public class MBean implements DynamicMBean {
             .entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
       } else if(res instanceof Number) {
-        return NumberFormat.getInstance().parse(res.toString());
+        return res;
       } else {
         return res.toString();
       }
-    } catch (IllegalAccessException | InvocationTargetException | ParseException e) {
+    } catch (IllegalAccessException | InvocationTargetException e) {
       LOG.severe("Error during execution: " + e.getMessage());
       return null;
     }
@@ -250,15 +250,11 @@ public class MBean implements DynamicMBean {
 
     // if attributeNames is empty, return an empty result list
     if (attributes == null || attributes.length == 0)
-            return resultList;
+      return resultList;
 
     for (int i = 0; i < attributes.length; i++) {
-      try {
-          Object value = getAttribute(attributes[i]);
-          resultList.add(new Attribute(attributes[i], value));
-      } catch (Exception e) {
-        LOG.severe("Error during execution: " + e.getMessage());
-      }
+      Object value = getAttribute(attributes[i]);
+      resultList.add(new Attribute(attributes[i], value));
     }
 
     return resultList;
