@@ -246,30 +246,22 @@ public class MBean implements DynamicMBean {
 
   @Override
   public AttributeList getAttributes(String[] attributes) {
-        // Check attributeNames to avoid NullPointerException later on
-    if (attributes == null) {
-        throw new RuntimeOperationsException(
-            new IllegalArgumentException(
-                "attributeNames[] cannot be null"),
-            "Cannot invoke a getter of " + this.getClass().getName());
-    }
     AttributeList resultList = new AttributeList();
 
     // if attributeNames is empty, return an empty result list
-    if (attributes.length == 0)
+    if (attributes == null || attributes.length == 0)
             return resultList;
-        
-    // build the result attribute list
-    for (int i=0 ; i<attributes.length ; i++){
-        try {        
-            Object value = getAttribute((String) attributes[i]);
-            resultList.add(new Attribute(attributes[i],value));
-        } catch (Exception e) {
-            // print debug info but continue processing list
-            e.printStackTrace();
-        }
+
+    for (int i = 0; i < attributes.length; i++) {
+      try {
+          Object value = getAttribute(attributes[i]);
+          resultList.add(new Attribute(attributes[i], value));
+      } catch (Exception e) {
+        LOG.severe("Error during execution: " + e.getMessage());
+      }
     }
-    return(resultList);
+
+    return resultList;
   }
 
   @Override
