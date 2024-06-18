@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.internal;
 
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
+
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -364,9 +368,24 @@ public final class Require {
       return file;
     }
 
+    public boolean isWindowsAppExecutionAlias() {
+      if (!FileSystems.getDefault().supportedFileAttributeViews().contains("dos")) {
+        return false;
+      }
+      final int WINDOWS_FILE_ATTRIBUTE_REPARSE_POINT = 0x400;
+      try {
+        int fileAttrs = (int) Files.getAttribute(file.toPath(), "dos:attributes", NOFOLLOW_LINKS);
+        return (fileAttrs & WINDOWS_FILE_ATTRIBUTE_REPARSE_POINT) != 0;
+      } catch (IOException e) {
+        return false;
+      }
+    }
+
     public File isExecutable() {
-      isFile();
-      if (!file.canExecute()) {
+      if (!isWindowsAppExecutionAlias()) {
+        isFile();
+      }
+      if (!Files.isExecutable(file.toPath())) {
         throw new IllegalStateException(
             String.format(MUST_BE_EXECUTABLE, name, file.getAbsolutePath()));
       }
