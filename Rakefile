@@ -337,11 +337,6 @@ end
 task 'release-java': %i[java-release-zip publish-maven]
 
 def read_m2_user_pass
-  ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
-  ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
-
-  return if ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
-
   puts 'Maven environment variables not set, inspecting /.m2/settings.xml.'
   settings = File.read("#{Dir.home}/.m2/settings.xml")
   found_section = false
@@ -880,7 +875,10 @@ namespace :java do
     args = arguments.to_a.compact
     nightly = args.delete('nightly')
 
-    read_m2_user_pass
+    ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
+    ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
+    read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+
     repo = nightly ? 'content/repositories/snapshots' : 'service/local/staging/deploy/maven2'
     ENV['MAVEN_REPO'] = "https://oss.sonatype.org/#{repo}"
     ENV['GPG_SIGN'] = (!nightly).to_s
