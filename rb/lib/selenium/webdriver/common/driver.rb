@@ -70,10 +70,9 @@ module Selenium
 
       def initialize(bridge: nil, listener: nil, **opts)
         @devtools = nil
-        @bidi = nil
         bridge ||= create_bridge(**opts)
-        add_extensions(bridge.browser)
         @bridge = listener ? Support::EventFiringBridge.new(bridge, listener) : bridge
+        add_extensions(@bridge.browser)
       end
 
       def inspect
@@ -98,6 +97,22 @@ module Selenium
 
       def navigate
         @navigate ||= WebDriver::Navigation.new(bridge)
+      end
+
+      #
+      # @return [Script]
+      # @see Script
+      #
+
+      def script(*args)
+        if args.any?
+          WebDriver.logger.deprecate('`Driver#script` as an alias for `#execute_script`',
+                                     '`Driver#execute_script`',
+                                     id: :driver_script)
+          execute_script(*args)
+        else
+          @script ||= WebDriver::Script.new(bridge)
+        end
       end
 
       #
@@ -174,7 +189,6 @@ module Selenium
       ensure
         @service_manager&.stop
         @devtools&.close
-        @bidi&.close
       end
 
       #
@@ -182,10 +196,7 @@ module Selenium
       #
 
       def close
-        # If no top-level browsing contexts are open after calling close,
-        # it indicates that the WebDriver session is closed.
-        # If the WebDriver session is closed, the BiDi session also needs to be closed.
-        bridge.close.tap { |handles| @bidi&.close if handles&.empty? }
+        bridge&.close
       end
 
       #
@@ -267,12 +278,6 @@ module Selenium
 
       alias all find_elements
 
-      #
-      #   driver.script('function() { ... };')
-      #
-
-      alias script execute_script
-
       # Get the first element matching the given selector. If given a
       # String or Symbol, it will be used as the id of the element.
       #
@@ -313,7 +318,8 @@ module Selenium
       attr_reader :bridge
 
       def create_bridge(caps:, url:, http_client: nil)
-        Remote::Bridge.new(http_client: http_client, url: url).tap do |bridge|
+        klass = caps['webSocketUrl'] ? Remote::BiDiBridge : Remote::Bridge
+        klass.new(http_client: http_client, url: url).tap do |bridge|
           bridge.create_session(caps)
         end
       end

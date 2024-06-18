@@ -59,7 +59,14 @@ module Selenium
             formatted = {driver_path: Platform.cygwin_path(output['driver_path'], only_cygwin: true),
                          browser_path: Platform.cygwin_path(output['browser_path'], only_cygwin: true)}
             Platform.assert_executable(formatted[:driver_path])
-            Platform.assert_executable(formatted[:browser_path])
+
+            browser_path = formatted[:browser_path]
+            Platform.assert_executable(browser_path)
+            if @options.respond_to?(:binary) && @options.binary.nil?
+              @options.binary = browser_path
+              @options.browser_version = nil
+            end
+
             formatted
           end
         rescue StandardError => e

@@ -2,14 +2,6 @@ workspace(name = "selenium")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-# This gets us a pre-compiled `protoc`
-
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
-
-rules_proto_dependencies()
-
-rules_proto_toolchains()
-
 # rules_closure are not published to BCR.
 
 http_archive(

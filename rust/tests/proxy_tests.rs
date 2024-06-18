@@ -15,15 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::assert_output;
-use assert_cmd::Command;
+use crate::common::{assert_output, get_selenium_manager};
+
 use exitcode::DATAERR;
 
 mod common;
 
 #[tokio::test]
 async fn wrong_proxy_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     let result = cmd
         .args([
             "--debug",
@@ -39,7 +39,7 @@ async fn wrong_proxy_test() {
 }
 #[test]
 fn wrong_protocol_proxy_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     let result = cmd
         .args(["--browser", "chrome", "--proxy", "wrong:://proxy"])
         .assert()
@@ -50,7 +50,7 @@ fn wrong_protocol_proxy_test() {
 
 #[test]
 fn wrong_port_proxy_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     let result = cmd
         .args([
             "--browser",

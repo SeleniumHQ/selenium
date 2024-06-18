@@ -213,7 +213,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
             "Error while creating session with the driver service. "
                 + "Stopping driver service: "
                 + e.getMessage();
-        LOG.warning(errorMessage);
+        LOG.log(Level.WARNING, errorMessage, e);
 
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
@@ -226,12 +226,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
       EXCEPTION.accept(attributeMap, e);
       String errorMessage =
           "Error while creating session with the driver service. " + e.getMessage();
-      LOG.warning(errorMessage);
+      LOG.log(Level.WARNING, errorMessage, e);
 
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
-      return Either.left(new SessionNotCreatedException(e.getMessage()));
+      return Either.left(new SessionNotCreatedException(errorMessage));
     } finally {
       span.close();
     }

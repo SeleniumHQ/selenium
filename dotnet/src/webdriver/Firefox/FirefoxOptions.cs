@@ -88,6 +88,9 @@ namespace OpenQA.Selenium.Firefox
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyProfileCapability, "Profile property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyBinaryCapability, "BrowserExecutableLocation property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxEnableDevToolsProtocolCapability, "EnableDevToolsProtocol property");
+            // Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
+            // https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
+            this.SetPreference("remote.active-protocols", 3);
         }
 
         /// <summary>

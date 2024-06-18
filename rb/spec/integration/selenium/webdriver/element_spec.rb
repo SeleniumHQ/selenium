@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Element do
+    describe Element, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       it 'clicks' do
         driver.navigate.to url_for('formPage.html')
         expect { driver.find_element(id: 'imageButton').click }.not_to raise_error
