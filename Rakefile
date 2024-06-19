@@ -336,69 +336,30 @@ end
 
 task 'release-java': %i[java-release-zip publish-maven]
 
-# TODO: just set the environment variables that maven is asking for
 def read_m2_user_pass
-  user = ENV.fetch('SEL_M2_USER', nil)
-  pass = ENV.fetch('SEL_M2_PASS', nil)
-  if user && pass
-    puts 'Fetching m2 user and pass from environment variables.'
-    return [user, pass]
-  end
-
-  puts 'Fetching m2 user and pass from /.m2/settings.xml.'
+  puts 'Maven environment variables not set, inspecting /.m2/settings.xml.'
   settings = File.read("#{Dir.home}/.m2/settings.xml")
   found_section = false
   settings.each_line do |line|
     if !found_section
       found_section = line.include? '<id>sonatype-nexus-staging</id>'
     elsif line.include?('<username>')
-      user = line[%r{<username>(.*?)</username>}, 1]
+      ENV['MAVEN_USER'] = line[%r{<username>(.*?)</username>}, 1]
     elsif line.include?('<password>')
-      pass = line[%r{<password>(.*?)</password>}, 1]
+      ENV['MAVEN_PASSWORD'] = line[%r{<password>(.*?)</password>}, 1]
     end
-    break if user && pass
+    break if ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
   end
-  [user, pass]
 end
 
 desc 'Publish all Java jars to Maven as stable release'
-task 'publish-maven': JAVA_RELEASE_TARGETS do
-  creds = read_m2_user_pass
-  JAVA_RELEASE_TARGETS.each do |p|
-    Bazel.execute('run',
-                  ['--stamp',
-                   '--define',
-                   'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2',
-                   '--define',
-                   "maven_user=#{creds[0]}",
-                   '--define',
-                   "maven_password=#{creds[1]}",
-                   '--define',
-                   'gpg_sign=true'],
-                  p)
-  end
+task 'publish-maven' do
+  Rake::Task['java:release'].invoke
 end
 
 desc 'Publish all Java jars to Maven as nightly release'
-task 'publish-maven-snapshot': JAVA_RELEASE_TARGETS do
-  creds = read_m2_user_pass
-  if java_version.end_with?('-SNAPSHOT')
-    JAVA_RELEASE_TARGETS.each do |p|
-      Bazel.execute('run',
-                    ['--stamp',
-                     '--define',
-                     'maven_repo=https://oss.sonatype.org/content/repositories/snapshots',
-                     '--define',
-                     "maven_user=#{creds[0]}",
-                     '--define',
-                     "maven_password=#{creds[1]}",
-                     '--define',
-                     'gpg_sign=false'],
-                    p)
-    end
-  else
-    puts 'No SNAPSHOT version configured. Targets will not be pushed to the snapshot repo in SonaType.'
-  end
+task 'publish-maven-snapshot' do
+  Rake::Task['java:release'].invoke('nightly')
 end
 
 desc 'Install jars to local m2 directory'
@@ -485,11 +446,11 @@ namespace :node do
 
   desc 'Release Node npm package'
   task :release do |_task, arguments|
-    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    args = arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['node:version'].invoke('nightly') if nightly
 
-    Bazel.execute('run', args, '//javascript/node/selenium-webdriver:selenium-webdriver.publish')
+    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.publish')
   end
 
   desc 'Release Node npm package'
@@ -550,12 +511,12 @@ namespace :py do
 
   desc 'Release Python wheel and sdist to pypi'
   task :release do |_task, arguments|
-    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    args = arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['py:version'].invoke('nightly') if nightly
 
-    command = nightly.nil? ? '//py:selenium-release' : '//py:selenium-release-nightly'
-    Bazel.execute('run', args, command)
+    command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
+    Bazel.execute('run', ['--stamp'], command)
   end
 
   desc 'generate and copy files required for local development'
@@ -706,9 +667,6 @@ namespace :rb do
     args = arguments.to_a.compact
     webdriver = args.delete('webdriver')
     devtools = args.delete('devtools')
-    if args.include?('--config=remote') || args.include?('--config=release')
-      File.write('rb/.ruby-version', 'jruby-9.4.7.0')
-    end
 
     Bazel.execute('build', args, '//rb:selenium-webdriver') if webdriver || !devtools
     Bazel.execute('build', args, '//rb:selenium-devtools') if devtools || !webdriver
@@ -724,16 +682,15 @@ namespace :rb do
   desc 'Push Ruby gems to rubygems'
   task :release do |_task, arguments|
     args = arguments.to_a.compact
-    if args.include?('--config=remote') || args.include?('--config=release')
-      File.write('rb/.ruby-version', 'jruby-9.4.7.0')
-    end
-
     nightly = args.delete('nightly')
-    wd_target = nightly ? '//rb:selenium-webdriver-release' : '//rb:selenium-webdriver-release-nightly'
-    cdp_target = nightly ? '//rb:selenium-devtools-release' : '//rb:selenium-devtools-release-nightly'
 
-    Bazel.execute('run', args, wd_target)
-    Bazel.execute('run', args, cdp_target)
+    if nightly
+      Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
+      Bazel.execute('run', ['--stamp'], '//rb:selenium-webdriver-release-nightly')
+    else
+      Bazel.execute('run', ['--stamp'], '//rb:selenium-webdriver-release')
+      Bazel.execute('run', ['--stamp'], '//rb:selenium-devtools-release')
+    end
   end
 
   desc 'Generate Ruby documentation'
@@ -802,16 +759,14 @@ namespace :dotnet do
 
   desc 'Upload nupkg files to Nuget'
   task :release do |_task, arguments|
-    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    args = arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['dotnet:version'].invoke('nightly') if nightly
+    Rake::Task['dotnet:package'].invoke('--stamp')
 
-    Rake::Task['dotnet:package'].invoke(*args)
-
-    release_version = dotnet_version
     api_key = ENV.fetch('NUGET_API_KEY', nil)
     push_destination = 'https://api.nuget.org/v3/index.json'
-    if release_version.include?('-nightly')
+    if nightly
       # Nightly builds are pushed to GitHub NuGet repository
       # This commands will run in GitHub Actions
       api_key = ENV.fetch('GITHUB_TOKEN', nil)
@@ -885,13 +840,13 @@ namespace :java do
   desc 'Build Java Client Jars'
   task :build do |_task, arguments|
     args = arguments.to_a.compact
-    Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-combined')
+    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('build', args, target) }
   end
 
-  desc 'Build Grid Jar'
+  desc 'Build Grid Server'
   task :grid do |_task, arguments|
     args = arguments.to_a.compact
-    Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:grid')
+    Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:executable-grid')
   end
 
   desc 'Package Java bindings and grid into releasable packages and stage for release'
@@ -917,9 +872,21 @@ namespace :java do
 
   desc 'Deploy all jars to Maven'
   task :release do |_task, arguments|
-    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
-    Rake::Task['java:package'].invoke(*args)
-    Rake::Task['publish-maven'].invoke
+    args = arguments.to_a.compact
+    nightly = args.delete('nightly')
+
+    ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
+    ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
+    read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+
+    repo = nightly ? 'content/repositories/snapshots' : 'service/local/staging/deploy/maven2'
+    ENV['MAVEN_REPO'] = "https://oss.sonatype.org/#{repo}"
+    ENV['GPG_SIGN'] = (!nightly).to_s
+
+    Rake::Task['java:version'].invoke if nightly
+    Rake::Task['java:package'].invoke('--stamp')
+    Rake::Task['java:build'].invoke('--stamp')
+    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('run', ['--stamp'], target) }
   end
 
   desc 'Install jars to local m2 directory'
@@ -1104,8 +1071,9 @@ namespace :all do
   end
 
   desc 'Update everything in preparation for a release'
-  task :prepare, [:channel] do |_task, arguments|
+  task :prepare, [:version, :channel] do |_task, arguments|
     chrome_channel = arguments[:channel] || 'Stable'
+    version = arguments[:version]
     args = Array(chrome_channel) ? ['--', "--chrome_channel=#{chrome_channel.capitalize}"] : []
     Bazel.execute('run', args, '//scripts:pinned_browsers')
     commit!('Update pinned browser versions', ['common/repositories.bzl'])
@@ -1135,7 +1103,7 @@ namespace :all do
     commit!('Update authors file', ['AUTHORS'])
 
     # Note that this does not include Rust version changes that are handled in separate rake:version task
-    Rake::Task['all:version'].invoke
+    Rake::Task['all:version'].invoke(version)
     commit!("FIX CHANGELOGS BEFORE MERGING!\n\nUpdate versions and change logs to release Selenium #{java_version}",
             ['dotnet/CHANGELOG',
              'dotnet/selenium-dotnet-version.bzl',
