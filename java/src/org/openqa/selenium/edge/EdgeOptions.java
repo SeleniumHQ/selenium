@@ -62,9 +62,10 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
    *
    * @param enable boolean flag to enable or disable the 'webview2' usage
    */
-  public void useWebView(boolean enable) {
+  public EdgeOptions useWebView(boolean enable) {
     String browserName = enable ? WEBVIEW2_BROWSER_NAME : EDGE.browserName();
     setCapability(CapabilityType.BROWSER_NAME, browserName);
+    return this;
   }
 
   @Override
