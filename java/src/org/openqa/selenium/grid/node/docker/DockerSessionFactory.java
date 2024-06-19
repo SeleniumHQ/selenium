@@ -373,13 +373,16 @@ public class DockerSessionFactory implements SessionFactory {
     // Capabilities set to env vars with higher precedence
     setCapsToEnvVars(sessionRequestCapabilities, envVars);
     envVars.put("DISPLAY_CONTAINER_NAME", containerIp);
-    Optional<String> testName = ofNullable(getTestName(sessionRequestCapabilities));
-    testName.ifPresent(name -> envVars.put("SE_VIDEO_FILE_NAME", String.format("%s.mp4", name)));
+    Optional<String> videoName =
+        ofNullable(getVideoFileName(sessionRequestCapabilities, "se:videoName"))
+            .or(() -> ofNullable(getVideoFileName(sessionRequestCapabilities, "se:name")));
+    videoName.ifPresent(name -> envVars.put("SE_VIDEO_FILE_NAME", String.format("%s.mp4", name)));
     return envVars;
   }
 
-  private String getTestName(Capabilities sessionRequestCapabilities) {
-    Optional<Object> testName = ofNullable(sessionRequestCapabilities.getCapability("se:name"));
+  private String getVideoFileName(Capabilities sessionRequestCapabilities, String capabilityName) {
+    Optional<Object> testName =
+        ofNullable(sessionRequestCapabilities.getCapability(capabilityName));
     if (testName.isPresent()) {
       String name = testName.get().toString();
       if (!name.isEmpty()) {
