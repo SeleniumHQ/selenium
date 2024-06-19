@@ -1,9 +1,28 @@
+# frozen_string_literal: true
+
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
     module FedCM
-      describe FedCM, only: { browser: :chrome }, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+      describe FedCM, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'}, only: {browser: :chrome} do
         let(:dialog) { driver.fedcm_dialog }
 
         before do
@@ -11,27 +30,12 @@ module Selenium
         end
 
         context 'without dialog present' do
-          it 'throws an error when getting the title' do
+          it 'throws an error' do
             expect { dialog.title }.to raise_error(Error::NoSuchAlertError)
-          end
-
-          it 'throws an error when getting the subtitle' do
             expect { dialog.subtitle }.to raise_error(Error::NoSuchAlertError)
-          end
-
-          it 'throws an error when getting the type' do
             expect { dialog.type }.to raise_error(Error::NoSuchAlertError)
-          end
-
-          it 'throws an error when getting the accounts' do
             expect { dialog.accounts }.to raise_error(Error::NoSuchAlertError)
-          end
-
-          it 'throws an error when selecting an account' do
             expect { dialog.select_account(1) }.to raise_error(Error::NoSuchAlertError)
-          end
-
-          it 'throws an error when cancelling the dialog' do
             expect { dialog.cancel }.to raise_error(Error::NoSuchAlertError)
           end
         end
