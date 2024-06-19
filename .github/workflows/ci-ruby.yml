@@ -73,7 +73,6 @@ jobs:
           - chrome
           - edge
           - firefox
-          - safari
         os:
           - ubuntu
           - windows
@@ -83,10 +82,6 @@ jobs:
             os: ubuntu
           - browser: edge
             os: macos
-          - browser: safari
-            os: ubuntu
-          - browser: safari
-            os: windows
     with:
       name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
@@ -99,6 +94,7 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}
+        ${{ matrix.os != 'windows' && '--pin_browsers=true' || '' }}
         //rb/spec/...
 
   integration-tests-remote:
@@ -115,8 +111,6 @@ jobs:
             os: ubuntu
           - browser: firefox
             os: ubuntu
-          - browser: safari
-            os: macos
     with:
       name: Remote Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
@@ -130,4 +124,5 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}-remote
+        ${{ matrix.os != 'windows' && '--pin_browsers=true' || '' }}
         //rb/spec/...

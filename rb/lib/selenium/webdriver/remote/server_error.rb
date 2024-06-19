@@ -23,7 +23,7 @@ module Selenium
       class ServerError < StandardError
         def initialize(response)
           if response.is_a? String
-            super(response)
+            super
           else
             super("status code #{response.code}; payload #{response.payload}")
           end

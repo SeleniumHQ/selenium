@@ -230,7 +230,7 @@ man_pages = [
 epub_title = 'Selenium'
 epub_author = 'The Selenium Project'
 epub_publisher = 'The Selenium Project'
-epub_copyright = '2009-2023 Software Freedom Conservancy'
+epub_copyright = '2009-2024 Software Freedom Conservancy'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
