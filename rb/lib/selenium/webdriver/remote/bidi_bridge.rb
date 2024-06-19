@@ -24,7 +24,7 @@ module Selenium
         attr_reader :bidi
 
         def create_session(capabilities)
-          super(capabilities)
+          super
           socket_url = @capabilities[:web_socket_url]
           @bidi = Selenium::WebDriver::BiDi.new(url: socket_url)
         end

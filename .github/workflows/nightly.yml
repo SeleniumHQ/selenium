@@ -37,8 +37,7 @@ jobs:
       cache-key: rb-nightly-${{ matrix.gem }}
       run: |
         export GEM_HOST_API_KEY="Bearer $GITHUB_TOKEN"
-        bazel run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
-        bazel run //rb:${{ matrix.gem }}-release-nightly
+        ./go rb:release[nightly]
   on-ruby-failure:
     name: On Ruby Failure
     runs-on: ubuntu-latest
@@ -64,11 +63,7 @@ jobs:
     with:
       name: Nightly Python Release
       cache-key: python-nightly
-      run: |
-        ./go "py:version[nightly]"
-        ./go py:build
-        pip install twine
-        twine upload --repository testpypi bazel-bin/py/selenium-4*.whl bazel-bin/py/selenium-4*.tar.gz
+      run: ./go py:release[nightly]
     secrets: inherit
   on-python-failure:
     name: On Python Failure
@@ -95,8 +90,7 @@ jobs:
     with:
       name: Nightly Java Release
       cache-key: java-nightly
-      run: |
-        ./go publish-maven-snapshot
+      run: ./go java:release[nightly]
     secrets: inherit
   on-java-failure:
     name: On Java Failure
@@ -124,9 +118,7 @@ jobs:
       name: Nightly DotNet Release
       cache-key: dotnet-nightly
       dotnet-version: '6.x'
-      run: |
-        ./go "dotnet:version[nightly]"
-        ./go dotnet:release
+      run: ./go dotnet:release[--stamp,nightly]
     secrets: inherit
   on-dotnet-failure:
     name: On .NET Failure
@@ -153,9 +145,7 @@ jobs:
     with:
       name: Nightly Grid Release
       cache-key: grid-nightly
-      run: |
-        echo build --stamp >>.bazelrc.local
-        ./go java-release-zip
+      run: ./go java:package[--config=release]
       nightly-release-files: build/dist/*.*
   on-grid-failure:
     name: On Grid Failure
@@ -189,8 +179,7 @@ jobs:
         echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
         echo "@seleniumhq:registry=https://npm.pkg.github.com" >> ~/.npmrc
         echo "always-auth=true" >> ~/.npmrc
-        ./go "node:version[nightly]"
-        ./go node:release
+        ./go node:release[--stamp,nightly]
     secrets: inherit
   on-javascript-failure:
     name: On JavaScript Failure

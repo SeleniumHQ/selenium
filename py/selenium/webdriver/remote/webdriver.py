@@ -41,6 +41,7 @@ from selenium.common.exceptions import JavascriptException
 from selenium.common.exceptions import NoSuchCookieException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.bidi.script import Script
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
@@ -63,8 +64,10 @@ from .script_key import ScriptKey
 from .shadowroot import ShadowRoot
 from .switch_to import SwitchTo
 from .webelement import WebElement
+from .websocket_connection import WebSocketConnection
 
 cdp = None
+devtools = None
 
 
 def import_cdp():
@@ -207,6 +210,9 @@ class WebDriver(BaseWebDriver):
         self._authenticator_id = None
         self.start_client()
         self.start_session(capabilities)
+
+        self._websocket_connection = None
+        self._script = None
 
     def __repr__(self):
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
@@ -1018,6 +1024,32 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_LOG, {"type": log_type})["value"]
 
+    def start_devtools(self):
+        global devtools
+        if self._websocket_connection:
+            return devtools, self._websocket_connection
+        else:
+            global cdp
+            import_cdp()
+
+            if not devtools:
+                if self.caps.get("se:cdp"):
+                    ws_url = self.caps.get("se:cdp")
+                    version = self.caps.get("se:cdpVersion").split(".")[0]
+                else:
+                    version, ws_url = self._get_cdp_details()
+
+                if not ws_url:
+                    raise WebDriverException("Unable to find url to connect to from capabilities")
+
+                devtools = cdp.import_devtools(version)
+            self._websocket_connection = WebSocketConnection(ws_url)
+            targets = self._websocket_connection.execute(devtools.target.get_targets())
+            target_id = targets[0].target_id
+            session = self._websocket_connection.execute(devtools.target.attach_to_target(target_id, True))
+            self._websocket_connection.session_id = session
+            return devtools, self._websocket_connection
+
     @asynccontextmanager
     async def bidi_connection(self):
         global cdp
@@ -1037,6 +1069,24 @@ class WebDriver(BaseWebDriver):
             target_id = targets[0].target_id
             async with conn.open_session(target_id) as session:
                 yield BidiConnection(session, cdp, devtools)
+
+    @property
+    def script(self):
+        if not self._websocket_connection:
+            self._start_bidi()
+
+        if not self._script:
+            self._script = Script(self._websocket_connection)
+
+        return self._script
+
+    def _start_bidi(self):
+        if self.caps.get("webSocketUrl"):
+            ws_url = self.caps.get("webSocketUrl")
+        else:
+            raise WebDriverException("Unable to find url to connect to from capabilities")
+
+        self._websocket_connection = WebSocketConnection(ws_url)
 
     def _get_cdp_details(self):
         import json
