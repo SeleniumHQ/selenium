@@ -31,4 +31,5 @@ jobs:
         bazel test
         --flaky_test_attempts 3
         --test_tag_filters ${{ matrix.browser }}
+        --local_test_jobs 1
         //javascript/node/...
