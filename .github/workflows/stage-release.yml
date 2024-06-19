@@ -43,7 +43,7 @@ jobs:
           java-version: 17
           distribution: 'temurin'
       - name: Build and Stage Packages
-        run: ./go all:package
+        run: ./go all:package[--config=release]
       - name: Generate Draft Release
         uses: softprops/action-gh-release@v2
         with:
