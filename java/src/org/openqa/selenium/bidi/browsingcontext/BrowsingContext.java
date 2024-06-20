@@ -368,66 +368,50 @@ public class BrowsingContext {
     this.traverseHistory(1);
   }
 
+  List<RemoteValue> parseRemoteValues(JsonInput jsonInput) {
+    Map<String, Object> result = jsonInput.read(Map.class);
+    try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
+         JsonInput input = JSON.newInput(reader)) {
+      return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
+    }
+  }
+
   public List<RemoteValue> locateNodes(LocateNodeParameters parameters) {
     Map<String, Object> params = new HashMap<>(parameters.toMap());
     params.put("context", id);
     return this.bidi.send(
-        new Command<>(
-            "browsingContext.locateNodes",
-            params,
-            jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
-                  JsonInput input = JSON.newInput(reader)) {
-                return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
-              }
-            }));
+      new Command<>(
+        "browsingContext.locateNodes",
+        params,
+        this::parseRemoteValues));
   }
 
   public List<RemoteValue> locateNodes(Locator locator) {
     return this.bidi.send(
-        new Command<>(
-            "browsingContext.locateNodes",
-            Map.of("context", id, "locator", locator.toMap()),
-            jsonInput -> {
-              Map<String, Object> result = jsonInput.read(Map.class);
-              try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
-                  JsonInput input = JSON.newInput(reader)) {
-                return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
-              }
-            }));
+      new Command<>(
+        "browsingContext.locateNodes",
+        Map.of("context", id, "locator", locator.toMap()),
+        this::parseRemoteValues));
   }
 
   public RemoteValue locateNode(Locator locator) {
     List<RemoteValue> remoteValues =
-        this.bidi.send(
-            new Command<>(
-                "browsingContext.locateNodes",
-                Map.of("context", id, "locator", locator.toMap(), "maxNodeCount", 1),
-                jsonInput -> {
-                  Map<String, Object> result = jsonInput.read(Map.class);
-                  try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
-                      JsonInput input = JSON.newInput(reader)) {
-                    return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
-                  }
-                }));
+      this.bidi.send(
+        new Command<>(
+          "browsingContext.locateNodes",
+          Map.of("context", id, "locator", locator.toMap(), "maxNodeCount", 1),
+          this::parseRemoteValues));
 
     return remoteValues.get(0);
   }
 
   public WebElement locateElement(Locator locator) {
     List<RemoteValue> remoteValues =
-        this.bidi.send(
-            new Command<>(
-                "browsingContext.locateNodes",
-                Map.of("context", id, "locator", locator.toMap(), "maxNodeCount", 1),
-                jsonInput -> {
-                  Map<String, Object> result = jsonInput.read(Map.class);
-                  try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
-                      JsonInput input = JSON.newInput(reader)) {
-                    return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
-                  }
-                }));
+      this.bidi.send(
+        new Command<>(
+          "browsingContext.locateNodes",
+          Map.of("context", id, "locator", locator.toMap(), "maxNodeCount", 1),
+          this::parseRemoteValues));
 
     List<WebElement> elements = nodeRemoteValueToWebElementConverter(remoteValues);
     return elements.get(0);
