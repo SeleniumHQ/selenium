@@ -43,7 +43,6 @@ Webdriver.common
    selenium.webdriver.common.actions.pointer_actions
    selenium.webdriver.common.actions.wheel_input
    selenium.webdriver.common.actions.wheel_actions
-   selenium.webdriver.common.html5.application_cache
    selenium.webdriver.common.virtual_authenticator
 
 Webdriver.support

@@ -1071,8 +1071,9 @@ namespace :all do
   end
 
   desc 'Update everything in preparation for a release'
-  task :prepare, [:channel] do |_task, arguments|
+  task :prepare, [:version, :channel] do |_task, arguments|
     chrome_channel = arguments[:channel] || 'Stable'
+    version = arguments[:version]
     args = Array(chrome_channel) ? ['--', "--chrome_channel=#{chrome_channel.capitalize}"] : []
     Bazel.execute('run', args, '//scripts:pinned_browsers')
     commit!('Update pinned browser versions', ['common/repositories.bzl'])
@@ -1102,7 +1103,7 @@ namespace :all do
     commit!('Update authors file', ['AUTHORS'])
 
     # Note that this does not include Rust version changes that are handled in separate rake:version task
-    Rake::Task['all:version'].invoke
+    Rake::Task['all:version'].invoke(version)
     commit!("FIX CHANGELOGS BEFORE MERGING!\n\nUpdate versions and change logs to release Selenium #{java_version}",
             ['dotnet/CHANGELOG',
              'dotnet/selenium-dotnet-version.bzl',

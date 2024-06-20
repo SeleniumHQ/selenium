@@ -22,7 +22,7 @@ from time import sleep
 
 from websocket import WebSocketApp
 
-logger = logging.getLogger("websocket")
+logger = logging.getLogger(__name__)
 
 
 class WebSocketConnection:
@@ -32,11 +32,11 @@ class WebSocketConnection:
     _max_log_message_size = 9999
 
     def __init__(self, url):
+        self.callbacks = {}
         self.session_id = None
         self.url = url
 
         self._id = 0
-        self._callbacks = {}
         self._messages = {}
         self._started = False
 
@@ -57,17 +57,38 @@ class WebSocketConnection:
             payload["sessionId"] = self.session_id
 
         data = json.dumps(payload)
-        logger.debug(f"WebSocket -> {data}"[: self._max_log_message_size])
+        logger.debug(f"-> {data}"[: self._max_log_message_size])
         self._ws.send(data)
 
         self._wait_until(lambda: self._id in self._messages)
-        result = self._messages.pop(self._id)["result"]
-        return self._deserialize_result(result, command)
+        response = self._messages.pop(self._id)
 
-    def on(self, event, callback):
-        if event not in self._callbacks:
-            self._callbacks[event.event_class] = []
-        self._callbacks[event.event_class].append(lambda params: callback(event.from_json(params)))
+        if "error" in response:
+            raise Exception(response["error"])
+        else:
+            result = response["result"]
+            return self._deserialize_result(result, command)
+
+    def add_callback(self, event, callback):
+        event_name = event.event_class
+        if event_name not in self.callbacks:
+            self.callbacks[event_name] = []
+
+        def _callback(params):
+            callback(event.from_json(params))
+
+        self.callbacks[event_name].append(_callback)
+        return id(_callback)
+
+    on = add_callback
+
+    def remove_callback(self, event, callback_id):
+        event_name = event.event_class
+        if event_name in self.callbacks:
+            for callback in self.callbacks[event_name]:
+                if id(callback) == callback_id:
+                    self.callbacks[event_name].remove(callback)
+                    return
 
     def _serialize_command(self, command):
         return next(command)
@@ -87,7 +108,7 @@ class WebSocketConnection:
             self._process_message(message)
 
         def on_error(ws, error):
-            logger.debug(f"WebSocket error: {error}")
+            logger.debug(f"error: {error}")
             ws.close()
 
         def run_socket():
@@ -102,14 +123,14 @@ class WebSocketConnection:
 
     def _process_message(self, message):
         message = json.loads(message)
-        logger.debug(f"WebSocket <- {message}"[: self._max_log_message_size])
+        logger.debug(f"<- {message}"[: self._max_log_message_size])
 
         if "id" in message:
             self._messages[message["id"]] = message
 
         if "method" in message:
             params = message["params"]
-            for callback in self._callbacks.get(message["method"], []):
+            for callback in self.callbacks.get(message["method"], []):
                 callback(params)
 
     def _wait_until(self, condition):
