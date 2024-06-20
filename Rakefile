@@ -1056,18 +1056,18 @@ namespace :all do
     Rake::Task['all:version'].invoke('nightly')
 
     puts 'Committing nightly version updates'
-    commit!('update versions to nightly', ['java/version.bzl',
+    commit!('update versions to nightly', ['dotnet/selenium-dotnet-version.bzl',
+                                           'java/version.bzl',
+                                           'javascript/node/selenium-webdriver/BUILD.bazel',
+                                           'javascript/node/selenium-webdriver/package.json',
+                                           'py/docs/source/conf.py',
+                                           'py/selenium/webdriver/__init__.py',
+                                           'py/selenium/__init__.py',
+                                           'py/BUILD.bazel',
+                                           'py/setup.py',
                                            'rb/lib/selenium/webdriver/version.rb',
                                            'rb/Gemfile.lock',
-                                           'py/setup.py',
-                                           'py/BUILD.bazel',
-                                           'py/selenium/__init__.py',
-                                           'py/selenium/webdriver/__init__.py',
-                                           'py/docs/source/conf.py',
-                                           'rust/BUILD.bazel',
-                                           'rust/Cargo.Bazel.lock',
-                                           'rust/Cargo.lock',
-                                           'rust/Cargo.toml'])
+                                           'package-lock.json'])
 
     print 'Do you want to push the committed changes? (Y/n): '
     response = $stdin.gets.chomp.downcase
