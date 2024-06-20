@@ -1,19 +1,10 @@
 v4.22.0
 ======
 
->>> [dotnet] change source of navigation alias (#13960)
-[dotnet] have url property setter call navigation method instead of the other way around
->>> [dotnet] add asynchronous methods to Navigation class (#14051)
-* allow driver to execute commands asynchronously
-*  implement navigation commands with async tasks
-* dd async navigation methods to interface and implement in event firing webdriver
-* add explicit tests for navigation async methods
-* use async delegate with Task.Run instead of ConfigureAwait
->>> [build] update rules_dotnet to 0.15.1 (#14096)
->>> Add preference to enable CDP in Firefox by default (#14091)
-Related to #11736
->>> update copyright dates
->>> Update supported versions for Chrome DevTools
+* Have url property setter call navigation method instead of the other way around (#13960)
+* Add asynchronous methods to Navigation class (#14051)
+* Add preference to enable CDP in Firefox by default (#14091)
+* Add CDP for Chrome 126 and remove 123
 
 v4.21.0
 ======
