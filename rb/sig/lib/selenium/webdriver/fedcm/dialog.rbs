@@ -15,7 +15,7 @@ module Selenium
 
         def select_account: (Integer index) -> Remote::Response?
 
-        def subtitle: -> (String | Remote::Response)
+        def subtitle: -> (String | Remote::Response)?
 
         def title: -> (String | Remote::Response)
 

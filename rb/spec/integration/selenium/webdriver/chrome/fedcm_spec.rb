@@ -17,12 +17,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative 'spec_helper'
+require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
     module FedCM
-      describe FedCM, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'}, only: {browser: :chrome} do
+      describe FedCM, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :chrome}] do
         let(:dialog) { driver.fedcm_dialog }
 
         before do

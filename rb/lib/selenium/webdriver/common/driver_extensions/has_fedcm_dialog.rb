@@ -26,7 +26,7 @@ module Selenium
         # FedCm by default delays promise resolution in failure cases for privacy reasons.
         # This method allows turning it off to let tests run faster where this is not relevant.
         def enable_fedcm_delay=(enable)
-          @bridge.set_fedcm_delay(enable)
+          @bridge.fedcm_delay(enable)
         end
 
         # Resets the FedCm dialog cooldown.

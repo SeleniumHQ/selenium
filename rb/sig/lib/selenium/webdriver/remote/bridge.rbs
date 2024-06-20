@@ -62,7 +62,7 @@ module Selenium
 
         def browser: () -> untyped
 
-        def set_fedcm_delay: -> bool
+        def fedcm_delay: -> bool
 
         def status: () -> untyped
 
