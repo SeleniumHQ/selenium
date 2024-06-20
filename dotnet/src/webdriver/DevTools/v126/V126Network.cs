@@ -1,4 +1,4 @@
-// <copyright file="V123Network.cs" company="WebDriver Committers">
+// <copyright file="V126Network.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,29 +16,29 @@
 // limitations under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V123.Fetch;
-using OpenQA.Selenium.DevTools.V123.Network;
+using OpenQA.Selenium.DevTools.V126.Fetch;
+using OpenQA.Selenium.DevTools.V126.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.DevTools.V123
+namespace OpenQA.Selenium.DevTools.V126
 {
     /// <summary>
-    /// Class providing functionality for manipulating network calls using version 123 of the DevTools Protocol
+    /// Class providing functionality for manipulating network calls using version 126 of the DevTools Protocol
     /// </summary>
-    public class V123Network : DevTools.Network
+    public class V126Network : DevTools.Network
     {
         private FetchAdapter fetch;
         private NetworkAdapter network;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V123Network"/> class.
+        /// Initializes a new instance of the <see cref="V126Network"/> class.
         /// </summary>
         /// <param name="network">The adapter for the Network domain.</param>
         /// <param name="fetch">The adapter for the Fetch domain.</param>
-        public V123Network(NetworkAdapter network, FetchAdapter fetch)
+        public V126Network(NetworkAdapter network, FetchAdapter fetch)
         {
             this.network = network;
             this.fetch = fetch;
@@ -216,9 +216,9 @@ namespace OpenQA.Selenium.DevTools.V123
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
             {
                 RequestId = requestId,
-                AuthChallengeResponse = new V123.Fetch.AuthChallengeResponse()
+                AuthChallengeResponse = new V126.Fetch.AuthChallengeResponse()
                 {
-                    Response = V123.Fetch.AuthChallengeResponseResponseValues.ProvideCredentials,
+                    Response = V126.Fetch.AuthChallengeResponseResponseValues.ProvideCredentials,
                     Username = userName,
                     Password = password
                 }
@@ -235,9 +235,9 @@ namespace OpenQA.Selenium.DevTools.V123
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
             {
                 RequestId = requestId,
-                AuthChallengeResponse = new OpenQA.Selenium.DevTools.V123.Fetch.AuthChallengeResponse()
+                AuthChallengeResponse = new OpenQA.Selenium.DevTools.V126.Fetch.AuthChallengeResponse()
                 {
-                    Response = V123.Fetch.AuthChallengeResponseResponseValues.CancelAuth
+                    Response = V126.Fetch.AuthChallengeResponseResponseValues.CancelAuth
                 }
             }).ConfigureAwait(false);
         }
