@@ -28,9 +28,9 @@ class WebDriver(RemoteWebDriver):
     """Controls the WPEWebKitDriver and allows you to drive the browser."""
 
     def __init__(
-      self,
-      options=None,
-      service: Service = None,
+        self,
+        options=None,
+        service: Service = None,
     ):
         """Creates a new instance of the WPEWebKit driver.
 
