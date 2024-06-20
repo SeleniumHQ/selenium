@@ -66,10 +66,16 @@ class LogInspector {
   }
 
   removeCallback(id) {
+    let hasId = false
     for (const [, callbacks] of this.listener) {
       if (callbacks.has(id)) {
         callbacks.delete(id)
+        hasId = true
       }
+    }
+
+    if (!hasId) {
+      throw Error(`Callback with id ${id} not found`)
     }
   }
 
