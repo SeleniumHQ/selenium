@@ -10,7 +10,7 @@ load("//javascript:defs.bzl", "mocha_test")
 
 npm_link_all_packages(name = "node_modules")
 
-VERSION = "4.22.0"
+VERSION = "4.23.0-nightly202406201609"
 
 BROWSER_VERSIONS = [
     "v85",

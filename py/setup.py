@@ -27,7 +27,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "4.22.0",
+    'version': "4.23.0.dev202406201609",
     'license': 'Apache 2.0',
     'description': 'Official Python bindings for Selenium WebDriver.',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
