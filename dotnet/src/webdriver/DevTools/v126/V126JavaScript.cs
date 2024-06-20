@@ -1,4 +1,4 @@
-// <copyright file="V123JavaScript.cs" company="WebDriver Committers">
+// <copyright file="V126JavaScript.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -15,28 +15,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using OpenQA.Selenium.DevTools.V123.Page;
-using OpenQA.Selenium.DevTools.V123.Runtime;
+using OpenQA.Selenium.DevTools.V126.Page;
+using OpenQA.Selenium.DevTools.V126.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.DevTools.V123
+namespace OpenQA.Selenium.DevTools.V126
 {
     /// <summary>
-    /// Class containing the JavaScript implementation for version 123 of the DevTools Protocol.
+    /// Class containing the JavaScript implementation for version 126 of the DevTools Protocol.
     /// </summary>
-    public class V123JavaScript : JavaScript
+    public class V126JavaScript : JavaScript
     {
         private RuntimeAdapter runtime;
         private PageAdapter page;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V123JavaScript"/> class.
+        /// Initializes a new instance of the <see cref="V126JavaScript"/> class.
         /// </summary>
         /// <param name="runtime">The DevTools Protocol adapter for the Runtime domain.</param>
         /// <param name="page">The DevTools Protocol adapter for the Page domain.</param>
-        public V123JavaScript(RuntimeAdapter runtime, PageAdapter page)
+        public V126JavaScript(RuntimeAdapter runtime, PageAdapter page)
         {
             this.runtime = runtime;
             this.page = page;
