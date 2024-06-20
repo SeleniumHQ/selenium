@@ -33,7 +33,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+      driver = await env.builder().build()
     })
 
     afterEach(async function () {
@@ -178,7 +178,7 @@ suite(
 
         await browsingContext.navigate(Pages.xhtmlTestPage, 'complete')
 
-        const elements = await browsingContext.locateNodes(Locator.css('div'), 1, undefined, sandbox)
+        const elements = await browsingContext.locateNodes(Locator.css('div'), 1, sandbox)
 
         assert.strictEqual(elements.length, 1)
 
