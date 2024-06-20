@@ -1,3 +1,40 @@
+4.22.0 (2024-06-20)
+=========================
+
+>>> Updating to nightly versions
+>>> [rb] Set binary path on driver path lookup
+It's a hacky way to solve #13918. The follow-up is to ensure Rails don't preload the drivers/browsers (assuming Selenium-Manager doesn't have race conditions) and make DriverFinder a private API.
+>>> [rb] Release 4.21.1
+>>> [rb] Update version for nightly
+>>> [rb] Force UTF-8 encoding on logger
+This should solve warnings from #6937
+>>> [rb] Don't crash when ChildProcess is already killed
+Fixes #14032
+>>> [rb] manage bidi instance on the bridge not the driver (#14071)
+* [rb] manage bidi instance on the bridge not the driver
+* restore null safety checks
+>>> [rb] Implement High Level Logging API with BiDi (#14073)
+* add and remove logging handlers with BiDi
+* use #object_id instead of creating new ids to track callbacks
+* do not send browsing contexts to subscription if not needed
+* deprecate Driver#script & LogInspector
+* error if trying to remove an id that does not exist
+* do not unsubscribe if never subscribed in the first place
+* do not deprecate callbacks people don't have to care about getting the id back
+>>> [rb] make new #camel_to_snake a private class method
+>>> [rb] #camel_to_snake as a class method cannot be private when called by constructor
+>>> [rb] do not delete the reason message from the guard, we need it later
+>>> [rb] when test is guarded just output the whole matching guard
+>>> [rb] fix the guard tests
+>>> [rb] implement toggle for BiDi and Classic implementations (#14092)
+[rb] use BiDiBridge subclass when web_socket_url is true
+>>> Add preference to enable CDP in Firefox by default (#14091)
+Related to #11736
+>>> [rb] update gems and rubocop
+>>> [rb] Adds support for the w3c silent option for the ruby library (#14152)
+Adds support for the w3c silent option for the ruby library
+>>> Update supported versions for Chrome DevTools
+
 4.21.1 (2024-05-16)
 =========================
 

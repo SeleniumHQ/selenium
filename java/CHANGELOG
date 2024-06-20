@@ -1,3 +1,20 @@
+v4.22.0
+======
+
+>>> [grid] log the complete exception
+>>> [grid] log unsuccessful attempts to create a session
+>>> [grid] prevent UrlChecker leaking threads on timeout
+>>> [java] Add convenience for enabling BiDi (#14029)
+Related to #13991
+>>> 14034: Eliminate assumption of mutable list argument in SeleniumManager.getBinaryPaths() (#14036)
+14034: Eliminate assumption of mutable list argument
+>>> 14035: Add 'toJson' method to produce expected serialization (#14038)
+>>> [java] let TracedCommandExecutor delegate NeedsLocalLogs calls
+>>> Add preference to enable CDP in Firefox by default (#14091)
+Related to #11736
+>>> [java][grid]: video file name set independently in dynamic grid via se:videoName (#14148)
+>>> Update supported versions for Chrome DevTools
+
 v4.21.0
 ======
 

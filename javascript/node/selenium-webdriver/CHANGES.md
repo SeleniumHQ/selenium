@@ -1,3 +1,23 @@
+## 4.22.0
+
+>>> Updating to nightly versions
+>>> Fixing cargo file and package lock files
+>>> [js] Adding jsdoc and clean-jsdoc-theme
+>>> [js] Marking those as modules
+>>> [js] Running format script
+>>> [bidi][js] Add types for user prompt related events (#14097)
+>>> Add preference to enable CDP in Firefox by default (#14091)
+Related to #11736
+>>> [bazel + js]: Get small js tests running on the rbe (#14123)
+>>> [bidi][js] Add callback handlers for logging APIs (#14120)
+>>> fixed docs api url in README.md for selenium-webdriver npm package (#14138)
+* fixed docs api url in README.md for selenium-webdriver npm package
+* updated URL to point directly to the JavaScript API documentation
+>>> [bidi][js] Add high-level logging API (#14135)
+Related to #13992
+>>> [js] Fix locate nodes BiDi test (#14140)
+>>> Update supported versions for Chrome DevTools
+
 ## 4.21.0
 
 - Add CDP for Chrome 125 and remove 122

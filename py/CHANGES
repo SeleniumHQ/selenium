@@ -1,3 +1,23 @@
+Selenium 4.22.0
+
+>>> Updating to nightly versions
+>>> Fix EOFError when calling the Remote WebDriver download_file method (#14031)
+>>> [py] Add low-level sync API to use DevTools (#13977)
+>>> Add preference to enable CDP in Firefox by default (#14091)
+Related to #11736
+>>> [py] allow using enable_bidi property on options class
+enable_bidi is a boolean property that defaults to False and can be set to True by user
+web_socket_url is a string property that defaults to None and is set by the remote response
+>>> [py] Implement script module for BiDi
+The commit also generates Bazel test targets for BiDi-backed implementation
+>>> [py] remove desired capabilities argument for Webkitgtk (#14128)
+* initial changes for capabilities removing
+remove capabilities and add default Options
+same  in safari.webdriver
+* make webkitgtk.webdriver same as wpewebkit.webdriver
+* fix formatting with isort
+* applying formatting with tox
+
 Selenium 4.21.0
 
 * Add CDP for Chrome 125 and remove 122
