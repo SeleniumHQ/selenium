@@ -1,0 +1,85 @@
+name: Update Documentation
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag (e.g. selenium-4.21.0)
+        required: true
+        type: string
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  java-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Update Documentation
+        run: ./go java:docs[true]
+
+  ruby-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Update Documentation
+        run: ./go ruby:docs[true]
+
+  python-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+      - name: Update Documentation
+        run: ./go py:docs[true]
+
+  dotnet-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - name: Install specific version of DocFX tool
+        #  Pinning to 2.75.3 to avoid breaking changes in newer versions
+        #  See https://github.com/dotnet/docfx/issues/9855
+        run: dotnet tool install --global --version 2.75.3 docfx
+      - name: Update Documentation
+        run: ./go dotnet:docs[true]
+
+  node-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - name: Install npm dependencies
+        run: |
+          npm install
+          npm install --prefix javascript/node/selenium-webdriver
+      - name: Update Documentation
+        run: ./go node:docs[true]

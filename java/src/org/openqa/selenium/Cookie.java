@@ -129,7 +129,7 @@ public class Cookie implements Serializable {
       String sameSite) {
     this.name = name;
     this.value = value;
-    this.path = path == null || "".equals(path) ? "/" : path;
+    this.path = path == null || path.isEmpty() ? "/" : path;
 
     this.domain = stripPort(domain);
     this.isSecure = isSecure;
@@ -203,7 +203,7 @@ public class Cookie implements Serializable {
   }
 
   public void validate() {
-    if (name == null || "".equals(name) || value == null || path == null) {
+    if (name == null || name.isEmpty() || value == null || path == null) {
       throw new IllegalArgumentException(
           "Required attributes are not set or " + "any non-null attribute set to null");
     }
