@@ -1035,14 +1035,11 @@ namespace :all do
     Rake::Task['node:build'].invoke(*args)
   end
 
-  desc 'Package or build stamped artifacts for all language bindings'
+  desc 'Package or build stamped artifacts for distribution in GitHub Release assets'
   task :package do |_task, arguments|
     args = arguments.to_a.compact
     Rake::Task['java:package'].invoke(*args)
     Rake::Task['dotnet:package'].invoke(*args)
-    Rake::Task['py:build'].invoke(*args)
-    Rake::Task['rb:build'].invoke(*args)
-    Rake::Task['node:build'].invoke(*args)
   end
 
   desc 'Release all artifacts for all language bindings'
