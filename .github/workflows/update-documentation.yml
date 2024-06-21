@@ -156,10 +156,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: 'gh-pages'
-      - name: Get updated Rakefile
-        run: |
-          git fetch origin auto_docs
-          git checkout origin/auto_docs -- Rakefile
       - name: Create and checkout new branch
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
