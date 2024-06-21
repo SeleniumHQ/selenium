@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v123;
+package org.openqa.selenium.devtools.v126;
 
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.idealized.Domains;
@@ -26,21 +26,21 @@ import org.openqa.selenium.devtools.idealized.log.Log;
 import org.openqa.selenium.devtools.idealized.target.Target;
 import org.openqa.selenium.internal.Require;
 
-public class v123Domains implements Domains {
+public class v126Domains implements Domains {
 
-  private final v123Javascript js;
-  private final v123Events events;
-  private final v123Log log;
-  private final v123Network network;
-  private final v123Target target;
+  private final v126Javascript js;
+  private final v126Events events;
+  private final v126Log log;
+  private final v126Network network;
+  private final v126Target target;
 
-  public v123Domains(DevTools devtools) {
+  public v126Domains(DevTools devtools) {
     Require.nonNull("DevTools", devtools);
-    events = new v123Events(devtools);
-    js = new v123Javascript(devtools);
-    log = new v123Log();
-    network = new v123Network(devtools);
-    target = new v123Target();
+    events = new v126Events(devtools);
+    js = new v126Javascript(devtools);
+    log = new v126Log();
+    network = new v126Network(devtools);
+    target = new v126Target();
   }
 
   @Override

@@ -98,7 +98,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v125:v125.publish
-  //java/src/org/openqa/selenium/devtools/v123:v123.publish
+  //java/src/org/openqa/selenium/devtools/v126:v126.publish
   //java/src/org/openqa/selenium/devtools/v124:v124.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
@@ -1035,11 +1035,16 @@ namespace :all do
     Rake::Task['node:build'].invoke(*args)
   end
 
+  desc 'Package or build stamped artifacts for distribution in GitHub Release assets'
+  task :package do |_task, arguments|
+    args = arguments.to_a.compact
+    Rake::Task['java:package'].invoke(*args)
+    Rake::Task['dotnet:package'].invoke(*args)
+  end
+
   desc 'Release all artifacts for all language bindings'
   task :release do |_task, arguments|
     Rake::Task['clean'].invoke
-    tag = @git.add_tag("selenium-#{java_version}")
-    @git.push('origin', tag.name)
 
     args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
     Rake::Task['java:release'].invoke(*args)
@@ -1047,7 +1052,6 @@ namespace :all do
     Rake::Task['rb:release'].invoke(*args)
     Rake::Task['dotnet:release'].invoke(*args)
     Rake::Task['node:release'].invoke(*args)
-    Rake::Task['create_release_notes'].invoke
     Rake::Task['all:docs'].invoke
     Rake::Task['all:version'].invoke('nightly')
 
@@ -1138,39 +1142,6 @@ end
 
 at_exit do
   system 'sh', '.git-fixfiles' if File.exist?('.git') && !SeleniumRake::Checks.windows?
-end
-
-desc 'Create Release Notes for Minor Release'
-task :create_release_notes do
-  range = "#{previous_tag(java_version)}...HEAD"
-  format = '* [\\`%h\\`](http://github.com/seleniumhq/selenium/commit/%H) - %s :: %aN'
-  git_log_command = %(git --no-pager log "#{range}" --pretty=format:"#{format}" --reverse)
-  git_log_output = `#{git_log_command}`
-
-  release_notes = <<~RELEASE_NOTES
-    ### Changelog
-
-    For each component's detailed changelog, please check:
-    * [Ruby](https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES)
-    * [Python](https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES)
-    * [JavaScript](https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/CHANGES.md)
-    * [Java](https://github.com/SeleniumHQ/selenium/blob/trunk/java/CHANGELOG)
-    * [DotNet](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG)
-    * [IEDriverServer](https://github.com/SeleniumHQ/selenium/blob/trunk/cpp/iedriverserver/CHANGELOG)
-
-    ### Commits in this release
-    <details>
-    <summary>Click to see all the commits included in this release</summary>
-
-    #{git_log_output}
-
-    </details>
-  RELEASE_NOTES
-
-  FileUtils.mkdir_p('build/dist')
-  release_notes_file = "build/dist/release_notes_#{java_version}.md"
-  File.write(release_notes_file, release_notes)
-  puts "Release notes have been generated at: #{release_notes_file}"
 end
 
 def updated_version(current, desired = nil, nightly = nil)
