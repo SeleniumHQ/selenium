@@ -26,6 +26,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Remote
@@ -237,9 +238,14 @@ namespace OpenQA.Selenium.Remote
 
             httpClientHandler.Proxy = this.Proxy;
 
-            // Use the custom LoggingHandler
-            var loggingHandler = new ResponseLoggerInterceptor(httpClientHandler);
-            this.client = new HttpClient(loggingHandler);
+            HttpMessageHandler handler = httpClientHandler;
+
+            if (_logger.IsEnabled(LogEventLevel.Trace))
+            {
+                handler = new DiagnosticsHttpHandler(httpClientHandler);
+            }
+
+            this.client = new HttpClient(handler);
             this.client.DefaultRequestHeaders.UserAgent.ParseAdd(this.UserAgent);
             this.client.DefaultRequestHeaders.Accept.ParseAdd(RequestAcceptHeader);
             this.client.DefaultRequestHeaders.ExpectContinue = false;
@@ -386,6 +392,44 @@ namespace OpenQA.Selenium.Remote
             public HttpStatusCode StatusCode { get; set; }
             public string Body { get; set; }
             public string ContentType { get; set; }
+        }
+
+        /// <summary>
+        /// Internal Diagnostic Handler for HttpCommandExecutor Additional Context
+        /// </summary>
+        internal class DiagnosticsHttpHandler : DelegatingHandler
+        {
+            private static readonly ILogger _logger = Log.GetLogger<DiagnosticsHttpHandler>();
+
+            public DiagnosticsHttpHandler(HttpMessageHandler messageHandler)
+                : base(messageHandler)
+            {
+            }
+
+            /// <summary>
+            /// Sends the specified request and returns the associated response.
+            /// </summary>
+            /// <param name="request">The request to be sent.</param>
+            /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the request.</param>
+            /// <returns>The http response message content.</returns>
+            protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                if (request.Content != null)
+                {
+                    var requestContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    _logger.Trace($">> Body: {requestContent}");
+                }
+
+                var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    _logger.Trace($"<< Body: {responseContent}");
+                }
+
+                return response;
+            }
         }
     }
 }
