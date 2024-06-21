@@ -22,7 +22,6 @@ import os
 import pkgutil
 import tempfile
 import types
-import typing
 import warnings
 import zipfile
 from abc import ABCMeta
@@ -31,24 +30,23 @@ from base64 import urlsafe_b64encode
 from contextlib import asynccontextmanager
 from contextlib import contextmanager
 from importlib import import_module
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import Dict, List, Optional, Union, Type
 
-from selenium.common.exceptions import InvalidArgumentException
-from selenium.common.exceptions import JavascriptException
-from selenium.common.exceptions import NoSuchCookieException
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import (
+    InvalidArgumentException,
+    JavascriptException,
+    NoSuchCookieException,
+    NoSuchElementException,
+    WebDriverException
+)
 from selenium.webdriver.common.bidi.script import Script
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
-from selenium.webdriver.common.virtual_authenticator import Credential
-from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions
 from selenium.webdriver.common.virtual_authenticator import (
+    Credential,
+    VirtualAuthenticatorOptions,
     required_virtual_authenticator,
 )
 from selenium.webdriver.support.relative_locator import RelativeBy
@@ -56,8 +54,7 @@ from selenium.webdriver.support.relative_locator import RelativeBy
 from .bidi_connection import BidiConnection
 from .command import Command
 from .errorhandler import ErrorHandler
-from .file_detector import FileDetector
-from .file_detector import LocalFileDetector
+from .file_detector import FileDetector, LocalFileDetector
 from .mobile import Mobile
 from .remote_connection import RemoteConnection
 from .script_key import ScriptKey
@@ -184,7 +181,6 @@ class WebDriver(BaseWebDriver):
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
         """
-
         if isinstance(options, list):
             capabilities = create_matches(options)
             _ignore_local_proxy = False
@@ -222,9 +218,9 @@ class WebDriver(BaseWebDriver):
 
     def __exit__(
         self,
-        exc_type: typing.Optional[typing.Type[BaseException]],
-        exc: typing.Optional[BaseException],
-        traceback: typing.Optional[types.TracebackType],
+        exc_type: Optional[Type[BaseException]],
+        exc: Optional[BaseException],
+        traceback: Optional[types.TracebackType],
     ):
         self.quit()
 
@@ -294,7 +290,6 @@ class WebDriver(BaseWebDriver):
         :Args:
          - capabilities - a capabilities dict to start the session with.
         """
-
         caps = _create_caps(capabilities)
         response = self.execute(Command.NEW_SESSION, caps)["value"]
         self.session_id = response.get("sessionId")
@@ -375,7 +370,8 @@ class WebDriver(BaseWebDriver):
 
     def pin_script(self, script: str, script_key=None) -> ScriptKey:
         """Store common javascript scripts to be executed later by a unique
-        hashable ID."""
+        hashable ID.
+        """
         script_key_instance = ScriptKey(script_key)
         self.pinned_scripts[script_key_instance.id] = script
         return script_key_instance
@@ -527,9 +523,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def switch_to(self) -> SwitchTo:
-        """
-        :Returns:
-            - SwitchTo: an object containing all options to switch focus into
+        """Return the `SwitchTo` object containing all options for switching focus.
 
         :Usage:
             ::
@@ -588,7 +582,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_ALL_COOKIES)["value"]
 
-    def get_cookie(self, name) -> typing.Optional[typing.Dict]:
+    def get_cookie(self, name) -> Optional[Dict]:
         """Get a single cookie by name. Returns the cookie if found, None if
         not.
 
@@ -872,7 +866,6 @@ class WebDriver(BaseWebDriver):
 
                 driver.get_window_size()
         """
-
         self._check_if_window_handle_is_current(windowHandle)
         size = self.get_window_rect()
 
@@ -904,7 +897,6 @@ class WebDriver(BaseWebDriver):
 
                 driver.get_window_position()
         """
-
         self._check_if_window_handle_is_current(windowHandle)
         position = self.get_window_rect()
 
@@ -939,7 +931,6 @@ class WebDriver(BaseWebDriver):
                 driver.set_window_rect(width=100, height=200)
                 driver.set_window_rect(x=10, y=10, width=100, height=200)
         """
-
         if (x is None and y is None) and (not height and not width):
             raise InvalidArgumentException("x and y or height and width need values")
 
@@ -1158,7 +1149,7 @@ class WebDriver(BaseWebDriver):
             credential_id = urlsafe_b64encode(credential_id).decode()
 
         self.execute(
-            Command.REMOVE_CREDENTIAL, {"credentialId": credential_id, "authenticatorId": self._authenticator_id}
+            Command.REMOVE_CREDENTIAL, {"credentialId": credential_id, "authenticatorId": self._authenticator_id},
         )
 
     @required_virtual_authenticator
@@ -1175,9 +1166,10 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.SET_USER_VERIFIED, {"authenticatorId": self._authenticator_id, "isUserVerified": verified})
 
-    def get_downloadable_files(self) -> dict:
+    def get_downloadable_files(self) -> List[str]:
         """Retrieves the downloadable files as a map of file names and their
-        corresponding URLs."""
+        corresponding URLs.
+        """
         if "se:downloadsEnabled" not in self.capabilities:
             raise WebDriverException("You must enable downloads in order to work with downloadable files.")
 
