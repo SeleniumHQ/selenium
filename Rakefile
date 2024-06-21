@@ -1147,6 +1147,7 @@ def updated_version(current, desired = nil, nightly = nil)
 end
 
 def update_gh_pages
+  @git.fetch('origin', {ref: 'gh-pages'})
   @git.checkout('gh-pages')
 
   %w[java rb py dotnet javascript].each do |language|
