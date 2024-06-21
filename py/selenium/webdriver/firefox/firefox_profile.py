@@ -53,13 +53,14 @@ class FirefoxProfile:
            This defaults to None and will create a new
            directory when object is created.
         """
-        self._strict_timestamps = False
+        self._strict_timestamps = True
         self._desired_preferences = {}
         if profile_directory:
-            self._profile_dir = os.path.join(tempfile.mkdtemp(), "webdriver-py-profilecopy")
+            newprof = os.path.join(tempfile.mkdtemp(), "webdriver-py-profilecopy")
             shutil.copytree(
-                profile_directory, self._profile_dir, ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock")
+                profile_directory, newprof, ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock")
             )
+            self._profile_dir = newprof
             os.chmod(self._profile_dir, 0o755)
         else:
             self._profile_dir = tempfile.mkdtemp()
