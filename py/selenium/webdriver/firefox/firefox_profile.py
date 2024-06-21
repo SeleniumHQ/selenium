@@ -53,7 +53,7 @@ class FirefoxProfile:
            This defaults to None and will create a new
            directory when object is created.
         """
-        self._strict_timestamps = True
+        self._strict_timestamps = False
         self._desired_preferences = {}
         if profile_directory:
             self._profile_dir = os.path.join(tempfile.mkdtemp(), "webdriver-py-profilecopy")
