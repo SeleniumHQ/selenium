@@ -213,7 +213,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
             "Error while creating session with the driver service. "
                 + "Stopping driver service: "
                 + e.getMessage();
-        LOG.warning(errorMessage);
+        LOG.log(Level.WARNING, errorMessage, e);
 
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
@@ -226,12 +226,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
       EXCEPTION.accept(attributeMap, e);
       String errorMessage =
           "Error while creating session with the driver service. " + e.getMessage();
-      LOG.warning(errorMessage);
+      LOG.log(Level.WARNING, errorMessage, e);
 
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
-      return Either.left(new SessionNotCreatedException(e.getMessage()));
+      return Either.left(new SessionNotCreatedException(errorMessage));
     } finally {
       span.close();
     }
@@ -326,9 +326,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
           Map<String, Object> vendorOptions =
               (Map<String, Object>) options.getCapability(vendorOptionsCapability);
           vendorOptions.put("binary", browserPath);
-          return new PersistentCapabilities(options)
-              .setCapability(vendorOptionsCapability, vendorOptions)
-              .setCapability("browserVersion", null);
+          MutableCapabilities toReturn = new MutableCapabilities(options);
+          toReturn.setCapability(vendorOptionsCapability, vendorOptions);
+          toReturn.setCapability("browserVersion", (String) null);
+          return new PersistentCapabilities(toReturn);
         } catch (Exception e) {
           LOG.log(
               Level.WARNING,

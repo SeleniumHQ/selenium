@@ -21,7 +21,8 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe ShadowRoot, only: {browser: %i[chrome firefox edge safari]} do
+    describe ShadowRoot, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'},
+                                     {browser: %i[chrome firefox edge safari]}] do
       before { driver.navigate.to url_for('webComponents.html') }
 
       let(:custom_element) { driver.find_element(css: 'custom-checkbox-element') }

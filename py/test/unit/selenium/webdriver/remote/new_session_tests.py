@@ -52,7 +52,7 @@ def test_works_as_context_manager(mocker):
 
 
 @pytest.mark.parametrize("browser_name", ["firefox", "chrome", "ie"])
-def test_accepts_options_to_remote_driver(mocker, browser_name):
+def test_acepts_options_to_remote_driver(mocker, browser_name):
     options = import_module(f"selenium.webdriver.{browser_name}.options")
     mock = mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.start_session")
 
@@ -103,7 +103,7 @@ def test_first_match_when_2_different_option_types():
                     "browserName": "firefox",
                     "acceptInsecureCerts": True,
                     "moz:debuggerAddress": True,
-                    "moz:firefoxOptions": {"args": ["foo"]},
+                    "moz:firefoxOptions": {"args": ["foo"], "prefs": {"remote.active-protocols": 3}},
                 },
             ],
         }

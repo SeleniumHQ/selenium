@@ -73,7 +73,6 @@ jobs:
           - chrome
           - edge
           - firefox
-          - safari
         os:
           - windows
           - macos
@@ -94,6 +93,7 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}
+        ${{ matrix.os != 'windows' && '--pin_browsers' || '' }}
         //rb/spec/...
 
   integration-tests-remote:
@@ -121,4 +121,5 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}-remote
+        ${{ matrix.os != 'windows' && '--pin_browsers' || '' }}
         //rb/spec/...

@@ -188,6 +188,25 @@ def rb_integration_test(name, srcs, deps = [], data = [], browsers = BROWSERS.ke
             target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         )
 
+        # Generate a test target for bidi browser execution.
+        rb_test(
+            name = "{}-{}-bidi".format(name, browser),
+            size = "large",
+            srcs = srcs,
+            args = ["rb/spec/"],
+            data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
+            env = BROWSERS[browser]["env"] | {"WEBDRIVER_BIDI": "true"},
+            main = "@bundle//bin:rspec",
+            tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + ["{}-bidi".format(browser)],
+            deps = depset(
+                ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
+                BROWSERS[browser]["deps"] +
+                deps,
+            ),
+            visibility = ["//rb:__subpackages__"],
+            target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        )
+
 def rb_unit_test(name, srcs, deps, data = []):
     rb_test(
         name = name,

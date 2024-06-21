@@ -35,6 +35,14 @@ module Selenium
         xpath: 'xpath'
       }.freeze
 
+      class << self
+        attr_accessor :extra_finders
+
+        def finders
+          FINDERS.merge(extra_finders || {})
+        end
+      end
+
       #
       # Find the first element matching the given arguments
       #
@@ -57,7 +65,7 @@ module Selenium
       def find_element(*args)
         how, what = extract_args(args)
 
-        by = FINDERS[how.to_sym]
+        by = SearchContext.finders[how.to_sym]
         raise ArgumentError, "cannot find element by #{how.inspect}" unless by
 
         bridge.find_element_by by, what, ref
@@ -72,7 +80,7 @@ module Selenium
       def find_elements(*args)
         how, what = extract_args(args)
 
-        by = FINDERS[how.to_sym]
+        by = SearchContext.finders[how.to_sym]
         raise ArgumentError, "cannot find elements by #{how.inspect}" unless by
 
         bridge.find_elements_by by, what, ref

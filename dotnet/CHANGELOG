@@ -1,3 +1,18 @@
+v4.22.0
+======
+
+* Have url property setter call navigation method instead of the other way around (#13960)
+* Add asynchronous methods to Navigation class (#14051)
+* Add preference to enable CDP in Firefox by default (#14091)
+* Add CDP for Chrome 126 and remove 123
+
+v4.21.0
+======
+
+* Add CDP for Chrome 125 and remove 122
+* Overwrite internal log file if it already exists (#13900)
+* Align binary location property for FirefoxOptions with other options (#13901)
+
 v4.20.0
 ======
 

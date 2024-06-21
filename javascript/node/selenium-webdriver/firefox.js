@@ -103,6 +103,8 @@
  *
  * [geckodriver release]: https://github.com/mozilla/geckodriver/releases/
  * [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
+ *
+ * @module selenium-webdriver/firefox
  */
 
 'use strict'
@@ -244,6 +246,9 @@ class Options extends Capabilities {
   constructor(other) {
     super(other)
     this.setBrowserName(Browser.FIREFOX)
+    // Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
+    // https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
+    this.setPreference('remote.active-protocols', 3)
   }
 
   /**

@@ -206,11 +206,11 @@ public class RemoteWebDriver
     converter = new JsonToWebElementConverter(this);
     executeMethod = new RemoteExecuteMethod(this);
 
-    Set<String> logTypesToInclude = Set.of();
+    Set<String> logTypesToIgnore = Set.of();
 
-    LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToInclude);
+    LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToIgnore);
     LocalLogs clientLogs =
-        LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(), logTypesToInclude);
+        LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(), logTypesToIgnore);
     localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
     remoteLogs = new RemoteLogs(executeMethod, localLogs);
 

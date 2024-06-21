@@ -33,7 +33,7 @@ suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+      driver = await env.builder().build()
     })
 
     afterEach(async function () {
@@ -128,32 +128,6 @@ suite(
         assert.strictEqual(elements.length, 4)
       })
 
-      it('can locate node with none ownership value', async function () {
-        const id = await driver.getWindowHandle()
-        const browsingContext = await BrowsingContext(driver, {
-          browsingContextId: id,
-        })
-
-        await driver.get(Pages.xhtmlTestPage)
-
-        const elements = await browsingContext.locateNodes(Locator.css('div'), undefined, 'none')
-        assert.strictEqual(elements.length, 13)
-        assert.strictEqual(elements[0].handle, null)
-      })
-
-      it('can locate node with root ownership value', async function () {
-        const id = await driver.getWindowHandle()
-        const browsingContext = await BrowsingContext(driver, {
-          browsingContextId: id,
-        })
-
-        await driver.get(Pages.xhtmlTestPage)
-
-        const elements = await browsingContext.locateNodes(Locator.css('div'), undefined, 'root')
-        assert.strictEqual(elements.length, 13)
-        assert.notEqual(elements[0].handle, null)
-      })
-
       xit('can locate node with given start nodes', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
@@ -204,7 +178,7 @@ suite(
 
         await browsingContext.navigate(Pages.xhtmlTestPage, 'complete')
 
-        const elements = await browsingContext.locateNodes(Locator.css('div'), 1, undefined, sandbox)
+        const elements = await browsingContext.locateNodes(Locator.css('div'), 1, sandbox)
 
         assert.strictEqual(elements.length, 1)
 

@@ -1,3 +1,39 @@
+v4.22.0
+======
+
+* [grid] Log unsuccessful attempts to create a session
+* [grid] Prevent UrlChecker leaking threads on timeout
+* Add convenience for enabling BiDi (#14029)
+* Eliminate assumption of mutable list argument in SeleniumManager.getBinaryPaths() (#14036)
+* Add 'toJson' method to Rectangle class to produce expected serialization (#14038)
+* Let TracedCommandExecutor delegate NeedsLocalLogs calls
+* Add preference to enable CDP in Firefox by default (#14091)
+* [grid] Video file name set independently in dynamic grid via se:videoName (#14148)
+* Add CDP for Chrome 126 and remove 123
+* EdgeOptions.useWebView to return "this" (#14157)
+* Various minor performance improvements and code cleanup (#14054)
+* Use java.nio to check files (#14088)
+
+v4.21.0
+======
+
+* Add CDP for Chrome 125 and remove 122
+* [bidi]Add methods to allow all parameters for script callFunction and evaluate method (#13873)
+* Setting a connection timeout for the WebSocket connections
+* [grid] flatten combined routes to improve routing (#13856)
+* Java language level aids (#13834)
+* [grid] apply protocol version in relay session factory (#13880)
+* Configure Selenium Manager environment from System Properties (#13858)
+* [grid] Set test name to video file name in dynamic grid (#13907)
+* [grid] Set connection timeout to session-timeout in RemoteNode (#13854)
+* Type casting and numeric improvements (#13909)
+* Allow filters to recover from failed requests in NetworkInterceptor (#13847)
+* Allow a DevTools listener to determinate the order of handler calls (#13921)
+* Read selenium manager output as UTF-8 #13653
+* Reduce redundant toString() calls (#13932)
+* Fixed format of expires in Cookie.toString #13927
+* [bidi] Remove root ownership parameter due to update in BiDi spec
+
 v4.20.0
 ======
 
