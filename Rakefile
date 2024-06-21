@@ -1148,7 +1148,7 @@ end
 
 def update_gh_pages
   @git.fetch('origin', {ref: 'gh-pages'})
-  @git.checkout('gh-pages')
+  @git.checkout('gh-pages', force: true)
 
   %w[java rb py dotnet javascript].each do |language|
     next unless Dir.exist?("build/docs/api/#{language}") && !Dir.empty?("build/docs/api/#{language}")
