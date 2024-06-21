@@ -1056,22 +1056,28 @@ namespace :all do
     Rake::Task['all:version'].invoke('nightly')
 
     puts 'Committing nightly version updates'
-    commit!('update versions to nightly', ['java/version.bzl',
+    commit!('update versions to nightly', ['dotnet/selenium-dotnet-version.bzl',
+                                           'java/version.bzl',
+                                           'javascript/node/selenium-webdriver/BUILD.bazel',
+                                           'javascript/node/selenium-webdriver/package.json',
+                                           'py/docs/source/conf.py',
+                                           'py/selenium/webdriver/__init__.py',
+                                           'py/selenium/__init__.py',
+                                           'py/BUILD.bazel',
+                                           'py/setup.py',
                                            'rb/lib/selenium/webdriver/version.rb',
                                            'rb/Gemfile.lock',
-                                           'py/setup.py',
-                                           'py/BUILD.bazel',
-                                           'py/selenium/__init__.py',
-                                           'py/selenium/webdriver/__init__.py',
-                                           'py/docs/source/conf.py',
-                                           'rust/BUILD.bazel',
-                                           'rust/Cargo.Bazel.lock',
-                                           'rust/Cargo.lock',
-                                           'rust/Cargo.toml'])
+                                           'package-lock.json'])
 
     print 'Do you want to push the committed changes? (Y/n): '
     response = $stdin.gets.chomp.downcase
     @git.push if %w[y yes].include?(response)
+  end
+
+  task :lint do
+    ext = /mswin|msys|mingw|cygwin|bccwin|wince|emc/.match?(RbConfig::CONFIG['host_os']) ? 'ps1' : 'sh'
+    sh "./scripts/format.#{ext}", verbose: true
+    Rake::Task['py:lint'].invoke
   end
 
   desc 'Update everything in preparation for a release'
@@ -1252,7 +1258,7 @@ end
 
 def update_changelog(version, language, path, changelog, header)
   tag = previous_tag(version, language)
-  log = `git --no-pager log #{tag}...HEAD --pretty=format:">>> %B" --reverse #{path}`
+  log = `git --no-pager log #{tag}...HEAD --pretty=format:"--> %B" --reverse #{path}`
   commits = log.split('>>>').map { |entry|
     lines = entry.split("\n")
     lines.reject! { |line| line.match?(/^(----|Co-authored|Signed-off)/) || line.empty? }
