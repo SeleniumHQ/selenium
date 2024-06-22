@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const { By, error } = require('..')
 const test = require('../lib/test')
 const Pages = test.Pages

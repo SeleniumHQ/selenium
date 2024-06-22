@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const test = require('../lib/test')
 const { By, Browser } = require('../index')
 const { ignore } = require('../lib/test')

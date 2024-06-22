@@ -30,6 +30,7 @@ const Type = {
  * Described in https://w3c.github.io/webdriver-bidi/#command-storage-getCookies.
  */
 class PartitionDescriptor {
+  /*eslint no-unused-private-class-members: "off"*/
   #type
 
   /**

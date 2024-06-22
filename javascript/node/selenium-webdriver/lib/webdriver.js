@@ -32,9 +32,9 @@ const Symbols = require('./symbols')
 const cdp = require('../devtools/CDPConnection')
 const WebSocket = require('ws')
 const http = require('../http/index')
-const fs = require('fs')
+const fs = require('node:fs')
 const { Capabilities } = require('./capabilities')
-const path = require('path')
+const path = require('node:path')
 const { NoSuchElementError } = require('./error')
 const cdpTargets = ['page', 'browser']
 const { Credential } = require('./virtual_authenticator')
@@ -43,6 +43,7 @@ const { isObject } = require('./util')
 const BIDI = require('../bidi')
 const { PinnedScript } = require('./pinnedScript')
 const JSZip = require('jszip')
+const Script = require('./script')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -654,6 +655,7 @@ function filterNonW3CCaps(capabilities) {
  * @implements {IWebDriver}
  */
 class WebDriver {
+  #script = undefined
   /**
    * @param {!(./session.Session|IThenable<!./session.Session>)} session Either
    *     a known session or a promise that will be resolved to a session.
@@ -1102,6 +1104,16 @@ class WebDriver {
   /** @override */
   switchTo() {
     return new TargetLocator(this)
+  }
+
+  script() {
+    // The Script calls the LogInspector which maintains state of the callbacks.
+    // Returning a new instance of the same driver will not work while removing callbacks.
+    if (this.#script === undefined) {
+      this.#script = new Script(this)
+    }
+
+    return this.#script
   }
 
   validatePrintPageParams(keys, object) {

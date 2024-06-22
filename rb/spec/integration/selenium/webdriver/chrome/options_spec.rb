@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      describe Options, exclusive: {browser: :chrome} do
+      describe Options, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :chrome}] do
         it 'passes emulated device correctly' do
           reset_driver!(emulation: {device_name: 'Nexus 5'}) do |driver|
             ua = driver.execute_script 'return window.navigator.userAgent'

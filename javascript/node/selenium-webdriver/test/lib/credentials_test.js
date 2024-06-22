@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const virtualAuthenticatorCredential = require('../../lib/virtual_authenticator').Credential
+const assert = require('node:assert')
+const virtualAuthenticatorCredential = require('selenium-webdriver/lib/virtual_authenticator').Credential
 
 describe('Credentials', function () {
   const BASE64_ENCODED_PK = `MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbBOu5Lhs4vpowbCnmCyLUpIE7JM9sm9QXzye2G+jr+Kr

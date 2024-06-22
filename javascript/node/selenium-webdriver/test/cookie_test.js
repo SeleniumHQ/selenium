@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const { URL } = require('url')
+const assert = require('node:assert')
+const { URL } = require('node:url')
 
 const { ignore, suite } = require('../lib/test')
 const fileserver = require('../lib/test/fileserver')

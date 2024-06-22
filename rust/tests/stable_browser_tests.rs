@@ -15,8 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_browser, assert_driver};
-use assert_cmd::Command;
+use crate::common::{assert_browser, assert_driver, get_selenium_manager};
+
 use rstest::rstest;
 
 mod common;
@@ -26,7 +26,7 @@ mod common;
 #[case("firefox")]
 #[case("edge")]
 fn stable_browser_test(#[case] browser_name: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args([
         "--browser",
         &browser_name,
@@ -34,6 +34,7 @@ fn stable_browser_test(#[case] browser_name: String) {
         "stable",
         "--output",
         "json",
+        "--debug",
     ])
     .assert()
     .success()

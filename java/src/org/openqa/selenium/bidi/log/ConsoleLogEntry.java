@@ -22,6 +22,7 @@ import static java.util.Collections.unmodifiableMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import org.openqa.selenium.bidi.script.RemoteValue;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
@@ -31,7 +32,7 @@ public class ConsoleLogEntry extends GenericLogEntry {
 
   private final String method;
   private final String realm;
-  private final List<Object> args;
+  private final List<RemoteValue> args;
 
   public ConsoleLogEntry(
       LogLevel level,
@@ -40,7 +41,7 @@ public class ConsoleLogEntry extends GenericLogEntry {
       String type,
       String method,
       String realm,
-      List<Object> args,
+      List<RemoteValue> args,
       StackTrace stackTrace) {
     super(level, text, timestamp, type, stackTrace);
     this.method = method;
@@ -56,7 +57,7 @@ public class ConsoleLogEntry extends GenericLogEntry {
     return realm;
   }
 
-  public List<Object> getArgs() {
+  public List<RemoteValue> getArgs() {
     return args;
   }
 
@@ -67,7 +68,7 @@ public class ConsoleLogEntry extends GenericLogEntry {
     String type = null;
     String method = null;
     String realm = null;
-    List<Object> args = null;
+    List<RemoteValue> args = null;
     StackTrace stackTrace = null;
 
     input.beginObject();
@@ -98,7 +99,7 @@ public class ConsoleLogEntry extends GenericLogEntry {
           break;
 
         case "args":
-          args = input.read(new TypeToken<List<Object>>() {}.getType());
+          args = input.read(new TypeToken<List<RemoteValue>>() {}.getType());
           break;
 
         case "stackTrace":

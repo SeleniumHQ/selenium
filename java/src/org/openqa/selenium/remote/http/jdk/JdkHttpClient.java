@@ -77,12 +77,14 @@ public class JdkHttpClient implements HttpClient {
   private final List<WebSocket> websockets;
   private final ExecutorService executorService;
   private final Duration readTimeout;
+  private final Duration connectTimeout;
 
   JdkHttpClient(ClientConfig config) {
     Objects.requireNonNull(config, "Client config must be set");
 
     this.messages = new JdkHttpMessages(config);
     this.readTimeout = config.readTimeout();
+    this.connectTimeout = config.connectionTimeout();
     this.websockets = new ArrayList<>();
     this.handler = config.filter().andFinally(this::execute0);
 
@@ -98,7 +100,7 @@ public class JdkHttpClient implements HttpClient {
 
     java.net.http.HttpClient.Builder builder =
         java.net.http.HttpClient.newBuilder()
-            .connectTimeout(config.connectionTimeout())
+            .connectTimeout(connectTimeout)
             .followRedirects(java.net.http.HttpClient.Redirect.NEVER)
             .executor(executorService);
 
@@ -165,6 +167,7 @@ public class JdkHttpClient implements HttpClient {
     CompletableFuture<java.net.http.WebSocket> webSocketCompletableFuture =
         client
             .newWebSocketBuilder()
+            .connectTimeout(connectTimeout)
             .buildAsync(
                 uri,
                 new java.net.http.WebSocket.Listener() {

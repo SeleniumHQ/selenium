@@ -178,8 +178,12 @@ rb_test(
         "--autocorrect",
         "--config=rb/.rubocop.yml",
         "rb/",
+        "Rakefile",
     ],
-    data = [".rubocop.yml"],
+    data = [
+        ".rubocop.yml",
+        "//:rakefile",
+    ],
     main = "@bundle//bin:rubocop",
     tags = ["no-sandbox"],
     deps = [

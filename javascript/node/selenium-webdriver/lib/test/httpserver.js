@@ -17,9 +17,9 @@
 
 'use strict'
 
-const assert = require('assert')
-const http = require('http')
-const url = require('url')
+const assert = require('node:assert')
+const http = require('node:http')
+const url = require('node:url')
 
 const net = require('../../net')
 const portprober = require('../../net/portprober')

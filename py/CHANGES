@@ -1,3 +1,30 @@
+Selenium 4.22.0
+
+* Fix EOFError when calling the Remote WebDriver download_file method (#14031)
+* Add low-level sync API to use DevTools (#13977)
+* Add preference to enable CDP in Firefox by default (#14091)
+* Allow using enable_bidi property on options class
+* Implement script module for BiDi
+* Remove desired capabilities argument for Webkitgtk (#14128)
+* Make webkitgtk.webdriver same as wpewebkit.webdriver
+* Add CDP for Chrome 126 and remove 123
+
+Selenium 4.21.0
+
+* Add CDP for Chrome 125 and remove 122
+* Moving ignore_local_proxy_environment_variables to BaseOptions (#13926)
+
+Selenium 4.20.0
+
+* Add CDP for Chrome 124 and remove 121
+* Add type hints for selenium.webdriver.remote.webdriver.WebDriver.__init__ (#13775)
+* Add types to set_window_position parameters (#13786)
+* Making Selenium Manager a thin wrapper (#13387)
+  * This change has been made to make it easier to maintain and improve, the interface has
+  changed and if users were invoking it, they might experience issues. Selenium Manager is
+  still in beta and these type of changes are expected.
+
+
 Selenium 4.19.0
 
 * Add CDP for Chrome 123 and remove 120

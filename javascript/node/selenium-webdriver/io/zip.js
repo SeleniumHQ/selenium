@@ -18,7 +18,7 @@
 'use strict'
 
 const jszip = require('jszip')
-const path = require('path')
+const path = require('node:path')
 
 const io = require('./index')
 const { InvalidArgumentError } = require('../lib/error')

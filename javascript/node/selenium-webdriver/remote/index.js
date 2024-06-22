@@ -17,7 +17,7 @@
 
 'use strict'
 
-const url = require('url')
+const url = require('node:url')
 
 const httpUtil = require('../http/util')
 const io = require('../io')

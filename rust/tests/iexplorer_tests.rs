@@ -15,14 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use assert_cmd::Command;
+use crate::common::get_selenium_manager;
+
 use rstest::rstest;
+
+mod common;
 
 #[rstest]
 #[case("4.8.0")]
 #[case("4.8.1")]
 fn iexplorer_test(#[case] driver_version: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     let cmd_assert = cmd
         .args([
             "--browser",
@@ -42,7 +45,7 @@ fn iexplorer_test(#[case] driver_version: String) {
 #[case("internet-explorer")]
 #[case("internet_explorer")]
 fn ie_name_test(#[case] browser_name: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     let cmd_assert = cmd.args(["--browser", &browser_name]).assert();
     cmd_assert.success();
 }
