@@ -53,7 +53,7 @@ class FirefoxProfile:
            This defaults to None and will create a new
            directory when object is created.
         """
-        self._strict_timestamps = True
+
         self._desired_preferences = {}
         if profile_directory:
             newprof = os.path.join(tempfile.mkdtemp(), "webdriver-py-profilecopy")
@@ -94,14 +94,6 @@ class FirefoxProfile:
                 f.write(f'user_pref("{key}", {json.dumps(value)});\n')
 
     # Properties
-    @property
-    def strict_timestamps(self) -> bool:
-        return self._strict_timestamps
-
-    @strict_timestamps.setter
-    def strict_timestamps(self, value: bool):
-        self._strict_timestamps = value
-
     @property
     def path(self):
         """Gets the profile directory that is currently being used."""
@@ -160,7 +152,7 @@ class FirefoxProfile:
         if self._desired_preferences:
             self.update_preferences()
         fp = BytesIO()
-        with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED, strict_timestamps=self.strict_timestamps) as zipped:
+        with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED, strict_timestamps=False) as zipped:
             path_root = len(self.path) + 1  # account for trailing slash
             for base, _, files in os.walk(self.path):
                 for fyle in files:
