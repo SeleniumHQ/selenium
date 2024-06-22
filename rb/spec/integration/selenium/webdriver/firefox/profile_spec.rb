@@ -38,7 +38,6 @@ module Selenium
 
         it 'is able to use the same profile more than once',
            exclude: {driver: :remote, rbe: true, reason: 'Cannot start 2+ drivers at once.'} do
-          abort
           reset_driver!(profile: profile) do |driver1|
             expect { wait(5).until { driver1.find_element(id: 'oneline') } }.not_to raise_error
             reset_driver!(profile: profile) do |driver2|
