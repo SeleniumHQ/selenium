@@ -53,7 +53,6 @@ class FirefoxProfile:
            This defaults to None and will create a new
            directory when object is created.
         """
-
         self._desired_preferences = {}
         if profile_directory:
             newprof = os.path.join(tempfile.mkdtemp(), "webdriver-py-profilecopy")
@@ -94,6 +93,7 @@ class FirefoxProfile:
                 f.write(f'user_pref("{key}", {json.dumps(value)});\n')
 
     # Properties
+
     @property
     def path(self):
         """Gets the profile directory that is currently being used."""
