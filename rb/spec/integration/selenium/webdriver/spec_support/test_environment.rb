@@ -115,6 +115,10 @@ module Selenium
           File.expand_path(File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp)
         end
 
+        def rbe?
+          Dir.pwd.start_with?('/mnt/engflow')
+        end
+
         def reset_remote_server
           @remote_server&.stop
           @remote_server = nil
@@ -201,7 +205,8 @@ module Selenium
             driver: driver,
             version: driver_instance.capabilities.browser_version,
             platform: Platform.os,
-            ci: Platform.ci
+            ci: Platform.ci,
+            rbe: rbe?
           }
         end
 

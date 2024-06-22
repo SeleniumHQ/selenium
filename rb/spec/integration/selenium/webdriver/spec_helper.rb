@@ -57,7 +57,7 @@ RSpec.configure do |c|
     guards.add_condition(:platform, WebDriver::Platform.os)
     guards.add_condition(:headless, !ENV['HEADLESS'].nil?)
     guards.add_condition(:bidi, !ENV['WEBDRIVER_BIDI'].nil?)
-    guards.add_condition(:rbe, Dir.pwd.start_with?('/mnt/engflow'))
+    guards.add_condition(:rbe, GlobalTestEnv.rbe?)
 
     results = guards.disposition
     send(*results) if results
