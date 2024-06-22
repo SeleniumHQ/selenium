@@ -1,0 +1,29 @@
+﻿selenium.webdriver.common.selenium\_manager
+===========================================
+
+.. automodule:: selenium.webdriver.common.selenium_manager
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SeleniumManager
+   
+   
+
+   
+   
+   
+
+
+

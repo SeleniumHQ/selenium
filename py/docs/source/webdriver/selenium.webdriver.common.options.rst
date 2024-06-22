@@ -19,6 +19,7 @@
    
       ArgOptions
       BaseOptions
+      PageLoadStrategy
    
    
 
