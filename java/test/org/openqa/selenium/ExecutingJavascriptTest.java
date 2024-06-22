@@ -264,7 +264,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
             t -> {
               Throwable rootCause = getRootCause(t);
               assertThat(rootCause).hasMessageContaining("errormessage");
-              assertThat(Arrays.asList(rootCause.getStackTrace()))
+              assertThat(List.of(rootCause.getStackTrace()))
                   .extracting(StackTraceElement::getMethodName)
                   .contains("functionB");
             });

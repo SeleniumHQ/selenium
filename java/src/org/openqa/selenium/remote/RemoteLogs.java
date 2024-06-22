@@ -106,9 +106,7 @@ public class RemoteLogs implements Logs {
     @SuppressWarnings("unchecked")
     List<String> rawList = (List<String>) raw;
     Set<String> builder = new LinkedHashSet<>();
-    for (String logType : rawList) {
-      builder.add(logType);
-    }
+    builder.addAll(rawList);
     builder.addAll(getAvailableLocalLogs());
     return Set.copyOf(builder);
   }
