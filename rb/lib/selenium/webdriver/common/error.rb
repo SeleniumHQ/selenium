@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'English'
 module Selenium
   module WebDriver
     module Error
@@ -37,7 +38,15 @@ module Selenium
       SUPPORT_MSG = 'For documentation on this error, please visit:'
       ERROR_URL = 'https://www.selenium.dev/documentation/webdriver/troubleshooting/errors'
 
-      class WebDriverError < StandardError; end
+      class WebDriverError < StandardError
+        def backtrace_locations
+          Thread.current.backtrace_locations
+        end
+
+        def cause
+          $ERROR_INFO
+        end
+      end
 
       #
       # An element could not be located on the page using the given search parameters.
