@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const ie = require('../../ie')
 const test = require('../../lib/test')
 const Capabilities = require('../../lib/capabilities').Capabilities

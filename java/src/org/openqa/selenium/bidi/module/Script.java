@@ -33,17 +33,7 @@ import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
-import org.openqa.selenium.bidi.script.ChannelValue;
-import org.openqa.selenium.bidi.script.EvaluateResult;
-import org.openqa.selenium.bidi.script.EvaluateResultExceptionValue;
-import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
-import org.openqa.selenium.bidi.script.ExceptionDetails;
-import org.openqa.selenium.bidi.script.LocalValue;
-import org.openqa.selenium.bidi.script.Message;
-import org.openqa.selenium.bidi.script.RealmInfo;
-import org.openqa.selenium.bidi.script.RealmType;
-import org.openqa.selenium.bidi.script.RemoteValue;
-import org.openqa.selenium.bidi.script.ResultOwnership;
+import org.openqa.selenium.bidi.script.*;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -118,6 +108,11 @@ public class Script implements Closeable {
     this.browsingContextIds = browsingContextIds;
   }
 
+  public EvaluateResult callFunction(CallFunctionParameters parameters) {
+    return this.bidi.send(
+        new Command<>("script.callFunction", parameters.toMap(), evaluateResultMapper));
+  }
+
   public EvaluateResult callFunctionInRealm(
       String realmId,
       String functionDeclaration,
@@ -177,6 +172,11 @@ public class Script implements Closeable {
             resultOwnership);
 
     return this.bidi.send(new Command<>("script.callFunction", params, evaluateResultMapper));
+  }
+
+  public EvaluateResult evaluateFunction(EvaluateParameters parameters) {
+    return this.bidi.send(
+        new Command<>("script.evaluate", parameters.toMap(), evaluateResultMapper));
   }
 
   public EvaluateResult evaluateFunctionInRealm(

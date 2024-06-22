@@ -17,8 +17,8 @@
 
 'use strict'
 
-const path = require('path')
-const cp = require('child_process')
+const path = require('node:path')
+const cp = require('node:child_process')
 const logging = require('../lib/logging')
 
 /**

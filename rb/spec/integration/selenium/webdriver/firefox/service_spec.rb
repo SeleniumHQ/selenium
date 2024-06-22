@@ -22,14 +22,14 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Service, exclusive: {browser: :firefox} do
+      describe Service, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}] do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 
         after { service_manager.stop }
 
         it 'auto uses geckodriver' do
-          service.executable_path = DriverFinder.path(Options.new, described_class)
+          service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
 
           expect(service_manager.uri).to be_a(URI)
         end

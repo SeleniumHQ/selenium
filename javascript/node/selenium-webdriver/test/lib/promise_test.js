@@ -17,10 +17,10 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 
 const testutil = require('./testutil')
-const promise = require('../../lib/promise')
+const promise = require('selenium-webdriver/lib/promise')
 
 // Aliases for readability.
 const NativePromise = Promise

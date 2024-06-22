@@ -71,62 +71,34 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Determines the location of the correct driver.
+        /// Determines the location of the browser and driver binaries.
         /// </summary>
-        /// <param name="options">The correct path depends on which options are being used.</param>
+        /// <param name="arguments">List of arguments to use when invoking Selenium Manager.</param>
         /// <returns>
-        /// The location of the driver.
+        /// An array with two entries, one for the driver path, and another one for the browser path.
         /// </returns>
-        public static string DriverPath(DriverOptions options)
+        public static Dictionary<string, string> BinaryPaths(string arguments)
         {
-            StringBuilder argsBuilder = new StringBuilder();
-            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", options.BrowserName);
+            StringBuilder argsBuilder = new StringBuilder(arguments);
             argsBuilder.Append(" --language-binding csharp");
             argsBuilder.Append(" --output json");
-
-            if (!string.IsNullOrEmpty(options.BrowserVersion))
+            if (_logger.IsEnabled(LogEventLevel.Debug))
             {
-                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-version {0}", options.BrowserVersion);
-            }
-
-            string browserBinary = options.BinaryLocation;
-            if (!string.IsNullOrEmpty(browserBinary))
-            {
-                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", browserBinary);
-            }
-
-            if (options.Proxy != null)
-            {
-                if (options.Proxy.SslProxy != null)
-                {
-                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.SslProxy);
-                }
-                else if (options.Proxy.HttpProxy != null)
-                {
-                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.HttpProxy);
-                }
+                argsBuilder.Append(" --debug");
             }
 
             Dictionary<string, object> output = RunCommand(BinaryFullPath, argsBuilder.ToString());
-
-            try
-            {
-                options.BinaryLocation = (string)output["browser_path"] == "" ? null : (string)output["browser_path"];
-                options.BrowserVersion = null;
-            }
-            catch (NotImplementedException)
-            {
-                // Cannot set Browser Location for this driver and that is ok
-            }
-
-            var driverPath = (string)output["driver_path"];
+            Dictionary<string, string> binaryPaths = new Dictionary<string, string>();
+            binaryPaths.Add("browser_path", (string)output["browser_path"]);
+            binaryPaths.Add("driver_path", (string)output["driver_path"]);
 
             if (_logger.IsEnabled(LogEventLevel.Trace))
             {
-                _logger.Trace($"Driver path: {driverPath}");
+                _logger.Trace($"Driver path: {binaryPaths["driver_path"]}");
+                _logger.Trace($"Browser path: {binaryPaths["browser_path"]}");
             }
 
-            return driverPath;
+            return binaryPaths;
         }
 
         /// <summary>
@@ -169,7 +141,7 @@ namespace OpenQA.Selenium
 
                 if (process.ExitCode != 0)
                 {
-                    // We do not log any warnings coming from Selenium Manager like the other bindings as we don't have any logging in the .NET bindings
+                    // We do not log any warnings coming from Selenium Manager like the other bindings, as we don't have any logging in the .NET bindings
 
                     var exceptionMessageBuilder = new StringBuilder($"Selenium Manager process exited abnormally with {process.ExitCode} code: {fileName} {arguments}");
 
@@ -212,6 +184,30 @@ namespace OpenQA.Selenium
             catch (Exception ex)
             {
                 throw new WebDriverException($"Error deserializing Selenium Manager's response: {output}", ex);
+            }
+
+            if (result.ContainsKey("logs"))
+            {
+                Dictionary<string, string> logs = result["logs"] as Dictionary<string, string>;
+                foreach (KeyValuePair<string, string> entry in logs)
+                {
+                    switch (entry.Key)
+                    {
+                        case "WARN":
+                            if (_logger.IsEnabled(LogEventLevel.Warn))
+                            {
+                                _logger.Warn(entry.Value);
+                            }
+                            break;
+                        case "DEBUG":
+                        case "INFO":
+                            if (_logger.IsEnabled(LogEventLevel.Debug) && (entry.Key == "DEBUG" || entry.Key == "INFO"))
+                            {
+                                _logger.Debug(entry.Value);
+                            }
+                            break;
+                    }
+                }
             }
 
             return result;

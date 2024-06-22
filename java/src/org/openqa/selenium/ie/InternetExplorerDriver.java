@@ -21,7 +21,6 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
@@ -125,8 +124,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     if (service == null) {
       service = InternetExplorerDriverService.createDefaultService();
     }
-    Result result = DriverFinder.getPath(service, options);
-    service.setExecutable(result.getDriverPath());
+    service.setExecutable(new DriverFinder(service, options).getDriverPath());
     if (clientConfig == null) {
       clientConfig = ClientConfig.defaultConfig();
     }

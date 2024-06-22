@@ -66,6 +66,7 @@ class LogInspectorTest extends JupiterTestBase {
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
       assertThat(logEntry.getRealm()).isNull();
       assertThat(logEntry.getArgs().size()).isEqualTo(1);
+      assertThat(logEntry.getArgs().get(0).getType()).isEqualTo("string");
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");

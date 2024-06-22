@@ -1,3 +1,26 @@
+0.4.22
+======
+
+* Include mixed output (INFO, WARN, DEBUG, etc. to stderr and minimal JSON to stdout) (#13414)
+* Display driver path in error trace when driver is unavailable
+* Include cache paths with non-ascii characters in test (#14066)
+* Use pure Rust implementation for which command (#14114)
+* Include PATH env for testing SM in CI
+* Bump dependencies to latest versions
+* Micro optimization in the strings usage and other minor issues
+* Use rules_rust 0.42.1 (Rust 1.77.2)
+
+0.4.21
+======
+
+* No logical changes in this release.
+
+0.4.20
+======
+
+* Minor typo-fix in warning trace
+* Use DEBUG level for WARN traces in offline mode (#13810)
+
 0.4.19
 ======
 

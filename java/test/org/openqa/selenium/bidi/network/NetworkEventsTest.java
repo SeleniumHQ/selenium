@@ -49,8 +49,6 @@ class NetworkEventsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canListenToBeforeRequestSentEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
@@ -71,8 +69,6 @@ class NetworkEventsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canListenToResponseStartedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
@@ -95,8 +91,6 @@ class NetworkEventsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canListenToResponseCompletedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
@@ -119,8 +113,6 @@ class NetworkEventsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canListenToResponseCompletedEventWithCookie()
       throws ExecutionException, InterruptedException, TimeoutException {
@@ -143,8 +135,6 @@ class NetworkEventsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canListenToOnAuthRequiredEvent()
@@ -168,8 +158,6 @@ class NetworkEventsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canListenToFetchError() throws ExecutionException, InterruptedException, TimeoutException {

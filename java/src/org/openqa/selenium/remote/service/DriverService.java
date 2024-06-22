@@ -196,7 +196,7 @@ public class DriverService implements Closeable {
         if (getDefaultDriverOptions().getBrowserName().isEmpty()) {
           throw new WebDriverException("Driver executable is null and browser name is not set.");
         }
-        this.executable = DriverFinder.getPath(this, getDefaultDriverOptions()).getDriverPath();
+        this.executable = new DriverFinder(this, getDefaultDriverOptions()).getDriverPath();
       }
       LOG.fine(String.format("Starting driver at %s with %s", this.executable, this.args));
 

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const crypto = require('crypto')
+const crypto = require('node:crypto')
 
 class PinnedScript {
   constructor(script) {

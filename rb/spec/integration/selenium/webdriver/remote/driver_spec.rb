@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Remote
-      describe Driver, exclusive: {driver: :remote} do
+      describe Driver, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {driver: :remote}] do
         it 'exposes session_id' do
           expect(driver.session_id).to be_a(String)
         end

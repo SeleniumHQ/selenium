@@ -1,0 +1,36 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["bazel", "bazelisk"],
+      "commitMessageSuffix": "[dotnet][java][js][py][rb][rust]"
+    },
+    {
+      "matchPackageNames": ["nuget"],
+      "commitMessagePrefix": "[dotnet]"
+    },
+    {
+      "matchPackageNames": ["maven"],
+      "commitMessagePrefix": "[java]"
+    },
+    {
+      "matchPackageNames": ["npm"],
+      "commitMessagePrefix": "[js]"
+    },
+    {
+      "matchPackageNames": ["pip_requirements"],
+      "commitMessagePrefix": "[py]"
+    },
+    {
+      "matchPackageNames": ["bundler", "ruby-version"],
+      "commitMessagePrefix": "[rb]"
+    },
+    {
+      "matchPackageNames": ["cargo"],
+      "commitMessagePrefix": "[rust]"
+    }
+  ],
+  "prConcurrentLimit": 5
+}

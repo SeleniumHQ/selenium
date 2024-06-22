@@ -36,8 +36,18 @@ on:
         required: false
         type: string
         default: ''
+      dotnet-version:
+        description: Custom DotNet version to install
+        required: false
+        type: string
+        default: ''
       java-version:
         description: Custom Java version to install
+        required: false
+        type: string
+        default: ''
+      node-version:
+        description: Custom Node version to install
         required: false
         type: string
         default: ''
@@ -60,13 +70,14 @@ on:
 jobs:
   bazel:
     name: ${{ inputs.name }}
-    runs-on: ${{ inputs.os }}-latest
+    runs-on: ${{ inputs.os == 'macos' && 'macos-13' || format('{0}-latest', inputs.os) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SE_AVOID_STATS: true
     steps:
       - name: Checkout source tree
@@ -87,30 +98,39 @@ jobs:
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version
+      - name: Setup DotNet
+        if: inputs.dotnet-version != ''
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ inputs.dotnet-version }}
       - name: Setup Java
         if: inputs.java-version != ''
         uses: actions/setup-java@v3
         with:
           java-version: ${{ inputs.java-version }}
           distribution: 'temurin'
+      - name: Setup Node
+        if: inputs.node-version != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
         if: inputs.caching
-        uses: bazel-contrib/setup-bazel@0.8.1
+        uses: bazel-contrib/setup-bazel@0.8.5
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
+          cache-version: 2
           disk-cache: ${{ inputs.cache-key }}
           external-cache: |
             name: ${{ inputs.cache-key }}
             manifest:
               crates: rust/Cargo.Bazel.lock
-              npm: package-lock.json
-              pypi__pip: py/requirements_lock.txt
-              ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
+              rules_ruby~~ruby~ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: bazel-contrib/setup-bazel@0.8.1
+        uses: bazel-contrib/setup-bazel@0.8.5
         with:
           bazelrc: common --color=yes
       - name: Setup Fluxbox and Xvfb
@@ -123,22 +143,6 @@ jobs:
       - name: Set resolution
         if: inputs.os == 'windows' && inputs.browser != ''
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
-      - name: Setup Chrome
-        if: inputs.browser == 'chrome'
-        uses: browser-actions/setup-chrome@latest
-        with:
-          chrome-version: ${{ inputs.browser-version || 'stable' }}
-      - name: Setup Firefox
-        if: inputs.browser == 'firefox'
-        uses: abhi1693/setup-browser@v0.3.5
-        with:
-          browser: firefox
-          version: ${{ inputs.browser-version || 'latest' }}
-      - name: Setup Edge
-        if: inputs.browser == 'edge'
-        uses: browser-actions/setup-edge@latest
-        with:
-          edge-version: ${{ inputs.browser-version || 'stable' }}
       - name: Setup Safari
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable

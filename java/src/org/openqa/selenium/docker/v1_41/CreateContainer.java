@@ -52,6 +52,7 @@ class CreateContainer {
   }
 
   public Container apply(ContainerConfig info) {
+    this.protocol.getImage(info.getImage().getName());
     HttpResponse res =
         DockerMessages.throwIfNecessary(
             client.execute(

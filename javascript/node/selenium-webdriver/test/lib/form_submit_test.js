@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const test = require('../../lib/test')
 const until = require('../../lib/until')
 const Pages = test.Pages
