@@ -1,0 +1,32 @@
+﻿selenium.webdriver.common.bidi.script
+=====================================
+
+.. automodule:: selenium.webdriver.common.bidi.script
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ConsoleLogEntry
+      JavaScriptLogEntry
+      LogEntryAdded
+      Script
+   
+   
+
+   
+   
+   
+
+
+

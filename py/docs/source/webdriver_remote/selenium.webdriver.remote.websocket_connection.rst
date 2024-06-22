@@ -1,0 +1,29 @@
+﻿selenium.webdriver.remote.websocket\_connection
+===============================================
+
+.. automodule:: selenium.webdriver.remote.websocket_connection
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      WebSocketConnection
+   
+   
+
+   
+   
+   
+
+
+

@@ -17,7 +17,6 @@
 
    .. autosummary::
    
-      Log
       Options
    
    

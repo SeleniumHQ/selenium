@@ -19,6 +19,7 @@
    
       ErrorCode
       ErrorHandler
+      ExceptionMapping
    
    
 

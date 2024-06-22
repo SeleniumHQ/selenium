@@ -1,0 +1,29 @@
+﻿selenium.webdriver.common.bidi.console
+======================================
+
+.. automodule:: selenium.webdriver.common.bidi.console
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Console
+   
+   
+
+   
+   
+   
+
+
+
