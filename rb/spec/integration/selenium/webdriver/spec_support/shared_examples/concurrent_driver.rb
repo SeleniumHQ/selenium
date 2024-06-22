@@ -30,7 +30,7 @@ shared_examples_for 'driver that can be started concurrently' do |guard|
     create_driver!
   end
 
-  fit 'starts multiple drivers sequentially', guard do
+  it 'starts multiple drivers sequentially', guard do
     expected_count = WebDriver::Platform.ci ? 2 : 4
     expected_count.times do
       thread = Thread.new do

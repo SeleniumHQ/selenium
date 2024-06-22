@@ -88,15 +88,15 @@ module Selenium
         end
 
         def remote_server
-          if ENV.key?('CHROMEDRIVER_BINARY')
-            args = ["-Dwebdriver.chrome.driver=#{ENV['CHROMEDRIVER_BINARY']}"]
-          elsif ENV.key?('MSEDGEDRIVER_BINARY')
-            args = ["-Dwebdriver.edge.driver=#{ENV['MSEDGEDRIVER_BINARY']}"]
-          elsif ENV.key?('GECKODRIVER_BINARY')
-            args = ["-Dwebdriver.gecko.driver=#{ENV['GECKODRIVER_BINARY']}"]
-          else
-            args = %w[--selenium-manager true --enable-managed-downloads true]
-          end
+          args = if ENV.key?('CHROMEDRIVER_BINARY')
+                   ["-Dwebdriver.chrome.driver=#{ENV['CHROMEDRIVER_BINARY']}"]
+                 elsif ENV.key?('MSEDGEDRIVER_BINARY')
+                   ["-Dwebdriver.edge.driver=#{ENV['MSEDGEDRIVER_BINARY']}"]
+                 elsif ENV.key?('GECKODRIVER_BINARY')
+                   ["-Dwebdriver.gecko.driver=#{ENV['GECKODRIVER_BINARY']}"]
+                 else
+                   %w[--selenium-manager true --enable-managed-downloads true]
+                 end
 
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
