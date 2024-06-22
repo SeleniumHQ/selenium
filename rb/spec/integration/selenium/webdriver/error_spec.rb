@@ -22,12 +22,23 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Error do
+      let(:base_url) { 'https://www.selenium.dev/documentation/webdriver/troubleshooting/errors' }
+
       it 'raises an appropriate error' do
         driver.navigate.to url_for('xhtmlTest.html')
 
         expect {
           driver.find_element(id: 'nonexistent')
         }.to raise_error(WebDriver::Error::NoSuchElementError)
+      end
+
+      context 'with self generated url' do
+        it 'provides the right url for NoSuchElementError' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          driver.find_element(id: 'nonexistent')
+        rescue WebDriver::Error::NoSuchElementError => e
+          expect(e.message).to include("#{base_url}#no-such-element-exception")
+        end
       end
     end
   end # WebDriver
