@@ -24,10 +24,12 @@ Webdriver.common
    selenium.webdriver.common.alert
    selenium.webdriver.common.by
    selenium.webdriver.common.desired_capabilities
+   selenium.webdriver.common.driver_finder
    selenium.webdriver.common.keys
    selenium.webdriver.common.log
    selenium.webdriver.common.print_page_options
    selenium.webdriver.common.proxy
+   selenium.webdriver.common.selenium_manager
    selenium.webdriver.common.utils
    selenium.webdriver.common.service
    selenium.webdriver.common.options
@@ -56,9 +58,11 @@ Webdriver.support
    selenium.webdriver.support.color
    selenium.webdriver.support.event_firing_webdriver
    selenium.webdriver.support.expected_conditions
+   selenium.webdriver.support.events
    selenium.webdriver.support.relative_locator
    selenium.webdriver.support.select
    selenium.webdriver.support.wait
+   selenium.webdriver.support.ui
 
 Webdriver.chrome
 ----------------
@@ -70,6 +74,7 @@ Webdriver.chrome
    selenium.webdriver.chrome.options
    selenium.webdriver.chrome.service
    selenium.webdriver.chrome.webdriver
+   selenium.webdriver.chrome.remote_connection
 
 Webdriver.chromium
 ------------------
@@ -93,6 +98,7 @@ Webdriver.edge
    selenium.webdriver.edge.options
    selenium.webdriver.edge.service
    selenium.webdriver.edge.webdriver
+   selenium.webdriver.edge.remote_connection
 
 Webdriver.firefox
 -----------------
@@ -101,7 +107,6 @@ Webdriver.firefox
 .. autosummary::
    :toctree: webdriver_firefox
 
-   selenium.webdriver.firefox.extension_connection
    selenium.webdriver.firefox.remote_connection
    selenium.webdriver.firefox.firefox_binary
    selenium.webdriver.firefox.options
@@ -139,6 +144,7 @@ Webdriver.remote
    selenium.webdriver.remote.file_detector
    selenium.webdriver.remote.script_key
    selenium.webdriver.remote.switch_to
+   selenium.webdriver.remote.websocket_connection
 
 Webdriver.safari
 ----------------
@@ -151,6 +157,18 @@ Webdriver.safari
   selenium.webdriver.safari.remote_connection
   selenium.webdriver.safari.service
   selenium.webdriver.safari.webdriver
+  selenium.webdriver.safari.permissions
+
+Webdriver.wpewebkit
+-------------------
+
+.. currentmodule:: selenium.webdriver.wpewebkit
+.. autosummary::
+  :toctree: webdriver_wpewebkit
+
+  selenium.webdriver.wpewebkit.options
+  selenium.webdriver.wpewebkit.service
+  selenium.webdriver.wpewebkit.webdriver
 
 Webdriver.webkitgtk
 -------------------
