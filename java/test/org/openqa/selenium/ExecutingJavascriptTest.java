@@ -264,7 +264,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
             t -> {
               Throwable rootCause = getRootCause(t);
               assertThat(rootCause).hasMessageContaining("errormessage");
-              assertThat(Arrays.asList(rootCause.getStackTrace()))
+              assertThat(List.of(rootCause.getStackTrace()))
                   .extracting(StackTraceElement::getMethodName)
                   .contains("functionB");
             });
@@ -407,7 +407,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     driver.get(pages.javascriptPage);
 
     Path jqueryFile = InProject.locate("common/src/web/js/jquery-3.5.1.min.js");
-    String jquery = new String(Files.readAllBytes(jqueryFile), US_ASCII);
+    String jquery = Files.readString(jqueryFile, US_ASCII);
     assertThat(jquery.length())
         .describedAs("The javascript code should be at least 50 KB.")
         .isGreaterThan(50000);

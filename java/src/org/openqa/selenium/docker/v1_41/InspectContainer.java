@@ -23,6 +23,7 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -67,7 +68,9 @@ class InspectContainer {
     ArrayList<Object> mounts = (ArrayList<Object>) rawInspectInfo.get("Mounts");
     List<Map<String, Object>> mountedVolumes =
         mounts.stream().map(mount -> (Map<String, Object>) mount).collect(Collectors.toList());
+    Map<String, Object> hostConfig =
+        (Map<String, Object>) rawInspectInfo.getOrDefault("HostConfig", Collections.emptyMap());
 
-    return new ContainerInfo(id, ip, mountedVolumes, networkName);
+    return new ContainerInfo(id, ip, mountedVolumes, networkName, hostConfig);
   }
 }

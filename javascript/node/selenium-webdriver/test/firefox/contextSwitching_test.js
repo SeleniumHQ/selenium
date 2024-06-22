@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const error = require('../../lib/error')
 const { Browser } = require('../../index')
 const { Context } = require('../../firefox')

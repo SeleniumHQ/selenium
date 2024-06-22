@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.openqa.selenium.Capabilities;
@@ -49,7 +50,6 @@ import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
@@ -130,10 +130,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), this.getClass().getName());
 
       DriverService service = builder.build();
-      Result driverResult = DriverFinder.getPath(service, capabilities);
-      service.setExecutable(driverResult.getDriverPath());
-      if (driverResult.getBrowserPath() != null && !driverResult.getBrowserPath().isEmpty()) {
-        capabilities = setBrowserBinary(capabilities, driverResult.getBrowserPath());
+      DriverFinder finder = new DriverFinder(service, capabilities);
+      service.setExecutable(finder.getDriverPath());
+      if (finder.hasBrowserPath()) {
+        capabilities = setBrowserBinary(capabilities, finder.getBrowserPath());
       }
 
       Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
@@ -213,7 +213,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
             "Error while creating session with the driver service. "
                 + "Stopping driver service: "
                 + e.getMessage();
-        LOG.warning(errorMessage);
+        LOG.log(Level.WARNING, errorMessage, e);
 
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
@@ -226,12 +226,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
       EXCEPTION.accept(attributeMap, e);
       String errorMessage =
           "Error while creating session with the driver service. " + e.getMessage();
-      LOG.warning(errorMessage);
+      LOG.log(Level.WARNING, errorMessage, e);
 
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
-      return Either.left(new SessionNotCreatedException(e.getMessage()));
+      return Either.left(new SessionNotCreatedException(errorMessage));
     } finally {
       span.close();
     }
@@ -326,13 +326,16 @@ public class DriverServiceSessionFactory implements SessionFactory {
           Map<String, Object> vendorOptions =
               (Map<String, Object>) options.getCapability(vendorOptionsCapability);
           vendorOptions.put("binary", browserPath);
-          return new PersistentCapabilities(options)
-              .setCapability(vendorOptionsCapability, vendorOptions);
+          MutableCapabilities toReturn = new MutableCapabilities(options);
+          toReturn.setCapability(vendorOptionsCapability, vendorOptions);
+          toReturn.setCapability("browserVersion", (String) null);
+          return new PersistentCapabilities(toReturn);
         } catch (Exception e) {
-          LOG.warning(
+          LOG.log(
+              Level.WARNING,
               String.format(
-                  "Exception while setting the browser binary path. %s: %s",
-                  options, e.getMessage()));
+                  "Exception while setting the browser binary path. Options: %s", options),
+              e);
         }
       }
     }

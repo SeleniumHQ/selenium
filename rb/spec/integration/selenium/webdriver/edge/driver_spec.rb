@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Edge
-      describe Driver, exclusive: {browser: :edge} do
+      describe Driver, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :edge}] do
         it 'gets and sets network conditions' do
           driver.network_conditions = {offline: false, latency: 56, throughput: 789}
           expect(driver.network_conditions).to eq(
@@ -43,6 +43,9 @@ module Selenium
             'upload_throughput' => -1
           )
           driver.delete_network_conditions
+
+          # Need to reset because https://bugs.chromium.org/p/chromedriver/issues/detail?id=4790
+          reset_driver!
         end
 
         it 'sets download path' do

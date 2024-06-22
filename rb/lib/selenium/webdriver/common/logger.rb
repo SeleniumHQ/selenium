@@ -185,7 +185,7 @@ module Selenium
         logger.progname = name
         logger.level = level
         logger.formatter = proc do |severity, time, progname, msg|
-          "#{time.strftime('%F %T')} #{severity} #{progname} #{msg}\n"
+          "#{time.strftime('%F %T')} #{severity} #{progname} #{msg}\n".force_encoding('UTF-8')
         end
 
         logger

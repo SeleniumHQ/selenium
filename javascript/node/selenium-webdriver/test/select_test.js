@@ -17,9 +17,10 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const { Select, By } = require('..')
 const { Pages, suite } = require('../lib/test')
+const { escapeQuotes } = require('../lib/select')
 
 let singleSelectValues1 = {
   name: 'selectomatic',
@@ -85,6 +86,42 @@ suite(
           let ele = await selector.getFirstSelectedOption()
           assert.deepEqual(await ele.getText(), singleSelectValues1['values'][x])
         }
+      })
+
+      it('Should be able to select by visible text with spaces', async function () {
+        await driver.get(Pages.selectSpacePage)
+
+        const elem = await driver.findElement(By.id('selectWithoutMultiple'))
+        const select = new Select(elem)
+        await select.selectByVisibleText('     five')
+        let selectedElement = await select.getFirstSelectedOption()
+        selectedElement.getText().then((text) => {
+          assert.strictEqual(text, '     five')
+        })
+      })
+
+      it('Should convert an unquoted string into one with quotes', async function () {
+        assert.strictEqual(escapeQuotes('abc'), '"abc"')
+        assert.strictEqual(escapeQuotes('abc  aqewqqw'), '"abc  aqewqqw"')
+        assert.strictEqual(escapeQuotes(''), '""')
+        assert.strictEqual(escapeQuotes('  '), '"  "')
+        assert.strictEqual(escapeQuotes('  abc  '), '"  abc  "')
+      })
+
+      it('Should add double quotes to a string that contains a single quote', async function () {
+        assert.strictEqual(escapeQuotes("f'oo"), `"f'oo"`)
+      })
+
+      it('Should add single quotes to a string that contains a double quotes', async function () {
+        assert.strictEqual(escapeQuotes('f"oo'), `'f"oo'`)
+      })
+
+      it('Should provide concatenated strings when string to escape contains both single and double quotes', async function () {
+        assert.strictEqual(escapeQuotes(`f"o'o`), `concat("f", '"', "o'o")`)
+      })
+
+      it('Should provide concatenated strings when string ends with quote', async function () {
+        assert.strictEqual(escapeQuotes(`'"`), `concat("'", '"')`)
       })
 
       it('Should select by multiple index', async function () {

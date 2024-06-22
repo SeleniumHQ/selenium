@@ -21,7 +21,6 @@ import static java.util.Collections.unmodifiableMap;
 
 import java.util.Map;
 import java.util.TreeMap;
-import org.openqa.selenium.bidi.log.StackTrace;
 import org.openqa.selenium.json.JsonInput;
 
 public class ExceptionDetails {

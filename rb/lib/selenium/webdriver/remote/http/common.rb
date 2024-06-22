@@ -26,9 +26,17 @@ module Selenium
           CONTENT_TYPE    = 'application/json'
           DEFAULT_HEADERS = {
             'Accept' => CONTENT_TYPE,
-            'Content-Type' => "#{CONTENT_TYPE}; charset=UTF-8",
-            'User-Agent' => "selenium/#{WebDriver::VERSION} (ruby #{Platform.os})"
+            'Content-Type' => "#{CONTENT_TYPE}; charset=UTF-8"
           }.freeze
+
+          class << self
+            attr_accessor :extra_headers
+            attr_writer :user_agent
+
+            def user_agent
+              @user_agent ||= "selenium/#{WebDriver::VERSION} (ruby #{Platform.os})"
+            end
+          end
 
           attr_writer :server_url
 
@@ -42,7 +50,7 @@ module Selenium
 
           def call(verb, url, command_hash)
             url      = server_url.merge(url) unless url.is_a?(URI)
-            headers  = DEFAULT_HEADERS.dup
+            headers  = common_headers.dup
             headers['Cache-Control'] = 'no-cache' if verb == :get
 
             if command_hash
@@ -60,6 +68,16 @@ module Selenium
           end
 
           private
+
+          def common_headers
+            @common_headers ||= begin
+              headers = DEFAULT_HEADERS.dup
+              headers['User-Agent'] = Common.user_agent
+              headers = headers.merge(Common.extra_headers || {})
+
+              headers
+            end
+          end
 
           def server_url
             return @server_url if @server_url

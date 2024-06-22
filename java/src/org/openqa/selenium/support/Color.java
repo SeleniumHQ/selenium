@@ -116,7 +116,7 @@ public class Color {
     result = 31 * result + green;
     result = 31 * result + blue;
     temp = alpha != +0.0d ? Double.doubleToLongBits(alpha) : 0L;
-    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    result = 31 * result + Long.hashCode(temp);
     return result;
   }
 

@@ -62,6 +62,9 @@ module Selenium
         end
 
         def reset_driver!(time: 0, **opts, &block)
+          # do not reset if the test was marked skipped
+          return if opts.delete(:example)&.metadata&.fetch(:skip, nil)
+
           quit_driver
           sleep time
           driver_instance(**opts, &block)
@@ -87,12 +90,19 @@ module Selenium
         def remote_server
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
+            java: bazel_java,
             port: random_port,
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 60,
             args: %w[--selenium-manager true --enable-managed-downloads true]
           )
+        end
+
+        def bazel_java
+          return unless ENV.key?('WD_BAZEL_JAVA_LOCATION')
+
+          File.expand_path(File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp)
         end
 
         def reset_remote_server
@@ -241,22 +251,28 @@ module Selenium
         end
 
         def chrome_options(args: [], **opts)
+          opts[:browser_version] = 'stable' if WebDriver::Platform.windows?
+          opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
-          args << '--no-sandbox'
+          args << '--no-sandbox' if ENV['NO_SANDBOX']
           args << '--disable-gpu'
-          WebDriver::Options.chrome(browser_version: 'stable', args: args, **opts)
+          WebDriver::Options.chrome(args: args, **opts)
         end
 
         def edge_options(args: [], **opts)
+          opts[:browser_version] = 'stable' if WebDriver::Platform.windows?
+          opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
-          args << '--no-sandbox'
+          args << '--no-sandbox' if ENV['NO_SANDBOX']
           args << '--disable-gpu'
-          WebDriver::Options.edge(browser_version: 'stable', args: args, **opts)
+          WebDriver::Options.edge(args: args, **opts)
         end
 
         def firefox_options(args: [], **opts)
+          opts[:browser_version] = 'stable' if WebDriver::Platform.windows?
+          opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
           args << '--headless' if ENV['HEADLESS']
           WebDriver::Options.firefox(args: args, **opts)

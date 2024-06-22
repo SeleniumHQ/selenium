@@ -60,8 +60,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   public void canGetCookieByName() {
     String key = generateUniqueKey();
@@ -81,10 +79,7 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
   @NotYetImplemented(EDGE)
   public void canGetCookieInDefaultUserContext() {
     String windowHandle = driver.getWindowHandle();
@@ -130,8 +125,6 @@ class StorageCommandsTest extends JupiterTestBase {
   public void canGetCookieInAUserContext() {}
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   public void canAddCookie() {
     String key = generateUniqueKey();
@@ -151,11 +144,8 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
   public void canAddAndGetCookie() {
     driver.get(appServer.whereIs("/common/animals"));
 
@@ -219,8 +209,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   public void canGetAllCookies() {
     String key1 = generateUniqueKey();
@@ -249,11 +237,7 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
   public void canDeleteAllCookies() {
     addCookieOnServerSide(new Cookie("foo", "set"));
     assertSomeCookiesArePresent();
@@ -267,11 +251,7 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
   public void canDeleteCookieWithName() {
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
@@ -293,8 +273,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   public void testAddCookiesWithDifferentPathsThatAreRelatedToOurs() {
     driver.get(appServer.whereIs("/common/animals"));

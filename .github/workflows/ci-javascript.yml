@@ -12,6 +12,7 @@ jobs:
       name: Build
       cache-key: javascript-build
       run: bazel build //javascript/node/selenium-webdriver:selenium-webdriver
+
   browser-tests:
     name: Browser Tests
     needs: build
@@ -25,7 +26,10 @@ jobs:
     with:
       name: Browser Tests  (${{ matrix.browser }})
       browser: ${{ matrix.browser }}
-      cache-key: node
-      run: |
-        export SELENIUM_BROWSER=${{ matrix.browser }}
-        bazel test --flaky_test_attempts 3 //javascript/node/selenium-webdriver:${{matrix.browser}}-browser-tests
+      cache-key: javascript-${{matrix.browser}}-browser-tests
+      run: >
+        bazel test
+        --flaky_test_attempts 3
+        --test_tag_filters ${{ matrix.browser }}
+        --local_test_jobs 1
+        //javascript/node/...

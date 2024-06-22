@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Error do
+    describe Error, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       let(:base_url) { 'https://www.selenium.dev/documentation/webdriver/troubleshooting/errors' }
 
       it 'raises an appropriate error' do

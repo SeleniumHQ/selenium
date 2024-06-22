@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const { Browser } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
@@ -34,6 +34,10 @@ suite(
     afterEach(async function () {
       await driver.quit()
     })
+
+    function delay(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms))
+    }
 
     describe('Log Inspector', function () {
       it('can listen to console log', async function () {
@@ -109,6 +113,41 @@ suite(
         await inspector.close()
       })
 
+      it('can call multiple callbacks for console log', async function () {
+        let logEntry1 = null
+        let logEntry2 = null
+        let logEntry3 = null
+        let logEntry4 = null
+        const inspector = await logInspector(driver)
+        await inspector.onConsoleEntry(function (log) {
+          logEntry1 = log
+        })
+
+        await inspector.onConsoleEntry(function (log) {
+          logEntry2 = log
+        })
+
+        await inspector.onConsoleEntry(function (log) {
+          logEntry3 = log
+        }, filterBy.FilterBy.logLevel('info'))
+
+        await inspector.onConsoleEntry(function (log) {
+          logEntry4 = log
+        }, filterBy.FilterBy.logLevel('error'))
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'consoleLog' }).click()
+
+        await delay(3000)
+
+        assert.notEqual(logEntry1, null)
+        assert.notEqual(logEntry2, null)
+        assert.notEqual(logEntry3, null)
+        assert.equal(logEntry4, null)
+
+        await inspector.close()
+      })
+
       it('can listen to javascript log', async function () {
         let logEntry = null
         const inspector = await logInspector(driver)
@@ -151,6 +190,41 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
         await driver.findElement({ id: 'jsException' }).click()
+
+        await inspector.close()
+      })
+
+      it('can call multiple callbacks for javascript log', async function () {
+        let logEntry1 = null
+        let logEntry2 = null
+        let logEntry3 = null
+        let logEntry4 = null
+        const inspector = await logInspector(driver)
+        await inspector.onJavascriptLog(function (log) {
+          logEntry1 = log
+        })
+
+        await inspector.onJavascriptLog(function (log) {
+          logEntry2 = log
+        })
+
+        await inspector.onJavascriptLog(function (log) {
+          logEntry3 = log
+        }, filterBy.FilterBy.logLevel('error'))
+
+        await inspector.onJavascriptLog(function (log) {
+          logEntry4 = log
+        }, filterBy.FilterBy.logLevel('info'))
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'jsException' }).click()
+
+        await delay(3000)
+
+        assert.notEqual(logEntry1, null)
+        assert.notEqual(logEntry2, null)
+        assert.notEqual(logEntry3, null)
+        assert.equal(logEntry4, null)
 
         await inspector.close()
       })
@@ -237,6 +311,64 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
         await driver.findElement({ id: 'jsException' }).click()
+
+        await inspector.close()
+      })
+
+      it('can call multiple callbacks for any log', async function () {
+        let logEntry1 = null
+        let logEntry2 = null
+        let logEntry3 = null
+        let logEntry4 = null
+        const inspector = await logInspector(driver)
+        await inspector.onLog(function (log) {
+          logEntry1 = log
+        })
+
+        await inspector.onLog(function (log) {
+          logEntry2 = log
+        })
+
+        await inspector.onLog(function (log) {
+          logEntry3 = log
+        }, filterBy.FilterBy.logLevel('error'))
+
+        await inspector.onLog(function (log) {
+          logEntry4 = log
+        }, filterBy.FilterBy.logLevel('info'))
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'jsException' }).click()
+
+        await delay(3000)
+
+        assert.notEqual(logEntry1, null)
+        assert.notEqual(logEntry2, null)
+        assert.notEqual(logEntry3, null)
+        assert.equal(logEntry4, null)
+
+        await inspector.close()
+      })
+
+      it('can call multiple callbacks for any log with filter', async function () {
+        let logEntry1 = null
+        let logEntry2 = null
+        const inspector = await logInspector(driver)
+        await inspector.onLog(function (log) {
+          logEntry1 = log
+        }, filterBy.FilterBy.logLevel('error'))
+
+        await inspector.onLog(function (log) {
+          logEntry2 = log
+        }, filterBy.FilterBy.logLevel('error'))
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'jsException' }).click()
+
+        await delay(3000)
+
+        assert.notEqual(logEntry1, null)
+        assert.notEqual(logEntry2, null)
 
         await inspector.close()
       })

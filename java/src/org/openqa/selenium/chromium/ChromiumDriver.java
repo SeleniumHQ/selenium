@@ -347,13 +347,16 @@ public class ChromiumDriver extends RemoteWebDriver
   }
 
   private Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
-    if (!biDiUri.isPresent()) {
+    if (biDiUri.isEmpty()) {
       return Optional.empty();
     }
 
     URI wsUri =
         biDiUri.orElseThrow(
-            () -> new BiDiException("This version of Chromium driver does not support BiDi"));
+            () ->
+                new BiDiException(
+                    "Check if this browser version supports BiDi and if the 'webSocketUrl: true'"
+                        + " capability is set."));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);

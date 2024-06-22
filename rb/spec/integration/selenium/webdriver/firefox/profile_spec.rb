@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Profile, exclusive: {browser: :firefox} do
+      describe Profile, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}] do
         let(:profile) { described_class.new }
 
         before do

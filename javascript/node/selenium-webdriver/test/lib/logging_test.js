@@ -17,9 +17,9 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const sinon = require('sinon')
-const logging = require('../../lib/logging')
+const logging = require('selenium-webdriver/lib/logging')
 
 describe('logging', function () {
   let mgr, root, clock

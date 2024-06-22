@@ -74,7 +74,7 @@ java_dist_zip(
 javadoc(
     name = "client-javadoc",
     third_party_prefixes = [
-        "@maven//",
+        "@",
         "//third_party",
     ] + CDP_DEPS,
     transitive = True,
