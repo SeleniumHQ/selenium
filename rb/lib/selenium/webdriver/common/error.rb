@@ -39,12 +39,14 @@ module Selenium
       ERROR_URL = 'https://www.selenium.dev/documentation/webdriver/troubleshooting/errors'
 
       class WebDriverError < StandardError
+        attr_writer :backtrace_locations, :cause
+
         def backtrace_locations
-          Thread.current.backtrace_locations
+          @backtrace_locations ||= Thread.current.backtrace_locations
         end
 
         def cause
-          $ERROR_INFO
+          @cause ||= $ERROR_INFO
         end
       end
 
