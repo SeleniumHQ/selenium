@@ -414,6 +414,8 @@ namespace OpenQA.Selenium.Remote
             /// <returns>The http response message content.</returns>
             protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
             {
+                var responseTask = base.SendAsync(request, cancellationToken);
+
                 StringBuilder requestLogMessageBuilder = new();
                 requestLogMessageBuilder.AppendFormat(">> {0}", request);
 
@@ -423,11 +425,9 @@ namespace OpenQA.Selenium.Remote
                     requestLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, requestContent);
                 }
 
-                var responseTask = base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
                 _logger.Trace(requestLogMessageBuilder.ToString());
 
-                var response = await responseTask;
+                var response = await responseTask.ConfigureAwait(false);
 
                 StringBuilder responseLogMessageBuilder = new();
                 responseLogMessageBuilder.AppendFormat("<< {0}", response);
