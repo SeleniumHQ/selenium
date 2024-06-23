@@ -427,19 +427,16 @@ namespace OpenQA.Selenium.Remote
 
                 var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                if (!response.IsSuccessStatusCode)
+                StringBuilder responseLogMessageBuilder = new();
+                responseLogMessageBuilder.AppendFormat("<< {0}", response);
+
+                if (!response.IsSuccessStatusCode && response.Content != null)
                 {
-                    StringBuilder responseLogMessageBuilder = new();
-                    responseLogMessageBuilder.AppendFormat("<< {0}", response);
-
-                    if (response.Content != null)
-                    {
-                        var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        responseLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, responseContent);
-                    }
-
-                    _logger.Trace(responseLogMessageBuilder.ToString());
+                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    responseLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, responseContent);
                 }
+
+                _logger.Trace(responseLogMessageBuilder.ToString());
 
                 return response;
             }
