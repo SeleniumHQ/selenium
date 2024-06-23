@@ -397,7 +397,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Internal Diagnostic Handler for HttpCommandExecutor Additional Context
         /// </summary>
-        internal class DiagnosticsHttpHandler : DelegatingHandler
+        private class DiagnosticsHttpHandler : DelegatingHandler
         {
             private static readonly ILogger _logger = Log.GetLogger<DiagnosticsHttpHandler>();
 
@@ -422,7 +422,7 @@ namespace OpenQA.Selenium.Remote
 
                 var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                if (!response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode && response.Content != null)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     _logger.Trace($"<< Body: {responseContent}");
