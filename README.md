@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml/badge.svg?branch=trunk&event=schedule)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml)
 
-<a href="https://selenium.dev"><img src="common/images/selenium_logo_medium.png" width="180" alt="Selenium Logo"/></a>
+<a href="https://selenium.dev"><img src="common/images/selenium_logo_mark_green.svg" width="180" alt="Selenium Logo"/></a>
 
 Selenium is an umbrella project encapsulating a variety of tools and
 libraries enabling web browser automation. Selenium specifically
