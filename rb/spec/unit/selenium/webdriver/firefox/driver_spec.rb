@@ -38,7 +38,7 @@ module Selenium
         def expect_request(body: nil, endpoint: nil)
           body = (body || {capabilities: {alwaysMatch: {acceptInsecureCerts: true,
                                                         browserName: 'firefox',
-                                                        'moz:firefoxOptions': {},
+                                                        'moz:firefoxOptions': {prefs: {'remote.active-protocols' => 3}},
                                                         'moz:debuggerAddress': true}}}).to_json
           endpoint ||= "#{service_manager.uri}/session"
           stub_request(:post, endpoint).with(body: body).to_return(valid_response)
@@ -79,7 +79,10 @@ module Selenium
           opts = {args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {acceptInsecureCerts: true,
                                                              browserName: 'firefox',
-                                                             'moz:firefoxOptions': opts,
+                                                             'moz:firefoxOptions': {
+                                                               args: ['-f'],
+                                                               prefs: {'remote.active-protocols' => 3}
+                                                             },
                                                              'moz:debuggerAddress': true}}})
           expect { described_class.new(options: Options.new(**opts)) }.not_to raise_exception
         end

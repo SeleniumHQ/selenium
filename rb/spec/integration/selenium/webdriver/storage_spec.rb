@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     module DriverExtensions
-      describe HasWebStorage do
+      describe HasWebStorage, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
         shared_examples 'web storage' do
           before do
             driver.navigate.to url_for('clicks.html')

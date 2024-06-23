@@ -1,3 +1,17 @@
+4.22.0 (2024-06-20)
+=========================
+
+* Force UTF-8 encoding on logger (see #6937)
+* Don't crash when ChildProcess is already killed (see #14032)
+* Manage bidi instance on the bridge not the driver (#14071)
+* Implement High Level Logging API with BiDi (#14073)
+* Fix bug with message deletion in Guard class
+* Change output for Guard class
+* Implement toggle for BiDi and Classic implementations (#14092)
+* Add preference to enable CDP in Firefox by default (#14091)
+* Add support for the w3c silent option for the ruby library (#14152)
+* Add CDP for Chrome 126 and remove 123
+
 4.21.1 (2024-05-16)
 =========================
 

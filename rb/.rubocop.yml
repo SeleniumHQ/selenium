@@ -1,5 +1,6 @@
 require:
   - rubocop-performance
+  - rubocop-rake
   - rubocop-rspec
 
 AllCops:
@@ -32,6 +33,7 @@ Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
     - 'selenium-*.gemspec'
+    - '../Rakefile*'
 
 Metrics/ClassLength:
   CountComments: false
@@ -76,6 +78,8 @@ Metrics/PerceivedComplexity:
 Naming/FileName:
   Exclude:
     - 'lib/selenium-webdriver.rb'
+    - 'Rakefile'
+    - '../Rakefile'
 
 Naming/MethodParameterName:
   AllowedNames:

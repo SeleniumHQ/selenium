@@ -78,7 +78,7 @@ class TestFileLocator {
       testDir = InProject.locate(testDirName);
     }
 
-    Require.state("Test directory", testDir.toFile()).isDirectory();
+    Require.state("Test directory", testDir).isDirectory();
 
     return testDir;
   }

@@ -4,14 +4,14 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@apollo/client": "3.9.9",
+    "@apollo/client": "3.10.4",
     "@emotion/react": "11.11.4",
-    "@emotion/styled": "11.11.0",
-    "@mui/icons-material": "5.15.14",
-    "@mui/material": "5.15.14",
+    "@emotion/styled": "11.11.5",
+    "@mui/icons-material": "5.15.18",
+    "@mui/material": "5.15.18",
     "@novnc/novnc": "1.4.0",
     "@types/jest": "29.5.12",
-    "@types/node": "20.11.30",
+    "@types/node": "20.12.12",
     "@types/react": "18.2.72",
     "@types/react-dom": "18.2.22",
     "@types/react-modal": "3.16.3",
@@ -47,7 +47,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/preset-react": "7.24.1",
+    "@babel/preset-react": "7.24.7",
     "@testing-library/jest-dom": "6.4.5",
     "@testing-library/react": "14.3.1",
     "@testing-library/user-event": "14.5.2",

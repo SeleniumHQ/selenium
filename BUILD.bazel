@@ -21,6 +21,14 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+filegroup(
+    name = "rakefile",
+    srcs = [
+        "Rakefile",
+    ],
+    visibility = ["//rb:__subpackages__"],
+)
+
 alias(
     name = "grid",
     actual = "//java/src/org/openqa/selenium/grid:executable-grid",

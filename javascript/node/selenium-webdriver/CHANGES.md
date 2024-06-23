@@ -1,3 +1,11 @@
+## 4.22.0
+
+- [bidi] Add types for user prompt related events (#14097)
+- Add preference to enable CDP in Firefox by default (#14091)
+- [bidi] Add callback handlers for logging APIs (#14120)
+- [bidi] Add high-level logging API (#14135)
+- Add CDP for Chrome 126 and remove 123
+
 ## 4.21.0
 
 - Add CDP for Chrome 125 and remove 122

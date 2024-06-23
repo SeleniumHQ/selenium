@@ -2,6 +2,11 @@
 
 load("@npm//javascript/node/selenium-webdriver:prettier/package_json.bzl", prettier_bin = "bin")
 
+alias(
+    name = "pnpm",
+    actual = "@pnpm//:pnpm",
+)
+
 prettier_bin.prettier_binary(
     name = "prettier",
 )

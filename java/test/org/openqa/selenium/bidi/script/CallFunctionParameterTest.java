@@ -47,8 +47,6 @@ public class CallFunctionParameterTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canCallFunctionWithDeclaration() {
     String id = driver.getWindowHandle();
     try (Script script = new Script(id, driver)) {
@@ -123,8 +121,6 @@ public class CallFunctionParameterTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canCallFunctionWithArguments() {
     String id = driver.getWindowHandle();
     try (Script script = new Script(id, driver)) {
@@ -151,8 +147,6 @@ public class CallFunctionParameterTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canCallFunctionToGetIFrameBrowsingContext() {
     String url = appServer.whereIs("click_too_big_in_frame.html");
     driver.get(url);
@@ -186,8 +180,6 @@ public class CallFunctionParameterTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canCallFunctionToGetElement() {
     String url = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(url);
@@ -215,8 +207,6 @@ public class CallFunctionParameterTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canCallFunctionWithAwaitPromise() {
     String id = driver.getWindowHandle();
     try (Script script = new Script(id, driver)) {
@@ -243,8 +233,6 @@ public class CallFunctionParameterTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canCallFunctionWithAwaitPromiseFalse() {
     String id = driver.getWindowHandle();
     try (Script script = new Script(id, driver)) {
@@ -269,8 +257,6 @@ public class CallFunctionParameterTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canCallFunctionWithThisParameter() {
     String id = driver.getWindowHandle();
     try (Script script = new Script(id, driver)) {
@@ -296,8 +282,6 @@ public class CallFunctionParameterTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canCallFunctionWithOwnershipRoot() {
     String id = driver.getWindowHandle();
     try (Script script = new Script(id, driver)) {
@@ -317,8 +301,6 @@ public class CallFunctionParameterTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canCallFunctionWithOwnershipNone() {
     String id = driver.getWindowHandle();
     try (Script script = new Script(id, driver)) {
@@ -364,8 +346,6 @@ public class CallFunctionParameterTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void canCallFunctionInASandBox() {
     String id = driver.getWindowHandle();
     try (Script script = new Script(id, driver)) {
