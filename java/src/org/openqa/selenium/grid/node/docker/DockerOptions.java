@@ -207,15 +207,15 @@ public class DockerOptions {
         config.getAll(DOCKER_SECTION, "devices").orElseGet(Collections::emptyList);
 
     List<Device> deviceMapping = new ArrayList<>();
-    for (int i = 0; i < devices.size(); i++) {
-      String deviceMappingDefined = devices.get(i).trim();
+    for (String device : devices) {
+      String deviceMappingDefined = device.trim();
       Matcher matcher =
-          linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
+        linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
 
       if (matcher.matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), null));
       } else if ((matcher = linuxDeviceMappingWithPermissionsPattern.matcher(deviceMappingDefined))
-          .matches()) {
+        .matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), matcher.group(3)));
       }
     }
