@@ -423,9 +423,11 @@ namespace OpenQA.Selenium.Remote
                     requestLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, requestContent);
                 }
 
+                var responseTask = base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
                 _logger.Trace(requestLogMessageBuilder.ToString());
 
-                var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                var response = await responseTask;
 
                 StringBuilder responseLogMessageBuilder = new();
                 responseLogMessageBuilder.AppendFormat("<< {0}", response);
