@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Error, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe Error, exclusive: { bidi: false, reason: 'Not yet implemented with BiDi' } do
       let(:base_url) { 'https://www.selenium.dev/documentation/webdriver/troubleshooting/errors' }
 
       it 'raises an appropriate error' do
@@ -35,9 +35,42 @@ module Selenium
       context 'with self generated url' do
         it 'provides the right url for NoSuchElementError' do
           driver.navigate.to url_for('xhtmlTest.html')
-          driver.find_element(id: 'nonexistent')
-        rescue WebDriver::Error::NoSuchElementError => e
-          expect(e.message).to include("#{base_url}#no-such-element-exception")
+
+          expect {
+            driver.find_element(id: 'nonexistent')
+          }.to raise_error(Selenium::WebDriver::Error::NoSuchElementError, /#{base_url}#no-such-element-exception/)
+        end
+
+        it 'provides the right url for StaleElementReferenceError' do
+          driver.navigate.to url_for('formPage.html')
+          button = driver.find_element(id: 'imageButton')
+          driver.navigate.refresh
+
+          expect {
+            button.click
+          }.to raise_error(Selenium::WebDriver::Error::StaleElementReferenceError,
+                           /#{base_url}#stale-element-reference-exception/)
+        end
+
+        it 'provides the right url for UnknownError' do
+          driver.network_conditions = { offline: false, latency: 56, download_throughput: 789, upload_throughput: 600 }
+          driver.delete_network_conditions
+
+          expect {
+            driver.network_conditions
+          }.to raise_error(Selenium::WebDriver::Error::UnknownError, /#{base_url}#unknown-exception/)
+        end
+
+        it 'provides the right url for NoSuchAlertError' do
+          expect {
+            driver.switch_to.alert
+          }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError, /#{base_url}#no-such-alert-exception/)
+        end
+
+        it 'provides the right url for ScriptTimeoutError' do
+          expect {
+            driver.execute_async_script 'return 1 + 2;'
+          }.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError, /#{base_url}#script-timeout-exception/)
         end
       end
     end
