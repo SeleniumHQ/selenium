@@ -133,15 +133,11 @@ class FormEncodedDataTest {
       if (!isFirst) {
         content.append("&");
       }
-      try {
-        content.append(URLEncoder.encode(iterator.next(), UTF_8.toString()));
+      content.append(URLEncoder.encode(iterator.next(), UTF_8));
 
-        String next = iterator.next();
-        if (next != null) {
-          content.append("=").append(URLEncoder.encode(next, UTF_8.toString()));
-        }
-      } catch (UnsupportedEncodingException e) {
-        fail(e.getMessage());
+      String next = iterator.next();
+      if (next != null) {
+        content.append("=").append(URLEncoder.encode(next, UTF_8));
       }
       if (isFirst) {
         isFirst = false;

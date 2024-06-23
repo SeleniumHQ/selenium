@@ -169,11 +169,7 @@ class ReferrerTest {
   }
 
   private static String encode(String url) {
-    try {
-      return URLEncoder.encode(url, UTF_8.name());
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException("UTF-8 should always be supported!", e);
-    }
+    return URLEncoder.encode(url, UTF_8);
   }
 
   private void performNavigation(WebDriver driver, String firstUrl) {

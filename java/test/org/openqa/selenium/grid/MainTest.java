@@ -38,11 +38,7 @@ class MainTest {
   }
 
   private PrintStream toPrintStream(ByteArrayOutputStream baos) {
-    try {
-      return new PrintStream(baos, true, StandardCharsets.UTF_8.name());
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
+    return new PrintStream(baos, true, StandardCharsets.UTF_8);
   }
 
   @Test
