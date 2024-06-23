@@ -21,7 +21,6 @@ using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -252,7 +251,7 @@ namespace OpenQA.Selenium.Remote
 
             if (_logger.IsEnabled(LogEventLevel.Trace))
             {
-                handler = new DiagnosticsHttpHandler(httpClientHandler);
+                handler = new DiagnosticsHttpHandler(httpClientHandler, _logger);
             }
 
             this.client = new HttpClient(handler);
@@ -399,11 +398,12 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         private class DiagnosticsHttpHandler : DelegatingHandler
         {
-            private static readonly ILogger _logger = Log.GetLogger<DiagnosticsHttpHandler>();
+            private readonly ILogger _logger;
 
-            public DiagnosticsHttpHandler(HttpMessageHandler messageHandler)
+            public DiagnosticsHttpHandler(HttpMessageHandler messageHandler, ILogger logger)
                 : base(messageHandler)
             {
+                _logger = logger;
             }
 
             /// <summary>
