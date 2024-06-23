@@ -414,19 +414,22 @@ namespace OpenQA.Selenium.Remote
             /// <returns>The http response message content.</returns>
             protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
             {
-                var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-                if (!response.IsSuccessStatusCode && response.Content != null && request.Content != null)
+                if (request.Content != null)
                 {
                     var requestContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    _logger.Trace($">> Body: {requestContent}");
+                }
 
-                    _logger.Trace($">> Request Body: {requestContent}\n\n<< Response Body: {responseContent}");
+                var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    _logger.Trace($"<< Body: {responseContent}");
                 }
 
                 return response;
             }
-
         }
     }
 }
