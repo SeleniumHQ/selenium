@@ -301,18 +301,8 @@ namespace OpenQA.Selenium.Remote
                     requestMessage.Content.Headers.ContentType = contentTypeHeader;
                 }
 
-                if (_logger.IsEnabled(LogEventLevel.Trace))
-                {
-                    _logger.Trace($">> {requestMessage}");
-                }
-
                 using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage).ConfigureAwait(false))
                 {
-                    if (_logger.IsEnabled(LogEventLevel.Trace))
-                    {
-                        _logger.Trace($"<< {responseMessage}");
-                    }
-
                     HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
                     httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
                     httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType?.ToString();
@@ -405,7 +395,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Internal Diagnostic Handler for HttpCommandExecutor Additional Context
+        /// Internal diagnostic handler to log http requests/responses.
         /// </summary>
         private class DiagnosticsHttpHandler : DelegatingHandler
         {
@@ -424,18 +414,31 @@ namespace OpenQA.Selenium.Remote
             /// <returns>The http response message content.</returns>
             protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
             {
+                StringBuilder requestLogMessageBuilder = new();
+                requestLogMessageBuilder.AppendFormat(">> {0}", request);
+
                 if (request.Content != null)
                 {
                     var requestContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    _logger.Trace($">> Body: {requestContent}");
+                    requestLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, requestContent);
                 }
+
+                _logger.Trace(requestLogMessageBuilder.ToString());
 
                 var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                if (!response.IsSuccessStatusCode && response.Content != null)
+                if (!response.IsSuccessStatusCode)
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    _logger.Trace($"<< Body: {responseContent}");
+                    StringBuilder responseLogMessageBuilder = new();
+                    responseLogMessageBuilder.AppendFormat("<< {0}", response);
+
+                    if (response.Content != null)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        responseLogMessageBuilder.AppendFormat("{0}{1}", Environment.NewLine, responseContent);
+                    }
+
+                    _logger.Trace(responseLogMessageBuilder.ToString());
                 }
 
                 return response;
