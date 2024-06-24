@@ -57,3 +57,9 @@ jobs:
           generate_release_notes: true
           prerelease: false
           files: build/dist/*.*
+
+  update-documentation:
+    needs: github-release
+    uses: ./.github/workflows/update-documentation.yml
+    with:
+      tag: selenium-${{ needs.github-release.outputs.version }}

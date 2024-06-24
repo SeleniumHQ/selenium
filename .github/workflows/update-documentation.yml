@@ -8,6 +8,12 @@ on:
         required: true
         type: string
 
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
