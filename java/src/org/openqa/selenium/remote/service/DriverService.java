@@ -355,7 +355,7 @@ public class DriverService implements Closeable {
   public abstract static class Builder<DS extends DriverService, B extends Builder<?, ?>> {
 
     private int port = 0;
-    private File exe = null;
+    public File exe = null;
     private Map<String, String> environment = emptyMap();
     private File logFile;
     private Duration timeout;
