@@ -72,6 +72,51 @@ module Selenium
             driver.execute_async_script 'return 1 + 2;'
           }.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError, /#{base_url}#script-timeout-exception/)
         end
+
+        it 'provides the right url for NoSuchWindowError' do
+          expect {
+            driver.switch_to.window 'nonexistent'
+          }.to raise_error(Selenium::WebDriver::Error::NoSuchWindowError, /#{base_url}#no-such-window-exception/)
+        end
+
+        it 'provides the right url for JavascriptError' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect {
+            driver.execute_script('return squiggle();')
+          }.to raise_error(Selenium::WebDriver::Error::JavascriptError, /#{base_url}#javascript-exception/)
+        end
+
+        it 'provides the right url for TimeoutError' do
+          block = -> { raise Error::NoSuchElementError, 'foo' }
+
+          expect {
+            wait(0.5).until(&block)
+          }.to raise_error(Error::TimeoutError, /#{base_url}#timeout-exception/)
+        end
+      end
+
+      it 'provides the right url for NoSuchShadowRootError' do
+        driver.navigate.to url_for('simpleTest.html')
+        div = driver.find_element(css: 'div')
+        expect {
+          div.shadow_root
+        }.to raise_error(Error::NoSuchShadowRootError, /#{base_url}#no-such-shadow-root-exception/)
+      end
+
+      it 'provides the right url for InvalidCookieDomainError' do
+        expect {
+          driver.manage.add_cookie name: 'domain',
+                                   value: 'different',
+                                   domain: 'selenium.dev'
+        }.to raise_error(Error::InvalidCookieDomainError, /#{base_url}#invalid-cookie-domain-exception/)
+      end
+
+      it 'provides the right url for InvalidSelectorError',
+         exclude: {browser: %i[safari safari_preview], reason: 'Safari TimeoutError'} do
+        driver.navigate.to url_for('xhtmlTest.html')
+        expect {
+          driver.find_element(xpath: '*?//-')
+        }.to raise_error(Error::InvalidSelectorError, /#{base_url}#invalid-selector-exception/)
       end
     end
   end # WebDriver
