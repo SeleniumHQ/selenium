@@ -66,15 +66,15 @@ public class FluentWait<T> implements Wait<T> {
 
   private static final Duration DEFAULT_WAIT_DURATION = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 
-  private final T input;
-  private final java.time.Clock clock;
-  private final Sleeper sleeper;
+  protected final T input;
+  protected final java.time.Clock clock;
+  protected final Sleeper sleeper;
 
-  private Duration timeout = DEFAULT_WAIT_DURATION;
-  private Duration interval = DEFAULT_WAIT_DURATION;
-  private Supplier<String> messageSupplier = () -> null;
+  protected Duration timeout = DEFAULT_WAIT_DURATION;
+  protected Duration interval = DEFAULT_WAIT_DURATION;
+  protected Supplier<String> messageSupplier = () -> null;
 
-  private final List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
+  protected final List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
 
   /**
    * @param input The input value to pass to the evaluated conditions.
