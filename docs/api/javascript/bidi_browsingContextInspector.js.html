@@ -17,7 +17,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { BrowsingContextInfo, NavigationInfo } = require('./browsingContextTypes')
+const { BrowsingContextInfo, NavigationInfo, UserPromptOpened, UserPromptClosed } = require('./browsingContextTypes')
 
 /**
  * Represents a browsing context related events.
@@ -129,8 +129,10 @@ class BrowsingContextInspector {
         let response = null
         if ('navigation' in params) {
           response = new NavigationInfo(params.context, params.navigation, params.timestamp, params.url)
+        } else if ('type' in params) {
+          response = new UserPromptOpened(params.context, params.type, params.message)
         } else if ('accepted' in params) {
-          /* Needs to be updated when browsers implement other events */
+          response = new UserPromptClosed(params.context, params.accepted, params.userText)
         } else {
           response = new BrowsingContextInfo(params.context, params.url, params.children, params.parent)
         }

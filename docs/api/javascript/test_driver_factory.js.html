@@ -21,10 +21,10 @@
 const fs = require('node:fs')
 const os = require('node:os')
 const path = require('node:path')
-const { Browser } = require('../index')
-const { Environment } = require('../testing')
-const chrome = require('../chrome')
-const firefox = require('../firefox')
+const { Browser } = require('selenium-webdriver/index')
+const { Environment } = require('selenium-webdriver/testing')
+const chrome = require('selenium-webdriver/chrome')
+const firefox = require('selenium-webdriver/firefox')
 const { runfiles } = require('@bazel/runfiles')
 
 function GetBrowserForTests() {
