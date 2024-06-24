@@ -78,12 +78,12 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></code></dd>
+<dd><code><a href="../logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</a></code>, <code><a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">TracedCommandExecutor</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements <a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></span></div>
+implements <a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a>, <a href="../logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</a></span></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -115,6 +115,9 @@ implements <a href="CommandExecutor.html" title="interface in org.openqa.seleniu
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Response.html" title="class in org.openqa.selenium.remote">Response</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#execute(org.openqa.selenium.remote.Command)" class="member-name-link">execute</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLocalLogs(org.openqa.selenium.logging.LocalLogs)" class="member-name-link">setLocalLogs</a><wbr>(<a href="../logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;logs)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -157,6 +160,16 @@ implements <a href="CommandExecutor.html" title="interface in org.openqa.seleniu
 <dd><code><a href="CommandExecutor.html#execute(org.openqa.selenium.remote.Command)">execute</a></code>&nbsp;in interface&nbsp;<code><a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></code></dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setLocalLogs(org.openqa.selenium.logging.LocalLogs)">
+<h3>setLocalLogs</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setLocalLogs</span><wbr><span class="parameters">(<a href="../logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;logs)</span></div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="../logging/NeedsLocalLogs.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs</a></code>&nbsp;in interface&nbsp;<code><a href="../logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</a></code></dd>
 </dl>
 </section>
 </li>

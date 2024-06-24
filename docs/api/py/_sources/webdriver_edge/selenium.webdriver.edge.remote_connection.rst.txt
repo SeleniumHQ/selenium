@@ -1,0 +1,29 @@
+selenium.webdriver.edge.remote\_connection
+==========================================
+
+.. automodule:: selenium.webdriver.edge.remote_connection
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      EdgeRemoteConnection
+   
+   
+
+   
+   
+   
+
+
+

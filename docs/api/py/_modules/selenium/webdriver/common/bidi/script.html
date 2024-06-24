@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>selenium.webdriver.common.bidi.script &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=89b800e6" />
+    
+    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.bidi.script</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for selenium.webdriver.common.bidi.script</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c1"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c1"># distributed with this work for additional information</span>
+<span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c1"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># with the License.  You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c1"># software distributed under the License is distributed on an</span>
+<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># KIND, either express or implied.  See the License for the</span>
+<span class="c1"># specific language governing permissions and limitations</span>
+<span class="c1"># under the License.</span>
+
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span> <span class="nn">.session</span> <span class="kn">import</span> <span class="n">session_subscribe</span>
+<span class="kn">from</span> <span class="nn">.session</span> <span class="kn">import</span> <span class="n">session_unsubscribe</span>
+
+
+<div class="viewcode-block" id="Script"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.script.html#selenium.webdriver.common.bidi.script.Script">[docs]</a><span class="k">class</span> <span class="nc">Script</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_entry_subscribed</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="Script.add_console_message_handler"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.script.html#selenium.webdriver.common.bidi.script.Script.add_console_message_handler">[docs]</a>    <span class="k">def</span> <span class="nf">add_console_message_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subscribe_to_log_entries</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">add_callback</span><span class="p">(</span><span class="n">LogEntryAdded</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_log_entry</span><span class="p">(</span><span class="s2">&quot;console&quot;</span><span class="p">,</span> <span class="n">handler</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Script.add_javascript_error_handler"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.script.html#selenium.webdriver.common.bidi.script.Script.add_javascript_error_handler">[docs]</a>    <span class="k">def</span> <span class="nf">add_javascript_error_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subscribe_to_log_entries</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">add_callback</span><span class="p">(</span><span class="n">LogEntryAdded</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_log_entry</span><span class="p">(</span><span class="s2">&quot;javascript&quot;</span><span class="p">,</span> <span class="n">handler</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Script.remove_console_message_handler"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.script.html#selenium.webdriver.common.bidi.script.Script.remove_console_message_handler">[docs]</a>    <span class="k">def</span> <span class="nf">remove_console_message_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">remove_callback</span><span class="p">(</span><span class="n">LogEntryAdded</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unsubscribe_from_log_entries</span><span class="p">()</span></div>
+
+    <span class="n">remove_javascript_error_handler</span> <span class="o">=</span> <span class="n">remove_console_message_handler</span>
+
+    <span class="k">def</span> <span class="nf">_subscribe_to_log_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_entry_subscribed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">session_subscribe</span><span class="p">(</span><span class="n">LogEntryAdded</span><span class="o">.</span><span class="n">event_class</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_entry_subscribed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_unsubscribe_from_log_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_entry_subscribed</span> <span class="ow">and</span> <span class="n">LogEntryAdded</span><span class="o">.</span><span class="n">event_class</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">session_unsubscribe</span><span class="p">(</span><span class="n">LogEntryAdded</span><span class="o">.</span><span class="n">event_class</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_entry_subscribed</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_handle_log_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_handle_log_entry</span><span class="p">(</span><span class="n">log_entry</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">log_entry</span><span class="o">.</span><span class="n">type_</span> <span class="o">==</span> <span class="nb">type</span><span class="p">:</span>
+                <span class="n">handler</span><span class="p">(</span><span class="n">log_entry</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_handle_log_entry</span></div>
+
+
+<div class="viewcode-block" id="LogEntryAdded"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.script.html#selenium.webdriver.common.bidi.script.LogEntryAdded">[docs]</a><span class="k">class</span> <span class="nc">LogEntryAdded</span><span class="p">:</span>
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">&quot;log.entryAdded&quot;</span>
+
+<div class="viewcode-block" id="LogEntryAdded.from_json"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.script.html#selenium.webdriver.common.bidi.script.LogEntryAdded.from_json">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;console&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ConsoleLogEntry</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;javascript&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">JavaScriptLogEntry</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ConsoleLogEntry"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.script.html#selenium.webdriver.common.bidi.script.ConsoleLogEntry">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ConsoleLogEntry</span><span class="p">:</span>
+    <span class="n">level</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
+    <span class="n">type_</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="ConsoleLogEntry.from_json"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.script.html#selenium.webdriver.common.bidi.script.ConsoleLogEntry.from_json">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">],</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">],</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span>
+            <span class="n">method</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">],</span>
+            <span class="n">args</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">],</span>
+            <span class="n">type_</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="JavaScriptLogEntry"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.script.html#selenium.webdriver.common.bidi.script.JavaScriptLogEntry">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">JavaScriptLogEntry</span><span class="p">:</span>
+    <span class="n">level</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">stacktrace</span><span class="p">:</span> <span class="nb">dict</span>
+    <span class="n">type_</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="JavaScriptLogEntry.from_json"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.script.html#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.from_json">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">],</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">],</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span>
+            <span class="n">stacktrace</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;stackTrace&quot;</span><span class="p">],</span>
+            <span class="n">type_</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.bidi.script</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    </div>
+  </body>
+</html>

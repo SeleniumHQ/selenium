@@ -1,19 +1,17 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.utils &#8212; Selenium 4.21.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.common.utils &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +25,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.utils</a></li> 
       </ul>
     </div>  
 
@@ -36,139 +35,135 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-selenium.webdriver.common.utils">
-<span id="selenium-webdriver-common-utils"></span><h1>selenium.webdriver.common.utils<a class="headerlink" href="#module-selenium.webdriver.common.utils" title="Permalink to this headline">¶</a></h1>
+  <section id="module-selenium.webdriver.common.utils">
+<span id="selenium-webdriver-common-utils"></span><h1>selenium.webdriver.common.utils<a class="headerlink" href="#module-selenium.webdriver.common.utils" title="Permalink to this heading">¶</a></h1>
 <p>The Utils methods.</p>
 <p class="rubric">Functions</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.utils.find_connectable_ip" title="selenium.webdriver.common.utils.find_connectable_ip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_connectable_ip</span></code></a>(host,&nbsp;bytes,&nbsp;bytearray,&nbsp;…)</td>
-<td>Resolve a hostname to an IP, preferring IPv4 addresses.</td>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.utils.find_connectable_ip" title="selenium.webdriver.common.utils.find_connectable_ip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_connectable_ip</span></code></a>(host[, port])</p></td>
+<td><p>Resolve a hostname to an IP, preferring IPv4 addresses.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.utils.free_port" title="selenium.webdriver.common.utils.free_port"><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_port</span></code></a>()</td>
-<td>Determines a free port using sockets.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.utils.free_port" title="selenium.webdriver.common.utils.free_port"><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_port</span></code></a>()</p></td>
+<td><p>Determines a free port using sockets.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.utils.is_connectable" title="selenium.webdriver.common.utils.is_connectable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_connectable</span></code></a>(port,&nbsp;host)</td>
-<td>Tries to connect to the server at port to see if it is running.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.utils.is_connectable" title="selenium.webdriver.common.utils.is_connectable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_connectable</span></code></a>(port[, host])</p></td>
+<td><p>Tries to connect to the server at port to see if it is running.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.utils.is_url_connectable" title="selenium.webdriver.common.utils.is_url_connectable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_url_connectable</span></code></a>(port,&nbsp;str])</td>
-<td>Tries to connect to the HTTP server at /status path and specified port to see if it responds successfully.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.utils.is_url_connectable" title="selenium.webdriver.common.utils.is_url_connectable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_url_connectable</span></code></a>(port)</p></td>
+<td><p>Tries to connect to the HTTP server at /status path and specified port to see if it responds successfully.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.utils.join_host_port" title="selenium.webdriver.common.utils.join_host_port"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_host_port</span></code></a>(host,&nbsp;port)</td>
-<td>Joins a hostname and port together.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.utils.join_host_port" title="selenium.webdriver.common.utils.join_host_port"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_host_port</span></code></a>(host, port)</p></td>
+<td><p>Joins a hostname and port together.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.utils.keys_to_typing" title="selenium.webdriver.common.utils.keys_to_typing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys_to_typing</span></code></a>(value,&nbsp;int,&nbsp;float]])</td>
-<td>Processes the values that will be typed in the element.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.utils.keys_to_typing" title="selenium.webdriver.common.utils.keys_to_typing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys_to_typing</span></code></a>(value)</p></td>
+<td><p>Processes the values that will be typed in the element.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="function">
-<dt id="selenium.webdriver.common.utils.find_connectable_ip">
-<code class="descclassname">selenium.webdriver.common.utils.</code><code class="descname">find_connectable_ip</code><span class="sig-paren">(</span><em>host: Union[str, bytes, bytearray, None], port: Optional[int] = None</em><span class="sig-paren">)</span> &#x2192; Optional[str]<a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#find_connectable_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.find_connectable_ip" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.utils.free_port">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.utils.</span></span><span class="sig-name descname"><span class="pre">free_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#free_port"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.utils.free_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines a free port using sockets.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.utils.find_connectable_ip">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.utils.</span></span><span class="sig-name descname"><span class="pre">find_connectable_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytearray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#find_connectable_ip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.utils.find_connectable_ip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolve a hostname to an IP, preferring IPv4 addresses.</p>
 <p>We prefer IPv4 so that we don’t change behavior from previous IPv4-only
 implementations, and because some drivers (e.g., FirefoxDriver) do not
 support IPv6 connections.</p>
 <p>If the optional port number is provided, only IPs that listen on the given
 port are considered.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
-<li>host - A hostname.</li>
-<li>port - Optional port number.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>host - A hostname.</p></li>
+<li><p>port - Optional port number.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A single IP address, as a string. If any IPv4 address is found, one is
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A single IP address, as a string. If any IPv4 address is found, one is
 returned. Otherwise, if any IPv6 address is found, one is returned. If
 neither, then None is returned.</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="selenium.webdriver.common.utils.free_port">
-<code class="descclassname">selenium.webdriver.common.utils.</code><code class="descname">free_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#free_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.free_port" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determines a free port using sockets.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.common.utils.is_connectable">
-<code class="descclassname">selenium.webdriver.common.utils.</code><code class="descname">is_connectable</code><span class="sig-paren">(</span><em>port: int</em>, <em>host: Optional[str] = 'localhost'</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#is_connectable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.is_connectable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tries to connect to the server at port to see if it is running.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>port - The port to connect.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.common.utils.is_url_connectable">
-<code class="descclassname">selenium.webdriver.common.utils.</code><code class="descname">is_url_connectable</code><span class="sig-paren">(</span><em>port: Union[int, str]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#is_url_connectable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.is_url_connectable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tries to connect to the HTTP server at /status path and specified port
-to see if it responds successfully.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>port - The port to connect.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.common.utils.join_host_port">
-<code class="descclassname">selenium.webdriver.common.utils.</code><code class="descname">join_host_port</code><span class="sig-paren">(</span><em>host: str</em>, <em>port: int</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#join_host_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.join_host_port" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.utils.join_host_port">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.utils.</span></span><span class="sig-name descname"><span class="pre">join_host_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#join_host_port"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.utils.join_host_port" title="Permalink to this definition">¶</a></dt>
 <dd><p>Joins a hostname and port together.</p>
 <p>This is a minimal implementation intended to cope with IPv6 literals. For
 example, _join_host_port(‘::1’, 80) == ‘[::1]:80’.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>host - A hostname.</li>
-<li>port - An integer port.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>host - A hostname.</p></li>
+<li><p>port - An integer port.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="selenium.webdriver.common.utils.keys_to_typing">
-<code class="descclassname">selenium.webdriver.common.utils.</code><code class="descname">keys_to_typing</code><span class="sig-paren">(</span><em>value: Iterable[Union[str, int, float]]</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#keys_to_typing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.keys_to_typing" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.utils.is_connectable">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.utils.</span></span><span class="sig-name descname"><span class="pre">is_connectable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'localhost'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#is_connectable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.utils.is_connectable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to connect to the server at port to see if it is running.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>port - The port to connect.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.utils.is_url_connectable">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.utils.</span></span><span class="sig-name descname"><span class="pre">is_url_connectable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#is_url_connectable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.utils.is_url_connectable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to connect to the HTTP server at /status path and specified port
+to see if it responds successfully.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>port - The port to connect.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.utils.keys_to_typing">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.utils.</span></span><span class="sig-name descname"><span class="pre">keys_to_typing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#keys_to_typing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.utils.keys_to_typing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processes the values that will be typed in the element.</p>
 </dd></dl>
 
-</div>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.common.utils</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.utils.free_port"><code class="docutils literal notranslate"><span class="pre">free_port()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.utils.find_connectable_ip"><code class="docutils literal notranslate"><span class="pre">find_connectable_ip()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.utils.join_host_port"><code class="docutils literal notranslate"><span class="pre">join_host_port()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.utils.is_connectable"><code class="docutils literal notranslate"><span class="pre">is_connectable()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.utils.is_url_connectable"><code class="docutils literal notranslate"><span class="pre">is_url_connectable()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.utils.keys_to_typing"><code class="docutils literal notranslate"><span class="pre">keys_to_typing()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -177,17 +172,15 @@ example, _join_host_port(‘::1’, 80) == ‘[::1]:80’.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -201,11 +194,12 @@ example, _join_host_port(‘::1’, 80) == ‘[::1]:80’.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.utils</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
     </div>
   </body>
 </html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.edge.remote_connection &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.edge.remote_connection</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-selenium.webdriver.edge.remote_connection">
+<span id="selenium-webdriver-edge-remote-connection"></span><h1>selenium.webdriver.edge.remote_connection<a class="headerlink" href="#module-selenium.webdriver.edge.remote_connection" title="Permalink to this heading">¶</a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection" title="selenium.webdriver.edge.remote_connection.EdgeRemoteConnection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EdgeRemoteConnection</span></code></a>(remote_server_addr[, ...])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.edge.remote_connection.EdgeRemoteConnection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.edge.remote_connection.</span></span><span class="sig-name descname"><span class="pre">EdgeRemoteConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_server_addr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_alive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_proxy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/edge/remote_connection.html#EdgeRemoteConnection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.browser_name">
+<span class="sig-name descname"><span class="pre">browser_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MicrosoftEdge'</span></em><a class="headerlink" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.browser_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up resources when finished with the remote_connection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a command to the remote server.</p>
+<p>Any path substitutions required for the URL mapped to the command should be
+included in the command parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>command - A string specifying the command to execute.</p></li>
+<li><p>params - A dictionary of named parameters to send with the command as
+its JSON payload.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_certificate_bundle_path">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_certificate_bundle_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_certificate_bundle_path" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<p>Paths of the .pem encoded certificate to verify connection to
+command executor. Defaults to certifi.where() or
+REQUESTS_CA_BUNDLE env variable if set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_remote_connection_headers">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_remote_connection_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parsed_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_alive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_remote_connection_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get headers for remote request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>parsed_url - The parsed url</p></li>
+<li><p>keep_alive (Boolean) - Is this a keep-alive connection (default: False)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_timeout">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<p>Timeout value in seconds for all http requests made to the
+Remote Connection</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.reset_timeout">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reset_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.reset_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.set_certificate_bundle_path">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_certificate_bundle_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.set_certificate_bundle_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the path to the certificate bundle to verify connection to
+command executor. Can also be set to None to disable certificate
+validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>path - path of a .pem encoded certificate chain.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.set_timeout">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.set_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override the default timeout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>timeout - timeout value for http requests in seconds</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.edge.remote_connection</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection"><code class="docutils literal notranslate"><span class="pre">EdgeRemoteConnection</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.browser_name"><code class="docutils literal notranslate"><span class="pre">EdgeRemoteConnection.browser_name</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.close"><code class="docutils literal notranslate"><span class="pre">EdgeRemoteConnection.close()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.execute"><code class="docutils literal notranslate"><span class="pre">EdgeRemoteConnection.execute()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_certificate_bundle_path"><code class="docutils literal notranslate"><span class="pre">EdgeRemoteConnection.get_certificate_bundle_path()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_remote_connection_headers"><code class="docutils literal notranslate"><span class="pre">EdgeRemoteConnection.get_remote_connection_headers()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.get_timeout"><code class="docutils literal notranslate"><span class="pre">EdgeRemoteConnection.get_timeout()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.reset_timeout"><code class="docutils literal notranslate"><span class="pre">EdgeRemoteConnection.reset_timeout()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.set_certificate_bundle_path"><code class="docutils literal notranslate"><span class="pre">EdgeRemoteConnection.set_certificate_bundle_path()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.edge.remote_connection.EdgeRemoteConnection.set_timeout"><code class="docutils literal notranslate"><span class="pre">EdgeRemoteConnection.set_timeout()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver_edge/selenium.webdriver.edge.remote_connection.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.edge.remote_connection</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    </div>
+  </body>
+</html>

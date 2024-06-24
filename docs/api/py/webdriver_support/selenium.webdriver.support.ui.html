@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.support.ui &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.support.ui</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-selenium.webdriver.support.ui">
+<span id="selenium-webdriver-support-ui"></span><h1>selenium.webdriver.support.ui<a class="headerlink" href="#module-selenium.webdriver.support.ui" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.Select">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.ui.</span></span><span class="sig-name descname"><span class="pre">Select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">webelement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.ui.Select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor. A check is made that the given element is, indeed, a
+SELECT tag. If it is not, then an UnexpectedTagNameException is thrown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>webelement - SELECT element to wrap</p></li>
+</ul>
+</dd>
+</dl>
+<dl>
+<dt>Example:</dt><dd><p>from selenium.webdriver.support.ui import Select</p>
+<p>Select(driver.find_element(By.TAG_NAME, “select”)).select_by_index(2)</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.Select.options">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#selenium.webdriver.support.ui.Select.options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all options belonging to this select tag.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.Select.all_selected_options">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_selected_options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#selenium.webdriver.support.ui.Select.all_selected_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all selected options belonging to this select
+tag.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.Select.first_selected_option">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">first_selected_option</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></em><a class="headerlink" href="#selenium.webdriver.support.ui.Select.first_selected_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>The first selected option in this select tag (or the currently
+selected option in a normal select)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.Select.select_by_value">
+<span class="sig-name descname"><span class="pre">select_by_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.select_by_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.ui.Select.select_by_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select all options that have a value matching the argument. That is,
+when given “foo” this would select an option like:</p>
+<p>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>value - The value to match against</p></li>
+</ul>
+</dd>
+</dl>
+<p>throws NoSuchElementException If there is no option with specified value in SELECT</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.Select.select_by_index">
+<span class="sig-name descname"><span class="pre">select_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.select_by_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.ui.Select.select_by_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select the option at the given index. This is done by examining the
+“index” attribute of an element, and not merely by counting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>index - The option at this index will be selected</p></li>
+</ul>
+</dd>
+</dl>
+<p>throws NoSuchElementException If there is no option with specified index in SELECT</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.Select.select_by_visible_text">
+<span class="sig-name descname"><span class="pre">select_by_visible_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.select_by_visible_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.ui.Select.select_by_visible_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select all options that display text matching the argument. That is,
+when given “Bar” this would select an option like:</p>
+<blockquote>
+<div><p>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</p>
+</div></blockquote>
+<dl class="field-list">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>text - The visible text to match against</p></li>
+</ul>
+<p>throws NoSuchElementException If there is no option with specified text in SELECT</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.Select.deselect_all">
+<span class="sig-name descname"><span class="pre">deselect_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.ui.Select.deselect_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear all selected entries.</p>
+<p>This is only valid when the SELECT supports multiple selections.
+throws NotImplementedError If the SELECT does not support
+multiple selections</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.Select.deselect_by_value">
+<span class="sig-name descname"><span class="pre">deselect_by_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_by_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.ui.Select.deselect_by_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deselect all options that have a value matching the argument. That
+is, when given “foo” this would deselect an option like:</p>
+<blockquote>
+<div><p>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</p>
+</div></blockquote>
+<dl class="field-list">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>value - The value to match against</p></li>
+</ul>
+<p>throws NoSuchElementException If there is no option with specified value in SELECT</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.Select.deselect_by_index">
+<span class="sig-name descname"><span class="pre">deselect_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_by_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.ui.Select.deselect_by_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deselect the option at the given index. This is done by examining
+the “index” attribute of an element, and not merely by counting.</p>
+<dl class="field-list">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>index - The option at this index will be deselected</p></li>
+</ul>
+<p>throws NoSuchElementException If there is no option with specified index in SELECT</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.Select.deselect_by_visible_text">
+<span class="sig-name descname"><span class="pre">deselect_by_visible_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_by_visible_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.ui.Select.deselect_by_visible_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deselect all options that display text matching the argument. That
+is, when given “Bar” this would deselect an option like:</p>
+<p>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>text - The visible text to match against</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.WebDriverWait">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.ui.</span></span><span class="sig-name descname"><span class="pre">WebDriverWait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poll_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignored_exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">Exception</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.ui.WebDriverWait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor, takes a WebDriver instance and timeout in seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote) or a WebElement</p></li>
+<li><p>timeout - Number of seconds before timing out</p></li>
+<li><p>poll_frequency - sleep interval between calls
+By default, it is 0.5 second.</p></li>
+<li><p>ignored_exceptions - iterable structure of exception classes ignored during calls.
+By default, it contains NoSuchElementException only.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">selenium.webdriver.support.wait</span> <span class="kn">import</span> <span class="n">WebDriverWait</span> 
+
+<span class="n">element</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">&quot;someId&quot;</span><span class="p">))</span> 
+
+<span class="n">is_disappeared</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">ElementNotVisibleException</span><span class="p">))</span><span class="o">.</span>\ 
+
+            <span class="n">until_not</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">&quot;someId&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">())</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.WebDriverWait.until">
+<span class="sig-name descname"><span class="pre">until</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">D</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait.until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.ui.WebDriverWait.until" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the method provided with the driver as an argument until the         return value does not evaluate to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> – callable(WebDriver)</p></li>
+<li><p><strong>message</strong> – optional message for <code class="xref py py-exc docutils literal notranslate"><span class="pre">TimeoutException</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the result of the last call to <cite>method</cite></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">selenium.common.exceptions.TimeoutException</span></code></a> if timeout occurs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.ui.WebDriverWait.until_not">
+<span class="sig-name descname"><span class="pre">until_not</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">D</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">True</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait.until_not"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.ui.WebDriverWait.until_not" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the method provided with the driver as an argument until the         return value evaluates to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> – callable(WebDriver)</p></li>
+<li><p><strong>message</strong> – optional message for <code class="xref py py-exc docutils literal notranslate"><span class="pre">TimeoutException</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the result of the last call to <cite>method</cite>, or
+<code class="docutils literal notranslate"><span class="pre">True</span></code> if <cite>method</cite> has raised one of the ignored exceptions</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">selenium.common.exceptions.TimeoutException</span></code></a> if timeout occurs</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.support.ui</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.Select"><code class="docutils literal notranslate"><span class="pre">Select</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.Select.options"><code class="docutils literal notranslate"><span class="pre">Select.options</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.Select.all_selected_options"><code class="docutils literal notranslate"><span class="pre">Select.all_selected_options</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.Select.first_selected_option"><code class="docutils literal notranslate"><span class="pre">Select.first_selected_option</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.Select.select_by_value"><code class="docutils literal notranslate"><span class="pre">Select.select_by_value()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.Select.select_by_index"><code class="docutils literal notranslate"><span class="pre">Select.select_by_index()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.Select.select_by_visible_text"><code class="docutils literal notranslate"><span class="pre">Select.select_by_visible_text()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.Select.deselect_all"><code class="docutils literal notranslate"><span class="pre">Select.deselect_all()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.Select.deselect_by_value"><code class="docutils literal notranslate"><span class="pre">Select.deselect_by_value()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.Select.deselect_by_index"><code class="docutils literal notranslate"><span class="pre">Select.deselect_by_index()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.Select.deselect_by_visible_text"><code class="docutils literal notranslate"><span class="pre">Select.deselect_by_visible_text()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.WebDriverWait"><code class="docutils literal notranslate"><span class="pre">WebDriverWait</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.WebDriverWait.until"><code class="docutils literal notranslate"><span class="pre">WebDriverWait.until()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.ui.WebDriverWait.until_not"><code class="docutils literal notranslate"><span class="pre">WebDriverWait.until_not()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver_support/selenium.webdriver.support.ui.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.support.ui</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    </div>
+  </body>
+</html>

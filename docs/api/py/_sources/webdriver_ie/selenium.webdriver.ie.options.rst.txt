@@ -1,4 +1,4 @@
-﻿selenium.webdriver.ie.options
+selenium.webdriver.ie.options
 =============================
 
 .. automodule:: selenium.webdriver.ie.options

@@ -1,19 +1,17 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.errorhandler &#8212; Selenium 4.21.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.remote.errorhandler &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +25,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.remote.errorhandler</a></li> 
       </ul>
     </div>  
 
@@ -36,449 +35,533 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-selenium.webdriver.remote.errorhandler">
-<span id="selenium-webdriver-remote-errorhandler"></span><h1>selenium.webdriver.remote.errorhandler<a class="headerlink" href="#module-selenium.webdriver.remote.errorhandler" title="Permalink to this headline">¶</a></h1>
+  <section id="module-selenium.webdriver.remote.errorhandler">
+<span id="selenium-webdriver-remote-errorhandler"></span><h1>selenium.webdriver.remote.errorhandler<a class="headerlink" href="#module-selenium.webdriver.remote.errorhandler" title="Permalink to this heading">¶</a></h1>
 <p class="rubric">Classes</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode" title="selenium.webdriver.remote.errorhandler.ErrorCode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ErrorCode</span></code></a></td>
-<td>Error codes defined in the WebDriver wire protocol.</td>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode" title="selenium.webdriver.remote.errorhandler.ErrorCode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ErrorCode</span></code></a>()</p></td>
+<td><p>Error codes defined in the WebDriver wire protocol.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorHandler" title="selenium.webdriver.remote.errorhandler.ErrorHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ErrorHandler</span></code></a></td>
-<td>Handles errors returned by the WebDriver server.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorHandler" title="selenium.webdriver.remote.errorhandler.ErrorHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ErrorHandler</span></code></a>()</p></td>
+<td><p>Handles errors returned by the WebDriver server.</p></td>
 </tr>
-</tbody>
-</table>
-<dl class="class">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.remote.errorhandler.</code><code class="descname">ErrorCode</code><a class="reference internal" href="../_modules/selenium/webdriver/remote/errorhandler.html#ErrorCode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Error codes defined in the WebDriver wire protocol.</p>
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_CLICK_INTERCEPTED">
-<code class="descname">ELEMENT_CLICK_INTERCEPTED</code><em class="property"> = [64, 'element click intercepted']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_CLICK_INTERCEPTED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_IS_NOT_SELECTABLE">
-<code class="descname">ELEMENT_IS_NOT_SELECTABLE</code><em class="property"> = [15, 'element not selectable']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_IS_NOT_SELECTABLE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_INTERACTABLE">
-<code class="descname">ELEMENT_NOT_INTERACTABLE</code><em class="property"> = [60, 'element not interactable']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_INTERACTABLE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_VISIBLE">
-<code class="descname">ELEMENT_NOT_VISIBLE</code><em class="property"> = [11, 'element not visible']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_VISIBLE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.IME_ENGINE_ACTIVATION_FAILED">
-<code class="descname">IME_ENGINE_ACTIVATION_FAILED</code><em class="property"> = [31, 'ime engine activation failed']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.IME_ENGINE_ACTIVATION_FAILED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.IME_NOT_AVAILABLE">
-<code class="descname">IME_NOT_AVAILABLE</code><em class="property"> = [30, 'ime not available']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.IME_NOT_AVAILABLE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INSECURE_CERTIFICATE">
-<code class="descname">INSECURE_CERTIFICATE</code><em class="property"> = ['insecure certificate']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INSECURE_CERTIFICATE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ARGUMENT">
-<code class="descname">INVALID_ARGUMENT</code><em class="property"> = [61, 'invalid argument']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ARGUMENT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COOKIE_DOMAIN">
-<code class="descname">INVALID_COOKIE_DOMAIN</code><em class="property"> = [24, 'invalid cookie domain']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COOKIE_DOMAIN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COORDINATES">
-<code class="descname">INVALID_COORDINATES</code><em class="property"> = ['invalid coordinates']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COORDINATES" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_COORDINATES">
-<code class="descname">INVALID_ELEMENT_COORDINATES</code><em class="property"> = [29, 'invalid element coordinates']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_COORDINATES" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_STATE">
-<code class="descname">INVALID_ELEMENT_STATE</code><em class="property"> = [12, 'invalid element state']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_STATE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SELECTOR">
-<code class="descname">INVALID_SELECTOR</code><em class="property"> = [32, 'invalid selector']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SELECTOR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SESSION_ID">
-<code class="descname">INVALID_SESSION_ID</code><em class="property"> = ['invalid session id']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SESSION_ID" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR">
-<code class="descname">INVALID_XPATH_SELECTOR</code><em class="property"> = [51, 'invalid selector']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER">
-<code class="descname">INVALID_XPATH_SELECTOR_RETURN_TYPER</code><em class="property"> = [52, 'invalid selector']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.JAVASCRIPT_ERROR">
-<code class="descname">JAVASCRIPT_ERROR</code><em class="property"> = [17, 'javascript error']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.JAVASCRIPT_ERROR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.METHOD_NOT_ALLOWED">
-<code class="descname">METHOD_NOT_ALLOWED</code><em class="property"> = [405, 'unsupported operation']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.METHOD_NOT_ALLOWED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS">
-<code class="descname">MOVE_TARGET_OUT_OF_BOUNDS</code><em class="property"> = [34, 'move target out of bounds']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_ALERT_OPEN">
-<code class="descname">NO_ALERT_OPEN</code><em class="property"> = [27, 'no such alert']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_ALERT_OPEN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_COOKIE">
-<code class="descname">NO_SUCH_COOKIE</code><em class="property"> = [62, 'no such cookie']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_COOKIE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_ELEMENT">
-<code class="descname">NO_SUCH_ELEMENT</code><em class="property"> = [7, 'no such element']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_ELEMENT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_FRAME">
-<code class="descname">NO_SUCH_FRAME</code><em class="property"> = [8, 'no such frame']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_FRAME" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_SHADOW_ROOT">
-<code class="descname">NO_SUCH_SHADOW_ROOT</code><em class="property"> = ['no such shadow root']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_SHADOW_ROOT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_WINDOW">
-<code class="descname">NO_SUCH_WINDOW</code><em class="property"> = [23, 'no such window']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_WINDOW" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.SCRIPT_TIMEOUT">
-<code class="descname">SCRIPT_TIMEOUT</code><em class="property"> = [28, 'script timeout']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SCRIPT_TIMEOUT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.SESSION_NOT_CREATED">
-<code class="descname">SESSION_NOT_CREATED</code><em class="property"> = [33, 'session not created']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SESSION_NOT_CREATED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.STALE_ELEMENT_REFERENCE">
-<code class="descname">STALE_ELEMENT_REFERENCE</code><em class="property"> = [10, 'stale element reference']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.STALE_ELEMENT_REFERENCE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.SUCCESS">
-<code class="descname">SUCCESS</code><em class="property"> = 0</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SUCCESS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.TIMEOUT">
-<code class="descname">TIMEOUT</code><em class="property"> = [21, 'timeout']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.TIMEOUT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_CAPTURE_SCREEN">
-<code class="descname">UNABLE_TO_CAPTURE_SCREEN</code><em class="property"> = [63, 'unable to capture screen']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_CAPTURE_SCREEN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_SET_COOKIE">
-<code class="descname">UNABLE_TO_SET_COOKIE</code><em class="property"> = [25, 'unable to set cookie']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_SET_COOKIE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNEXPECTED_ALERT_OPEN">
-<code class="descname">UNEXPECTED_ALERT_OPEN</code><em class="property"> = [26, 'unexpected alert open']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNEXPECTED_ALERT_OPEN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_COMMAND">
-<code class="descname">UNKNOWN_COMMAND</code><em class="property"> = [9, 'unknown command']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_COMMAND" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_ERROR">
-<code class="descname">UNKNOWN_ERROR</code><em class="property"> = [13, 'unknown error']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_ERROR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_METHOD">
-<code class="descname">UNKNOWN_METHOD</code><em class="property"> = ['unknown method exception']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_METHOD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.XPATH_LOOKUP_ERROR">
-<code class="descname">XPATH_LOOKUP_ERROR</code><em class="property"> = [19, 'invalid selector']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.XPATH_LOOKUP_ERROR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorHandler">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.remote.errorhandler.</code><code class="descname">ErrorHandler</code><a class="reference internal" href="../_modules/selenium/webdriver/remote/errorhandler.html#ErrorHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles errors returned by the WebDriver server.</p>
-<dl class="method">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorHandler.check_response">
-<code class="descname">check_response</code><span class="sig-paren">(</span><em>response: Dict[str, Any]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/errorhandler.html#ErrorHandler.check_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorHandler.check_response" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks that a JSON response from the WebDriver does not have an
-error.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
-<li>response - The JSON response from the WebDriver server as a dictionary
-object.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">If the response contains an error message.</p>
-</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping" title="selenium.webdriver.remote.errorhandler.ExceptionMapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExceptionMapping</span></code></a>()</p></td>
+<td><p>:Maps each errorcode in ErrorCode object to corresponding exception Please refer to <a class="reference external" href="https://www.w3.org/TR/webdriver2/#errors">https://www.w3.org/TR/webdriver2/#errors</a> for w3c specification</p></td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.remote.errorhandler.</code><code class="descname">ExceptionMapping</code><a class="reference internal" href="../_modules/selenium/webdriver/remote/errorhandler.html#ExceptionMapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.remote.errorhandler.</span></span><span class="sig-name descname"><span class="pre">ExceptionMapping</span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/errorhandler.html#ExceptionMapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping" title="Permalink to this definition">¶</a></dt>
 <dd><p>:Maps each errorcode in ErrorCode object to corresponding exception
 Please refer to <a class="reference external" href="https://www.w3.org/TR/webdriver2/#errors">https://www.w3.org/TR/webdriver2/#errors</a> for w3c specification</p>
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_CLICK_INTERCEPTED">
-<code class="descname">ELEMENT_CLICK_INTERCEPTED</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_CLICK_INTERCEPTED" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementClickInterceptedException" title="selenium.common.exceptions.ElementClickInterceptedException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.ElementClickInterceptedException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_ELEMENT">
+<span class="sig-name descname"><span class="pre">NO_SUCH_ELEMENT</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchElementException" title="selenium.common.exceptions.NoSuchElementException"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoSuchElementException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_IS_NOT_SELECTABLE">
-<code class="descname">ELEMENT_IS_NOT_SELECTABLE</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_IS_NOT_SELECTABLE" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotSelectableException" title="selenium.common.exceptions.ElementNotSelectableException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.ElementNotSelectableException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_FRAME">
+<span class="sig-name descname"><span class="pre">NO_SUCH_FRAME</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_FRAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchFrameException" title="selenium.common.exceptions.NoSuchFrameException"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoSuchFrameException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_NOT_INTERACTABLE">
-<code class="descname">ELEMENT_NOT_INTERACTABLE</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_NOT_INTERACTABLE" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotInteractableException" title="selenium.common.exceptions.ElementNotInteractableException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.ElementNotInteractableException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_SHADOW_ROOT">
+<span class="sig-name descname"><span class="pre">NO_SUCH_SHADOW_ROOT</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_SHADOW_ROOT" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchShadowRootException" title="selenium.common.exceptions.NoSuchShadowRootException"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoSuchShadowRootException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_NOT_VISIBLE">
-<code class="descname">ELEMENT_NOT_VISIBLE</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_NOT_VISIBLE" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotVisibleException" title="selenium.common.exceptions.ElementNotVisibleException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.ElementNotVisibleException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.STALE_ELEMENT_REFERENCE">
+<span class="sig-name descname"><span class="pre">STALE_ELEMENT_REFERENCE</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.STALE_ELEMENT_REFERENCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.StaleElementReferenceException" title="selenium.common.exceptions.StaleElementReferenceException"><code class="xref py py-class docutils literal notranslate"><span class="pre">StaleElementReferenceException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_ENGINE_ACTIVATION_FAILED">
-<code class="descname">IME_ENGINE_ACTIVATION_FAILED</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_ENGINE_ACTIVATION_FAILED" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ImeActivationFailedException" title="selenium.common.exceptions.ImeActivationFailedException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.ImeActivationFailedException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_NOT_VISIBLE">
+<span class="sig-name descname"><span class="pre">ELEMENT_NOT_VISIBLE</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_NOT_VISIBLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotVisibleException" title="selenium.common.exceptions.ElementNotVisibleException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementNotVisibleException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_NOT_AVAILABLE">
-<code class="descname">IME_NOT_AVAILABLE</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_NOT_AVAILABLE" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ImeNotAvailableException" title="selenium.common.exceptions.ImeNotAvailableException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.ImeNotAvailableException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ELEMENT_STATE">
+<span class="sig-name descname"><span class="pre">INVALID_ELEMENT_STATE</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ELEMENT_STATE" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidElementStateException" title="selenium.common.exceptions.InvalidElementStateException"><code class="xref py py-class docutils literal notranslate"><span class="pre">InvalidElementStateException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INSECURE_CERTIFICATE">
-<code class="descname">INSECURE_CERTIFICATE</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INSECURE_CERTIFICATE" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InsecureCertificateException" title="selenium.common.exceptions.InsecureCertificateException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.InsecureCertificateException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.UNKNOWN_ERROR">
+<span class="sig-name descname"><span class="pre">UNKNOWN_ERROR</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNKNOWN_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.WebDriverException" title="selenium.common.exceptions.WebDriverException"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriverException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ARGUMENT">
-<code class="descname">INVALID_ARGUMENT</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ARGUMENT" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidArgumentException" title="selenium.common.exceptions.InvalidArgumentException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.InvalidArgumentException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_IS_NOT_SELECTABLE">
+<span class="sig-name descname"><span class="pre">ELEMENT_IS_NOT_SELECTABLE</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_IS_NOT_SELECTABLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotSelectableException" title="selenium.common.exceptions.ElementNotSelectableException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementNotSelectableException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COOKIE_DOMAIN">
-<code class="descname">INVALID_COOKIE_DOMAIN</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COOKIE_DOMAIN" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidCookieDomainException" title="selenium.common.exceptions.InvalidCookieDomainException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.InvalidCookieDomainException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.JAVASCRIPT_ERROR">
+<span class="sig-name descname"><span class="pre">JAVASCRIPT_ERROR</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.JAVASCRIPT_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.JavascriptException" title="selenium.common.exceptions.JavascriptException"><code class="xref py py-class docutils literal notranslate"><span class="pre">JavascriptException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COORDINATES">
-<code class="descname">INVALID_COORDINATES</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COORDINATES" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidCoordinatesException" title="selenium.common.exceptions.InvalidCoordinatesException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.InvalidCoordinatesException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.TIMEOUT">
+<span class="sig-name descname"><span class="pre">TIMEOUT</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeoutException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ELEMENT_STATE">
-<code class="descname">INVALID_ELEMENT_STATE</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ELEMENT_STATE" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidElementStateException" title="selenium.common.exceptions.InvalidElementStateException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.InvalidElementStateException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_WINDOW">
+<span class="sig-name descname"><span class="pre">NO_SUCH_WINDOW</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchWindowException" title="selenium.common.exceptions.NoSuchWindowException"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoSuchWindowException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SELECTOR">
-<code class="descname">INVALID_SELECTOR</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SELECTOR" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSelectorException" title="selenium.common.exceptions.InvalidSelectorException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.InvalidSelectorException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COOKIE_DOMAIN">
+<span class="sig-name descname"><span class="pre">INVALID_COOKIE_DOMAIN</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COOKIE_DOMAIN" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidCookieDomainException" title="selenium.common.exceptions.InvalidCookieDomainException"><code class="xref py py-class docutils literal notranslate"><span class="pre">InvalidCookieDomainException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SESSION_ID">
-<code class="descname">INVALID_SESSION_ID</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SESSION_ID" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSessionIdException" title="selenium.common.exceptions.InvalidSessionIdException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.InvalidSessionIdException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.UNABLE_TO_SET_COOKIE">
+<span class="sig-name descname"><span class="pre">UNABLE_TO_SET_COOKIE</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNABLE_TO_SET_COOKIE" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.UnableToSetCookieException" title="selenium.common.exceptions.UnableToSetCookieException"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnableToSetCookieException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR">
-<code class="descname">INVALID_XPATH_SELECTOR</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSelectorException" title="selenium.common.exceptions.InvalidSelectorException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.InvalidSelectorException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.UNEXPECTED_ALERT_OPEN">
+<span class="sig-name descname"><span class="pre">UNEXPECTED_ALERT_OPEN</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNEXPECTED_ALERT_OPEN" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.UnexpectedAlertPresentException" title="selenium.common.exceptions.UnexpectedAlertPresentException"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnexpectedAlertPresentException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR_RETURN_TYPER">
-<code class="descname">INVALID_XPATH_SELECTOR_RETURN_TYPER</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR_RETURN_TYPER" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSelectorException" title="selenium.common.exceptions.InvalidSelectorException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.InvalidSelectorException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_ALERT_OPEN">
+<span class="sig-name descname"><span class="pre">NO_ALERT_OPEN</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_ALERT_OPEN" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoAlertPresentException" title="selenium.common.exceptions.NoAlertPresentException"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoAlertPresentException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.JAVASCRIPT_ERROR">
-<code class="descname">JAVASCRIPT_ERROR</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.JAVASCRIPT_ERROR" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.JavascriptException" title="selenium.common.exceptions.JavascriptException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.JavascriptException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.SCRIPT_TIMEOUT">
+<span class="sig-name descname"><span class="pre">SCRIPT_TIMEOUT</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.SCRIPT_TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeoutException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.MOVE_TARGET_OUT_OF_BOUNDS">
-<code class="descname">MOVE_TARGET_OUT_OF_BOUNDS</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.MOVE_TARGET_OUT_OF_BOUNDS" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.MoveTargetOutOfBoundsException" title="selenium.common.exceptions.MoveTargetOutOfBoundsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.MoveTargetOutOfBoundsException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_NOT_AVAILABLE">
+<span class="sig-name descname"><span class="pre">IME_NOT_AVAILABLE</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_NOT_AVAILABLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ImeNotAvailableException" title="selenium.common.exceptions.ImeNotAvailableException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImeNotAvailableException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_ALERT_OPEN">
-<code class="descname">NO_ALERT_OPEN</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_ALERT_OPEN" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoAlertPresentException" title="selenium.common.exceptions.NoAlertPresentException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.NoAlertPresentException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_ENGINE_ACTIVATION_FAILED">
+<span class="sig-name descname"><span class="pre">IME_ENGINE_ACTIVATION_FAILED</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_ENGINE_ACTIVATION_FAILED" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ImeActivationFailedException" title="selenium.common.exceptions.ImeActivationFailedException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImeActivationFailedException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_COOKIE">
-<code class="descname">NO_SUCH_COOKIE</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_COOKIE" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchCookieException" title="selenium.common.exceptions.NoSuchCookieException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.NoSuchCookieException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SELECTOR">
+<span class="sig-name descname"><span class="pre">INVALID_SELECTOR</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SELECTOR" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSelectorException" title="selenium.common.exceptions.InvalidSelectorException"><code class="xref py py-class docutils literal notranslate"><span class="pre">InvalidSelectorException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_ELEMENT">
-<code class="descname">NO_SUCH_ELEMENT</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_ELEMENT" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchElementException" title="selenium.common.exceptions.NoSuchElementException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.NoSuchElementException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.SESSION_NOT_CREATED">
+<span class="sig-name descname"><span class="pre">SESSION_NOT_CREATED</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.SESSION_NOT_CREATED" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.SessionNotCreatedException" title="selenium.common.exceptions.SessionNotCreatedException"><code class="xref py py-class docutils literal notranslate"><span class="pre">SessionNotCreatedException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_FRAME">
-<code class="descname">NO_SUCH_FRAME</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_FRAME" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchFrameException" title="selenium.common.exceptions.NoSuchFrameException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.NoSuchFrameException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.MOVE_TARGET_OUT_OF_BOUNDS">
+<span class="sig-name descname"><span class="pre">MOVE_TARGET_OUT_OF_BOUNDS</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.MOVE_TARGET_OUT_OF_BOUNDS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.MoveTargetOutOfBoundsException" title="selenium.common.exceptions.MoveTargetOutOfBoundsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">MoveTargetOutOfBoundsException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_SHADOW_ROOT">
-<code class="descname">NO_SUCH_SHADOW_ROOT</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_SHADOW_ROOT" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchShadowRootException" title="selenium.common.exceptions.NoSuchShadowRootException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.NoSuchShadowRootException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR">
+<span class="sig-name descname"><span class="pre">INVALID_XPATH_SELECTOR</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSelectorException" title="selenium.common.exceptions.InvalidSelectorException"><code class="xref py py-class docutils literal notranslate"><span class="pre">InvalidSelectorException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_WINDOW">
-<code class="descname">NO_SUCH_WINDOW</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_WINDOW" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchWindowException" title="selenium.common.exceptions.NoSuchWindowException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.NoSuchWindowException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR_RETURN_TYPER">
+<span class="sig-name descname"><span class="pre">INVALID_XPATH_SELECTOR_RETURN_TYPER</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR_RETURN_TYPER" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSelectorException" title="selenium.common.exceptions.InvalidSelectorException"><code class="xref py py-class docutils literal notranslate"><span class="pre">InvalidSelectorException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.SCRIPT_TIMEOUT">
-<code class="descname">SCRIPT_TIMEOUT</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.SCRIPT_TIMEOUT" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.TimeoutException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_NOT_INTERACTABLE">
+<span class="sig-name descname"><span class="pre">ELEMENT_NOT_INTERACTABLE</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_NOT_INTERACTABLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotInteractableException" title="selenium.common.exceptions.ElementNotInteractableException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementNotInteractableException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.SESSION_NOT_CREATED">
-<code class="descname">SESSION_NOT_CREATED</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.SESSION_NOT_CREATED" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.SessionNotCreatedException" title="selenium.common.exceptions.SessionNotCreatedException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.SessionNotCreatedException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INSECURE_CERTIFICATE">
+<span class="sig-name descname"><span class="pre">INSECURE_CERTIFICATE</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INSECURE_CERTIFICATE" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InsecureCertificateException" title="selenium.common.exceptions.InsecureCertificateException"><code class="xref py py-class docutils literal notranslate"><span class="pre">InsecureCertificateException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.STALE_ELEMENT_REFERENCE">
-<code class="descname">STALE_ELEMENT_REFERENCE</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.STALE_ELEMENT_REFERENCE" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.StaleElementReferenceException" title="selenium.common.exceptions.StaleElementReferenceException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.StaleElementReferenceException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ARGUMENT">
+<span class="sig-name descname"><span class="pre">INVALID_ARGUMENT</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ARGUMENT" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidArgumentException" title="selenium.common.exceptions.InvalidArgumentException"><code class="xref py py-class docutils literal notranslate"><span class="pre">InvalidArgumentException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.TIMEOUT">
-<code class="descname">TIMEOUT</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.TIMEOUT" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.TimeoutException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COORDINATES">
+<span class="sig-name descname"><span class="pre">INVALID_COORDINATES</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COORDINATES" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidCoordinatesException" title="selenium.common.exceptions.InvalidCoordinatesException"><code class="xref py py-class docutils literal notranslate"><span class="pre">InvalidCoordinatesException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.UNABLE_TO_CAPTURE_SCREEN">
-<code class="descname">UNABLE_TO_CAPTURE_SCREEN</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNABLE_TO_CAPTURE_SCREEN" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ScreenshotException" title="selenium.common.exceptions.ScreenshotException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.ScreenshotException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SESSION_ID">
+<span class="sig-name descname"><span class="pre">INVALID_SESSION_ID</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SESSION_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSessionIdException" title="selenium.common.exceptions.InvalidSessionIdException"><code class="xref py py-class docutils literal notranslate"><span class="pre">InvalidSessionIdException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.UNABLE_TO_SET_COOKIE">
-<code class="descname">UNABLE_TO_SET_COOKIE</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNABLE_TO_SET_COOKIE" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.UnableToSetCookieException" title="selenium.common.exceptions.UnableToSetCookieException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.UnableToSetCookieException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_COOKIE">
+<span class="sig-name descname"><span class="pre">NO_SUCH_COOKIE</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_COOKIE" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchCookieException" title="selenium.common.exceptions.NoSuchCookieException"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoSuchCookieException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.UNEXPECTED_ALERT_OPEN">
-<code class="descname">UNEXPECTED_ALERT_OPEN</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNEXPECTED_ALERT_OPEN" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.UnexpectedAlertPresentException" title="selenium.common.exceptions.UnexpectedAlertPresentException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.UnexpectedAlertPresentException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.UNABLE_TO_CAPTURE_SCREEN">
+<span class="sig-name descname"><span class="pre">UNABLE_TO_CAPTURE_SCREEN</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNABLE_TO_CAPTURE_SCREEN" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ScreenshotException" title="selenium.common.exceptions.ScreenshotException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScreenshotException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.UNKNOWN_ERROR">
-<code class="descname">UNKNOWN_ERROR</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNKNOWN_ERROR" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.WebDriverException" title="selenium.common.exceptions.WebDriverException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.WebDriverException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_CLICK_INTERCEPTED">
+<span class="sig-name descname"><span class="pre">ELEMENT_CLICK_INTERCEPTED</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_CLICK_INTERCEPTED" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementClickInterceptedException" title="selenium.common.exceptions.ElementClickInterceptedException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementClickInterceptedException</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ExceptionMapping.UNKNOWN_METHOD">
-<code class="descname">UNKNOWN_METHOD</code><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNKNOWN_METHOD" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.UnknownMethodException" title="selenium.common.exceptions.UnknownMethodException"><code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.common.exceptions.UnknownMethodException</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ExceptionMapping.UNKNOWN_METHOD">
+<span class="sig-name descname"><span class="pre">UNKNOWN_METHOD</span></span><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNKNOWN_METHOD" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.UnknownMethodException" title="selenium.common.exceptions.UnknownMethodException"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnknownMethodException</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.remote.errorhandler.</span></span><span class="sig-name descname"><span class="pre">ErrorCode</span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/errorhandler.html#ErrorCode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error codes defined in the WebDriver wire protocol.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.SUCCESS">
+<span class="sig-name descname"><span class="pre">SUCCESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SUCCESS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_ELEMENT">
+<span class="sig-name descname"><span class="pre">NO_SUCH_ELEMENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[7,</span> <span class="pre">'no</span> <span class="pre">such</span> <span class="pre">element']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_FRAME">
+<span class="sig-name descname"><span class="pre">NO_SUCH_FRAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[8,</span> <span class="pre">'no</span> <span class="pre">such</span> <span class="pre">frame']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_FRAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_SHADOW_ROOT">
+<span class="sig-name descname"><span class="pre">NO_SUCH_SHADOW_ROOT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['no</span> <span class="pre">such</span> <span class="pre">shadow</span> <span class="pre">root']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_SHADOW_ROOT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_COMMAND">
+<span class="sig-name descname"><span class="pre">UNKNOWN_COMMAND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[9,</span> <span class="pre">'unknown</span> <span class="pre">command']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_COMMAND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.STALE_ELEMENT_REFERENCE">
+<span class="sig-name descname"><span class="pre">STALE_ELEMENT_REFERENCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[10,</span> <span class="pre">'stale</span> <span class="pre">element</span> <span class="pre">reference']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.STALE_ELEMENT_REFERENCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_VISIBLE">
+<span class="sig-name descname"><span class="pre">ELEMENT_NOT_VISIBLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[11,</span> <span class="pre">'element</span> <span class="pre">not</span> <span class="pre">visible']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_VISIBLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_STATE">
+<span class="sig-name descname"><span class="pre">INVALID_ELEMENT_STATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[12,</span> <span class="pre">'invalid</span> <span class="pre">element</span> <span class="pre">state']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_STATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_ERROR">
+<span class="sig-name descname"><span class="pre">UNKNOWN_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[13,</span> <span class="pre">'unknown</span> <span class="pre">error']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_IS_NOT_SELECTABLE">
+<span class="sig-name descname"><span class="pre">ELEMENT_IS_NOT_SELECTABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[15,</span> <span class="pre">'element</span> <span class="pre">not</span> <span class="pre">selectable']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_IS_NOT_SELECTABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.JAVASCRIPT_ERROR">
+<span class="sig-name descname"><span class="pre">JAVASCRIPT_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[17,</span> <span class="pre">'javascript</span> <span class="pre">error']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.JAVASCRIPT_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.XPATH_LOOKUP_ERROR">
+<span class="sig-name descname"><span class="pre">XPATH_LOOKUP_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[19,</span> <span class="pre">'invalid</span> <span class="pre">selector']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.XPATH_LOOKUP_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.TIMEOUT">
+<span class="sig-name descname"><span class="pre">TIMEOUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[21,</span> <span class="pre">'timeout']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_WINDOW">
+<span class="sig-name descname"><span class="pre">NO_SUCH_WINDOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[23,</span> <span class="pre">'no</span> <span class="pre">such</span> <span class="pre">window']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COOKIE_DOMAIN">
+<span class="sig-name descname"><span class="pre">INVALID_COOKIE_DOMAIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[24,</span> <span class="pre">'invalid</span> <span class="pre">cookie</span> <span class="pre">domain']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COOKIE_DOMAIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_SET_COOKIE">
+<span class="sig-name descname"><span class="pre">UNABLE_TO_SET_COOKIE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[25,</span> <span class="pre">'unable</span> <span class="pre">to</span> <span class="pre">set</span> <span class="pre">cookie']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_SET_COOKIE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.UNEXPECTED_ALERT_OPEN">
+<span class="sig-name descname"><span class="pre">UNEXPECTED_ALERT_OPEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[26,</span> <span class="pre">'unexpected</span> <span class="pre">alert</span> <span class="pre">open']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNEXPECTED_ALERT_OPEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_ALERT_OPEN">
+<span class="sig-name descname"><span class="pre">NO_ALERT_OPEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[27,</span> <span class="pre">'no</span> <span class="pre">such</span> <span class="pre">alert']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_ALERT_OPEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.SCRIPT_TIMEOUT">
+<span class="sig-name descname"><span class="pre">SCRIPT_TIMEOUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[28,</span> <span class="pre">'script</span> <span class="pre">timeout']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SCRIPT_TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_COORDINATES">
+<span class="sig-name descname"><span class="pre">INVALID_ELEMENT_COORDINATES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[29,</span> <span class="pre">'invalid</span> <span class="pre">element</span> <span class="pre">coordinates']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_COORDINATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.IME_NOT_AVAILABLE">
+<span class="sig-name descname"><span class="pre">IME_NOT_AVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[30,</span> <span class="pre">'ime</span> <span class="pre">not</span> <span class="pre">available']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.IME_NOT_AVAILABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.IME_ENGINE_ACTIVATION_FAILED">
+<span class="sig-name descname"><span class="pre">IME_ENGINE_ACTIVATION_FAILED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[31,</span> <span class="pre">'ime</span> <span class="pre">engine</span> <span class="pre">activation</span> <span class="pre">failed']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.IME_ENGINE_ACTIVATION_FAILED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SELECTOR">
+<span class="sig-name descname"><span class="pre">INVALID_SELECTOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[32,</span> <span class="pre">'invalid</span> <span class="pre">selector']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SELECTOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.SESSION_NOT_CREATED">
+<span class="sig-name descname"><span class="pre">SESSION_NOT_CREATED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[33,</span> <span class="pre">'session</span> <span class="pre">not</span> <span class="pre">created']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SESSION_NOT_CREATED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS">
+<span class="sig-name descname"><span class="pre">MOVE_TARGET_OUT_OF_BOUNDS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[34,</span> <span class="pre">'move</span> <span class="pre">target</span> <span class="pre">out</span> <span class="pre">of</span> <span class="pre">bounds']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR">
+<span class="sig-name descname"><span class="pre">INVALID_XPATH_SELECTOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[51,</span> <span class="pre">'invalid</span> <span class="pre">selector']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER">
+<span class="sig-name descname"><span class="pre">INVALID_XPATH_SELECTOR_RETURN_TYPER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[52,</span> <span class="pre">'invalid</span> <span class="pre">selector']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_INTERACTABLE">
+<span class="sig-name descname"><span class="pre">ELEMENT_NOT_INTERACTABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[60,</span> <span class="pre">'element</span> <span class="pre">not</span> <span class="pre">interactable']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_INTERACTABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.INSECURE_CERTIFICATE">
+<span class="sig-name descname"><span class="pre">INSECURE_CERTIFICATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['insecure</span> <span class="pre">certificate']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INSECURE_CERTIFICATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ARGUMENT">
+<span class="sig-name descname"><span class="pre">INVALID_ARGUMENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[61,</span> <span class="pre">'invalid</span> <span class="pre">argument']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ARGUMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COORDINATES">
+<span class="sig-name descname"><span class="pre">INVALID_COORDINATES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['invalid</span> <span class="pre">coordinates']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COORDINATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SESSION_ID">
+<span class="sig-name descname"><span class="pre">INVALID_SESSION_ID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['invalid</span> <span class="pre">session</span> <span class="pre">id']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SESSION_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_COOKIE">
+<span class="sig-name descname"><span class="pre">NO_SUCH_COOKIE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[62,</span> <span class="pre">'no</span> <span class="pre">such</span> <span class="pre">cookie']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_COOKIE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_CAPTURE_SCREEN">
+<span class="sig-name descname"><span class="pre">UNABLE_TO_CAPTURE_SCREEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[63,</span> <span class="pre">'unable</span> <span class="pre">to</span> <span class="pre">capture</span> <span class="pre">screen']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_CAPTURE_SCREEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_CLICK_INTERCEPTED">
+<span class="sig-name descname"><span class="pre">ELEMENT_CLICK_INTERCEPTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[64,</span> <span class="pre">'element</span> <span class="pre">click</span> <span class="pre">intercepted']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_CLICK_INTERCEPTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_METHOD">
+<span class="sig-name descname"><span class="pre">UNKNOWN_METHOD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['unknown</span> <span class="pre">method</span> <span class="pre">exception']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_METHOD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorCode.METHOD_NOT_ALLOWED">
+<span class="sig-name descname"><span class="pre">METHOD_NOT_ALLOWED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[405,</span> <span class="pre">'unsupported</span> <span class="pre">operation']</span></em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.METHOD_NOT_ALLOWED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.remote.errorhandler.</span></span><span class="sig-name descname"><span class="pre">ErrorHandler</span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/errorhandler.html#ErrorHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles errors returned by the WebDriver server.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.errorhandler.ErrorHandler.check_response">
+<span class="sig-name descname"><span class="pre">check_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/errorhandler.html#ErrorHandler.check_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorHandler.check_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks that a JSON response from the WebDriver does not have an
+error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>response - The JSON response from the WebDriver server as a dictionary
+object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p>If the response contains an error message.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.remote.errorhandler</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_ELEMENT"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.NO_SUCH_ELEMENT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_FRAME"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.NO_SUCH_FRAME</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_SHADOW_ROOT"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.NO_SUCH_SHADOW_ROOT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.STALE_ELEMENT_REFERENCE"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.STALE_ELEMENT_REFERENCE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_NOT_VISIBLE"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.ELEMENT_NOT_VISIBLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ELEMENT_STATE"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.INVALID_ELEMENT_STATE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNKNOWN_ERROR"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.UNKNOWN_ERROR</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_IS_NOT_SELECTABLE"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.ELEMENT_IS_NOT_SELECTABLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.JAVASCRIPT_ERROR"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.JAVASCRIPT_ERROR</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.TIMEOUT"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.TIMEOUT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_WINDOW"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.NO_SUCH_WINDOW</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COOKIE_DOMAIN"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.INVALID_COOKIE_DOMAIN</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNABLE_TO_SET_COOKIE"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.UNABLE_TO_SET_COOKIE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNEXPECTED_ALERT_OPEN"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.UNEXPECTED_ALERT_OPEN</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_ALERT_OPEN"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.NO_ALERT_OPEN</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.SCRIPT_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.SCRIPT_TIMEOUT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_NOT_AVAILABLE"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.IME_NOT_AVAILABLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.IME_ENGINE_ACTIVATION_FAILED"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.IME_ENGINE_ACTIVATION_FAILED</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SELECTOR"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.INVALID_SELECTOR</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.SESSION_NOT_CREATED"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.SESSION_NOT_CREATED</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.MOVE_TARGET_OUT_OF_BOUNDS"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.MOVE_TARGET_OUT_OF_BOUNDS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.INVALID_XPATH_SELECTOR</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_XPATH_SELECTOR_RETURN_TYPER"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.INVALID_XPATH_SELECTOR_RETURN_TYPER</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_NOT_INTERACTABLE"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.ELEMENT_NOT_INTERACTABLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INSECURE_CERTIFICATE"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.INSECURE_CERTIFICATE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_ARGUMENT"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.INVALID_ARGUMENT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_COORDINATES"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.INVALID_COORDINATES</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.INVALID_SESSION_ID"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.INVALID_SESSION_ID</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.NO_SUCH_COOKIE"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.NO_SUCH_COOKIE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNABLE_TO_CAPTURE_SCREEN"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.UNABLE_TO_CAPTURE_SCREEN</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.ELEMENT_CLICK_INTERCEPTED"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.ELEMENT_CLICK_INTERCEPTED</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ExceptionMapping.UNKNOWN_METHOD"><code class="docutils literal notranslate"><span class="pre">ExceptionMapping.UNKNOWN_METHOD</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode"><code class="docutils literal notranslate"><span class="pre">ErrorCode</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SUCCESS"><code class="docutils literal notranslate"><span class="pre">ErrorCode.SUCCESS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_ELEMENT"><code class="docutils literal notranslate"><span class="pre">ErrorCode.NO_SUCH_ELEMENT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_FRAME"><code class="docutils literal notranslate"><span class="pre">ErrorCode.NO_SUCH_FRAME</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_SHADOW_ROOT"><code class="docutils literal notranslate"><span class="pre">ErrorCode.NO_SUCH_SHADOW_ROOT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_COMMAND"><code class="docutils literal notranslate"><span class="pre">ErrorCode.UNKNOWN_COMMAND</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.STALE_ELEMENT_REFERENCE"><code class="docutils literal notranslate"><span class="pre">ErrorCode.STALE_ELEMENT_REFERENCE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_VISIBLE"><code class="docutils literal notranslate"><span class="pre">ErrorCode.ELEMENT_NOT_VISIBLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_STATE"><code class="docutils literal notranslate"><span class="pre">ErrorCode.INVALID_ELEMENT_STATE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_ERROR"><code class="docutils literal notranslate"><span class="pre">ErrorCode.UNKNOWN_ERROR</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_IS_NOT_SELECTABLE"><code class="docutils literal notranslate"><span class="pre">ErrorCode.ELEMENT_IS_NOT_SELECTABLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.JAVASCRIPT_ERROR"><code class="docutils literal notranslate"><span class="pre">ErrorCode.JAVASCRIPT_ERROR</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.XPATH_LOOKUP_ERROR"><code class="docutils literal notranslate"><span class="pre">ErrorCode.XPATH_LOOKUP_ERROR</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.TIMEOUT"><code class="docutils literal notranslate"><span class="pre">ErrorCode.TIMEOUT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_WINDOW"><code class="docutils literal notranslate"><span class="pre">ErrorCode.NO_SUCH_WINDOW</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COOKIE_DOMAIN"><code class="docutils literal notranslate"><span class="pre">ErrorCode.INVALID_COOKIE_DOMAIN</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_SET_COOKIE"><code class="docutils literal notranslate"><span class="pre">ErrorCode.UNABLE_TO_SET_COOKIE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNEXPECTED_ALERT_OPEN"><code class="docutils literal notranslate"><span class="pre">ErrorCode.UNEXPECTED_ALERT_OPEN</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_ALERT_OPEN"><code class="docutils literal notranslate"><span class="pre">ErrorCode.NO_ALERT_OPEN</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SCRIPT_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">ErrorCode.SCRIPT_TIMEOUT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_COORDINATES"><code class="docutils literal notranslate"><span class="pre">ErrorCode.INVALID_ELEMENT_COORDINATES</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.IME_NOT_AVAILABLE"><code class="docutils literal notranslate"><span class="pre">ErrorCode.IME_NOT_AVAILABLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.IME_ENGINE_ACTIVATION_FAILED"><code class="docutils literal notranslate"><span class="pre">ErrorCode.IME_ENGINE_ACTIVATION_FAILED</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SELECTOR"><code class="docutils literal notranslate"><span class="pre">ErrorCode.INVALID_SELECTOR</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SESSION_NOT_CREATED"><code class="docutils literal notranslate"><span class="pre">ErrorCode.SESSION_NOT_CREATED</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS"><code class="docutils literal notranslate"><span class="pre">ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR"><code class="docutils literal notranslate"><span class="pre">ErrorCode.INVALID_XPATH_SELECTOR</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER"><code class="docutils literal notranslate"><span class="pre">ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_INTERACTABLE"><code class="docutils literal notranslate"><span class="pre">ErrorCode.ELEMENT_NOT_INTERACTABLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INSECURE_CERTIFICATE"><code class="docutils literal notranslate"><span class="pre">ErrorCode.INSECURE_CERTIFICATE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ARGUMENT"><code class="docutils literal notranslate"><span class="pre">ErrorCode.INVALID_ARGUMENT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COORDINATES"><code class="docutils literal notranslate"><span class="pre">ErrorCode.INVALID_COORDINATES</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SESSION_ID"><code class="docutils literal notranslate"><span class="pre">ErrorCode.INVALID_SESSION_ID</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_COOKIE"><code class="docutils literal notranslate"><span class="pre">ErrorCode.NO_SUCH_COOKIE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_CAPTURE_SCREEN"><code class="docutils literal notranslate"><span class="pre">ErrorCode.UNABLE_TO_CAPTURE_SCREEN</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_CLICK_INTERCEPTED"><code class="docutils literal notranslate"><span class="pre">ErrorCode.ELEMENT_CLICK_INTERCEPTED</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_METHOD"><code class="docutils literal notranslate"><span class="pre">ErrorCode.UNKNOWN_METHOD</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorCode.METHOD_NOT_ALLOWED"><code class="docutils literal notranslate"><span class="pre">ErrorCode.METHOD_NOT_ALLOWED</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorHandler"><code class="docutils literal notranslate"><span class="pre">ErrorHandler</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.remote.errorhandler.ErrorHandler.check_response"><code class="docutils literal notranslate"><span class="pre">ErrorHandler.check_response()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -487,17 +570,15 @@ Please refer to <a class="reference external" href="https://www.w3.org/TR/webdri
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -511,11 +592,12 @@ Please refer to <a class="reference external" href="https://www.w3.org/TR/webdri
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.remote.errorhandler</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
     </div>
   </body>
 </html>

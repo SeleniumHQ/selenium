@@ -1,4 +1,4 @@
-﻿selenium.webdriver.remote.switch\_to
+selenium.webdriver.remote.switch\_to
 ====================================
 
 .. automodule:: selenium.webdriver.remote.switch_to

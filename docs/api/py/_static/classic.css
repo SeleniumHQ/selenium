@@ -4,7 +4,7 @@
  *
  * Sphinx stylesheet -- classic theme.
  *
- * :copyright: Copyright 2007-2018 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2023 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
@@ -12,6 +12,11 @@
 @import url("basic.css");
 
 /* -- page layout ----------------------------------------------------------- */
+
+html {
+    /* CSS hack for macOS's scrollbar (see #1125) */
+    background-color: #FFFFFF;
+}
 
 body {
     font-family: sans-serif;
@@ -23,6 +28,7 @@ body {
 }
 
 div.document {
+    display: flex;
     background-color: #1c4e63;
 }
 
@@ -200,6 +206,8 @@ div.seealso {
     border: 1px solid #ff6;
 }
 
+nav.contents,
+aside.topic,
 div.topic {
     background-color: #eee;
 }
@@ -219,8 +227,8 @@ p.admonition-title:after {
 
 pre {
     padding: 5px;
-    background-color: #eeffcc;
-    color: #333333;
+    background-color: unset;
+    color: unset;
     line-height: 120%;
     border: 1px solid #ac9;
     border-left: none;
@@ -233,7 +241,7 @@ code {
     font-size: 0.95em;
 }
 
-th {
+th, dl.field-list > dt {
     background-color: #ede;
 }
 

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.common.bidi.script &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.bidi.script</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-selenium.webdriver.common.bidi.script">
+<span id="selenium-webdriver-common-bidi-script"></span><h1>selenium.webdriver.common.bidi.script<a class="headerlink" href="#module-selenium.webdriver.common.bidi.script" title="Permalink to this heading">¶</a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry" title="selenium.webdriver.common.bidi.script.ConsoleLogEntry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConsoleLogEntry</span></code></a>(level, text, timestamp, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry" title="selenium.webdriver.common.bidi.script.JavaScriptLogEntry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JavaScriptLogEntry</span></code></a>(level, text, timestamp, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.script.LogEntryAdded" title="selenium.webdriver.common.bidi.script.LogEntryAdded"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LogEntryAdded</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.script.Script" title="selenium.webdriver.common.bidi.script.Script"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Script</span></code></a>(conn)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.Script">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.script.</span></span><span class="sig-name descname"><span class="pre">Script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/script.html#Script"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.script.Script" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.Script.add_console_message_handler">
+<span class="sig-name descname"><span class="pre">add_console_message_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/script.html#Script.add_console_message_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.script.Script.add_console_message_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.Script.add_javascript_error_handler">
+<span class="sig-name descname"><span class="pre">add_javascript_error_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/script.html#Script.add_javascript_error_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.script.Script.add_javascript_error_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.Script.remove_console_message_handler">
+<span class="sig-name descname"><span class="pre">remove_console_message_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/script.html#Script.remove_console_message_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.script.Script.remove_console_message_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.Script.remove_javascript_error_handler">
+<span class="sig-name descname"><span class="pre">remove_javascript_error_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.bidi.script.Script.remove_javascript_error_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.LogEntryAdded">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.script.</span></span><span class="sig-name descname"><span class="pre">LogEntryAdded</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/script.html#LogEntryAdded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.script.LogEntryAdded" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.LogEntryAdded.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'log.entryAdded'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.LogEntryAdded.event_class" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.LogEntryAdded.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/script.html#LogEntryAdded.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.script.LogEntryAdded.from_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.ConsoleLogEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.script.</span></span><span class="sig-name descname"><span class="pre">ConsoleLogEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/script.html#ConsoleLogEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.ConsoleLogEntry.level">
+<span class="sig-name descname"><span class="pre">level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.ConsoleLogEntry.text">
+<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.ConsoleLogEntry.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.ConsoleLogEntry.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.ConsoleLogEntry.args">
+<span class="sig-name descname"><span class="pre">args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.ConsoleLogEntry.type_">
+<span class="sig-name descname"><span class="pre">type_</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.type_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.ConsoleLogEntry.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/script.html#ConsoleLogEntry.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.from_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.JavaScriptLogEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.script.</span></span><span class="sig-name descname"><span class="pre">JavaScriptLogEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/script.html#JavaScriptLogEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.JavaScriptLogEntry.level">
+<span class="sig-name descname"><span class="pre">level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.JavaScriptLogEntry.text">
+<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.JavaScriptLogEntry.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.JavaScriptLogEntry.stacktrace">
+<span class="sig-name descname"><span class="pre">stacktrace</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.stacktrace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.JavaScriptLogEntry.type_">
+<span class="sig-name descname"><span class="pre">type_</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.type_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.script.JavaScriptLogEntry.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/script.html#JavaScriptLogEntry.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.from_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.common.bidi.script</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.Script"><code class="docutils literal notranslate"><span class="pre">Script</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.Script.add_console_message_handler"><code class="docutils literal notranslate"><span class="pre">Script.add_console_message_handler()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.Script.add_javascript_error_handler"><code class="docutils literal notranslate"><span class="pre">Script.add_javascript_error_handler()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.Script.remove_console_message_handler"><code class="docutils literal notranslate"><span class="pre">Script.remove_console_message_handler()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.Script.remove_javascript_error_handler"><code class="docutils literal notranslate"><span class="pre">Script.remove_javascript_error_handler()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.LogEntryAdded"><code class="docutils literal notranslate"><span class="pre">LogEntryAdded</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.LogEntryAdded.event_class"><code class="docutils literal notranslate"><span class="pre">LogEntryAdded.event_class</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.LogEntryAdded.from_json"><code class="docutils literal notranslate"><span class="pre">LogEntryAdded.from_json()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry"><code class="docutils literal notranslate"><span class="pre">ConsoleLogEntry</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.level"><code class="docutils literal notranslate"><span class="pre">ConsoleLogEntry.level</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.text"><code class="docutils literal notranslate"><span class="pre">ConsoleLogEntry.text</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.timestamp"><code class="docutils literal notranslate"><span class="pre">ConsoleLogEntry.timestamp</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.method"><code class="docutils literal notranslate"><span class="pre">ConsoleLogEntry.method</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.args"><code class="docutils literal notranslate"><span class="pre">ConsoleLogEntry.args</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.type_"><code class="docutils literal notranslate"><span class="pre">ConsoleLogEntry.type_</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.ConsoleLogEntry.from_json"><code class="docutils literal notranslate"><span class="pre">ConsoleLogEntry.from_json()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry"><code class="docutils literal notranslate"><span class="pre">JavaScriptLogEntry</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.level"><code class="docutils literal notranslate"><span class="pre">JavaScriptLogEntry.level</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.text"><code class="docutils literal notranslate"><span class="pre">JavaScriptLogEntry.text</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.timestamp"><code class="docutils literal notranslate"><span class="pre">JavaScriptLogEntry.timestamp</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.stacktrace"><code class="docutils literal notranslate"><span class="pre">JavaScriptLogEntry.stacktrace</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.type_"><code class="docutils literal notranslate"><span class="pre">JavaScriptLogEntry.type_</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.script.JavaScriptLogEntry.from_json"><code class="docutils literal notranslate"><span class="pre">JavaScriptLogEntry.from_json()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver/selenium.webdriver.common.bidi.script.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.bidi.script</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    </div>
+  </body>
+</html>

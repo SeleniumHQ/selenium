@@ -1,4 +1,4 @@
-﻿selenium.webdriver.common.actions.interaction
+selenium.webdriver.common.actions.interaction
 =============================================
 
 .. automodule:: selenium.webdriver.common.actions.interaction

@@ -546,7 +546,10 @@
 68
 69
 70
-71</pre>
+71
+72
+73
+74</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 59</span>
@@ -559,6 +562,9 @@
 
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:args</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:prefs</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='comment'># Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
+</span>  <span class='comment'># https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
+</span>  <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:prefs</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>remote.active-protocols</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='int'>3</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:env</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:log</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='label'>level:</span> <span class='id identifier rubyid_log_level'>log_level</span><span class='rbrace'>}</span> <span class='kw'>if</span> <span class='id identifier rubyid_log_level'>log_level</span>
 
@@ -726,12 +732,12 @@
       <pre class="lines">
 
 
-83
-84
-85</pre>
+86
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_argument'>add_argument</span><span class='lparen'>(</span><span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:args</span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_arg'>arg</span>
@@ -816,12 +822,12 @@
       <pre class="lines">
 
 
-98
-99
-100</pre>
+101
+102
+103</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 101</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_preference'>add_preference</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:prefs</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -940,15 +946,15 @@
       <pre class="lines">
 
 
-141
-142
-143
 144
 145
-146</pre>
+146
+147
+148
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 141</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 144</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_enable_android'>enable_android</span><span class='lparen'>(</span><span class='label'>package:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>org.mozilla.firefox</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>serial_number:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>activity:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>intent_arguments:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:android_package</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_package'>package</span>
@@ -976,12 +982,12 @@
       <pre class="lines">
 
 
-121
-122
-123</pre>
+124
+125
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log_level'>log_level</span>
   <span class='ivar'>@options</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='symbol'>:log</span><span class='comma'>,</span> <span class='symbol'>:level</span><span class='rparen'>)</span>
@@ -1006,12 +1012,12 @@
       <pre class="lines">
 
 
-125
-126
-127</pre>
+128
+129
+130</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 128</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log_level='>log_level=</span><span class='lparen'>(</span><span class='id identifier rubyid_level'>level</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:log</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>level:</span> <span class='id identifier rubyid_level'>level</span><span class='rbrace'>}</span>
@@ -1026,7 +1032,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu May 16 04:49:18 2024 by
+  Generated on Mon Jun 24 14:57:04 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.36 (ruby-3.0.6).
 </div>

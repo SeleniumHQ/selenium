@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>selenium.webdriver.common.bidi.cdp &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=89b800e6" />
+    
+    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.bidi.cdp</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for selenium.webdriver.common.bidi.cdp</h1><div class="highlight"><pre>
+<span></span><span class="c1"># The MIT License(MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright(c) 2018 Hyperion Gray</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files(the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and / or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in</span>
+<span class="c1"># all copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN</span>
+<span class="c1"># THE SOFTWARE.</span>
+<span class="c1">#</span>
+<span class="c1"># This code comes from https://github.com/HyperionGray/trio-chrome-devtools-protocol/tree/master/trio_cdp</span>
+
+<span class="c1"># flake8: noqa</span>
+
+<span class="kn">import</span> <span class="nn">contextvars</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">asynccontextmanager</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">import</span> <span class="nn">trio</span>
+<span class="kn">from</span> <span class="nn">trio_websocket</span> <span class="kn">import</span> <span class="n">ConnectionClosed</span> <span class="k">as</span> <span class="n">WsConnectionClosed</span>
+<span class="kn">from</span> <span class="nn">trio_websocket</span> <span class="kn">import</span> <span class="n">connect_websocket_url</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;trio_cdp&quot;</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
+<span class="n">MAX_WS_MESSAGE_SIZE</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">24</span>
+
+<span class="n">devtools</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">version</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="import_devtools"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.import_devtools">[docs]</a><span class="k">def</span> <span class="nf">import_devtools</span><span class="p">(</span><span class="n">ver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Attempt to load the current latest available devtools into the module</span>
+<span class="sd">    cache for use later.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">devtools</span>
+    <span class="k">global</span> <span class="n">version</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">ver</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="s2">&quot;selenium.webdriver.common.devtools.v&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">devtools</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base</span><span class="si">}{</span><span class="n">ver</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">devtools</span>
+    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+        <span class="c1"># Attempt to parse and load the &#39;most recent&#39; devtools module. This is likely</span>
+        <span class="c1"># because cdp has been updated but selenium python has not been released yet.</span>
+        <span class="n">devtools_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;devtools&quot;</span><span class="p">)</span>
+        <span class="n">versions</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">devtools_path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dir</span><span class="p">())</span>
+        <span class="n">latest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">versions</span><span class="p">)</span>
+        <span class="n">selenium_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">selenium_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Falling back to loading `devtools`: v</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">latest</span><span class="p">)</span>
+        <span class="n">devtools</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base</span><span class="si">}{</span><span class="n">latest</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">devtools</span></div>
+
+
+<span class="n">_connection_context</span><span class="p">:</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;connection_context&quot;</span><span class="p">)</span>
+<span class="n">_session_context</span><span class="p">:</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;session_context&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_connection_context"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.get_connection_context">[docs]</a><span class="k">def</span> <span class="nf">get_connection_context</span><span class="p">(</span><span class="n">fn_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Look up the current connection.</span>
+
+<span class="sd">    If there is no current connection, raise a ``RuntimeError`` with a</span>
+<span class="sd">    helpful message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_connection_context</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fn_name</span><span class="si">}</span><span class="s2">() must be called in a connection context.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_session_context"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.get_session_context">[docs]</a><span class="k">def</span> <span class="nf">get_session_context</span><span class="p">(</span><span class="n">fn_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Look up the current session.</span>
+
+<span class="sd">    If there is no current session, raise a ``RuntimeError`` with a</span>
+<span class="sd">    helpful message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_session_context</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fn_name</span><span class="si">}</span><span class="s2">() must be called in a session context.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="connection_context"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.connection_context">[docs]</a><span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">connection_context</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This context manager installs ``connection`` as the session context for</span>
+<span class="sd">    the current Trio task.&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">_connection_context</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">_connection_context</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">token</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="session_context"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.session_context">[docs]</a><span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">session_context</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This context manager installs ``session`` as the session context for the</span>
+<span class="sd">    current Trio task.&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">_session_context</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">_session_context</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">token</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_global_connection"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.set_global_connection">[docs]</a><span class="k">def</span> <span class="nf">set_global_connection</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Install ``connection`` in the root context so that it will become the</span>
+<span class="sd">    default connection for all tasks.</span>
+
+<span class="sd">    This is generally not recommended, except it may be necessary in</span>
+<span class="sd">    certain use cases such as running inside Jupyter notebook.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_connection_context</span>
+    <span class="n">_connection_context</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;_connection_context&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">connection</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_global_session"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.set_global_session">[docs]</a><span class="k">def</span> <span class="nf">set_global_session</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Install ``session`` in the root context so that it will become the</span>
+<span class="sd">    default session for all tasks.</span>
+
+<span class="sd">    This is generally not recommended, except it may be necessary in</span>
+<span class="sd">    certain use cases such as running inside Jupyter notebook.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_session_context</span>
+    <span class="n">_session_context</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;_session_context&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">session</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BrowserError"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.BrowserError">[docs]</a><span class="k">class</span> <span class="nc">BrowserError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This exception is raised when the browser&#39;s response to a command</span>
+<span class="sd">    indicates that an error occurred.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;BrowserError&lt;code=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2"> message=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">detail</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="CdpConnectionClosed"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed">[docs]</a><span class="k">class</span> <span class="nc">CdpConnectionClosed</span><span class="p">(</span><span class="n">WsConnectionClosed</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a public method is called on a closed CDP connection.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+
+<span class="sd">        :param reason:</span>
+<span class="sd">        :type reason: wsproto.frame_protocol.CloseReason</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reason</span> <span class="o">=</span> <span class="n">reason</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return representation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+
+
+<div class="viewcode-block" id="InternalError"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.InternalError">[docs]</a><span class="k">class</span> <span class="nc">InternalError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This exception is only raised when there is faulty logic in TrioCDP or</span>
+<span class="sd">    the integration with PyCDP.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="CmEventProxy"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CmEventProxy">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">CmEventProxy</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A proxy object returned by :meth:`CdpBase.wait_for()``.</span>
+
+<span class="sd">    After the context manager executes, this proxy object will have a</span>
+<span class="sd">    value set that contains the returned event.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">value</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="CdpBase"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpBase">[docs]</a><span class="k">class</span> <span class="nc">CdpBase</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ws</span><span class="p">,</span> <span class="n">session_id</span><span class="p">,</span> <span class="n">target_id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ws</span> <span class="o">=</span> <span class="n">ws</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">session_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_id</span> <span class="o">=</span> <span class="n">target_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_iter</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inflight_cmd</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inflight_result</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="CdpBase.execute"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpBase.execute">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Generator</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute a command on the server and wait for the result.</span>
+
+<span class="sd">        :param cmd: any CDP command</span>
+<span class="sd">        :returns: a CDP result</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd_id</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_iter</span><span class="p">)</span>
+        <span class="n">cmd_event</span> <span class="o">=</span> <span class="n">trio</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inflight_cmd</span><span class="p">[</span><span class="n">cmd_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">cmd_event</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="n">request</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmd_id</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">:</span>
+            <span class="n">request</span><span class="p">[</span><span class="s2">&quot;sessionId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span>
+        <span class="n">request_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">request_str</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">WsConnectionClosed</span> <span class="k">as</span> <span class="n">wcc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CdpConnectionClosed</span><span class="p">(</span><span class="n">wcc</span><span class="o">.</span><span class="n">reason</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+        <span class="k">await</span> <span class="n">cmd_event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inflight_result</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">cmd_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">response</span>
+        <span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="CdpBase.listen"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpBase.listen">[docs]</a>    <span class="k">def</span> <span class="nf">listen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">event_types</span><span class="p">,</span> <span class="n">buffer_size</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an async iterator that iterates over events matching the</span>
+<span class="sd">        indicated types.&quot;&quot;&quot;</span>
+        <span class="n">sender</span><span class="p">,</span> <span class="n">receiver</span> <span class="o">=</span> <span class="n">trio</span><span class="o">.</span><span class="n">open_memory_channel</span><span class="p">(</span><span class="n">buffer_size</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">event_type</span> <span class="ow">in</span> <span class="n">event_types</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">event_type</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sender</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">receiver</span></div>
+
+<div class="viewcode-block" id="CdpBase.wait_for"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpBase.wait_for">[docs]</a>    <span class="nd">@asynccontextmanager</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">buffer_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">CmEventProxy</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait for an event of the given type and return it.</span>
+
+<span class="sd">        This is an async context manager, so you should open it inside</span>
+<span class="sd">        an async with block. The block will not exit until the indicated</span>
+<span class="sd">        event is received.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sender</span><span class="p">,</span> <span class="n">receiver</span> <span class="o">=</span> <span class="n">trio</span><span class="o">.</span><span class="n">open_memory_channel</span><span class="p">(</span><span class="n">buffer_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">event_type</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sender</span><span class="p">)</span>
+        <span class="n">proxy</span> <span class="o">=</span> <span class="n">CmEventProxy</span><span class="p">()</span>
+        <span class="k">yield</span> <span class="n">proxy</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">receiver</span><span class="p">:</span>
+            <span class="n">event</span> <span class="o">=</span> <span class="k">await</span> <span class="n">receiver</span><span class="o">.</span><span class="n">receive</span><span class="p">()</span>
+        <span class="n">proxy</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">event</span></div>
+
+    <span class="k">def</span> <span class="nf">_handle_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle incoming WebSocket data.</span>
+
+<span class="sd">        :param dict data: a JSON dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_cmd_response</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_event</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_handle_cmd_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a response to a command. This will set an event flag that</span>
+<span class="sd">        will return control to the task that called the command.</span>
+
+<span class="sd">        :param dict data: response as a JSON dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd_id</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cmd</span><span class="p">,</span> <span class="n">event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inflight_cmd</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">cmd_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Got a message with a command ID that does not exist: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="c1"># If the server reported an error, convert it to an exception and do</span>
+            <span class="c1"># not process the response any further.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inflight_result</span><span class="p">[</span><span class="n">cmd_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">BrowserError</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Otherwise, continue the generator to parse the JSON result</span>
+            <span class="c1"># into a CDP object.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">])</span>
+                <span class="k">raise</span> <span class="n">InternalError</span><span class="p">(</span><span class="s2">&quot;The command&#39;s generator function did not exit when expected!&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">exit</span><span class="p">:</span>
+                <span class="n">return_</span> <span class="o">=</span> <span class="n">exit</span><span class="o">.</span><span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inflight_result</span><span class="p">[</span><span class="n">cmd_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">return_</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_handle_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle an event.</span>
+
+<span class="sd">        :param dict data: event as a JSON dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">devtools</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">devtools</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">parse_json_event</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Received event: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+        <span class="n">to_remove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">sender</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">event</span><span class="p">)]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sender</span><span class="o">.</span><span class="n">send_nowait</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">trio</span><span class="o">.</span><span class="n">WouldBlock</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unable to send event &quot;</span><span class="si">%r</span><span class="s1">&quot; due to full channel </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">sender</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">trio</span><span class="o">.</span><span class="n">BrokenResourceError</span><span class="p">:</span>
+                <span class="n">to_remove</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sender</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">to_remove</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">event</span><span class="p">)]</span> <span class="o">-=</span> <span class="n">to_remove</span></div>
+
+
+<div class="viewcode-block" id="CdpSession"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpSession">[docs]</a><span class="k">class</span> <span class="nc">CdpSession</span><span class="p">(</span><span class="n">CdpBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Contains the state for a CDP session.</span>
+
+<span class="sd">    Generally you should not instantiate this object yourself; you should call</span>
+<span class="sd">    :meth:`CdpConnection.open_session`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ws</span><span class="p">,</span> <span class="n">session_id</span><span class="p">,</span> <span class="n">target_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+
+<span class="sd">        :param trio_websocket.WebSocketConnection ws:</span>
+<span class="sd">        :param devtools.target.SessionID session_id:</span>
+<span class="sd">        :param devtools.target.TargetID target_id:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">session_id</span><span class="p">,</span> <span class="n">target_id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dom_enable_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dom_enable_lock</span> <span class="o">=</span> <span class="n">trio</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_page_enable_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_page_enable_lock</span> <span class="o">=</span> <span class="n">trio</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CdpSession.dom_enable"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpSession.dom_enable">[docs]</a>    <span class="nd">@asynccontextmanager</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">dom_enable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A context manager that executes ``dom.enable()`` when it enters and</span>
+<span class="sd">        then calls ``dom.disable()``.</span>
+
+<span class="sd">        This keeps track of concurrent callers and only disables DOM</span>
+<span class="sd">        events when all callers have exited.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">devtools</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dom_enable_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dom_enable_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dom_enable_count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">dom</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
+
+        <span class="k">yield</span>
+
+        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dom_enable_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dom_enable_count</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dom_enable_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">dom</span><span class="o">.</span><span class="n">disable</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="CdpSession.page_enable"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpSession.page_enable">[docs]</a>    <span class="nd">@asynccontextmanager</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">page_enable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A context manager that executes ``page.enable()`` when it enters and</span>
+<span class="sd">        then calls ``page.disable()`` when it exits.</span>
+
+<span class="sd">        This keeps track of concurrent callers and only disables page</span>
+<span class="sd">        events when all callers have exited.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">devtools</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page_enable_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_page_enable_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page_enable_count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
+
+        <span class="k">yield</span>
+
+        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page_enable_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_page_enable_count</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page_enable_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">disable</span><span class="p">())</span></div></div>
+
+
+<div class="viewcode-block" id="CdpConnection"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpConnection">[docs]</a><span class="k">class</span> <span class="nc">CdpConnection</span><span class="p">(</span><span class="n">CdpBase</span><span class="p">,</span> <span class="n">trio</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">AsyncResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Contains the connection state for a Chrome DevTools Protocol server.</span>
+
+<span class="sd">    CDP can multiplex multiple &quot;sessions&quot; over a single connection. This</span>
+<span class="sd">    class corresponds to the &quot;root&quot; session, i.e. the implicitly created</span>
+<span class="sd">    session that has no session ID. This class is responsible for</span>
+<span class="sd">    reading incoming WebSocket messages and forwarding them to the</span>
+<span class="sd">    corresponding session, as well as handling messages targeted at the</span>
+<span class="sd">    root session itself. You should generally call the</span>
+<span class="sd">    :func:`open_cdp()` instead of instantiating this class directly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ws</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+
+<span class="sd">        :param trio_websocket.WebSocketConnection ws:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">session_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sessions</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="CdpConnection.aclose"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpConnection.aclose">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">aclose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the underlying WebSocket connection.</span>
+
+<span class="sd">        This will cause the reader task to gracefully exit when it tries</span>
+<span class="sd">        to read the next message from the WebSocket. All of the public</span>
+<span class="sd">        APIs (``execute()``, ``listen()``, etc.) will raise</span>
+<span class="sd">        ``CdpConnectionClosed`` after the CDP connection is closed. It</span>
+<span class="sd">        is safe to call this multiple times.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">aclose</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CdpConnection.open_session"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpConnection.open_session">[docs]</a>    <span class="nd">@asynccontextmanager</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">open_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="n">CdpSession</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This context manager opens a session and enables the &quot;simple&quot; style</span>
+<span class="sd">        of calling CDP APIs.</span>
+
+<span class="sd">        For example, inside a session context, you can call ``await</span>
+<span class="sd">        dom.get_document()`` and it will execute on the current session</span>
+<span class="sd">        automatically.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect_session</span><span class="p">(</span><span class="n">target_id</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">session_context</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">session</span></div>
+
+<div class="viewcode-block" id="CdpConnection.connect_session"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.CdpConnection.connect_session">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">connect_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CdpSession&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new :class:`CdpSession` connected to the specified</span>
+<span class="sd">        target.&quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">devtools</span>
+        <span class="n">session_id</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">attach_to_target</span><span class="p">(</span><span class="n">target_id</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">CdpSession</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="p">,</span> <span class="n">session_id</span><span class="p">,</span> <span class="n">target_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sessions</span><span class="p">[</span><span class="n">session_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">session</span>
+        <span class="k">return</span> <span class="n">session</span></div>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_reader_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs in the background and handles incoming messages: dispatching</span>
+<span class="sd">        responses to commands and events to listeners.&quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">devtools</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="o">.</span><span class="n">get_message</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">WsConnectionClosed</span><span class="p">:</span>
+                <span class="c1"># If the WebSocket is closed, we don&#39;t want to throw an</span>
+                <span class="c1"># exception from the reader task. Instead we will throw</span>
+                <span class="c1"># exceptions from the public API methods, and we can quietly</span>
+                <span class="c1"># exit the reader task here.</span>
+                <span class="k">break</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">BrowserError</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">32700</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Client received invalid JSON&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">})</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Received message </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;sessionId&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">session_id</span> <span class="o">=</span> <span class="n">devtools</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">SessionID</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;sessionId&quot;</span><span class="p">])</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sessions</span><span class="p">[</span><span class="n">session_id</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">BrowserError</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">32700</span><span class="p">,</span>
+                            <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Browser sent a message for an invalid session&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">session_id</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">_handle_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_handle_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">session</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sessions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">senders</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">sender</span> <span class="ow">in</span> <span class="n">senders</span><span class="p">:</span>
+                    <span class="n">sender</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="open_cdp"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.open_cdp">[docs]</a><span class="nd">@asynccontextmanager</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">open_cdp</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="n">CdpConnection</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This async context manager opens a connection to the browser specified</span>
+<span class="sd">    by ``url`` before entering the block, then closes the connection when the</span>
+<span class="sd">    block exits.</span>
+
+<span class="sd">    The context manager also sets the connection as the default</span>
+<span class="sd">    connection for the current task, so that commands like ``await</span>
+<span class="sd">    target.get_targets()`` will run on this connection automatically. If</span>
+<span class="sd">    you want to use multiple connections concurrently, it is recommended</span>
+<span class="sd">    to open each on in a separate task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">trio</span><span class="o">.</span><span class="n">open_nursery</span><span class="p">()</span> <span class="k">as</span> <span class="n">nursery</span><span class="p">:</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connect_cdp</span><span class="p">(</span><span class="n">nursery</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">connection_context</span><span class="p">(</span><span class="n">conn</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">conn</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">aclose</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="connect_cdp"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.cdp.html#selenium.webdriver.common.bidi.cdp.connect_cdp">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">connect_cdp</span><span class="p">(</span><span class="n">nursery</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CdpConnection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Connect to the browser specified by ``url`` and spawn a background task</span>
+<span class="sd">    in the specified nursery.</span>
+
+<span class="sd">    The ``open_cdp()`` context manager is preferred in most situations.</span>
+<span class="sd">    You should only use this function if you need to specify a custom</span>
+<span class="sd">    nursery. This connection is not automatically closed! You can either</span>
+<span class="sd">    use the connection object as a context manager (``async with</span>
+<span class="sd">    conn:``) or else call ``await conn.aclose()`` on it when you are</span>
+<span class="sd">    done with it. If ``set_context`` is True, then the returned</span>
+<span class="sd">    connection will be installed as the default connection for the</span>
+<span class="sd">    current task. This argument is for unusual use cases, such as</span>
+<span class="sd">    running inside of a notebook.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ws</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connect_websocket_url</span><span class="p">(</span><span class="n">nursery</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">max_message_size</span><span class="o">=</span><span class="n">MAX_WS_MESSAGE_SIZE</span><span class="p">)</span>
+    <span class="n">cdp_conn</span> <span class="o">=</span> <span class="n">CdpConnection</span><span class="p">(</span><span class="n">ws</span><span class="p">)</span>
+    <span class="n">nursery</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span><span class="n">cdp_conn</span><span class="o">.</span><span class="n">_reader_task</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cdp_conn</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.bidi.cdp</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    </div>
+  </body>
+</html>

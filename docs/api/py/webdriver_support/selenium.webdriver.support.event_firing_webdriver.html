@@ -1,19 +1,17 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.support.event_firing_webdriver &#8212; Selenium 4.21.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.support.event_firing_webdriver &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +25,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.support.event_firing_webdriver</a></li> 
       </ul>
     </div>  
 
@@ -36,41 +35,33 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-selenium.webdriver.support.event_firing_webdriver">
-<span id="selenium-webdriver-support-event-firing-webdriver"></span><h1>selenium.webdriver.support.event_firing_webdriver<a class="headerlink" href="#module-selenium.webdriver.support.event_firing_webdriver" title="Permalink to this headline">¶</a></h1>
+  <section id="module-selenium.webdriver.support.event_firing_webdriver">
+<span id="selenium-webdriver-support-event-firing-webdriver"></span><h1>selenium.webdriver.support.event_firing_webdriver<a class="headerlink" href="#module-selenium.webdriver.support.event_firing_webdriver" title="Permalink to this heading">¶</a></h1>
 <p class="rubric">Classes</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver" title="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EventFiringWebDriver</span></code></a>(driver,&nbsp;event_listener)</td>
-<td>A wrapper around an arbitrary WebDriver instance which supports firing events.</td>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver" title="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EventFiringWebDriver</span></code></a>(driver, event_listener)</p></td>
+<td><p>A wrapper around an arbitrary WebDriver instance which supports firing events.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement" title="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EventFiringWebElement</span></code></a>(webelement,&nbsp;ef_driver)</td>
-<td>A wrapper around WebElement instance which supports firing events.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement" title="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EventFiringWebElement</span></code></a>(webelement, ef_driver)</p></td>
+<td><p>A wrapper around WebElement instance which supports firing events.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="class">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.support.event_firing_webdriver.</code><code class="descname">EventFiringWebDriver</code><span class="sig-paren">(</span><em>driver: selenium.webdriver.remote.webdriver.WebDriver</em>, <em>event_listener: selenium.webdriver.support.abstract_event_listener.AbstractEventListener</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.event_firing_webdriver.</span></span><span class="sig-name descname"><span class="pre">EventFiringWebDriver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="selenium.webdriver.support.abstract_event_listener.html#selenium.webdriver.support.abstract_event_listener.AbstractEventListener" title="selenium.webdriver.support.abstract_event_listener.AbstractEventListener"><span class="pre">AbstractEventListener</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>A wrapper around an arbitrary WebDriver instance which supports firing
 events.</p>
 <p>Creates a new instance of the EventFiringWebDriver.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>driver : A WebDriver instance</li>
-<li>event_listener : Instance of a class that subclasses AbstractEventListener and implements it fully or partially</li>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>driver : A WebDriver instance</p></li>
+<li><p>event_listener : Instance of a class that subclasses AbstractEventListener and implements it fully or partially</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">selenium.webdriver</span> <span class="kn">import</span> <span class="n">Firefox</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.support.events</span> <span class="kn">import</span> <span class="n">EventFiringWebDriver</span><span class="p">,</span> <span class="n">AbstractEventListener</span>
@@ -86,107 +77,139 @@ events.</p>
 <span class="n">ef_driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://www.google.co.in/&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.back">
-<code class="descname">back</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.back"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.back" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.close" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_async_script">
-<code class="descname">execute_async_script</code><span class="sig-paren">(</span><em>script</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.execute_async_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_async_script" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_script">
-<code class="descname">execute_script</code><span class="sig-paren">(</span><em>script</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.execute_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_script" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element">
-<code class="descname">find_element</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value=None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements">
-<code class="descname">find_elements</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value=None</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.forward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.get">
-<code class="descname">get</code><span class="sig-paren">(</span><em>url: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.quit">
-<code class="descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.quit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.wrapped_driver">
-<code class="descname">wrapped_driver</code><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.wrapped_driver" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.wrapped_driver">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wrapped_driver</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a></em><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.wrapped_driver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the WebDriver instance wrapped by this
 EventsFiringWebDriver.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.back">
+<span class="sig-name descname"><span class="pre">back</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.back"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.back" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_script">
+<span class="sig-name descname"><span class="pre">execute_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.execute_script"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_script" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_async_script">
+<span class="sig-name descname"><span class="pre">execute_async_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.execute_async_script"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_async_script" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.quit">
+<span class="sig-name descname"><span class="pre">quit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.quit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.quit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element">
+<span class="sig-name descname"><span class="pre">find_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements">
+<span class="sig-name descname"><span class="pre">find_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
-<dl class="class">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.support.event_firing_webdriver.</code><code class="descname">EventFiringWebElement</code><span class="sig-paren">(</span><em>webelement: selenium.webdriver.remote.webelement.WebElement</em>, <em>ef_driver: selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.event_firing_webdriver.</span></span><span class="sig-name descname"><span class="pre">EventFiringWebElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">webelement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ef_driver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver" title="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver"><span class="pre">EventFiringWebDriver</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement" title="Permalink to this definition">¶</a></dt>
 <dd><p>A wrapper around WebElement instance which supports firing events.</p>
 <p>Creates a new instance of the EventFiringWebElement.</p>
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.clear">
-<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.clear" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.click">
-<code class="descname">click</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.click" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element">
-<code class="descname">find_element</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value=None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements">
-<code class="descname">find_elements</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value=None</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.send_keys">
-<code class="descname">send_keys</code><span class="sig-paren">(</span><em>*value</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.send_keys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.wrapped_element">
-<code class="descname">wrapped_element</code><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.wrapped_element" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.wrapped_element">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wrapped_element</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></em><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.wrapped_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the WebElement wrapped by this EventFiringWebElement
 instance.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.click">
+<span class="sig-name descname"><span class="pre">click</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.click" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.send_keys">
+<span class="sig-name descname"><span class="pre">send_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.send_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.send_keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element">
+<span class="sig-name descname"><span class="pre">find_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements">
+<span class="sig-name descname"><span class="pre">find_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
-</div>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.support.event_firing_webdriver</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver"><code class="docutils literal notranslate"><span class="pre">EventFiringWebDriver</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.wrapped_driver"><code class="docutils literal notranslate"><span class="pre">EventFiringWebDriver.wrapped_driver</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.get"><code class="docutils literal notranslate"><span class="pre">EventFiringWebDriver.get()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.back"><code class="docutils literal notranslate"><span class="pre">EventFiringWebDriver.back()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.forward"><code class="docutils literal notranslate"><span class="pre">EventFiringWebDriver.forward()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_script"><code class="docutils literal notranslate"><span class="pre">EventFiringWebDriver.execute_script()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_async_script"><code class="docutils literal notranslate"><span class="pre">EventFiringWebDriver.execute_async_script()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.close"><code class="docutils literal notranslate"><span class="pre">EventFiringWebDriver.close()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.quit"><code class="docutils literal notranslate"><span class="pre">EventFiringWebDriver.quit()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element"><code class="docutils literal notranslate"><span class="pre">EventFiringWebDriver.find_element()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements"><code class="docutils literal notranslate"><span class="pre">EventFiringWebDriver.find_elements()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement"><code class="docutils literal notranslate"><span class="pre">EventFiringWebElement</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.wrapped_element"><code class="docutils literal notranslate"><span class="pre">EventFiringWebElement.wrapped_element</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.click"><code class="docutils literal notranslate"><span class="pre">EventFiringWebElement.click()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.clear"><code class="docutils literal notranslate"><span class="pre">EventFiringWebElement.clear()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.send_keys"><code class="docutils literal notranslate"><span class="pre">EventFiringWebElement.send_keys()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element"><code class="docutils literal notranslate"><span class="pre">EventFiringWebElement.find_element()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements"><code class="docutils literal notranslate"><span class="pre">EventFiringWebElement.find_elements()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -195,17 +218,15 @@ instance.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -219,11 +240,12 @@ instance.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.support.event_firing_webdriver</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
     </div>
   </body>
 </html>

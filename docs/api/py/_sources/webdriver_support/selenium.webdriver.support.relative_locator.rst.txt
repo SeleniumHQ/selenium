@@ -1,4 +1,4 @@
-﻿selenium.webdriver.support.relative\_locator
+selenium.webdriver.support.relative\_locator
 ============================================
 
 .. automodule:: selenium.webdriver.support.relative_locator
