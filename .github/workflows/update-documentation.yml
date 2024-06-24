@@ -23,10 +23,10 @@ jobs:
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-      - name: Get updated Rakefile
+      - name: TEMP Get correct generation code
         run: |
-          git fetch origin auto_docs
-          git checkout origin/auto_docs -- Rakefile
+          git fetch origin trunk
+          git checkout origin/trunk -- Rakefile
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -54,10 +54,10 @@ jobs:
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-      - name: Get updated Rakefile
+      - name: TEMP Get correct generation code
         run: |
-          git fetch origin auto_docs
-          git checkout origin/auto_docs -- Rakefile
+          git fetch origin trunk
+          git checkout origin/trunk -- Rakefile
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -85,10 +85,12 @@ jobs:
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-      - name: Get updated Rakefile
+      - name: TEMP Get correct generation code
         run: |
-          git fetch origin auto_docs
-          git checkout origin/auto_docs -- Rakefile
+          git fetch origin trunk
+          git cherry-pick da71ba31
+          git cherry-pick 6936f642
+          git checkout origin/trunk -- Rakefile
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
@@ -119,10 +121,10 @@ jobs:
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-      - name: Get updated Rakefile
+      - name: TEMP Get correct generation code
         run: |
-          git fetch origin auto_docs
-          git checkout origin/auto_docs -- Rakefile
+          git fetch origin trunk
+          git checkout origin/trunk -- Rakefile
       - name: Install specific version of DocFX tool
         #  Pinning to 2.75.3 to avoid breaking changes in newer versions
         #  See https://github.com/dotnet/docfx/issues/9855
@@ -149,10 +151,10 @@ jobs:
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-      - name: Get updated Rakefile
+      - name: TEMP Get correct generation code
         run: |
-          git fetch origin auto_docs
-          git checkout origin/auto_docs -- Rakefile
+          git fetch origin trunk
+          git checkout origin/trunk -- Rakefile
       - name: Install npm dependencies
         run: |
           npm install
