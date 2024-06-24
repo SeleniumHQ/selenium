@@ -602,6 +602,46 @@ module Selenium
           execute :set_user_verified, {authenticatorId: authenticator_id}, {isUserVerified: verified}
         end
 
+        #
+        # federated-credential management
+        #
+
+        def cancel_fedcm_dialog
+          execute :cancel_fedcm_dialog
+        end
+
+        def select_fedcm_account(index)
+          execute :select_fedcm_account, {}, {accountIndex: index}
+        end
+
+        def fedcm_dialog_type
+          execute :get_fedcm_dialog_type
+        end
+
+        def fedcm_title
+          execute(:get_fedcm_title).fetch('title')
+        end
+
+        def fedcm_subtitle
+          execute(:get_fedcm_title).fetch('subtitle', nil)
+        end
+
+        def fedcm_account_list
+          execute :get_fedcm_account_list
+        end
+
+        def fedcm_delay(enabled)
+          execute :set_fedcm_delay, {}, {enabled: enabled}
+        end
+
+        def reset_fedcm_cooldown
+          execute :reset_fedcm_cooldown
+        end
+
+        def click_fedcm_dialog_button
+          execute :click_fedcm_dialog_button, {}, {dialogButton: 'ConfirmIdpLoginContinue'}
+        end
+
         def bidi
           msg = 'BiDi must be enabled by setting #web_socket_url to true in options class'
           raise(WebDriver::Error::WebDriverError, msg)
