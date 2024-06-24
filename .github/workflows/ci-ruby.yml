@@ -79,8 +79,6 @@ jobs:
         exclude:
           - browser: edge
             os: macos
-          - browser: safari
-            os: windows
     with:
       name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
@@ -106,8 +104,6 @@ jobs:
         include:
           - browser: edge
             os: windows
-          - browser: safari
-            os: macos
     with:
       name: Remote Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
