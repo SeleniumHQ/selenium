@@ -295,7 +295,7 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_status'>status</span>
   <span class='id identifier rubyid_status'>status</span> <span class='op'>=</span> <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session.status</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Session/Status.html" title="Selenium::WebDriver::BiDi::Session::Status (class)">Status</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::BiDi::Session#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_status'>status</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ready</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_status'>status</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>message</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Session/Status.html" title="Selenium::WebDriver::BiDi::Session::Status (class)">Status</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::BiDi::Session#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_status'>status</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -328,10 +328,10 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_subscribe'>subscribe</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='comma'>,</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_events_list'>events_list</span> <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_browsing_contexts_list'>browsing_contexts_list</span> <span class='op'>=</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='kw'>nil</span> <span class='op'>:</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>events:</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='rparen'>)</span><span class='rbrace'>}</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:browsing_contexts</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span>
 
-  <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session.subscribe</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>events:</span> <span class='id identifier rubyid_events_list'>events_list</span><span class='comma'>,</span> <span class='label'>contexts:</span> <span class='id identifier rubyid_browsing_contexts_list'>browsing_contexts_list</span><span class='rparen'>)</span>
+  <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session.subscribe</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -364,10 +364,10 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unsubscribe'>unsubscribe</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='comma'>,</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_events_list'>events_list</span> <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_browsing_contexts_list'>browsing_contexts_list</span> <span class='op'>=</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='kw'>nil</span> <span class='op'>:</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>events:</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='rparen'>)</span><span class='rbrace'>}</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:browsing_contexts</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span>
 
-  <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session.unsubscribe</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>events:</span> <span class='id identifier rubyid_events_list'>events_list</span><span class='comma'>,</span> <span class='label'>contexts:</span> <span class='id identifier rubyid_browsing_contexts_list'>browsing_contexts_list</span><span class='rparen'>)</span>
+  <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session.unsubscribe</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -379,7 +379,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu May 16 04:49:17 2024 by
+  Generated on Mon Jun 24 14:57:03 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.36 (ruby-3.0.6).
 </div>

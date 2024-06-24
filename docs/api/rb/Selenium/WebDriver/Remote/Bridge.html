@@ -121,7 +121,11 @@
 <div class="tags">
   
 
-</div><h2>Defined Under Namespace</h2>
+</div><div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><span class='object_link'><a href="BiDiBridge.html" title="Selenium::WebDriver::Remote::BiDiBridge (class)">BiDiBridge</a></span></p>
+</div>
+<h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -689,6 +693,28 @@
   <span class="summary_signature">
     
       <a href="#alert_text-instance_method" title="#alert_text (instance method)">#<strong>alert_text</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#bidi-instance_method" title="#bidi (instance method)">#<strong>bidi</strong>  &#x21d2; Object </a>
     
 
     
@@ -3281,6 +3307,60 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="bidi-instance_method">
+  
+    #<strong>bidi</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriver::Error::WebDriverError</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+605
+606
+607
+608</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 605</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_bidi'>bidi</span>
+  <span class='id identifier rubyid_msg'>msg</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BiDi must be enabled by setting #web_socket_url to true in options class</span><span class='tstring_end'>&#39;</span></span>
+  <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_msg'>msg</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="browser-instance_method">
   
     #<strong>browser</strong>  &#x21d2; <tt>Object</tt> 
@@ -3481,12 +3561,12 @@
       <pre class="lines">
 
 
-605
-606
-607</pre>
+610
+611
+612</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 605</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 610</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_command_list'>command_list</span>
   <span class='const'><span class='object_link'><a href="#COMMANDS-constant" title="Selenium::WebDriver::Remote::Bridge::COMMANDS (constant)">COMMANDS</a></span></span>
@@ -6236,7 +6316,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu May 16 04:49:18 2024 by
+  Generated on Mon Jun 24 14:57:04 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.36 (ruby-3.0.6).
 </div>
