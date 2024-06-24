@@ -47,7 +47,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   private final HttpClient client;
   private final HttpClient.Factory httpClientFactory;
   private final Map<String, CommandInfo> additionalCommands;
-  private CommandCodec<HttpRequest> commandCodec;
+  protected CommandCodec<HttpRequest> commandCodec;
   private ResponseCodec<HttpResponse> responseCodec;
 
   private LocalLogs logs = LocalLogs.getNullLogger();
