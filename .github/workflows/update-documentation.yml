@@ -18,8 +18,24 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+  determine-language:
+    runs-on: ubuntu-latest
+    outputs:
+      language: ${{ steps.get-language.outputs.language }}
+    steps:
+      - name: Parse language from tag
+        id: get-language
+        run: |
+          tag=${{ inputs.tag }}
+          language=$(echo $tag | awk -F'-' '{print $NF}')
+          if [[ ! "$language" =~ ^(java|ruby|python|dotnet|node)$ ]]; then
+            language="all"
+          fi
+          echo "language=$language" > $GITHUB_OUTPUT
+
   java-docs:
     runs-on: ubuntu-latest
+    needs: determine-language
     steps:
       - name: Checkout the tag
         uses: actions/checkout@v4
@@ -35,11 +51,13 @@ jobs:
           java-version: 17
           distribution: 'temurin'
       - name: Update Documentation
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'java'
         run: ./go java:docs
       - name: Create patch for changes
         run: |
           git format-patch -1 HEAD --stdout > java-docs.patch
       - name: Upload patch
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'java'
         uses: actions/upload-artifact@v2
         with:
           name: java-docs-patch
@@ -47,6 +65,7 @@ jobs:
 
   ruby-docs:
     runs-on: ubuntu-latest
+    needs: determine-language
     steps:
       - name: Checkout the tag
         uses: actions/checkout@v4
@@ -62,17 +81,20 @@ jobs:
           java-version: 17
           distribution: 'temurin'
       - name: Update Documentation
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'ruby'
         run: ./go rb:docs
       - name: Create patch for changes
         run: |
           git format-patch -1 HEAD --stdout > ruby-docs.patch
       - name: Upload patch
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'ruby'
         uses: actions/upload-artifact@v2
         with:
           name: ruby-docs-patch
           path: ruby-docs.patch
 
   python-docs:
+    needs: determine-language
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the tag
@@ -92,17 +114,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install tox
       - name: Update Documentation
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'python'
         run: ./go py:docs
       - name: Create patch for changes
         run: |
           git format-patch -1 HEAD --stdout > python-docs.patch
       - name: Upload patch
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'python'
         uses: actions/upload-artifact@v2
         with:
           name: python-docs-patch
           path: python-docs.patch
 
   dotnet-docs:
+    needs: determine-language
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the tag
@@ -118,17 +143,20 @@ jobs:
         #  See https://github.com/dotnet/docfx/issues/9855
         run: dotnet tool install --global --version 2.75.3 docfx
       - name: Update Documentation
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'dotnet'
         run: ./go dotnet:docs
       - name: Create patch for changes
         run: |
           git format-patch -1 HEAD --stdout > dotnet-docs.patch
       - name: Upload patch
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'dotnet'
         uses: actions/upload-artifact@v2
         with:
           name: dotnet-docs-patch
           path: dotnet-docs.patch
 
   node-docs:
+    needs: determine-language
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the tag
@@ -144,11 +172,13 @@ jobs:
           npm install
           npm install --prefix javascript/node/selenium-webdriver
       - name: Update Documentation
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'node'
         run: ./go node:docs
       - name: Create patch for changes
         run: |
           git format-patch -1 HEAD --stdout > node-docs.patch
       - name: Upload patch
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'node'
         uses: actions/upload-artifact@v2
         with:
           name: node-docs-patch
@@ -167,24 +197,33 @@ jobs:
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           git checkout -b api-docs-${{ inputs.tag }}
-      - name: Download patches
+      - name: Download Java patch
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'java'
         uses: actions/download-artifact@v2
         with:
           name: java-docs-patch
           path: patches/
-      - uses: actions/download-artifact@v2
+      - name: Download Ruby patch
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'ruby'
+        uses: actions/download-artifact@v2
         with:
           name: ruby-docs-patch
           path: patches/
-      - uses: actions/download-artifact@v2
+      - name: Download Python patch
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'python'
+        uses: actions/download-artifact@v2
         with:
           name: python-docs-patch
           path: patches/
-      - uses: actions/download-artifact@v2
+      - name: Download .NET patch
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'dotnet'
+        uses: actions/download-artifact@v2
         with:
           name: dotnet-docs-patch
           path: patches/
-      - uses: actions/download-artifact@v2
+      - name: Download Node patch
+        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'node'
+        uses: actions/download-artifact@v2
         with:
           name: node-docs-patch
           path: patches/
