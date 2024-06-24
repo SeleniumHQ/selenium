@@ -36,7 +36,7 @@ jobs:
           git checkout -b release-${{ github.event.inputs.version }}
       - name: Update Rust Version
         run: |
-          ./go rust:version
+          ./go rust:version[${{ github.event.inputs.version }}]
           ./go rust:version:commit
       - name: Push changes
         uses: ad-m/github-push-action@master
