@@ -1,4 +1,4 @@
-﻿selenium.webdriver.remote.bidi\_connection
+selenium.webdriver.remote.bidi\_connection
 ==========================================
 
 .. automodule:: selenium.webdriver.remote.bidi_connection

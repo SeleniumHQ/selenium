@@ -1,19 +1,17 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.desired_capabilities &#8212; Selenium 4.21.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.common.desired_capabilities &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +25,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.desired_capabilities</a></li> 
       </ul>
     </div>  
 
@@ -36,24 +35,20 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-selenium.webdriver.common.desired_capabilities">
-<span id="selenium-webdriver-common-desired-capabilities"></span><h1>selenium.webdriver.common.desired_capabilities<a class="headerlink" href="#module-selenium.webdriver.common.desired_capabilities" title="Permalink to this headline">¶</a></h1>
+  <section id="module-selenium.webdriver.common.desired_capabilities">
+<span id="selenium-webdriver-common-desired-capabilities"></span><h1>selenium.webdriver.common.desired_capabilities<a class="headerlink" href="#module-selenium.webdriver.common.desired_capabilities" title="Permalink to this heading">¶</a></h1>
 <p>The Desired Capabilities implementation.</p>
 <p class="rubric">Classes</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities" title="selenium.webdriver.common.desired_capabilities.DesiredCapabilities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DesiredCapabilities</span></code></a></td>
-<td>Set of default supported desired capabilities.</td>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities" title="selenium.webdriver.common.desired_capabilities.DesiredCapabilities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DesiredCapabilities</span></code></a>()</p></td>
+<td><p>Set of default supported desired capabilities.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="class">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.common.desired_capabilities.</code><code class="descname">DesiredCapabilities</code><a class="reference internal" href="../_modules/selenium/webdriver/common/desired_capabilities.html#DesiredCapabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.desired_capabilities.</span></span><span class="sig-name descname"><span class="pre">DesiredCapabilities</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/desired_capabilities.html#DesiredCapabilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of default supported desired capabilities.</p>
 <p>Use this as a starting point for creating a desired capabilities object for
 requesting remote webdrivers for connecting to selenium server or selenium grid.</p>
@@ -74,71 +69,95 @@ requesting remote webdrivers for connecting to selenium server or selenium grid.
 </div>
 <p>Note: Always use ‘.copy()’ on the DesiredCapabilities object to avoid the side
 effects of altering the Global class instance.</p>
-<dl class="attribute">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.CHROME">
-<code class="descname">CHROME</code><em class="property"> = {'browserName': 'chrome'}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.CHROME" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.FIREFOX">
+<span class="sig-name descname"><span class="pre">FIREFOX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'acceptInsecureCerts':</span> <span class="pre">True,</span> <span class="pre">'browserName':</span> <span class="pre">'firefox',</span> <span class="pre">'moz:debuggerAddress':</span> <span class="pre">True}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.FIREFOX" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.EDGE">
-<code class="descname">EDGE</code><em class="property"> = {'browserName': 'MicrosoftEdge'}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.EDGE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.INTERNETEXPLORER">
+<span class="sig-name descname"><span class="pre">INTERNETEXPLORER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'browserName':</span> <span class="pre">'internet</span> <span class="pre">explorer',</span> <span class="pre">'platformName':</span> <span class="pre">'windows'}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.INTERNETEXPLORER" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.FIREFOX">
-<code class="descname">FIREFOX</code><em class="property"> = {'acceptInsecureCerts': True, 'browserName': 'firefox', 'moz:debuggerAddress': True}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.FIREFOX" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.EDGE">
+<span class="sig-name descname"><span class="pre">EDGE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'browserName':</span> <span class="pre">'MicrosoftEdge'}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.EDGE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.HTMLUNIT">
-<code class="descname">HTMLUNIT</code><em class="property"> = {'browserName': 'htmlunit', 'platform': 'ANY', 'version': ''}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.HTMLUNIT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.CHROME">
+<span class="sig-name descname"><span class="pre">CHROME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'browserName':</span> <span class="pre">'chrome'}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.CHROME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.HTMLUNITWITHJS">
-<code class="descname">HTMLUNITWITHJS</code><em class="property"> = {'browserName': 'htmlunit', 'javascriptEnabled': True, 'platform': 'ANY', 'version': 'firefox'}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.HTMLUNITWITHJS" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.SAFARI">
+<span class="sig-name descname"><span class="pre">SAFARI</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'browserName':</span> <span class="pre">'safari',</span> <span class="pre">'platformName':</span> <span class="pre">'mac'}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.SAFARI" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.INTERNETEXPLORER">
-<code class="descname">INTERNETEXPLORER</code><em class="property"> = {'browserName': 'internet explorer', 'platformName': 'windows'}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.INTERNETEXPLORER" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.HTMLUNIT">
+<span class="sig-name descname"><span class="pre">HTMLUNIT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'browserName':</span> <span class="pre">'htmlunit',</span> <span class="pre">'platform':</span> <span class="pre">'ANY',</span> <span class="pre">'version':</span> <span class="pre">''}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.HTMLUNIT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPAD">
-<code class="descname">IPAD</code><em class="property"> = {'browserName': 'iPad', 'platform': 'mac', 'version': ''}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPAD" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.HTMLUNITWITHJS">
+<span class="sig-name descname"><span class="pre">HTMLUNITWITHJS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'browserName':</span> <span class="pre">'htmlunit',</span> <span class="pre">'javascriptEnabled':</span> <span class="pre">True,</span> <span class="pre">'platform':</span> <span class="pre">'ANY',</span> <span class="pre">'version':</span> <span class="pre">'firefox'}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.HTMLUNITWITHJS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPHONE">
-<code class="descname">IPHONE</code><em class="property"> = {'browserName': 'iPhone', 'platform': 'mac', 'version': ''}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPHONE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPHONE">
+<span class="sig-name descname"><span class="pre">IPHONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'browserName':</span> <span class="pre">'iPhone',</span> <span class="pre">'platform':</span> <span class="pre">'mac',</span> <span class="pre">'version':</span> <span class="pre">''}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPHONE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.SAFARI">
-<code class="descname">SAFARI</code><em class="property"> = {'browserName': 'safari', 'platformName': 'mac'}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.SAFARI" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPAD">
+<span class="sig-name descname"><span class="pre">IPAD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'browserName':</span> <span class="pre">'iPad',</span> <span class="pre">'platform':</span> <span class="pre">'mac',</span> <span class="pre">'version':</span> <span class="pre">''}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPAD" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.WEBKITGTK">
-<code class="descname">WEBKITGTK</code><em class="property"> = {'browserName': 'MiniBrowser'}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.WEBKITGTK" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.WEBKITGTK">
+<span class="sig-name descname"><span class="pre">WEBKITGTK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'browserName':</span> <span class="pre">'MiniBrowser'}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.WEBKITGTK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.WPEWEBKIT">
-<code class="descname">WPEWEBKIT</code><em class="property"> = {'browserName': 'MiniBrowser'}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.WPEWEBKIT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.WPEWEBKIT">
+<span class="sig-name descname"><span class="pre">WPEWEBKIT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'browserName':</span> <span class="pre">'MiniBrowser'}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.WPEWEBKIT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.common.desired_capabilities</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.FIREFOX"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities.FIREFOX</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.INTERNETEXPLORER"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities.INTERNETEXPLORER</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.EDGE"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities.EDGE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.CHROME"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities.CHROME</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.SAFARI"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities.SAFARI</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.HTMLUNIT"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities.HTMLUNIT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.HTMLUNITWITHJS"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities.HTMLUNITWITHJS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPHONE"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities.IPHONE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.IPAD"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities.IPAD</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.WEBKITGTK"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities.WEBKITGTK</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.WPEWEBKIT"><code class="docutils literal notranslate"><span class="pre">DesiredCapabilities.WPEWEBKIT</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -147,17 +166,15 @@ effects of altering the Global class instance.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -171,11 +188,12 @@ effects of altering the Global class instance.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.desired_capabilities</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
     </div>
   </body>
 </html>

@@ -1,19 +1,17 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.21.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +25,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.action_chains</a></li> 
       </ul>
     </div>  
 
@@ -36,34 +35,30 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-selenium.webdriver.common.action_chains">
-<span id="selenium-webdriver-common-action-chains"></span><h1>selenium.webdriver.common.action_chains<a class="headerlink" href="#module-selenium.webdriver.common.action_chains" title="Permalink to this headline">¶</a></h1>
+  <section id="module-selenium.webdriver.common.action_chains">
+<span id="selenium-webdriver-common-action-chains"></span><h1>selenium.webdriver.common.action_chains<a class="headerlink" href="#module-selenium.webdriver.common.action_chains" title="Permalink to this heading">¶</a></h1>
 <p>The ActionChains implementation.</p>
 <p class="rubric">Classes</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActionChains</span></code></a>(driver,&nbsp;duration,&nbsp;devices)</td>
-<td>ActionChains are a way to automate low level interactions such as mouse movements, mouse button actions, key press, and context menu interactions.</td>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActionChains</span></code></a>(driver[, duration, devices])</p></td>
+<td><p>ActionChains are a way to automate low level interactions such as mouse movements, mouse button actions, key press, and context menu interactions.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="class">
-<dt id="selenium.webdriver.common.action_chains.ActionChains">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.common.action_chains.</code><code class="descname">ActionChains</code><span class="sig-paren">(</span><em>driver: WebDriver</em>, <em>duration: int = 250</em>, <em>devices: list[AnyDevice] | None = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.action_chains.</span></span><span class="sig-name descname"><span class="pre">ActionChains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver" title="selenium.webdriver.chrome.webdriver.WebDriver"><span class="pre">WebDriver</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">AnyDevice</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains" title="Permalink to this definition">¶</a></dt>
 <dd><p>ActionChains are a way to automate low level interactions such as mouse
 movements, mouse button actions, key press, and context menu interactions.
 This is useful for doing more complex actions like hover over and drag and
 drop.</p>
-<dl class="docutils">
-<dt>Generate user actions.</dt>
-<dd>When you call methods for actions on the ActionChains object,
+<dl class="simple">
+<dt>Generate user actions.</dt><dd><p>When you call methods for actions on the ActionChains object,
 the actions are stored in a queue in the ActionChains object.
 When you call perform(), the events are fired in the order they
-are queued up.</dd>
+are queued up.</p>
+</dd>
 </dl>
 <p>ActionChains can be used in a chain pattern:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">menu</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">&quot;.nav&quot;</span><span class="p">)</span>
@@ -85,384 +80,342 @@ are queued up.</dd>
 <p>Either way, the actions are performed in the order they are called, one after
 another.</p>
 <p>Creates a new ActionChains.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>driver: The WebDriver instance which performs user actions.</li>
-<li>duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput</li>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>driver: The WebDriver instance which performs user actions.</p></li>
+<li><p>duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.click">
-<code class="descname">click</code><span class="sig-paren">(</span><em>on_element: WebElement | None = None</em><span class="sig-paren">)</span> &#x2192; ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.click" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clicks an element.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>on_element: The element to click.
-If None, clicks on current mouse position.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.click_and_hold">
-<code class="descname">click_and_hold</code><span class="sig-paren">(</span><em>on_element: WebElement | None = None</em><span class="sig-paren">)</span> &#x2192; ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.click_and_hold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.click_and_hold" title="Permalink to this definition">¶</a></dt>
-<dd><p>Holds down the left mouse button on an element.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>on_element: The element to mouse down.
-If None, clicks on current mouse position.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.context_click">
-<code class="descname">context_click</code><span class="sig-paren">(</span><em>on_element: WebElement | None = None</em><span class="sig-paren">)</span> &#x2192; ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.context_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.context_click" title="Permalink to this definition">¶</a></dt>
-<dd><p>Performs a context-click (right click) on an element.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>on_element: The element to context-click.
-If None, clicks on current mouse position.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.double_click">
-<code class="descname">double_click</code><span class="sig-paren">(</span><em>on_element: WebElement | None = None</em><span class="sig-paren">)</span> &#x2192; ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.double_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.double_click" title="Permalink to this definition">¶</a></dt>
-<dd><p>Double-clicks an element.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>on_element: The element to double-click.
-If None, clicks on current mouse position.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.drag_and_drop">
-<code class="descname">drag_and_drop</code><span class="sig-paren">(</span><em>source: selenium.webdriver.remote.webelement.WebElement</em>, <em>target: selenium.webdriver.remote.webelement.WebElement</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.action_chains.ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.drag_and_drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Holds down the left mouse button on the source element, then moves
-to the target element and releases the mouse button.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>source: The element to mouse down.</li>
-<li>target: The element to mouse up.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.drag_and_drop_by_offset">
-<code class="descname">drag_and_drop_by_offset</code><span class="sig-paren">(</span><em>source: selenium.webdriver.remote.webelement.WebElement</em>, <em>xoffset: int</em>, <em>yoffset: int</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.action_chains.ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.drag_and_drop_by_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop_by_offset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Holds down the left mouse button on the source element, then moves
-to the target offset and releases the mouse button.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>source: The element to mouse down.</li>
-<li>xoffset: X offset to move to.</li>
-<li>yoffset: Y offset to move to.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.key_down">
-<code class="descname">key_down</code><span class="sig-paren">(</span><em>value: str</em>, <em>element: WebElement | None = None</em><span class="sig-paren">)</span> &#x2192; ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.key_down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.key_down" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sends a key press only, without releasing it. Should only be used
-with modifier keys (Control, Alt and Shift).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>value: The modifier key to send. Values are defined in <cite>Keys</cite> class.</li>
-<li>element: The element to send keys.
-If None, sends a key to current focused element.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>Example, pressing ctrl+c:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ActionChains</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.key_up">
-<code class="descname">key_up</code><span class="sig-paren">(</span><em>value: str</em>, <em>element: WebElement | None = None</em><span class="sig-paren">)</span> &#x2192; ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.key_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.key_up" title="Permalink to this definition">¶</a></dt>
-<dd><p>Releases a modifier key.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>value: The modifier key to send. Values are defined in Keys class.</li>
-<li>element: The element to send keys.
-If None, sends a key to current focused element.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>Example, pressing ctrl+c:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ActionChains</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.move_by_offset">
-<code class="descname">move_by_offset</code><span class="sig-paren">(</span><em>xoffset: int</em>, <em>yoffset: int</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.action_chains.ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_by_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_by_offset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Moving the mouse to an offset from current mouse position.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>xoffset: X offset to move to, as a positive or negative integer.</li>
-<li>yoffset: Y offset to move to, as a positive or negative integer.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.move_to_element">
-<code class="descname">move_to_element</code><span class="sig-paren">(</span><em>to_element: selenium.webdriver.remote.webelement.WebElement</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.action_chains.ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_to_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_to_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>Moving the mouse to the middle of an element.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>to_element: The WebElement to move to.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset">
-<code class="descname">move_to_element_with_offset</code><span class="sig-paren">(</span><em>to_element: selenium.webdriver.remote.webelement.WebElement</em>, <em>xoffset: int</em>, <em>yoffset: int</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.action_chains.ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_to_element_with_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Move the mouse by an offset of the specified element. Offsets are
-relative to the in-view center point of the element.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>to_element: The WebElement to move to.</li>
-<li>xoffset: X offset to move to, as a positive or negative integer.</li>
-<li>yoffset: Y offset to move to, as a positive or negative integer.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.pause">
-<code class="descname">pause</code><span class="sig-paren">(</span><em>seconds: float | int</em><span class="sig-paren">)</span> &#x2192; ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.pause"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.pause" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pause all inputs for the specified duration in seconds.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.perform">
-<code class="descname">perform</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.perform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.perform" title="Permalink to this definition">¶</a></dt>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.perform">
+<span class="sig-name descname"><span class="pre">perform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.perform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.perform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs all stored actions.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.release">
-<code class="descname">release</code><span class="sig-paren">(</span><em>on_element: WebElement | None = None</em><span class="sig-paren">)</span> &#x2192; ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.release"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.release" title="Permalink to this definition">¶</a></dt>
-<dd><p>Releasing a held mouse button on an element.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>on_element: The element to mouse up.
-If None, releases on current mouse position.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.reset_actions">
-<code class="descname">reset_actions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.reset_actions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.reset_actions" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.reset_actions">
+<span class="sig-name descname"><span class="pre">reset_actions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.reset_actions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.reset_actions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clears actions that are already stored locally and on the remote
 end.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.scroll_by_amount">
-<code class="descname">scroll_by_amount</code><span class="sig-paren">(</span><em>delta_x: int</em>, <em>delta_y: int</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.action_chains.ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.scroll_by_amount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_by_amount" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scrolls by provided amounts with the origin in the top left corner
-of the viewport.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.</li>
-<li>delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.click">
+<span class="sig-name descname"><span class="pre">click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clicks an element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>on_element: The element to click.
+If None, clicks on current mouse position.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.scroll_from_origin">
-<code class="descname">scroll_from_origin</code><span class="sig-paren">(</span><em>scroll_origin: selenium.webdriver.common.actions.wheel_input.ScrollOrigin</em>, <em>delta_x: int</em>, <em>delta_y: int</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.action_chains.ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.scroll_from_origin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_from_origin" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.click_and_hold">
+<span class="sig-name descname"><span class="pre">click_and_hold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.click_and_hold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.click_and_hold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Holds down the left mouse button on an element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>on_element: The element to mouse down.
+If None, clicks on current mouse position.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.context_click">
+<span class="sig-name descname"><span class="pre">context_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.context_click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.context_click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a context-click (right click) on an element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>on_element: The element to context-click.
+If None, clicks on current mouse position.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.double_click">
+<span class="sig-name descname"><span class="pre">double_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.double_click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.double_click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Double-clicks an element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>on_element: The element to double-click.
+If None, clicks on current mouse position.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.drag_and_drop">
+<span class="sig-name descname"><span class="pre">drag_and_drop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.drag_and_drop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Holds down the left mouse button on the source element, then moves
+to the target element and releases the mouse button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>source: The element to mouse down.</p></li>
+<li><p>target: The element to mouse up.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.drag_and_drop_by_offset">
+<span class="sig-name descname"><span class="pre">drag_and_drop_by_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">xoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.drag_and_drop_by_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop_by_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Holds down the left mouse button on the source element, then moves
+to the target offset and releases the mouse button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>source: The element to mouse down.</p></li>
+<li><p>xoffset: X offset to move to.</p></li>
+<li><p>yoffset: Y offset to move to.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.key_down">
+<span class="sig-name descname"><span class="pre">key_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.key_down"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.key_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a key press only, without releasing it. Should only be used
+with modifier keys (Control, Alt and Shift).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>value: The modifier key to send. Values are defined in <cite>Keys</cite> class.</p></li>
+<li><p>element: The element to send keys.
+If None, sends a key to current focused element.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example, pressing ctrl+c:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ActionChains</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.key_up">
+<span class="sig-name descname"><span class="pre">key_up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.key_up"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.key_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Releases a modifier key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>value: The modifier key to send. Values are defined in Keys class.</p></li>
+<li><p>element: The element to send keys.
+If None, sends a key to current focused element.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example, pressing ctrl+c:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ActionChains</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.move_by_offset">
+<span class="sig-name descname"><span class="pre">move_by_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_by_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_by_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moving the mouse to an offset from current mouse position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>xoffset: X offset to move to, as a positive or negative integer.</p></li>
+<li><p>yoffset: Y offset to move to, as a positive or negative integer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.move_to_element">
+<span class="sig-name descname"><span class="pre">move_to_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_to_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_to_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moving the mouse to the middle of an element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>to_element: The WebElement to move to.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset">
+<span class="sig-name descname"><span class="pre">move_to_element_with_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">xoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_to_element_with_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the mouse by an offset of the specified element. Offsets are
+relative to the in-view center point of the element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>to_element: The WebElement to move to.</p></li>
+<li><p>xoffset: X offset to move to, as a positive or negative integer.</p></li>
+<li><p>yoffset: Y offset to move to, as a positive or negative integer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.pause">
+<span class="sig-name descname"><span class="pre">pause</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.pause"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.pause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pause all inputs for the specified duration in seconds.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.release">
+<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.release"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Releasing a held mouse button on an element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>on_element: The element to mouse up.
+If None, releases on current mouse position.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.send_keys">
+<span class="sig-name descname"><span class="pre">send_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">keys_to_send</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.send_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.send_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends keys to current focused element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>keys_to_send: The keys to send.  Modifier keys constants can be found in the
+‘Keys’ class.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.send_keys_to_element">
+<span class="sig-name descname"><span class="pre">send_keys_to_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">keys_to_send</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.send_keys_to_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.send_keys_to_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends keys to an element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>element: The element to send keys.</p></li>
+<li><p>keys_to_send: The keys to send.  Modifier keys constants can be found in the
+‘Keys’ class.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.scroll_to_element">
+<span class="sig-name descname"><span class="pre">scroll_to_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.scroll_to_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_to_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the element is outside the viewport, scrolls the bottom of the
+element to the bottom of the viewport.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>element: Which element to scroll into the viewport.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.scroll_by_amount">
+<span class="sig-name descname"><span class="pre">scroll_by_amount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.scroll_by_amount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_by_amount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scrolls by provided amounts with the origin in the top left corner
+of the viewport.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.</p></li>
+<li><p>delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.scroll_from_origin">
+<span class="sig-name descname"><span class="pre">scroll_from_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scroll_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.ScrollOrigin" title="selenium.webdriver.common.actions.wheel_input.ScrollOrigin"><span class="pre">ScrollOrigin</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.scroll_from_origin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_from_origin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scrolls by provided amount based on a provided origin. The scroll
 origin is either the center of an element or the upper left of the
 viewport plus any offsets. If the origin is an element, and the element
 is not in the viewport, the bottom of the element will first be
 scrolled to the bottom of the viewport.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
-<li>origin: Where scroll originates (viewport or element center) plus provided offsets.</li>
-<li>delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.</li>
-<li>delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</li>
+<dl class="field-list">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>origin: Where scroll originates (viewport or element center) plus provided offsets.</p></li>
+<li><p>delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.</p></li>
+<li><p>delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</p></li>
 </ul>
-<table class="last docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">If the origin with offset is outside the viewport.
-- MoveTargetOutOfBoundsException - If the origin with offset is outside the viewport.</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.scroll_to_element">
-<code class="descname">scroll_to_element</code><span class="sig-paren">(</span><em>element: selenium.webdriver.remote.webelement.WebElement</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.action_chains.ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.scroll_to_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_to_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>If the element is outside the viewport, scrolls the bottom of the
-element to the bottom of the viewport.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>element: Which element to scroll into the viewport.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.send_keys">
-<code class="descname">send_keys</code><span class="sig-paren">(</span><em>*keys_to_send</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.action_chains.ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.send_keys" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sends keys to current focused element.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>keys_to_send: The keys to send.  Modifier keys constants can be found in the
-‘Keys’ class.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.action_chains.ActionChains.send_keys_to_element">
-<code class="descname">send_keys_to_element</code><span class="sig-paren">(</span><em>element: selenium.webdriver.remote.webelement.WebElement</em>, <em>*keys_to_send</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.action_chains.ActionChains<a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.send_keys_to_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.send_keys_to_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sends keys to an element.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>element: The element to send keys.</li>
-<li>keys_to_send: The keys to send.  Modifier keys constants can be found in the
-‘Keys’ class.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p>If the origin with offset is outside the viewport.
+- MoveTargetOutOfBoundsException - If the origin with offset is outside the viewport.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.common.action_chains</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains"><code class="docutils literal notranslate"><span class="pre">ActionChains</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.perform"><code class="docutils literal notranslate"><span class="pre">ActionChains.perform()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.reset_actions"><code class="docutils literal notranslate"><span class="pre">ActionChains.reset_actions()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.click"><code class="docutils literal notranslate"><span class="pre">ActionChains.click()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.click_and_hold"><code class="docutils literal notranslate"><span class="pre">ActionChains.click_and_hold()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.context_click"><code class="docutils literal notranslate"><span class="pre">ActionChains.context_click()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.double_click"><code class="docutils literal notranslate"><span class="pre">ActionChains.double_click()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop"><code class="docutils literal notranslate"><span class="pre">ActionChains.drag_and_drop()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop_by_offset"><code class="docutils literal notranslate"><span class="pre">ActionChains.drag_and_drop_by_offset()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.key_down"><code class="docutils literal notranslate"><span class="pre">ActionChains.key_down()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.key_up"><code class="docutils literal notranslate"><span class="pre">ActionChains.key_up()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.move_by_offset"><code class="docutils literal notranslate"><span class="pre">ActionChains.move_by_offset()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.move_to_element"><code class="docutils literal notranslate"><span class="pre">ActionChains.move_to_element()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset"><code class="docutils literal notranslate"><span class="pre">ActionChains.move_to_element_with_offset()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.pause"><code class="docutils literal notranslate"><span class="pre">ActionChains.pause()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.release"><code class="docutils literal notranslate"><span class="pre">ActionChains.release()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.send_keys"><code class="docutils literal notranslate"><span class="pre">ActionChains.send_keys()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.send_keys_to_element"><code class="docutils literal notranslate"><span class="pre">ActionChains.send_keys_to_element()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_to_element"><code class="docutils literal notranslate"><span class="pre">ActionChains.scroll_to_element()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_by_amount"><code class="docutils literal notranslate"><span class="pre">ActionChains.scroll_by_amount()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_from_origin"><code class="docutils literal notranslate"><span class="pre">ActionChains.scroll_from_origin()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -471,17 +424,15 @@ element to the bottom of the viewport.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -495,11 +446,12 @@ element to the bottom of the viewport.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.action_chains</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
     </div>
   </body>
 </html>

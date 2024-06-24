@@ -1,4 +1,4 @@
-﻿selenium.webdriver.common.timeouts
+selenium.webdriver.common.timeouts
 ==================================
 
 .. automodule:: selenium.webdriver.common.timeouts

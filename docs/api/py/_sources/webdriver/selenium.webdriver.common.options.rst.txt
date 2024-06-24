@@ -1,4 +1,4 @@
-﻿selenium.webdriver.common.options
+selenium.webdriver.common.options
 =================================
 
 .. automodule:: selenium.webdriver.common.options
@@ -19,6 +19,7 @@
    
       ArgOptions
       BaseOptions
+      PageLoadStrategy
    
    
 

@@ -1,0 +1,54 @@
+selenium.webdriver.common.bidi.cdp
+==================================
+
+.. automodule:: selenium.webdriver.common.bidi.cdp
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      connect_cdp
+      connection_context
+      get_connection_context
+      get_session_context
+      import_devtools
+      open_cdp
+      session_context
+      set_global_connection
+      set_global_session
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CdpBase
+      CdpConnection
+      CdpSession
+      CmEventProxy
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      BrowserError
+      CdpConnectionClosed
+      InternalError
+   
+   
+
+
+

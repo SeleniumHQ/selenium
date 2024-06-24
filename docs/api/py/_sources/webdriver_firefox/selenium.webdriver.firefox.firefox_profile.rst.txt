@@ -1,4 +1,4 @@
-﻿selenium.webdriver.firefox.firefox\_profile
+selenium.webdriver.firefox.firefox\_profile
 ===========================================
 
 .. automodule:: selenium.webdriver.firefox.firefox_profile

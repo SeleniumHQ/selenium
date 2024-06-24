@@ -1,4 +1,4 @@
-﻿selenium.webdriver.firefox.remote\_connection
+selenium.webdriver.firefox.remote\_connection
 =============================================
 
 .. automodule:: selenium.webdriver.firefox.remote_connection

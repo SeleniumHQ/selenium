@@ -1,4 +1,4 @@
-﻿selenium.webdriver.remote.webelement
+selenium.webdriver.remote.webelement
 ====================================
 
 .. automodule:: selenium.webdriver.remote.webelement

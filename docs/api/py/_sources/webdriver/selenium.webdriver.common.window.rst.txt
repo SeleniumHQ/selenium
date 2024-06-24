@@ -1,4 +1,4 @@
-﻿selenium.webdriver.common.window
+selenium.webdriver.common.window
 ================================
 
 .. automodule:: selenium.webdriver.common.window

@@ -1,19 +1,17 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.firefox.firefox_binary &#8212; Selenium 4.21.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.firefox.firefox_binary &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +25,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.firefox.firefox_binary</a></li> 
       </ul>
     </div>  
 
@@ -36,16 +35,92 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="selenium-webdriver-firefox-firefox-binary">
-<h1>selenium.webdriver.firefox.firefox_binary<a class="headerlink" href="#selenium-webdriver-firefox-firefox-binary" title="Permalink to this headline">¶</a></h1>
-</div>
+  <section id="module-selenium.webdriver.firefox.firefox_binary">
+<span id="selenium-webdriver-firefox-firefox-binary"></span><h1>selenium.webdriver.firefox.firefox_binary<a class="headerlink" href="#module-selenium.webdriver.firefox.firefox_binary" title="Permalink to this heading">¶</a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary" title="selenium.webdriver.firefox.firefox_binary.FirefoxBinary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FirefoxBinary</span></code></a>([firefox_path, log_file])</p></td>
+<td><p>Creates a new instance of Firefox binary.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.firefox.firefox_binary.</span></span><span class="sig-name descname"><span class="pre">FirefoxBinary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">firefox_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new instance of Firefox binary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.</p></li>
+<li><dl class="simple">
+<dt>log_file - A file object to redirect the firefox process output to. It can be sys.stdout.</dt><dd><p>Please note that with parallel run the output won’t be synchronous.
+By default, it will be redirected to /dev/null.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary.NO_FOCUS_LIBRARY_NAME">
+<span class="sig-name descname"><span class="pre">NO_FOCUS_LIBRARY_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'x_ignore_nofocus.so'</span></em><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.NO_FOCUS_LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary.add_command_line_options">
+<span class="sig-name descname"><span class="pre">add_command_line_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary.add_command_line_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.add_command_line_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary.launch_browser">
+<span class="sig-name descname"><span class="pre">launch_browser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary.launch_browser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.launch_browser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launches the browser for the given profile name.</p>
+<p>It is assumed the profile already exists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary.kill">
+<span class="sig-name descname"><span class="pre">kill</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary.kill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.kill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kill the browser.</p>
+<p>This is useful when the browser is stuck.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary.which">
+<span class="sig-name descname"><span class="pre">which</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary.which"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.which" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the fully qualified path by searching Path of the given
+name.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.firefox.firefox_binary</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary"><code class="docutils literal notranslate"><span class="pre">FirefoxBinary</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.NO_FOCUS_LIBRARY_NAME"><code class="docutils literal notranslate"><span class="pre">FirefoxBinary.NO_FOCUS_LIBRARY_NAME</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.add_command_line_options"><code class="docutils literal notranslate"><span class="pre">FirefoxBinary.add_command_line_options()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.launch_browser"><code class="docutils literal notranslate"><span class="pre">FirefoxBinary.launch_browser()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.kill"><code class="docutils literal notranslate"><span class="pre">FirefoxBinary.kill()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.which"><code class="docutils literal notranslate"><span class="pre">FirefoxBinary.which()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -54,17 +129,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -78,11 +151,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.firefox.firefox_binary</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
     </div>
   </body>
 </html>

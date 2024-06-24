@@ -1,4 +1,4 @@
-﻿selenium.webdriver.remote.shadowroot
+selenium.webdriver.remote.shadowroot
 ====================================
 
 .. automodule:: selenium.webdriver.remote.shadowroot

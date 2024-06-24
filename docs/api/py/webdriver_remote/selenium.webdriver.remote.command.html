@@ -1,19 +1,17 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.command &#8212; Selenium 4.21.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.remote.command &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +25,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.remote.command</a></li> 
       </ul>
     </div>  
 
@@ -36,449 +35,541 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-selenium.webdriver.remote.command">
-<span id="selenium-webdriver-remote-command"></span><h1>selenium.webdriver.remote.command<a class="headerlink" href="#module-selenium.webdriver.remote.command" title="Permalink to this headline">¶</a></h1>
+  <section id="module-selenium.webdriver.remote.command">
+<span id="selenium-webdriver-remote-command"></span><h1>selenium.webdriver.remote.command<a class="headerlink" href="#module-selenium.webdriver.remote.command" title="Permalink to this heading">¶</a></h1>
 <p class="rubric">Classes</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.remote.command.Command" title="selenium.webdriver.remote.command.Command"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Command</span></code></a></td>
-<td>Defines constants for the standard WebDriver commands.</td>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.remote.command.Command" title="selenium.webdriver.remote.command.Command"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Command</span></code></a>()</p></td>
+<td><p>Defines constants for the standard WebDriver commands.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="class">
-<dt id="selenium.webdriver.remote.command.Command">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.remote.command.</code><code class="descname">Command</code><a class="reference internal" href="../_modules/selenium/webdriver/remote/command.html#Command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.command.Command" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.remote.command.</span></span><span class="sig-name descname"><span class="pre">Command</span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/command.html#Command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.command.Command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines constants for the standard WebDriver commands.</p>
 <p>While these constants have no meaning in and of themselves, they are
 used to marshal commands through a service that implements WebDriver’s
 remote wire protocol:</p>
 <blockquote>
-<div><a class="reference external" href="https://w3c.github.io/webdriver/">https://w3c.github.io/webdriver/</a></div></blockquote>
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.ADD_COOKIE">
-<code class="descname">ADD_COOKIE</code><em class="property"> = 'addCookie'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.ADD_COOKIE" title="Permalink to this definition">¶</a></dt>
+<div><p><a class="reference external" href="https://w3c.github.io/webdriver/">https://w3c.github.io/webdriver/</a></p>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.NEW_SESSION">
+<span class="sig-name descname"><span class="pre">NEW_SESSION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'newSession'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.NEW_SESSION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.ADD_CREDENTIAL">
-<code class="descname">ADD_CREDENTIAL</code><em class="property"> = 'addCredential'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.ADD_CREDENTIAL" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.DELETE_SESSION">
+<span class="sig-name descname"><span class="pre">DELETE_SESSION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'deleteSession'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DELETE_SESSION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.ADD_VIRTUAL_AUTHENTICATOR">
-<code class="descname">ADD_VIRTUAL_AUTHENTICATOR</code><em class="property"> = 'addVirtualAuthenticator'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.ADD_VIRTUAL_AUTHENTICATOR" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.NEW_WINDOW">
+<span class="sig-name descname"><span class="pre">NEW_WINDOW</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'newWindow'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.NEW_WINDOW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.CLEAR_ELEMENT">
-<code class="descname">CLEAR_ELEMENT</code><em class="property"> = 'clearElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLEAR_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.CLOSE">
+<span class="sig-name descname"><span class="pre">CLOSE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'close'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLOSE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.CLICK_ELEMENT">
-<code class="descname">CLICK_ELEMENT</code><em class="property"> = 'clickElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLICK_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.QUIT">
+<span class="sig-name descname"><span class="pre">QUIT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'quit'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.QUIT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.CLOSE">
-<code class="descname">CLOSE</code><em class="property"> = 'close'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLOSE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET">
+<span class="sig-name descname"><span class="pre">GET</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'get'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.CONTEXT_HANDLES">
-<code class="descname">CONTEXT_HANDLES</code><em class="property"> = 'getContextHandles'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CONTEXT_HANDLES" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GO_BACK">
+<span class="sig-name descname"><span class="pre">GO_BACK</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'goBack'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GO_BACK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.CURRENT_CONTEXT_HANDLE">
-<code class="descname">CURRENT_CONTEXT_HANDLE</code><em class="property"> = 'getCurrentContextHandle'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CURRENT_CONTEXT_HANDLE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GO_FORWARD">
+<span class="sig-name descname"><span class="pre">GO_FORWARD</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'goForward'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GO_FORWARD" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.DELETE_ALL_COOKIES">
-<code class="descname">DELETE_ALL_COOKIES</code><em class="property"> = 'deleteAllCookies'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DELETE_ALL_COOKIES" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.REFRESH">
+<span class="sig-name descname"><span class="pre">REFRESH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'refresh'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.REFRESH" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.DELETE_COOKIE">
-<code class="descname">DELETE_COOKIE</code><em class="property"> = 'deleteCookie'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DELETE_COOKIE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.ADD_COOKIE">
+<span class="sig-name descname"><span class="pre">ADD_COOKIE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'addCookie'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.ADD_COOKIE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.DELETE_DOWNLOADABLE_FILES">
-<code class="descname">DELETE_DOWNLOADABLE_FILES</code><em class="property"> = 'deleteDownloadableFiles'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DELETE_DOWNLOADABLE_FILES" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_COOKIE">
+<span class="sig-name descname"><span class="pre">GET_COOKIE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getCookie'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_COOKIE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.DELETE_SESSION">
-<code class="descname">DELETE_SESSION</code><em class="property"> = 'deleteSession'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DELETE_SESSION" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_ALL_COOKIES">
+<span class="sig-name descname"><span class="pre">GET_ALL_COOKIES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getCookies'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ALL_COOKIES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.DOWNLOAD_FILE">
-<code class="descname">DOWNLOAD_FILE</code><em class="property"> = 'downloadFile'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DOWNLOAD_FILE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.DELETE_COOKIE">
+<span class="sig-name descname"><span class="pre">DELETE_COOKIE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'deleteCookie'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DELETE_COOKIE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.ELEMENT_SCREENSHOT">
-<code class="descname">ELEMENT_SCREENSHOT</code><em class="property"> = 'elementScreenshot'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.ELEMENT_SCREENSHOT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.DELETE_ALL_COOKIES">
+<span class="sig-name descname"><span class="pre">DELETE_ALL_COOKIES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'deleteAllCookies'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DELETE_ALL_COOKIES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.EXECUTE_ASYNC_SCRIPT">
-<code class="descname">EXECUTE_ASYNC_SCRIPT</code><em class="property"> = 'executeAsyncScript'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.EXECUTE_ASYNC_SCRIPT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.FIND_ELEMENT">
+<span class="sig-name descname"><span class="pre">FIND_ELEMENT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'findElement'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENT">
-<code class="descname">FIND_CHILD_ELEMENT</code><em class="property"> = 'findChildElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.FIND_ELEMENTS">
+<span class="sig-name descname"><span class="pre">FIND_ELEMENTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'findElements'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENTS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENTS">
-<code class="descname">FIND_CHILD_ELEMENTS</code><em class="property"> = 'findChildElements'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENTS" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENT">
+<span class="sig-name descname"><span class="pre">FIND_CHILD_ELEMENT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'findChildElement'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.FIND_ELEMENT">
-<code class="descname">FIND_ELEMENT</code><em class="property"> = 'findElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENTS">
+<span class="sig-name descname"><span class="pre">FIND_CHILD_ELEMENTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'findChildElements'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENTS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.FIND_ELEMENTS">
-<code class="descname">FIND_ELEMENTS</code><em class="property"> = 'findElements'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENTS" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.CLEAR_ELEMENT">
+<span class="sig-name descname"><span class="pre">CLEAR_ELEMENT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'clearElement'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLEAR_ELEMENT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.FIND_ELEMENTS_FROM_SHADOW_ROOT">
-<code class="descname">FIND_ELEMENTS_FROM_SHADOW_ROOT</code><em class="property"> = 'findElementsFromShadowRoot'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENTS_FROM_SHADOW_ROOT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.CLICK_ELEMENT">
+<span class="sig-name descname"><span class="pre">CLICK_ELEMENT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'clickElement'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLICK_ELEMENT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.FIND_ELEMENT_FROM_SHADOW_ROOT">
-<code class="descname">FIND_ELEMENT_FROM_SHADOW_ROOT</code><em class="property"> = 'findElementFromShadowRoot'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENT_FROM_SHADOW_ROOT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.SEND_KEYS_TO_ELEMENT">
+<span class="sig-name descname"><span class="pre">SEND_KEYS_TO_ELEMENT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'sendKeysToElement'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SEND_KEYS_TO_ELEMENT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.FULLSCREEN_WINDOW">
-<code class="descname">FULLSCREEN_WINDOW</code><em class="property"> = 'fullscreenWindow'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FULLSCREEN_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_GET_CURRENT_WINDOW_HANDLE">
+<span class="sig-name descname"><span class="pre">W3C_GET_CURRENT_WINDOW_HANDLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'w3cGetCurrentWindowHandle'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_CURRENT_WINDOW_HANDLE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET">
-<code class="descname">GET</code><em class="property"> = 'get'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_HANDLES">
+<span class="sig-name descname"><span class="pre">W3C_GET_WINDOW_HANDLES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'w3cGetWindowHandles'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_HANDLES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_ALL_COOKIES">
-<code class="descname">GET_ALL_COOKIES</code><em class="property"> = 'getCookies'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ALL_COOKIES" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.SET_WINDOW_RECT">
+<span class="sig-name descname"><span class="pre">SET_WINDOW_RECT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'setWindowRect'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_WINDOW_RECT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_AVAILABLE_LOG_TYPES">
-<code class="descname">GET_AVAILABLE_LOG_TYPES</code><em class="property"> = 'getAvailableLogTypes'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_AVAILABLE_LOG_TYPES" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_WINDOW_RECT">
+<span class="sig-name descname"><span class="pre">GET_WINDOW_RECT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getWindowRect'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_WINDOW_RECT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_COOKIE">
-<code class="descname">GET_COOKIE</code><em class="property"> = 'getCookie'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_COOKIE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.SWITCH_TO_WINDOW">
+<span class="sig-name descname"><span class="pre">SWITCH_TO_WINDOW</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'switchToWindow'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_WINDOW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_CREDENTIALS">
-<code class="descname">GET_CREDENTIALS</code><em class="property"> = 'getCredentials'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_CREDENTIALS" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.SWITCH_TO_FRAME">
+<span class="sig-name descname"><span class="pre">SWITCH_TO_FRAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'switchToFrame'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_FRAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_CURRENT_URL">
-<code class="descname">GET_CURRENT_URL</code><em class="property"> = 'getCurrentUrl'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_CURRENT_URL" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.SWITCH_TO_PARENT_FRAME">
+<span class="sig-name descname"><span class="pre">SWITCH_TO_PARENT_FRAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'switchToParentFrame'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_PARENT_FRAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_DOWNLOADABLE_FILES">
-<code class="descname">GET_DOWNLOADABLE_FILES</code><em class="property"> = 'getDownloadableFiles'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_DOWNLOADABLE_FILES" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_GET_ACTIVE_ELEMENT">
+<span class="sig-name descname"><span class="pre">W3C_GET_ACTIVE_ELEMENT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'w3cGetActiveElement'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_ACTIVE_ELEMENT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_LABEL">
-<code class="descname">GET_ELEMENT_ARIA_LABEL</code><em class="property"> = 'getElementAriaLabel'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_LABEL" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_CURRENT_URL">
+<span class="sig-name descname"><span class="pre">GET_CURRENT_URL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getCurrentUrl'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_CURRENT_URL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_ROLE">
-<code class="descname">GET_ELEMENT_ARIA_ROLE</code><em class="property"> = 'getElementAriaRole'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_ROLE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_PAGE_SOURCE">
+<span class="sig-name descname"><span class="pre">GET_PAGE_SOURCE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getPageSource'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_PAGE_SOURCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_ATTRIBUTE">
-<code class="descname">GET_ELEMENT_ATTRIBUTE</code><em class="property"> = 'getElementAttribute'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ATTRIBUTE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_TITLE">
+<span class="sig-name descname"><span class="pre">GET_TITLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getTitle'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_TITLE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_PROPERTY">
-<code class="descname">GET_ELEMENT_PROPERTY</code><em class="property"> = 'getElementProperty'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_PROPERTY" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT">
+<span class="sig-name descname"><span class="pre">W3C_EXECUTE_SCRIPT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'w3cExecuteScript'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_RECT">
-<code class="descname">GET_ELEMENT_RECT</code><em class="property"> = 'getElementRect'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_RECT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT_ASYNC">
+<span class="sig-name descname"><span class="pre">W3C_EXECUTE_SCRIPT_ASYNC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'w3cExecuteScriptAsync'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT_ASYNC" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_TAG_NAME">
-<code class="descname">GET_ELEMENT_TAG_NAME</code><em class="property"> = 'getElementTagName'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_TAG_NAME" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_ELEMENT_TEXT">
+<span class="sig-name descname"><span class="pre">GET_ELEMENT_TEXT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getElementText'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_TEXT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_TEXT">
-<code class="descname">GET_ELEMENT_TEXT</code><em class="property"> = 'getElementText'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_TEXT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_ELEMENT_TAG_NAME">
+<span class="sig-name descname"><span class="pre">GET_ELEMENT_TAG_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getElementTagName'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_TAG_NAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY">
-<code class="descname">GET_ELEMENT_VALUE_OF_CSS_PROPERTY</code><em class="property"> = 'getElementValueOfCssProperty'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.IS_ELEMENT_SELECTED">
+<span class="sig-name descname"><span class="pre">IS_ELEMENT_SELECTED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'isElementSelected'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.IS_ELEMENT_SELECTED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_LOG">
-<code class="descname">GET_LOG</code><em class="property"> = 'getLog'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_LOG" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.IS_ELEMENT_ENABLED">
+<span class="sig-name descname"><span class="pre">IS_ELEMENT_ENABLED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'isElementEnabled'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.IS_ELEMENT_ENABLED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_NETWORK_CONNECTION">
-<code class="descname">GET_NETWORK_CONNECTION</code><em class="property"> = 'getNetworkConnection'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_NETWORK_CONNECTION" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_ELEMENT_RECT">
+<span class="sig-name descname"><span class="pre">GET_ELEMENT_RECT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getElementRect'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_RECT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_PAGE_SOURCE">
-<code class="descname">GET_PAGE_SOURCE</code><em class="property"> = 'getPageSource'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_PAGE_SOURCE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_ELEMENT_ATTRIBUTE">
+<span class="sig-name descname"><span class="pre">GET_ELEMENT_ATTRIBUTE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getElementAttribute'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ATTRIBUTE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_SCREEN_ORIENTATION">
-<code class="descname">GET_SCREEN_ORIENTATION</code><em class="property"> = 'getScreenOrientation'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_SCREEN_ORIENTATION" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_ELEMENT_PROPERTY">
+<span class="sig-name descname"><span class="pre">GET_ELEMENT_PROPERTY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getElementProperty'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_PROPERTY" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_SHADOW_ROOT">
-<code class="descname">GET_SHADOW_ROOT</code><em class="property"> = 'getShadowRoot'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_SHADOW_ROOT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY">
+<span class="sig-name descname"><span class="pre">GET_ELEMENT_VALUE_OF_CSS_PROPERTY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getElementValueOfCssProperty'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_TIMEOUTS">
-<code class="descname">GET_TIMEOUTS</code><em class="property"> = 'getTimeouts'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_TIMEOUTS" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_ROLE">
+<span class="sig-name descname"><span class="pre">GET_ELEMENT_ARIA_ROLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getElementAriaRole'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_ROLE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_TITLE">
-<code class="descname">GET_TITLE</code><em class="property"> = 'getTitle'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_TITLE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_LABEL">
+<span class="sig-name descname"><span class="pre">GET_ELEMENT_ARIA_LABEL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getElementAriaLabel'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_LABEL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GET_WINDOW_RECT">
-<code class="descname">GET_WINDOW_RECT</code><em class="property"> = 'getWindowRect'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_WINDOW_RECT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.SCREENSHOT">
+<span class="sig-name descname"><span class="pre">SCREENSHOT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'screenshot'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SCREENSHOT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GO_BACK">
-<code class="descname">GO_BACK</code><em class="property"> = 'goBack'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GO_BACK" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.ELEMENT_SCREENSHOT">
+<span class="sig-name descname"><span class="pre">ELEMENT_SCREENSHOT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'elementScreenshot'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.ELEMENT_SCREENSHOT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.GO_FORWARD">
-<code class="descname">GO_FORWARD</code><em class="property"> = 'goForward'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GO_FORWARD" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.EXECUTE_ASYNC_SCRIPT">
+<span class="sig-name descname"><span class="pre">EXECUTE_ASYNC_SCRIPT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'executeAsyncScript'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.EXECUTE_ASYNC_SCRIPT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.IS_ELEMENT_ENABLED">
-<code class="descname">IS_ELEMENT_ENABLED</code><em class="property"> = 'isElementEnabled'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.IS_ELEMENT_ENABLED" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.SET_TIMEOUTS">
+<span class="sig-name descname"><span class="pre">SET_TIMEOUTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'setTimeouts'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_TIMEOUTS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.IS_ELEMENT_SELECTED">
-<code class="descname">IS_ELEMENT_SELECTED</code><em class="property"> = 'isElementSelected'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.IS_ELEMENT_SELECTED" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_TIMEOUTS">
+<span class="sig-name descname"><span class="pre">GET_TIMEOUTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getTimeouts'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_TIMEOUTS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.MINIMIZE_WINDOW">
-<code class="descname">MINIMIZE_WINDOW</code><em class="property"> = 'minimizeWindow'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.MINIMIZE_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_MAXIMIZE_WINDOW">
+<span class="sig-name descname"><span class="pre">W3C_MAXIMIZE_WINDOW</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'w3cMaximizeWindow'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_MAXIMIZE_WINDOW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.NEW_SESSION">
-<code class="descname">NEW_SESSION</code><em class="property"> = 'newSession'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.NEW_SESSION" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_LOG">
+<span class="sig-name descname"><span class="pre">GET_LOG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getLog'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_LOG" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.NEW_WINDOW">
-<code class="descname">NEW_WINDOW</code><em class="property"> = 'newWindow'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.NEW_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_AVAILABLE_LOG_TYPES">
+<span class="sig-name descname"><span class="pre">GET_AVAILABLE_LOG_TYPES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getAvailableLogTypes'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_AVAILABLE_LOG_TYPES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.PRINT_PAGE">
-<code class="descname">PRINT_PAGE</code><em class="property"> = 'printPage'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.PRINT_PAGE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.FULLSCREEN_WINDOW">
+<span class="sig-name descname"><span class="pre">FULLSCREEN_WINDOW</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'fullscreenWindow'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FULLSCREEN_WINDOW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.QUIT">
-<code class="descname">QUIT</code><em class="property"> = 'quit'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.QUIT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.MINIMIZE_WINDOW">
+<span class="sig-name descname"><span class="pre">MINIMIZE_WINDOW</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'minimizeWindow'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.MINIMIZE_WINDOW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.REFRESH">
-<code class="descname">REFRESH</code><em class="property"> = 'refresh'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.REFRESH" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.PRINT_PAGE">
+<span class="sig-name descname"><span class="pre">PRINT_PAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'printPage'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.PRINT_PAGE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.REMOVE_ALL_CREDENTIALS">
-<code class="descname">REMOVE_ALL_CREDENTIALS</code><em class="property"> = 'removeAllCredentials'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.REMOVE_ALL_CREDENTIALS" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_DISMISS_ALERT">
+<span class="sig-name descname"><span class="pre">W3C_DISMISS_ALERT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'w3cDismissAlert'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_DISMISS_ALERT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.REMOVE_CREDENTIAL">
-<code class="descname">REMOVE_CREDENTIAL</code><em class="property"> = 'removeCredential'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.REMOVE_CREDENTIAL" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_ACCEPT_ALERT">
+<span class="sig-name descname"><span class="pre">W3C_ACCEPT_ALERT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'w3cAcceptAlert'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_ACCEPT_ALERT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.REMOVE_VIRTUAL_AUTHENTICATOR">
-<code class="descname">REMOVE_VIRTUAL_AUTHENTICATOR</code><em class="property"> = 'removeVirtualAuthenticator'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.REMOVE_VIRTUAL_AUTHENTICATOR" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_SET_ALERT_VALUE">
+<span class="sig-name descname"><span class="pre">W3C_SET_ALERT_VALUE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'w3cSetAlertValue'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_SET_ALERT_VALUE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.SCREENSHOT">
-<code class="descname">SCREENSHOT</code><em class="property"> = 'screenshot'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SCREENSHOT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_GET_ALERT_TEXT">
+<span class="sig-name descname"><span class="pre">W3C_GET_ALERT_TEXT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'w3cGetAlertText'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_ALERT_TEXT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.SEND_KEYS_TO_ELEMENT">
-<code class="descname">SEND_KEYS_TO_ELEMENT</code><em class="property"> = 'sendKeysToElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SEND_KEYS_TO_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_ACTIONS">
+<span class="sig-name descname"><span class="pre">W3C_ACTIONS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'actions'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_ACTIONS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.SET_NETWORK_CONNECTION">
-<code class="descname">SET_NETWORK_CONNECTION</code><em class="property"> = 'setNetworkConnection'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_NETWORK_CONNECTION" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.W3C_CLEAR_ACTIONS">
+<span class="sig-name descname"><span class="pre">W3C_CLEAR_ACTIONS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'clearActionState'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_CLEAR_ACTIONS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.SET_SCREEN_ORIENTATION">
-<code class="descname">SET_SCREEN_ORIENTATION</code><em class="property"> = 'setScreenOrientation'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_SCREEN_ORIENTATION" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.SET_SCREEN_ORIENTATION">
+<span class="sig-name descname"><span class="pre">SET_SCREEN_ORIENTATION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'setScreenOrientation'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_SCREEN_ORIENTATION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.SET_TIMEOUTS">
-<code class="descname">SET_TIMEOUTS</code><em class="property"> = 'setTimeouts'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_TIMEOUTS" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_SCREEN_ORIENTATION">
+<span class="sig-name descname"><span class="pre">GET_SCREEN_ORIENTATION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getScreenOrientation'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_SCREEN_ORIENTATION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.SET_USER_VERIFIED">
-<code class="descname">SET_USER_VERIFIED</code><em class="property"> = 'setUserVerified'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_USER_VERIFIED" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_NETWORK_CONNECTION">
+<span class="sig-name descname"><span class="pre">GET_NETWORK_CONNECTION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getNetworkConnection'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_NETWORK_CONNECTION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.SET_WINDOW_RECT">
-<code class="descname">SET_WINDOW_RECT</code><em class="property"> = 'setWindowRect'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_WINDOW_RECT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.SET_NETWORK_CONNECTION">
+<span class="sig-name descname"><span class="pre">SET_NETWORK_CONNECTION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'setNetworkConnection'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_NETWORK_CONNECTION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.SWITCH_TO_CONTEXT">
-<code class="descname">SWITCH_TO_CONTEXT</code><em class="property"> = 'switchToContext'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_CONTEXT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.CURRENT_CONTEXT_HANDLE">
+<span class="sig-name descname"><span class="pre">CURRENT_CONTEXT_HANDLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getCurrentContextHandle'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CURRENT_CONTEXT_HANDLE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.SWITCH_TO_FRAME">
-<code class="descname">SWITCH_TO_FRAME</code><em class="property"> = 'switchToFrame'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_FRAME" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.CONTEXT_HANDLES">
+<span class="sig-name descname"><span class="pre">CONTEXT_HANDLES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getContextHandles'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CONTEXT_HANDLES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.SWITCH_TO_PARENT_FRAME">
-<code class="descname">SWITCH_TO_PARENT_FRAME</code><em class="property"> = 'switchToParentFrame'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_PARENT_FRAME" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.SWITCH_TO_CONTEXT">
+<span class="sig-name descname"><span class="pre">SWITCH_TO_CONTEXT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'switchToContext'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_CONTEXT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.SWITCH_TO_WINDOW">
-<code class="descname">SWITCH_TO_WINDOW</code><em class="property"> = 'switchToWindow'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_SHADOW_ROOT">
+<span class="sig-name descname"><span class="pre">GET_SHADOW_ROOT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getShadowRoot'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_SHADOW_ROOT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.UPLOAD_FILE">
-<code class="descname">UPLOAD_FILE</code><em class="property"> = 'uploadFile'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.UPLOAD_FILE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.FIND_ELEMENT_FROM_SHADOW_ROOT">
+<span class="sig-name descname"><span class="pre">FIND_ELEMENT_FROM_SHADOW_ROOT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'findElementFromShadowRoot'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENT_FROM_SHADOW_ROOT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_ACCEPT_ALERT">
-<code class="descname">W3C_ACCEPT_ALERT</code><em class="property"> = 'w3cAcceptAlert'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_ACCEPT_ALERT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.FIND_ELEMENTS_FROM_SHADOW_ROOT">
+<span class="sig-name descname"><span class="pre">FIND_ELEMENTS_FROM_SHADOW_ROOT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'findElementsFromShadowRoot'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENTS_FROM_SHADOW_ROOT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_ACTIONS">
-<code class="descname">W3C_ACTIONS</code><em class="property"> = 'actions'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_ACTIONS" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.ADD_VIRTUAL_AUTHENTICATOR">
+<span class="sig-name descname"><span class="pre">ADD_VIRTUAL_AUTHENTICATOR</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'addVirtualAuthenticator'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.ADD_VIRTUAL_AUTHENTICATOR" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_CLEAR_ACTIONS">
-<code class="descname">W3C_CLEAR_ACTIONS</code><em class="property"> = 'clearActionState'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_CLEAR_ACTIONS" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.REMOVE_VIRTUAL_AUTHENTICATOR">
+<span class="sig-name descname"><span class="pre">REMOVE_VIRTUAL_AUTHENTICATOR</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'removeVirtualAuthenticator'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.REMOVE_VIRTUAL_AUTHENTICATOR" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_DISMISS_ALERT">
-<code class="descname">W3C_DISMISS_ALERT</code><em class="property"> = 'w3cDismissAlert'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_DISMISS_ALERT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.ADD_CREDENTIAL">
+<span class="sig-name descname"><span class="pre">ADD_CREDENTIAL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'addCredential'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.ADD_CREDENTIAL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT">
-<code class="descname">W3C_EXECUTE_SCRIPT</code><em class="property"> = 'w3cExecuteScript'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_CREDENTIALS">
+<span class="sig-name descname"><span class="pre">GET_CREDENTIALS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getCredentials'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_CREDENTIALS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT_ASYNC">
-<code class="descname">W3C_EXECUTE_SCRIPT_ASYNC</code><em class="property"> = 'w3cExecuteScriptAsync'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT_ASYNC" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.REMOVE_CREDENTIAL">
+<span class="sig-name descname"><span class="pre">REMOVE_CREDENTIAL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'removeCredential'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.REMOVE_CREDENTIAL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_GET_ACTIVE_ELEMENT">
-<code class="descname">W3C_GET_ACTIVE_ELEMENT</code><em class="property"> = 'w3cGetActiveElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_ACTIVE_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.REMOVE_ALL_CREDENTIALS">
+<span class="sig-name descname"><span class="pre">REMOVE_ALL_CREDENTIALS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'removeAllCredentials'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.REMOVE_ALL_CREDENTIALS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_GET_ALERT_TEXT">
-<code class="descname">W3C_GET_ALERT_TEXT</code><em class="property"> = 'w3cGetAlertText'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_ALERT_TEXT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.SET_USER_VERIFIED">
+<span class="sig-name descname"><span class="pre">SET_USER_VERIFIED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'setUserVerified'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_USER_VERIFIED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_GET_CURRENT_WINDOW_HANDLE">
-<code class="descname">W3C_GET_CURRENT_WINDOW_HANDLE</code><em class="property"> = 'w3cGetCurrentWindowHandle'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_CURRENT_WINDOW_HANDLE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.UPLOAD_FILE">
+<span class="sig-name descname"><span class="pre">UPLOAD_FILE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'uploadFile'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.UPLOAD_FILE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_HANDLES">
-<code class="descname">W3C_GET_WINDOW_HANDLES</code><em class="property"> = 'w3cGetWindowHandles'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_HANDLES" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.GET_DOWNLOADABLE_FILES">
+<span class="sig-name descname"><span class="pre">GET_DOWNLOADABLE_FILES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'getDownloadableFiles'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_DOWNLOADABLE_FILES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_MAXIMIZE_WINDOW">
-<code class="descname">W3C_MAXIMIZE_WINDOW</code><em class="property"> = 'w3cMaximizeWindow'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_MAXIMIZE_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.DOWNLOAD_FILE">
+<span class="sig-name descname"><span class="pre">DOWNLOAD_FILE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'downloadFile'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DOWNLOAD_FILE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.command.Command.W3C_SET_ALERT_VALUE">
-<code class="descname">W3C_SET_ALERT_VALUE</code><em class="property"> = 'w3cSetAlertValue'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_SET_ALERT_VALUE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.remote.command.Command.DELETE_DOWNLOADABLE_FILES">
+<span class="sig-name descname"><span class="pre">DELETE_DOWNLOADABLE_FILES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'deleteDownloadableFiles'</span></em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DELETE_DOWNLOADABLE_FILES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.remote.command</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command"><code class="docutils literal notranslate"><span class="pre">Command</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.NEW_SESSION"><code class="docutils literal notranslate"><span class="pre">Command.NEW_SESSION</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.DELETE_SESSION"><code class="docutils literal notranslate"><span class="pre">Command.DELETE_SESSION</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.NEW_WINDOW"><code class="docutils literal notranslate"><span class="pre">Command.NEW_WINDOW</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.CLOSE"><code class="docutils literal notranslate"><span class="pre">Command.CLOSE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.QUIT"><code class="docutils literal notranslate"><span class="pre">Command.QUIT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET"><code class="docutils literal notranslate"><span class="pre">Command.GET</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GO_BACK"><code class="docutils literal notranslate"><span class="pre">Command.GO_BACK</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GO_FORWARD"><code class="docutils literal notranslate"><span class="pre">Command.GO_FORWARD</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.REFRESH"><code class="docutils literal notranslate"><span class="pre">Command.REFRESH</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.ADD_COOKIE"><code class="docutils literal notranslate"><span class="pre">Command.ADD_COOKIE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_COOKIE"><code class="docutils literal notranslate"><span class="pre">Command.GET_COOKIE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_ALL_COOKIES"><code class="docutils literal notranslate"><span class="pre">Command.GET_ALL_COOKIES</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.DELETE_COOKIE"><code class="docutils literal notranslate"><span class="pre">Command.DELETE_COOKIE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.DELETE_ALL_COOKIES"><code class="docutils literal notranslate"><span class="pre">Command.DELETE_ALL_COOKIES</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENT"><code class="docutils literal notranslate"><span class="pre">Command.FIND_ELEMENT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENTS"><code class="docutils literal notranslate"><span class="pre">Command.FIND_ELEMENTS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENT"><code class="docutils literal notranslate"><span class="pre">Command.FIND_CHILD_ELEMENT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENTS"><code class="docutils literal notranslate"><span class="pre">Command.FIND_CHILD_ELEMENTS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.CLEAR_ELEMENT"><code class="docutils literal notranslate"><span class="pre">Command.CLEAR_ELEMENT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.CLICK_ELEMENT"><code class="docutils literal notranslate"><span class="pre">Command.CLICK_ELEMENT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.SEND_KEYS_TO_ELEMENT"><code class="docutils literal notranslate"><span class="pre">Command.SEND_KEYS_TO_ELEMENT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_GET_CURRENT_WINDOW_HANDLE"><code class="docutils literal notranslate"><span class="pre">Command.W3C_GET_CURRENT_WINDOW_HANDLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_HANDLES"><code class="docutils literal notranslate"><span class="pre">Command.W3C_GET_WINDOW_HANDLES</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.SET_WINDOW_RECT"><code class="docutils literal notranslate"><span class="pre">Command.SET_WINDOW_RECT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_WINDOW_RECT"><code class="docutils literal notranslate"><span class="pre">Command.GET_WINDOW_RECT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_WINDOW"><code class="docutils literal notranslate"><span class="pre">Command.SWITCH_TO_WINDOW</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_FRAME"><code class="docutils literal notranslate"><span class="pre">Command.SWITCH_TO_FRAME</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_PARENT_FRAME"><code class="docutils literal notranslate"><span class="pre">Command.SWITCH_TO_PARENT_FRAME</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_GET_ACTIVE_ELEMENT"><code class="docutils literal notranslate"><span class="pre">Command.W3C_GET_ACTIVE_ELEMENT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_CURRENT_URL"><code class="docutils literal notranslate"><span class="pre">Command.GET_CURRENT_URL</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_PAGE_SOURCE"><code class="docutils literal notranslate"><span class="pre">Command.GET_PAGE_SOURCE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_TITLE"><code class="docutils literal notranslate"><span class="pre">Command.GET_TITLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT"><code class="docutils literal notranslate"><span class="pre">Command.W3C_EXECUTE_SCRIPT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT_ASYNC"><code class="docutils literal notranslate"><span class="pre">Command.W3C_EXECUTE_SCRIPT_ASYNC</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_TEXT"><code class="docutils literal notranslate"><span class="pre">Command.GET_ELEMENT_TEXT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_TAG_NAME"><code class="docutils literal notranslate"><span class="pre">Command.GET_ELEMENT_TAG_NAME</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.IS_ELEMENT_SELECTED"><code class="docutils literal notranslate"><span class="pre">Command.IS_ELEMENT_SELECTED</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.IS_ELEMENT_ENABLED"><code class="docutils literal notranslate"><span class="pre">Command.IS_ELEMENT_ENABLED</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_RECT"><code class="docutils literal notranslate"><span class="pre">Command.GET_ELEMENT_RECT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ATTRIBUTE"><code class="docutils literal notranslate"><span class="pre">Command.GET_ELEMENT_ATTRIBUTE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_PROPERTY"><code class="docutils literal notranslate"><span class="pre">Command.GET_ELEMENT_PROPERTY</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY"><code class="docutils literal notranslate"><span class="pre">Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_ROLE"><code class="docutils literal notranslate"><span class="pre">Command.GET_ELEMENT_ARIA_ROLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_LABEL"><code class="docutils literal notranslate"><span class="pre">Command.GET_ELEMENT_ARIA_LABEL</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.SCREENSHOT"><code class="docutils literal notranslate"><span class="pre">Command.SCREENSHOT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.ELEMENT_SCREENSHOT"><code class="docutils literal notranslate"><span class="pre">Command.ELEMENT_SCREENSHOT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.EXECUTE_ASYNC_SCRIPT"><code class="docutils literal notranslate"><span class="pre">Command.EXECUTE_ASYNC_SCRIPT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.SET_TIMEOUTS"><code class="docutils literal notranslate"><span class="pre">Command.SET_TIMEOUTS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_TIMEOUTS"><code class="docutils literal notranslate"><span class="pre">Command.GET_TIMEOUTS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_MAXIMIZE_WINDOW"><code class="docutils literal notranslate"><span class="pre">Command.W3C_MAXIMIZE_WINDOW</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_LOG"><code class="docutils literal notranslate"><span class="pre">Command.GET_LOG</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_AVAILABLE_LOG_TYPES"><code class="docutils literal notranslate"><span class="pre">Command.GET_AVAILABLE_LOG_TYPES</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.FULLSCREEN_WINDOW"><code class="docutils literal notranslate"><span class="pre">Command.FULLSCREEN_WINDOW</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.MINIMIZE_WINDOW"><code class="docutils literal notranslate"><span class="pre">Command.MINIMIZE_WINDOW</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.PRINT_PAGE"><code class="docutils literal notranslate"><span class="pre">Command.PRINT_PAGE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_DISMISS_ALERT"><code class="docutils literal notranslate"><span class="pre">Command.W3C_DISMISS_ALERT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_ACCEPT_ALERT"><code class="docutils literal notranslate"><span class="pre">Command.W3C_ACCEPT_ALERT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_SET_ALERT_VALUE"><code class="docutils literal notranslate"><span class="pre">Command.W3C_SET_ALERT_VALUE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_GET_ALERT_TEXT"><code class="docutils literal notranslate"><span class="pre">Command.W3C_GET_ALERT_TEXT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_ACTIONS"><code class="docutils literal notranslate"><span class="pre">Command.W3C_ACTIONS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.W3C_CLEAR_ACTIONS"><code class="docutils literal notranslate"><span class="pre">Command.W3C_CLEAR_ACTIONS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.SET_SCREEN_ORIENTATION"><code class="docutils literal notranslate"><span class="pre">Command.SET_SCREEN_ORIENTATION</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_SCREEN_ORIENTATION"><code class="docutils literal notranslate"><span class="pre">Command.GET_SCREEN_ORIENTATION</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_NETWORK_CONNECTION"><code class="docutils literal notranslate"><span class="pre">Command.GET_NETWORK_CONNECTION</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.SET_NETWORK_CONNECTION"><code class="docutils literal notranslate"><span class="pre">Command.SET_NETWORK_CONNECTION</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.CURRENT_CONTEXT_HANDLE"><code class="docutils literal notranslate"><span class="pre">Command.CURRENT_CONTEXT_HANDLE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.CONTEXT_HANDLES"><code class="docutils literal notranslate"><span class="pre">Command.CONTEXT_HANDLES</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_CONTEXT"><code class="docutils literal notranslate"><span class="pre">Command.SWITCH_TO_CONTEXT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_SHADOW_ROOT"><code class="docutils literal notranslate"><span class="pre">Command.GET_SHADOW_ROOT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENT_FROM_SHADOW_ROOT"><code class="docutils literal notranslate"><span class="pre">Command.FIND_ELEMENT_FROM_SHADOW_ROOT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENTS_FROM_SHADOW_ROOT"><code class="docutils literal notranslate"><span class="pre">Command.FIND_ELEMENTS_FROM_SHADOW_ROOT</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.ADD_VIRTUAL_AUTHENTICATOR"><code class="docutils literal notranslate"><span class="pre">Command.ADD_VIRTUAL_AUTHENTICATOR</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.REMOVE_VIRTUAL_AUTHENTICATOR"><code class="docutils literal notranslate"><span class="pre">Command.REMOVE_VIRTUAL_AUTHENTICATOR</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.ADD_CREDENTIAL"><code class="docutils literal notranslate"><span class="pre">Command.ADD_CREDENTIAL</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_CREDENTIALS"><code class="docutils literal notranslate"><span class="pre">Command.GET_CREDENTIALS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.REMOVE_CREDENTIAL"><code class="docutils literal notranslate"><span class="pre">Command.REMOVE_CREDENTIAL</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.REMOVE_ALL_CREDENTIALS"><code class="docutils literal notranslate"><span class="pre">Command.REMOVE_ALL_CREDENTIALS</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.SET_USER_VERIFIED"><code class="docutils literal notranslate"><span class="pre">Command.SET_USER_VERIFIED</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.UPLOAD_FILE"><code class="docutils literal notranslate"><span class="pre">Command.UPLOAD_FILE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.GET_DOWNLOADABLE_FILES"><code class="docutils literal notranslate"><span class="pre">Command.GET_DOWNLOADABLE_FILES</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.DOWNLOAD_FILE"><code class="docutils literal notranslate"><span class="pre">Command.DOWNLOAD_FILE</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.remote.command.Command.DELETE_DOWNLOADABLE_FILES"><code class="docutils literal notranslate"><span class="pre">Command.DELETE_DOWNLOADABLE_FILES</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -487,17 +578,15 @@ remote wire protocol:</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -511,11 +600,12 @@ remote wire protocol:</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.remote.command</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
     </div>
   </body>
 </html>

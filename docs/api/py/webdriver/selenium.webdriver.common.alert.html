@@ -1,19 +1,17 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.alert &#8212; Selenium 4.21.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.common.alert &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +25,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.alert</a></li> 
       </ul>
     </div>  
 
@@ -36,24 +35,20 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-selenium.webdriver.common.alert">
-<span id="selenium-webdriver-common-alert"></span><h1>selenium.webdriver.common.alert<a class="headerlink" href="#module-selenium.webdriver.common.alert" title="Permalink to this headline">¶</a></h1>
+  <section id="module-selenium.webdriver.common.alert">
+<span id="selenium-webdriver-common-alert"></span><h1>selenium.webdriver.common.alert<a class="headerlink" href="#module-selenium.webdriver.common.alert" title="Permalink to this heading">¶</a></h1>
 <p>The Alert implementation.</p>
 <p class="rubric">Classes</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.alert.Alert" title="selenium.webdriver.common.alert.Alert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Alert</span></code></a>(driver)</td>
-<td>Allows to work with alerts.</td>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.alert.Alert" title="selenium.webdriver.common.alert.Alert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Alert</span></code></a>(driver)</p></td>
+<td><p>Allows to work with alerts.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="class">
-<dt id="selenium.webdriver.common.alert.Alert">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.common.alert.</code><code class="descname">Alert</code><span class="sig-paren">(</span><em>driver</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.alert.Alert">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.alert.</span></span><span class="sig-name descname"><span class="pre">Alert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allows to work with alerts.</p>
 <p>Use this class to interact with alert prompts.  It contains methods for dismissing,
 accepting, inputting, and getting text from alert prompts.</p>
@@ -74,73 +69,78 @@ accepting, inputting, and getting text from alert prompts.</p>
 </pre></div>
 </div>
 <p>Creates a new Alert.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>driver: The WebDriver instance which performs user actions.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>driver: The WebDriver instance which performs user actions.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="selenium.webdriver.common.alert.Alert.accept">
-<code class="descname">accept</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert.accept"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.accept" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accepts the alert available.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Alert</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span> <span class="c1"># Confirm a alert dialog.</span>
-</pre></div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.alert.Alert.dismiss">
-<code class="descname">dismiss</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert.dismiss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.dismiss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dismisses the alert available.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.common.alert.Alert.send_keys">
-<code class="descname">send_keys</code><span class="sig-paren">(</span><em>keysToSend: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert.send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.send_keys" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send Keys to the Alert.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>keysToSend: The text to be sent to Alert.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.common.alert.Alert.text">
-<code class="descname">text</code><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.text" title="Permalink to this definition">¶</a></dt>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.alert.Alert.text">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the text of the Alert.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.alert.Alert.dismiss">
+<span class="sig-name descname"><span class="pre">dismiss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert.dismiss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.dismiss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dismisses the alert available.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.alert.Alert.accept">
+<span class="sig-name descname"><span class="pre">accept</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert.accept"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.accept" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accepts the alert available.</p>
+<dl class="field-list">
+<dt class="field-odd">Usage<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Alert</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span> <span class="c1"># Confirm a alert dialog.</span>
+</pre></div>
 </div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.alert.Alert.send_keys">
+<span class="sig-name descname"><span class="pre">send_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keysToSend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert.send_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.send_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send Keys to the Alert.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Args<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>keysToSend: The text to be sent to Alert.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.common.alert</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.alert.Alert"><code class="docutils literal notranslate"><span class="pre">Alert</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.alert.Alert.text"><code class="docutils literal notranslate"><span class="pre">Alert.text</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.alert.Alert.dismiss"><code class="docutils literal notranslate"><span class="pre">Alert.dismiss()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.alert.Alert.accept"><code class="docutils literal notranslate"><span class="pre">Alert.accept()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.alert.Alert.send_keys"><code class="docutils literal notranslate"><span class="pre">Alert.send_keys()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -149,17 +149,15 @@ accepting, inputting, and getting text from alert prompts.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -173,11 +171,12 @@ accepting, inputting, and getting text from alert prompts.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.alert</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
     </div>
   </body>
 </html>

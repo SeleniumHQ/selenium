@@ -1,4 +1,4 @@
-﻿selenium.webdriver.safari.options
+selenium.webdriver.safari.options
 =================================
 
 .. automodule:: selenium.webdriver.safari.options
@@ -17,7 +17,6 @@
 
    .. autosummary::
    
-      Log
       Options
    
    

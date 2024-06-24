@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.common.bidi.cdp &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.bidi.cdp</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-selenium.webdriver.common.bidi.cdp">
+<span id="selenium-webdriver-common-bidi-cdp"></span><h1>selenium.webdriver.common.bidi.cdp<a class="headerlink" href="#module-selenium.webdriver.common.bidi.cdp" title="Permalink to this heading">¶</a></h1>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.connect_cdp" title="selenium.webdriver.common.bidi.cdp.connect_cdp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">connect_cdp</span></code></a>(nursery, url)</p></td>
+<td><p>Connect to the browser specified by <code class="docutils literal notranslate"><span class="pre">url</span></code> and spawn a background task in the specified nursery.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.connection_context" title="selenium.webdriver.common.bidi.cdp.connection_context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">connection_context</span></code></a>(connection)</p></td>
+<td><p>This context manager installs <code class="docutils literal notranslate"><span class="pre">connection</span></code> as the session context for the current Trio task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.get_connection_context" title="selenium.webdriver.common.bidi.cdp.get_connection_context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_connection_context</span></code></a>(fn_name)</p></td>
+<td><p>Look up the current connection.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.get_session_context" title="selenium.webdriver.common.bidi.cdp.get_session_context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_session_context</span></code></a>(fn_name)</p></td>
+<td><p>Look up the current session.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.import_devtools" title="selenium.webdriver.common.bidi.cdp.import_devtools"><code class="xref py py-obj docutils literal notranslate"><span class="pre">import_devtools</span></code></a>(ver)</p></td>
+<td><p>Attempt to load the current latest available devtools into the module cache for use later.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.open_cdp" title="selenium.webdriver.common.bidi.cdp.open_cdp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_cdp</span></code></a>(url)</p></td>
+<td><p>This async context manager opens a connection to the browser specified by <code class="docutils literal notranslate"><span class="pre">url</span></code> before entering the block, then closes the connection when the block exits.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.session_context" title="selenium.webdriver.common.bidi.cdp.session_context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">session_context</span></code></a>(session)</p></td>
+<td><p>This context manager installs <code class="docutils literal notranslate"><span class="pre">session</span></code> as the session context for the current Trio task.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.set_global_connection" title="selenium.webdriver.common.bidi.cdp.set_global_connection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_global_connection</span></code></a>(connection)</p></td>
+<td><p>Install <code class="docutils literal notranslate"><span class="pre">connection</span></code> in the root context so that it will become the default connection for all tasks.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.set_global_session" title="selenium.webdriver.common.bidi.cdp.set_global_session"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_global_session</span></code></a>(session)</p></td>
+<td><p>Install <code class="docutils literal notranslate"><span class="pre">session</span></code> in the root context so that it will become the default session for all tasks.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpBase" title="selenium.webdriver.common.bidi.cdp.CdpBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CdpBase</span></code></a>(ws, session_id, target_id)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnection" title="selenium.webdriver.common.bidi.cdp.CdpConnection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CdpConnection</span></code></a>(ws)</p></td>
+<td><p>Contains the connection state for a Chrome DevTools Protocol server.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpSession" title="selenium.webdriver.common.bidi.cdp.CdpSession"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CdpSession</span></code></a>(ws, session_id, target_id)</p></td>
+<td><p>Contains the state for a CDP session.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CmEventProxy" title="selenium.webdriver.common.bidi.cdp.CmEventProxy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CmEventProxy</span></code></a>([value])</p></td>
+<td><p>A proxy object returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">CdpBase.wait_for()`()</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Exceptions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.BrowserError" title="selenium.webdriver.common.bidi.cdp.BrowserError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrowserError</span></code></a>(obj)</p></td>
+<td><p>This exception is raised when the browser's response to a command indicates that an error occurred.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed" title="selenium.webdriver.common.bidi.cdp.CdpConnectionClosed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CdpConnectionClosed</span></code></a>(reason)</p></td>
+<td><p>Raised when a public method is called on a closed CDP connection.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.InternalError" title="selenium.webdriver.common.bidi.cdp.InternalError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InternalError</span></code></a></p></td>
+<td><p>This exception is only raised when there is faulty logic in TrioCDP or the integration with PyCDP.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.import_devtools">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">import_devtools</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#import_devtools"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.import_devtools" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to load the current latest available devtools into the module
+cache for use later.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.get_connection_context">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">get_connection_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#get_connection_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.get_connection_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look up the current connection.</p>
+<p>If there is no current connection, raise a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> with a
+helpful message.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.get_session_context">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">get_session_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#get_session_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.get_session_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look up the current session.</p>
+<p>If there is no current session, raise a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> with a
+helpful message.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.connection_context">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">connection_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#connection_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.connection_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>This context manager installs <code class="docutils literal notranslate"><span class="pre">connection</span></code> as the session context for
+the current Trio task.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.session_context">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">session_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#session_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.session_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>This context manager installs <code class="docutils literal notranslate"><span class="pre">session</span></code> as the session context for the
+current Trio task.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.set_global_connection">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">set_global_connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#set_global_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.set_global_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Install <code class="docutils literal notranslate"><span class="pre">connection</span></code> in the root context so that it will become the
+default connection for all tasks.</p>
+<p>This is generally not recommended, except it may be necessary in
+certain use cases such as running inside Jupyter notebook.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.set_global_session">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">set_global_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#set_global_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.set_global_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Install <code class="docutils literal notranslate"><span class="pre">session</span></code> in the root context so that it will become the
+default session for all tasks.</p>
+<p>This is generally not recommended, except it may be necessary in
+certain use cases such as running inside Jupyter notebook.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.BrowserError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">BrowserError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#BrowserError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.BrowserError" title="Permalink to this definition">¶</a></dt>
+<dd><p>This exception is raised when the browser’s response to a command
+indicates that an error occurred.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.BrowserError.args">
+<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.BrowserError.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.BrowserError.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.BrowserError.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnectionClosed">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">CdpConnectionClosed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reason</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpConnectionClosed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when a public method is called on a closed CDP connection.</p>
+<p>Constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>reason</strong> (<em>wsproto.frame_protocol.CloseReason</em>) – </p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.args">
+<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.InternalError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">InternalError</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#InternalError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.InternalError" title="Permalink to this definition">¶</a></dt>
+<dd><p>This exception is only raised when there is faulty logic in TrioCDP or
+the integration with PyCDP.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.InternalError.args">
+<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.InternalError.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.InternalError.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.InternalError.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CmEventProxy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">CmEventProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CmEventProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CmEventProxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>A proxy object returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">CdpBase.wait_for()`()</span></code>.</p>
+<p>After the context manager executes, this proxy object will have a
+value set that contains the returned event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CmEventProxy.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CmEventProxy.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">CdpBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpBase" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpBase.execute">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpBase.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpBase.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a command on the server and wait for the result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cmd</strong> – any CDP command</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CDP result</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpBase.listen">
+<span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">event_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpBase.listen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpBase.listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an async iterator that iterates over events matching the
+indicated types.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpBase.wait_for">
+<span class="sig-name descname"><span class="pre">wait_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncGenerator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CmEventProxy" title="selenium.webdriver.common.bidi.cdp.CmEventProxy"><span class="pre">CmEventProxy</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpBase.wait_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpBase.wait_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for an event of the given type and return it.</p>
+<p>This is an async context manager, so you should open it inside
+an async with block. The block will not exit until the indicated
+event is received.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpSession">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">CdpSession</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpSession"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpSession" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains the state for a CDP session.</p>
+<p>Generally you should not instantiate this object yourself; you should call
+<a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.open_session" title="selenium.webdriver.common.bidi.cdp.CdpConnection.open_session"><code class="xref py py-meth docutils literal notranslate"><span class="pre">CdpConnection.open_session()</span></code></a>.</p>
+<p>Constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ws</strong> (<em>trio_websocket.WebSocketConnection</em>) – </p></li>
+<li><p><strong>session_id</strong> (<em>devtools.target.SessionID</em>) – </p></li>
+<li><p><strong>target_id</strong> (<em>devtools.target.TargetID</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpSession.dom_enable">
+<span class="sig-name descname"><span class="pre">dom_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpSession.dom_enable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpSession.dom_enable" title="Permalink to this definition">¶</a></dt>
+<dd><p>A context manager that executes <code class="docutils literal notranslate"><span class="pre">dom.enable()</span></code> when it enters and
+then calls <code class="docutils literal notranslate"><span class="pre">dom.disable()</span></code>.</p>
+<p>This keeps track of concurrent callers and only disables DOM
+events when all callers have exited.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpSession.page_enable">
+<span class="sig-name descname"><span class="pre">page_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpSession.page_enable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpSession.page_enable" title="Permalink to this definition">¶</a></dt>
+<dd><p>A context manager that executes <code class="docutils literal notranslate"><span class="pre">page.enable()</span></code> when it enters and
+then calls <code class="docutils literal notranslate"><span class="pre">page.disable()</span></code> when it exits.</p>
+<p>This keeps track of concurrent callers and only disables page
+events when all callers have exited.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpSession.execute">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpSession.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a command on the server and wait for the result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cmd</strong> – any CDP command</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CDP result</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpSession.listen">
+<span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">event_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpSession.listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an async iterator that iterates over events matching the
+indicated types.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpSession.wait_for">
+<span class="sig-name descname"><span class="pre">wait_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncGenerator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CmEventProxy" title="selenium.webdriver.common.bidi.cdp.CmEventProxy"><span class="pre">CmEventProxy</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpSession.wait_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for an event of the given type and return it.</p>
+<p>This is an async context manager, so you should open it inside
+an async with block. The block will not exit until the indicated
+event is received.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">CdpConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpConnection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains the connection state for a Chrome DevTools Protocol server.</p>
+<p>CDP can multiplex multiple “sessions” over a single connection. This
+class corresponds to the “root” session, i.e. the implicitly created
+session that has no session ID. This class is responsible for
+reading incoming WebSocket messages and forwarding them to the
+corresponding session, as well as handling messages targeted at the
+root session itself. You should generally call the
+<a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.open_cdp" title="selenium.webdriver.common.bidi.cdp.open_cdp"><code class="xref py py-func docutils literal notranslate"><span class="pre">open_cdp()</span></code></a> instead of instantiating this class directly.</p>
+<p>Constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ws</strong> (<em>trio_websocket.WebSocketConnection</em>) – </p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnection.aclose">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">aclose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpConnection.aclose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.aclose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the underlying WebSocket connection.</p>
+<p>This will cause the reader task to gracefully exit when it tries
+to read the next message from the WebSocket. All of the public
+APIs (<code class="docutils literal notranslate"><span class="pre">execute()</span></code>, <code class="docutils literal notranslate"><span class="pre">listen()</span></code>, etc.) will raise
+<code class="docutils literal notranslate"><span class="pre">CdpConnectionClosed</span></code> after the CDP connection is closed. It
+is safe to call this multiple times.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnection.open_session">
+<span class="sig-name descname"><span class="pre">open_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpSession" title="selenium.webdriver.common.bidi.cdp.CdpSession"><span class="pre">CdpSession</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpConnection.open_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.open_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>This context manager opens a session and enables the “simple” style
+of calling CDP APIs.</p>
+<p>For example, inside a session context, you can call <code class="docutils literal notranslate"><span class="pre">await</span>
+<span class="pre">dom.get_document()</span></code> and it will execute on the current session
+automatically.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnection.connect_session">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpSession" title="selenium.webdriver.common.bidi.cdp.CdpSession"><span class="pre">CdpSession</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CdpConnection.connect_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.connect_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new <a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpSession" title="selenium.webdriver.common.bidi.cdp.CdpSession"><code class="xref py py-class docutils literal notranslate"><span class="pre">CdpSession</span></code></a> connected to the specified
+target.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnection.execute">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a command on the server and wait for the result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cmd</strong> – any CDP command</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CDP result</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnection.listen">
+<span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">event_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an async iterator that iterates over events matching the
+indicated types.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnection.wait_for">
+<span class="sig-name descname"><span class="pre">wait_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncGenerator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CmEventProxy" title="selenium.webdriver.common.bidi.cdp.CmEventProxy"><span class="pre">CmEventProxy</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.wait_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for an event of the given type and return it.</p>
+<p>This is an async context manager, so you should open it inside
+an async with block. The block will not exit until the indicated
+event is received.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.open_cdp">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">open_cdp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnection" title="selenium.webdriver.common.bidi.cdp.CdpConnection"><span class="pre">CdpConnection</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#open_cdp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.open_cdp" title="Permalink to this definition">¶</a></dt>
+<dd><p>This async context manager opens a connection to the browser specified
+by <code class="docutils literal notranslate"><span class="pre">url</span></code> before entering the block, then closes the connection when the
+block exits.</p>
+<p>The context manager also sets the connection as the default
+connection for the current task, so that commands like <code class="docutils literal notranslate"><span class="pre">await</span>
+<span class="pre">target.get_targets()</span></code> will run on this connection automatically. If
+you want to use multiple connections concurrently, it is recommended
+to open each on in a separate task.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.connect_cdp">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">connect_cdp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nursery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnection" title="selenium.webdriver.common.bidi.cdp.CdpConnection"><span class="pre">CdpConnection</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#connect_cdp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.connect_cdp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the browser specified by <code class="docutils literal notranslate"><span class="pre">url</span></code> and spawn a background task
+in the specified nursery.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">open_cdp()</span></code> context manager is preferred in most situations.
+You should only use this function if you need to specify a custom
+nursery. This connection is not automatically closed! You can either
+use the connection object as a context manager (<code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">with</span>
+<span class="pre">conn:</span></code>) or else call <code class="docutils literal notranslate"><span class="pre">await</span> <span class="pre">conn.aclose()</span></code> on it when you are
+done with it. If <code class="docutils literal notranslate"><span class="pre">set_context</span></code> is True, then the returned
+connection will be installed as the default connection for the
+current task. This argument is for unusual use cases, such as
+running inside of a notebook.</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.common.bidi.cdp</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.import_devtools"><code class="docutils literal notranslate"><span class="pre">import_devtools()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.get_connection_context"><code class="docutils literal notranslate"><span class="pre">get_connection_context()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.get_session_context"><code class="docutils literal notranslate"><span class="pre">get_session_context()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.connection_context"><code class="docutils literal notranslate"><span class="pre">connection_context()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.session_context"><code class="docutils literal notranslate"><span class="pre">session_context()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.set_global_connection"><code class="docutils literal notranslate"><span class="pre">set_global_connection()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.set_global_session"><code class="docutils literal notranslate"><span class="pre">set_global_session()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.BrowserError"><code class="docutils literal notranslate"><span class="pre">BrowserError</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.BrowserError.args"><code class="docutils literal notranslate"><span class="pre">BrowserError.args</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.BrowserError.with_traceback"><code class="docutils literal notranslate"><span class="pre">BrowserError.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed"><code class="docutils literal notranslate"><span class="pre">CdpConnectionClosed</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.args"><code class="docutils literal notranslate"><span class="pre">CdpConnectionClosed.args</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.with_traceback"><code class="docutils literal notranslate"><span class="pre">CdpConnectionClosed.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.InternalError"><code class="docutils literal notranslate"><span class="pre">InternalError</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.InternalError.args"><code class="docutils literal notranslate"><span class="pre">InternalError.args</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.InternalError.with_traceback"><code class="docutils literal notranslate"><span class="pre">InternalError.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CmEventProxy"><code class="docutils literal notranslate"><span class="pre">CmEventProxy</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CmEventProxy.value"><code class="docutils literal notranslate"><span class="pre">CmEventProxy.value</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpBase"><code class="docutils literal notranslate"><span class="pre">CdpBase</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpBase.execute"><code class="docutils literal notranslate"><span class="pre">CdpBase.execute()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpBase.listen"><code class="docutils literal notranslate"><span class="pre">CdpBase.listen()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpBase.wait_for"><code class="docutils literal notranslate"><span class="pre">CdpBase.wait_for()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpSession"><code class="docutils literal notranslate"><span class="pre">CdpSession</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpSession.dom_enable"><code class="docutils literal notranslate"><span class="pre">CdpSession.dom_enable()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpSession.page_enable"><code class="docutils literal notranslate"><span class="pre">CdpSession.page_enable()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpSession.execute"><code class="docutils literal notranslate"><span class="pre">CdpSession.execute()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpSession.listen"><code class="docutils literal notranslate"><span class="pre">CdpSession.listen()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpSession.wait_for"><code class="docutils literal notranslate"><span class="pre">CdpSession.wait_for()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnection"><code class="docutils literal notranslate"><span class="pre">CdpConnection</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.aclose"><code class="docutils literal notranslate"><span class="pre">CdpConnection.aclose()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.open_session"><code class="docutils literal notranslate"><span class="pre">CdpConnection.open_session()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.connect_session"><code class="docutils literal notranslate"><span class="pre">CdpConnection.connect_session()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.execute"><code class="docutils literal notranslate"><span class="pre">CdpConnection.execute()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.listen"><code class="docutils literal notranslate"><span class="pre">CdpConnection.listen()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnection.wait_for"><code class="docutils literal notranslate"><span class="pre">CdpConnection.wait_for()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.open_cdp"><code class="docutils literal notranslate"><span class="pre">open_cdp()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.connect_cdp"><code class="docutils literal notranslate"><span class="pre">connect_cdp()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver/selenium.webdriver.common.bidi.cdp.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.bidi.cdp</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    </div>
+  </body>
+</html>

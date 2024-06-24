@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>selenium.webdriver.safari.options &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css?v=89b800e6" />
+    
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.safari.options</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for selenium.webdriver.safari.options</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c1"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c1"># distributed with this work for additional information</span>
+<span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c1"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># with the License.  You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c1"># software distributed under the License is distributed on an</span>
+<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># KIND, either express or implied.  See the License for the</span>
+<span class="c1"># specific language governing permissions and limitations</span>
+<span class="c1"># under the License.</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.options</span> <span class="kn">import</span> <span class="n">ArgOptions</span>
+
+
+<span class="k">class</span> <span class="nc">_SafariOptionsDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;_SafariOptionsDescriptor is an implementation of Descriptor protocol:</span>
+
+<span class="sd">    : Any look-up or assignment to the below attributes in `Options` class will be intercepted</span>
+<span class="sd">    by `__get__` and `__set__` method respectively.</span>
+
+<span class="sd">    - `automatic_inspection`</span>
+<span class="sd">    - `automatic_profiling`</span>
+<span class="sd">    - `use_technology_preview`</span>
+
+<span class="sd">    : When an attribute lookup happens,</span>
+<span class="sd">    Example:</span>
+<span class="sd">        `self.automatic_inspection`</span>
+<span class="sd">        `__get__` method does a dictionary look up in the dictionary `_caps` of `Options` class</span>
+<span class="sd">        and returns the value of key `safari:automaticInspection`</span>
+<span class="sd">    : When an attribute assignment happens,</span>
+<span class="sd">    Example:</span>
+<span class="sd">        `self.automatic_inspection` = True</span>
+<span class="sd">        `__set__` method sets/updates the value of the key `safari:automaticInspection` in `_caps`</span>
+<span class="sd">        dictionary in `Options` class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span> <span class="o">=</span> <span class="n">expected_type</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Safari Technology Preview&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;browserName&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be of type </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Safari Technology Preview&quot;</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s2">&quot;browserName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="s2">&quot;safari&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+
+<div class="viewcode-block" id="Options"><a class="viewcode-back" href="../../../../webdriver_safari/selenium.webdriver.safari.options.html#selenium.webdriver.safari.options.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="n">ArgOptions</span><span class="p">):</span>
+    <span class="c1"># @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari</span>
+    <span class="n">AUTOMATIC_INSPECTION</span> <span class="o">=</span> <span class="s2">&quot;safari:automaticInspection&quot;</span>
+    <span class="n">AUTOMATIC_PROFILING</span> <span class="o">=</span> <span class="s2">&quot;safari:automaticProfiling&quot;</span>
+    <span class="n">SAFARI_TECH_PREVIEW</span> <span class="o">=</span> <span class="s2">&quot;Safari Technology Preview&quot;</span>
+
+    <span class="c1"># creating descriptor objects</span>
+    <span class="n">automatic_inspection</span> <span class="o">=</span> <span class="n">_SafariOptionsDescriptor</span><span class="p">(</span><span class="n">AUTOMATIC_INSPECTION</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get or Set Automatic Inspection value:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.automatic_inspection`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.automatic_inspection` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">automatic_profiling</span> <span class="o">=</span> <span class="n">_SafariOptionsDescriptor</span><span class="p">(</span><span class="n">AUTOMATIC_PROFILING</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get or Set Automatic Profiling value:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.automatic_profiling`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.automatic_profiling` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">use_technology_preview</span> <span class="o">=</span> <span class="n">_SafariOptionsDescriptor</span><span class="p">(</span><span class="n">SAFARI_TECH_PREVIEW</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get and Set Technology Preview:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.use_technology_preview`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.use_technology_preview` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">default_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">SAFARI</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.safari.options</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    </div>
+  </body>
+</html>

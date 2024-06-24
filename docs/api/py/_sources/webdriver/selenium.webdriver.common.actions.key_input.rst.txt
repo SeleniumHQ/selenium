@@ -1,4 +1,4 @@
-﻿selenium.webdriver.common.actions.key\_input
+selenium.webdriver.common.actions.key\_input
 ============================================
 
 .. automodule:: selenium.webdriver.common.actions.key_input

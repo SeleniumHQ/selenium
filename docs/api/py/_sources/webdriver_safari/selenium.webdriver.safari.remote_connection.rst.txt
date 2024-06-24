@@ -1,4 +1,4 @@
-﻿selenium.webdriver.safari.remote\_connection
+selenium.webdriver.safari.remote\_connection
 ============================================
 
 .. automodule:: selenium.webdriver.safari.remote_connection

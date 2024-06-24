@@ -1,4 +1,4 @@
-﻿selenium.webdriver.common.actions.input\_device
+selenium.webdriver.common.actions.input\_device
 ===============================================
 
 .. automodule:: selenium.webdriver.common.actions.input_device

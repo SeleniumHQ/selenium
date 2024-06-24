@@ -1,19 +1,17 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.support.expected_conditions &#8212; Selenium 4.21.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>selenium.webdriver.support.expected_conditions &#8212; Selenium 4.22.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +25,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.support.expected_conditions</a></li> 
       </ul>
     </div>  
 
@@ -36,357 +35,169 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-selenium.webdriver.support.expected_conditions">
-<span id="selenium-webdriver-support-expected-conditions"></span><h1>selenium.webdriver.support.expected_conditions<a class="headerlink" href="#module-selenium.webdriver.support.expected_conditions" title="Permalink to this headline">¶</a></h1>
+  <section id="module-selenium.webdriver.support.expected_conditions">
+<span id="selenium-webdriver-support-expected-conditions"></span><h1>selenium.webdriver.support.expected_conditions<a class="headerlink" href="#module-selenium.webdriver.support.expected_conditions" title="Permalink to this heading">¶</a></h1>
 <p class="rubric">Functions</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.alert_is_present" title="selenium.webdriver.support.expected_conditions.alert_is_present"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alert_is_present</span></code></a>()</td>
-<td>An expectation for checking if an alert is currently present and switching to it.</td>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.alert_is_present" title="selenium.webdriver.support.expected_conditions.alert_is_present"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alert_is_present</span></code></a>()</p></td>
+<td><p>An expectation for checking if an alert is currently present and switching to it.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.all_of" title="selenium.webdriver.support.expected_conditions.all_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_of</span></code></a>(*expected_conditions)</td>
-<td>An expectation that all of multiple expected conditions is true.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.all_of" title="selenium.webdriver.support.expected_conditions.all_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_of</span></code></a>(*expected_conditions)</p></td>
+<td><p>An expectation that all of multiple expected conditions is true.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.any_of" title="selenium.webdriver.support.expected_conditions.any_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">any_of</span></code></a>(*expected_conditions)</td>
-<td>An expectation that any of multiple expected conditions is true.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.any_of" title="selenium.webdriver.support.expected_conditions.any_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">any_of</span></code></a>(*expected_conditions)</p></td>
+<td><p>An expectation that any of multiple expected conditions is true.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_attribute_to_include" title="selenium.webdriver.support.expected_conditions.element_attribute_to_include"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_attribute_to_include</span></code></a>(locator,&nbsp;str],&nbsp;…)</td>
-<td>An expectation for checking if the given attribute is included in the specified element.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_attribute_to_include" title="selenium.webdriver.support.expected_conditions.element_attribute_to_include"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_attribute_to_include</span></code></a>(locator, attribute_)</p></td>
+<td><p>An expectation for checking if the given attribute is included in the specified element.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_located_selection_state_to_be" title="selenium.webdriver.support.expected_conditions.element_located_selection_state_to_be"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_located_selection_state_to_be</span></code></a>(…)</td>
-<td>An expectation to locate an element and check if the selection state specified is in that state.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_located_selection_state_to_be" title="selenium.webdriver.support.expected_conditions.element_located_selection_state_to_be"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_located_selection_state_to_be</span></code></a>(...)</p></td>
+<td><p>An expectation to locate an element and check if the selection state specified is in that state.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_located_to_be_selected" title="selenium.webdriver.support.expected_conditions.element_located_to_be_selected"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_located_to_be_selected</span></code></a>(locator,&nbsp;str])</td>
-<td>An expectation for the element to be located is selected.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_located_to_be_selected" title="selenium.webdriver.support.expected_conditions.element_located_to_be_selected"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_located_to_be_selected</span></code></a>(locator)</p></td>
+<td><p>An expectation for the element to be located is selected.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_selection_state_to_be" title="selenium.webdriver.support.expected_conditions.element_selection_state_to_be"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_selection_state_to_be</span></code></a>(element,&nbsp;…)</td>
-<td>An expectation for checking if the given element is selected.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_selection_state_to_be" title="selenium.webdriver.support.expected_conditions.element_selection_state_to_be"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_selection_state_to_be</span></code></a>(element, ...)</p></td>
+<td><p>An expectation for checking if the given element is selected.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_to_be_clickable" title="selenium.webdriver.support.expected_conditions.element_to_be_clickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_to_be_clickable</span></code></a>(mark,&nbsp;Tuple[str,&nbsp;str]])</td>
-<td>An Expectation for checking an element is visible and enabled such that you can click it.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_to_be_clickable" title="selenium.webdriver.support.expected_conditions.element_to_be_clickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_to_be_clickable</span></code></a>(mark)</p></td>
+<td><p>An Expectation for checking an element is visible and enabled such that you can click it.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_to_be_selected" title="selenium.webdriver.support.expected_conditions.element_to_be_selected"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_to_be_selected</span></code></a>(element)</td>
-<td>An expectation for checking the selection is selected.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_to_be_selected" title="selenium.webdriver.support.expected_conditions.element_to_be_selected"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_to_be_selected</span></code></a>(element)</p></td>
+<td><p>An expectation for checking the selection is selected.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.frame_to_be_available_and_switch_to_it" title="selenium.webdriver.support.expected_conditions.frame_to_be_available_and_switch_to_it"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_to_be_available_and_switch_to_it</span></code></a>(…)</td>
-<td>An expectation for checking whether the given frame is available to switch to.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.frame_to_be_available_and_switch_to_it" title="selenium.webdriver.support.expected_conditions.frame_to_be_available_and_switch_to_it"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_to_be_available_and_switch_to_it</span></code></a>(locator)</p></td>
+<td><p>An expectation for checking whether the given frame is available to switch to.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.invisibility_of_element" title="selenium.webdriver.support.expected_conditions.invisibility_of_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">invisibility_of_element</span></code></a>(element,&nbsp;Tuple[str,&nbsp;…)</td>
-<td>An Expectation for checking that an element is either invisible or not present on the DOM.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.invisibility_of_element" title="selenium.webdriver.support.expected_conditions.invisibility_of_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">invisibility_of_element</span></code></a>(element)</p></td>
+<td><p>An Expectation for checking that an element is either invisible or not present on the DOM.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.invisibility_of_element_located" title="selenium.webdriver.support.expected_conditions.invisibility_of_element_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">invisibility_of_element_located</span></code></a>(locator,&nbsp;…)</td>
-<td>An Expectation for checking that an element is either invisible or not present on the DOM.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.invisibility_of_element_located" title="selenium.webdriver.support.expected_conditions.invisibility_of_element_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">invisibility_of_element_located</span></code></a>(locator)</p></td>
+<td><p>An Expectation for checking that an element is either invisible or not present on the DOM.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.new_window_is_opened" title="selenium.webdriver.support.expected_conditions.new_window_is_opened"><code class="xref py py-obj docutils literal notranslate"><span class="pre">new_window_is_opened</span></code></a>(current_handles)</td>
-<td>An expectation that a new window will be opened and have the number of windows handles increase.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.new_window_is_opened" title="selenium.webdriver.support.expected_conditions.new_window_is_opened"><code class="xref py py-obj docutils literal notranslate"><span class="pre">new_window_is_opened</span></code></a>(current_handles)</p></td>
+<td><p>An expectation that a new window will be opened and have the number of windows handles increase.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.none_of" title="selenium.webdriver.support.expected_conditions.none_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">none_of</span></code></a>(*expected_conditions)</td>
-<td>An expectation that none of 1 or multiple expected conditions is true.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.none_of" title="selenium.webdriver.support.expected_conditions.none_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">none_of</span></code></a>(*expected_conditions)</p></td>
+<td><p>An expectation that none of 1 or multiple expected conditions is true.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.number_of_windows_to_be" title="selenium.webdriver.support.expected_conditions.number_of_windows_to_be"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_windows_to_be</span></code></a>(num_windows)</td>
-<td>An expectation for the number of windows to be a certain value.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.number_of_windows_to_be" title="selenium.webdriver.support.expected_conditions.number_of_windows_to_be"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_windows_to_be</span></code></a>(num_windows)</p></td>
+<td><p>An expectation for the number of windows to be a certain value.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.presence_of_all_elements_located" title="selenium.webdriver.support.expected_conditions.presence_of_all_elements_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">presence_of_all_elements_located</span></code></a>(locator,&nbsp;str])</td>
-<td>An expectation for checking that there is at least one element present on a web page.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.presence_of_all_elements_located" title="selenium.webdriver.support.expected_conditions.presence_of_all_elements_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">presence_of_all_elements_located</span></code></a>(locator)</p></td>
+<td><p>An expectation for checking that there is at least one element present on a web page.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.presence_of_element_located" title="selenium.webdriver.support.expected_conditions.presence_of_element_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">presence_of_element_located</span></code></a>(locator,&nbsp;str])</td>
-<td>An expectation for checking that an element is present on the DOM of a page.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.presence_of_element_located" title="selenium.webdriver.support.expected_conditions.presence_of_element_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">presence_of_element_located</span></code></a>(locator)</p></td>
+<td><p>An expectation for checking that an element is present on the DOM of a page.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.staleness_of" title="selenium.webdriver.support.expected_conditions.staleness_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">staleness_of</span></code></a>(element)</td>
-<td>Wait until an element is no longer attached to the DOM.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.staleness_of" title="selenium.webdriver.support.expected_conditions.staleness_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">staleness_of</span></code></a>(element)</p></td>
+<td><p>Wait until an element is no longer attached to the DOM.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element" title="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text_to_be_present_in_element</span></code></a>(locator,&nbsp;str],&nbsp;…)</td>
-<td>An expectation for checking if the given text is present in the specified element.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element" title="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text_to_be_present_in_element</span></code></a>(locator, text_)</p></td>
+<td><p>An expectation for checking if the given text is present in the specified element.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute" title="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text_to_be_present_in_element_attribute</span></code></a>(…)</td>
-<td>An expectation for checking if the given text is present in the element’s attribute.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute" title="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text_to_be_present_in_element_attribute</span></code></a>(...)</p></td>
+<td><p>An expectation for checking if the given text is present in the element's attribute.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value" title="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text_to_be_present_in_element_value</span></code></a>(locator,&nbsp;…)</td>
-<td>An expectation for checking if the given text is present in the element’s value.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value" title="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text_to_be_present_in_element_value</span></code></a>(locator, ...)</p></td>
+<td><p>An expectation for checking if the given text is present in the element's value.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.title_contains" title="selenium.webdriver.support.expected_conditions.title_contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">title_contains</span></code></a>(title)</td>
-<td>An expectation for checking that the title contains a case-sensitive substring.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.title_contains" title="selenium.webdriver.support.expected_conditions.title_contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">title_contains</span></code></a>(title)</p></td>
+<td><p>An expectation for checking that the title contains a case-sensitive substring.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.title_is" title="selenium.webdriver.support.expected_conditions.title_is"><code class="xref py py-obj docutils literal notranslate"><span class="pre">title_is</span></code></a>(title)</td>
-<td>An expectation for checking the title of a page.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.title_is" title="selenium.webdriver.support.expected_conditions.title_is"><code class="xref py py-obj docutils literal notranslate"><span class="pre">title_is</span></code></a>(title)</p></td>
+<td><p>An expectation for checking the title of a page.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_changes" title="selenium.webdriver.support.expected_conditions.url_changes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url_changes</span></code></a>(url)</td>
-<td>An expectation for checking the current url.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_changes" title="selenium.webdriver.support.expected_conditions.url_changes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url_changes</span></code></a>(url)</p></td>
+<td><p>An expectation for checking the current url.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_contains" title="selenium.webdriver.support.expected_conditions.url_contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url_contains</span></code></a>(url)</td>
-<td>An expectation for checking that the current url contains a case- sensitive substring.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_contains" title="selenium.webdriver.support.expected_conditions.url_contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url_contains</span></code></a>(url)</p></td>
+<td><p>An expectation for checking that the current url contains a case- sensitive substring.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_matches" title="selenium.webdriver.support.expected_conditions.url_matches"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url_matches</span></code></a>(pattern)</td>
-<td>An expectation for checking the current url.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_matches" title="selenium.webdriver.support.expected_conditions.url_matches"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url_matches</span></code></a>(pattern)</p></td>
+<td><p>An expectation for checking the current url.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_to_be" title="selenium.webdriver.support.expected_conditions.url_to_be"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url_to_be</span></code></a>(url)</td>
-<td>An expectation for checking the current url.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_to_be" title="selenium.webdriver.support.expected_conditions.url_to_be"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url_to_be</span></code></a>(url)</p></td>
+<td><p>An expectation for checking the current url.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of" title="selenium.webdriver.support.expected_conditions.visibility_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visibility_of</span></code></a>(element)</td>
-<td>An expectation for checking that an element, known to be present on the DOM of a page, is visible.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of" title="selenium.webdriver.support.expected_conditions.visibility_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visibility_of</span></code></a>(element)</p></td>
+<td><p>An expectation for checking that an element, known to be present on the DOM of a page, is visible.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of_all_elements_located" title="selenium.webdriver.support.expected_conditions.visibility_of_all_elements_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visibility_of_all_elements_located</span></code></a>(locator,&nbsp;str])</td>
-<td>An expectation for checking that all elements are present on the DOM of a page and visible.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of_all_elements_located" title="selenium.webdriver.support.expected_conditions.visibility_of_all_elements_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visibility_of_all_elements_located</span></code></a>(locator)</p></td>
+<td><p>An expectation for checking that all elements are present on the DOM of a page and visible.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of_any_elements_located" title="selenium.webdriver.support.expected_conditions.visibility_of_any_elements_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visibility_of_any_elements_located</span></code></a>(locator,&nbsp;str])</td>
-<td>An expectation for checking that there is at least one element visible on a web page.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of_any_elements_located" title="selenium.webdriver.support.expected_conditions.visibility_of_any_elements_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visibility_of_any_elements_located</span></code></a>(locator)</p></td>
+<td><p>An expectation for checking that there is at least one element visible on a web page.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of_element_located" title="selenium.webdriver.support.expected_conditions.visibility_of_element_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visibility_of_element_located</span></code></a>(locator,&nbsp;str])</td>
-<td>An expectation for checking that an element is present on the DOM of a page and visible.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of_element_located" title="selenium.webdriver.support.expected_conditions.visibility_of_element_located"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visibility_of_element_located</span></code></a>(locator)</p></td>
+<td><p>An expectation for checking that an element is present on the DOM of a page and visible.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.alert_is_present">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">alert_is_present</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Callable[[selenium.webdriver.remote.webdriver.WebDriver], Union[selenium.webdriver.common.alert.Alert, Literal[False]]]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#alert_is_present"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.alert_is_present" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking if an alert is currently present and
-switching to it.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.title_is">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">title_is</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#title_is"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.title_is" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking the title of a page.</p>
+<p>title is the expected title, which must be an exact match returns
+True if the title matches, false otherwise.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.all_of">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">all_of</code><span class="sig-paren">(</span><em>*expected_conditions</em><span class="sig-paren">)</span> &#x2192; Callable[[D], Union[List[T], Literal[False]]]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#all_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.all_of" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation that all of multiple expected conditions is true.</p>
-<p>Equivalent to a logical ‘AND’.
-Returns: When any ExpectedCondition is not met: False.
-When all ExpectedConditions are met: A List with each ExpectedCondition’s return value.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.any_of">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">any_of</code><span class="sig-paren">(</span><em>*expected_conditions</em><span class="sig-paren">)</span> &#x2192; Callable[[D], Union[Literal[False], T]]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#any_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.any_of" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation that any of multiple expected conditions is true.</p>
-<p>Equivalent to a logical ‘OR’. Returns results of the first matching
-condition, or False if none do.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.element_attribute_to_include">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">element_attribute_to_include</code><span class="sig-paren">(</span><em>locator: Tuple[str, str], attribute_: str</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_attribute_to_include"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_attribute_to_include" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking if the given attribute is included in the
-specified element.</p>
-<p>locator, attribute</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.element_located_selection_state_to_be">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">element_located_selection_state_to_be</code><span class="sig-paren">(</span><em>locator: Tuple[str, str], is_selected: bool</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_located_selection_state_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_located_selection_state_to_be" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation to locate an element and check if the selection state
-specified is in that state.</p>
-<p>locator is a tuple of (by, path) is_selected is a boolean</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.element_located_to_be_selected">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">element_located_to_be_selected</code><span class="sig-paren">(</span><em>locator: Tuple[str, str]</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_located_to_be_selected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_located_to_be_selected" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for the element to be located is selected.</p>
-<p>locator is a tuple of (by, path)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.element_selection_state_to_be">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">element_selection_state_to_be</code><span class="sig-paren">(</span><em>element: selenium.webdriver.remote.webelement.WebElement</em>, <em>is_selected: bool</em><span class="sig-paren">)</span> &#x2192; Callable[[Any], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_selection_state_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_selection_state_to_be" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking if the given element is selected.</p>
-<p>element is WebElement object is_selected is a Boolean.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.element_to_be_clickable">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">element_to_be_clickable</code><span class="sig-paren">(</span><em>mark: Union[selenium.webdriver.remote.webelement.WebElement, Tuple[str, str]]</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], Union[Literal[False], selenium.webdriver.remote.webelement.WebElement]]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_to_be_clickable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_to_be_clickable" title="Permalink to this definition">¶</a></dt>
-<dd><p>An Expectation for checking an element is visible and enabled such that
-you can click it.</p>
-<p>element is either a locator (text) or an WebElement</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.element_to_be_selected">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">element_to_be_selected</code><span class="sig-paren">(</span><em>element: selenium.webdriver.remote.webelement.WebElement</em><span class="sig-paren">)</span> &#x2192; Callable[[Any], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_to_be_selected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_to_be_selected" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking the selection is selected.</p>
-<p>element is WebElement object</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.frame_to_be_available_and_switch_to_it">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">frame_to_be_available_and_switch_to_it</code><span class="sig-paren">(</span><em>locator: Union[Tuple[str, str], str]</em><span class="sig-paren">)</span> &#x2192; Callable[[selenium.webdriver.remote.webdriver.WebDriver], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#frame_to_be_available_and_switch_to_it"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.frame_to_be_available_and_switch_to_it" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking whether the given frame is available to
-switch to.</p>
-<p>If the frame is available it switches the given driver to the
-specified frame.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.invisibility_of_element">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">invisibility_of_element</code><span class="sig-paren">(</span><em>element: Union[selenium.webdriver.remote.webelement.WebElement, Tuple[str, str]]</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], Union[selenium.webdriver.remote.webelement.WebElement, bool]]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#invisibility_of_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.invisibility_of_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>An Expectation for checking that an element is either invisible or not
-present on the DOM.</p>
-<p>element is either a locator (text) or an WebElement</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.invisibility_of_element_located">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">invisibility_of_element_located</code><span class="sig-paren">(</span><em>locator: Union[selenium.webdriver.remote.webelement.WebElement, Tuple[str, str]]</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], Union[selenium.webdriver.remote.webelement.WebElement, bool]]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#invisibility_of_element_located"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.invisibility_of_element_located" title="Permalink to this definition">¶</a></dt>
-<dd><p>An Expectation for checking that an element is either invisible or not
-present on the DOM.</p>
-<p>locator used to find the element</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.new_window_is_opened">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">new_window_is_opened</code><span class="sig-paren">(</span><em>current_handles: List[str]</em><span class="sig-paren">)</span> &#x2192; Callable[[selenium.webdriver.remote.webdriver.WebDriver], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#new_window_is_opened"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.new_window_is_opened" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation that a new window will be opened and have the number of
-windows handles increase.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.none_of">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">none_of</code><span class="sig-paren">(</span><em>*expected_conditions</em><span class="sig-paren">)</span> &#x2192; Callable[[D], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#none_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.none_of" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation that none of 1 or multiple expected conditions is true.</p>
-<p>Equivalent to a logical ‘NOT-OR’. Returns a Boolean</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.number_of_windows_to_be">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">number_of_windows_to_be</code><span class="sig-paren">(</span><em>num_windows: int</em><span class="sig-paren">)</span> &#x2192; Callable[[selenium.webdriver.remote.webdriver.WebDriver], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#number_of_windows_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.number_of_windows_to_be" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for the number of windows to be a certain value.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.presence_of_all_elements_located">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">presence_of_all_elements_located</code><span class="sig-paren">(</span><em>locator: Tuple[str, str]</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], List[selenium.webdriver.remote.webelement.WebElement]]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#presence_of_all_elements_located"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.presence_of_all_elements_located" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking that there is at least one element present
-on a web page.</p>
-<p>locator is used to find the element returns the list of WebElements
-once they are located</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.presence_of_element_located">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">presence_of_element_located</code><span class="sig-paren">(</span><em>locator: Tuple[str, str]</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#presence_of_element_located"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.presence_of_element_located" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking that an element is present on the DOM of a
-page. This does not necessarily mean that the element is visible.</p>
-<p>locator - used to find the element
-returns the WebElement once it is located</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.staleness_of">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">staleness_of</code><span class="sig-paren">(</span><em>element: selenium.webdriver.remote.webelement.WebElement</em><span class="sig-paren">)</span> &#x2192; Callable[[Any], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#staleness_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.staleness_of" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wait until an element is no longer attached to the DOM.</p>
-<p>element is the element to wait for. returns False if the element is
-still attached to the DOM, true otherwise.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">text_to_be_present_in_element</code><span class="sig-paren">(</span><em>locator: Tuple[str, str], text_: str</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#text_to_be_present_in_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking if the given text is present in the
-specified element.</p>
-<p>locator, text</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">text_to_be_present_in_element_attribute</code><span class="sig-paren">(</span><em>locator: Tuple[str, str], attribute_: str, text_: str</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#text_to_be_present_in_element_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking if the given text is present in the
-element’s attribute.</p>
-<p>locator, attribute, text</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">text_to_be_present_in_element_value</code><span class="sig-paren">(</span><em>locator: Tuple[str, str], text_: str</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#text_to_be_present_in_element_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking if the given text is present in the
-element’s value.</p>
-<p>locator, text</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.title_contains">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">title_contains</code><span class="sig-paren">(</span><em>title: str</em><span class="sig-paren">)</span> &#x2192; Callable[[selenium.webdriver.remote.webdriver.WebDriver], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#title_contains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.title_contains" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.title_contains">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">title_contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#title_contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.title_contains" title="Permalink to this definition">¶</a></dt>
 <dd><p>An expectation for checking that the title contains a case-sensitive
 substring.</p>
 <p>title is the fragment of title expected returns True when the title
 matches, False otherwise</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.title_is">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">title_is</code><span class="sig-paren">(</span><em>title: str</em><span class="sig-paren">)</span> &#x2192; Callable[[selenium.webdriver.remote.webdriver.WebDriver], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#title_is"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.title_is" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking the title of a page.</p>
-<p>title is the expected title, which must be an exact match returns
-True if the title matches, false otherwise.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.presence_of_element_located">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">presence_of_element_located</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#presence_of_element_located"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.presence_of_element_located" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking that an element is present on the DOM of a
+page. This does not necessarily mean that the element is visible.</p>
+<p>locator - used to find the element
+returns the WebElement once it is located</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.url_changes">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">url_changes</code><span class="sig-paren">(</span><em>url: str</em><span class="sig-paren">)</span> &#x2192; Callable[[selenium.webdriver.remote.webdriver.WebDriver], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#url_changes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.url_changes" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking the current url.</p>
-<p>url is the expected url, which must not be an exact match returns
-True if the url is different, false otherwise.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.url_contains">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">url_contains</code><span class="sig-paren">(</span><em>url: str</em><span class="sig-paren">)</span> &#x2192; Callable[[selenium.webdriver.remote.webdriver.WebDriver], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#url_contains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.url_contains" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.url_contains">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">url_contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#url_contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.url_contains" title="Permalink to this definition">¶</a></dt>
 <dd><p>An expectation for checking that the current url contains a case-
 sensitive substring.</p>
 <p>url is the fragment of url expected, returns True when the url
 matches, False otherwise</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.url_matches">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">url_matches</code><span class="sig-paren">(</span><em>pattern: str</em><span class="sig-paren">)</span> &#x2192; Callable[[selenium.webdriver.remote.webdriver.WebDriver], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#url_matches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.url_matches" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.url_matches">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">url_matches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#url_matches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.url_matches" title="Permalink to this definition">¶</a></dt>
 <dd><p>An expectation for checking the current url.</p>
 <p>pattern is the expected pattern.  This finds the first occurrence of
 pattern in the current url and as such does not require an exact
 full match.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.url_to_be">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">url_to_be</code><span class="sig-paren">(</span><em>url: str</em><span class="sig-paren">)</span> &#x2192; Callable[[selenium.webdriver.remote.webdriver.WebDriver], bool]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#url_to_be"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.url_to_be" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.url_to_be">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">url_to_be</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#url_to_be"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.url_to_be" title="Permalink to this definition">¶</a></dt>
 <dd><p>An expectation for checking the current url.</p>
 <p>url is the expected url, which must be an exact match returns True
 if the url matches, false otherwise.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.visibility_of">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">visibility_of</code><span class="sig-paren">(</span><em>element: selenium.webdriver.remote.webelement.WebElement</em><span class="sig-paren">)</span> &#x2192; Callable[[Any], Union[Literal[False], selenium.webdriver.remote.webelement.WebElement]]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#visibility_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.visibility_of" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking that an element, known to be present on the
-DOM of a page, is visible.</p>
-<p>Visibility means that the element is not only displayed but also has
-a height and width that is greater than 0. element is the WebElement
-returns the (same) WebElement once it is visible</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.url_changes">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">url_changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#url_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.url_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking the current url.</p>
+<p>url is the expected url, which must not be an exact match returns
+True if the url is different, false otherwise.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.visibility_of_all_elements_located">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">visibility_of_all_elements_located</code><span class="sig-paren">(</span><em>locator: Tuple[str, str]</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], Union[List[selenium.webdriver.remote.webelement.WebElement], Literal[False]]]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#visibility_of_all_elements_located"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.visibility_of_all_elements_located" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking that all elements are present on the DOM of
-a page and visible. Visibility means that the elements are not only
-displayed but also has a height and width that is greater than 0.</p>
-<p>locator - used to find the elements
-returns the list of WebElements once they are located and visible</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.visibility_of_any_elements_located">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">visibility_of_any_elements_located</code><span class="sig-paren">(</span><em>locator: Tuple[str, str]</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], List[selenium.webdriver.remote.webelement.WebElement]]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#visibility_of_any_elements_located"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.visibility_of_any_elements_located" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking that there is at least one element visible
-on a web page.</p>
-<p>locator is used to find the element returns the list of WebElements
-once they are located</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.support.expected_conditions.visibility_of_element_located">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">visibility_of_element_located</code><span class="sig-paren">(</span><em>locator: Tuple[str, str]</em><span class="sig-paren">)</span> &#x2192; Callable[[Union[selenium.webdriver.remote.webdriver.WebDriver, selenium.webdriver.remote.webelement.WebElement]], Union[Literal[False], selenium.webdriver.remote.webelement.WebElement]]<a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#visibility_of_element_located"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.visibility_of_element_located" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.visibility_of_element_located">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">visibility_of_element_located</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#visibility_of_element_located"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.visibility_of_element_located" title="Permalink to this definition">¶</a></dt>
 <dd><p>An expectation for checking that an element is present on the DOM of a
 page and visible. Visibility means that the element is not only displayed
 but also has a height and width that is greater than 0.</p>
@@ -394,14 +205,239 @@ but also has a height and width that is greater than 0.</p>
 returns the WebElement once it is located and visible</p>
 </dd></dl>
 
-</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.visibility_of">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">visibility_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#visibility_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.visibility_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking that an element, known to be present on the
+DOM of a page, is visible.</p>
+<p>Visibility means that the element is not only displayed but also has
+a height and width that is greater than 0. element is the WebElement
+returns the (same) WebElement once it is visible</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.presence_of_all_elements_located">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">presence_of_all_elements_located</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#presence_of_all_elements_located"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.presence_of_all_elements_located" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking that there is at least one element present
+on a web page.</p>
+<p>locator is used to find the element returns the list of WebElements
+once they are located</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.visibility_of_any_elements_located">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">visibility_of_any_elements_located</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#visibility_of_any_elements_located"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.visibility_of_any_elements_located" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking that there is at least one element visible
+on a web page.</p>
+<p>locator is used to find the element returns the list of WebElements
+once they are located</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.visibility_of_all_elements_located">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">visibility_of_all_elements_located</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#visibility_of_all_elements_located"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.visibility_of_all_elements_located" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking that all elements are present on the DOM of
+a page and visible. Visibility means that the elements are not only
+displayed but also has a height and width that is greater than 0.</p>
+<p>locator - used to find the elements
+returns the list of WebElements once they are located and visible</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">text_to_be_present_in_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#text_to_be_present_in_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking if the given text is present in the
+specified element.</p>
+<p>locator, text</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">text_to_be_present_in_element_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#text_to_be_present_in_element_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking if the given text is present in the
+element’s value.</p>
+<p>locator, text</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">text_to_be_present_in_element_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#text_to_be_present_in_element_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking if the given text is present in the
+element’s attribute.</p>
+<p>locator, attribute, text</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.frame_to_be_available_and_switch_to_it">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">frame_to_be_available_and_switch_to_it</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#frame_to_be_available_and_switch_to_it"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.frame_to_be_available_and_switch_to_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking whether the given frame is available to
+switch to.</p>
+<p>If the frame is available it switches the given driver to the
+specified frame.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.invisibility_of_element_located">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">invisibility_of_element_located</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#invisibility_of_element_located"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.invisibility_of_element_located" title="Permalink to this definition">¶</a></dt>
+<dd><p>An Expectation for checking that an element is either invisible or not
+present on the DOM.</p>
+<p>locator used to find the element</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.invisibility_of_element">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">invisibility_of_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#invisibility_of_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.invisibility_of_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>An Expectation for checking that an element is either invisible or not
+present on the DOM.</p>
+<p>element is either a locator (text) or an WebElement</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.element_to_be_clickable">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">element_to_be_clickable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mark</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_to_be_clickable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_to_be_clickable" title="Permalink to this definition">¶</a></dt>
+<dd><p>An Expectation for checking an element is visible and enabled such that
+you can click it.</p>
+<p>element is either a locator (text) or an WebElement</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.staleness_of">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">staleness_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#staleness_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.staleness_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until an element is no longer attached to the DOM.</p>
+<p>element is the element to wait for. returns False if the element is
+still attached to the DOM, true otherwise.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.element_to_be_selected">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">element_to_be_selected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_to_be_selected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_to_be_selected" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking the selection is selected.</p>
+<p>element is WebElement object</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.element_located_to_be_selected">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">element_located_to_be_selected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_located_to_be_selected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_located_to_be_selected" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for the element to be located is selected.</p>
+<p>locator is a tuple of (by, path)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.element_selection_state_to_be">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">element_selection_state_to_be</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_selection_state_to_be"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_selection_state_to_be" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking if the given element is selected.</p>
+<p>element is WebElement object is_selected is a Boolean.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.element_located_selection_state_to_be">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">element_located_selection_state_to_be</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_selected</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_located_selection_state_to_be"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_located_selection_state_to_be" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation to locate an element and check if the selection state
+specified is in that state.</p>
+<p>locator is a tuple of (by, path) is_selected is a boolean</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.number_of_windows_to_be">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">number_of_windows_to_be</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_windows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#number_of_windows_to_be"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.number_of_windows_to_be" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for the number of windows to be a certain value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.new_window_is_opened">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">new_window_is_opened</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_handles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#new_window_is_opened"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.new_window_is_opened" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation that a new window will be opened and have the number of
+windows handles increase.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.alert_is_present">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">alert_is_present</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../webdriver/selenium.webdriver.common.alert.html#selenium.webdriver.common.alert.Alert" title="selenium.webdriver.common.alert.Alert"><span class="pre">Alert</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#alert_is_present"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.alert_is_present" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking if an alert is currently present and
+switching to it.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.element_attribute_to_include">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">element_attribute_to_include</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver" title="selenium.webdriver.remote.webdriver.WebDriver"><span class="pre">WebDriver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_attribute_to_include"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_attribute_to_include" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking if the given attribute is included in the
+specified element.</p>
+<p>locator, attribute</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.any_of">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">any_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">expected_conditions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">D</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">D</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#any_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.any_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation that any of multiple expected conditions is true.</p>
+<p>Equivalent to a logical ‘OR’. Returns results of the first matching
+condition, or False if none do.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.all_of">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">all_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">expected_conditions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">D</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">D</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#all_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.all_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation that all of multiple expected conditions is true.</p>
+<p>Equivalent to a logical ‘AND’.
+Returns: When any ExpectedCondition is not met: False.
+When all ExpectedConditions are met: A List with each ExpectedCondition’s return value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="selenium.webdriver.support.expected_conditions.none_of">
+<span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.expected_conditions.</span></span><span class="sig-name descname"><span class="pre">none_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">expected_conditions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">D</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">D</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#none_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.none_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation that none of 1 or multiple expected conditions is true.</p>
+<p>Equivalent to a logical ‘NOT-OR’. Returns a Boolean</p>
+</dd></dl>
+
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">selenium.webdriver.support.expected_conditions</a><ul>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.title_is"><code class="docutils literal notranslate"><span class="pre">title_is()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.title_contains"><code class="docutils literal notranslate"><span class="pre">title_contains()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.presence_of_element_located"><code class="docutils literal notranslate"><span class="pre">presence_of_element_located()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_contains"><code class="docutils literal notranslate"><span class="pre">url_contains()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_matches"><code class="docutils literal notranslate"><span class="pre">url_matches()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_to_be"><code class="docutils literal notranslate"><span class="pre">url_to_be()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.url_changes"><code class="docutils literal notranslate"><span class="pre">url_changes()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of_element_located"><code class="docutils literal notranslate"><span class="pre">visibility_of_element_located()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of"><code class="docutils literal notranslate"><span class="pre">visibility_of()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.presence_of_all_elements_located"><code class="docutils literal notranslate"><span class="pre">presence_of_all_elements_located()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of_any_elements_located"><code class="docutils literal notranslate"><span class="pre">visibility_of_any_elements_located()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.visibility_of_all_elements_located"><code class="docutils literal notranslate"><span class="pre">visibility_of_all_elements_located()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element"><code class="docutils literal notranslate"><span class="pre">text_to_be_present_in_element()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value"><code class="docutils literal notranslate"><span class="pre">text_to_be_present_in_element_value()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute"><code class="docutils literal notranslate"><span class="pre">text_to_be_present_in_element_attribute()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.frame_to_be_available_and_switch_to_it"><code class="docutils literal notranslate"><span class="pre">frame_to_be_available_and_switch_to_it()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.invisibility_of_element_located"><code class="docutils literal notranslate"><span class="pre">invisibility_of_element_located()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.invisibility_of_element"><code class="docutils literal notranslate"><span class="pre">invisibility_of_element()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_to_be_clickable"><code class="docutils literal notranslate"><span class="pre">element_to_be_clickable()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.staleness_of"><code class="docutils literal notranslate"><span class="pre">staleness_of()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_to_be_selected"><code class="docutils literal notranslate"><span class="pre">element_to_be_selected()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_located_to_be_selected"><code class="docutils literal notranslate"><span class="pre">element_located_to_be_selected()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_selection_state_to_be"><code class="docutils literal notranslate"><span class="pre">element_selection_state_to_be()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_located_selection_state_to_be"><code class="docutils literal notranslate"><span class="pre">element_located_selection_state_to_be()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.number_of_windows_to_be"><code class="docutils literal notranslate"><span class="pre">number_of_windows_to_be()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.new_window_is_opened"><code class="docutils literal notranslate"><span class="pre">new_window_is_opened()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.alert_is_present"><code class="docutils literal notranslate"><span class="pre">alert_is_present()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.element_attribute_to_include"><code class="docutils literal notranslate"><span class="pre">element_attribute_to_include()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.any_of"><code class="docutils literal notranslate"><span class="pre">any_of()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.all_of"><code class="docutils literal notranslate"><span class="pre">all_of()</span></code></a></li>
+<li><a class="reference internal" href="#selenium.webdriver.support.expected_conditions.none_of"><code class="docutils literal notranslate"><span class="pre">none_of()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -410,17 +446,15 @@ returns the WebElement once it is located and visible</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -434,11 +468,12 @@ returns the WebElement once it is located and visible</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.21.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.support.expected_conditions</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2009-2024 Software Freedom Conservancy.
+    &#169; Copyright 2009-2024 Software Freedom Conservancy.
     </div>
   </body>
 </html>
