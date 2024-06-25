@@ -113,8 +113,8 @@ module Selenium
 
         def run(*command)
           command += %w[--language-binding ruby]
-          command += %w[--output json]
-          command << '--debug' if WebDriver.logger.debug?
+          command += %w[--output mixed]
+          command << '--log-level debug' if WebDriver.logger.debug?
 
           WebDriver.logger.debug("Executing Process #{command}", id: :selenium_manager)
 
