@@ -77,6 +77,7 @@ setup_args = {
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
+        "websocket-client==1.8.0",
     ],
     'zip_safe': False
 }
