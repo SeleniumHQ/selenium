@@ -37,30 +37,24 @@ module Selenium
       SUPPORT_MSG = 'For documentation on this error, please visit:'
       ERROR_URL = 'https://www.selenium.dev/documentation/webdriver/troubleshooting/errors'
 
-      class WebDriverError < StandardError
+      URLS = {
+        NoSuchElementError: "#{ERROR_URL}#no-such-element-exception",
+        StaleElementReferenceError: "#{ERROR_URL}#stale-element-reference-exception",
+        InvalidSelectorError: "#{ERROR_URL}#invalid-selector-exception",
+        NoSuchDriverError: "#{ERROR_URL}/driver_location"
+      }.freeze
 
-        def initialize(msg = '')
-          super("#{msg}; #{SUPPORT_MSG} #{url}")
-        end
-
-        def url
-          first_word, rest = parsed_class_name.split(/(?=[A-Z])/, 2)
-          rest_with_hyphens = rest.gsub(/([A-Z])/, '-\1')
-          "#{ERROR_URL}##{first_word.downcase}#{rest_with_hyphens.downcase.sub('error', 'exception')}"
-        end
-
-        private
-
-        def parsed_class_name
-          self.class.to_s.sub('Selenium::WebDriver::Error::', '')
-        end
-      end
+      class WebDriverError < StandardError; end
 
       #
       # An element could not be located on the page using the given search parameters.
       #
 
-      class NoSuchElementError < WebDriverError; end
+      class NoSuchElementError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{URLS[:NoSuchElementError]}")
+        end
+      end
 
       #
       # A command to switch to a frame could not be satisfied because the frame could not be found.
@@ -78,7 +72,11 @@ module Selenium
       # A command failed because the referenced element is no longer attached to the DOM.
       #
 
-      class StaleElementReferenceError < WebDriverError; end
+      class StaleElementReferenceError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{URLS[:StaleElementReferenceError]}")
+        end
+      end
 
       #
       # A command failed because the referenced shadow root is no longer attached to the DOM.
@@ -152,7 +150,11 @@ module Selenium
       # Argument was an invalid selector.
       #
 
-      class InvalidSelectorError < WebDriverError; end
+      class InvalidSelectorError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{URLS[:InvalidSelectorError]}")
+        end
+      end
 
       #
       # A new session could not be created.
@@ -237,7 +239,11 @@ module Selenium
       # Indicates that driver was not specified and could not be located.
       #
 
-      class NoSuchDriverError < WebDriverError; end
+      class NoSuchDriverError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{URLS[:NoSuchDriverError]}")
+        end
+      end
     end # Error
   end # WebDriver
 end # Selenium
