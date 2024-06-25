@@ -5,7 +5,6 @@
 -//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest
 -//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest-edge
 -//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest-remote
--//java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
 -//java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
 -//java/test/org/openqa/selenium/grid/gridui:OverallGridTest
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
