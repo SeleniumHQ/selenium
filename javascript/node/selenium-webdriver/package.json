@@ -25,7 +25,7 @@
   "dependencies": {
     "jszip": "^3.10.1",
     "tmp": "^0.2.3",
-    "ws": ">=8.16.0"
+    "ws": ">=8.17.1"
   },
   "devDependencies": {
     "@bazel/runfiles": "^5.8.1",
