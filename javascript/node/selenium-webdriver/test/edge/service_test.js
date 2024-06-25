@@ -17,10 +17,10 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const edge = require('../../edge')
 const test = require('../../lib/test')
-const { getPath } = require('../../common/driverFinder')
+const { getBinaryPaths } = require('../../common/driverFinder')
 
 test.suite(
   function (_env) {
@@ -35,7 +35,7 @@ test.suite(
 
       it('can start msedgedriver', async function () {
         service = new edge.ServiceBuilder().build()
-        service.setExecutable(getPath(new edge.Options()).driverPath)
+        service.setExecutable(getBinaryPaths(new edge.Options()).driverPath)
         let url = await service.start()
         assert(/127\.0\.0\.1/.test(url), `unexpected url: ${url}`)
       })

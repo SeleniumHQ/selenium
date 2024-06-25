@@ -17,9 +17,9 @@
 
 'use strict'
 
-const assert = require('assert')
-const http = require('http')
-const url = require('url')
+const assert = require('node:assert')
+const http = require('node:http')
+const url = require('node:url')
 
 const HttpClient = require('../../http').HttpClient
 const HttpRequest = require('../../lib/http').Request
@@ -27,7 +27,7 @@ const Server = require('../../lib/test/httpserver').Server
 
 describe('HttpClient', function () {
   const server = new Server(function (req, res) {
-    // eslint-disable-next-line node/no-deprecated-api
+    // eslint-disable-next-line n/no-deprecated-api
     const parsedUrl = url.parse(req.url)
 
     if (req.method === 'GET' && req.url === '/echo') {
@@ -186,7 +186,7 @@ describe('HttpClient', function () {
   })
 
   it('can use basic auth', function () {
-    // eslint-disable-next-line node/no-deprecated-api
+    // eslint-disable-next-line n/no-deprecated-api
     const parsed = url.parse(server.url())
     parsed.auth = 'genie:bottle'
 

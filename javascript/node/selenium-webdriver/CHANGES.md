@@ -1,3 +1,32 @@
+## 4.22.0
+
+- [bidi] Add types for user prompt related events (#14097)
+- Add preference to enable CDP in Firefox by default (#14091)
+- [bidi] Add callback handlers for logging APIs (#14120)
+- [bidi] Add high-level logging API (#14135)
+- Add CDP for Chrome 126 and remove 123
+
+## 4.21.0
+
+- Add CDP for Chrome 125 and remove 122
+- Ensure 'selectVisibleByText' method is same as other languages (#13899)
+- Ensure parity in the locators used by methods (#13902)
+
+## 4.20.0
+
+- Add CDP for Chrome 124 and remove 121
+- [bidi] Update capture screenshot APIs to include all parameters and remove scroll parameter (
+  #13744)
+- [bidi] Implement functionality to retrieve all top-level browsing contexts
+- Set browserName by default when browserOptions are used
+- Implement fullPageScreenshot functionality for Firefox (#13301)
+- Nightly JS builds are now pushed to GitHub packages
+- Making Selenium Manager a thin wrapper (#13853)
+  - This change has been made to make it easier to maintain and improve, the interface has
+    changed and if users were invoking it, they might experience issues. Selenium Manager is
+    still in beta and these type of changes are expected.
+- [bidi] Update browsing context create method (#13766)
+
 ## 4.19.0
 
 - Add CDP for Chrome 123 and remove 120

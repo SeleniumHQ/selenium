@@ -17,13 +17,15 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const { Browser, By } = require('../../')
 const { Pages, suite, ignore } = require('../../lib/test')
 const BrowsingContext = require('../../bidi/browsingContext')
 const until = require('../../lib/until')
 const { Origin, CaptureScreenshotParameters } = require('../../bidi/captureScreenshotParameters')
 const { BoxClipRectangle, ElementClipRectangle } = require('../../bidi/clipRectangle')
+const { CreateContextParameters } = require('../../bidi/createContextParameters')
+const BrowserBiDi = require('../../bidi/browser')
 
 suite(
   function (env) {
@@ -61,9 +63,23 @@ suite(
       it('can create a window with a reference context', async function () {
         const browsingContext = await BrowsingContext(driver, {
           type: 'window',
-          referenceContext: await driver.getWindowHandle(),
+          createParameters: new CreateContextParameters().referenceContext(await driver.getWindowHandle()),
         })
         assert.notEqual(browsingContext.id, null)
+      })
+
+      it('can create a tab with all parameters', async function () {
+        const browser = await BrowserBiDi(driver)
+        const userContext = await browser.createUserContext()
+        const browsingContext = await BrowsingContext(driver, {
+          type: 'window',
+          createParameters: new CreateContextParameters()
+            .referenceContext(await driver.getWindowHandle())
+            .background(true)
+            .userContext(userContext),
+        })
+        assert.notEqual(browsingContext.id, null)
+        assert.notEqual(browsingContext.id, await driver.getWindowHandle())
       })
 
       it('can create a tab', async function () {
@@ -76,7 +92,7 @@ suite(
       it('can create a tab with a reference context', async function () {
         const browsingContext = await BrowsingContext(driver, {
           type: 'tab',
-          referenceContext: await driver.getWindowHandle(),
+          referenceContext: new CreateContextParameters().referenceContext(await driver.getWindowHandle()),
         })
         assert.notEqual(browsingContext.id, null)
       })

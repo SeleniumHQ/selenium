@@ -1,0 +1,68 @@
+# The RBE to use
+build:remote --bes_results_url=https://gypsum.cluster.engflow.com/invocation
+build:remote --bes_backend=grpcs://gypsum.cluster.engflow.com
+build:remote --remote_executor=grpcs://gypsum.cluster.engflow.com
+build:remote --remote_cache=grpcs://gypsum.cluster.engflow.com
+
+# The number of cores available
+build:remote -j 50
+
+build:remote --define=EXECUTOR=remote
+build:remote --experimental_inmemory_dotd_files
+build:remote --experimental_inmemory_jdeps_files
+build:remote --remote_timeout=3600
+build:remote --spawn_strategy=remote,local
+#build:remote --nolegacy_important_outputs
+build:remote --incompatible_strict_action_env=true
+
+build:remote --crosstool_top=//common/remote-build/cc:toolchain
+build:remote --extra_execution_platforms=//common/remote-build:platform
+build:remote --extra_toolchains=//common/remote-build:cc-toolchain
+build:remote --host_platform=//common/remote-build:platform
+build:remote --platforms=//common/remote-build:platform
+build:remote --cxxopt=-std=c++14
+
+# The Docker images are running Linux
+build:remote --cpu=k8
+build:remote --host_cpu=k8
+
+build:remote --disk_cache=
+
+build:remote --incompatible_enable_cc_toolchain_resolution
+build:remote --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+test:remote --test_env=DISPLAY=:99.0
+test:remote --test_tag_filters=-skip-remote,-remote
+
+# Env vars we can hard code
+build:remote --action_env=HOME=/home/dev
+build:remote --action_env=PATH=/bin:/usr/bin:/usr/local/bin
+test:remote --test_env=PATH=/bin:/usr/bin:/usr/local/bin
+test:remote --test_env=HOME=/home/dev
+
+# Make sure we sniff credentials properly
+build:remote --credential_helper=gypsum.cluster.engflow.com=%workspace%/scripts/credential-helper.sh
+
+# Use pinned browsers when running remotely
+build:remote --//common:pin_browsers
+
+# The remote build machines are pretty small, and 50 threads may leave them
+# thrashing, but our dev machines are a lot larger. Scale the workload so we
+# make reasonable usage of everything, everywhere, all at once.
+build:remote --local_resources=cpu='HOST_CPUS*10'
+build:remote --local_resources=memory='HOST_RAM*4.0'
+
+# A small hint that we're running our tests remotely
+test:remote --test_env=REMOTE_BUILD=1
+
+# Wait for up to 5 minutes for a test to pass
+test:remote --test_timeout=600
+
+# Extend the remote config for CI
+build:remote-ci --config=remote
+build:remote-ci --curses=no --color=yes --show_timestamps --show_progress_rate_limit=5
+build:remote-ci --bes_upload_mode=wait_for_upload_complete
+build:remote-ci --remote_download_minimal
+
+# Configuration changes suggested by EngFlow
+build:remote --grpc_keepalive_time=30s
+build:remote --nolegacy_important_outputs

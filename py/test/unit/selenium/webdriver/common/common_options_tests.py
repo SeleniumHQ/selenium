@@ -75,3 +75,23 @@ def test_add_proxy():
 
     assert options.proxy == proxy
     assert caps.get("proxy") == proxy.to_capabilities()
+
+
+def test_default_bidi():
+    options = ArgOptions()
+    assert options.enable_bidi is False
+    assert options.web_socket_url is None
+
+
+def test_enable_bidi():
+    options = ArgOptions()
+    options.enable_bidi = True
+    assert options.enable_bidi is True
+    assert options.web_socket_url is None
+
+
+def test_set_socket_url():
+    options = ArgOptions()
+    options.web_socket_url = "socket_url"
+    assert options.enable_bidi is True
+    assert options.web_socket_url == "socket_url"

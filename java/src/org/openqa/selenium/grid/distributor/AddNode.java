@@ -65,6 +65,7 @@ class AddNode implements HttpHandler {
             status.getNodeId(),
             status.getExternalUri(),
             registrationSecret,
+            status.getSessionTimeout(),
             status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));
 
     distributor.add(node);

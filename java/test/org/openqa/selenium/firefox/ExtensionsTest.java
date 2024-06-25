@@ -52,7 +52,7 @@ public class ExtensionsTest extends JupiterTestBase {
     Path extension = InProject.locate(EXT_XPI);
 
     String id = ((HasExtensions) driver).installExtension(extension);
-    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+    assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     driver.get(pages.blankPage);
     WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
@@ -69,7 +69,7 @@ public class ExtensionsTest extends JupiterTestBase {
     Path extension = InProject.locate(EXT_UNSIGNED_ZIP);
 
     String id = ((HasExtensions) driver).installExtension(extension, true);
-    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+    assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     driver.get(pages.blankPage);
     WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
@@ -86,7 +86,7 @@ public class ExtensionsTest extends JupiterTestBase {
     Path extension = InProject.locate(EXT_SIGNED_ZIP);
 
     String id = ((HasExtensions) driver).installExtension(extension);
-    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+    assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     driver.get(pages.blankPage);
     WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
@@ -103,7 +103,7 @@ public class ExtensionsTest extends JupiterTestBase {
     Path extension = InProject.locate(EXT_UNSIGNED_DIR);
 
     String id = ((HasExtensions) driver).installExtension(extension, true);
-    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+    assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     driver.get(pages.blankPage);
     WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
@@ -120,7 +120,7 @@ public class ExtensionsTest extends JupiterTestBase {
     Path extension = InProject.locate(EXT_SIGNED_DIR);
 
     String id = ((HasExtensions) driver).installExtension(extension);
-    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+    assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     driver.get(pages.blankPage);
     WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));

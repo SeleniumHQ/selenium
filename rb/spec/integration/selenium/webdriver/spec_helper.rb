@@ -45,7 +45,9 @@ RSpec.configure do |c|
     GlobalTestEnv.quit_driver
   end
 
-  c.filter_run focus: true if ENV['focus']
+  c.filter_run_when_matching :focus
+  c.run_all_when_everything_filtered = true
+  c.default_formatter = c.files_to_run.count > 1 ? 'progress' : 'doc'
 
   c.before do |example|
     guards = WebDriver::Support::Guards.new(example, bug_tracker: 'https://github.com/SeleniumHQ/selenium/issues')
@@ -54,6 +56,8 @@ RSpec.configure do |c|
     guards.add_condition(:ci, WebDriver::Platform.ci)
     guards.add_condition(:platform, WebDriver::Platform.os)
     guards.add_condition(:headless, !ENV['HEADLESS'].nil?)
+    guards.add_condition(:bidi, !ENV['WEBDRIVER_BIDI'].nil?)
+    guards.add_condition(:rbe, GlobalTestEnv.rbe?)
 
     results = guards.disposition
     send(*results) if results
@@ -61,7 +65,7 @@ RSpec.configure do |c|
 
   c.after do |example|
     result = example.execution_result
-    reset_driver! if result.exception || result.pending_exception
+    reset_driver! if example.exception || result.pending_exception
   end
 end
 

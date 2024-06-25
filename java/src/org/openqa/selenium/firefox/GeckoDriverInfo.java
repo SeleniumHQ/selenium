@@ -22,15 +22,12 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.auto.service.AutoService;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
-import org.openqa.selenium.remote.NoSuchDriverException;
 import org.openqa.selenium.remote.service.DriverFinder;
 
 @AutoService(WebDriverInfo.class)
@@ -68,29 +65,14 @@ public class GeckoDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isAvailable() {
-    try {
-      DriverFinder.getPath(GeckoDriverService.createDefaultService(), getCanonicalCapabilities());
-      return true;
-    } catch (NoSuchDriverException e) {
-      return false;
-    } catch (IllegalStateException | WebDriverException e) {
-      LOG.log(Level.WARNING, "failed to discover driver path", e);
-      return false;
-    }
+    return new DriverFinder(GeckoDriverService.createDefaultService(), getCanonicalCapabilities())
+        .isAvailable();
   }
 
   @Override
   public boolean isPresent() {
-    try {
-      DriverFinder.getPath(
-          GeckoDriverService.createDefaultService(), getCanonicalCapabilities(), true);
-      return true;
-    } catch (NoSuchDriverException e) {
-      return false;
-    } catch (IllegalStateException | WebDriverException e) {
-      LOG.log(Level.WARNING, "failed to discover driver path", e);
-      return false;
-    }
+    return new DriverFinder(GeckoDriverService.createDefaultService(), getCanonicalCapabilities())
+        .isPresent();
   }
 
   @Override

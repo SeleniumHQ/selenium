@@ -61,7 +61,7 @@ namespace OpenQA.Selenium.Firefox
         private const string FirefoxEnableDevToolsProtocolCapability = "moz:debuggerAddress";
 
         private bool enableDevToolsProtocol;
-        private string browserBinaryLocation;
+        private string binaryLocation;
         private FirefoxDriverLogLevel logLevel = FirefoxDriverLogLevel.Default;
         private FirefoxProfile profile;
         private List<string> firefoxArguments = new List<string>();
@@ -88,6 +88,9 @@ namespace OpenQA.Selenium.Firefox
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyProfileCapability, "Profile property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyBinaryCapability, "BrowserExecutableLocation property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxEnableDevToolsProtocolCapability, "EnableDevToolsProtocol property");
+            // Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
+            // https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
+            this.SetPreference("remote.active-protocols", 3);
         }
 
         /// <summary>
@@ -104,17 +107,18 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         public override string BinaryLocation
         {
-            get { return this.browserBinaryLocation; }
-            set { this.browserBinaryLocation = value; }
+            get { return this.binaryLocation; }
+            set { this.binaryLocation = value; }
         }
 
         /// <summary>
         /// Gets or sets the path and file name of the Firefox browser executable.
         /// </summary>
+        [Obsolete("Use BinaryLocation property instead of BrowserExecutableLocation. This one will be removed soon.")]
         public string BrowserExecutableLocation
         {
-            get { return this.browserBinaryLocation; }
-            set { this.browserBinaryLocation = value; }
+            get { return this.binaryLocation; }
+            set { this.binaryLocation = value; }
         }
 
         /// <summary>
@@ -302,9 +306,9 @@ namespace OpenQA.Selenium.Firefox
                 firefoxOptions[FirefoxProfileCapability] = this.profile.ToBase64String();
             }
 
-            if (!string.IsNullOrEmpty(this.browserBinaryLocation))
+            if (!string.IsNullOrEmpty(this.binaryLocation))
             {
-                firefoxOptions[FirefoxBinaryCapability] = this.browserBinaryLocation;
+                firefoxOptions[FirefoxBinaryCapability] = this.binaryLocation;
             }
 
             if (this.logLevel != FirefoxDriverLogLevel.Default)

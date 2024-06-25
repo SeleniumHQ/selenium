@@ -17,7 +17,7 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const { Browser, By } = require('../../')
 const { Pages, suite, ignore } = require('../../lib/test')
 const BrowsingContext = require('../../bidi/browsingContext')
@@ -158,52 +158,67 @@ suite(
         assert(navigationInfo.url.includes('linkToAnchorOnThisPage'))
       })
 
-      xit('can listen to user prompt opened event', async function () {
-        let userpromptOpened = null
-        const browsingConextInspector = await BrowsingContextInspector(driver)
+      ignore(env.browsers(Browser.EDGE, Browser.CHROME)).it(
+        'can listen to user prompt opened event',
+        async function () {
+          let userpromptOpened = null
+          const browsingcontextInspector = await BrowsingContextInspector(driver)
 
-        const browsingContext = await BrowsingContext(driver, {
-          browsingContextId: await driver.getWindowHandle(),
-        })
+          const browsingContext = await BrowsingContext(driver, {
+            browsingContextId: await driver.getWindowHandle(),
+          })
 
-        await driver.get(Pages.alertsPage)
+          await browsingcontextInspector.onUserPromptOpened((entry) => {
+            userpromptOpened = entry
+          })
 
-        await driver.findElement(By.id('alert')).click()
+          await driver.get(Pages.alertsPage)
 
-        await driver.wait(until.alertIsPresent())
+          await driver.findElement(By.id('alert')).click()
 
-        await browsingConextInspector.onUserPromptOpened((entry) => {
-          userpromptOpened = entry
-        })
+          await driver.wait(until.alertIsPresent())
 
-        assert.equal(userpromptOpened.browsingContextId, browsingContext.id)
-        assert.equal(userpromptOpened.type, 'alert')
-      })
+          await browsingContext.handleUserPrompt(true)
 
-      xit('can listen to user prompt closed event', async function () {
-        let userpromptClosed = null
-        const browsingConextInspector = await BrowsingContextInspector(driver)
+          // Chrome/Edge do not return the window's browsing context id as per the spec.
+          // This assertion fails.
+          // It is probably a bug in the Chrome/Edge driver.
+          assert.equal(userpromptOpened.browsingContextId, browsingContext.id)
+          assert.equal(userpromptOpened.type, 'alert')
+        },
+      )
 
-        const browsingContext = await BrowsingContext(driver, {
-          browsingContextId: await driver.getWindowHandle(),
-        })
+      ignore(env.browsers(Browser.EDGE, Browser.CHROME)).it(
+        'can listen to user prompt closed event',
+        async function () {
+          const windowHandle = await driver.getWindowHandle()
+          let userpromptClosed = null
+          const browsingcontextInspector = await BrowsingContextInspector(driver, windowHandle)
 
-        await driver.get(Pages.alertsPage)
+          const browsingContext = await BrowsingContext(driver, {
+            browsingContextId: windowHandle,
+          })
 
-        await driver.findElement(By.id('prompt')).click()
+          await driver.get(Pages.alertsPage)
 
-        await driver.wait(until.alertIsPresent())
+          await driver.findElement(By.id('prompt')).click()
 
-        await browsingConextInspector.onUserPromptClosed((entry) => {
-          userpromptClosed = entry
-        })
+          await driver.wait(until.alertIsPresent())
 
-        await browsingContext.handleUserPrompt(true, 'selenium')
+          await browsingcontextInspector.onUserPromptClosed((entry) => {
+            userpromptClosed = entry
+          })
 
-        assert.equal(userpromptClosed.browsingContextId, browsingContext.id)
-        assert.equal(userpromptClosed.accepted, true)
-        assert.equal(userpromptClosed.userText, 'selenium')
-      })
+          await browsingContext.handleUserPrompt(true, 'selenium')
+
+          // Chrome/Edge do not return the window's browsing context id as per the spec.
+          // This assertion fails.
+          // It is probably a bug in the Chrome/Edge driver.
+          assert.equal(userpromptClosed.browsingContextId, browsingContext.id)
+          assert.equal(userpromptClosed.accepted, true)
+          assert.equal(userpromptClosed.userText, 'selenium')
+        },
+      )
     })
   },
   { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },

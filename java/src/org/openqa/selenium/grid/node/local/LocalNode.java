@@ -154,7 +154,12 @@ public class LocalNode extends Node {
       List<SessionSlot> factories,
       Secret registrationSecret,
       boolean managedDownloadsEnabled) {
-    super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
+    super(
+        tracer,
+        new NodeId(UUID.randomUUID()),
+        uri,
+        registrationSecret,
+        Require.positive(sessionTimeout));
 
     this.bus = Require.nonNull("Event bus", bus);
 
@@ -906,6 +911,7 @@ public class LocalNode extends Node {
         slots,
         availability,
         heartbeatPeriod,
+        getSessionTimeout(),
         getNodeVersion(),
         getOsInfo());
   }

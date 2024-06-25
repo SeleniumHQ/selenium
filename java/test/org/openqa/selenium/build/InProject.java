@@ -69,7 +69,7 @@ public class InProject {
     if (!Platform.getCurrent().is(WINDOWS)) {
       dir = findRunfilesRoot();
       if (dir != null) {
-        return dir.resolve("selenium").normalize();
+        return dir.resolve("_main").normalize();
       }
     }
 

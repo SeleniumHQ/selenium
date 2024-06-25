@@ -74,8 +74,10 @@ py/selenium/webdriver/remote/findElements.js
 py/selenium/webdriver/remote/getAttribute.js
 py/selenium/webdriver/remote/isDisplayed.js
 py/docs/build/
+py/docs/source/**/*
 py/build/
 py/LICENSE
+py/pytestdebug.log
 selenium.egg-info/
 third_party/java/jetty/jetty-repacked.jar
 *.user
@@ -125,6 +127,7 @@ bazel-genfiles
 bazel-out
 bazel-selenium
 bazel-testlogs
+MODULE.bazel.lock
 
 /.vscode/
 /.scannerwork/

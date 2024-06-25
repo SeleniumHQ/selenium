@@ -913,18 +913,23 @@ public class CdpClientGenerator {
       fromJson.getBody().get().addStatement(String.format("return new %s(%s);", name, getMapper()));
 
       MethodDeclaration toJson = classDecl.addMethod("toJson").setPublic(true);
-      if (type.equals("object")) {
-        toJson.setType("java.util.Map<String, Object>");
-        toJson.getBody().get().addStatement(String.format("return %s;", propertyName));
-      } else if (type.equals("number")) {
-        toJson.setType(Number.class);
-        toJson.getBody().get().addStatement(String.format("return %s;", propertyName));
-      } else if (type.equals("integer")) {
-        toJson.setType(Integer.class);
-        toJson.getBody().get().addStatement(String.format("return %s;", propertyName));
-      } else {
-        toJson.setType(String.class);
-        toJson.getBody().get().addStatement(String.format("return %s.toString();", propertyName));
+      switch (type) {
+        case "object":
+          toJson.setType("java.util.Map<String, Object>");
+          toJson.getBody().get().addStatement(String.format("return %s;", propertyName));
+          break;
+        case "number":
+          toJson.setType(Number.class);
+          toJson.getBody().get().addStatement(String.format("return %s;", propertyName));
+          break;
+        case "integer":
+          toJson.setType(Integer.class);
+          toJson.getBody().get().addStatement(String.format("return %s;", propertyName));
+          break;
+        default:
+          toJson.setType(String.class);
+          toJson.getBody().get().addStatement(String.format("return %s.toString();", propertyName));
+          break;
       }
 
       MethodDeclaration toString = classDecl.addMethod("toString").setPublic(true);
