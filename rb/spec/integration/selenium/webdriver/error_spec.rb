@@ -21,13 +21,13 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Error do
+    describe Error, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       it 'raises an appropriate error' do
         driver.navigate.to url_for('xhtmlTest.html')
 
         expect {
           driver.find_element(id: 'nonexistent')
-        }.to raise_error(WebDriver::Error::NoSuchElementError)
+        }.to raise_error(WebDriver::Error::NoSuchElementError, /#no-such-element-exception/)
       end
     end
   end # WebDriver

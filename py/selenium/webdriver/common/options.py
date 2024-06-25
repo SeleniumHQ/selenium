@@ -44,12 +44,23 @@ class _BaseOptionsDescriptor:
         self.name = name
 
     def __get__(self, obj, cls):
+        if self.name == "enableBidi":
+            # whether BiDi is or will be enabled
+            value = obj._caps.get("webSocketUrl")
+            return value is True or isinstance(value, str)
+        if self.name == "webSocketUrl":
+            # Return socket url or None if not created yet
+            value = obj._caps.get(self.name)
+            return None if not isinstance(value, str) else value
         if self.name in ("acceptInsecureCerts", "strictFileInteractability", "setWindowRect", "se:downloadsEnabled"):
             return obj._caps.get(self.name, False)
         return obj._caps.get(self.name)
 
     def __set__(self, obj, value):
-        obj.set_capability(self.name, value)
+        if self.name == "enableBidi":
+            obj.set_capability("webSocketUrl", value)
+        else:
+            obj.set_capability(self.name, value)
 
 
 class _PageLoadStrategyDescriptor:
@@ -249,6 +260,50 @@ class BaseOptions(metaclass=ABCMeta):
         - `None`
     """
 
+    enable_bidi = _BaseOptionsDescriptor("enableBidi")
+    """Gets and Set whether the session has WebDriverBiDi enabled.
+
+    Usage
+    -----
+    - Get
+        - `self.enable_bidi`
+    - Set
+        - `self.enable_bidi` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+
+    Returns
+    -------
+    - Get
+        - `bool`
+    - Set
+        - `None`
+    """
+
+    web_socket_url = _BaseOptionsDescriptor("webSocketUrl")
+    """Gets and Set whether the session accepts insecure certificates.
+
+    Usage
+    -----
+    - Get
+        - `self.web_socket_url`
+    - Set
+        - `self.web_socket_url` = `value`
+
+    Parameters
+    ----------
+    `value`: `str`
+
+    Returns
+    -------
+    - Get
+        - `str` or `None`
+    - Set
+        - `None`
+    """
+
     page_load_strategy = _PageLoadStrategyDescriptor("pageLoadStrategy")
     """:Gets and Sets page load strategy, the default is "normal".
 
@@ -348,6 +403,28 @@ class BaseOptions(metaclass=ABCMeta):
         - `self.enable_downloads`
     - Set
         - `self.enable_downloads` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+
+    Returns
+    -------
+    - Get
+        - `bool`
+    - Set
+        - `None`
+    """
+
+    web_socket_url = _BaseOptionsDescriptor("webSocketUrl")
+    """Gets and Sets WebSocket URL.
+
+    Usage
+    -----
+    - Get
+        - `self.web_socket_url`
+    - Set
+        - `self.web_socket_url` = `value`
 
     Parameters
     ----------

@@ -1,0 +1,20 @@
+module Selenium
+  module WebDriver
+    class Script
+      @bidi: BiDi
+      @log_entry_subscribed: bool
+
+      def add_console_message_handler: -> untyped
+
+      def add_javascript_error_handler: -> untyped
+
+      def remove_console_message_handler: -> untyped
+
+      alias remove_javascript_error_handler remove_console_message_handler
+
+      private
+
+      def subscribe_log_entry: -> untyped
+    end
+  end
+end

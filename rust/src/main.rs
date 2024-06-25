@@ -178,8 +178,8 @@ fn main() {
             log.error(&err);
             flush_and_exit(DATAERR, &log, Some(err));
         })
-    } else if grid.is_some() {
-        GridManager::new(grid.as_ref().unwrap().to_string()).unwrap_or_else(|err| {
+    } else if let Some(grid_value) = &grid {
+        GridManager::new(grid_value.to_string()).unwrap_or_else(|err| {
             log.error(&err);
             flush_and_exit(DATAERR, &log, Some(err));
         })
@@ -283,7 +283,7 @@ fn log_driver_and_browser_path(
     if driver_path.exists() {
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
     } else {
-        log.error(format!("Driver unavailable: {}", DRIVER_PATH));
+        log.error(format!("Driver unavailable: {}", driver_path.display()));
         flush_and_exit(UNAVAILABLE, log, None);
     }
     if !browser_path.is_empty() {

@@ -1,24 +1,31 @@
 module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.3.2")
-bazel_dep(name = "aspect_bazel_lib", version = "2.7.3")
-bazel_dep(name = "aspect_rules_esbuild", version = "0.20.0")
+bazel_dep(name = "aspect_bazel_lib", version = "2.7.7")
+bazel_dep(name = "aspect_rules_esbuild", version = "0.20.1")
 bazel_dep(name = "aspect_rules_js", version = "1.42.3")
-bazel_dep(name = "aspect_rules_ts", version = "2.1.0")
-bazel_dep(name = "bazel_features", version = "1.9.1")
-bazel_dep(name = "bazel_skylib", version = "1.5.0")
+bazel_dep(name = "aspect_rules_ts", version = "2.4.2")
+bazel_dep(name = "bazel_features", version = "1.13.0")
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
 bazel_dep(name = "buildifier_prebuilt", version = "6.4.0")
-bazel_dep(name = "contrib_rules_jvm", version = "0.24.0")
+bazel_dep(name = "contrib_rules_jvm", version = "0.27.0")
 bazel_dep(name = "platforms", version = "0.0.10")
-bazel_dep(name = "rules_dotnet", version = "0.14.0")
-bazel_dep(name = "rules_java", version = "7.4.0")
+
+# Required for the closure rules
+bazel_dep(name = "protobuf", version = "21.7", dev_dependency = True, repo_name = "com_google_protobuf")
+
+# Required for rules_rust to import the crates properly
+bazel_dep(name = "rules_cc", version = "0.0.9", dev_dependency = True)
+
+bazel_dep(name = "rules_dotnet", version = "0.15.1")
+bazel_dep(name = "rules_java", version = "7.6.3")
 bazel_dep(name = "rules_jvm_external", version = "6.1")
-bazel_dep(name = "rules_nodejs", version = "6.0.5")
-bazel_dep(name = "rules_oci", version = "1.0.0")
-bazel_dep(name = "rules_pkg", version = "0.9.1")
-bazel_dep(name = "rules_python", version = "0.31.0")
-bazel_dep(name = "rules_proto", version = "5.3.0-21.7")
-bazel_dep(name = "rules_ruby", version = "0.8.1")
+bazel_dep(name = "rules_nodejs", version = "6.2.0")
+bazel_dep(name = "rules_oci", version = "1.7.6")
+bazel_dep(name = "rules_pkg", version = "0.10.1")
+bazel_dep(name = "rules_python", version = "0.33.0")
+bazel_dep(name = "rules_proto", version = "6.0.0")
+bazel_dep(name = "rules_ruby", version = "0.11.0")
 
 linter = use_extension("@apple_rules_lint//lint:extensions.bzl", "linter")
 linter.configure(
@@ -33,6 +40,9 @@ linter.register(name = "rust-rustfmt")
 
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
 node.toolchain(node_version = "18.17.0")
+
+pnpm = use_extension("@aspect_rules_js//npm:extensions.bzl", "pnpm", dev_dependency = True)
+use_repo(pnpm, "pnpm")
 
 npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
 npm.npm_translate_lock(
@@ -155,11 +165,11 @@ maven.install(
     name = "maven",
     artifacts = [
         "com.beust:jcommander:1.82",
-        "com.github.javaparser:javaparser-core:3.25.10",
-        "com.github.spotbugs:spotbugs:4.8.5",
+        "com.github.javaparser:javaparser-core:3.26.0",
+        "com.github.spotbugs:spotbugs:4.8.6",
         "com.github.stephenc.jcip:jcip-annotations:1.0-1",
-        "com.google.code.gson:gson:2.10.1",
-        "com.google.guava:guava:33.2.0-jre",
+        "com.google.code.gson:gson:2.11.0",
+        "com.google.guava:guava:33.2.1-jre",
         "com.google.auto:auto-common:1.2.2",
         "com.google.auto.service:auto-service:1.1.1",
         "com.google.auto.service:auto-service-annotations:1.1.1",
@@ -169,33 +179,33 @@ maven.install(
         "dev.failsafe:failsafe:3.3.2",
         "io.grpc:grpc-context:1.64.0",
         "io.lettuce:lettuce-core:6.3.2.RELEASE",
-        "io.netty:netty-buffer:4.1.109.Final",
-        "io.netty:netty-codec-http:4.1.109.Final",
-        "io.netty:netty-codec-http2:4.1.109.Final",
-        "io.netty:netty-common:4.1.109.Final",
-        "io.netty:netty-handler:4.1.109.Final",
-        "io.netty:netty-handler-proxy:4.1.109.Final",
-        "io.netty:netty-transport:4.1.109.Final",
-        "io.opentelemetry:opentelemetry-api:1.38.0",
-        "io.opentelemetry:opentelemetry-context:1.38.0",
-        "io.opentelemetry:opentelemetry-exporter-logging:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk-common:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk-testing:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk-trace:1.38.0",
+        "io.netty:netty-buffer:4.1.111.Final",
+        "io.netty:netty-codec-http:4.1.111.Final",
+        "io.netty:netty-codec-http2:4.1.111.Final",
+        "io.netty:netty-common:4.1.111.Final",
+        "io.netty:netty-handler:4.1.111.Final",
+        "io.netty:netty-handler-proxy:4.1.111.Final",
+        "io.netty:netty-transport:4.1.111.Final",
+        "io.opentelemetry:opentelemetry-api:1.39.0",
+        "io.opentelemetry:opentelemetry-context:1.39.0",
+        "io.opentelemetry:opentelemetry-exporter-logging:1.39.0",
+        "io.opentelemetry:opentelemetry-sdk:1.39.0",
+        "io.opentelemetry:opentelemetry-sdk-common:1.39.0",
+        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.39.0",
+        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.39.0",
+        "io.opentelemetry:opentelemetry-sdk-testing:1.39.0",
+        "io.opentelemetry:opentelemetry-sdk-trace:1.39.0",
         "io.opentelemetry.semconv:opentelemetry-semconv:1.25.0-alpha",
         "io.ous:jtoml:2.0.0",
         "it.ozimov:embedded-redis:0.7.3",
-        "net.bytebuddy:byte-buddy:1.14.15",
-        "org.htmlunit:htmlunit-core-js:4.1.0",
+        "net.bytebuddy:byte-buddy:1.14.17",
+        "org.htmlunit:htmlunit-core-js:4.2.0",
         "org.apache.commons:commons-exec:1.4.0",
         "org.apache.logging.log4j:log4j-core:2.23.1",
-        "org.assertj:assertj-core:3.25.3",
+        "org.assertj:assertj-core:3.26.0",
         "org.bouncycastle:bcpkix-jdk18on:1.78.1",
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
-        "org.hsqldb:hsqldb:2.7.2",
+        "org.hsqldb:hsqldb:2.7.3",
         "org.junit.jupiter:junit-jupiter-api:5.10.2",
         "org.junit.jupiter:junit-jupiter-engine:5.10.2",
         "org.junit.jupiter:junit-jupiter-params:5.10.2",
@@ -204,7 +214,7 @@ maven.install(
         "org.junit.platform:junit-platform-commons:1.10.2",
         "org.junit.platform:junit-platform-engine:1.10.2",
         "org.mockito:mockito-core:5.12.0",
-        "org.redisson:redisson:3.30.0",
+        "org.redisson:redisson:3.31.0",
         "org.slf4j:slf4j-api:2.0.13",
         "org.slf4j:slf4j-jdk14:2.0.13",
         "org.zeromq:jeromq:0.6.0",

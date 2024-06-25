@@ -20,13 +20,13 @@
 const assert = require('node:assert'),
   sinon = require('sinon')
 
-const Capabilities = require('../../lib/capabilities').Capabilities,
-  Command = require('../../lib/command').Command,
-  CommandName = require('../../lib/command').Name,
-  error = require('../../lib/error'),
-  http = require('../../lib/http'),
-  Session = require('../../lib/session').Session,
-  WebElement = require('../../lib/webdriver').WebElement
+const Capabilities = require('selenium-webdriver/lib/capabilities').Capabilities,
+  Command = require('selenium-webdriver/lib/command').Command,
+  CommandName = require('selenium-webdriver/lib/command').Name,
+  error = require('selenium-webdriver/lib/error'),
+  http = require('selenium-webdriver/lib/http'),
+  Session = require('selenium-webdriver/lib/session').Session,
+  WebElement = require('selenium-webdriver/lib/webdriver').WebElement
 
 describe('http', function () {
   describe('buildPath', function () {

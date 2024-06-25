@@ -14,9 +14,6 @@ dotnet_nunit_test_suite(
     size = "small",
     srcs = SMALL_TESTS,
     target_frameworks = ["net7.0"],
-    targeting_packs = [
-        framework("nuget", "NETStandard.Library"),
-    ],
     deps = [
         "//dotnet/src/support",
         "//dotnet/src/webdriver",
@@ -45,9 +42,6 @@ dotnet_nunit_test_suite(
         "//dotnet/test/common:test-data",
     ],
     target_frameworks = ["net7.0"],
-    targeting_packs = [
-        framework("nuget", "NETStandard.Library"),
-    ],
     deps = [
         "//dotnet/src/support",
         "//dotnet/src/webdriver",

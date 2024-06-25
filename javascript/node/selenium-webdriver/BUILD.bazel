@@ -10,12 +10,12 @@ load("//javascript:defs.bzl", "mocha_test")
 
 npm_link_all_packages(name = "node_modules")
 
-VERSION = "4.22.0-nightly202405160507"
+VERSION = "4.23.0-nightly202406201609"
 
 BROWSER_VERSIONS = [
     "v85",
     "v125",
-    "v123",
+    "v126",
     "v124",
 ]
 
@@ -38,6 +38,11 @@ js_library(
         "common/*.js",
         "bidi/*.js",
     ]),
+    deps = [
+        ":node_modules/jszip",
+        ":node_modules/tmp",
+        ":node_modules/ws",
+    ],
 )
 
 npm_package(
@@ -117,27 +122,18 @@ js_library(
 mocha_test(
     name = "small-tests",
     size = "small",
+    args = ["./**/*test.js"],
     chdir = package_name(),
     data = [
         ":node_modules/@bazel/runfiles",
-        ":node_modules/jszip",
         ":node_modules/mocha",
         ":node_modules/mocha-junit-reporter",
         ":node_modules/sinon",
-        ":node_modules/tmp",
-        ":node_modules/ws",
         ":small-test-srcs",
         ":test-data",
         "//:node_modules/selenium-webdriver",
         "//common/extensions:js-lib",
         "//common/src/web:js-lib",
-        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
-        "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
-        "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
-        "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
-    ],
-    tags = [
-        "skip-remote",
     ],
 )
 

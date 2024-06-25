@@ -152,7 +152,7 @@ class FirefoxProfile:
         if self._desired_preferences:
             self.update_preferences()
         fp = BytesIO()
-        with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED) as zipped:
+        with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED, strict_timestamps=False) as zipped:
             path_root = len(self.path) + 1  # account for trailing slash
             for base, _, files in os.walk(self.path):
                 for fyle in files:

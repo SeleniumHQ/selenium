@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Timeouts do
+    describe Timeouts, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       before do
         driver.manage.timeouts.implicit_wait = 6
         driver.manage.timeouts.page_load = 2

@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe ActionBuilder do
+    describe ActionBuilder, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       after { driver.action.clear_all_actions }
 
       describe '#send_keys' do
