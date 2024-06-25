@@ -7,12 +7,9 @@ module Selenium
 
       ERROR_URL: String
 
+      URLS: Hash[Symbol, String]
+
       class WebDriverError < StandardError
-        def url: -> String
-
-        private
-
-        def parsed_class_name: -> String
       end
 
       class NoSuchElementError < WebDriverError
