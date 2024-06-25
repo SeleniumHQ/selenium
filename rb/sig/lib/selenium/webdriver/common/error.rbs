@@ -7,12 +7,16 @@ module Selenium
 
       ERROR_URL: String
 
+      URLS: Hash[Symbol, String]
+
       class WebDriverError < StandardError
         @backtrace_locations: Array[Thread::Backtrace::Location]?
         @cause: Exception?
 
         attr_writer backtrace_locations:  Array[Thread::Backtrace::Location]?
         attr_writer cause: Exception?
+
+        def class_name: -> Symbol?
       end
 
       class NoSuchElementError < WebDriverError
