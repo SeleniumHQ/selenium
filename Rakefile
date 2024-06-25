@@ -1035,6 +1035,7 @@ namespace :all do
     Rake::Task['dotnet:release'].invoke(*args)
     Rake::Task['node:release'].invoke(*args)
 
+    # TODO: Update this so it happens in each language, but does not commit
     Rake::Task['all:version'].invoke('nightly')
 
     puts 'Committing nightly version updates'
@@ -1095,6 +1096,7 @@ namespace :all do
     commit!('Update authors file', ['AUTHORS'])
 
     # Note that this does not include Rust version changes that are handled in separate rake:version task
+    # TODO: These files are all defined in other tasks; remove duplication
     Rake::Task['all:version'].invoke(version)
     commit!("FIX CHANGELOGS BEFORE MERGING!\n\nUpdate versions and change logs to release Selenium #{java_version}",
             ['dotnet/CHANGELOG',
