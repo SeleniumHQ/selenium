@@ -10,6 +10,7 @@ module Selenium
       URLS: Hash[Symbol, String]
 
       class WebDriverError < StandardError
+        def class_name: -> Symbol?
       end
 
       class NoSuchElementError < WebDriverError
