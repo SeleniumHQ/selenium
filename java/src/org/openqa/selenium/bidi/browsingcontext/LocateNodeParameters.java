@@ -23,25 +23,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.openqa.selenium.bidi.script.RemoteReference;
-import org.openqa.selenium.bidi.script.ResultOwnership;
 import org.openqa.selenium.bidi.script.SerializationOptions;
 
 public class LocateNodeParameters {
 
   private final Locator locator;
   private Optional<Long> maxNodeCount = Optional.empty();
-  private Optional<ResultOwnership> ownership = Optional.empty();
   private Optional<String> sandbox = Optional.empty();
   private Optional<SerializationOptions> serializationOptions = Optional.empty();
   private Optional<List<RemoteReference>> startNodes = Optional.empty();
-
-  private LocateNodeParameters(Builder builder) {
-    this.locator = builder.locator;
-    this.maxNodeCount = Optional.ofNullable(builder.maxNodeCount);
-    this.sandbox = Optional.ofNullable(builder.sandbox);
-    this.serializationOptions = Optional.ofNullable(builder.serializationOptions);
-    this.startNodes = Optional.ofNullable(builder.startNodes);
-  }
 
   public LocateNodeParameters(Locator locator) {
     this.locator = locator;
@@ -82,48 +72,5 @@ public class LocateNodeParameters {
         });
 
     return map;
-  }
-
-  /**
-   * @deprecated Use the chaining of LocateNodeParameters methods to add optional parameters. This
-   *     is in favor of keeping the usage pattern consistent for BiDi parameters. Use the {@link
-   *     LocateNodeParameters#LocateNodeParameters(Locator locator)} constructor and chain methods.
-   */
-  @Deprecated(since = "4.20", forRemoval = true)
-  public static class Builder {
-
-    private final Locator locator;
-    private Long maxNodeCount = null;
-    private String sandbox;
-    private SerializationOptions serializationOptions;
-    private List<RemoteReference> startNodes;
-
-    public Builder(Locator locator) {
-      this.locator = locator;
-    }
-
-    public Builder setMaxNodeCount(long maxNodeCount) {
-      this.maxNodeCount = maxNodeCount;
-      return this;
-    }
-
-    public Builder setSandbox(String sandbox) {
-      this.sandbox = sandbox;
-      return this;
-    }
-
-    public Builder setSerializationOptions(SerializationOptions options) {
-      this.serializationOptions = options;
-      return this;
-    }
-
-    public Builder setStartNodes(List<RemoteReference> startNodes) {
-      this.startNodes = startNodes;
-      return this;
-    }
-
-    public LocateNodeParameters build() {
-      return new LocateNodeParameters(this);
-    }
   }
 }
