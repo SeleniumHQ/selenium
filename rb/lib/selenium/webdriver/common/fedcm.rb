@@ -17,18 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative 'spec_helper'
-
 module Selenium
   module WebDriver
-    describe Error, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
-      it 'raises an appropriate error' do
-        driver.navigate.to url_for('xhtmlTest.html')
-
-        expect {
-          driver.find_element(id: 'nonexistent')
-        }.to raise_error(WebDriver::Error::NoSuchElementError, /#no-such-element-exception/)
-      end
-    end
+    module FedCM
+      autoload :Account, 'fedcm/account'
+      autoload :Dialog, 'fedcm/dialog'
+    end # FedCM
   end # WebDriver
 end # Selenium
