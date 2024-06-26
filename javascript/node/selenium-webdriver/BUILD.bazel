@@ -117,6 +117,9 @@ js_library(
             "test/**/*_test.js",
         ],
     ),
+    deps = [
+        ":node_modules/@bazel/runfiles",
+    ],
 )
 
 mocha_test(
@@ -152,23 +155,15 @@ mocha_test(
             ],
             chdir = package_name(),
             data = [
-                "test-data",
                 ":large-test-srcs",
-                ":node_modules/@bazel/runfiles",
                 ":node_modules/express",
-                ":node_modules/jszip",
                 ":node_modules/multer",
                 ":node_modules/serve-index",
                 ":node_modules/sinon",
-                ":node_modules/tmp",
-                ":node_modules/ws",
+                ":test-data",
                 "//:node_modules/selenium-webdriver",
                 "//common/extensions:js-lib",
                 "//common/src/web:js-lib",
-                "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
-                "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
-                "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
-                "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
             ],
             env = {
                 "SELENIUM_BROWSER": browser,
@@ -178,7 +173,6 @@ mocha_test(
                 "browser-test",
                 "no-sandbox",
                 "requires-network",
-                "skip-remote",
             ],
         ),
     ]
