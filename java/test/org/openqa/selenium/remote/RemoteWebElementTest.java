@@ -165,7 +165,7 @@ class RemoteWebElementTest {
 
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(fixture.element::click)
-        .withMessageStartingWith("BOOM!!!")
+        .withMessageStartingWith("response failed with unknown status: element click intercepted")
         .withMessageContaining("Build info: ")
         .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
         .withMessageContaining(String.format("Session ID: %s", fixture.driver.getSessionId()))

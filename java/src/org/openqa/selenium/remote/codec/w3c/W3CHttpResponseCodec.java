@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.codec.w3c;
 
 import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
-import static java.net.HttpURLConnection.HTTP_BAD_METHOD;
 import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -88,15 +87,12 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     // text"}
     if (!encodedResponse.isSuccessful()) {
       LOG.fine("Processing an error");
-      if (HTTP_BAD_METHOD == encodedResponse.getStatus()) {
-        response.setState("unknown command");
-        response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
-        response.setValue(content);
-      } else if (HTTP_GATEWAY_TIMEOUT == encodedResponse.getStatus()
+      if (HTTP_GATEWAY_TIMEOUT == encodedResponse.getStatus()
           || HTTP_BAD_GATEWAY == encodedResponse.getStatus()) {
         response.setState("unknown error");
         response.setStatus(ErrorCodes.UNHANDLED_ERROR);
-        response.setValue(content);
+        response.setValue(
+            new WebDriverException("http gateway error: " + encodedResponse.getStatus()));
       } else {
         Map<String, Object> org = json.toType(content, MAP_TYPE);
         Map<String, Object> obj;
