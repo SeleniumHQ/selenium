@@ -190,7 +190,7 @@ class PrintOptions:
     - Set
         - `self.page_width` = `value`
 
-    Patameters
+    Parameters
     ----------
     `value`: `float`
 
@@ -253,7 +253,7 @@ class PrintOptions:
     -----
     - Get
         - `self.margin_left`
-    -Set
+    - Set
         - `self.margin_left` = `value`
 
     Parameters

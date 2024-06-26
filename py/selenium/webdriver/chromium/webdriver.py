@@ -77,9 +77,9 @@ class ChromiumDriver(RemoteWebDriver):
     def get_network_conditions(self):
         """Gets Chromium network emulation settings.
 
-        :Returns:     A dict. For example:     {'latency': 4,
-        'download_throughput': 2, 'upload_throughput': 2,     'offline':
-        False}
+        :Returns:
+            A dict.
+            For example:     {'latency': 4, 'download_throughput': 2, 'upload_throughput': 2, 'offline': False}
         """
         return self.execute("getNetworkConditions")["value"]
 
@@ -145,8 +145,7 @@ class ChromiumDriver(RemoteWebDriver):
         return self.execute("getSinks")["value"]
 
     def get_issue_message(self):
-        """:Returns: An error message when there is any issue in a Cast
-        session."""
+        """:Returns: An error message when there is any issue in a Cast session."""
         return self.execute("getIssueMessage")["value"]
 
     def set_sink_to_use(self, sink_name: str) -> dict:
