@@ -23,12 +23,12 @@
     "node": ">= 14.21.0"
   },
   "dependencies": {
+    "@bazel/runfiles": "^5.8.1",
     "jszip": "^3.10.1",
     "tmp": "^0.2.3",
     "ws": "^8.17.1"
   },
   "devDependencies": {
-    "@bazel/runfiles": "^5.8.1",
     "@eslint/js": "^9.5.0",
     "clean-jsdoc-theme": "^4.3.0",
     "eslint": "^9.5.0",

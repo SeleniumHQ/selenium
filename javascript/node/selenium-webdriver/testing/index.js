@@ -33,6 +33,8 @@
 'use strict'
 
 const { isatty } = require('node:tty')
+const fs = require('node:fs')
+const runfiles = require('@bazel/runfiles')
 const chrome = require('../chrome')
 const edge = require('../edge')
 const firefox = require('../firefox')
@@ -288,6 +290,23 @@ class Environment {
     const urlOrServer = URL_MAP.get(this)
 
     const builder = new Builder()
+
+    // Sniff the environment variables for paths to use for the common browsers
+    // Chrome
+    if ('SE_CHROMEDRIVER' in process.env) {
+      const found = locate(process.env.SE_CHROMEDRIVER)
+      const service = new chrome.ServiceBuilder(found)
+      builder.setChromeService(service)
+    }
+    if ('SE_CHROME' in process.env) {
+      const binary = locate(process.env.SE_CHROME)
+      const options = new chrome.Options()
+      options.setChromeBinaryPath(binary)
+      builder.setChromeOptions(options)
+    }
+    // Edge
+    // Firefox
+
     builder.disableEnvironmentOverrides()
 
     const realBuild = builder.build
@@ -503,6 +522,65 @@ function getTestHook(name) {
     )
   }
   return fn
+}
+
+function locate(fileLike) {
+  if (fs.existsSync(fileLike)) {
+    return fileLike
+  }
+  console.log("Falling through from regular finding", fileLike)
+
+  try {
+    return runfiles.resolve(fileLike)
+  } catch {
+    // Fall through
+    console.log("Initial resolve did not succeed", fileLike)
+  }
+
+  // Is the item in the workspace?
+  try {
+    return runfiles.resolveWorkspaceRelative(fileLike)
+  } catch {
+    // Fall through
+    console.log("Resolving relative to the workspace failed", fileLike)
+  }
+
+  // Find the repo mapping file
+  let repoMappingFile
+  try {
+    repoMappingFile = runfiles.resolve('_repo_mapping')
+  } catch {
+    throw new Error('Unable to locate ' + fileLike)
+  }
+  const lines = fs.readFileSync(repoMappingFile, { encoding: 'utf8' }).split('\n')
+
+  // Build a map of "repo we declared we need" to "path"
+  const mapping = {}
+  for (const line of lines) {
+    if (line.startsWith(',')) {
+      const parts = line.split(',', 3)
+      mapping[parts[1]] = parts[2]
+    }
+  }
+  console.log("Mappings for", fileLike, mapping)
+
+  // Get the first segment of the path
+  const pathSegments = fileLike.split('/')
+  if (!pathSegments.length) {
+    console.log("Not enough path segments for", fileLike)
+    throw new Error('Unable to locate ' + fileLike)
+  }
+
+  pathSegments[0] = mapping[pathSegments[0]] ? mapping[pathSegments[0]] : '_main'
+
+  try {
+    return runfiles.resolve(path.join(...pathSegments))
+  } catch {
+    // Fall through
+    console.log("Failed to resolve", path.join(...pathSegments))
+  }
+
+  throw new Error('Unable to find ' + fileLike)
 }
 
 // PUBLIC API

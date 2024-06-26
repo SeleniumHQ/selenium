@@ -39,6 +39,7 @@ js_library(
         "bidi/*.js",
     ]),
     deps = [
+        ":node_modules/@bazel/runfiles",
         ":node_modules/jszip",
         ":node_modules/tmp",
         ":node_modules/ws",
@@ -140,6 +141,29 @@ mocha_test(
     ],
 )
 
+BROWSERS = {
+    "chrome": {
+        "data": select({
+            "@selenium//common:use_pinned_linux_chrome": [
+                "@linux_chrome//:chrome-js",
+                "@linux_chromedriver//:chromedriver-js",
+            ],
+            "//conditions:default": [],
+        }),
+        "env": select({
+            "@selenium//common:use_pinned_linux_chrome": {
+                "SE_CHROMEDRIVER": "linux_chromedriver/chromedriver",
+                "SE_CHROME": "linux_chrome/Chrome.app/Contents/MacOS/Chrome",
+            },
+            "//conditions:default": {},
+        }),
+    },
+    "firefox": {
+        "data": [],
+        "env": {},
+    },
+}
+
 [
     [
         mocha_test(
@@ -164,10 +188,10 @@ mocha_test(
                 "//:node_modules/selenium-webdriver",
                 "//common/extensions:js-lib",
                 "//common/src/web:js-lib",
-            ],
+            ] + BROWSERS[browser]["data"],
             env = {
                 "SELENIUM_BROWSER": browser,
-            },
+            } | BROWSERS[browser]["env"],
             tags = [
                 browser,
                 "browser-test",
