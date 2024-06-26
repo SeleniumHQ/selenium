@@ -37,17 +37,29 @@ module Selenium
       SUPPORT_MSG = 'For documentation on this error, please visit:'
       ERROR_URL = 'https://www.selenium.dev/documentation/webdriver/troubleshooting/errors'
 
-      class WebDriverError < StandardError; end
+      URLS = {
+        NoSuchElementError: "#{ERROR_URL}#no-such-element-exception",
+        StaleElementReferenceError: "#{ERROR_URL}#stale-element-reference-exception",
+        InvalidSelectorError: "#{ERROR_URL}#invalid-selector-exception",
+        NoSuchDriverError: "#{ERROR_URL}/driver_location"
+      }.freeze
+
+      class WebDriverError < StandardError
+        def initialize(msg = '')
+          # Remove this conditional when all the error pages have been documented
+          super(URLS[class_name] ? "#{msg}; #{SUPPORT_MSG} #{URLS[class_name]}" : msg)
+        end
+
+        def class_name
+          self.class.name&.split('::')&.last&.to_sym
+        end
+      end
 
       #
       # An element could not be located on the page using the given search parameters.
       #
 
-      class NoSuchElementError < WebDriverError
-        def initialize(msg = '')
-          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}#no-such-element-exception")
-        end
-      end
+      class NoSuchElementError < WebDriverError; end
 
       #
       # A command to switch to a frame could not be satisfied because the frame could not be found.
@@ -67,7 +79,7 @@ module Selenium
 
       class StaleElementReferenceError < WebDriverError
         def initialize(msg = '')
-          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}#stale-element-reference-exception")
+          super("#{msg}; #{SUPPORT_MSG} #{URLS[:StaleElementReferenceError]}")
         end
       end
 
@@ -143,11 +155,7 @@ module Selenium
       # Argument was an invalid selector.
       #
 
-      class InvalidSelectorError < WebDriverError
-        def initialize(msg = '')
-          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}#invalid-selector-exception")
-        end
-      end
+      class InvalidSelectorError < WebDriverError; end
 
       #
       # A new session could not be created.
@@ -232,11 +240,7 @@ module Selenium
       # Indicates that driver was not specified and could not be located.
       #
 
-      class NoSuchDriverError < WebDriverError
-        def initialize(msg = '')
-          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}/driver_location")
-        end
-      end
+      class NoSuchDriverError < WebDriverError; end
     end # Error
   end # WebDriver
 end # Selenium
