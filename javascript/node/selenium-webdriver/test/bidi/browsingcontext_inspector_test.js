@@ -27,19 +27,21 @@ const until = require('../../lib/until')
 suite(
   function (env) {
     let driver
+    let browsingcontextInspector
 
     beforeEach(async function () {
       driver = await env.builder().build()
     })
 
     afterEach(async function () {
+      await browsingcontextInspector.close()
       await driver.quit()
     })
 
     describe('Browsing Context Inspector', function () {
       it('can listen to window browsing context created event', async function () {
         let contextInfo = null
-        const browsingcontextInspector = await BrowsingContextInspector(driver)
+        browsingcontextInspector = await BrowsingContextInspector(driver)
         await browsingcontextInspector.onBrowsingContextCreated((entry) => {
           contextInfo = entry
         })
@@ -54,7 +56,7 @@ suite(
 
       it('can listen to browsing context destroyed event', async function () {
         let contextInfo = null
-        const browsingcontextInspector = await BrowsingContextInspector(driver)
+        browsingcontextInspector = await BrowsingContextInspector(driver)
         await browsingcontextInspector.onBrowsingContextDestroyed((entry) => {
           contextInfo = entry
         })
@@ -72,7 +74,7 @@ suite(
 
       it('can listen to tab browsing context created event', async function () {
         let contextInfo = null
-        const browsingcontextInspector = await BrowsingContextInspector(driver)
+        browsingcontextInspector = await BrowsingContextInspector(driver)
         await browsingcontextInspector.onBrowsingContextCreated((entry) => {
           contextInfo = entry
         })
@@ -87,7 +89,7 @@ suite(
       })
 
       it('can listen to dom content loaded event', async function () {
-        const browsingcontextInspector = await BrowsingContextInspector(driver)
+        browsingcontextInspector = await BrowsingContextInspector(driver)
         let navigationInfo = null
         await browsingcontextInspector.onDomContentLoaded((entry) => {
           navigationInfo = entry
@@ -104,7 +106,7 @@ suite(
 
       it('can listen to browsing context loaded event', async function () {
         let navigationInfo = null
-        const browsingcontextInspector = await BrowsingContextInspector(driver)
+        browsingcontextInspector = await BrowsingContextInspector(driver)
 
         await browsingcontextInspector.onBrowsingContextLoaded((entry) => {
           navigationInfo = entry
@@ -162,7 +164,7 @@ suite(
         'can listen to user prompt opened event',
         async function () {
           let userpromptOpened = null
-          const browsingcontextInspector = await BrowsingContextInspector(driver)
+          browsingcontextInspector = await BrowsingContextInspector(driver)
 
           const browsingContext = await BrowsingContext(driver, {
             browsingContextId: await driver.getWindowHandle(),
@@ -193,7 +195,7 @@ suite(
         async function () {
           const windowHandle = await driver.getWindowHandle()
           let userpromptClosed = null
-          const browsingcontextInspector = await BrowsingContextInspector(driver, windowHandle)
+          browsingcontextInspector = await BrowsingContextInspector(driver, windowHandle)
 
           const browsingContext = await BrowsingContext(driver, {
             browsingContextId: windowHandle,

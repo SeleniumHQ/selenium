@@ -27,19 +27,22 @@ const until = require('../../lib/until')
 suite(
   function (env) {
     let driver
+    let inspector
 
     beforeEach(async function () {
       driver = await env.builder().build()
+      inspector = await logInspector(driver)
     })
 
     afterEach(async function () {
+      await inspector.close()
       await driver.quit()
     })
 
     describe('Integration Tests', function () {
       it('can navigate and listen to errors', async function () {
         let logEntry = null
-        const inspector = await logInspector(driver)
+
         await inspector.onJavascriptException(function (log) {
           logEntry = log
         })
@@ -61,7 +64,6 @@ suite(
         assert.equal(logEntry.type, 'javascript')
         assert.equal(logEntry.level, 'error')
 
-        await inspector.close()
         await browsingContext.close()
       })
     })

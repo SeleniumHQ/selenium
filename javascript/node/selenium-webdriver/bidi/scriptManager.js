@@ -486,6 +486,23 @@ class ScriptManager {
       }
     })
   }
+
+  async close() {
+    if (
+      this._browsingContextIds !== null &&
+      this._browsingContextIds !== undefined &&
+      this._browsingContextIds.length > 0
+    ) {
+      await this.bidi.unsubscribe(
+        'script.message',
+        'script.realmCreated',
+        'script.realmDestroyed',
+        this._browsingContextIds,
+      )
+    } else {
+      await this.bidi.unsubscribe('script.message', 'script.realmCreated', 'script.realmDestroyed')
+    }
+  }
 }
 
 async function getScriptManagerInstance(browsingContextId, driver) {
