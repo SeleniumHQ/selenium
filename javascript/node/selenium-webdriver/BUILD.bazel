@@ -181,7 +181,8 @@ BROWSERS = {
             data = [
                 ":large-test-srcs",
                 ":node_modules/express",
-                ":node_modules/has-flag",
+                ":node_modules/mocha",
+                ":node_modules/mocha-junit-reporter",
                 ":node_modules/multer",
                 ":node_modules/serve-index",
                 ":node_modules/sinon",
