@@ -53,14 +53,6 @@ module Selenium
           super(URLS[class_name] ? "#{msg}; #{SUPPORT_MSG} #{URLS[class_name]}" : msg)
         end
 
-        def backtrace_locations
-          @backtrace_locations ||= Thread.current.backtrace_locations
-        end
-
-        def cause
-          @cause ||= $ERROR_INFO
-        end
-
         def class_name
           self.class.name&.split('::')&.last&.to_sym
         end

@@ -35,14 +35,10 @@ module Selenium
         end
 
         def error
-          error, message, backtrace = process_error
+          error, message = process_error
           klass = Error.for_error(error) || return
 
-          ex = klass.new(message)
-          ex.set_backtrace(caller)
-          add_backtrace ex, backtrace
-
-          ex
+          klass.new(message)
         end
 
         def [](key)
