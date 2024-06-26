@@ -528,13 +528,13 @@ function locate(fileLike) {
   if (fs.existsSync(fileLike)) {
     return fileLike
   }
-  console.log("Falling through from regular finding", fileLike)
+  console.warn("Falling through from regular finding", fileLike)
 
   try {
     return runfiles.resolve(fileLike)
   } catch {
     // Fall through
-    console.log("Initial resolve did not succeed", fileLike)
+    console.warn("Initial resolve did not succeed", fileLike)
   }
 
   // Is the item in the workspace?
@@ -542,7 +542,7 @@ function locate(fileLike) {
     return runfiles.resolveWorkspaceRelative(fileLike)
   } catch {
     // Fall through
-    console.log("Resolving relative to the workspace failed", fileLike)
+    console.warn("Resolving relative to the workspace failed", fileLike)
   }
 
   // Find the repo mapping file
@@ -550,7 +550,7 @@ function locate(fileLike) {
   try {
     repoMappingFile = runfiles.resolve('_repo_mapping')
   } catch {
-    throw new Error('Unable to locate ' + fileLike)
+    throw new Error('Unable to locate (no repo mapping file): ' + fileLike)
   }
   const lines = fs.readFileSync(repoMappingFile, { encoding: 'utf8' }).split('\n')
 
@@ -562,12 +562,12 @@ function locate(fileLike) {
       mapping[parts[1]] = parts[2]
     }
   }
-  console.log("Mappings for", fileLike, mapping)
+  console.warn("Mappings for", fileLike, mapping)
 
   // Get the first segment of the path
   const pathSegments = fileLike.split('/')
   if (!pathSegments.length) {
-    console.log("Not enough path segments for", fileLike)
+    console.warn("Not enough path segments for", fileLike)
     throw new Error('Unable to locate ' + fileLike)
   }
 
@@ -577,7 +577,7 @@ function locate(fileLike) {
     return runfiles.resolve(path.join(...pathSegments))
   } catch {
     // Fall through
-    console.log("Failed to resolve", path.join(...pathSegments))
+    console.warn("Failed to resolve", path.join(...pathSegments))
   }
 
   throw new Error('Unable to find ' + fileLike)
