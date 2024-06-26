@@ -330,7 +330,15 @@ class LogInspector {
    * @returns {Promise<void>}
    */
   async close() {
-    await this.bidi.unsubscribe('log.entryAdded', this._browsingContextIds)
+    if (
+      this._browsingContextIds !== null &&
+      this._browsingContextIds !== undefined &&
+      this._browsingContextIds.length > 0
+    ) {
+      await this.bidi.unsubscribe('log.entryAdded', this._browsingContextIds)
+    } else {
+      await this.bidi.unsubscribe('log.entryAdded')
+    }
   }
 }
 
