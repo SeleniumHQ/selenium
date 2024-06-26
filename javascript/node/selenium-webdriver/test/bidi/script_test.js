@@ -32,19 +32,21 @@ const { WebDriverError } = require('../../lib/error')
 suite(
   function (env) {
     let driver
+    let manager
 
     beforeEach(async function () {
       driver = await env.builder().build()
     })
 
     afterEach(async function () {
+      await manager.close()
       await driver.quit()
     })
 
     describe('Script Manager', function () {
       it('can call function with declaration', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const result = await manager.callFunctionInBrowsingContext(id, '()=>{return 1+2;}', false)
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
@@ -57,7 +59,7 @@ suite(
       it('can call function to get iframe browsing context', async function () {
         await driver.get(Pages.iframePage)
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -74,7 +76,7 @@ suite(
       it('can call function to get element', async function () {
         await driver.get(Pages.logEntryAdded)
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -90,7 +92,7 @@ suite(
 
       it('can call function with arguments', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         let argumentValues = []
         let value1 = new ArgumentValue(LocalValue.createStringValue('ARGUMENT_STRING_VALUE'))
@@ -113,7 +115,7 @@ suite(
 
       it('can call function with await promise', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -132,7 +134,7 @@ suite(
 
       it('can call function with await promise false', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -150,7 +152,7 @@ suite(
 
       it('can call function with this parameter', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         let mapValue = { some_property: LocalValue.createNumberValue(42) }
         let thisParameter = new ArgumentValue(LocalValue.createObjectValue(mapValue)).asMap()
@@ -171,7 +173,7 @@ suite(
 
       it('can call function with ownership root', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -189,7 +191,7 @@ suite(
 
       it('can call function with ownership none', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -207,7 +209,7 @@ suite(
 
       it('can call function that throws exception', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const result = await manager.callFunctionInBrowsingContext(id, '))) !!@@## some invalid JS script (((', false)
         assert.equal(result.resultType, EvaluateResultType.EXCEPTION)
@@ -221,7 +223,7 @@ suite(
 
       it('can call function in a sandbox', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         // Make changes without sandbox
         await manager.callFunctionInBrowsingContext(id, '() => { window.foo = 1; }', true)
@@ -267,7 +269,7 @@ suite(
       it('can call function in a realm', async function () {
         const firstTab = await driver.getWindowHandle()
         await driver.switchTo().newWindow('tab')
-        const manager = await ScriptManager(firstTab, driver)
+        manager = await ScriptManager(firstTab, driver)
 
         const realms = await manager.getAllRealms()
         const firstTabRealmId = realms[0].realmId
@@ -294,7 +296,7 @@ suite(
 
       it('can evaluate script', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const result = await manager.evaluateFunctionInBrowsingContext(id, '1 + 2', true)
 
@@ -307,7 +309,7 @@ suite(
 
       it('can evaluate script that throws exception', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const result = await manager.evaluateFunctionInBrowsingContext(
           id,
@@ -326,7 +328,7 @@ suite(
 
       it('can evaluate script with result ownership', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const result = await manager.evaluateFunctionInBrowsingContext(
           id,
@@ -344,7 +346,7 @@ suite(
 
       it('can evaluate in a sandbox', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         // Make changes without sandbox
         await manager.evaluateFunctionInBrowsingContext(id, 'window.foo = 1', true)
@@ -377,7 +379,7 @@ suite(
       it('can evaluate in a realm', async function () {
         const firstTab = await driver.getWindowHandle()
         await driver.switchTo().newWindow('tab')
-        const manager = await ScriptManager(firstTab, driver)
+        manager = await ScriptManager(firstTab, driver)
 
         const realms = await manager.getAllRealms()
         const firstTabRealmId = realms[0].realmId
@@ -404,7 +406,7 @@ suite(
 
       it('can disown handles', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const evaluateResult = await manager.evaluateFunctionInBrowsingContext(
           id,
@@ -439,7 +441,7 @@ suite(
 
       it('can disown handles in realm', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const evaluateResult = await manager.evaluateFunctionInBrowsingContext(
           id,
@@ -476,7 +478,7 @@ suite(
         const firstWindow = await driver.getWindowHandle()
         await driver.switchTo().newWindow('window')
         const secondWindow = await driver.getWindowHandle()
-        const manager = await ScriptManager(firstWindow, driver)
+        manager = await ScriptManager(firstWindow, driver)
 
         const realms = await manager.getAllRealms()
         assert.equal(realms.length, 2)
@@ -496,7 +498,7 @@ suite(
         const firstWindow = await driver.getWindowHandle()
         await driver.switchTo().newWindow('window')
         const secondWindow = await driver.getWindowHandle()
-        const manager = await ScriptManager(firstWindow, driver)
+        manager = await ScriptManager(firstWindow, driver)
 
         const realms = await manager.getRealmsByType(RealmType.WINDOW)
         assert.equal(realms.length, 2)
@@ -516,7 +518,7 @@ suite(
         const windowId = await driver.getWindowHandle()
         await driver.switchTo().newWindow('tab')
         const tabId = await driver.getWindowHandle()
-        const manager = await ScriptManager(windowId, driver)
+        manager = await ScriptManager(windowId, driver)
 
         const realms = await manager.getRealmsInBrowsingContext(tabId)
 
@@ -529,7 +531,7 @@ suite(
       it('can get realm in browsing context by type', async function () {
         const windowId = await driver.getWindowHandle()
         await driver.switchTo().newWindow('tab')
-        const manager = await ScriptManager(windowId, driver)
+        manager = await ScriptManager(windowId, driver)
 
         const realms = await manager.getRealmsInBrowsingContextByType(windowId, RealmType.WINDOW)
 
@@ -541,7 +543,7 @@ suite(
 
       it('can add preload script test', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager([], driver)
+        manager = await ScriptManager([], driver)
 
         await manager.addPreloadScript("() => { window.foo='bar'; }")
 
@@ -576,7 +578,7 @@ suite(
 
       it('can add same preload script twice', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         const script_1 = await manager.addPreloadScript('() => { return 42; }')
         const script_2 = await manager.addPreloadScript('() => { return 42; }')
@@ -585,7 +587,7 @@ suite(
       })
 
       it('can access preload script properties', async function () {
-        const manager = await ScriptManager([], driver)
+        manager = await ScriptManager([], driver)
 
         await manager.addPreloadScript('() => { window.preloadScriptFunction = () => window.baz = 42; }')
 
@@ -600,7 +602,7 @@ suite(
       })
 
       it('can add preload script to sandbox', async function () {
-        const manager = await ScriptManager([], driver)
+        manager = await ScriptManager([], driver)
 
         await manager.addPreloadScript('() => { window.foo = 1; }')
         await manager.addPreloadScript('() => { window.bar = 2; }', [], 'sandbox')
@@ -635,7 +637,7 @@ suite(
       })
 
       it('can remove properties set by preload script', async function () {
-        const manager = await ScriptManager([], driver)
+        manager = await ScriptManager([], driver)
 
         await manager.addPreloadScript('() => { window.foo = 42; }')
         await manager.addPreloadScript('() => { window.foo = 50; }', [], 'sandbox_1')
@@ -653,7 +655,7 @@ suite(
       })
 
       it('can remove preload script', async function () {
-        const manager = await ScriptManager([], driver)
+        manager = await ScriptManager([], driver)
 
         let script = await manager.addPreloadScript("() => { window.foo='bar'; }")
 
@@ -677,7 +679,7 @@ suite(
       })
 
       it('cannot remove same preload script twice', async function () {
-        const manager = await ScriptManager([], driver)
+        manager = await ScriptManager([], driver)
 
         let script = await manager.addPreloadScript("() => { window.foo='bar'; }")
 
@@ -689,7 +691,7 @@ suite(
       })
 
       it('can remove one of preload script', async function () {
-        const manager = await ScriptManager([], driver)
+        manager = await ScriptManager([], driver)
 
         let script_1 = await manager.addPreloadScript("() => { window.bar='foo'; }")
 
@@ -717,7 +719,7 @@ suite(
 
       it('can remove one of preload script from sandbox', async function () {
         const id = await driver.getWindowHandle()
-        const manager = await ScriptManager(id, driver)
+        manager = await ScriptManager(id, driver)
 
         let script_1 = await manager.addPreloadScript('() => { window.foo = 1; }')
 
@@ -750,7 +752,7 @@ suite(
       })
 
       it('can listen to channel message', async function () {
-        const manager = await ScriptManager(undefined, driver)
+        manager = await ScriptManager(undefined, driver)
 
         let message = null
 
@@ -776,7 +778,7 @@ suite(
       })
 
       it('can listen to realm created message', async function () {
-        const manager = await ScriptManager(undefined, driver)
+        manager = await ScriptManager(undefined, driver)
 
         let realmInfo = null
 
@@ -797,7 +799,7 @@ suite(
       })
 
       xit('can listen to realm destroyed message', async function () {
-        const manager = await ScriptManager(undefined, driver)
+        manager = await ScriptManager(undefined, driver)
 
         let realmInfo = null
 
