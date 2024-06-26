@@ -138,6 +138,29 @@ class BrowsingContextInspector {
       }
     })
   }
+
+  async close() {
+    if (
+      this._browsingContextIds !== null &&
+      this._browsingContextIds !== undefined &&
+      this._browsingContextIds.length > 0
+    ) {
+      await this.bidi.unsubscribe(
+        'browsingContext.contextCreated',
+        'browsingContext.contextDestroyed',
+        'browsingContext.fragmentNavigated',
+        'browsingContext.userPromptClosed',
+        this._browsingContextIds,
+      )
+    } else {
+      await this.bidi.unsubscribe(
+        'browsingContext.contextCreated',
+        'browsingContext.contextDestroyed',
+        'browsingContext.fragmentNavigated',
+        'browsingContext.userPromptClosed',
+      )
+    }
+  }
 }
 
 async function getBrowsingContextInstance(driver, browsingContextIds = null) {
