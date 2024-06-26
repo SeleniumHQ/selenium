@@ -32,9 +32,10 @@
 
 'use strict'
 
-const { isatty } = require('node:tty')
 const fs = require('node:fs')
-const runfiles = require('@bazel/runfiles')
+const path = require('node:path')
+const { isatty } = require('node:tty')
+const {runfiles} = require('@bazel/runfiles')
 const chrome = require('../chrome')
 const edge = require('../edge')
 const firefox = require('../firefox')
@@ -544,6 +545,11 @@ function locate(fileLike) {
     // Fall through
     console.warn("Resolving relative to the workspace failed", fileLike)
   }
+
+  const cwd = runfiles.resolve('.')
+  fs.readdirSync(cwd).forEach(file => {
+    console.log(file);
+  });
 
   // Find the repo mapping file
   let repoMappingFile

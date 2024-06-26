@@ -153,7 +153,7 @@ BROWSERS = {
         "env": select({
             "@selenium//common:use_pinned_linux_chrome": {
                 "SE_CHROMEDRIVER": "linux_chromedriver/chromedriver",
-                "SE_CHROME": "linux_chrome/Chrome.app/Contents/MacOS/Chrome",
+                "SE_CHROME": "linux_chrome/chrome-linux64/chrome",
             },
             "//conditions:default": {},
         }),
