@@ -39,7 +39,7 @@
     "eslint-plugin-prettier": "^5.1.3",
     "express": "^4.19.2",
     "globals": "^15.6.0",
-    "has-flag": "^5.0.1",
+    "has-flag": "^4.0.0",
     "jsdoc": "^4.0.3",
     "mocha": "^10.5.1",
     "mocha-junit-reporter": "^2.2.1",
