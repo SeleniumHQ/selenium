@@ -76,11 +76,11 @@ setup_args = {
                  ],
     'include_package_data': True,
     'install_requires': [
-        "typing_extensions~= 4.9",
         "urllib3[socks]>=1.26,<3",
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
+        "typing_extensions~= 4.9.0",
         "websocket-client==1.8.0",
     ],
     'zip_safe': False
