@@ -7,6 +7,7 @@ load("@npm//javascript/node/selenium-webdriver:prettier/package_json.bzl", prett
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("//common:defs.bzl", "copy_file")
 load("//javascript:defs.bzl", "mocha_test")
+load("//javascript/private:browsers.bzl", "BROWSERS")
 
 npm_link_all_packages(name = "node_modules")
 
@@ -141,41 +142,6 @@ mocha_test(
     ],
 )
 
-BROWSERS = {
-    "chrome": {
-        "data": select({
-            "@selenium//common:use_pinned_linux_chrome": [
-                "@linux_chrome//:chrome-js",
-                "@linux_chromedriver//:chromedriver-js",
-            ],
-            "//conditions:default": [],
-        }),
-        "env": select({
-            "@selenium//common:use_pinned_linux_chrome": {
-                "SE_CHROMEDRIVER": "linux_chromedriver/chromedriver",
-                "SE_CHROME": "linux_chrome/chrome-linux64/chrome",
-            },
-            "//conditions:default": {},
-        }),
-    },
-    "firefox": {
-        "data": select({
-            "@selenium//common:use_pinned_linux_firefox": [
-                "@linux_geckodriver//:geckodriver-js",
-                "@linux_firefox//:firefox-js",
-            ],
-            "//conditions:default": [],
-        }),
-        "env": select({
-            "@selenium//common:use_pinned_linux_firefox": {
-                "SE_GECKODRIVER": "linux_geckodriver/geckodriver",
-                "SE_FIREFOX": "linux_firefox/firefox/firefox",
-            },
-            "//conditions:default": {},
-        }),
-    },
-}
-
 [
     [
         mocha_test(
@@ -215,10 +181,7 @@ BROWSERS = {
         ),
     ]
     for test in LARGE_TESTS
-    for browser in [
-        "chrome",
-        "firefox",
-    ]
+    for browser in BROWSERS.keys()
 ]
 
 # npm_package does not pick up filegroup sources.

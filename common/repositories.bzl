@@ -272,7 +272,7 @@ exports_files(["chromedriver"])
 
 copy_to_bin(
     name = "chromedriver-js",
-    data = ["chromedriver"],
+    srcs = ["chromedriver"],
 )
 """,
     )
