@@ -309,6 +309,18 @@ class Environment {
     }
     // Edge
     // Firefox
+    if ('SE_GECKODRIVER' in process.env) {
+      const found = locate(process.env.SE_GECKODRIVER)
+      const service = new firefox.ServiceBuilder(found)
+      builder.setFirefoxService(service)
+    }
+    if ('SE_FIREFOX' in process.env) {
+      const binary = locate(process.env.SE_FIREFOX)
+      const options = new firefox.Options()
+      options.enableBidi()
+      options.setBinary(binary)
+      builder.setFirefoxOptions(options)
+    }
 
     builder.disableEnvironmentOverrides()
 

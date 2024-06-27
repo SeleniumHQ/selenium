@@ -159,8 +159,20 @@ BROWSERS = {
         }),
     },
     "firefox": {
-        "data": [],
-        "env": {},
+        "data": select({
+            "@selenium//common:use_pinned_linux_firefox": [
+                "@linux_geckodriver//:geckodriver-js",
+                "@linux_firefox//:firefox-js",
+            ],
+            "//conditions:default": [],
+        }),
+        "env": select({
+            "@selenium//common:use_pinned_linux_firefox": {
+                "SE_GECKODRIVER": "linux_geckodriver/geckodriver",
+                "SE_FIREFOX": "linux_firefox/firefox/firefox",
+            },
+            "//conditions:default": {},
+        }),
     },
 }
 
@@ -205,7 +217,7 @@ BROWSERS = {
     for test in LARGE_TESTS
     for browser in [
         "chrome",
-        #        "firefox",
+        "firefox",
     ]
 ]
 

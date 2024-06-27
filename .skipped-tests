@@ -21,6 +21,7 @@
 -//javascript/atoms:test-firefox-beta
 //javascript/node/selenium-webdriver:test-bidi-network-test.js-chrome
 //javascript/node/selenium-webdriver:test-builder-test.js-chrome
+//javascript/node/selenium-webdriver:test-builder-test.js-firefox
 //javascript/node/selenium-webdriver:test-chrome-devtools-test.js-chrome
 //javascript/node/selenium-webdriver:test-chrome-options-test.js-chrome
 //javascript/node/selenium-webdriver:test-chrome-service-test.js-chrome
