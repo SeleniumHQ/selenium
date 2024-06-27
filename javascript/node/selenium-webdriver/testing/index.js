@@ -303,6 +303,10 @@ class Environment {
       const binary = locate(process.env.SE_CHROME)
       const options = new chrome.Options()
       options.setChromeBinaryPath(binary)
+      options.addArguments("--remote-allow-origins")
+      options.addArguments("--disable-dev-shm-usage")
+      options.addArguments("--no-sandbox")
+      options.set("webSocketUrl", true)
       builder.setChromeOptions(options)
     }
     // Edge
