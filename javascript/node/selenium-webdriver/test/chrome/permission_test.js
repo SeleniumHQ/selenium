@@ -61,6 +61,7 @@ test.suite(
 
 const checkPermission = (driver, permission) => {
   return driver.executeAsyncScript((permission, callback) => {
+    // eslint-disable-next-line
     navigator.permissions.query({ name: permission }).then((result) => callback(result.state))
   }, permission)
 }

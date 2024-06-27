@@ -18,7 +18,6 @@
 'use strict'
 
 const assert = require('node:assert')
-const firefox = require('selenium-webdriver/firefox')
 const { Browser } = require('selenium-webdriver')
 const { Pages, suite } = require('../../lib/test')
 const BrowsingContext = require('selenium-webdriver/bidi/browsingContext')
