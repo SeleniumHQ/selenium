@@ -25,6 +25,7 @@
 -//javascript/node/selenium-webdriver:test-chrome-devtools-test.js-chrome
 -//javascript/node/selenium-webdriver:test-chrome-options-test.js-chrome
 -//javascript/node/selenium-webdriver:test-chrome-service-test.js-chrome
+-//javascript/node/selenium-webdriver:test-firefox-options-test.js-firefox
 -//javascript/node/selenium-webdriver:test-lib-capabilities-test.js-chrome
 -//py:test-chrome-test/selenium/webdriver/chrome/chrome_launcher_tests.py
 -//py:test-chrome-test/selenium/webdriver/chrome/chrome_service_tests.py
