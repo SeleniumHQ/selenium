@@ -18,9 +18,9 @@
 'use strict'
 
 const assert = require('node:assert')
-const ie = require('../../ie')
+const ie = require('selenium-webdriver/ie')
 const test = require('../../lib/test')
-const Capabilities = require('../../lib/capabilities').Capabilities
+const Capabilities = require('selenium-webdriver/lib/capabilities').Capabilities
 
 test.suite(
   function (env) {

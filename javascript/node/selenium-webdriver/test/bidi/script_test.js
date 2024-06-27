@@ -18,16 +18,21 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Browser } = require('../../')
+const { Browser } = require('selenium-webdriver')
 const { Pages, suite } = require('../../lib/test')
-const BrowsingContext = require('../../bidi/browsingContext')
-const ScriptManager = require('../../bidi/scriptManager')
-const { ChannelValue, LocalValue, ReferenceValue, RemoteReferenceType } = require('../../bidi/protocolValue')
-const { ArgumentValue } = require('../../bidi/argumentValue')
-const { EvaluateResultType } = require('../../bidi/evaluateResult')
-const { ResultOwnership } = require('../../bidi/resultOwnership')
-const { RealmType } = require('../../bidi/realmInfo')
-const { WebDriverError } = require('../../lib/error')
+const BrowsingContext = require('selenium-webdriver/bidi/browsingContext')
+const ScriptManager = require('selenium-webdriver/bidi/scriptManager')
+const {
+  ChannelValue,
+  LocalValue,
+  ReferenceValue,
+  RemoteReferenceType,
+} = require('selenium-webdriver/bidi/protocolValue')
+const { ArgumentValue } = require('selenium-webdriver/bidi/argumentValue')
+const { EvaluateResultType } = require('selenium-webdriver/bidi/evaluateResult')
+const { ResultOwnership } = require('selenium-webdriver/bidi/resultOwnership')
+const { RealmType } = require('selenium-webdriver/bidi/realmInfo')
+const { WebDriverError } = require('selenium-webdriver/lib/error')
 
 suite(
   function (env) {
