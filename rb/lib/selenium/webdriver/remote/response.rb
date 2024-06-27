@@ -89,9 +89,7 @@ module Selenium
             self['value']['stacktrace']
           ]
         end
-      end
-
-      # Response
+      end # Response
     end # Remote
   end # WebDriver
 end # Selenium
