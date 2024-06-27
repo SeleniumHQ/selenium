@@ -68,8 +68,8 @@ module Selenium
           raise Error::WebDriverError
         rescue Error::WebDriverError
           raise ex
-        rescue Error.for_error(error) => e
-          pp e.backtrace_locations
+        rescue Error.for_error(error)
+          ex
         end
 
         def assert_ok
