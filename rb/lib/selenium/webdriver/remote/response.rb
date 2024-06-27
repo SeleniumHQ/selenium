@@ -39,6 +39,7 @@ module Selenium
           klass = Error.for_error(error) || return
           ex = klass.new(message)
           add_cause(ex, error)
+          ex.set_backtrace(caller)
           add_backtrace(ex, backtrace)
           ex
         end
