@@ -37,8 +37,7 @@ exports.locate = function (filePath) {
   }
 
   try {
-    runfiles.resolve(filePath)
-    return fullPath
+    return runfiles.resolve(filePath)
   } catch {
     // Fall through
   }
