@@ -49,12 +49,22 @@ module Selenium
 
         private
 
+        def assert_ok
+          e = error
+          raise e if e
+          return unless @code.nil? || @code >= 400
+
+          raise Error::ServerError, self
+        end
+
         def add_backtrace(ex, server_trace)
           return unless server_trace
 
           backtrace = case server_trace
-                      when Array then backtrace_from_remote(server_trace)
-                      when String then server_trace.split("\n")
+                      when Array
+                        backtrace_from_remote(server_trace)
+                      when String
+                        server_trace.split("\n")
                       end
 
           ex.backtrace ? ex.set_backtrace(backtrace + ex.backtrace) : ex.set_backtrace(backtrace)
@@ -85,14 +95,6 @@ module Selenium
           ex
         end
 
-        def assert_ok
-          e = error
-          raise e if e
-          return unless @code.nil? || @code >= 400
-
-          raise Error::ServerError, self
-        end
-
         def process_error
           return unless self['value'].is_a?(Hash)
 
@@ -102,9 +104,7 @@ module Selenium
             self['value']['stacktrace']
           ]
         end
-      end
-
-      # Response
+      end # Response
     end # Remote
   end # WebDriver
 end # Selenium

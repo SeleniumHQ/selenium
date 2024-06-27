@@ -18,9 +18,13 @@ module Selenium
 
         private
 
-        def add_cause: -> Error::WebDriverError
-
         def assert_ok: () -> Error::WebDriverError
+        
+        def add_backtrace: (Error::WebDriverError ex, Array[String] backtrace) -> Array[String]
+        
+        def backtrace_from_remote: (Array[String] server_trace) -> Array[String]
+        
+        def add_cause: -> Error::WebDriverError
 
         def process_error: () -> Array[Hash[untyped, untyped]]
       end
