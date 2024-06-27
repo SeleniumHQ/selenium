@@ -45,8 +45,6 @@ module Selenium
       }.freeze
 
       class WebDriverError < StandardError
-        attr_writer :backtrace_locations, :cause
-
         def initialize(msg = '')
           # Remove this conditional when all the error pages have been documented
           super(URLS[class_name] ? "#{msg}; #{SUPPORT_MSG} #{URLS[class_name]}" : msg)
