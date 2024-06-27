@@ -18,10 +18,10 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Browser } = require('../../')
+const { Browser } = require('selenium-webdriver')
 const { Pages, suite } = require('../../lib/test')
-const logInspector = require('../../bidi/logInspector')
-const filterBy = require('../../bidi/filterBy')
+const logInspector = require('selenium-webdriver/bidi/logInspector')
+const filterBy = require('selenium-webdriver/bidi/filterBy')
 
 suite(
   function (env) {

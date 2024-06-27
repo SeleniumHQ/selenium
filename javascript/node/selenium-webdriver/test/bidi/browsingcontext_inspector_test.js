@@ -18,11 +18,11 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Browser, By } = require('../../')
+const { Browser, By } = require('selenium-webdriver')
 const { Pages, suite, ignore } = require('../../lib/test')
-const BrowsingContext = require('../../bidi/browsingContext')
-const BrowsingContextInspector = require('../../bidi/browsingContextInspector')
-const until = require('../../lib/until')
+const BrowsingContext = require('selenium-webdriver/bidi/browsingContext')
+const BrowsingContextInspector = require('selenium-webdriver/bidi/browsingContextInspector')
+const until = require('selenium-webdriver/lib/until')
 
 suite(
   function (env) {

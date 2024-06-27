@@ -19,10 +19,10 @@
 
 const assert = require('node:assert')
 const fs = require('node:fs')
-const io = require('../io')
-const remote = require('../remote')
+const io = require('selenium-webdriver/io')
+const remote = require('selenium-webdriver/remote')
 const test = require('../lib/test')
-const { Browser, By, until } = require('..')
+const { Browser, By, until } = require('selenium-webdriver')
 
 const Pages = test.Pages
 

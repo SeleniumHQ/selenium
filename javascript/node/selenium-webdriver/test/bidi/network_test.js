@@ -18,10 +18,10 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Browser } = require('../../')
+const { Browser } = require('selenium-webdriver')
 const { Pages, suite, ignore } = require('../../lib/test')
-const Network = require('../../bidi/network')
-const until = require('../../lib/until')
+const Network = require('selenium-webdriver/bidi/network')
+const until = require('selenium-webdriver/lib/until')
 
 suite(
   function (env) {

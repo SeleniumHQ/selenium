@@ -35,7 +35,7 @@
 const fs = require('node:fs')
 const path = require('node:path')
 const { isatty } = require('node:tty')
-const {runfiles} = require('@bazel/runfiles')
+const { runfiles } = require('@bazel/runfiles')
 const chrome = require('../chrome')
 const edge = require('../edge')
 const firefox = require('../firefox')
@@ -303,10 +303,8 @@ class Environment {
       const binary = locate(process.env.SE_CHROME)
       const options = new chrome.Options()
       options.setChromeBinaryPath(binary)
-      options.addArguments("--remote-allow-origins")
-      options.addArguments("--disable-dev-shm-usage")
-      options.addArguments("--no-sandbox")
-      options.set("webSocketUrl", true)
+      options.setAcceptInsecureCerts(true)
+      options.addArguments('disable-infobars', 'disable-breakpad', 'disable-dev-shm-usage', 'no-sandbox')
       builder.setChromeOptions(options)
     }
     // Edge
@@ -533,13 +531,11 @@ function locate(fileLike) {
   if (fs.existsSync(fileLike)) {
     return fileLike
   }
-  console.warn("Falling through from regular finding", fileLike)
 
   try {
     return runfiles.resolve(fileLike)
   } catch {
     // Fall through
-    console.warn("Initial resolve did not succeed", fileLike)
   }
 
   // Is the item in the workspace?
@@ -547,13 +543,7 @@ function locate(fileLike) {
     return runfiles.resolveWorkspaceRelative(fileLike)
   } catch {
     // Fall through
-    console.warn("Resolving relative to the workspace failed", fileLike)
   }
-
-  const cwd = runfiles.resolve('.')
-  fs.readdirSync(cwd).forEach(file => {
-    console.log(file);
-  });
 
   // Find the repo mapping file
   let repoMappingFile
@@ -572,12 +562,10 @@ function locate(fileLike) {
       mapping[parts[1]] = parts[2]
     }
   }
-  console.warn("Mappings for", fileLike, mapping)
 
   // Get the first segment of the path
   const pathSegments = fileLike.split('/')
   if (!pathSegments.length) {
-    console.warn("Not enough path segments for", fileLike)
     throw new Error('Unable to locate ' + fileLike)
   }
 
@@ -587,7 +575,6 @@ function locate(fileLike) {
     return runfiles.resolve(path.join(...pathSegments))
   } catch {
     // Fall through
-    console.warn("Failed to resolve", path.join(...pathSegments))
   }
 
   throw new Error('Unable to find ' + fileLike)

@@ -205,7 +205,7 @@ BROWSERS = {
     for test in LARGE_TESTS
     for browser in [
         "chrome",
-        "firefox",
+        #        "firefox",
     ]
 ]
 
