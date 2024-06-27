@@ -36,7 +36,6 @@ build --explicit_java_test_deps
 
 # Allow spaces in runfile paths
 build --nobuild_runfile_links
-build --experimental_inprocess_symlink_creation
 
 # More JS magic
 build --experimental_allow_unresolved_symlinks
