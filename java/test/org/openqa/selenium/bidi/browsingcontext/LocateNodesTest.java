@@ -242,7 +242,7 @@ public class LocateNodesTest extends JupiterTestBase {
 
     String sharedId = (String) ((RemoteValue) sharedIdMap.get("sharedId")).getValue().get();
     assertThat(sharedId).isEqualTo(nodeId);
-  } 
+  }
 
   @AfterEach
   public void quitDriver() {
