@@ -20,13 +20,13 @@
 const assert = require('node:assert')
 require('../../lib/test/fileserver')
 const { suite } = require('../../lib/test')
-const { Browser } = require('../..')
-const Storage = require('../../bidi/storage')
+const { Browser } = require('selenium-webdriver')
+const Storage = require('selenium-webdriver/bidi/storage')
 const fileserver = require('../../lib/test/fileserver')
-const { CookieFilter } = require('../../bidi/cookieFilter')
-const { BytesValue, SameSite } = require('../../bidi/networkTypes')
-const { BrowsingContextPartitionDescriptor } = require('../../bidi/partitionDescriptor')
-const { PartialCookie } = require('../../bidi/partialCookie')
+const { CookieFilter } = require('selenium-webdriver/bidi/cookieFilter')
+const { BytesValue, SameSite } = require('selenium-webdriver/bidi/networkTypes')
+const { BrowsingContextPartitionDescriptor } = require('selenium-webdriver/bidi/partitionDescriptor')
+const { PartialCookie } = require('selenium-webdriver/bidi/partialCookie')
 
 suite(
   function (env) {

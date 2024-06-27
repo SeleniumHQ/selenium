@@ -202,7 +202,7 @@ js_library(
         url = "https://storage.googleapis.com/chrome-for-testing-public/126.0.6478.62/linux64/chrome-linux64.zip",
         sha256 = "6f42045c9134bdd3cfcea03fb54876ad061da998cabd624c92a25ac6811cd737",
         build_file_content = """
-load("@aspect_rules_js//js:defs.bzl", "js_library")
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
 package(default_visibility = ["//visibility:public"])
 
 filegroup(
@@ -212,9 +212,9 @@ filegroup(
 
 exports_files(["chrome-linux64/chrome"])
 
-js_library(
+copy_to_bin(
     name = "chrome-js",
-    data = [":files"],
+    srcs = [":files"],
 )
 """,
     )
@@ -229,14 +229,14 @@ js_library(
             "mv 'Chrome.app/Contents/MacOS/Google Chrome for Testing' Chrome.app/Contents/MacOS/Chrome",
         ],
         build_file_content = """
-load("@aspect_rules_js//js:defs.bzl", "js_library")
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
 package(default_visibility = ["//visibility:public"])
 
 exports_files(["Chrome.app"])
 
-js_library(
+copy_to_bin(
     name = "chrome-js",
-    data = glob(["Chrome.app/**/*"]),
+    srcs = glob(["Chrome.app/**/*"]),
 )
 """,
     )
@@ -247,14 +247,14 @@ js_library(
         sha256 = "a304e692480c726bae846bf6dee36316305d0b8f4826dfafeab8d6bbbc6e7214",
         strip_prefix = "chromedriver-linux64",
         build_file_content = """
-load("@aspect_rules_js//js:defs.bzl", "js_library")
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
 package(default_visibility = ["//visibility:public"])
 
 exports_files(["chromedriver"])
 
-js_library(
+copy_to_bin(
     name = "chromedriver-js",
-    data = ["chromedriver"],
+    srcs = ["chromedriver"],
 )
 """,
     )
@@ -265,14 +265,14 @@ js_library(
         sha256 = "05665a6b5fb71141b5d519998e36f01b650f661942a56dd7f6b929896ae38333",
         strip_prefix = "chromedriver-mac-x64",
         build_file_content = """
-load("@aspect_rules_js//js:defs.bzl", "js_library")
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
 package(default_visibility = ["//visibility:public"])
 
 exports_files(["chromedriver"])
 
-js_library(
+copy_to_bin(
     name = "chromedriver-js",
-    data = ["chromedriver"],
+    srcs = ["chromedriver"],
 )
 """,
     )
