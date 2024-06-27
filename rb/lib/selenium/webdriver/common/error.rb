@@ -17,7 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'English'
 module Selenium
   module WebDriver
     module Error
