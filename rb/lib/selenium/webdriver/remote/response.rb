@@ -35,10 +35,12 @@ module Selenium
         end
 
         def error
-          error, message = process_error
+          error, message, backtrace = process_error
           klass = Error.for_error(error) || return
           ex = klass.new(message)
           add_cause(ex, error)
+          add_backtrace(ex, backtrace)
+          ex
         end
 
         def [](key)
@@ -46,6 +48,17 @@ module Selenium
         end
 
         private
+
+        def add_backtrace(ex, server_trace)
+          return unless server_trace
+
+          backtrace = case server_trace
+                      when Array then backtrace_from_remote(server_trace)
+                      when String then server_trace.split("\n")
+                      end
+
+          ex.backtrace ? ex.set_backtrace(backtrace + ex.backtrace) : ex.set_backtrace(backtrace)
+        end
 
         def backtrace_from_remote(server_trace)
           server_trace.filter_map do |frame|
@@ -89,7 +102,9 @@ module Selenium
             self['value']['stacktrace']
           ]
         end
-      end # Response
+      end
+
+      # Response
     end # Remote
   end # WebDriver
 end # Selenium
