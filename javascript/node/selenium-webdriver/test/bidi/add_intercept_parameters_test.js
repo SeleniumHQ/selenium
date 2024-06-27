@@ -18,12 +18,12 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Browser } = require('../../')
+const { Browser } = require('selenium-webdriver')
 const { suite } = require('../../lib/test')
-const Network = require('../../bidi/network')
-const { AddInterceptParameters } = require('../../bidi/addInterceptParameters')
-const { InterceptPhase } = require('../../bidi/interceptPhase')
-const { UrlPattern } = require('../../bidi/urlPattern')
+const Network = require('selenium-webdriver/bidi/network')
+const { AddInterceptParameters } = require('selenium-webdriver/bidi/addInterceptParameters')
+const { InterceptPhase } = require('selenium-webdriver/bidi/interceptPhase')
+const { UrlPattern } = require('selenium-webdriver/bidi/urlPattern')
 
 suite(
   function (env) {

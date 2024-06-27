@@ -18,14 +18,14 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Browser } = require('../../')
+const { Browser } = require('selenium-webdriver/')
 const { suite } = require('../../lib/test')
 
-const ScriptManager = require('../../bidi/scriptManager')
-const { LocalValue, RegExpValue } = require('../../bidi/protocolValue')
-const { ArgumentValue } = require('../../bidi/argumentValue')
-const { EvaluateResultType } = require('../../bidi/evaluateResult')
-const { SpecialNumberType } = require('../../bidi/protocolType')
+const ScriptManager = require('selenium-webdriver/bidi/scriptManager')
+const { LocalValue, RegExpValue } = require('selenium-webdriver/bidi/protocolValue')
+const { ArgumentValue } = require('selenium-webdriver/bidi/argumentValue')
+const { EvaluateResultType } = require('selenium-webdriver/bidi/evaluateResult')
+const { SpecialNumberType } = require('selenium-webdriver/bidi/protocolType')
 
 suite(
   function (env) {

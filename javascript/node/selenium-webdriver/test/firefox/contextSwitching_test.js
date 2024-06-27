@@ -18,9 +18,9 @@
 'use strict'
 
 const assert = require('node:assert')
-const error = require('../../lib/error')
-const { Browser } = require('../../index')
-const { Context } = require('../../firefox')
+const error = require('selenium-webdriver/lib/error')
+const { Browser } = require('selenium-webdriver/index')
+const { Context } = require('selenium-webdriver/firefox')
 const { suite } = require('../../lib/test')
 
 suite(

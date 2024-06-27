@@ -39,6 +39,8 @@ build --nobuild_runfile_links
 
 # More JS magic
 build --experimental_allow_unresolved_symlinks
+# Avoid a warning about directory tracking being unsound
+startup --host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1
 
 # Required for faster TS builds
 build --@aspect_rules_ts//ts:skipLibCheck=always
