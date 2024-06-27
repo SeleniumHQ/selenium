@@ -28,7 +28,7 @@ module Selenium
         attr_reader :code, :payload
 
         def initialize(code, payload = nil)
-          @code    = code
+          @code = code
           @payload = payload || {}
 
           assert_ok
@@ -37,8 +37,8 @@ module Selenium
         def error
           error, message = process_error
           klass = Error.for_error(error) || return
-
-          klass.new(message)
+          ex = klass.new(message)
+          add_cause(ex, error)
         end
 
         def [](key)
@@ -46,6 +46,31 @@ module Selenium
         end
 
         private
+
+        def backtrace_from_remote(server_trace)
+          server_trace.filter_map do |frame|
+            next unless frame.is_a?(Hash)
+
+            file = frame['fileName']
+            line = frame['lineNumber']
+            meth = frame['methodName']
+
+            class_name = frame['className']
+            file = "#{class_name}(#{file})" if class_name
+
+            meth = 'unknown' if meth.nil? || meth.empty?
+
+            "[remote server] #{file}:#{line}:in `#{meth}'"
+          end
+        end
+
+        def add_cause(ex, error)
+          raise Error::WebDriverError
+        rescue Error::WebDriverError
+          raise ex
+        rescue Error.for_error(error) => e
+          pp e.backtrace_locations
+        end
 
         def assert_ok
           e = error
@@ -64,7 +89,9 @@ module Selenium
             self['value']['stacktrace']
           ]
         end
-      end # Response
+      end
+
+      # Response
     end # Remote
   end # WebDriver
 end # Selenium

@@ -39,7 +39,13 @@ module Selenium
       it 'has cause' do
         driver.find_element(id: 'nonexistent')
       rescue WebDriver::Error::NoSuchElementError => e
-        expect(e.cause).to be_a(WebDriver::Error::NoSuchElementError)
+        expect(e.cause).to be_a(WebDriver::Error::WebDriverError)
+      end
+
+      it 'has backtrace' do
+        driver.find_element(id: 'nonexistent')
+      rescue WebDriver::Error::NoSuchElementError => e
+        expect(e.backtrace).not_to be_empty
       end
     end
   end # WebDriver
