@@ -52,8 +52,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "npm run lint && mocha -t 600000 --recursive test",
-    "test-jasmine": "bazel test //javascript/node/selenium-webdriver:tests",
+    "test": "bazel test //javascript/node/selenium-webdriver/...",
     "generate-docs": "jsdoc --configure jsdoc_conf.json --verbose"
   },
   "mocha": {
