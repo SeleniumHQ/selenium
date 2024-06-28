@@ -35,12 +35,10 @@ module Selenium
         end
 
         def error
-          error, message, backtrace = process_error
+          error, message = process_error
           klass = Error.for_error(error) || return
           ex = klass.new(message)
           add_cause(ex, error)
-          ex.set_backtrace(caller)
-          add_backtrace(ex, backtrace)
           ex
         end
 
@@ -56,36 +54,6 @@ module Selenium
           return unless @code.nil? || @code >= 400
 
           raise Error::ServerError, self
-        end
-
-        def add_backtrace(ex, server_trace)
-          return unless server_trace
-
-          backtrace = case server_trace
-                      when Array
-                        backtrace_from_remote(server_trace)
-                      when String
-                        server_trace.split("\n")
-                      end
-
-          ex.backtrace ? ex.set_backtrace(backtrace + ex.backtrace) : ex.set_backtrace(backtrace)
-        end
-
-        def backtrace_from_remote(server_trace)
-          server_trace.filter_map do |frame|
-            next unless frame.is_a?(Hash)
-
-            file = frame['fileName']
-            line = frame['lineNumber']
-            meth = frame['methodName']
-
-            class_name = frame['className']
-            file = "#{class_name}(#{file})" if class_name
-
-            meth = 'unknown' if meth.nil? || meth.empty?
-
-            "[remote server] #{file}:#{line}:in `#{meth}'"
-          end
         end
 
         def add_cause(ex, error)
