@@ -19,9 +19,9 @@
 
 const assert = require('node:assert')
 const { URL } = require('node:url')
-const proxy = require('../proxy')
+const proxy = require('selenium-webdriver/proxy')
 const test = require('../lib/test')
-const { Browser } = require('..')
+const { Browser } = require('selenium-webdriver')
 const { Server } = require('../lib/test/httpserver')
 
 test.suite(function (env) {

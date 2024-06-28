@@ -18,7 +18,7 @@
 'use strict'
 
 const assert = require('node:assert')
-const { By, Browser } = require('../../index')
+const { By, Browser } = require('selenium-webdriver/index')
 const { Pages, ignore, suite } = require('../../lib/test')
 
 suite(function (env) {

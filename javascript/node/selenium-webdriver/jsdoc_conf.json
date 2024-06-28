@@ -11,7 +11,7 @@
     "destination": "../../../build/docs/api/javascript/",
     "recurse": true,
     "verbose": true,
-    "template": "../../../node_modules/clean-jsdoc-theme",
+    "template": "./node_modules/clean-jsdoc-theme",
     "theme_opts": {
       "default_theme": "dark",
       "displayModuleHeader": true,
