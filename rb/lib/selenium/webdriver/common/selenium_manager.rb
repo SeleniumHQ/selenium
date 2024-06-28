@@ -37,10 +37,6 @@ module Selenium
         # @param [Array] arguments what gets sent to to Selenium Manager binary.
         # @return [Hash] paths to the requested assets.
         def binary_paths(*arguments)
-          arguments += %w[--language-binding ruby]
-          arguments += %w[--output json]
-          arguments << '--debug' if WebDriver.logger.debug?
-
           run(binary, *arguments)
         end
 
