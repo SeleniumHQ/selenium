@@ -35,10 +35,10 @@ module Selenium
         end
 
         def error
-          error, message = process_error
+          error, message, backtrace = process_error
           klass = Error.for_error(error) || return
           ex = klass.new(message)
-          add_cause(ex, error)
+          add_cause(ex, error, backtrace)
           ex
         end
 
@@ -56,8 +56,8 @@ module Selenium
           raise Error::ServerError, self
         end
 
-        def add_cause(ex, error)
-          raise Error::WebDriverError
+        def add_cause(ex, error, backtrace)
+          raise Error::WebDriverError, backtrace
         rescue Error::WebDriverError
           raise ex
         rescue Error.for_error(error)
