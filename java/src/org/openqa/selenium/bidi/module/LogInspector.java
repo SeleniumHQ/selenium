@@ -61,11 +61,11 @@ public class LogInspector implements AutoCloseable {
     this.browsingContextIds = browsingContextIds;
   }
 
-  public void onConsoleEntry(Consumer<ConsoleLogEntry> consumer) {
+  public long onConsoleEntry(Consumer<ConsoleLogEntry> consumer) {
     Consumer<LogEntry> logEntryConsumer =
         logEntry -> logEntry.getConsoleLogEntry().ifPresent(consumer);
 
-    addLogEntryAddedListener(logEntryConsumer);
+    return addLogEntryAddedListener(logEntryConsumer);
   }
 
   public void onConsoleEntry(Consumer<ConsoleLogEntry> consumer, FilterBy filter) {
@@ -105,7 +105,7 @@ public class LogInspector implements AutoCloseable {
     addLogEntryAddedListener(logEntryConsumer);
   }
 
-  public void onJavaScriptException(Consumer<JavascriptLogEntry> consumer) {
+  public long onJavaScriptException(Consumer<JavascriptLogEntry> consumer) {
     Consumer<LogEntry> logEntryConsumer =
         logEntry ->
             logEntry
@@ -117,7 +117,7 @@ public class LogInspector implements AutoCloseable {
                       }
                     });
 
-    addLogEntryAddedListener(logEntryConsumer);
+    return addLogEntryAddedListener(logEntryConsumer);
   }
 
   public void onGenericLog(Consumer<GenericLogEntry> consumer) {
@@ -163,11 +163,11 @@ public class LogInspector implements AutoCloseable {
     addLogEntryAddedListener(logEntryConsumer);
   }
 
-  private void addLogEntryAddedListener(Consumer<LogEntry> consumer) {
+  private long addLogEntryAddedListener(Consumer<LogEntry> consumer) {
     if (browsingContextIds.isEmpty()) {
-      this.bidi.addListener(Log.entryAdded(), consumer);
+      return this.bidi.addListener(Log.entryAdded(), consumer);
     } else {
-      this.bidi.addListener(browsingContextIds, Log.entryAdded(), consumer);
+      return this.bidi.addListener(browsingContextIds, Log.entryAdded(), consumer);
     }
   }
 
