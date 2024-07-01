@@ -333,14 +333,13 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
       }
       addExtensions(options.extensionFiles);
       addEncodedExtensions(options.extensions);
-      if (options.binary != null) {
-        setBinary(options.binary);
-      }
+
+      Optional.ofNullable(options.binary).ifPresent(this::setBinary);
+
       options.experimentalOptions.forEach(this::setExperimentalOption);
 
-      if (options.androidOptions != null) {
-        options.androidOptions.forEach(this::setAndroidCapability);
-      }
+      Optional.ofNullable(options.androidOptions).ifPresent(opts -> opts.forEach(this::setAndroidCapability));
+
     }
   }
 

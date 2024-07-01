@@ -394,7 +394,7 @@ class ChromeOptionsTest {
     var caps = new MutableCapabilities();
     var merged = original.merge(caps);
 
-    assert original.asMap().equals(merged.asMap());
+    assertEquals(original.asMap(), merged.asMap());
 
   }
 }
