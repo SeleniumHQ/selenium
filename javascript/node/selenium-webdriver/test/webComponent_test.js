@@ -18,7 +18,7 @@
 'use strict'
 
 const assert = require('node:assert')
-const { By, error } = require('..')
+const { By, error } = require('selenium-webdriver')
 const test = require('../lib/test')
 const Pages = test.Pages
 

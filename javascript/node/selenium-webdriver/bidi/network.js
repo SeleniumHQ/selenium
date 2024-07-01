@@ -313,12 +313,26 @@ class Network {
    * @returns {Promise<void>} A promise that resolves when the network connection is closed.
    */
   async close() {
-    await this.bidi.unsubscribe(
-      'network.beforeRequestSent',
-      'network.responseStarted',
-      'network.responseCompleted',
-      'network.authRequired',
-    )
+    if (
+      this._browsingContextIds !== null &&
+      this._browsingContextIds !== undefined &&
+      this._browsingContextIds.length > 0
+    ) {
+      await this.bidi.unsubscribe(
+        'network.beforeRequestSent',
+        'network.responseStarted',
+        'network.responseCompleted',
+        'network.authRequired',
+        this._browsingContextIds,
+      )
+    } else {
+      await this.bidi.unsubscribe(
+        'network.beforeRequestSent',
+        'network.responseStarted',
+        'network.responseCompleted',
+        'network.authRequired',
+      )
+    }
   }
 }
 
