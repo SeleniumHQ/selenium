@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.OFF;
 import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
