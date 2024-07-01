@@ -337,6 +337,10 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
         setBinary(options.binary);
       }
       options.experimentalOptions.forEach(this::setExperimentalOption);
+
+      if (options.androidOptions != null) {
+        options.androidOptions.forEach(this::setAndroidCapability);
+      }
     }
   }
 

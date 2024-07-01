@@ -382,4 +382,19 @@ class ChromeOptionsTest {
         .extractingByKey("androidActivity")
         .isEqualTo("com.cheese.nom");
   }
+
+  @Test
+  void shouldBeAbleToMergeAnAndroidOption(){
+    var original = new ChromeOptions();
+    original.setAndroidActivity("co_activity");
+    original.setAndroidPackage("co_package");
+    original.setExperimentalOption("experimental", "co_experimental");
+    original.addArguments("--co_argument");
+
+    var caps = new MutableCapabilities();
+    var merged = original.merge(caps);
+
+    assert original.asMap().equals(merged.asMap());
+
+  }
 }
