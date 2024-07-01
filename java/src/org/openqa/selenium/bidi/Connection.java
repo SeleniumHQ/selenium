@@ -217,6 +217,13 @@ public class Connection implements Closeable {
     lock.lock();
     try {
       eventCallbacks.forEach((k, v) -> v.remove(id));
+      eventCallbacks.forEach(
+          (k, v) -> {
+            v.remove(id);
+            if (v.isEmpty()) {
+              eventCallbacks.remove(k);
+            }
+          });
     } finally {
       lock.unlock();
     }
