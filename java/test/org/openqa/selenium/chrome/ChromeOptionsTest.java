@@ -384,7 +384,7 @@ class ChromeOptionsTest {
   }
 
   @Test
-  void shouldBeAbleToMergeAnAndroidOption(){
+  void shouldBeAbleToMergeAnAndroidOption() {
     var original = new ChromeOptions();
     original.setAndroidActivity("co_activity");
     original.setAndroidPackage("co_package");
@@ -395,6 +395,5 @@ class ChromeOptionsTest {
     var merged = original.merge(caps);
 
     assertEquals(original.asMap(), merged.asMap());
-
   }
 }

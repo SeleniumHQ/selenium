@@ -338,8 +338,8 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
 
       options.experimentalOptions.forEach(this::setExperimentalOption);
 
-      Optional.ofNullable(options.androidOptions).ifPresent(opts -> opts.forEach(this::setAndroidCapability));
-
+      Optional.ofNullable(options.androidOptions)
+          .ifPresent(opts -> opts.forEach(this::setAndroidCapability));
     }
   }
 
