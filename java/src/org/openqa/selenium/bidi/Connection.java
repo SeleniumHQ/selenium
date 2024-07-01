@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import java.io.Closeable;
 import java.io.StringReader;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,11 +65,12 @@ public class Connection implements Closeable {
             return thread;
           });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
+  private final AtomicLong EVENT_CALLBACK_ID = new AtomicLong(1);
   private WebSocket socket;
   private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks =
       new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
-  private final Map<Event<?>, List<Consumer<?>>> eventCallbacks = new HashMap<>();
+  private final Map<Event<?>, Map<Long, Consumer<?>>> eventCallbacks = new HashMap<>();
   private final HttpClient client;
   private final AtomicBoolean underlyingSocketClosed = new AtomicBoolean();
 
@@ -180,17 +180,26 @@ public class Connection implements Closeable {
     }
   }
 
-  public <X> void addListener(Event<X> event, Consumer<X> handler) {
+  public <X> long addListener(Event<X> event, Consumer<X> handler) {
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
+
+    long id = EVENT_CALLBACK_ID.getAndIncrement();
 
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      eventCallbacks.computeIfAbsent(event, (key) -> new ArrayList<>()).add(handler);
+      eventCallbacks.computeIfAbsent(
+          event,
+          key -> {
+            HashMap<Long, Consumer<?>> map = new HashMap<>();
+            map.put(id, handler);
+            return map;
+          });
     } finally {
       lock.unlock();
     }
+    return id;
   }
 
   public <X> void clearListener(Event<X> event) {
@@ -198,6 +207,23 @@ public class Connection implements Closeable {
     lock.lock();
     try {
       eventCallbacks.remove(event);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  public void removeListener(long id) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      eventCallbacks.forEach((k, v) -> v.remove(id));
+      eventCallbacks.forEach(
+          (k, v) -> {
+            v.remove(id);
+            if (v.isEmpty()) {
+              eventCallbacks.remove(k);
+            }
+          });
     } finally {
       lock.unlock();
     }
@@ -354,7 +380,7 @@ public class Connection implements Closeable {
 
                 final Object finalValue = value;
 
-                for (Consumer<?> action : event.getValue()) {
+                for (Consumer<?> action : event.getValue().values()) {
                   @SuppressWarnings("unchecked")
                   Consumer<Object> obj = (Consumer<Object>) action;
                   LOG.log(
