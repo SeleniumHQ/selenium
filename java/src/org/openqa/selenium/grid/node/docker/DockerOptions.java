@@ -210,12 +210,12 @@ public class DockerOptions {
     for (String device : devices) {
       String deviceMappingDefined = device.trim();
       Matcher matcher =
-        linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
+          linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
 
       if (matcher.matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), null));
       } else if ((matcher = linuxDeviceMappingWithPermissionsPattern.matcher(deviceMappingDefined))
-        .matches()) {
+          .matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), matcher.group(3)));
       }
     }

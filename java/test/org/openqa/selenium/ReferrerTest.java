@@ -31,7 +31,6 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 import com.google.common.net.HostAndPort;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.file.Files;
