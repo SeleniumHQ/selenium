@@ -189,13 +189,7 @@ public class Connection implements Closeable {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      eventCallbacks.computeIfAbsent(
-          event,
-          key -> {
-            HashMap<Long, Consumer<?>> map = new HashMap<>();
-            map.put(id, handler);
-            return map;
-          });
+      eventCallbacks.computeIfAbsent(event, key -> new HashMap<>()).put(id, handler);
     } finally {
       lock.unlock();
     }
@@ -217,13 +211,6 @@ public class Connection implements Closeable {
     lock.lock();
     try {
       eventCallbacks.forEach((k, v) -> v.remove(id));
-      eventCallbacks.forEach(
-          (k, v) -> {
-            v.remove(id);
-            if (v.isEmpty()) {
-              eventCallbacks.remove(k);
-            }
-          });
     } finally {
       lock.unlock();
     }
