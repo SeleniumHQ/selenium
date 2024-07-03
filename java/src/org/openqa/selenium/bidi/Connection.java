@@ -25,6 +25,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import java.io.Closeable;
 import java.io.StringReader;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -210,7 +211,16 @@ public class Connection implements Closeable {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      eventCallbacks.forEach((k, v) -> v.remove(id));
+      List<Event<?>> list = new ArrayList<>();
+      eventCallbacks.forEach(
+          (k, v) -> {
+            v.remove(id);
+            if (v.isEmpty()) {
+              list.add(k);
+            }
+          });
+
+      list.forEach(eventCallbacks::remove);
     } finally {
       lock.unlock();
     }
