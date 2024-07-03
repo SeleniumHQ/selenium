@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.log.BaseLogEntry;
 import org.openqa.selenium.bidi.log.ConsoleLogEntry;
@@ -36,7 +37,7 @@ import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.internal.Require;
 
 public class LogInspector implements AutoCloseable {
-
+  private final Event<LogEntry> logEntryAddedEvent;
   private final Set<String> browsingContextIds;
 
   private final BiDi bidi;
@@ -59,6 +60,7 @@ public class LogInspector implements AutoCloseable {
 
     this.bidi = ((HasBiDi) driver).getBiDi();
     this.browsingContextIds = browsingContextIds;
+    this.logEntryAddedEvent = Log.entryAdded();
   }
 
   public long onConsoleEntry(Consumer<ConsoleLogEntry> consumer) {
@@ -165,9 +167,9 @@ public class LogInspector implements AutoCloseable {
 
   private long addLogEntryAddedListener(Consumer<LogEntry> consumer) {
     if (browsingContextIds.isEmpty()) {
-      return this.bidi.addListener(Log.entryAdded(), consumer);
+      return this.bidi.addListener(this.logEntryAddedEvent, consumer);
     } else {
-      return this.bidi.addListener(browsingContextIds, Log.entryAdded(), consumer);
+      return this.bidi.addListener(browsingContextIds, this.logEntryAddedEvent, consumer);
     }
   }
 
