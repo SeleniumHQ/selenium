@@ -19,6 +19,7 @@ from distutils.command.install import INSTALL_SCHEMES
 from os.path import dirname, join, abspath
 from setuptools import setup
 from setuptools.command.install import install
+from setuptools_rust import Binding, RustExtension
 
 
 for scheme in INSTALL_SCHEMES.values():
@@ -82,6 +83,12 @@ setup_args = {
         "certifi>=2021.10.8",
         "typing_extensions~= 4.9.0",
         "websocket-client==1.8.0",
+    ],
+    'rust_extensions': [
+        RustExtension(
+            {"selenium-manager": "selenium.webdriver.common.selenium-manager"},
+            binding=Binding.Exec
+        )
     ],
     'zip_safe': False
 }

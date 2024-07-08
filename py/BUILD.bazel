@@ -230,10 +230,17 @@ pkg_files(
         "CHANGES",
         "MANIFEST.in",
         "README.rst",
+        "pyproject.toml",
         "setup.py",
         ":license",
         ":selenium-pkg",
         ":selenium-pkginfo",
+        "//rust:selenium_manager_srcs",
+    ],
+    excludes = [
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
     ],
     strip_prefix = strip_prefix.from_pkg(),
 )
