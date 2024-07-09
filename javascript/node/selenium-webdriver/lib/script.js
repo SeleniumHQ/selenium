@@ -82,7 +82,7 @@ class Script {
     argumentValues.push(value)
 
     const filePath = '../../../bazel-bin/javascript/node/selenium-webdriver/lib/atoms/bidi-mutation-listener.js'
-    
+
     let mutationListener = fs.readFileSync(path.resolve(filePath), 'utf-8').toString()
 
     await this.#script.addPreloadScript(mutationListener, argumentValues)
