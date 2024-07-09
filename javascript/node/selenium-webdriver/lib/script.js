@@ -80,18 +80,10 @@ class Script {
     let argumentValues = []
     let value = new ArgumentValue(LocalValue.createChannelValue(new ChannelValue('channel_name')))
     argumentValues.push(value)
-    
-    let mutationListener = ''
-    try {
-      // Depending on what is running the code it could appear in 2 different places which is why we try
-      // here and then the other location
-      mutationListener = fs
-        .readFileSync('./javascript/node/selenium-webdriver/lib/atoms/bidi-mutation-listener', 'utf-8')
-        .toString()
-    } catch {
-      mutationListener = fs.readFileSync(path.resolve(__dirname, './atoms/bidi-mutation-listener'), 'utf-8').toString()
-    }
 
+    const filePath = path.join(__dirname, 'atoms', 'bidi-mutation-listener.js')
+
+    let mutationListener = fs.readFileSync(filePath, 'utf-8').toString()
     await this.#script.addPreloadScript(mutationListener, argumentValues)
 
     let id = await this.#script.onMessage(async (message) => {
