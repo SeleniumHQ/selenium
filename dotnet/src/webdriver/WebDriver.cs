@@ -703,7 +703,10 @@ namespace OpenQA.Selenium
         {
             try
             {
-                this.Execute(DriverCommand.Quit, null);
+                if (this.sessionId is not null)
+                {
+                    this.Execute(DriverCommand.Quit, null);
+                }
             }
             catch (NotImplementedException)
             {
