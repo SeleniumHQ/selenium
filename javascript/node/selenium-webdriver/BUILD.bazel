@@ -55,6 +55,7 @@ npm_package(
         ":manager-macos",
         ":manager-windows",
         ":prod-src-files",
+        "//javascript/node/selenium-webdriver/lib/atoms:bidi-mutation-listener",
         "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
