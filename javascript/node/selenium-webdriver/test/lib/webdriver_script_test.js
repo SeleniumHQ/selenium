@@ -21,7 +21,7 @@ const assert = require('node:assert')
 const { Browser } = require('selenium-webdriver')
 const { Pages, suite } = require('../../lib/test')
 const fileServer = require('../../lib/test/fileserver')
-const { until } = require('../../index')
+const until = require('selenium-webdriver/lib/until')
 
 suite(
   function (env) {
