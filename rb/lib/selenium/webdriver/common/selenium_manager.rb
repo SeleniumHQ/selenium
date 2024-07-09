@@ -49,15 +49,15 @@ module Selenium
         # @return [String] the path to the correct selenium manager
         def binary
           @binary ||= begin
-                        if (location = ENV.fetch('SE_MANAGER_PATH', nil))
-                          WebDriver.logger.debug("Selenium Manager set by ENV['SE_MANAGER_PATH']: #{location}")
-                        end
-                        location ||= platform_location
+            if (location = ENV.fetch('SE_MANAGER_PATH', nil))
+              WebDriver.logger.debug("Selenium Manager set by ENV['SE_MANAGER_PATH']: #{location}")
+            end
+            location ||= platform_location
 
-                        Platform.assert_executable(location)
-                        WebDriver.logger.debug("Selenium Manager binary found at #{location}", id: :selenium_manager)
-                        location
-                      end
+            Platform.assert_executable(location)
+            WebDriver.logger.debug("Selenium Manager binary found at #{location}", id: :selenium_manager)
+            location
+          end
         end
 
         def run(*command)
@@ -69,7 +69,7 @@ module Selenium
             raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
           end
 
-          json_output = stdout.empty? ? { 'logs' => [], 'result' => {} } : JSON.parse(stdout)
+          json_output = stdout.empty? ? {'logs' => [], 'result' => {}} : JSON.parse(stdout)
           json_output['logs'].each do |log|
             level = log['level'].casecmp('info').zero? ? 'debug' : log['level'].downcase
             WebDriver.logger.send(level, log['message'], id: :selenium_manager)
@@ -99,8 +99,6 @@ module Selenium
           end
         end
       end
-    end
-
-    # SeleniumManager
+    end # SeleniumManager
   end # WebDriver
 end # Selenium
