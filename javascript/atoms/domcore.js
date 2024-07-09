@@ -153,6 +153,21 @@ bot.dom.core.getProperty = function (element, propertyName) {
 };
 
 
+/**
+ * Return the element tagName property with upper case
+ * even if the form tagName property is overridden.
+ * @param {Element} element The element to get the tag name.
+ * @return {string} tag name.
+ * @private
+ */
+bot.dom.core.getTagName_ = function(element) {
+  // If the input element id or name is 'tagName',
+  // The form element tagName property is overridden and returns the input element instead of the tag name.
+  if (element instanceof HTMLFormElement)
+    return 'FORM';
+  return element.tagName.toUpperCase();
+};
+
 
 /**
  * Returns whether the given node is an element and, optionally, whether it has
@@ -170,7 +185,7 @@ bot.dom.core.isElement = function (node, opt_tagName) {
     opt_tagName = opt_tagName.toString();
   }
   return !!node && node.nodeType == goog.dom.NodeType.ELEMENT &&
-    (!opt_tagName || node.tagName.toUpperCase() == opt_tagName);
+    (!opt_tagName || bot.dom.core.getTagName_(/** @type {Element} */(node)) == opt_tagName);
 };
 
 
