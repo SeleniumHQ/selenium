@@ -44,7 +44,8 @@ suite(
         const inspector = await logInspector(driver)
         await inspector.onConsoleEntry(function (log) {
           assert.equal(log.text, 'Hello, world!')
-          assert.equal(log.realm, null)
+          assert.notEqual(log.source.realmId, null)
+          assert.notEqual(log.source.browsingContextId, null)
           assert.equal(log.type, 'console')
           assert.equal(log.level, 'info')
           assert.equal(log.method, 'log')
@@ -63,7 +64,8 @@ suite(
         await inspector.onConsoleEntry(function (log) {
           logEntry = log
           assert.equal(logEntry.text, 'Hello, world!')
-          assert.equal(logEntry.realm, null)
+          assert.notEqual(log.source.realmId, null)
+          assert.notEqual(log.source.browsingContextId, null)
           assert.equal(logEntry.type, 'console')
           assert.equal(logEntry.level, 'info')
           assert.equal(logEntry.method, 'log')
@@ -88,7 +90,8 @@ suite(
         await inspector.onConsoleEntry(function (log) {
           logEntry = log
           assert.equal(logEntry.text, 'Hello, world!')
-          assert.equal(logEntry.realm, null)
+          assert.notEqual(log.source.realmId, null)
+          assert.notEqual(log.source.browsingContextId, null)
           assert.equal(logEntry.type, 'console')
           assert.equal(logEntry.level, 'info')
           assert.equal(logEntry.method, 'log')
@@ -235,6 +238,8 @@ suite(
         await inspector.onJavascriptException(function (log) {
           logEntry = log
           assert.equal(logEntry.text, 'Error: Not working')
+          assert.notEqual(log.source.realmId, null)
+          assert.notEqual(log.source.browsingContextId, null)
           assert.equal(logEntry.type, 'javascript')
           assert.equal(logEntry.level, 'error')
         })
@@ -267,7 +272,8 @@ suite(
         await inspector.onLog(function (log) {
           logEntry = log
           assert.equal(logEntry.text, 'Hello, world!')
-          assert.equal(logEntry.realm, null)
+          assert.notEqual(log.source.realmId, null)
+          assert.notEqual(log.source.browsingContextId, null)
           assert.equal(logEntry.type, 'console')
           assert.equal(logEntry.level, 'info')
           assert.equal(logEntry.method, 'log')
@@ -286,7 +292,8 @@ suite(
         await inspector.onLog(function (log) {
           logEntry = log
           assert.equal(logEntry.text, 'Hello, world!')
-          assert.equal(logEntry.realm, null)
+          assert.notEqual(log.source.realmId, null)
+          assert.notEqual(log.source.browsingContextId, null)
           assert.equal(logEntry.type, 'console')
           assert.equal(logEntry.level, 'info')
           assert.equal(logEntry.method, 'log')
