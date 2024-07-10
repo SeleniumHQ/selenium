@@ -1,5 +1,5 @@
 {
-  "checksum": "11219ebc06847400b45e4149dbf89b68fce48fd990ff6e117d4de3353419d87a",
+  "checksum": "149bb9b0c3a9f334ef58ebb67cac35f2288de202aa1980ddfe080096bd773d7a",
   "crates": {
     "addr2line 0.21.0": {
       "name": "addr2line",
@@ -296,19 +296,7 @@
             }
           ],
           "selects": {
-            "aarch64-pc-windows-msvc": [
-              {
-                "id": "anstyle-wincon 3.0.3",
-                "target": "anstyle_wincon"
-              }
-            ],
-            "i686-pc-windows-msvc": [
-              {
-                "id": "anstyle-wincon 3.0.3",
-                "target": "anstyle_wincon"
-              }
-            ],
-            "x86_64-pc-windows-msvc": [
+            "cfg(windows)": [
               {
                 "id": "anstyle-wincon 3.0.3",
                 "target": "anstyle_wincon"
@@ -885,6 +873,15 @@
           "**"
         ],
         "edition": "2021",
+        "proc_macro_deps": {
+          "common": [
+            {
+              "id": "derive_arbitrary 1.3.2",
+              "target": "derive_arbitrary"
+            }
+          ],
+          "selects": {}
+        },
         "version": "1.3.2"
       },
       "license": "MIT OR Apache-2.0",
@@ -1979,15 +1976,18 @@
               "target": "jobserver"
             },
             {
-              "id": "libc 0.2.154",
-              "target": "libc"
-            },
-            {
               "id": "once_cell 1.19.0",
               "target": "once_cell"
             }
           ],
-          "selects": {}
+          "selects": {
+            "cfg(unix)": [
+              {
+                "id": "libc 0.2.154",
+                "target": "libc"
+              }
+            ]
+          }
         },
         "edition": "2018",
         "version": "1.0.97"
@@ -2153,133 +2153,7 @@
             }
           ],
           "selects": {
-            "aarch64-apple-darwin": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "aarch64-apple-ios": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "aarch64-apple-ios-sim": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "aarch64-fuchsia": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "aarch64-linux-android": [
-              {
-                "id": "android-tzdata 0.1.1",
-                "target": "android_tzdata"
-              },
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "aarch64-pc-windows-msvc": [
-              {
-                "id": "windows-targets 0.52.5",
-                "target": "windows_targets"
-              }
-            ],
-            "aarch64-unknown-linux-gnu": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "aarch64-unknown-nixos-gnu": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "aarch64-unknown-nto-qnx710": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "arm-unknown-linux-gnueabi": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "armv7-linux-androideabi": [
-              {
-                "id": "android-tzdata 0.1.1",
-                "target": "android_tzdata"
-              },
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "armv7-unknown-linux-gnueabi": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "i686-apple-darwin": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "i686-linux-android": [
-              {
-                "id": "android-tzdata 0.1.1",
-                "target": "android_tzdata"
-              },
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "i686-pc-windows-msvc": [
-              {
-                "id": "windows-targets 0.52.5",
-                "target": "windows_targets"
-              }
-            ],
-            "i686-unknown-freebsd": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "i686-unknown-linux-gnu": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "powerpc-unknown-linux-gnu": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "s390x-unknown-linux-gnu": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "wasm32-unknown-unknown": [
+            "cfg(all(target_arch = \"wasm32\", not(any(target_os = \"emscripten\", target_os = \"wasi\"))))": [
               {
                 "id": "js-sys 0.3.69",
                 "target": "js_sys"
@@ -2289,56 +2163,22 @@
                 "target": "wasm_bindgen"
               }
             ],
-            "x86_64-apple-darwin": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "x86_64-apple-ios": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "x86_64-fuchsia": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "x86_64-linux-android": [
+            "cfg(target_os = \"android\")": [
               {
                 "id": "android-tzdata 0.1.1",
                 "target": "android_tzdata"
-              },
+              }
+            ],
+            "cfg(unix)": [
               {
                 "id": "iana-time-zone 0.1.60",
                 "target": "iana_time_zone"
               }
             ],
-            "x86_64-pc-windows-msvc": [
+            "cfg(windows)": [
               {
                 "id": "windows-targets 0.52.5",
                 "target": "windows_targets"
-              }
-            ],
-            "x86_64-unknown-freebsd": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "x86_64-unknown-linux-gnu": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
-              }
-            ],
-            "x86_64-unknown-nixos-gnu": [
-              {
-                "id": "iana-time-zone 0.1.60",
-                "target": "iana_time_zone"
               }
             ]
           }
@@ -9623,145 +9463,7 @@
             }
           ],
           "selects": {
-            "aarch64-apple-darwin": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-apple-ios": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-apple-ios-sim": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-fuchsia": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-linux-android": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-unknown-linux-gnu": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-unknown-nixos-gnu": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-unknown-nto-qnx710": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "arm-unknown-linux-gnueabi": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "armv7-linux-androideabi": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "armv7-unknown-linux-gnueabi": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "i686-apple-darwin": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "i686-linux-android": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "i686-unknown-freebsd": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "i686-unknown-linux-gnu": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "powerpc-unknown-linux-gnu": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "s390x-unknown-linux-gnu": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-apple-darwin": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-apple-ios": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-fuchsia": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-linux-android": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-unknown-freebsd": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-unknown-linux-gnu": [
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-unknown-nixos-gnu": [
+            "cfg(unix)": [
               {
                 "id": "libc 0.2.154",
                 "target": "libc"
@@ -10347,270 +10049,6 @@
             }
           ],
           "selects": {
-            "aarch64-apple-darwin": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-apple-ios": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-apple-ios-sim": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-fuchsia": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-linux-android": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-pc-windows-msvc": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-unknown-linux-gnu": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-unknown-nixos-gnu": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-unknown-nto-qnx710": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "arm-unknown-linux-gnueabi": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "armv7-linux-androideabi": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "armv7-unknown-linux-gnueabi": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
             "cfg(not(target_arch = \"wasm32\"))": [
               {
                 "id": "encoding_rs 0.8.34",
@@ -10627,6 +10065,10 @@
               {
                 "id": "hyper 0.14.28",
                 "target": "hyper"
+              },
+              {
+                "id": "hyper-rustls 0.24.2",
+                "target": "hyper_rustls"
               },
               {
                 "id": "ipnet 2.9.0",
@@ -10653,8 +10095,24 @@
                 "target": "pin_project_lite"
               },
               {
+                "id": "rustls 0.21.12",
+                "target": "rustls"
+              },
+              {
+                "id": "rustls-pemfile 1.0.4",
+                "target": "rustls_pemfile"
+              },
+              {
                 "id": "tokio 1.38.0",
                 "target": "tokio"
+              },
+              {
+                "id": "tokio-rustls 0.24.1",
+                "target": "tokio_rustls"
+              },
+              {
+                "id": "webpki-roots 0.25.4",
+                "target": "webpki_roots"
               }
             ],
             "cfg(target_arch = \"wasm32\")": [
@@ -10689,446 +10147,6 @@
               {
                 "id": "winreg 0.50.0",
                 "target": "winreg"
-              }
-            ],
-            "i686-apple-darwin": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "i686-linux-android": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "i686-pc-windows-msvc": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "i686-unknown-freebsd": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "i686-unknown-linux-gnu": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "powerpc-unknown-linux-gnu": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "riscv32imc-unknown-none-elf": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "riscv64gc-unknown-none-elf": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "s390x-unknown-linux-gnu": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "thumbv7em-none-eabi": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "thumbv8m.main-none-eabi": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-apple-darwin": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-apple-ios": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-fuchsia": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-linux-android": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-pc-windows-msvc": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-unknown-freebsd": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-unknown-linux-gnu": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-unknown-nixos-gnu": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-unknown-none": [
-              {
-                "id": "hyper-rustls 0.24.2",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.21.12",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 1.0.4",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "tokio-rustls 0.24.1",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.25.4",
-                "target": "webpki_roots"
               }
             ]
           }
@@ -11226,318 +10244,6 @@
             }
           ],
           "selects": {
-            "aarch64-apple-darwin": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-apple-ios": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-apple-ios-sim": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-fuchsia": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-linux-android": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-pc-windows-msvc": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-unknown-linux-gnu": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-unknown-nixos-gnu": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "aarch64-unknown-nto-qnx710": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "arm-unknown-linux-gnueabi": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "armv7-linux-androideabi": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "armv7-unknown-linux-gnueabi": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
             "cfg(not(target_arch = \"wasm32\"))": [
               {
                 "id": "http-body 1.0.0",
@@ -11550,6 +10256,10 @@
               {
                 "id": "hyper 1.3.1",
                 "target": "hyper"
+              },
+              {
+                "id": "hyper-rustls 0.26.0",
+                "target": "hyper_rustls"
               },
               {
                 "id": "hyper-util 0.1.3",
@@ -11580,8 +10290,28 @@
                 "target": "pin_project_lite"
               },
               {
+                "id": "rustls 0.22.4",
+                "target": "rustls"
+              },
+              {
+                "id": "rustls-pemfile 2.1.2",
+                "target": "rustls_pemfile"
+              },
+              {
+                "id": "rustls-pki-types 1.7.0",
+                "target": "rustls_pki_types"
+              },
+              {
                 "id": "tokio 1.38.0",
                 "target": "tokio"
+              },
+              {
+                "id": "tokio-rustls 0.25.0",
+                "target": "tokio_rustls"
+              },
+              {
+                "id": "webpki-roots 0.26.1",
+                "target": "webpki_roots"
               }
             ],
             "cfg(target_arch = \"wasm32\")": [
@@ -11610,526 +10340,6 @@
               {
                 "id": "winreg 0.52.0",
                 "target": "winreg"
-              }
-            ],
-            "i686-apple-darwin": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "i686-linux-android": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "i686-pc-windows-msvc": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "i686-unknown-freebsd": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "i686-unknown-linux-gnu": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "powerpc-unknown-linux-gnu": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "riscv32imc-unknown-none-elf": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "riscv64gc-unknown-none-elf": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "s390x-unknown-linux-gnu": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "thumbv7em-none-eabi": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "thumbv8m.main-none-eabi": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-apple-darwin": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-apple-ios": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-fuchsia": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-linux-android": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-pc-windows-msvc": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-unknown-freebsd": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-unknown-linux-gnu": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-unknown-nixos-gnu": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
-              }
-            ],
-            "x86_64-unknown-none": [
-              {
-                "id": "hyper-rustls 0.26.0",
-                "target": "hyper_rustls"
-              },
-              {
-                "id": "rustls 0.22.4",
-                "target": "rustls"
-              },
-              {
-                "id": "rustls-pemfile 2.1.2",
-                "target": "rustls_pemfile"
-              },
-              {
-                "id": "rustls-pki-types 1.7.0",
-                "target": "rustls_pki_types"
-              },
-              {
-                "id": "tokio-rustls 0.25.0",
-                "target": "tokio_rustls"
-              },
-              {
-                "id": "webpki-roots 0.26.1",
-                "target": "webpki_roots"
               }
             ]
           }
@@ -12586,83 +10796,6 @@
             }
           ],
           "selects": {
-            "aarch64-apple-darwin": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-apple-ios": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-apple-ios-sim": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-fuchsia": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-linux-android": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "aarch64-unknown-nto-qnx710": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "armv7-linux-androideabi": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
             "cfg(all(any(target_os = \"android\", target_os = \"linux\"), any(rustix_use_libc, miri, not(all(target_os = \"linux\", target_endian = \"little\", any(target_arch = \"arm\", all(target_arch = \"aarch64\", target_pointer_width = \"64\"), target_arch = \"riscv64\", all(rustix_use_experimental_asm, target_arch = \"powerpc64\"), all(rustix_use_experimental_asm, target_arch = \"mips\"), all(rustix_use_experimental_asm, target_arch = \"mips32r6\"), all(rustix_use_experimental_asm, target_arch = \"mips64\"), all(rustix_use_experimental_asm, target_arch = \"mips64r6\"), target_arch = \"x86\", all(target_arch = \"x86_64\", target_pointer_width = \"64\")))))))": [
               {
                 "id": "linux-raw-sys 0.4.13",
@@ -12695,127 +10828,6 @@
               {
                 "id": "windows-sys 0.52.0",
                 "target": "windows_sys"
-              }
-            ],
-            "i686-apple-darwin": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "i686-linux-android": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "i686-unknown-freebsd": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "powerpc-unknown-linux-gnu": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "s390x-unknown-linux-gnu": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "wasm32-wasi": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-apple-darwin": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-apple-ios": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-fuchsia": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-linux-android": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              }
-            ],
-            "x86_64-unknown-freebsd": [
-              {
-                "id": "errno 0.3.9",
-                "target": "errno",
-                "alias": "libc_errno"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
               }
             ]
           }
@@ -13578,9 +11590,9 @@
       ],
       "license_file": "LICENSE"
     },
-    "selenium-manager 0.4.22-nightly": {
+    "selenium-manager 0.4.23-nightly": {
       "name": "selenium-manager",
-      "version": "0.4.22-nightly",
+      "version": "0.4.23-nightly",
       "package_url": "https://github.com/SeleniumHQ/selenium",
       "repository": null,
       "targets": [
@@ -13717,7 +11729,7 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "0.4.22-nightly"
+        "version": "0.4.23-nightly"
       },
       "license": "Apache-2.0",
       "license_ids": [
@@ -15275,151 +13287,11 @@
             }
           ],
           "selects": {
-            "aarch64-apple-darwin": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "aarch64-apple-ios": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "aarch64-apple-ios-sim": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "aarch64-fuchsia": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "aarch64-linux-android": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "aarch64-unknown-linux-gnu": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "aarch64-unknown-nixos-gnu": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "aarch64-unknown-nto-qnx710": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "arm-unknown-linux-gnueabi": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "armv7-linux-androideabi": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "armv7-unknown-linux-gnueabi": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
             "cfg(unix)": [
               {
                 "id": "libc 0.2.154",
                 "target": "libc"
-              }
-            ],
-            "i686-apple-darwin": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "i686-linux-android": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "i686-unknown-freebsd": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "i686-unknown-linux-gnu": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "powerpc-unknown-linux-gnu": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "s390x-unknown-linux-gnu": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "x86_64-apple-darwin": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "x86_64-apple-ios": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "x86_64-fuchsia": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "x86_64-linux-android": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "x86_64-unknown-freebsd": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "x86_64-unknown-linux-gnu": [
-              {
-                "id": "xattr 1.3.1",
-                "target": "xattr"
-              }
-            ],
-            "x86_64-unknown-nixos-gnu": [
+              },
               {
                 "id": "xattr 1.3.1",
                 "target": "xattr"
@@ -16241,6 +14113,10 @@
         "deps": {
           "common": [
             {
+              "id": "bytes 1.6.0",
+              "target": "bytes"
+            },
+            {
               "id": "mio 0.8.11",
               "target": "mio"
             },
@@ -16254,169 +14130,7 @@
             }
           ],
           "selects": {
-            "aarch64-apple-darwin": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "aarch64-apple-ios": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "aarch64-apple-ios-sim": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "aarch64-fuchsia": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "aarch64-linux-android": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "aarch64-pc-windows-msvc": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              },
-              {
-                "id": "windows-sys 0.48.0",
-                "target": "windows_sys"
-              }
-            ],
-            "aarch64-unknown-linux-gnu": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "aarch64-unknown-nixos-gnu": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "aarch64-unknown-nto-qnx710": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "arm-unknown-linux-gnueabi": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "armv7-linux-androideabi": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "armv7-unknown-linux-gnueabi": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
+            "cfg(not(target_family = \"wasm\"))": [
               {
                 "id": "socket2 0.5.7",
                 "target": "socket2"
@@ -16428,264 +14142,16 @@
                 "target": "backtrace"
               }
             ],
-            "i686-apple-darwin": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
+            "cfg(unix)": [
               {
                 "id": "libc 0.2.154",
                 "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
               }
             ],
-            "i686-linux-android": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "i686-pc-windows-msvc": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              },
+            "cfg(windows)": [
               {
                 "id": "windows-sys 0.48.0",
                 "target": "windows_sys"
-              }
-            ],
-            "i686-unknown-freebsd": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "i686-unknown-linux-gnu": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "powerpc-unknown-linux-gnu": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "riscv32imc-unknown-none-elf": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "riscv64gc-unknown-none-elf": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "s390x-unknown-linux-gnu": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "thumbv7em-none-eabi": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "thumbv8m.main-none-eabi": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "x86_64-apple-darwin": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "x86_64-apple-ios": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "x86_64-fuchsia": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "x86_64-linux-android": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "x86_64-pc-windows-msvc": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              },
-              {
-                "id": "windows-sys 0.48.0",
-                "target": "windows_sys"
-              }
-            ],
-            "x86_64-unknown-freebsd": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "x86_64-unknown-linux-gnu": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "x86_64-unknown-nixos-gnu": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "libc 0.2.154",
-                "target": "libc"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
-              }
-            ],
-            "x86_64-unknown-none": [
-              {
-                "id": "bytes 1.6.0",
-                "target": "bytes"
-              },
-              {
-                "id": "socket2 0.5.7",
-                "target": "socket2"
               }
             ]
           }
@@ -21312,7 +18778,7 @@
   },
   "binary_crates": [],
   "workspace_members": {
-    "selenium-manager 0.4.22-nightly": "rust"
+    "selenium-manager 0.4.23-nightly": "rust"
   },
   "conditions": {
     "aarch64-apple-darwin": [
@@ -21335,8 +18801,7 @@
       "aarch64-pc-windows-msvc"
     ],
     "aarch64-unknown-linux-gnu": [
-      "aarch64-unknown-linux-gnu",
-      "aarch64-unknown-nixos-gnu"
+      "aarch64-unknown-linux-gnu"
     ],
     "aarch64-unknown-nixos-gnu": [
       "aarch64-unknown-nixos-gnu"
@@ -21423,6 +18888,9 @@
       "aarch64-apple-ios-sim"
     ],
     "cfg(all(target_arch = \"loongarch64\", target_os = \"linux\"))": [],
+    "cfg(all(target_arch = \"wasm32\", not(any(target_os = \"emscripten\", target_os = \"wasi\"))))": [
+      "wasm32-unknown-unknown"
+    ],
     "cfg(all(target_arch = \"x86\", target_env = \"gnu\", not(target_abi = \"llvm\"), not(windows_raw_dylib)))": [
       "i686-unknown-linux-gnu"
     ],
@@ -21690,6 +19158,40 @@
       "x86_64-unknown-nixos-gnu",
       "x86_64-unknown-none"
     ],
+    "cfg(not(target_family = \"wasm\"))": [
+      "aarch64-apple-darwin",
+      "aarch64-apple-ios",
+      "aarch64-apple-ios-sim",
+      "aarch64-fuchsia",
+      "aarch64-linux-android",
+      "aarch64-pc-windows-msvc",
+      "aarch64-unknown-linux-gnu",
+      "aarch64-unknown-nixos-gnu",
+      "aarch64-unknown-nto-qnx710",
+      "arm-unknown-linux-gnueabi",
+      "armv7-linux-androideabi",
+      "armv7-unknown-linux-gnueabi",
+      "i686-apple-darwin",
+      "i686-linux-android",
+      "i686-pc-windows-msvc",
+      "i686-unknown-freebsd",
+      "i686-unknown-linux-gnu",
+      "powerpc-unknown-linux-gnu",
+      "riscv32imc-unknown-none-elf",
+      "riscv64gc-unknown-none-elf",
+      "s390x-unknown-linux-gnu",
+      "thumbv7em-none-eabi",
+      "thumbv8m.main-none-eabi",
+      "x86_64-apple-darwin",
+      "x86_64-apple-ios",
+      "x86_64-fuchsia",
+      "x86_64-linux-android",
+      "x86_64-pc-windows-msvc",
+      "x86_64-unknown-freebsd",
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-nixos-gnu",
+      "x86_64-unknown-none"
+    ],
     "cfg(not(windows))": [
       "aarch64-apple-darwin",
       "aarch64-apple-ios",
@@ -21855,8 +19357,7 @@
       "x86_64-unknown-freebsd"
     ],
     "x86_64-unknown-linux-gnu": [
-      "x86_64-unknown-linux-gnu",
-      "x86_64-unknown-nixos-gnu"
+      "x86_64-unknown-linux-gnu"
     ],
     "x86_64-unknown-nixos-gnu": [
       "x86_64-unknown-nixos-gnu"

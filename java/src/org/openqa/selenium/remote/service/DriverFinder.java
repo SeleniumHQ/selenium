@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.service;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -100,7 +100,7 @@ public class DriverFinder {
           if (result.getDriverPath() == null) {
             List<String> arguments = toArguments();
             result = seleniumManager.getBinaryPaths(arguments);
-            Require.state(options.getBrowserName(), new File(result.getBrowserPath()))
+            Require.state(options.getBrowserName(), Path.of(result.getBrowserPath()))
                 .isExecutable();
           } else {
             LOG.fine(
@@ -115,7 +115,7 @@ public class DriverFinder {
                   driverName, result.getDriverPath()));
         }
 
-        Require.state(driverName, new File(result.getDriverPath())).isExecutable();
+        Require.state(driverName, Path.of(result.getDriverPath())).isExecutable();
       } catch (RuntimeException e) {
         throw new NoSuchDriverException(
             String.format(
@@ -148,7 +148,9 @@ public class DriverFinder {
     }
 
     Proxy proxy = Proxy.extractFrom(options);
-    if (proxy != null) {
+    if (proxy != null
+        && proxy.getProxyType() != Proxy.ProxyType.DIRECT
+        && proxy.getProxyType() != Proxy.ProxyType.AUTODETECT) {
       arguments.add("--proxy");
       if (proxy.getSslProxy() != null) {
         arguments.add(proxy.getSslProxy());

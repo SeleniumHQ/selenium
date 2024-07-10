@@ -19,12 +19,12 @@
 
 const assert = require('node:assert')
 const path = require('node:path')
-const firefox = require('../../firefox')
-const io = require('../../io')
-const { Browser } = require('../../index')
+const firefox = require('selenium-webdriver/firefox')
+const io = require('selenium-webdriver/io')
+const { Browser } = require('selenium-webdriver/index')
 const { Pages, suite } = require('../../lib/test')
 const { locate } = require('../../lib/test/resources')
-const { until, By } = require('../../index')
+const { until, By } = require('selenium-webdriver/index')
 
 const EXT_XPI = locate('common/extensions/webextensions-selenium-example.xpi')
 const WEBEXTENSION_EXTENSION_ID = 'webextensions-selenium-example@example.com.xpi'

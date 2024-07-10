@@ -18,9 +18,9 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Select, By } = require('..')
+const { Select, By } = require('selenium-webdriver')
 const { Pages, suite } = require('../lib/test')
-const { escapeQuotes } = require('../lib/select')
+const { escapeQuotes } = require('selenium-webdriver/lib/select')
 
 let singleSelectValues1 = {
   name: 'selectomatic',

@@ -20,8 +20,8 @@
 const assert = require('node:assert')
 const http = require('node:http')
 
-const error = require('../../lib/error')
-const util = require('../../http/util')
+const error = require('selenium-webdriver/lib/error')
+const util = require('selenium-webdriver/http/util')
 
 describe('selenium-webdriver/http/util', function () {
   let server, baseUrl

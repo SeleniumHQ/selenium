@@ -27,7 +27,7 @@ module Selenium
 
         expect {
           driver.find_element(id: 'nonexistent')
-        }.to raise_error(WebDriver::Error::NoSuchElementError)
+        }.to raise_error(WebDriver::Error::NoSuchElementError, /#no-such-element-exception/)
       end
     end
   end # WebDriver

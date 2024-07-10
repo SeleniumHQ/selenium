@@ -66,10 +66,16 @@ class LogInspector {
   }
 
   removeCallback(id) {
+    let hasId = false
     for (const [, callbacks] of this.listener) {
       if (callbacks.has(id)) {
         callbacks.delete(id)
+        hasId = true
       }
+    }
+
+    if (!hasId) {
+      throw Error(`Callback with id ${id} not found`)
     }
   }
 
@@ -122,11 +128,11 @@ class LogInspector {
       if (params?.type === LOG.TYPE_CONSOLE) {
         let consoleEntry = new ConsoleLogEntry(
           params.level,
+          params.source,
           params.text,
           params.timestamp,
           params.type,
           params.method,
-          params.realm,
           params.args,
           params.stackTrace,
         )
@@ -172,6 +178,7 @@ class LogInspector {
       if (params?.type === LOG.TYPE_JS_LOGS) {
         let jsEntry = new JavascriptLogEntry(
           params.level,
+          params.source,
           params.text,
           params.timestamp,
           params.type,
@@ -206,6 +213,7 @@ class LogInspector {
       if (params?.type === 'javascript' && params?.level === 'error') {
         let jsErrorEntry = new JavascriptLogEntry(
           params.level,
+          params.source,
           params.text,
           params.timestamp,
           params.type,
@@ -244,6 +252,7 @@ class LogInspector {
       if (params?.type === 'javascript') {
         let jsEntry = new JavascriptLogEntry(
           params.level,
+          params.source,
           params.text,
           params.timestamp,
           params.type,
@@ -273,11 +282,11 @@ class LogInspector {
       if (params?.type === 'console') {
         let consoleEntry = new ConsoleLogEntry(
           params.level,
+          params.source,
           params.text,
           params.timestamp,
           params.type,
           params.method,
-          params.realm,
           params.args,
           params.stackTrace,
         )
@@ -296,6 +305,7 @@ class LogInspector {
       if (params !== undefined && !['console', 'javascript'].includes(params?.type)) {
         let genericEntry = new GenericLogEntry(
           params.level,
+          params.source,
           params.text,
           params.timestamp,
           params.type,
@@ -324,7 +334,15 @@ class LogInspector {
    * @returns {Promise<void>}
    */
   async close() {
-    await this.bidi.unsubscribe('log.entryAdded', this._browsingContextIds)
+    if (
+      this._browsingContextIds !== null &&
+      this._browsingContextIds !== undefined &&
+      this._browsingContextIds.length > 0
+    ) {
+      await this.bidi.unsubscribe('log.entryAdded', this._browsingContextIds)
+    } else {
+      await this.bidi.unsubscribe('log.entryAdded')
+    }
   }
 }
 

@@ -18,22 +18,21 @@
 'use strict'
 
 const assert = require('node:assert')
-const firefox = require('../../firefox')
-const { Browser } = require('../../')
+const { Browser } = require('selenium-webdriver')
 const { Pages, suite } = require('../../lib/test')
-const BrowsingContext = require('../../bidi/browsingContext')
-const { Locator } = require('../../bidi/browsingContext')
-const { ScriptManager } = require('../../index')
-const { EvaluateResultType } = require('../../bidi/evaluateResult')
-const { LocalValue, ReferenceValue } = require('../../bidi/protocolValue')
-const { ArgumentValue } = require('../../bidi/argumentValue')
+const BrowsingContext = require('selenium-webdriver/bidi/browsingContext')
+const { Locator } = require('selenium-webdriver/bidi/browsingContext')
+const { ScriptManager } = require('selenium-webdriver/index')
+const { EvaluateResultType } = require('selenium-webdriver/bidi/evaluateResult')
+const { LocalValue, ReferenceValue } = require('selenium-webdriver/bidi/protocolValue')
+const { ArgumentValue } = require('selenium-webdriver/bidi/argumentValue')
 
 suite(
   function (env) {
     let driver
 
     beforeEach(async function () {
-      driver = await env.builder().setFirefoxOptions(new firefox.Options().enableBidi()).build()
+      driver = await env.builder().build()
     })
 
     afterEach(async function () {
@@ -178,7 +177,7 @@ suite(
 
         await browsingContext.navigate(Pages.xhtmlTestPage, 'complete')
 
-        const elements = await browsingContext.locateNodes(Locator.css('div'), 1, undefined, sandbox)
+        const elements = await browsingContext.locateNodes(Locator.css('div'), 1, sandbox)
 
         assert.strictEqual(elements.length, 1)
 

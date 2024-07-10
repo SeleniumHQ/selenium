@@ -146,7 +146,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    * @param paths Paths to the extensions to install.
    */
   public T addExtensions(List<File> paths) {
-    paths.forEach(path -> Require.argument("Extension", path).isFile());
+    paths.forEach(path -> Require.argument("Extension", path.toPath()).isFile());
     extensionFiles.addAll(paths);
     return (T) this;
   }
@@ -240,8 +240,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
       return null;
     }
 
-    Map<String, Object> options = new TreeMap<>();
-    experimentalOptions.forEach(options::put);
+    Map<String, Object> options = new TreeMap<>(experimentalOptions);
 
     if (binary != null) {
       options.put("binary", binary);
