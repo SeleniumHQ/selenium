@@ -22,7 +22,6 @@ const { LocalValue, ChannelValue } = require('../bidi/protocolValue')
 const fs = require('node:fs')
 const path = require('node:path')
 const by = require('./by')
-const { requireAtom } = require('./http')
 
 class Script {
   #driver
