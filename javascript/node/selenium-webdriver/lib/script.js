@@ -112,6 +112,16 @@ class Script {
 
     await this.#script.removeCallback(id)
   }
+
+  async pin(script) {
+    await this.#initScript()
+    return await this.#script.addPreloadScript(script)
+  }
+
+  async unpin(id) {
+    await this.#initScript()
+    await this.#script.removePreloadScript(id)
+  }
 }
 
 module.exports = Script
