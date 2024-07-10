@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-;(channel) => {
+(channel) => {
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       switch (mutation.type) {
