@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-(channel) => {
+function observeMutations(channel) {
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       switch (mutation.type) {
@@ -25,7 +25,7 @@
             break
           }
           const curr = mutation.target.getAttribute(mutation.attributeName)
-          var id = mutation.target.dataset.__webdriver_id
+          let id = mutation.target.dataset.__webdriver_id
           if (!id) {
             id = Math.random().toString(36).substring(2) + Date.now().toString(36)
             mutation.target.dataset.__webdriver_id = id
