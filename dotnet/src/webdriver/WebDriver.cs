@@ -60,18 +60,18 @@ namespace OpenQA.Selenium
             {
                 this.StartSession(capabilities);
             }
-            catch (Exception)
+            catch (Exception originalException)
             {
                 try
                 {
                     // Failed to start driver session, disposing of driver
                     this.Quit();
                 }
-                catch
+                catch (Exception)
                 {
-                    // Ignore the clean-up exception. We'll propagate the original failure.
+                    // Throw original exception instead of a possible outcome of Quit() method
+                    throw originalException;
                 }
-                throw;
             }
 
             this.elementFactory = new WebElementFactory(this);
