@@ -153,10 +153,10 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Executes a command
+        /// Executes a command.
         /// </summary>
-        /// <param name="commandToExecute">The command you wish to execute</param>
-        /// <returns>A response from the browser</returns>
+        /// <param name="commandToExecute">The command you wish to execute.</param>
+        /// <returns>A response from the browser.</returns>
         public virtual Response Execute(Command commandToExecute)
         {
             return Task.Run(() => this.ExecuteAsync(commandToExecute)).GetAwaiter().GetResult();
@@ -165,8 +165,8 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Executes a command as an asynchronous task.
         /// </summary>
-        /// <param name="commandToExecute">The command you wish to execute</param>
-        /// <returns>A task object representing the asynchronous operation</returns>
+        /// <param name="commandToExecute">The command you wish to execute.</param>
+        /// <returns>A task object representing the asynchronous operation.</returns>
         public virtual async Task<Response> ExecuteAsync(Command commandToExecute)
         {
             if (commandToExecute == null)
