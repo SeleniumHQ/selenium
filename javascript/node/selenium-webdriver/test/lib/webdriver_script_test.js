@@ -20,6 +20,8 @@
 const assert = require('node:assert')
 const { Browser } = require('selenium-webdriver')
 const { Pages, suite } = require('../../lib/test')
+const fileServer = require('../../lib/test/fileserver')
+const until = require('selenium-webdriver/lib/until')
 
 suite(
   function (env) {
@@ -83,6 +85,42 @@ suite(
         } catch (e) {
           assert.strictEqual(e.message, 'Callback with id 10 not found')
         }
+      })
+
+      it('can listen to dom mutations', async function () {
+        let message = null
+        await driver.script().addDomMutationHandler((m) => {
+          message = m
+        })
+
+        await driver.get(fileServer.Pages.dynamicPage)
+
+        let element = driver.findElement({ id: 'reveal' })
+        await element.click()
+        let revealed = driver.findElement({ id: 'revealed' })
+        await driver.wait(until.elementIsVisible(revealed), 5000)
+
+        assert.strictEqual(message['attribute_name'], 'style')
+        assert.strictEqual(message['current_value'], '')
+        assert.strictEqual(message['old_value'], 'display:none;')
+      })
+
+      it('can remove to dom mutation handler', async function () {
+        let message = null
+        let id = await driver.script().addDomMutationHandler((m) => {
+          message = m
+        })
+
+        await driver.get(fileServer.Pages.dynamicPage)
+
+        await driver.script().removeDomMutationHandler(id)
+
+        let element = driver.findElement({ id: 'reveal' })
+        await element.click()
+        let revealed = driver.findElement({ id: 'revealed' })
+        await driver.wait(until.elementIsVisible(revealed), 5000)
+
+        assert.strictEqual(message, null)
       })
     })
   },
