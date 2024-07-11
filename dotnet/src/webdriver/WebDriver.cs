@@ -62,8 +62,15 @@ namespace OpenQA.Selenium
             }
             catch (Exception)
             {
-                // Failed to start driver session, disposing of driver
-                this.Quit();
+                try
+                {
+                    // Failed to start driver session, disposing of driver
+                    this.Quit();
+                }
+                catch
+                {
+                    // Ignore the clean-up exception. We'll propagate the original failure.
+                }
                 throw;
             }
 
@@ -703,7 +710,10 @@ namespace OpenQA.Selenium
         {
             try
             {
-                this.Execute(DriverCommand.Quit, null);
+                if (this.sessionId is not null)
+                {
+                    this.Execute(DriverCommand.Quit, null);
+                }
             }
             catch (NotImplementedException)
             {
