@@ -122,6 +122,38 @@ suite(
 
         assert.strictEqual(message, null)
       })
+
+      it('can pin script', async function () {
+        await driver.script().pin("() => { console.log('Hello!'); }")
+        let log
+
+        await driver.script().addConsoleMessageHandler((logEntry) => {
+          log = logEntry
+        })
+
+        await driver.get(Pages.logEntryAdded)
+
+        await delay(3000)
+
+        assert.equal(log.text, 'Hello!')
+      })
+
+      it('can unpin script', async function () {
+        const id = await driver.script().pin("() => { console.log('Hello!'); }")
+
+        let count = 0
+        await driver.script().addConsoleMessageHandler((logEntry) => {
+          count++
+        })
+
+        await driver.get(Pages.logEntryAdded)
+
+        await driver.script().unpin(id)
+
+        await driver.get(Pages.logEntryAdded)
+
+        assert.equal(count, 1)
+      })
     })
   },
   { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
