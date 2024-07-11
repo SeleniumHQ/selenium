@@ -25,7 +25,6 @@ const { Locator } = require('selenium-webdriver/bidi/browsingContext')
 const { ScriptManager } = require('selenium-webdriver/index')
 const { EvaluateResultType } = require('selenium-webdriver/bidi/evaluateResult')
 const { LocalValue, ReferenceValue } = require('selenium-webdriver/bidi/protocolValue')
-const { ArgumentValue } = require('selenium-webdriver/bidi/argumentValue')
 
 suite(
   function (env) {
@@ -187,7 +186,7 @@ suite(
 
         let argumentValues = []
         let mapValue = { sharedId: LocalValue.createStringValue(nodeId) }
-        argumentValues.push(new ArgumentValue(LocalValue.createMapValue(mapValue)))
+        argumentValues.push(LocalValue.createMapValue(mapValue))
 
         const response = await script.callFunctionInBrowsingContext(
           id,

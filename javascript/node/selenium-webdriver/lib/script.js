@@ -17,7 +17,6 @@
 
 const logInspector = require('../bidi/logInspector')
 const scriptManager = require('../bidi//scriptManager')
-const { ArgumentValue } = require('../bidi/argumentValue')
 const { LocalValue, ChannelValue } = require('../bidi/protocolValue')
 const fs = require('node:fs')
 const path = require('node:path')
@@ -77,7 +76,7 @@ class Script {
     await this.#initScript()
 
     let argumentValues = []
-    let value = new ArgumentValue(LocalValue.createChannelValue(new ChannelValue('channel_name')))
+    let value = LocalValue.createChannelValue(new ChannelValue('channel_name'))
     argumentValues.push(value)
 
     const filePath = path.join(__dirname, 'atoms', 'bidi-mutation-listener.js')
