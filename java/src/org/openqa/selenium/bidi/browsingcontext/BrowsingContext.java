@@ -368,11 +368,23 @@ public class BrowsingContext {
     this.traverseHistory(1);
   }
 
-  List<RemoteValue> parseRemoteValues(JsonInput jsonInput) {
+  private List<RemoteValue> parseRemoteValues(JsonInput jsonInput) {
     Map<String, Object> result = jsonInput.read(Map.class);
-    try (StringReader reader = new StringReader(JSON.toJson(result.get("nodes")));
+    Object nodes = result.get("nodes");
+
+    if (nodes == null) {
+      return null;
+    }
+
+    try (StringReader reader = new StringReader(JSON.toJson(nodes));
          JsonInput input = JSON.newInput(reader)) {
-      return input.read(new TypeToken<List<RemoteValue>>() {}.getType());
+      List<RemoteValue> remoteValues = input.read(new TypeToken<List<RemoteValue>>() {}.getType());
+
+      if (remoteValues == null || remoteValues.isEmpty()) {
+        return null;
+      }
+
+      return remoteValues;
     }
   }
 
