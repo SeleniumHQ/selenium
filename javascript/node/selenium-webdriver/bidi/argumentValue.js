@@ -17,7 +17,6 @@
 
 const { LocalValue } = require('./protocolValue')
 
-
 /**
  * @deprecated
  * in favor of LocalValue methods for all argument values.
