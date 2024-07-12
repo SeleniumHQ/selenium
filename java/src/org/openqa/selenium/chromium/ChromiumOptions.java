@@ -24,15 +24,7 @@ import static java.util.stream.Collectors.toList;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Stream;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -320,10 +312,13 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
       }
       addExtensions(options.extensionFiles);
       addEncodedExtensions(options.extensions);
-      if (options.binary != null) {
-        setBinary(options.binary);
-      }
+
+      Optional.ofNullable(options.binary).ifPresent(this::setBinary);
+
       options.experimentalOptions.forEach(this::setExperimentalOption);
+
+      Optional.ofNullable(options.androidOptions)
+          .ifPresent(opts -> opts.forEach(this::setAndroidCapability));
     }
   }
 
