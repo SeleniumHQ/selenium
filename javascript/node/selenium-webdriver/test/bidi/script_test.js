@@ -100,8 +100,8 @@ suite(
         manager = await ScriptManager(id, driver)
 
         let argumentValues = []
-        let value1 = new ArgumentValue(LocalValue.createStringValue('ARGUMENT_STRING_VALUE'))
-        let value2 = new ArgumentValue(LocalValue.createNumberValue(42))
+        let value1 = LocalValue.createStringValue('ARGUMENT_STRING_VALUE')
+        let value2 = LocalValue.createNumberValue(42)
         argumentValues.push(value1)
         argumentValues.push(value2)
 
@@ -160,7 +160,7 @@ suite(
         manager = await ScriptManager(id, driver)
 
         let mapValue = { some_property: LocalValue.createNumberValue(42) }
-        let thisParameter = new ArgumentValue(LocalValue.createObjectValue(mapValue)).asMap()
+        let thisParameter = LocalValue.createObjectValue(mapValue).asMap()
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -427,8 +427,8 @@ suite(
         let argumentValues = []
         let valueMap = evaluateResult.result.value
 
-        let value1 = new ArgumentValue(LocalValue.createObjectValue(valueMap))
-        let value2 = new ArgumentValue(new ReferenceValue(RemoteReferenceType.HANDLE, evaluateResult.result.handle))
+        let value1 = LocalValue.createObjectValue(valueMap)
+        let value2 = new ReferenceValue(RemoteReferenceType.HANDLE, evaluateResult.result.handle)
         argumentValues.push(value1)
         argumentValues.push(value2)
 
@@ -462,8 +462,8 @@ suite(
         let argumentValues = []
         let valueMap = evaluateResult.result.value
 
-        let value1 = new ArgumentValue(LocalValue.createObjectValue(valueMap))
-        let value2 = new ArgumentValue(new ReferenceValue(RemoteReferenceType.HANDLE, evaluateResult.result.handle))
+        let value1 = LocalValue.createObjectValue(valueMap)
+        let value2 = new ReferenceValue(RemoteReferenceType.HANDLE, evaluateResult.result.handle)
         argumentValues.push(value1)
         argumentValues.push(value2)
 
@@ -766,7 +766,7 @@ suite(
         })
 
         let argumentValues = []
-        let value = new ArgumentValue(LocalValue.createChannelValue(new ChannelValue('channel_name')))
+        let value = LocalValue.createChannelValue(new ChannelValue('channel_name'))
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
