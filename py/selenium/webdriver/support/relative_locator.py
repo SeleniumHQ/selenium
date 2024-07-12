@@ -88,12 +88,10 @@ class RelativeBy:
         self.filters = filters or []
 
     @overload
-    def above(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy":
-        ...
+    def above(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
 
     @overload
-    def above(self, element_or_locator: None = None) -> "NoReturn":
-        ...
+    def above(self, element_or_locator: None = None) -> "NoReturn": ...
 
     def above(self, element_or_locator: Union[WebElement, LocatorType, None] = None) -> "RelativeBy":
         """Add a filter to look for elements above.
@@ -108,12 +106,10 @@ class RelativeBy:
         return self
 
     @overload
-    def below(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy":
-        ...
+    def below(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
 
     @overload
-    def below(self, element_or_locator: None = None) -> "NoReturn":
-        ...
+    def below(self, element_or_locator: None = None) -> "NoReturn": ...
 
     def below(self, element_or_locator: Union[WebElement, Dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements below.
@@ -128,12 +124,10 @@ class RelativeBy:
         return self
 
     @overload
-    def to_left_of(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy":
-        ...
+    def to_left_of(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
 
     @overload
-    def to_left_of(self, element_or_locator: None = None) -> "NoReturn":
-        ...
+    def to_left_of(self, element_or_locator: None = None) -> "NoReturn": ...
 
     def to_left_of(self, element_or_locator: Union[WebElement, Dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements to the left of.
@@ -148,12 +142,10 @@ class RelativeBy:
         return self
 
     @overload
-    def to_right_of(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy":
-        ...
+    def to_right_of(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
 
     @overload
-    def to_right_of(self, element_or_locator: None = None) -> "NoReturn":
-        ...
+    def to_right_of(self, element_or_locator: None = None) -> "NoReturn": ...
 
     def to_right_of(self, element_or_locator: Union[WebElement, Dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements right of.
@@ -168,12 +160,10 @@ class RelativeBy:
         return self
 
     @overload
-    def near(self, element_or_locator: Union[WebElement, LocatorType], distance: int = 50) -> "RelativeBy":
-        ...
+    def near(self, element_or_locator: Union[WebElement, LocatorType], distance: int = 50) -> "RelativeBy": ...
 
     @overload
-    def near(self, element_or_locator: None = None, distance: int = 50) -> "NoReturn":
-        ...
+    def near(self, element_or_locator: None = None, distance: int = 50) -> "NoReturn": ...
 
     def near(self, element_or_locator: Union[WebElement, LocatorType, None] = None, distance: int = 50) -> "RelativeBy":
         """Add a filter to look for elements near.
