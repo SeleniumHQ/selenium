@@ -332,7 +332,7 @@ py_library(
         "test/selenium/webdriver/support/conftest.py",
     ],
     data = [
-        "pytest.ini",
+        "pyproject.toml",
         "setup.cfg",
         "test/selenium/webdriver/common/test_file.txt",
         "test/selenium/webdriver/common/test_file2.txt",
