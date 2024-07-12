@@ -148,12 +148,13 @@ public class RelaySessionFactory implements SessionFactory {
           new SessionNotCreatedException(
               "New session request capabilities do not " + "match the stereotype."));
     }
-        
-    // remove browserName capability if 'appium:app' is present as it breaks appium tests when app is provided
+
+    // remove browserName capability if 'appium:app' is present as it breaks appium tests when app
+    // is provided
     // they are mutually exclusive
     MutableCapabilities filteredStereotype = new MutableCapabilities(stereotype);
     if (capabilities.getCapability("appium:app") != null) {
-      filteredStereotype.setCapability(CapabilityType.BROWSER_NAME, (String)null);
+      filteredStereotype.setCapability(CapabilityType.BROWSER_NAME, (String) null);
     }
 
     capabilities = capabilities.merge(filteredStereotype);
