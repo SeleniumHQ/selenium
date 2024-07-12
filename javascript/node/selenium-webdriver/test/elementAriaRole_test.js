@@ -17,9 +17,9 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const test = require('../lib/test')
-const { By } = require('../index')
+const { By } = require('selenium-webdriver')
 
 test.suite(
   function (env) {
@@ -53,5 +53,5 @@ test.suite(
       })
     })
   },
-  { browsers: ['chrome'] }
+  { browsers: ['chrome'] },
 )

@@ -17,10 +17,10 @@
 
 'use strict'
 
-const assert = require('assert')
-const error = require('../lib/error')
+const assert = require('node:assert')
+const error = require('selenium-webdriver/lib/error')
 const test = require('../lib/test')
-const { Browser, By, until } = require('..')
+const { Browser, By, until } = require('selenium-webdriver')
 const Pages = test.Pages
 
 test.suite(function (env) {
@@ -141,13 +141,10 @@ test.suite(function (env) {
           throw Error('Should have timed out on page load')
         },
         function (e) {
-          if (
-            !(e instanceof error.ScriptTimeoutError) &&
-            !(e instanceof error.TimeoutError)
-          ) {
+          if (!(e instanceof error.ScriptTimeoutError) && !(e instanceof error.TimeoutError)) {
             throw Error('Unexpected error response: ' + e)
           }
-        }
+        },
       )
     })
   })

@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const safari = require('../safari')
+const assert = require('node:assert')
+const safari = require('selenium-webdriver/safari')
 const test = require('../lib/test')
 
 test.suite(
@@ -40,5 +40,5 @@ test.suite(
       })
     })
   },
-  { browsers: ['safari'] }
+  { browsers: ['safari'] },
 )

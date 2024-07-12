@@ -1,0 +1,275 @@
+module Selenium
+  module WebDriver
+    module Remote
+      class Bridge
+        include _CommandList
+        include _Features
+
+        @bidi: WebDriver::BiDi
+        @http: untyped
+
+        @file_detector: untyped
+
+        @session_id: untyped
+
+        @capabilities: untyped
+
+        @browser: untyped
+
+        @manage: untyped
+
+        @escaper: untyped
+
+        include Atoms
+
+        PORT: Integer
+
+        attr_accessor http: untyped
+
+        attr_accessor file_detector: untyped
+
+        attr_reader capabilities: untyped
+
+        def initialize: (url: String | URI, ?http_client: untyped?) -> void
+
+        def cancel_fedcm_dialog: -> nil
+
+        def click_fedcm_dialog_button: -> nil
+
+        def create_session: (untyped capabilities) -> untyped
+
+        extend WebDriver::Chrome::Features
+
+        extend WebDriver::Firefox::Features
+
+        extend WebDriver::Edge::Features
+
+        extend WebDriver::Safari::Features
+
+        def fedcm_account_list: -> [FedCM::Account]
+
+        def fedcm_dialog_type: -> String
+
+        def fedcm_subtitle: -> String?
+
+        def fedcm_title: -> String
+
+        def reset_fedcm_cooldown: -> nil
+
+        def select_fedcm_account: -> nil
+
+        def session_id: () -> untyped
+
+        def browser: () -> untyped
+
+        def fedcm_delay: -> bool
+
+        def status: () -> untyped
+
+        def get: (untyped url) -> untyped
+
+        def timeouts: () -> untyped
+
+        def timeouts=: (untyped timeouts) -> untyped
+
+        def accept_alert: () -> untyped
+
+        def dismiss_alert: () -> untyped
+
+        def alert=: (untyped keys) -> untyped
+
+        def alert_text: () -> untyped
+
+        def go_back: () -> untyped
+
+        def go_forward: () -> untyped
+
+        def url: () -> untyped
+
+        def title: () -> untyped
+
+        def page_source: () -> untyped
+
+        def new_window: (untyped type) -> untyped
+
+        def switch_to_window: (untyped name) -> untyped
+
+        def switch_to_frame: (untyped id) -> untyped
+
+        def switch_to_parent_frame: () -> untyped
+
+        def switch_to_default_content: () -> untyped
+
+        QUIT_ERRORS: ::Array[untyped]
+
+        def quit: () -> untyped
+
+        def close: () -> untyped
+
+        def refresh: () -> untyped
+
+        def window_handles: () -> untyped
+
+        def window_handle: () -> untyped
+
+        def resize_window: (untyped width, untyped height, ?::Symbol handle) -> untyped
+
+        def window_size: (?::Symbol handle) -> untyped
+
+        def minimize_window: () -> untyped
+
+        def maximize_window: (?::Symbol handle) -> untyped
+
+        def full_screen_window: () -> untyped
+
+        def reposition_window: (untyped x, untyped y) -> untyped
+
+        def window_position: () -> untyped
+
+        def set_window_rect: (?x: untyped?, ?y: untyped?, ?width: untyped?, ?height: untyped?) -> untyped
+
+        def window_rect: () -> untyped
+
+        def screenshot: () -> untyped
+
+        def element_screenshot: (untyped element) -> untyped
+
+        def local_storage_item: (untyped key, ?untyped? value) -> untyped
+
+        def remove_local_storage_item: (untyped key) -> untyped
+
+        def local_storage_keys: () -> untyped
+
+        def clear_local_storage: () -> untyped
+
+        def local_storage_size: () -> untyped
+
+        def session_storage_item: (untyped key, ?untyped? value) -> untyped
+
+        def remove_session_storage_item: (untyped key) -> untyped
+
+        def session_storage_keys: () -> untyped
+
+        def clear_session_storage: () -> untyped
+
+        def session_storage_size: () -> untyped
+
+        def execute_script: (untyped script, *untyped args) -> untyped
+
+        def execute_async_script: (untyped script, *untyped args) -> untyped
+
+        def manage: () -> untyped
+
+        def add_cookie: (untyped cookie) -> untyped
+
+        def delete_cookie: (untyped name) -> untyped
+
+        def cookie: (untyped name) -> untyped
+
+        def cookies: () -> untyped
+
+        def delete_all_cookies: () -> untyped
+
+        def action: (?async: bool, ?devices: untyped, ?duration: ::Integer) -> untyped
+
+        alias actions action
+
+        def send_actions: (untyped data) -> untyped
+
+        def release_actions: () -> untyped
+
+        def print_page: (?::Hash[untyped, untyped] options) -> untyped
+
+        def click_element: (untyped element) -> untyped
+
+        def send_keys_to_element: (untyped element, untyped keys) -> untyped
+
+        def upload: (untyped local_file) -> untyped
+
+        def clear_element: (untyped element) -> untyped
+
+        def submit_element: (untyped element) -> untyped
+
+        def element_tag_name: (untyped element) -> untyped
+
+        def element_attribute: (untyped element, untyped name) -> untyped
+
+        def element_dom_attribute: (untyped element, untyped name) -> untyped
+
+        def element_property: (untyped element, untyped name) -> untyped
+
+        def element_aria_role: (untyped element) -> untyped
+
+        def element_aria_label: (untyped element) -> untyped
+
+        def element_value: (untyped element) -> untyped
+
+        def element_text: (untyped element) -> untyped
+
+        def element_location: (untyped element) -> untyped
+
+        def element_rect: (untyped element) -> untyped
+
+        def element_location_once_scrolled_into_view: (untyped element) -> untyped
+
+        def element_size: (untyped element) -> untyped
+
+        def element_enabled?: (untyped element) -> untyped
+
+        def element_selected?: (untyped element) -> untyped
+
+        def element_displayed?: (untyped element) -> untyped
+
+        def element_value_of_css_property: (untyped element, untyped prop) -> untyped
+
+        def active_element: () -> untyped
+
+        alias switch_to_active_element active_element
+
+        def find_element_by: (untyped how, untyped what, ?untyped parent_ref) -> untyped
+
+        def find_elements_by: (untyped how, untyped what, ?untyped parent_ref) -> untyped
+
+        def shadow_root: (untyped element) -> untyped
+
+        def add_virtual_authenticator: (untyped options) -> untyped
+
+        def remove_virtual_authenticator: (untyped id) -> untyped
+
+        def add_credential: (untyped credential, untyped id) -> untyped
+
+        def credentials: (untyped authenticator_id) -> untyped
+
+        def remove_credential: (untyped credential_id, untyped authenticator_id) -> untyped
+
+        def remove_all_credentials: (untyped authenticator_id) -> untyped
+
+        def user_verified: (untyped verified, untyped authenticator_id) -> untyped
+
+        private
+
+        def execute: (untyped command, ?::Hash[untyped, untyped] opts, ?untyped? command_hash) -> WebDriver::Remote::Response
+
+        def escaper: () -> untyped
+
+        def commands: (untyped command) -> untyped
+
+        def unwrap_script_result: (untyped arg) -> untyped
+
+        def element_id_from: (untyped id) -> untyped
+
+        def shadow_root_id_from: (untyped id) -> untyped
+
+        def prepare_capabilities_payload: (untyped capabilities) -> { capabilities: untyped }
+
+        def convert_locator: (untyped how, untyped what) -> ::Array[untyped]
+
+        ESCAPE_CSS_REGEXP: ::Regexp
+
+        UNICODE_CODE_POINT: 30
+
+        def escape_css: (untyped string) -> untyped
+      end
+    end
+  end
+end

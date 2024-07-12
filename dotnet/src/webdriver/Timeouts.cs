@@ -63,6 +63,9 @@ namespace OpenQA.Selenium
         /// will have an adverse effect on test run time, especially when used with
         /// slower location strategies like XPath.
         /// </para>
+        /// <para>
+        /// Also can be managed via driver <see cref="DriverOptions.ImplicitWaitTimeout"/> option.
+        /// </para>
         /// </remarks>
         public TimeSpan ImplicitWait
         {
@@ -76,6 +79,11 @@ namespace OpenQA.Selenium
         /// This timeout only affects the <see cref="IJavaScriptExecutor.ExecuteAsyncScript(string, object[])"/>
         /// method.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Also can be managed via driver <see cref="DriverOptions.ScriptTimeout"/> option.
+        /// </para>
+        /// </remarks>
         public TimeSpan AsynchronousJavaScript
         {
             get { return this.ExecuteGetTimeout(AsyncScriptTimeoutName); }
@@ -87,6 +95,11 @@ namespace OpenQA.Selenium
         /// should wait for a page to load when setting the <see cref="IWebDriver.Url"/>
         /// property.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Also can be managed via driver <see cref="DriverOptions.PageLoadTimeout"/> option.
+        /// </para>
+        /// </remarks>
         public TimeSpan PageLoad
         {
             get

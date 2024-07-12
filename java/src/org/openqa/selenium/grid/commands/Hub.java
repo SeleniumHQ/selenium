@@ -182,20 +182,25 @@ public class Hub extends TemplateGridServerCommand {
 
     Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
 
-    String subPath = new RouterOptions(config).subPath();
-    Routable ui = new GridUiRoute(subPath);
+    RouterOptions routerOptions = new RouterOptions(config);
+    String subPath = routerOptions.subPath();
 
     Routable appendRoute =
         Stream.of(
-                routerWithSpecChecks,
+                baseRoute(subPath, combine(routerWithSpecChecks)),
                 hubRoute(subPath, combine(routerWithSpecChecks)),
                 graphqlRoute(subPath, () -> graphqlHandler))
             .reduce(Route::combine)
             .get();
-    if (!subPath.isEmpty()) {
-      appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(routerWithSpecChecks)));
+
+    Routable httpHandler;
+    if (routerOptions.disableUi()) {
+      LOG.info("Grid UI has been disabled.");
+      httpHandler = appendRoute;
+    } else {
+      Routable ui = new GridUiRoute(subPath);
+      httpHandler = combine(ui, appendRoute);
     }
-    Routable httpHandler = combine(ui, appendRoute);
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {

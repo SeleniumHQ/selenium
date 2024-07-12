@@ -10,12 +10,12 @@ This gem provides Ruby bindings for Selenium and supports MRI >= 3.0.
 
 * https://rubygems.org/gems/selenium-webdriver
 * https://www.selenium.dev/selenium/docs/api/rb/index.html
-* https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings
+* https://www.selenium.dev/documentation/?tab=ruby
 * https://github.com/SeleniumHQ/selenium/issues
 
 ## License
 
-Copyright 2009-2023 Software Freedom Conservancy
+Copyright 2009-2024 Software Freedom Conservancy
 
 Licensed to the Software Freedom Conservancy (SFC) under one
 or more contributor license agreements.  See the NOTICE file

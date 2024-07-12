@@ -42,7 +42,7 @@ public class ByChained extends By implements Serializable {
 
   private static final long serialVersionUID = 1563769051170172451L;
 
-  private By[] bys;
+  private final By[] bys;
 
   public ByChained(By... bys) {
     this.bys = bys;

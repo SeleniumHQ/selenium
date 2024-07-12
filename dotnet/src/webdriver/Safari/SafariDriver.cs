@@ -16,10 +16,10 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Safari
 {
@@ -162,7 +162,8 @@ namespace OpenQA.Selenium.Safari
         {
             if (service.DriverServicePath == null)
             {
-                string fullServicePath = DriverFinder.FullPath(options);
+                DriverFinder finder = new DriverFinder(options);
+                string fullServicePath = finder.GetDriverPath();
                 service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
                 service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
             }

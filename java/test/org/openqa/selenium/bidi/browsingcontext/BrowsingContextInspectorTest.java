@@ -19,10 +19,7 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -33,7 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
-import org.openqa.selenium.bidi.BrowsingContextInspector;
+import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -50,10 +47,6 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
   void canListenToWindowBrowsingContextCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -74,10 +67,27 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
+  void canListenToBrowsingContextDestroyedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
+
+      inspector.onBrowsingContextDestroyed(future::complete);
+
+      String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
+
+      driver.close();
+
+      BrowsingContextInfo browsingContextInfo = future.get(5, TimeUnit.SECONDS);
+
+      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
+      assertThat("about:blank").isEqualTo(browsingContextInfo.getUrl());
+      assertThat(browsingContextInfo.getChildren()).isEqualTo(null);
+      assertThat(browsingContextInfo.getParentBrowsingContext()).isEqualTo(null);
+    }
+  }
+
+  @Test
   void canListenToTabBrowsingContextCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -97,10 +107,6 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
   void canListenToDomContentLoadedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -117,10 +123,6 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
   void canListenToBrowsingContextLoadedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -137,8 +139,6 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canListenToNavigationStartedEvent()
@@ -157,10 +157,6 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
   void canListenToFragmentNavigatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -181,10 +177,6 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
   void canListenToUserPromptOpenedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -204,10 +196,8 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
+  // TODO: This test is flaky for comparing the browsing context id for Chrome and Edge. Fix flaky
+  // test.
   void canListenToUserPromptClosedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {

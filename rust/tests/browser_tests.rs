@@ -15,8 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_driver, assert_output};
-use assert_cmd::Command;
+use crate::common::{assert_output, get_selenium_manager, get_stdout};
+
+use exitcode::DATAERR;
 use rstest::rstest;
 use std::env::consts::OS;
 
@@ -27,13 +28,18 @@ mod common;
 #[case("chrome", "chromedriver", "115", "115.0.5790")]
 #[case("edge", "msedgedriver", "105", "105.0")]
 #[case("edge", "msedgedriver", "106", "106.0")]
+#[case("firefox", "geckodriver", "101", "0.31.0")]
+#[case("firefox", "geckodriver", "91", "0.31.0")]
+#[case("firefox", "geckodriver", "90", "0.30.0")]
+#[case("firefox", "geckodriver", "62", "0.29.1")]
+#[case("firefox", "geckodriver", "53", "0.18.0")]
 fn browser_version_test(
     #[case] browser: String,
     #[case] driver_name: String,
     #[case] browser_version: String,
     #[case] driver_version: String,
 ) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args([
         "--browser",
         &browser,
@@ -41,36 +47,37 @@ fn browser_version_test(
         &browser_version,
         "--debug",
         "--avoid-browser-download",
+        "--language-binding",
+        "java",
     ])
     .assert()
     .success()
     .code(0);
 
-    let stdout = &cmd.unwrap().stdout;
-    let output = std::str::from_utf8(stdout).unwrap();
-    println!("{}", output);
+    let stdout = get_stdout(&mut cmd);
 
-    assert!(output.contains(&driver_name));
-    if !browser_version.is_empty() && output.contains("cache") {
-        assert!(output.contains(&driver_version));
+    assert!(stdout.contains(&driver_name));
+    if !browser_version.is_empty() && stdout.contains("cache") {
+        assert!(stdout.contains(&driver_version));
     }
+    assert!(!stdout.contains("Error sending stats"));
 }
 
 #[rstest]
-#[case("wrong-browser", "", "", exitcode::DATAERR)]
-#[case("chrome", "wrong-browser-version", "", exitcode::DATAERR)]
-#[case("chrome", "", "wrong-driver-version", exitcode::DATAERR)]
-#[case("firefox", "", "wrong-driver-version", exitcode::DATAERR)]
-#[case("edge", "wrong-browser-version", "", exitcode::DATAERR)]
-#[case("edge", "", "wrong-driver-version", exitcode::DATAERR)]
-#[case("iexplorer", "", "wrong-driver-version", exitcode::DATAERR)]
+#[case("wrong-browser", "", "", DATAERR)]
+#[case("chrome", "wrong-browser-version", "", DATAERR)]
+#[case("chrome", "", "wrong-driver-version", DATAERR)]
+#[case("firefox", "", "wrong-driver-version", DATAERR)]
+#[case("edge", "wrong-browser-version", "", DATAERR)]
+#[case("edge", "", "wrong-driver-version", DATAERR)]
+#[case("iexplorer", "", "wrong-driver-version", DATAERR)]
 fn wrong_parameters_test(
     #[case] browser: String,
     #[case] browser_version: String,
     #[case] driver_version: String,
     #[case] error_code: i32,
 ) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     let result = cmd
         .args([
             "--debug",
@@ -87,73 +94,60 @@ fn wrong_parameters_test(
     assert_output(&mut cmd, result, vec!["in PATH"], error_code);
 }
 
-#[rstest]
-#[case("chrome", "chromedriver")]
-#[case("edge", "msedgedriver")]
-#[case("firefox", "geckodriver")]
-fn browser_beta_test(#[case] browser: String, #[case] driver_name: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    let assert = cmd
+#[test]
+fn invalid_geckodriver_version_test() {
+    let mut cmd = get_selenium_manager();
+    let result = cmd
         .args([
             "--browser",
-            &browser,
+            "firefox",
             "--browser-version",
-            "beta",
+            "51",
             "--avoid-browser-download",
-            "--debug",
         ])
-        .assert();
+        .assert()
+        .try_success();
 
-    let stdout = &assert.get_output().stdout;
-    let output = std::str::from_utf8(stdout).unwrap();
-    println!("output {}", output);
-    assert!(output.contains(&driver_name) || output.contains("ERROR"));
+    assert_output(
+        &mut cmd,
+        result,
+        vec!["Not valid geckodriver version found"],
+        DATAERR,
+    );
 }
 
 #[rstest]
 #[case(
     "windows",
     "chrome",
-    r#"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"#
+    r"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 )]
 #[case(
     "windows",
     "chrome",
-    r#"C:\Program Files\Google\Chrome\Application\chrome.exe"#
+    r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 )]
 #[case("linux", "chrome", "/usr/bin/google-chrome")]
 #[case(
     "macos",
     "chrome",
-    r#"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"#
+    r"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 )]
 #[case(
     "macos",
     "chrome",
-    r#"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"#
+    r"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 )]
 fn browser_path_test(#[case] os: String, #[case] browser: String, #[case] browser_path: String) {
     if OS.eq(&os) {
-        let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+        let mut cmd = get_selenium_manager();
         cmd.args(["--browser", &browser, "--browser-path", &browser_path])
             .assert()
             .success()
             .code(0);
 
-        let stdout = &cmd.unwrap().stdout;
-        let output = std::str::from_utf8(stdout).unwrap();
-        println!("{}", output);
-        assert!(!output.contains("WARN"));
+        let stdout = get_stdout(&mut cmd);
+
+        assert!(!stdout.contains("WARN"));
     }
-}
-
-#[test]
-fn webview2_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args(["--browser", "webview2", "--output", "json"])
-        .assert()
-        .success()
-        .code(0);
-
-    assert_driver(&mut cmd);
 }

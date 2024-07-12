@@ -3,13 +3,212 @@
     "tag_name": "nightly",
     "assets": [
       {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-java-4.15.0-SNAPSHOT.zip"
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-java-4.23.0-SNAPSHOT.zip"
       },
       {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.15.0-SNAPSHOT.jar"
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.23.0-SNAPSHOT.jar"
       },
       {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.15.0-SNAPSHOT.zip"
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.23.0-SNAPSHOT.zip"
+      }
+    ]
+  },
+  {
+    "tag_name": "selenium-4.22.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.22.0/selenium-dotnet-4.22.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.22.0/selenium-dotnet-strongnamed-4.22.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.22.0/selenium-java-4.22.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.22.0/selenium-server-4.22.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.22.0/selenium-server-4.22.0.zip"
+      }
+    ]
+  },
+  {
+    "tag_name": "selenium-4.21.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.21.0/selenium-dotnet-4.21.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.21.0/selenium-dotnet-strongnamed-4.21.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.21.0/selenium-java-4.21.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.21.0/selenium-server-4.21.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.21.0/selenium-server-4.21.0.zip"
+      }
+    ]
+  },
+  {
+    "tag_name": "selenium-4.20.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.20.0/selenium-dotnet-4.20.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.20.0/selenium-dotnet-strongnamed-4.20.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.20.0/selenium-java-4.20.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.20.0/selenium-server-4.20.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.20.0/selenium-server-4.20.0.zip"
+      }
+    ]
+  },
+  {
+    "tag_name": "selenium-4.19.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.19.0/selenium-dotnet-4.19.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.19.0/selenium-dotnet-strongnamed-4.19.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.19.0/selenium-java-4.19.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.19.0/selenium-java-4.19.1.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.19.0/selenium-server-4.19.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.19.0/selenium-server-4.19.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.19.0/selenium-server-4.19.1.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.19.0/selenium-server-4.19.1.zip"
+      }
+    ]
+  },
+  {
+    "tag_name": "selenium-4.18.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.18.0/selenium-dotnet-4.18.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.18.0/selenium-dotnet-4.18.1.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.18.0/selenium-dotnet-strongnamed-4.18.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.18.0/selenium-dotnet-strongnamed-4.18.1.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.18.0/selenium-java-4.18.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.18.0/selenium-java-4.18.1.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.18.0/selenium-server-4.18.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.18.0/selenium-server-4.18.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.18.0/selenium-server-4.18.1.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.18.0/selenium-server-4.18.1.zip"
+      }
+    ]
+  },
+  {
+    "tag_name": "selenium-4.17.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.17.0/selenium-dotnet-4.17.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.17.0/selenium-dotnet-strongnamed-4.17.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.17.0/selenium-java-4.17.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.17.0/selenium-server-4.17.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.17.0/selenium-server-4.17.0.zip"
+      }
+    ]
+  },
+  {
+    "tag_name": "selenium-4.16.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.16.0/selenium-dotnet-4.16.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.16.0/selenium-dotnet-4.16.1.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.16.0/selenium-dotnet-strongnamed-4.16.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.16.0/selenium-dotnet-strongnamed-4.16.1.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.16.0/selenium-java-4.16.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.16.0/selenium-java-4.16.1.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.16.0/selenium-server-4.16.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.16.0/selenium-server-4.16.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.16.0/selenium-server-4.16.1.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.16.0/selenium-server-4.16.1.zip"
+      }
+    ]
+  },
+  {
+    "tag_name": "selenium-4.15.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.15.0/selenium-dotnet-4.15.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.15.0/selenium-dotnet-strongnamed-4.15.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.15.0/selenium-java-4.15.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.15.0/selenium-server-4.15.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.15.0/selenium-server-4.15.0.zip"
       }
     ]
   },
@@ -742,184 +941,6 @@
       },
       {
         "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-2/selenium-server-4.0.0-beta-2.jar"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-4.0.0-beta-1",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-1/selenium-dotnet-4.0.0-beta1.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-1/selenium-dotnet-strongnamed-4.0.0-beta1.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-1/selenium-html-runner-4.0.0-beta-1.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-1/selenium-java-4.0.0-beta-1.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-1/selenium-server-4.0.0-beta-1.jar"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-4.0.0-alpha-7",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-7/selenium-dotnet-4.0.0-alpha07.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-7/selenium-dotnet-strongnamed-4.0.0-alpha07.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-7/selenium-html-runner-4.0.0-alpha-7.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-7/selenium-java-4.0.0-alpha-7.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-7/selenium-server-4.0.0-alpha-7.jar"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-4.0.0-alpha-6",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-6/selenium-html-runner-4.0.0-alpha-6.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-6/selenium-java-4.0.0-alpha-6.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-6/selenium-server-4.0.0-alpha-6.jar"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-4.0.0-alpha-5",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-5/selenium-dotnet-4.0.0-alpha05.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-5/selenium-dotnet-strongnamed-4.0.0-alpha05.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-5/selenium-html-runner-4.0.0-alpha-5.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-5/selenium-java-4.0.0-alpha-5.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-5/selenium-server-4.0.0-alpha-5.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-5/selenium-server-4.0.0-alpha-5.zip"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-4.0.0-alpha-4",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-4/selenium-dotnet-4.0.0-alpha04.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-4/selenium-dotnet-strongnamed-4.0.0-alpha04.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-4/selenium-html-runner-4.0.0-alpha-4.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-4/selenium-java-4.0.0-alpha-4.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-4/selenium-server-4.0.0-alpha-4.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-4/selenium-server-4.0.0-alpha-4.zip"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-4.0.0-alpha-3",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-3/selenium-dotnet-4.0.0-alpha03.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-3/selenium-dotnet-strongnamed-4.0.0.alpha03.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-3/selenium-html-runner-4.0.0-alpha-3.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-3/selenium-java-4.0.0-alpha-3.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-3/selenium-server-4.0.0-alpha-3.jar"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-3.150.0",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.150.0/IEDriverServer_Win32_3.150.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.150.0/IEDriverServer_Win32_3.150.1.1.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.150.0/IEDriverServer_Win32_3.150.1.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.150.0/IEDriverServer_Win32_3.150.2.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.150.0/IEDriverServer_x64_3.150.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.150.0/IEDriverServer_x64_3.150.1.1.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.150.0/IEDriverServer_x64_3.150.1.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.150.0/IEDriverServer_x64_3.150.2.zip"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-4.0.0-alpha-2",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-2/selenium-dotnet-4.0.0-alpha02.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-2/selenium-dotnet-strongnamed-4.0.0-alpha02.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-2/selenium-html-runner-4.0.0-alpha-2.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-2/selenium-java-4.0.0-alpha-2.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-2/selenium-server-4.0.0-alpha-2.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-2/selenium-server-4.0.0-alpha-2.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-2/selenium-server-standalone-4.0.0-alpha-2.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-alpha-2/selenium-server-standalone-4.0.0-alpha-2.zip"
       }
     ]
   }

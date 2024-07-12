@@ -1,4 +1,4 @@
-// <copyright file="DesiredCapabilities.cs" company="WebDriver Committers">
+// <copyright file="VirtualAuthenticatorOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -115,7 +115,7 @@ namespace OpenQA.Selenium.VirtualAuth
         }
 
         /// <summary>
-        /// If set to true the authenticator will support client-side discoverable credentials. 
+        /// If set to true the authenticator will support client-side discoverable credentials.
         /// Refer https://w3c.github.io/webauthn/#client-side-discoverable-credential
         /// </summary>
         /// <param name="hasResidentKey">boolean value to set</param>
@@ -139,7 +139,7 @@ namespace OpenQA.Selenium.VirtualAuth
         }
 
         /// <summary>
-        /// If set to true, a user consent will always be granted. 
+        /// If set to true, a user consent will always be granted.
         /// Refer https://w3c.github.io/webauthn/#user-consent
         /// </summary>
         /// <param name="isUserConsenting">boolean value to set</param>

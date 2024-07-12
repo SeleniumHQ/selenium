@@ -16,6 +16,12 @@
 // under the License.
 
 const { LocalValue } = require('./protocolValue')
+
+/**
+ * @deprecated
+ * in favor of LocalValue methods for all argument values.
+ * This extra wrapper is not required.
+ */
 class ArgumentValue {
   constructor(value) {
     this.value = value
@@ -23,7 +29,7 @@ class ArgumentValue {
 
   asMap() {
     if (this.value instanceof LocalValue) {
-      return this.value.toJson()
+      return this.value.asMap()
     } else {
       // ReferenceValue
       return this.value.asMap()

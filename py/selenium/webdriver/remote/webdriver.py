@@ -20,9 +20,11 @@ import contextlib
 import copy
 import os
 import pkgutil
+import tempfile
 import types
 import typing
 import warnings
+import zipfile
 from abc import ABCMeta
 from base64 import b64decode
 from base64 import urlsafe_b64encode
@@ -39,8 +41,8 @@ from selenium.common.exceptions import JavascriptException
 from selenium.common.exceptions import NoSuchCookieException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.bidi.script import Script
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
@@ -62,8 +64,10 @@ from .script_key import ScriptKey
 from .shadowroot import ShadowRoot
 from .switch_to import SwitchTo
 from .webelement import WebElement
+from .websocket_connection import WebSocketConnection
 
 cdp = None
+devtools = None
 
 
 def import_cdp():
@@ -92,11 +96,12 @@ def _create_caps(caps):
 
 
 def get_remote_connection(capabilities, command_executor, keep_alive, ignore_local_proxy=False):
-    from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+    from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
+    from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
     from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
     from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
-    candidates = [RemoteConnection, ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
+    candidates = [ChromeRemoteConnection, EdgeRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
     handler = next((c for c in candidates if c.browser_name == capabilities.get("browserName")), RemoteConnection)
 
     return handler(command_executor, keep_alive=keep_alive, ignore_proxy=ignore_local_proxy)
@@ -162,10 +167,10 @@ class WebDriver(BaseWebDriver):
 
     def __init__(
         self,
-        command_executor="http://127.0.0.1:4444",
-        keep_alive=True,
-        file_detector=None,
-        options: Union[BaseOptions, List[BaseOptions]] = None,
+        command_executor: Union[str, RemoteConnection] = "http://127.0.0.1:4444",
+        keep_alive: bool = True,
+        file_detector: Optional[FileDetector] = None,
+        options: Optional[Union[BaseOptions, List[BaseOptions]]] = None,
     ) -> None:
         """Create a new driver that will issue commands using the wire
         protocol.
@@ -205,6 +210,9 @@ class WebDriver(BaseWebDriver):
         self._authenticator_id = None
         self.start_client()
         self.start_session(capabilities)
+
+        self._websocket_connection = None
+        self._script = None
 
     def __repr__(self):
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
@@ -770,12 +778,6 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.FIND_ELEMENTS, {"using": by, "value": value})["value"] or []
 
     @property
-    def desired_capabilities(self) -> dict:
-        """Returns the drivers current desired capabilities being used."""
-        warnings.warn("desired_capabilities is deprecated. Please call capabilities.", DeprecationWarning, stacklevel=2)
-        return self.caps
-
-    @property
     def capabilities(self) -> dict:
         """Returns the drivers current capabilities being used."""
         return self.caps
@@ -879,7 +881,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: size[k] for k in ("width", "height")}
 
-    def set_window_position(self, x, y, windowHandle: str = "current") -> dict:
+    def set_window_position(self, x: float, y: float, windowHandle: str = "current") -> dict:
         """Sets the x,y position of the current window. (window.moveTo)
 
         :Args:
@@ -995,12 +997,6 @@ class WebDriver(BaseWebDriver):
             raise WebDriverException("You can only set the orientation to 'LANDSCAPE' and 'PORTRAIT'")
 
     @property
-    def application_cache(self):
-        """Returns a ApplicationCache Object to interact with the browser app
-        cache."""
-        return ApplicationCache(self)
-
-    @property
     def log_types(self):
         """Gets a list of the available log types. This only works with w3c
         compliant browsers.
@@ -1028,6 +1024,32 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_LOG, {"type": log_type})["value"]
 
+    def start_devtools(self):
+        global devtools
+        if self._websocket_connection:
+            return devtools, self._websocket_connection
+        else:
+            global cdp
+            import_cdp()
+
+            if not devtools:
+                if self.caps.get("se:cdp"):
+                    ws_url = self.caps.get("se:cdp")
+                    version = self.caps.get("se:cdpVersion").split(".")[0]
+                else:
+                    version, ws_url = self._get_cdp_details()
+
+                if not ws_url:
+                    raise WebDriverException("Unable to find url to connect to from capabilities")
+
+                devtools = cdp.import_devtools(version)
+            self._websocket_connection = WebSocketConnection(ws_url)
+            targets = self._websocket_connection.execute(devtools.target.get_targets())
+            target_id = targets[0].target_id
+            session = self._websocket_connection.execute(devtools.target.attach_to_target(target_id, True))
+            self._websocket_connection.session_id = session
+            return devtools, self._websocket_connection
+
     @asynccontextmanager
     async def bidi_connection(self):
         global cdp
@@ -1048,6 +1070,24 @@ class WebDriver(BaseWebDriver):
             async with conn.open_session(target_id) as session:
                 yield BidiConnection(session, cdp, devtools)
 
+    @property
+    def script(self):
+        if not self._websocket_connection:
+            self._start_bidi()
+
+        if not self._script:
+            self._script = Script(self._websocket_connection)
+
+        return self._script
+
+    def _start_bidi(self):
+        if self.caps.get("webSocketUrl"):
+            ws_url = self.caps.get("webSocketUrl")
+        else:
+            raise WebDriverException("Unable to find url to connect to from capabilities")
+
+        self._websocket_connection = WebSocketConnection(ws_url)
+
     def _get_cdp_details(self):
         import json
 
@@ -1057,7 +1097,7 @@ class WebDriver(BaseWebDriver):
         _firefox = False
         if self.caps.get("browserName") == "chrome":
             debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
-        elif self.caps.get("browserName") == "msedge":
+        elif self.caps.get("browserName") == "MicrosoftEdge":
             debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
         else:
             _firefox = True
@@ -1158,9 +1198,13 @@ class WebDriver(BaseWebDriver):
 
         contents = self.execute(Command.DOWNLOAD_FILE, {"name": file_name})["value"]["contents"]
 
-        target_file = os.path.join(target_directory, file_name)
-        with open(target_file, "wb") as file:
-            file.write(base64.b64decode(contents))
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            zip_file = os.path.join(tmp_dir, file_name + ".zip")
+            with open(zip_file, "wb") as file:
+                file.write(base64.b64decode(contents))
+
+            with zipfile.ZipFile(zip_file, "r") as zip_ref:
+                zip_ref.extractall(target_directory)
 
     def delete_downloadable_files(self) -> None:
         """Deletes all downloadable files."""

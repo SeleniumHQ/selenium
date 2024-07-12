@@ -19,9 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chromium
 {
@@ -183,27 +181,6 @@ namespace OpenQA.Selenium.Chromium
         {
             get { return this.androidOptions; }
             set { this.androidOptions = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the <see cref="ChromiumDriver"/> instance
-        /// should use the legacy OSS protocol dialect or a dialect compliant with the W3C
-        /// WebDriver Specification.
-        /// </summary>
-        [Obsolete("Spec Compliant Protocol is the only supported protocol")]
-        public bool UseSpecCompliantProtocol
-        {
-            get { return this.useSpecCompliantProtocol; }
-            set
-            {
-                if (!value)
-                {
-                    throw new ArgumentException("Only the spec compliant protocol is supported, " +
-                                                "Please update to W3C Syntax: " +
-                                                "https://www.selenium.dev/blog/2022/legacy-protocol-support/");
-                }
-                this.useSpecCompliantProtocol = true;
-            }
         }
 
         /// <summary>

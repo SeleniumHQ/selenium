@@ -1,0 +1,11 @@
+interface _ActionBuilder
+  def tick: (untyped) -> (nil | Array[Selenium::WebDriver::Interactions::InputDevice])
+
+  def device: (untyped) -> Selenium::WebDriver::Interactions::InputDevice
+
+  def add_pointer_input: (Symbol kind, String name) -> ::Selenium::WebDriver::Interactions::PointerInput
+
+  def add_key_input: (String key) -> ::Selenium::WebDriver::Interactions::KeyInput
+
+  def add_wheel_input: (String name) -> ::Selenium::WebDriver::Interactions::InputDevice
+end

@@ -1,0 +1,3 @@
+interface _Profile
+  def layout_on_disk: () -> untyped
+end

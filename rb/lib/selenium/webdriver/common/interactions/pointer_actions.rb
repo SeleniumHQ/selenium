@@ -91,7 +91,6 @@ module Selenium
       #   element. A negative value means coordinates to the left of the center.
       # @param [Integer] down_by Optional offset from the in-view center of the
       #   element. A negative value means coordinates to the top of the center.
-      # @param [Symbol || String] device optional name of the PointerInput device to move.
       # @return [ActionBuilder] A self reference.
       #
 

@@ -129,6 +129,9 @@ public class DockerOptions {
             .getAll(DOCKER_SECTION, "configs")
             .orElseThrow(() -> new DockerException("Unable to find docker configs"));
 
+    List<String> hostConfigKeys =
+        config.getAll(DOCKER_SECTION, "host-config-keys").orElseGet(Collections::emptyList);
+
     Multimap<String, Capabilities> kinds = HashMultimap.create();
     for (int i = 0; i < allConfigs.size(); i++) {
       String imageName = allConfigs.get(i);
@@ -152,6 +155,7 @@ public class DockerOptions {
 
     DockerAssetsPath assetsPath = getAssetsPath(info);
     String networkName = getDockerNetworkName(info);
+    Map<String, Object> hostConfig = getDockerHostConfig(info);
 
     loadImages(docker, kinds.keySet().toArray(new String[0]));
     Image videoImage = getVideoImage(docker);
@@ -182,7 +186,9 @@ public class DockerOptions {
                     assetsPath,
                     networkName,
                     info.isPresent(),
-                    capabilities -> options.getSlotMatcher().matches(caps, capabilities)));
+                    capabilities -> options.getSlotMatcher().matches(caps, capabilities),
+                    hostConfig,
+                    hostConfigKeys));
           }
           LOG.info(
               String.format(
@@ -227,6 +233,11 @@ public class DockerOptions {
       return info.get().getNetworkName();
     }
     return DEFAULT_DOCKER_NETWORK;
+  }
+
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  private Map<String, Object> getDockerHostConfig(Optional<ContainerInfo> info) {
+    return info.map(ContainerInfo::getHostConfig).orElse(Collections.emptyMap());
   }
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

@@ -17,8 +17,9 @@
 
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('node:fs')
+const path = require('node:path')
+const runfiles = require('@bazel/runfiles')
 const { projectRoot } = require('./build')
 
 // PUBLIC API
@@ -31,8 +32,15 @@ const { projectRoot } = require('./build')
  */
 exports.locate = function (filePath) {
   const fullPath = path.normalize(path.join(projectRoot(), filePath))
-  if (!fs.existsSync(fullPath)) {
-    throw Error('File does not exist: ' + filePath)
+  if (fs.existsSync(fullPath)) {
+    return fullPath
   }
-  return fullPath
+
+  try {
+    return runfiles.resolve(filePath)
+  } catch {
+    // Fall through
+  }
+
+  throw Error('File does not exist: ' + filePath)
 }

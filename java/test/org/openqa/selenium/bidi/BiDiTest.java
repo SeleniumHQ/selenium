@@ -20,8 +20,6 @@ package org.openqa.selenium.bidi;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +34,7 @@ import org.openqa.selenium.bidi.browsingcontext.NavigationResult;
 import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.log.JavascriptLogEntry;
 import org.openqa.selenium.bidi.log.LogLevel;
+import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -53,12 +52,10 @@ class BiDiTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canNavigateAndListenToErrors()
       throws ExecutionException, InterruptedException, TimeoutException {
-    try (LogInspector logInspector = new LogInspector(driver)) {
+    try (org.openqa.selenium.bidi.module.LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
       logInspector.onJavaScriptException(future::complete);
 

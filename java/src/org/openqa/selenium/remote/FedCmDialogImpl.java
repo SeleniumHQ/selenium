@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,7 @@ class FedCmDialogImpl implements FederatedCredentialManagementDialog {
 
   @Override
   public void selectAccount(int index) {
-    executeMethod.execute(DriverCommand.SELECT_ACCOUNT, ImmutableMap.of("accountIndex", index));
+    executeMethod.execute(DriverCommand.SELECT_ACCOUNT, Map.of("accountIndex", index));
   }
 
   @Override

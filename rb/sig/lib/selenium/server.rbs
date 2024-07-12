@@ -1,0 +1,80 @@
+module Selenium
+  class Server
+    self.@latest: untyped
+
+    self.@available_assets: untyped
+
+    @jar: String
+
+    @host: String
+
+    @role: String
+
+    @port: Integer
+
+    @timeout: Integer
+
+    @background: bool
+
+    @additional_args: Integer | bool | Array[untyped]
+
+    @log: String | bool
+
+    @log_file: untyped
+
+    @process: untyped
+
+    @socket: WebDriver::SocketPoller
+
+    class Error < StandardError
+    end
+
+    CL_RESET: untyped
+
+    def self.get: (Symbol | String required_version, ?Hash[untyped, untyped] opts) -> Server
+
+    def self.download: (Symbol | String required_version) -> String
+
+    def self.latest: () -> untyped
+
+    def self.available_assets: () -> untyped
+
+    def self.net_http_start: (untyped address) { () -> untyped } -> untyped
+
+    def self.download_server: (untyped uri, untyped destination) -> untyped
+
+    attr_accessor role: untyped
+
+    attr_accessor host: untyped
+
+    attr_accessor port: untyped
+
+    attr_accessor timeout: untyped
+
+    attr_accessor background: untyped
+
+    attr_accessor log: untyped
+
+    def initialize: (String jar, ?Hash[String | Symbol, Integer | bool] opts) -> void
+
+    def start: () -> untyped
+
+    def stop: () -> untyped
+
+    def webdriver_url: () -> String
+
+    def <<: (untyped arg) -> untyped
+
+    private
+
+    def stop_process: () -> untyped
+
+    def process: () -> untyped
+
+    def poll_for_service: () -> nil?
+
+    def poll_for_shutdown: () -> nil?
+
+    def socket: () -> untyped
+  end
+end

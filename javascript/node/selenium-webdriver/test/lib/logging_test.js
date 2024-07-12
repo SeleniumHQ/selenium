@@ -17,9 +17,9 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const sinon = require('sinon')
-const logging = require('../../lib/logging')
+const logging = require('selenium-webdriver/lib/logging')
 
 describe('logging', function () {
   let mgr, root, clock
@@ -120,10 +120,7 @@ describe('logging', function () {
       it('Level.OFF is never loggable', function () {
         function test(level) {
           root.setLevel(level)
-          assert(
-            !root.isLoggable(logging.Level.OFF),
-            'OFF should not be loggable at ' + level
-          )
+          assert(!root.isLoggable(logging.Level.OFF), 'OFF should not be loggable at ' + level)
         }
 
         test(logging.Level.ALL)
@@ -175,26 +172,10 @@ describe('logging', function () {
         assert.strictEqual(4, cb2.callCount)
         assert.strictEqual(4, cb3.callCount)
 
-        const entry1 = new logging.Entry(
-          logging.Level.FINER,
-          '[foo.bar.baz.quot] this is a finer message',
-          123456
-        )
-        const entry2 = new logging.Entry(
-          logging.Level.INFO,
-          '[foo.bar.baz.quot] this is an info message',
-          123456
-        )
-        const entry3 = new logging.Entry(
-          logging.Level.WARNING,
-          '[foo.bar.baz.quot] this is a warning message',
-          123456
-        )
-        const entry4 = new logging.Entry(
-          logging.Level.SEVERE,
-          '[foo.bar.baz.quot] this is a severe message',
-          123456
-        )
+        const entry1 = new logging.Entry(logging.Level.FINER, '[foo.bar.baz.quot] this is a finer message', 123456)
+        const entry2 = new logging.Entry(logging.Level.INFO, '[foo.bar.baz.quot] this is an info message', 123456)
+        const entry3 = new logging.Entry(logging.Level.WARNING, '[foo.bar.baz.quot] this is a warning message', 123456)
+        const entry4 = new logging.Entry(logging.Level.SEVERE, '[foo.bar.baz.quot] this is a severe message', 123456)
 
         check(cb1.getCall(0).args[0], entry1)
         check(cb1.getCall(1).args[0], entry2)
@@ -242,23 +223,14 @@ describe('logging', function () {
     })
 
     it('converts numeric levels', function () {
-      assert.strictEqual(
-        logging.Level.DEBUG,
-        logging.getLevel(logging.Level.DEBUG.value)
-      )
+      assert.strictEqual(logging.Level.DEBUG, logging.getLevel(logging.Level.DEBUG.value))
     })
 
     it('normalizes numeric levels', function () {
-      assert.strictEqual(
-        logging.Level.OFF,
-        logging.getLevel(logging.Level.OFF.value * 2)
-      )
+      assert.strictEqual(logging.Level.OFF, logging.getLevel(logging.Level.OFF.value * 2))
 
       let diff = logging.Level.SEVERE.value - logging.Level.WARNING.value
-      assert.strictEqual(
-        logging.Level.WARNING,
-        logging.getLevel(logging.Level.WARNING.value + diff * 0.5)
-      )
+      assert.strictEqual(logging.Level.WARNING, logging.getLevel(logging.Level.WARNING.value + diff * 0.5))
 
       assert.strictEqual(logging.Level.ALL, logging.getLevel(0))
       assert.strictEqual(logging.Level.ALL, logging.getLevel(-1))
@@ -274,10 +246,7 @@ describe('logging', function () {
       assert.strictEqual('{"foo":"DEBUG"}', JSON.stringify(prefs))
 
       prefs.setLevel(logging.Type.BROWSER, logging.Level.FINE)
-      assert.strictEqual(
-        '{"foo":"DEBUG","browser":"FINE"}',
-        JSON.stringify(prefs)
-      )
+      assert.strictEqual('{"foo":"DEBUG","browser":"FINE"}', JSON.stringify(prefs))
     })
   })
 })

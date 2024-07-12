@@ -16,27 +16,26 @@
 // under the License.
 package org.openqa.selenium.manager;
 
+import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.BuildInfo;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
@@ -66,11 +65,12 @@ public class SeleniumManager {
   private static final String CACHE_PATH_ENV = "SE_CACHE_PATH";
   private static final String BETA_PREFIX = "0.";
   private static final String EXE = ".exe";
+  private static final String SE_ENV_PREFIX = "SE_";
 
   private static volatile SeleniumManager manager;
   private final String managerPath = System.getenv("SE_MANAGER_PATH");
   private Path binary = managerPath == null ? null : Paths.get(managerPath);
-  private String seleniumManagerVersion;
+  private final String seleniumManagerVersion;
   private boolean binaryInTemporalFolder = false;
 
   /** Wrapper for the Selenium Manager binary. */
@@ -95,6 +95,8 @@ public class SeleniumManager {
                       }
                     }
                   }));
+    } else {
+      LOG.fine(String.format("Selenium Manager set by env 'SE_MANAGER_PATH': %s", managerPath));
     }
   }
 
@@ -121,14 +123,27 @@ public class SeleniumManager {
     String output;
     int code;
     try {
+      ExternalProcess.Builder processBuilder = ExternalProcess.builder();
+
+      Properties properties = System.getProperties();
+      for (String name : properties.stringPropertyNames()) {
+        if (name.startsWith(SE_ENV_PREFIX)) {
+          // read property with 'default' value due to concurrency
+          String value = properties.getProperty(name, "");
+          if (!value.isEmpty()) {
+            processBuilder.environment(name, value);
+          }
+        }
+      }
       ExternalProcess process =
-          ExternalProcess.builder().command(binary.toAbsolutePath().toString(), arguments).start();
+          processBuilder.command(binary.toAbsolutePath().toString(), arguments).start();
+
       if (!process.waitFor(Duration.ofHours(1))) {
         LOG.warning("Selenium Manager did not exit, shutting it down");
         process.shutdown();
       }
       code = process.exitValue();
-      output = process.getOutput();
+      output = process.getOutput(StandardCharsets.UTF_8);
     } catch (Exception e) {
       throw new WebDriverException("Failed to run command: " + arguments, e);
     }
@@ -171,13 +186,23 @@ public class SeleniumManager {
     if (binary == null) {
       try {
         Platform current = Platform.getCurrent();
-        String folder = "linux";
+        String folder = "";
         String extension = "";
         if (current.is(WINDOWS)) {
           extension = EXE;
           folder = "windows";
         } else if (current.is(MAC)) {
           folder = "macos";
+        } else if (current.is(LINUX)) {
+          folder = "linux";
+        } else if (current.is(UNIX)) {
+          LOG.warning(
+              String.format(
+                  "Selenium Manager binary may not be compatible with %s; verify settings",
+                  current));
+          folder = "linux";
+        } else {
+          throw new WebDriverException("Unsupported platform: " + current);
         }
 
         binary = getBinaryInCache(SELENIUM_MANAGER + extension);
@@ -187,9 +212,7 @@ public class SeleniumManager {
             binary.getParent().toFile().mkdirs();
             Files.copy(inputStream, binary);
           }
-          binary.toFile().setExecutable(true);
         }
-
       } catch (Exception e) {
         throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
@@ -200,96 +223,28 @@ public class SeleniumManager {
     binary.toFile().setExecutable(true);
 
     LOG.fine(String.format("Selenium Manager binary found at: %s", binary));
-
     return binary;
   }
 
   /**
-   * Returns the browser binary path when present in the vendor options
+   * Executes Selenium Manager to get the locations of the requested assets
    *
-   * @param options browser options used to start the session
-   * @return the browser binary path when present, only Chrome/Firefox/Edge
+   * @param arguments List of command line arguments to send to Selenium Manager binary
+   * @return the locations of the assets from Selenium Manager execution
    */
-  private String getBrowserBinary(Capabilities options) {
-    List<String> vendorOptionsCapabilities =
-        Arrays.asList("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");
-    for (String vendorOptionsCapability : vendorOptionsCapabilities) {
-      if (options.asMap().containsKey(vendorOptionsCapability)) {
-        try {
-          @SuppressWarnings("unchecked")
-          Map<String, Object> vendorOptions =
-              (Map<String, Object>) options.getCapability(vendorOptionsCapability);
-          return (String) vendorOptions.get("binary");
-        } catch (Exception e) {
-          LOG.warning(
-              String.format(
-                  "Exception while retrieving the browser binary path. %s: %s",
-                  options, e.getMessage()));
-        }
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Determines the location of the correct driver.
-   *
-   * @param options Browser Options instance.
-   * @return the location of the driver.
-   */
-  public Result getDriverPath(Capabilities options, boolean offline) {
-    Path binaryFile = getBinary();
-    if (binaryFile == null) {
-      return null;
-    }
-
-    List<String> arguments = new ArrayList<>();
-    arguments.add("--browser");
-    arguments.add(options.getBrowserName());
-    arguments.add("--output");
-    arguments.add("json");
-
-    if (!options.getBrowserVersion().isEmpty()) {
-      arguments.add("--browser-version");
-      arguments.add(options.getBrowserVersion());
-      // We know the browser binary path, we don't need the browserVersion.
-      // Useful when "beta" is specified as browserVersion, but the browser driver cannot match it.
-      if (options instanceof MutableCapabilities) {
-        ((MutableCapabilities) options).setCapability("browserVersion", (String) null);
-      }
-    }
-
-    String browserBinary = getBrowserBinary(options);
-    if (browserBinary != null && !browserBinary.isEmpty()) {
-      arguments.add("--browser-path");
-      arguments.add(browserBinary);
-    }
+  public Result getBinaryPaths(List<String> arguments) {
+    List<String> args = new ArrayList<>(arguments.size() + 5);
+    args.addAll(arguments);
+    args.add("--language-binding");
+    args.add("java");
+    args.add("--output");
+    args.add("json");
 
     if (getLogLevel().intValue() <= Level.FINE.intValue()) {
-      arguments.add("--debug");
+      args.add("--debug");
     }
 
-    if (offline) {
-      arguments.add("--offline");
-    }
-
-    Proxy proxy = Proxy.extractFrom(options);
-    if (proxy != null) {
-      if (proxy.getSslProxy() != null) {
-        arguments.add("--proxy");
-        arguments.add(proxy.getSslProxy());
-      } else if (proxy.getHttpProxy() != null) {
-        arguments.add("--proxy");
-        arguments.add(proxy.getHttpProxy());
-      }
-    }
-
-    Result result = runCommand(binaryFile, arguments);
-    LOG.fine(
-        String.format(
-            "Using driver at location: %s, browser at location %s",
-            result.getDriverPath(), result.getBrowserPath()));
-    return result;
+    return runCommand(getBinary(), args);
   }
 
   private Level getLogLevel() {
@@ -304,13 +259,13 @@ public class SeleniumManager {
   }
 
   private Path getBinaryInCache(String binaryName) throws IOException {
-    String cachePath = DEFAULT_CACHE_PATH.replace(HOME, System.getProperty("user.home"));
 
-    // Look for cache path as env
-    String cachePathEnv = System.getenv(CACHE_PATH_ENV);
-    if (cachePathEnv != null) {
-      cachePath = cachePathEnv;
-    }
+    // Look for cache path as system property or env
+    String cachePath = System.getProperty(CACHE_PATH_ENV, "");
+    if (cachePath.isEmpty()) cachePath = System.getenv(CACHE_PATH_ENV);
+    if (cachePath == null) cachePath = DEFAULT_CACHE_PATH;
+
+    cachePath = cachePath.replace(HOME, System.getProperty("user.home"));
 
     // If cache path is not writable, SM will be extracted to a temporal folder
     Path cacheParent = Paths.get(cachePath);

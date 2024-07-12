@@ -32,8 +32,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.function.Predicate;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +47,7 @@ import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -61,14 +63,16 @@ class DriverServiceSessionFactoryTest {
   private DriverService driverService;
 
   @BeforeEach
-  public void setUp() throws MalformedURLException {
+  public void setUp() throws IOException {
     tracer = DefaultTestTracer.createTracer();
 
     clientFactory = mock(HttpClient.Factory.class);
 
     driverService = mock(DriverService.class);
     when(driverService.getUrl()).thenReturn(new URL("http://localhost:1234/"));
-    when(driverService.getExecutable()).thenReturn("/usr/bin/driver");
+    Path driverFile = Files.createTempFile("testDriver", ".tmp");
+    driverFile.toFile().setExecutable(true);
+    when(driverService.getExecutable()).thenReturn(driverFile.toString());
 
     builder = mock(DriverService.Builder.class);
     when(builder.build()).thenReturn(driverService);
@@ -132,7 +136,7 @@ class DriverServiceSessionFactoryTest {
         .thenReturn(
             new HttpResponse()
                 .setStatus(200)
-                .setContent(() -> new ByteArrayInputStream("Hello, world!".getBytes())));
+                .setContent(Contents.bytes("Hello, world!".getBytes())));
     when(clientFactory.createClient(any(URL.class))).thenReturn(httpClient);
 
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
@@ -147,10 +151,10 @@ class DriverServiceSessionFactoryTest {
     verify(builder, times(1)).build();
     verifyNoMoreInteractions(builder);
     verify(driverService, times(1)).getExecutable();
+    verify(driverService, times(1)).setExecutable(any(String.class));
     verify(driverService, times(1)).start();
     verify(driverService, atLeastOnce()).getUrl();
     verify(driverService, times(1)).stop();
-    verifyNoMoreInteractions(driverService);
   }
 
   @Test
@@ -179,9 +183,9 @@ class DriverServiceSessionFactoryTest {
     verify(builder, times(1)).build();
     verifyNoMoreInteractions(builder);
     verify(driverService, times(1)).getExecutable();
+    verify(driverService, times(1)).setExecutable(any(String.class));
     verify(driverService, times(1)).start();
     verify(driverService, atLeastOnce()).getUrl();
-    verifyNoMoreInteractions(driverService);
   }
 
   private DriverServiceSessionFactory factoryFor(String browser, DriverService.Builder builder) {

@@ -73,6 +73,8 @@
  * {@link ./builder.Builder selenium-webdriver.Builder}.
  *
  * [WebDriver (Chromium)]: https://docs.microsoft.com/en-us/microsoft-edge/webdriver-chromium
+ *
+ * @module selenium-webdriver/edge
  */
 
 'use strict'
@@ -147,9 +149,7 @@ class Driver extends chromium.Driver {
    */
   static createSession(opt_config, opt_serviceExecutor) {
     let caps = opt_config || new Options()
-    return /** @type {!Driver} */ (
-      super.createSession(caps, opt_serviceExecutor, 'ms', EDGE_CAPABILITY_KEY)
-    )
+    return /** @type {!Driver} */ (super.createSession(caps, opt_serviceExecutor, 'ms', EDGE_CAPABILITY_KEY))
   }
 
   /**

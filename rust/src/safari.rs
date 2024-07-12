@@ -25,11 +25,13 @@ use reqwest::Client;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::string::ToString;
+use std::sync::mpsc;
+use std::sync::mpsc::{Receiver, Sender};
 
 pub const SAFARI_NAME: &str = "safari";
 pub const SAFARIDRIVER_NAME: &str = "safaridriver";
-const SAFARI_PATH: &str = r#"/Applications/Safari.app"#;
-const SAFARI_FULL_PATH: &str = r#"/Applications/Safari.app/Contents/MacOS/Safari"#;
+const SAFARI_PATH: &str = "/Applications/Safari.app";
+const SAFARI_FULL_PATH: &str = "/Applications/Safari.app/Contents/MacOS/Safari";
 
 pub struct SafariManager {
     pub browser_name: &'static str,
@@ -37,6 +39,9 @@ pub struct SafariManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub tx: Sender<String>,
+    pub rx: Receiver<String>,
+    pub download_browser: bool,
 }
 
 impl SafariManager {
@@ -46,12 +51,16 @@ impl SafariManager {
         let config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
+        let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(SafariManager {
             browser_name,
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::new(),
+            tx,
+            rx,
+            download_browser: false,
         }))
     }
 }
@@ -124,6 +133,14 @@ impl SeleniumManager for SafariManager {
         self.log = log;
     }
 
+    fn get_sender(&self) -> &Sender<String> {
+        &self.tx
+    }
+
+    fn get_receiver(&self) -> &Receiver<String> {
+        &self.rx
+    }
+
     fn get_platform_label(&self) -> &str {
         ""
     }
@@ -159,5 +176,13 @@ impl SeleniumManager for SafariManager {
         _browser_version: &str,
     ) -> Result<Option<&str>, Error> {
         self.unavailable_download()
+    }
+
+    fn is_download_browser(&self) -> bool {
+        self.download_browser
+    }
+
+    fn set_download_browser(&mut self, download_browser: bool) {
+        self.download_browser = download_browser;
     }
 }

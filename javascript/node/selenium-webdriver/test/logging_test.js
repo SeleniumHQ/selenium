@@ -17,23 +17,16 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 const test = require('../lib/test')
-const { Browser, logging } = require('..')
+const { Browser, logging } = require('selenium-webdriver')
 
 test.suite(function (env) {
   // Logging API is not supported in IE.
   // Logging API not supported in Marionette.
   // Logging API not supported in Safari.
   test
-    .ignore(
-      env.browsers(
-        Browser.INTERNET_EXPLORER,
-        Browser.SAFARI,
-        Browser.FIREFOX,
-        Browser.CHROME
-      )
-    )
+    .ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI, Browser.FIREFOX, Browser.CHROME))
     .describe('logging', function () {
       var driver
 
@@ -59,8 +52,8 @@ test.suite(function (env) {
             'console.info("hello");',
             'console.warn("this is a warning");',
             'console.error("and this is an error");',
-            '</script>'
-          )
+            '</script>',
+          ),
         )
         return driver
           .manage()
@@ -70,72 +63,68 @@ test.suite(function (env) {
       })
 
       // Firefox does not capture JS error console log messages.
-      test
-        .ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox'))
-        .it('can be turned down', async function () {
-          var prefs = new logging.Preferences()
-          prefs.setLevel(logging.Type.BROWSER, logging.Level.SEVERE)
+      test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).it('can be turned down', async function () {
+        var prefs = new logging.Preferences()
+        prefs.setLevel(logging.Type.BROWSER, logging.Level.SEVERE)
 
-          driver = await env.builder().setLoggingPrefs(prefs).build()
+        driver = await env.builder().setLoggingPrefs(prefs).build()
 
-          await driver.get(
-            dataUrl(
-              '<!DOCTYPE html><script>',
-              'console.info("hello");',
-              'console.warn("this is a warning");',
-              'console.error("and this is an error");',
-              '</script>'
-            )
-          )
-          return driver
-            .manage()
-            .logs()
-            .get(logging.Type.BROWSER)
-            .then(function (entries) {
-              assert.strictEqual(entries.length, 1)
-              assert.strictEqual(entries[0].level.name, 'SEVERE')
-              // eslint-disable-next-line no-useless-escape
-              assert.ok(/.*\"?and this is an error\"?/.test(entries[0].message))
-            })
-        })
+        await driver.get(
+          dataUrl(
+            '<!DOCTYPE html><script>',
+            'console.info("hello");',
+            'console.warn("this is a warning");',
+            'console.error("and this is an error");',
+            '</script>',
+          ),
+        )
+        return driver
+          .manage()
+          .logs()
+          .get(logging.Type.BROWSER)
+          .then(function (entries) {
+            assert.strictEqual(entries.length, 1)
+            assert.strictEqual(entries[0].level.name, 'SEVERE')
+            // eslint-disable-next-line no-useless-escape
+            assert.ok(/.*\"?and this is an error\"?/.test(entries[0].message))
+          })
+      })
 
       // Firefox does not capture JS error console log messages.
-      test
-        .ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox'))
-        .it('can be made verbose', async function () {
-          var prefs = new logging.Preferences()
-          prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG)
+      test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).it('can be made verbose', async function () {
+        var prefs = new logging.Preferences()
+        prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG)
 
-          driver = await env.builder().setLoggingPrefs(prefs).build()
+        driver = await env.builder().setLoggingPrefs(prefs).build()
 
-          await driver.get(
-            dataUrl(
-              '<!DOCTYPE html><script>',
-              'console.debug("hello");',
-              'console.warn("this is a warning");',
-              'console.error("and this is an error");',
-              '</script>'
-            )
-          )
-          return driver
-            .manage()
-            .logs()
-            .get(logging.Type.BROWSER)
-            .then(function (entries) {
-              assert.strictEqual(entries.length, 3)
-              assert.strictEqual(entries[0].level.name, 'DEBUG')
-              // eslint-disable-next-line no-useless-escape
-              assert.ok(/.*\"?hello\"?/.test(entries[0].message))
+        await driver.get(
+          dataUrl(
+            '<!DOCTYPE html><script>',
+            'console.debug("hello");',
+            'console.warn("this is a warning");',
+            'console.error("and this is an error");',
+            '</script>',
+          ),
+        )
+        return driver
+          .manage()
+          .logs()
+          .get(logging.Type.BROWSER)
+          .then(function (entries) {
+            assert.strictEqual(entries.length, 3)
+            assert.strictEqual(entries[0].level.name, 'DEBUG')
+            // eslint-disable-next-line no-useless-escape
+            assert.ok(/.*\"?hello\"?/.test(entries[0].message))
 
-              assert.strictEqual(entries[1].level.name, 'WARNING')
-              // eslint-disable-next-line no-useless-escape
-              assert.ok(/.*\"?this is a warning\"?/.test(entries[1].message))
+            assert.strictEqual(entries[1].level.name, 'WARNING')
+            // eslint-disable-next-line no-useless-escape
+            assert.ok(/.*\"?this is a warning\"?/.test(entries[1].message))
 
-              assert.strictEqual(entries[2].level.name, 'SEVERE')
-              // eslint-disable-next-line no-useless-escape
-              assert.ok(/.*\"?and this is an error\"?/.test(entries[2].message))
-            })
-        })
+            assert.strictEqual(entries[2].level.name, 'SEVERE')
+            // eslint-disable-next-line no-useless-escape
+            assert.ok(/.*\"?and this is an error\"?/.test(entries[2].message))
+          })
+      })
 
       // Firefox does not capture JS error console log messages.
       test
@@ -152,8 +141,8 @@ test.suite(function (env) {
               'console.debug("hello");',
               'console.warn("this is a warning");',
               'console.error("and this is an error");',
-              '</script>'
-            )
+              '</script>',
+            ),
           )
           await driver
             .manage()
@@ -180,8 +169,8 @@ test.suite(function (env) {
             'console.debug("hello");',
             'console.warn("this is a warning");',
             'console.error("and this is an error");',
-            '</script>'
-          )
+            '</script>',
+          ),
         )
         return driver
           .manage()

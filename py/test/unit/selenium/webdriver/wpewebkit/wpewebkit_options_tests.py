@@ -17,12 +17,21 @@
 
 import pytest
 
+from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.wpewebkit.options import Options
 
 
 @pytest.fixture
 def options():
     return Options()
+
+
+def test_starts_with_default_capabilities(options):
+    from selenium.webdriver import DesiredCapabilities
+
+    caps = DesiredCapabilities.WPEWEBKIT.copy()
+    caps.update({"pageLoadStrategy": PageLoadStrategy.normal})
+    assert options._caps == caps
 
 
 def test_set_binary_location(options):

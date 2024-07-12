@@ -17,6 +17,7 @@
 
 import pytest
 
+from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.safari.options import Options
 
 
@@ -29,7 +30,7 @@ def test_starts_with_default_capabilities(options):
     from selenium.webdriver import DesiredCapabilities
 
     caps = DesiredCapabilities.SAFARI.copy()
-    caps.update({"pageLoadStrategy": "normal"})
+    caps.update({"pageLoadStrategy": PageLoadStrategy.normal})
     assert options._caps == caps
 
 

@@ -1,5 +1,6 @@
-# -*- mode: ruby -*-
+# frozen_string_literal: true
 
+require 'English'
 $LOAD_PATH.unshift File.expand_path('.')
 
 require 'rake'
@@ -7,8 +8,8 @@ require 'net/telnet'
 require 'stringio'
 require 'fileutils'
 require 'open-uri'
-
-include Rake::DSL
+require 'git'
+require 'find'
 
 Rake.application.instance_variable_set(:@name, 'go')
 orig_verbose = verbose
@@ -42,20 +43,18 @@ require 'rake_tasks/bazel/task'
 # These are the final items mixed into the global NS
 # These need moving into correct namespaces, and not be globally included
 require 'rake_tasks/bazel'
-require 'rake_tasks/copyright'
 require 'rake_tasks/python'
 
-$DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT ? true : false
+$DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT
 $DEBUG = true if ENV['debug'] == 'true'
 
 verbose($DEBUG)
+@git = Git.open(__dir__)
 
-def release_version
-  '4.16'
-end
-
-def version
-  "#{release_version}.0-SNAPSHOT"
+def java_version
+  File.foreach('java/version.bzl') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+  end
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -84,7 +83,7 @@ CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
 # crazy_fun.create_tasks(Dir['**/build.desc'])
 
 # If it looks like a bazel target, build it with bazel
-rule /\/\/.*/ do |task|
+rule(%r{//.*}) do |task|
   task.out = Bazel.execute('build', %w[], task.name)
 end
 
@@ -98,9 +97,9 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v119:v119.publish
-  //java/src/org/openqa/selenium/devtools/v117:v117.publish
-  //java/src/org/openqa/selenium/devtools/v118:v118.publish
+  //java/src/org/openqa/selenium/devtools/v125:v125.publish
+  //java/src/org/openqa/selenium/devtools/v126:v126.publish
+  //java/src/org/openqa/selenium/devtools/v124:v124.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -119,17 +118,17 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/support:support.publish
   //java/src/org/openqa/selenium:client-combined.publish
   //java/src/org/openqa/selenium:core.publish
-]
+].freeze
 
 # Notice that because we're using rake, anything you can do in a normal rake
 # build can also be done here. For example, here we set the default task
 task default: [:grid]
 
 task all: [
-  :"selenium-java",
+  :'selenium-java',
   '//java/test/org/openqa/selenium/environment:webserver'
 ]
-task all_zip: [:'prep-release-zip']
+
 task tests: [
   '//java/test/org/openqa/selenium/htmlunit:htmlunit',
   '//java/test/org/openqa/selenium/firefox:test-synthesized',
@@ -151,9 +150,7 @@ task remote_client: ['//java/src/org/openqa/selenium/remote']
 task remote_server: ['//java/src/org/openqa/selenium/remote/server']
 task safari: ['//java/src/org/openqa/selenium/safari']
 task selenium: ['//java/src/org/openqa/selenium:core']
-task support: [
-  '//java/src/org/openqa/selenium/support'
-]
+task support: ['//java/src/org/openqa/selenium/support']
 
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/src/org/openqa/selenium/grid:executable-grid'
@@ -204,15 +201,19 @@ task test_support: [
   '//java/test/org/openqa/selenium/support:large-tests:run'
 ]
 
-task test_java_webdriver: %i[
-  test_htmlunit
-  test_firefox
-  test_remote_server
-]
-
-task test_java_webdriver: [:test_ie] if SeleniumRake::Checks.windows?
-task test_java_webdriver: [:test_chrome] if SeleniumRake::Checks.chrome?
-task test_java_webdriver: [:test_edge] if SeleniumRake::Checks.edge?
+task :test_java_webdriver do
+  if SeleniumRake::Checks.windows?
+    Rake::Task['test_ie'].invoke
+  elsif SeleniumRake::Checks.chrome?
+    Rake::Task['test_chrome'].invoke
+  elsif SeleniumRake::Checks.edge?
+    Rake::Task['test_edge'].invoke
+  else
+    Rake::Task['test_htmlunit'].invoke
+    Rake::Task['test_firefox'].invoke
+    Rake::Task['test_remote_server'].invoke
+  end
+end
 
 task test_java: [
   '//java/test/org/openqa/selenium/atoms:test:run',
@@ -235,9 +236,16 @@ task test_java_small_tests: [
   '//java/test/org/openqa/selenium/remote/server/log:test:run'
 ]
 
+task :test do
+  if SeleniumRake::Checks.python?
+    Rake::Task['test_py'].invoke
+  else
+    Rake::Task['test_javascript'].invoke
+    Rake::Task['test_java'].invoke
+  end
+end
+
 task test_py: [:py_prep_for_install_release, 'py:marionette_test']
-task test: %i[test_javascript test_java]
-task test: [:test_py] if SeleniumRake::Checks.python?
 task build: %i[all firefox remote selenium tests]
 
 desc 'Clean build artifacts.'
@@ -259,25 +267,18 @@ ie_generator.generate_type_mapping(
   out: 'cpp/iedriver/IEReturnTypes.h'
 )
 
+desc 'Generate Javadocs'
 task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
-  rm_rf 'build/javadoc'
-  mkdir_p 'build/javadoc'
-
-  # Temporary hack, bazel is not outputting where things are so we need to do it manually.
-  # This will only work on Posix based OSes
-  Rake::Task['//java/src/org/openqa/selenium/grid:all-javadocs']
+  FileUtils.rm_rf('build/docs/api/java')
+  FileUtils.mkdir_p('build/docs/api/java')
   out = 'bazel-bin/java/src/org/openqa/selenium/grid/all-javadocs.jar'
 
-  cmd = %{cd build/javadoc && jar xf "../../#{out}" 2>&1}
-  if SeleniumRake::Checks.windows?
-    cmd = cmd.gsub(/\//, '\\').gsub(/:/, ';')
-  end
+  cmd = %(cd build/docs/api/java && jar xf "../../../../#{out}" 2>&1)
+  cmd = cmd.tr('/', '\\').tr(':', ';') if SeleniumRake::Checks.windows?
+  raise 'could not unpack javadocs' unless system(cmd)
 
-  ok = system(cmd)
-  ok or raise "could not unpack javadocs"
-
-  File.open('build/javadoc/stylesheet.css', 'a') { |file|
-    file.write(<<~EOF
+  File.open('build/docs/api/java/stylesheet.css', 'a') do |file|
+    file.write(<<~STYLE
       /* Custom selenium-specific styling */
       .blink {
         animation: 2s cubic-bezier(0.5, 0, 0.85, 0.85) infinite blink;
@@ -289,9 +290,9 @@ task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
         }
       }
 
-    EOF
-    )
-  }
+    STYLE
+              )
+  end
 end
 
 file 'cpp/iedriver/sizzle.h' => ['//third_party/js/sizzle:sizzle:header'] do
@@ -326,120 +327,60 @@ task ios_driver: [
   '//javascript/webdriver/atoms/fragments:get_location_in_view:ios'
 ]
 
-task 'prep-release-zip': [
-  '//java/src/org/openqa/selenium:client-zip',
-  '//java/src/org/openqa/selenium/grid:server-zip',
-  '//java/src/org/openqa/selenium/grid:executable-grid',
-] do
-  [
-    "build/dist/selenium-server-#{version}.zip",
-    "build/dist/selenium-java-#{version}.zip",
-    "build/dist/selenium-server-#{version}.jar"
-  ].each do |f|
-    rm_f(f) if File.exists?(f)
-  end
-
-  mkdir_p 'build/dist'
-  File.delete
-  cp "bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip", "build/dist/selenium-server-#{version}.zip", preserve: false
-  chmod 0666, "build/dist/selenium-server-#{version}.zip"
-  cp "bazel-bin/java/src/org/openqa/selenium/client-zip.zip", "build/dist/selenium-java-#{version}.zip", preserve: false
-  chmod 0666, "build/dist/selenium-java-#{version}.zip"
-  cp "bazel-bin/java/src/org/openqa/selenium/grid/selenium", "build/dist/selenium-server-#{version}.jar", preserve: false
-  chmod 0666, "build/dist/selenium-server-#{version}.jar"
+# This task does not allow running RBE, to run stamped with RBE use
+# ./go java:package['--config=release']
+desc 'Create stamped zipped assets for Java for uploading to GitHub'
+task :'java-release-zip' do
+  Rake::Task['java:package'].invoke('--stamp')
 end
 
-task 'release-java': %i[prep-release-zip publish-maven]
+task 'release-java': %i[java-release-zip publish-maven]
 
 def read_m2_user_pass
-  # First check env vars, then the settings.xml config inside .m2
-  user = nil
-  pass = nil
-  if ENV['SEL_M2_USER'] && ENV['SEL_M2_PASS']
-    puts 'Fetching m2 user and pass from environment variables.'
-    user = ENV['SEL_M2_USER']
-    pass = ENV['SEL_M2_PASS']
-    return [user, pass]
-  end
-  settings = File.read(ENV['HOME'] + '/.m2/settings.xml')
+  puts 'Maven environment variables not set, inspecting /.m2/settings.xml.'
+  settings = File.read("#{Dir.home}/.m2/settings.xml")
   found_section = false
   settings.each_line do |line|
     if !found_section
       found_section = line.include? '<id>sonatype-nexus-staging</id>'
-    else
-      if (user.nil?) && line.include?('<username>')
-        user = line.split('<username>')[1].split('</')[0]
-      elsif (pass.nil?) && line.include?('<password>')
-        pass = line.split('<password>')[1].split('</')[0]
-        end
+    elsif line.include?('<username>')
+      ENV['MAVEN_USER'] = line[%r{<username>(.*?)</username>}, 1]
+    elsif line.include?('<password>')
+      ENV['MAVEN_PASSWORD'] = line[%r{<password>(.*?)</password>}, 1]
     end
-  end
-
-  return [user, pass]
-end
-
-task 'publish-maven': JAVA_RELEASE_TARGETS do
-  creds = read_m2_user_pass
-  JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
+    break if ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
   end
 end
 
-task 'publish-maven-snapshot': JAVA_RELEASE_TARGETS do
-  creds = read_m2_user_pass
-  if version.end_with?('-SNAPSHOT')
-    JAVA_RELEASE_TARGETS.each do |p|
-      Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/content/repositories/snapshots', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=false'], p)
-    end
-  else
-    puts 'No SNAPSHOT version configured. Targets will not be pushed to the snapshot repo in SonaType.'
-  end
+desc 'Publish all Java jars to Maven as stable release'
+task 'publish-maven' do
+  Rake::Task['java:release'].invoke
 end
 
+desc 'Publish all Java jars to Maven as nightly release'
+task 'publish-maven-snapshot' do
+  Rake::Task['java:release'].invoke('nightly')
+end
+
+desc 'Install jars to local m2 directory'
 task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository", '--define', 'gpg_sign=false'], p)
+    Bazel.execute('run',
+                  ['--stamp',
+                   '--define',
+                   "maven_repo=file://#{Dir.home}/.m2/repository",
+                   '--define',
+                   'gpg_sign=false'],
+                  p)
   end
 end
 
 desc 'Build the selenium client jars'
 task 'selenium-java' => '//java/src/org/openqa/selenium:client-combined'
 
-namespace :safari do
-  desc 'Build the SafariDriver java client'
-  task build: [
-    '//java/src/org/openqa/selenium/safari'
-  ]
-end
-
+desc 'Update AUTHORS file'
 task :authors do
-  puts 'Generating AUTHORS file'
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
-end
-
-namespace :copyright do
-  task :update do
-    Copyright.new.update(
-      FileList['javascript/**/*.js'].exclude(
-        'javascript/atoms/test/jquery.min.js',
-        'javascript/jsunit/**/*.js',
-        'javascript/node/selenium-webdriver/node_modules/**/*.js',
-        'javascript/selenium-core/lib/**/*.js',
-        'javascript/selenium-core/scripts/ui-element.js',
-        'javascript/selenium-core/scripts/ui-map-sample.js',
-        'javascript/selenium-core/scripts/user-extensions.js',
-        'javascript/selenium-core/scripts/xmlextras.js',
-        'javascript/selenium-core/xpath/**/*.js',
-        'javascript/grid-ui/node_modules/**/*.js'
-      )
-    )
-    Copyright.new.update(FileList['javascript/**/*.tsx'])
-    Copyright.new(comment_characters: '#').update(FileList['py/**/*.py'])
-    Copyright.new(comment_characters: '#', prefix: ["# frozen_string_literal: true\n", "\n"])
-      .update(FileList['rb/**/*.rb'])
-    Copyright.new.update(FileList['java/**/*.java'])
-    Copyright.new.update(FileList['rust/**/*.rs'])
-  end
 end
 
 namespace :side do
@@ -447,25 +388,26 @@ namespace :side do
     '//javascript/atoms/fragments:find-element'
   ] do
     # TODO: move directly to IDE's directory once the repositories are merged
-    baseDir = 'build/javascript/atoms'
-    mkdir_p baseDir
+    mkdir_p 'build/javascript/atoms'
 
-    [
-      Rake::Task['//javascript/atoms/fragments:find-element'].out
-    ].each do |atom|
-      name = File.basename(atom)
+    atom = 'bazel-bin/javascript/atoms/fragments/find-element.js'
+    name = File.basename(atom)
 
-      puts "Generating #{atom} as #{name}"
-      File.open(File.join(baseDir, name), 'w') do |f|
-        f << "// GENERATED CODE - DO NOT EDIT\n"
-        f << 'module.exports = '
-        f << IO.read(atom).strip
-        f << ";\n"
-      end
+    puts "Generating #{atom} as #{name}"
+    File.open(File.join(baseDir, name), 'w') do |f|
+      f << "// GENERATED CODE - DO NOT EDIT\n"
+      f << 'module.exports = '
+      f << File.read(atom).strip
+      f << ";\n"
     end
   end
 end
 
+def node_version
+  File.foreach('javascript/node/selenium-webdriver/package.json') do |line|
+    return line.split(':').last.strip.tr('",', '') if line.include?('version')
+  end
+end
 namespace :node do
   atom_list = %w[
     //javascript/atoms/fragments:find-elements
@@ -474,102 +416,802 @@ namespace :node do
   ]
 
   task atoms: atom_list do
-    baseDir = 'javascript/node/selenium-webdriver/lib/atoms'
-    mkdir_p baseDir
+    base_dir = 'javascript/node/selenium-webdriver/lib/atoms'
+    mkdir_p base_dir
 
-    puts 'rake outs are below'
-    p rake_outs = [
-      Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
-      Rake::Task['//javascript/webdriver/atoms:get-attribute'].out,
-      Rake::Task['//javascript/atoms/fragments:find-elements'].out
-    ]
-
-    rake_outs.each do |atom|
-      puts "atom is #{atom}\n"
+    ['bazel-bin/javascript/atoms/fragments/is-displayed.js',
+     'bazel-bin/javascript/webdriver/atoms/get-attribute.js',
+     'bazel-bin/javascript/atoms/fragments/find-elements.js'].each do |atom|
       name = File.basename(atom)
-
       puts "Generating #{atom} as #{name}"
-      File.open(File.join(baseDir, name), 'w') do |f|
+      File.open(File.join(base_dir, name), 'w') do |f|
         f << "// GENERATED CODE - DO NOT EDIT\n"
         f << 'module.exports = '
-        f << IO.read(atom).strip
+        f << File.read(atom).strip
         f << ";\n"
       end
     end
   end
 
-  task :build do
-    sh 'bazel build //javascript/node/selenium-webdriver'
+  desc 'Build Node npm package'
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
+    Bazel.execute('build', args, '//javascript/node/selenium-webdriver')
   end
 
-  task 'dry-run': [
-    'node:build'
-  ] do
-    sh 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.pack'
+  task :'dry-run' do
+    Bazel.execute('run', ['--stamp'],
+                  '//javascript/node/selenium-webdriver:selenium-webdriver.publish  -- --dry-run=true')
   end
 
-  task deploy: [
-    'node:build'
-  ] do
-    sh 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.publish'
+  desc 'Release Node npm package'
+  task :release do |_task, arguments|
+    args = arguments.to_a.compact
+    nightly = args.delete('nightly')
+    Rake::Task['node:version'].invoke('nightly') if nightly
+
+    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.publish')
   end
 
-  task :docs do
-    sh 'node javascript/node/gendocs.js'
+  desc 'Release Node npm package'
+  task deploy: :release
+
+  desc 'Generate Node documentation'
+  task :docs, [:skip_update] do |_task, arguments|
+    FileUtils.rm_rf('build/docs/api/javascript/')
+    begin
+      sh 'npm run generate-docs --prefix javascript/node/selenium-webdriver || true', verbose: true
+    rescue StandardError
+      puts 'Ensure that npm is installed on your system'
+      raise
+    end
+
+    update_gh_pages unless arguments[:skip_update]
+  end
+
+  desc 'Update JavaScript changelog'
+  task :changelog do
+    header = "## #{node_version}"
+    update_changelog(node_version, 'javascript', 'javascript/node/selenium-webdriver/',
+                     'javascript/node/selenium-webdriver/CHANGES.md', header)
+  end
+
+  desc 'Update Node version'
+  task :version, [:version] do |_task, arguments|
+    old_version = node_version
+    nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
+    new_version = updated_version(old_version, arguments[:version], nightly)
+
+    ['javascript/node/selenium-webdriver/package.json',
+     'package-lock.json',
+     'javascript/node/selenium-webdriver/BUILD.bazel'].each do |file|
+      text = File.read(file).gsub(old_version, new_version)
+      File.open(file, 'w') { |f| f.puts text }
+    end
+
+    Rake::Task['node:changelog'].invoke unless new_version.include?(nightly)
   end
 end
 
+def python_version
+  File.foreach('py/BUILD.bazel') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+  end
+end
 namespace :py do
-  task prep: [
-    '//javascript/atoms/fragments:is-displayed',
-    '//javascript/webdriver/atoms:get-attribute',
-    '//third_party/js/selenium:webdriver_xpi'
-  ] do
-    py_home = 'py/'
-    remote_py_home = py_home + 'selenium/webdriver/remote/'
-    firefox_py_home = py_home + 'selenium/webdriver/firefox/'
+  desc 'Build Python wheel and sdist with optional arguments'
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
+    Bazel.execute('build', args, '//py:selenium-wheel')
+    Bazel.execute('build', args, '//py:selenium-sdist')
+  end
 
-    if SeleniumRake::Checks.windows?
-      remote_py_home = remote_py_home.gsub(/\//, '\\')
-      firefox_py_home = firefox_py_home .gsub(/\//, '\\')
+  desc 'Release Python wheel and sdist to pypi'
+  task :release do |_task, arguments|
+    args = arguments.to_a.compact
+    nightly = args.delete('nightly')
+    Rake::Task['py:version'].invoke('nightly') if nightly
+
+    command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
+    Bazel.execute('run', ['--stamp'], command)
+  end
+
+  desc 'generate and copy files required for local development'
+  task :local_dev do
+    Bazel.execute('build', [], '//py:selenium')
+    Rake::Task['grid'].invoke
+
+    FileUtils.rm_rf('py/selenium/webdriver/common/devtools/')
+    FileUtils.cp_r('bazel-bin/py/selenium/webdriver/.', 'py/selenium/webdriver', remove_destination: true)
+  end
+
+  desc 'Update generated Python files for local development'
+  task :clean do
+    Bazel.execute('build', [], '//py:selenium')
+    bazel_bin_path = 'bazel-bin/py/selenium/webdriver'
+    lib_path = 'py/selenium/webdriver'
+
+    dirs = %w[devtools linux mac windows]
+    dirs.each { |dir| FileUtils.rm_rf("#{lib_path}/common/#{dir}") }
+
+    Find.find(bazel_bin_path) do |path|
+      if File.directory?(path) && dirs.any? { |dir| path.include?("common/#{dir}") }
+        Find.prune
+        next
+      end
+      next if File.directory?(path)
+
+      target_file = File.join(lib_path, path.sub(%r{^#{bazel_bin_path}/}, ''))
+      if File.exist?(target_file)
+        puts "Removing target file: #{target_file}"
+        FileUtils.rm(target_file)
+      end
+    end
+  end
+
+  desc 'Generate Python documentation'
+  task :docs, [:skip_update] do |_task, arguments|
+    FileUtils.rm_rf('build/docs/api/py/')
+    FileUtils.rm_rf('build/docs/doctrees/')
+    begin
+      sh 'tox -c py/tox.ini -e docs', verbose: true
+    rescue StandardError
+      puts 'Ensure that tox is installed on your system'
+      raise
     end
 
-    cp Rake::Task['//javascript/atoms/fragments:is-displayed'].out, remote_py_home + 'isDisplayed.js', verbose: true
-    cp Rake::Task['//javascript/webdriver/atoms:get-attribute'].out, remote_py_home + 'getAttribute.js', verbose: true
-
-    cp Rake::Task['//third_party/js/selenium:webdriver_xpi'].out, firefox_py_home, verbose: true
-    cp 'third_party/js/selenium/webdriver.json', firefox_py_home + 'webdriver_prefs.json', verbose: true
-    cp 'LICENSE', py_home + 'LICENSE', verbose: true
+    update_gh_pages unless arguments[:skip_update]
   end
 
-  bazel :unit do
-    Bazel.execute('test', [], '//py:unit')
-  end
-
-  task docs: :prep do
-    sh 'tox -c py/tox.ini -e docs', verbose: true
-  end
-
-  task install: :prep do
-    Dir.chdir('py') do
-      sh py_exe + ' setup.py install', verbose: true
+  desc 'Install Python wheel locally'
+  task :install do
+    Bazel.execute('build', [], '//py:selenium-wheel')
+    begin
+      sh 'pip install bazel-bin/py/selenium-*.whl'
+    rescue StandardError
+      puts 'Ensure that Python and pip are installed on your system'
+      raise
     end
   end
 
-  %w[chrome ff marionette ie edge remote_firefox safari].each do |browser|
-    browser_data = SeleniumRake::Browsers::BROWSERS[browser]
-    deps = browser_data[:deps] || []
-    deps += [:prep]
-    driver = browser_data[:driver]
+  desc 'Update Python changelog'
+  task :changelog do
+    header = "Selenium #{python_version}"
+    update_changelog(python_version, 'py', 'py/selenium/webdriver', 'py/CHANGES', header)
+  end
 
-    task "#{browser}_test" => deps do
-      tox_test driver
+  desc 'Update Python version'
+  task :version, [:version] do |_task, arguments|
+    old_version = python_version
+    nightly = ".dev#{Time.now.strftime('%Y%m%d%H%M')}"
+    new_version = updated_version(old_version, arguments[:version], nightly)
+
+    ['py/setup.py',
+     'py/BUILD.bazel',
+     'py/selenium/__init__.py',
+     'py/selenium/webdriver/__init__.py',
+     'py/docs/source/conf.py'].each do |file|
+      text = File.read(file).gsub(old_version, new_version)
+      File.open(file, 'w') { |f| f.puts text }
     end
+
+    old_short_version = old_version.split('.')[0..1].join('.')
+    new_short_version = new_version.split('.')[0..1].join('.')
+
+    text = File.read('py/docs/source/conf.py').gsub(old_short_version, new_short_version)
+    File.open('py/docs/source/conf.py', 'w') { |f| f.puts text }
+
+    Rake::Task['py:changelog'].invoke unless new_version.include?(nightly)
+  end
+
+  desc 'Update Python Syntax'
+  task :lint do
+    sh 'tox -c py/tox.ini -e linting'
+  end
+
+  namespace :test do
+    desc 'Python unit tests'
+    task :unit do
+      Rake::Task['py:clean'].invoke
+      Bazel.execute('test', ['--test_size_filters=small'], '//py/...')
+    end
+
+    %i[chrome edge firefox safari].each do |browser|
+      desc "Python #{browser} tests"
+      task browser do
+        Rake::Task['py:clean'].invoke
+        Bazel.execute('test', [], "//py:common-#{browser}")
+        Bazel.execute('test', [], "//py:test-#{browser}")
+      end
+    end
+
+    desc 'Python Remote tests with Firefox'
+    task :remote do
+      Rake::Task['py:clean'].invoke
+      Bazel.execute('test', [], '//py:test-remote')
+    end
+  end
+
+  namespace :test do
+    desc 'Python unit tests'
+    task :unit do
+      Rake::Task['py:clean'].invoke
+      Bazel.execute('test', ['--test_size_filters=small'], '//py/...')
+    end
+
+    %i[chrome edge firefox safari].each do |browser|
+      desc "Python #{browser} tests"
+      task browser do
+        Rake::Task['py:clean'].invoke
+        Bazel.execute('test', %w[--test_output all], "//py:common-#{browser}")
+        Bazel.execute('test', %w[--test_output all], "//py:test-#{browser}")
+      end
+    end
+  end
+end
+
+def ruby_version
+  File.foreach('rb/lib/selenium/webdriver/version.rb') do |line|
+    return line.split('=').last.strip.tr("'", '') if line.include?('VERSION')
+  end
+end
+namespace :rb do
+  desc 'Generate Ruby gems'
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
+    webdriver = args.delete('webdriver')
+    devtools = args.delete('devtools')
+
+    Bazel.execute('build', args, '//rb:selenium-webdriver') if webdriver || !devtools
+    Bazel.execute('build', args, '//rb:selenium-devtools') if devtools || !webdriver
+  end
+
+  desc 'Update generated Ruby files for local development'
+  task :local_dev do
+    Bazel.execute('build', [], '@bundle//:bundle')
+    Rake::Task['rb:build'].invoke
+    Rake::Task['grid'].invoke
+  end
+
+  desc 'Push Ruby gems to rubygems'
+  task :release do |_task, arguments|
+    args = arguments.to_a.compact
+    nightly = args.delete('nightly')
+
+    if nightly
+      Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
+      Bazel.execute('run', ['--stamp'], '//rb:selenium-webdriver-release-nightly')
+    else
+      Bazel.execute('run', ['--stamp'], '//rb:selenium-webdriver-release')
+      Bazel.execute('run', ['--stamp'], '//rb:selenium-devtools-release')
+    end
+  end
+
+  desc 'Generate Ruby documentation'
+  task :docs, [:skip_update] do |_task, arguments|
+    FileUtils.rm_rf('build/docs/api/rb/')
+    Bazel.execute('run', [], '//rb:docs')
+    FileUtils.mkdir_p('build/docs/api')
+    FileUtils.cp_r('bazel-bin/rb/docs.sh.runfiles/_main/docs/api/rb/.', 'build/docs/api/rb')
+
+    update_gh_pages unless arguments[:skip_update]
+  end
+
+  desc 'Update Ruby changelog'
+  task :changelog do
+    header = "#{ruby_version} (#{Time.now.strftime('%Y-%m-%d')})\n========================="
+    update_changelog(ruby_version, 'rb', 'rb/lib/', 'rb/CHANGES', header)
+  end
+
+  desc 'Update Ruby version'
+  task :version, [:version] do |_task, arguments|
+    old_version = ruby_version
+    new_version = updated_version(old_version, arguments[:version], '.nightly')
+
+    file = 'rb/lib/selenium/webdriver/version.rb'
+    text = File.read(file).gsub(old_version, new_version)
+    File.open(file, 'w') { |f| f.puts text }
+
+    Rake::Task['rb:changelog'].invoke unless new_version.include?('.nightly')
+    sh 'cd rb && bundle --version && bundle update'
+  end
+
+  desc 'Update Ruby Syntax'
+  task :lint do |_task, arguments|
+    args = arguments.to_a.compact
+    Bazel.execute('run', args, '//rb:lint')
+  end
+end
+
+def dotnet_version
+  File.foreach('dotnet/selenium-dotnet-version.bzl') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+  end
+end
+namespace :dotnet do
+  desc 'Build nupkg files'
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
+    Bazel.execute('build', args, '//dotnet:all')
+  end
+
+  desc 'Package .NET bindings into zipped assets and stage for release'
+  task :package do |_task, arguments|
+    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    Rake::Task['dotnet:build'].invoke(*args)
+    mkdir_p 'build/dist'
+    FileUtils.rm_f(Dir.glob('build/dist/*dotnet*'))
+
+    FileUtils.copy('bazel-bin/dotnet/release.zip', "build/dist/selenium-dotnet-#{dotnet_version}.zip")
+    FileUtils.chmod(0o666, "build/dist/selenium-dotnet-#{dotnet_version}.zip")
+    FileUtils.copy('bazel-bin/dotnet/strongnamed.zip', "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
+    FileUtils.chmod(0o666, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
+  end
+
+  desc 'Upload nupkg files to Nuget'
+  task :release do |_task, arguments|
+    args = arguments.to_a.compact
+    nightly = args.delete('nightly')
+    Rake::Task['dotnet:version'].invoke('nightly') if nightly
+    Rake::Task['dotnet:package'].invoke('--stamp')
+
+    api_key = ENV.fetch('NUGET_API_KEY', nil)
+    push_destination = 'https://api.nuget.org/v3/index.json'
+    if nightly
+      # Nightly builds are pushed to GitHub NuGet repository
+      # This commands will run in GitHub Actions
+      api_key = ENV.fetch('GITHUB_TOKEN', nil)
+      github_push_url = 'https://nuget.pkg.github.com/seleniumhq/index.json'
+      push_destination = 'github'
+      flags = ['--username', 'seleniumhq', '--password', api_key, '--store-password-in-clear-text', '--name',
+               push_destination, github_push_url]
+      sh "dotnet nuget add source #{flags.join(' ')}"
+    end
+
+    ["./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
+     "./bazel-bin/dotnet/src/support/Selenium.Support.#{dotnet_version}.nupkg"].each do |asset|
+      sh "dotnet nuget push #{asset} --api-key #{api_key} --source #{push_destination}"
+    end
+  end
+
+  desc 'Generate .NET documentation'
+  task :docs, [:skip_update] do |_task, arguments|
+    FileUtils.rm_rf('build/docs/api/dotnet/')
+    begin
+      # Pinning to 2.75.3 to avoid breaking changes in newer versions
+      # See https://github.com/dotnet/docfx/issues/9855
+      sh 'dotnet tool uninstall --global docfx || true'
+      sh 'dotnet tool install --global --version 2.75.3 docfx'
+      # sh 'dotnet tool update -g docfx'
+    rescue StandardError
+      puts 'Please ensure that .NET SDK is installed.'
+      raise
+    end
+
+    begin
+      sh 'docfx dotnet/docs/docfx.json'
+    rescue StandardError
+      case $CHILD_STATUS.exitstatus
+      when 127
+        raise 'Ensure the dotnet/tools directory is added to your PATH environment variable (e.g., `~/.dotnet/tools`)'
+      when 255
+        puts '.NET documentation build failed, likely because of DevTools namespacing. This is ok; continuing'
+      else
+        raise
+      end
+    end
+
+    update_gh_pages unless arguments[:skip_update]
+  end
+
+  desc 'Update .NET changelog'
+  task :changelog do
+    header = "v#{dotnet_version}\n======"
+    update_changelog(dotnet_version, 'dotnet', 'dotnet/src/', 'dotnet/CHANGELOG', header)
+  end
+
+  desc 'Update .NET version'
+  task :version, [:version] do |_task, arguments|
+    old_version = dotnet_version
+    nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
+    new_version = updated_version(old_version, arguments[:version], nightly)
+
+    file = 'dotnet/selenium-dotnet-version.bzl'
+    text = File.read(file).gsub(old_version, new_version)
+    File.open(file, 'w') { |f| f.puts text }
+
+    Rake::Task['dotnet:changelog'].invoke unless new_version.include?(nightly)
+  end
+end
+
+namespace :java do
+  desc 'Build Java Client Jars'
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
+    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('build', args, target) }
+  end
+
+  desc 'Build Grid Server'
+  task :grid do |_task, arguments|
+    args = arguments.to_a.compact
+    Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:executable-grid')
+  end
+
+  desc 'Package Java bindings and grid into releasable packages and stage for release'
+  task :package do |_task, arguments|
+    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-zip')
+    Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:server-zip')
+    Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:executable-grid')
+
+    mkdir_p 'build/dist'
+    Dir.glob('build/dist/*{java,server}*').each { |file| FileUtils.rm_f(file) }
+
+    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip',
+                   "build/dist/selenium-server-#{java_version}.zip")
+    FileUtils.chmod(0o666, "build/dist/selenium-server-#{java_version}.zip")
+    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/client-zip.zip',
+                   "build/dist/selenium-java-#{java_version}.zip")
+    FileUtils.chmod(0o666, "build/dist/selenium-java-#{java_version}.zip")
+    FileUtils.copy('bazel-bin/java/src/org/openqa/selenium/grid/selenium',
+                   "build/dist/selenium-server-#{java_version}.jar")
+    FileUtils.chmod(0o777, "build/dist/selenium-server-#{java_version}.jar")
+  end
+
+  desc 'Deploy all jars to Maven'
+  task :release do |_task, arguments|
+    args = arguments.to_a.compact
+    nightly = args.delete('nightly')
+
+    ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
+    ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
+    read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+
+    repo = nightly ? 'content/repositories/snapshots' : 'service/local/staging/deploy/maven2'
+    ENV['MAVEN_REPO'] = "https://oss.sonatype.org/#{repo}"
+    ENV['GPG_SIGN'] = (!nightly).to_s
+
+    Rake::Task['java:version'].invoke if nightly
+    Rake::Task['java:package'].invoke('--stamp')
+    Rake::Task['java:build'].invoke('--stamp')
+    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('run', ['--stamp'], target) }
+  end
+
+  desc 'Install jars to local m2 directory'
+  task install: :'maven-install'
+
+  desc 'Generate Java documentation'
+  task :docs, [:skip_update] do |_task, arguments|
+    Rake::Task['javadocs'].invoke
+
+    update_gh_pages unless arguments[:skip_update]
+  end
+
+  desc 'Update Maven dependencies'
+  task :update do
+    # Make sure things are in a good state to start with
+    args = ['--action_env=RULES_JVM_EXTERNAL_REPIN=1']
+    Bazel.execute('run', args, '@unpinned_maven//:pin')
+
+    file_path = 'MODULE.bazel'
+    content = File.read(file_path)
+    # For some reason ./go wrapper is not outputting from Open3, so cannot use Bazel class directly
+    output = `bazel run @maven//:outdated`
+
+    output.scan(/\S+ \[\S+-alpha\]/).each do |match|
+      puts "WARNING — Cannot automatically update alpha version of: #{match}"
+    end
+
+    versions = output.scan(/(\S+) \[\S+ -> (\S+)\]/).to_h
+    versions.each do |artifact, version|
+      if artifact.match?('graphql')
+        puts 'WARNING — Cannot automatically update graphql'
+        next
+      end
+
+      replacement = artifact.include?('googlejavaformat') ? "#{artifact}:jar:#{version}" : "#{artifact}:#{version}"
+      content.gsub!(/#{artifact}:(jar:)?\d+\.\d+[^\\"]+/, replacement)
+    end
+    File.write(file_path, content)
+
+    args = ['--action_env=RULES_JVM_EXTERNAL_REPIN=1']
+    Bazel.execute('run', args, '@unpinned_maven//:pin')
+  end
+
+  desc 'Update Java changelog'
+  task :changelog do
+    header = "v#{java_version}\n======"
+    update_changelog(java_version, 'java', 'java/src/org/', 'java/CHANGELOG', header)
+  end
+
+  desc 'Update Java version'
+  task :version, [:version] do |_task, arguments|
+    old_version = java_version
+    new_version = updated_version(old_version, arguments[:version], '-SNAPSHOT')
+
+    file = 'java/version.bzl'
+    text = File.read(file).gsub(old_version, new_version)
+    File.open(file, 'w') { |f| f.puts text }
+    Rake::Task['java:changelog'].invoke unless new_version.include?('-SNAPSHOT')
+  end
+end
+
+def rust_version
+  File.foreach('rust/BUILD.bazel') do |line|
+    return line.split('=').last.strip.tr('",', '') if line.include?('version =')
+  end
+end
+namespace :rust do
+  desc 'Build Selenium Manager'
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
+    Bazel.execute('build', args, '//rust:selenium-manager')
+  end
+
+  desc 'Update the rust lock files'
+  task :update do
+    sh 'CARGO_BAZEL_REPIN=true bazel sync --only=crates'
+  end
+
+  desc 'Update Rust changelog'
+  task :changelog do
+    header = "#{rust_version}\n======"
+    version = rust_version.split('.').tap(&:shift).join('.')
+    update_changelog(version, 'rust', 'rust/src', 'rust/CHANGELOG.md', header)
+  end
+
+  # Rust versioning is currently difficult compared to the others because we are using the 0.4.x pattern
+  # until Selenium Manager comes out of beta
+  desc 'Update Rust version'
+  task :version, [:version] do |_task, arguments|
+    old_version = rust_version.dup
+    equivalent_version = if old_version.include?('nightly')
+                           "#{old_version.split(/\.|-/)[0...-1].tap(&:shift).join('.')}.0-nightly"
+                         else
+                           old_version.split('.').tap(&:shift).append('0').join('.')
+                         end
+    updated = updated_version(equivalent_version, arguments[:version], '-nightly')
+    new_version = updated.split(/\.|-/).tap { |v| v.delete_at(2) }.unshift('0').join('.').gsub('.nightly', '-nightly')
+
+    ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
+      text = File.read(file).gsub(old_version, new_version)
+      File.open(file, 'w') { |f| f.puts text }
+    end
+
+    Rake::Task['rust:changelog'].invoke unless new_version.include?('-nightly')
+    Rake::Task['rust:update'].invoke
+  end
+
+  # Creating a special task for this because Rust version needs to be managed at a different place than
+  # everything else; want to use changelog updates later in process
+  namespace :version do
+    desc 'Commits updates from Rust version changes'
+    task :commit do
+      @git.reset
+      commit!("update Rust version to #{rust_version}",
+              ['rust/BUILD.bazel', 'rust/Cargo.Bazel.lock', 'rust/Cargo.lock', 'rust/Cargo.toml'])
+      commit!('Rust Changelog', ['rust/CHANGELOG.md'])
+    end
+  end
+end
+
+namespace :all do
+  desc 'Update all API Documentation'
+  task :docs do
+    Rake::Task['java:docs'].invoke(true)
+    Rake::Task['py:docs'].invoke(true)
+    Rake::Task['rb:docs'].invoke(true)
+    Rake::Task['dotnet:docs'].invoke(true)
+    Rake::Task['node:docs'].invoke(true)
+
+    update_gh_pages
+  end
+
+  desc 'Build all artifacts for all language bindings'
+  task :build do |_task, arguments|
+    args = arguments.to_a.compact
+    Rake::Task['java:build'].invoke(*args)
+    Rake::Task['py:build'].invoke(*args)
+    Rake::Task['rb:build'].invoke(*args)
+    Rake::Task['dotnet:build'].invoke(*args)
+    Rake::Task['node:build'].invoke(*args)
+  end
+
+  desc 'Package or build stamped artifacts for distribution in GitHub Release assets'
+  task :package do |_task, arguments|
+    args = arguments.to_a.compact
+    Rake::Task['java:package'].invoke(*args)
+    Rake::Task['dotnet:package'].invoke(*args)
+  end
+
+  desc 'Release all artifacts for all language bindings'
+  task :release do |_task, arguments|
+    Rake::Task['clean'].invoke
+
+    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    Rake::Task['java:release'].invoke(*args)
+    Rake::Task['py:release'].invoke(*args)
+    Rake::Task['rb:release'].invoke(*args)
+    Rake::Task['dotnet:release'].invoke(*args)
+    Rake::Task['node:release'].invoke(*args)
+
+    # TODO: Update this so it happens in each language, but does not commit
+    Rake::Task['all:version'].invoke('nightly')
+
+    puts 'Committing nightly version updates'
+    commit!('update versions to nightly', ['dotnet/selenium-dotnet-version.bzl',
+                                           'java/version.bzl',
+                                           'javascript/node/selenium-webdriver/BUILD.bazel',
+                                           'javascript/node/selenium-webdriver/package.json',
+                                           'py/docs/source/conf.py',
+                                           'py/selenium/webdriver/__init__.py',
+                                           'py/selenium/__init__.py',
+                                           'py/BUILD.bazel',
+                                           'py/setup.py',
+                                           'rb/lib/selenium/webdriver/version.rb',
+                                           'rb/Gemfile.lock',
+                                           'package-lock.json'])
+
+    print 'Do you want to push the committed changes? (Y/n): '
+    response = $stdin.gets.chomp.downcase
+    @git.push if %w[y yes].include?(response)
+  end
+
+  task :lint do
+    ext = /mswin|msys|mingw|cygwin|bccwin|wince|emc/.match?(RbConfig::CONFIG['host_os']) ? 'ps1' : 'sh'
+    sh "./scripts/format.#{ext}", verbose: true
+    Rake::Task['py:lint'].invoke
+  end
+
+  desc 'Update everything in preparation for a release'
+  task :prepare, [:version, :channel] do |_task, arguments|
+    chrome_channel = arguments[:channel] || 'Stable'
+    version = arguments[:version]
+    args = Array(chrome_channel) ? ['--', "--chrome_channel=#{chrome_channel.capitalize}"] : []
+    Bazel.execute('run', args, '//scripts:pinned_browsers')
+    commit!('Update pinned browser versions', ['common/repositories.bzl'])
+
+    Bazel.execute('run', args, '//scripts:update_cdp')
+    commit!('Update supported versions for Chrome DevTools',
+            ['common/devtools/',
+             'dotnet/src/webdriver/DevTools/',
+             'dotnet/src/webdriver/WebDriver.csproj',
+             'dotnet/test/common/DevTools/',
+             'dotnet/test/common/CustomDriverConfigs/',
+             'dotnet/selenium-dotnet-version.bzl',
+             'java/src/org/openqa/selenium/devtools/',
+             'javascript/node/selenium-webdriver/BUILD.bazel',
+             'py/BUILD.bazel',
+             'rb/lib/selenium/devtools/',
+             'rb/Gemfile.lock',
+             'Rakefile'])
+
+    Bazel.execute('run', args, '//scripts:selenium_manager')
+    commit!('Update selenium manager version', ['common/selenium_manager.bzl'])
+
+    Rake::Task['java:update'].invoke
+    commit!('Update Maven Dependencies', ['java/maven_deps.bzl', 'java/maven_install.json'])
+
+    Rake::Task['authors'].invoke
+    commit!('Update authors file', ['AUTHORS'])
+
+    # Note that this does not include Rust version changes that are handled in separate rake:version task
+    # TODO: These files are all defined in other tasks; remove duplication
+    Rake::Task['all:version'].invoke(version)
+    commit!("FIX CHANGELOGS BEFORE MERGING!\n\nUpdate versions and change logs to release Selenium #{java_version}",
+            ['dotnet/CHANGELOG',
+             'dotnet/selenium-dotnet-version.bzl',
+             'java/CHANGELOG',
+             'java/version.bzl',
+             'javascript/node/selenium-webdriver/CHANGES.md',
+             'javascript/node/selenium-webdriver/package.json',
+             'package-lock.json',
+             'py/docs/source/conf.py',
+             'py/selenium/__init__.py',
+             'py/selenium/webdriver/__init__.py',
+             'py/BUILD.bazel',
+             'py/CHANGES',
+             'py/setup.py',
+             'rb/lib/selenium/webdriver/version.rb',
+             'rb/CHANGES',
+             'rb/Gemfile.lock',
+             'rust/CHANGELOG.md'])
+  end
+
+  desc 'Update all versions'
+  task :version, [:version] do |_task, arguments|
+    version = arguments[:version] || 'nightly'
+
+    Rake::Task['java:version'].invoke(version)
+    Rake::Task['rb:version'].invoke(version)
+    Rake::Task['node:version'].invoke(version)
+    Rake::Task['py:version'].invoke(version)
+    Rake::Task['dotnet:version'].invoke(version)
   end
 end
 
 at_exit do
-  if File.exist?('.git') && !SeleniumRake::Checks.windows?
-    system 'sh', '.git-fixfiles'
+  system 'sh', '.git-fixfiles' if File.exist?('.git') && !SeleniumRake::Checks.windows?
+end
+
+def updated_version(current, desired = nil, nightly = nil)
+  if !desired.nil? && desired != 'nightly'
+    # If desired is present, return full 3 digit version
+    desired.split('.').tap { |v| v << 0 while v.size < 3 }.join('.')
+  elsif current.split(/\.|-/).size > 3
+    # if current version is already nightly, just need to bump it; this will be noop for some languages
+    pattern = /-?\.?(nightly|SNAPSHOT|dev)\d*$/
+    current.gsub(pattern, nightly)
+  elsif current.split(/\.|-/).size == 3
+    # if current version is not nightly, need to bump the version and make nightly
+    "#{current.split(/\.|-/).tap { |i| (i[1] = i[1].to_i + 1) && (i[2] = 0) }.join('.')}#{nightly}"
   end
+end
+
+def update_gh_pages
+  @git.fetch('origin', {ref: 'gh-pages'})
+  @git.checkout('gh-pages', force: true)
+
+  %w[java rb py dotnet javascript].each do |language|
+    next unless Dir.exist?("build/docs/api/#{language}") && !Dir.empty?("build/docs/api/#{language}")
+
+    FileUtils.rm_rf("docs/api/#{language}")
+    FileUtils.mv("build/docs/api/#{language}", "docs/api/#{language}")
+
+    commit!("updating #{language} API docs", ["docs/api/#{language}/"])
+  end
+end
+
+def restore_git(origin_reference)
+  puts 'Stashing docs changes for gh-pages'
+  Git::Stash.new(@git, 'docs changes for gh-pages')
+  puts "Checking out originating branch/tag — #{origin_reference}"
+  @git.checkout(origin_reference)
+  false
+end
+
+def previous_tag(current_version, language = nil)
+  version = current_version.split(/\.|-/)
+  if version.size > 3
+    puts 'WARNING - Changelogs not updated when set to prerelease'
+  elsif version[2].to_i > 1
+    # specified as patch release
+    patch_version = (version[2].to_i - 1).to_s
+    "selenium-#{[[version[0]], version[1], patch_version].join('.')}-#{language}"
+  elsif version[2] == '1'
+    # specified as patch release; special case
+    "selenium-#{[[version[0]], version[1], '0'].join('.')}"
+  else
+    minor_version = (version[1].to_i - 1)
+    tags = @git.tags.map(&:name)
+    tag = language ? tags.reverse.find { |t| t.match?(/selenium-4\.#{minor_version}.*-#{language}/) } : nil
+    tag || "selenium-#{[[version[0]], minor_version, '0'].join('.')}"
+  end
+end
+
+def update_changelog(version, language, path, changelog, header)
+  tag = previous_tag(version, language)
+  log = `git --no-pager log #{tag}...HEAD --pretty=format:"--> %B" --reverse #{path}`
+  commits = log.split('>>>').map { |entry|
+    lines = entry.split("\n")
+    lines.reject! { |line| line.match?(/^(----|Co-authored|Signed-off)/) || line.empty? }
+    lines.join("\n")
+  }.join("\n>>>")
+
+  File.open(changelog, 'r+') do |file|
+    new_content = "#{header}\n#{commits}\n\n#{file.read}"
+    file.rewind
+    file.write(new_content)
+    file.truncate(file.pos)
+  end
+end
+
+def commit!(message, files = [], all: false)
+  files.each do |file|
+    puts "adding: #{file}"
+    @git.add(file)
+  end
+  all ? @git.commit_all(message) : @git.commit(message)
+rescue Git::FailedError => e
+  puts e.message
 end

@@ -15,21 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('node:fs')
+const path = require('node:path')
 
 if (process.argv.length < 3) {
-  process.stderr.write(
-    `Usage: node ${path.basename(__filename)} <src file> <dst file>\n`
-  )
-  // eslint-disable-next-line no-process-exit
+  process.stderr.write(`Usage: node ${path.basename(__filename)} <src file> <dst file>\n`)
+  // eslint-disable-next-line n/no-process-exit
   process.exit(-1)
 }
 
 const buffer = fs.readFileSync(process.argv[2])
+
 fs.writeFileSync(
   process.argv[3],
   `// GENERATED CODE - DO NOT EDIT
 module.exports = ${buffer.toString('utf8').trim()};
-`
+`,
 )

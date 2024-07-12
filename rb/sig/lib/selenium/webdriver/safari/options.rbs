@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    module Safari
+      class Options < WebDriver::Options
+        attr_accessor options: untyped
+
+        CAPABILITIES: Hash[Symbol, String]
+
+        BROWSER: untyped
+
+        def add_option: (untyped name, ?untyped? value) -> untyped
+
+        def as_json: (*untyped) -> untyped
+      end
+    end
+  end
+end

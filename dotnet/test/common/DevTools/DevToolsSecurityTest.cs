@@ -1,14 +1,15 @@
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V119;
+    using CurrentCdpVersion = V126;
 
     [TestFixture]
+    [IgnoreBrowser(Selenium.Browser.Edge, "While CDP 126 is released for Edge")]
     public class DevToolsSecurityTest : DevToolsTestFixture
     {
         //[Test]

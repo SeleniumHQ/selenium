@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Window do
+    describe Window, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       after(:all) { reset_driver! }
 
       let(:window) { driver.manage.window }
@@ -124,8 +124,8 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can minimize the window', except: [{browser: %i[chrome edge], headless: true},
-                                             {browser: :safari, ci: :github}] do
+      it 'can minimize the window', except: [{browser: %i[chrome edge], headless: true}],
+                                    flaky: {browser: :chrome, platform: %i[macosx linux], ci: :github} do
         window.minimize
         expect {
           wait.until { driver.execute_script('return document.hidden;') }

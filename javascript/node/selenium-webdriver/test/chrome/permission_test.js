@@ -17,74 +17,51 @@
 
 'use strict'
 
-const assert = require('assert')
-const chrome = require('../../chrome')
+const assert = require('node:assert')
+const chrome = require('selenium-webdriver/chrome')
 const test = require('../../lib/test')
 const { ignore } = require('../../lib/test')
-const { Browser } = require('../../index')
+const { Browser } = require('selenium-webdriver/index')
 
 test.suite(
   function (env) {
     // Chrome unable to set "prompt" due to: https://bugs.chromium.org/p/chromedriver/issues/detail?id=4350
     describe('setPermission', () => {
-      ignore(env.browsers(Browser.CHROME)).it(
-        'can set permission',
-        async function () {
-          const driver = await env.builder().build()
+      ignore(env.browsers(Browser.CHROME)).it('can set permission', async function () {
+        const driver = await env.builder().build()
 
-          await driver.get(test.Pages.clicksPage)
+        await driver.get(test.Pages.clicksPage)
 
-          await driver.setPermission('clipboard-read', 'prompt')
-          assert.strictEqual(
-            await checkPermission(driver, 'clipboard-read'),
-            'prompt'
-          )
+        await driver.setPermission('clipboard-read', 'prompt')
+        assert.strictEqual(await checkPermission(driver, 'clipboard-read'), 'prompt')
 
-          await driver.setPermission('clipboard-read', 'granted')
-          assert.strictEqual(
-            await checkPermission(driver, 'clipboard-read'),
-            'granted'
-          )
+        await driver.setPermission('clipboard-read', 'granted')
+        assert.strictEqual(await checkPermission(driver, 'clipboard-read'), 'granted')
 
-          await driver.quit()
-        }
-      )
+        await driver.quit()
+      })
 
-      ignore(env.browsers(Browser.CHROME)).it(
-        'can set permission in headless mode',
-        async function () {
-          const driver = await env
-            .builder()
-            .setChromeOptions(new chrome.Options().headless())
-            .build()
+      ignore(env.browsers(Browser.CHROME)).it('can set permission in headless mode', async function () {
+        const driver = await env.builder().setChromeOptions(new chrome.Options().addArguments('-headless')).build()
 
-          await driver.get(test.Pages.clicksPage)
+        await driver.get(test.Pages.clicksPage)
 
-          await driver.setPermission('clipboard-read', 'prompt')
-          assert.strictEqual(
-            await checkPermission(driver, 'clipboard-read'),
-            'prompt'
-          )
+        await driver.setPermission('clipboard-read', 'prompt')
+        assert.strictEqual(await checkPermission(driver, 'clipboard-read'), 'prompt')
 
-          await driver.setPermission('clipboard-read', 'granted')
-          assert.strictEqual(
-            await checkPermission(driver, 'clipboard-read'),
-            'granted'
-          )
+        await driver.setPermission('clipboard-read', 'granted')
+        assert.strictEqual(await checkPermission(driver, 'clipboard-read'), 'granted')
 
-          await driver.quit()
-        }
-      )
+        await driver.quit()
+      })
     })
   },
-  { browsers: ['chrome'] }
+  { browsers: ['chrome'] },
 )
 
 const checkPermission = (driver, permission) => {
   return driver.executeAsyncScript((permission, callback) => {
-    // eslint-disable-next-line no-undef
-    navigator.permissions
-      .query({ name: permission })
-      .then((result) => callback(result.state))
+    // eslint-disable-next-line
+    navigator.permissions.query({ name: permission }).then((result) => callback(result.state))
   }, permission)
 }

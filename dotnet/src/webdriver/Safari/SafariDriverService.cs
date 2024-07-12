@@ -16,13 +16,14 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Safari
 {
@@ -33,7 +34,7 @@ namespace OpenQA.Selenium.Safari
     {
         private const string DefaultSafariDriverServiceExecutableName = "safaridriver";
 
-        private bool useLegacyProtocol;
+        private readonly static ILogger logger = Log.GetLogger<SafariDriverService>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriverService"/> class.
@@ -53,22 +54,6 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to use the default open-source project
-        /// dialect of the protocol instead of the default dialect compliant with the
-        /// W3C WebDriver Specification.
-        /// </summary>
-        /// <remarks>
-        /// This is only valid for versions of the driver for Safari that target Safari 12
-        /// or later, and will result in an error if used with prior versions of the driver.
-        /// </remarks>
-        [Obsolete("Only w3c protocol is currently supported")]
-        public bool UseLegacyProtocol
-        {
-            get { return this.useLegacyProtocol; }
-            set { this.useLegacyProtocol = value; }
-        }
-
-        /// <summary>
         /// Gets the command-line arguments for the driver service.
         /// </summary>
         protected override string CommandLineArguments
@@ -76,11 +61,6 @@ namespace OpenQA.Selenium.Safari
             get
             {
                 StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
-                if (this.useLegacyProtocol)
-                {
-                    argsBuilder.Append(" --legacy");
-                }
-
                 return argsBuilder.ToString();
             }
         }
@@ -150,7 +130,10 @@ namespace OpenQA.Selenium.Safari
                         // check.
                         catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
                         {
-                            Console.WriteLine(ex);
+                            if (logger.IsEnabled(LogEventLevel.Trace))
+                            {
+                                logger.Trace(ex.ToString());
+                            }
                         }
                     }
                 }
@@ -169,30 +152,24 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Creates a default instance of the SafariDriverService.
-        /// </summary>
-        /// <param name="options">Browser options used to find the correct GeckoDriver binary.</param>
-        /// <returns>A SafariDriverService that implements default settings.</returns>
-        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
-        public static SafariDriverService CreateDefaultService(SafariOptions options)
-        {
-            string fullServicePath = DriverFinder.FullPath(options);
-            return CreateDefaultService(Path.GetDirectoryName(fullServicePath), Path.GetFileName(fullServicePath));
-        }
-
-        /// <summary>
         /// Creates a default instance of the SafariDriverService using a specified path to the SafariDriver executable.
         /// </summary>
-        /// <param name="driverPath">The directory containing the SafariDriver executable.</param>
+        /// <param name="driverPath">The path to the executable or the directory containing the SafariDriver executable.</param>
         /// <returns>A SafariDriverService using a random port.</returns>
         public static SafariDriverService CreateDefaultService(string driverPath)
         {
+            string fileName;
             if (File.Exists(driverPath))
             {
+                fileName = Path.GetFileName(driverPath);
                 driverPath = Path.GetDirectoryName(driverPath);
             }
+            else
+            {
+                fileName = DefaultSafariDriverServiceExecutableName;
+            }
 
-            return CreateDefaultService(driverPath, DefaultSafariDriverServiceExecutableName);
+            return CreateDefaultService(driverPath, fileName);
         }
 
         /// <summary>

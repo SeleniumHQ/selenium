@@ -1,0 +1,16 @@
+module Selenium
+  module WebDriver
+    module Atoms
+      include _Bridge
+      include _ExecuteScript
+
+      def atom_script: (Symbol) -> String
+
+      private
+
+      def read_atom: (Symbol function) -> String
+
+      def execute_atom: (Symbol function_name, [Element | String | Symbol] arguments) -> [Element | Integer | Float | bool | nil | String | Array[untyped]]
+    end
+  end
+end

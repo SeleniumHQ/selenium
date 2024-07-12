@@ -19,8 +19,8 @@
 
 const test = require('../lib/test')
 const { Pages } = require('../lib/test')
-const { Browser } = require('../')
-const assert = require('assert')
+const { Browser } = require('selenium-webdriver')
+const assert = require('node:assert')
 
 let startIndex = 0
 let endIndex = 5
@@ -92,5 +92,5 @@ test.suite(
       assert.strictEqual(base64Code, pdfMagicNumber)
     })
   },
-  { browsers: [Browser.FIREFOX, Browser.CHROME] }
+  { browsers: [Browser.FIREFOX, Browser.CHROME] },
 )

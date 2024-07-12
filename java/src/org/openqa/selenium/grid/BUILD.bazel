@@ -127,7 +127,7 @@ java_export(
     ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
     opens_to = [
-        "org.openqa.selenium.json",
+        "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
     uses = [
@@ -215,7 +215,7 @@ java_dist_zip(
 javadoc(
     name = "all-javadocs",
     third_party_prefixes = [
-        "@maven//",
+        "@",
         "//third_party",
     ] + CDP_DEPS,
     transitive = True,

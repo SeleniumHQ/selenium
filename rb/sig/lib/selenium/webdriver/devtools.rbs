@@ -1,0 +1,30 @@
+module Selenium
+  module WebDriver
+    class DevTools
+      include _DefineMethod
+      include _Target
+
+      @ws: untyped
+
+      @session_id: untyped
+
+      def initialize: (url: untyped) -> void
+
+      def close: () -> nil
+
+      def callbacks: () -> untyped
+
+      def send_cmd: (untyped method, **untyped params) -> untyped
+
+      def method_missing: (untyped method, *untyped _args) -> untyped?
+
+      def respond_to_missing?: (untyped method, *untyped _args) -> untyped
+
+      private
+
+      def start_session: () -> untyped
+
+      def error_message: (Hash[untyped, untyped] error) -> String
+    end
+  end
+end

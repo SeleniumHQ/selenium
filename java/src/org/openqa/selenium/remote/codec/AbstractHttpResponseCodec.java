@@ -17,18 +17,14 @@
 
 package org.openqa.selenium.remote.codec;
 
-import static com.google.common.base.Strings.nullToEmpty;
-import static com.google.common.net.HttpHeaders.CACHE_CONTROL;
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static com.google.common.net.HttpHeaders.EXPIRES;
-import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.openqa.selenium.json.Json;
@@ -36,6 +32,7 @@ import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
+import org.openqa.selenium.remote.http.HttpHeader;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 /**
@@ -61,10 +58,10 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
 
     HttpResponse httpResponse = factory.get();
     httpResponse.setStatus(status);
-    httpResponse.setHeader(CACHE_CONTROL, "no-cache");
-    httpResponse.setHeader(EXPIRES, "Thu, 01 Jan 1970 00:00:00 GMT");
-    httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
-    httpResponse.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
+    httpResponse.setHeader(HttpHeader.CacheControl.getName(), "no-cache");
+    httpResponse.setHeader(HttpHeader.Expires.getName(), "Thu, 01 Jan 1970 00:00:00 GMT");
+    httpResponse.setHeader(HttpHeader.ContentLength.getName(), String.valueOf(data.length));
+    httpResponse.setHeader(HttpHeader.ContentType.getName(), JSON_UTF_8);
     httpResponse.setContent(bytes(data));
 
     return httpResponse;
@@ -74,7 +71,8 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
 
   @Override
   public Response decode(HttpResponse encodedResponse) {
-    String contentType = nullToEmpty(encodedResponse.getHeader(CONTENT_TYPE));
+    String contentType =
+        Objects.requireNonNullElse(encodedResponse.getHeader(HttpHeader.ContentType.getName()), "");
     String content = string(encodedResponse).trim();
     try {
       return reconstructValue(json.toType(content, Response.class));

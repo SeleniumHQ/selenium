@@ -1,0 +1,7 @@
+interface _Target
+  def target: () -> untyped
+
+  def getTarget: () -> Hash[untyped, untyped]
+
+  def attach_to_target: (Hash[untyped, untyped]) -> untyped
+end

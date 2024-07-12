@@ -15,6 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * Represents a primitive type.
+ * @enum
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-PrimitiveProtocolValue.
+ */
 const PrimitiveType = {
   UNDEFINED: 'undefined',
   NULL: 'null',
@@ -27,14 +32,17 @@ const PrimitiveType = {
   findByName(name) {
     return (
       Object.values(this).find((type) => {
-        return (
-          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
-        )
+        return typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
       }) || null
     )
   },
 }
 
+/**
+ * Represents a non-primitive type.
+ * @enum
+ * Described inhttps://w3c.github.io/webdriver-bidi/#type-script-RemoteValue.
+ */
 const NonPrimitiveType = {
   ARRAY: 'array',
   DATE: 'date',
@@ -42,18 +50,22 @@ const NonPrimitiveType = {
   OBJECT: 'object',
   REGULAR_EXPRESSION: 'regexp',
   SET: 'set',
+  CHANNEL: 'channel',
 
   findByName(name) {
     return (
       Object.values(this).find((type) => {
-        return (
-          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
-        )
+        return typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
       }) || null
     )
   },
 }
 
+/**
+ * Represents a remote value type.
+ * @enum
+ * Described inhttps://w3c.github.io/webdriver-bidi/#type-script-RemoteValue.
+ */
 const RemoteType = {
   SYMBOL: 'symbol',
   FUNCTION: 'function',
@@ -74,14 +86,17 @@ const RemoteType = {
   findByName(name) {
     return (
       Object.values(this).find((type) => {
-        return (
-          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
-        )
+        return typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
       }) || null
     )
   },
 }
 
+/**
+ * Represents a speacial number type.
+ * @enum
+ * Described in https://w3c.github.io/webdriver-bidi/#type-script-PrimitiveProtocolValue.
+ */
 const SpecialNumberType = {
   NAN: 'NaN',
   MINUS_ZERO: '-0',

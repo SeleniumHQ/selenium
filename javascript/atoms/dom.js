@@ -24,7 +24,7 @@ goog.provide('bot.dom');
 goog.require('bot');
 goog.require('bot.color');
 goog.require('bot.dom.core');
-goog.require('bot.locators.xpath');
+goog.require('bot.locators.css');
 goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
@@ -587,7 +587,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     var parent = bot.dom.getParentNodeInComposedDom(e);
 
     if (bot.dom.IS_SHADOW_DOM_ENABLED && (parent instanceof ShadowRoot)) {
-      if (parent.host.shadowRoot !== parent) {
+      if (parent.host.shadowRoot && parent.host.shadowRoot !== parent) {
         // There is a younger shadow root, which will take precedence over
         // the shadow this element is in, thus this element won't be
         // displayed.
@@ -878,15 +878,12 @@ bot.dom.maybeFindImageMap_ = function(elem) {
   if (map && map.name) {
     var mapDoc = goog.dom.getOwnerDocument(map);
 
-    // The "//*" XPath syntax can confuse the closure compiler, so we use
-    // the "/descendant::*" syntax instead.
-    // TODO: Try to find a reproducible case for the compiler bug.
     // TODO: Restrict to applet, img, input:image, and object nodes.
-    var imageXpath = '/descendant::*[@usemap = "#' + map.name + '"]';
+    var locator = '*[usemap="#' + map.name + '"]';
 
     // TODO: Break dependency of bot.locators on bot.dom,
     // so bot.locators.findElement can be called here instead.
-    image = bot.locators.xpath.single(imageXpath, mapDoc);
+    image = bot.locators.css.single(locator, mapDoc);
 
     if (image) {
       rect = bot.dom.getClientRect(image);
@@ -1176,7 +1173,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
 
   if (textTransform == 'capitalize') {
     // the unicode regex ending with /gu does not work in IE
-    var re = goog.userAgent.IE ? /(^|\s|\b)(\S)/g : /(^|[^\d\p{L}\p{S}])([\p{Ll}|\p{S}])/gu;
+    var re = goog.userAgent.IE ? /(^|\s|\b)(\S)/g : /(^|\s|\b)(\S)/gu;
     text = text.replace(re, function() {
       return arguments[1] + arguments[2].toUpperCase();
     });
@@ -1325,7 +1322,9 @@ bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
         } else {
           shadowChildren = contentElem.assignedNodes();
         }
-        goog.array.forEach(shadowChildren, function(node) {
+        const childrenToTraverse =
+          shadowChildren.length > 0 ? shadowChildren : contentElem.childNodes;
+        goog.array.forEach(childrenToTraverse, function (node) {
           bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
               node, lines, shown, whitespace, textTransform);
         });

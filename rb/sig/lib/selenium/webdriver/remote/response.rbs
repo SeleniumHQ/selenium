@@ -1,0 +1,31 @@
+module Selenium
+  module WebDriver
+    module Remote
+      class Response
+        @code: String
+
+        @payload: Hash[untyped, untyped]
+
+        attr_reader code: String
+
+        attr_reader payload: Hash[untyped, untyped]
+
+        def initialize: (String code, ?Hash[untyped, untyped]? payload) -> void
+
+        def error: () -> (nil | untyped)
+
+        def []: (untyped key) -> untyped
+
+        private
+
+        def assert_ok: () -> (nil | untyped)
+
+        def add_backtrace: (untyped ex, untyped server_trace) -> (nil | untyped)
+
+        def backtrace_from_remote: (untyped server_trace) -> String
+
+        def process_error: () -> (nil | untyped)
+      end
+    end
+  end
+end

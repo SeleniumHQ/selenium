@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    class TargetLocator
+      def initialize: (untyped bridge) -> void
+
+      def frame: (String id) -> void
+
+      def parent_frame: () -> void
+
+      def new_window: (Symbol type) { (untyped) -> untyped } -> untyped
+
+      def window: (Integer id) ?{ () -> untyped } -> untyped
+
+      def active_element: () -> Element
+
+      def default_content: () -> void
+
+      def alert: () -> void
+    end
+  end
+end

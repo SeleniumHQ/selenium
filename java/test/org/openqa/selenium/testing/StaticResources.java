@@ -28,7 +28,7 @@ import org.openqa.selenium.build.BazelBuild;
 import org.openqa.selenium.build.InProject;
 
 class StaticResources {
-  private static Logger LOG = Logger.getLogger(StaticResources.class.getName());
+  private static final Logger LOG = Logger.getLogger(StaticResources.class.getName());
 
   static void ensureAvailable() {
     if (!isInDevMode()) {

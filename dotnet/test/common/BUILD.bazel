@@ -4,7 +4,7 @@ filegroup(
     name = "assembly-fixtures",
     testonly = True,
     srcs = [
-        "AssemblyTeardown.cs",
+        "AssemblyFixture.cs",
     ],
     visibility = [
         "//dotnet/test:__subpackages__",
@@ -18,6 +18,9 @@ filegroup(
     data = [
         "appconfig.json",
         "//common/src/web",
+        "//dotnet/src/webdriver:manager-linux",
+        "//dotnet/src/webdriver:manager-macos",
+        "//dotnet/src/webdriver:manager-windows",
         "//java/test/org/openqa/selenium/environment:appserver",
         "//java/test/org/openqa/selenium/environment:keystore",
         "//javascript/atoms",
@@ -39,10 +42,10 @@ csharp_library(
             "**/*Tests.cs",
         ],
     ),
-    private_deps = [
-        framework("nuget", "NETStandard.Library"),
+    data = [
+        "//common/manager:selenium-manager-macos",
     ],
-    target_frameworks = ["netstandard2.0"],
+    target_frameworks = ["net7.0"],
     visibility = [
         "//dotnet/test:__subpackages__",
     ],
@@ -54,6 +57,12 @@ csharp_library(
     ],
 )
 
+# copy_file(
+#     name = "manager-macos",
+#     src = "//common/manager:selenium-manager-macos",
+#     out = "manager/macos/selenium-manager",
+# )
+
 dotnet_nunit_test_suite(
     name = "AllTests",
     size = "large",
@@ -63,6 +72,7 @@ dotnet_nunit_test_suite(
     ]) + [
         ":assembly-fixtures",
     ],
+    out = "WebDriver.Common.Tests",
     browsers = [
         # The first browser in this list is assumed to be the one that should
         # be used by default.
@@ -74,9 +84,6 @@ dotnet_nunit_test_suite(
     ],
     data = [
         ":test-data",
-    ],
-    private_deps = [
-        framework("nuget", "NETStandard.Library"),
     ],
     target_frameworks = ["net7.0"],
     deps = [

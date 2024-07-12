@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasContext
+        def context=: (untyped value) -> untyped
+
+        def context: () -> untyped
+      end
+    end
+  end
+end

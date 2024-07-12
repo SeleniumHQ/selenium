@@ -1,3 +1,103 @@
+v4.22.0
+======
+
+* Have url property setter call navigation method instead of the other way around (#13960)
+* Add asynchronous methods to Navigation class (#14051)
+* Add preference to enable CDP in Firefox by default (#14091)
+* Add CDP for Chrome 126 and remove 123
+
+v4.21.0
+======
+
+* Add CDP for Chrome 125 and remove 122
+* Overwrite internal log file if it already exists (#13900)
+* Align binary location property for FirefoxOptions with other options (#13901)
+
+v4.20.0
+======
+
+* Add CDP for Chrome 124 and remove 121
+* Use correct devtools session id after reinitialization (#13768)
+* Making Selenium Manager a thin wrapper (#13833)
+  * This change has been made to make it easier to maintain and improve, the interface has
+  changed and if users were invoking it, they might experience issues. Selenium Manager is
+  still in beta and these type of changes are expected.
+* Nightly dotnet builds are now pushed to GitHub packages
+
+v4.19.0
+======
+
+* Add CDP for Chrome 123 and remove 120
+* Correct `ChromiumDriverService.AllowedIPAddresses` property name (#13626)
+* Fixed parsing of the year in ConsoleApiCalledEventArgs cdp event args (Fixes #13654)
+* Add dispose on constructor failure to ensure driver closes (#13673)
+* Rename assembly prerequisites to AssemblyFixture
+* Support setting timeouts in capabilities (#13698)
+* Treat unsuccessful http responses as errored commands (#13608)
+* Enable internal logging at trace level for unit tests (#13727)
+
+v4.18.1
+======
+
+* Add CDP for Chrome 122 and remove 119
+
+v4.18.0
+======
+
+* update parameter name to allowedIpAddresses and make whitelistedIpAddresses obsolete
+* remove download url parameter from driver service constructor
+* mark UseVerboseLogging obsolete for Edge service in favor of EnableVerboseLogging
+* explicitly support passing the full path to driver in Service constructor
+* Fix protocol cdp version for remote webdriver (#13507)
+* Move initialization of error codes to static ctor
+* Add DetachedShadowRoot exception for error response handling
+* Add InsecureCertificate exception for error response handling
+* Fix network response data encoding (#13576)
+* Breaking change: `desiredCapabilities` was renamed to `capabilities` in RemoteWebDriver ctor
+
+v4.17.0
+======
+
+* Add csharp to Selenium Manager input for tracking (see #13288)
+* Consider log handlers as null when not initiated
+* Lazy initialization of log handlers when required
+* Specify the dll as nuget content explicitly (#13332)
+* Extract downloadable zip file in memory (#13277)
+* Update references from desiredCapabilities to capabilities
+* Don't output to user's console, rather use logging (Fixes #13410)
+* Add function to enable halting targets until runtime.runIfWaitingForDebugger is invoked (#13330)
+* Properly get selenium manager from bazel output (#13452)
+* Remove deprecated DriverService constructors with options parameter
+* Remove deprecated methods for toggling legacy protocol
+* Remove deprecated class RemoteWebElement
+* Improve logging performance when it is disabled (#13464)
+* Add CDP for Chrome 121 and remove 118
+
+v4.16.2
+======
+
+* Allow output ofinternal log messages to file (#13249)
+* Change a list of downloadable files to IReadOnlyList (#13265)
+* Change date format for file log
+* Improve file logging code smell (#13249)
+
+v4.16.1
+======
+
+* Fix nuget target framework (#13253)
+
+v4.16.0
+======
+
+* Update rules_dotnet  (#13117)
+* Fix WSS scheme determination for DevTools connection (#13131)
+* Remove System.Drawing.Common as package dependency (#12781)
+* Add Runfiles support to bazel
+* Added TargetAttached datastructure to DevTools Target (#13175)
+* Allow overriding default Actions duration (#13229)
+* Add internal logging (#13140)
+* Add Chrome 120 and remove 117
+
 v4.15.0
 ======
 

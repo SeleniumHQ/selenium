@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Alert;
@@ -166,10 +167,17 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
 
   private final List<WebDriverListener> listeners;
 
+  /**
+   * @param listeners the listeners to notify about events happening in the decorated WebDriver
+   */
   public EventFiringDecorator(WebDriverListener... listeners) {
     this.listeners = Arrays.asList(listeners);
   }
 
+  /**
+   * @param targetClass the class of the WebDriver to be decorated
+   * @param listeners the listeners to notify about events happening in the decorated WebDriver
+   */
   public EventFiringDecorator(Class<T> targetClass, WebDriverListener... listeners) {
     super(targetClass);
     this.listeners = Arrays.asList(listeners);
@@ -223,6 +231,9 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
         listener.beforeAnyOptionsCall((WebDriver.Options) target.getOriginal(), method, args);
       } else if (target.getOriginal() instanceof WebDriver.Timeouts) {
         listener.beforeAnyTimeoutsCall((WebDriver.Timeouts) target.getOriginal(), method, args);
+      } else if (target.getOriginal() instanceof WebDriver.TargetLocator) {
+        listener.beforeAnyTargetLocatorCall(
+            (WebDriver.TargetLocator) target.getOriginal(), method, args);
       } else if (target.getOriginal() instanceof WebDriver.Window) {
         listener.beforeAnyWindowCall((WebDriver.Window) target.getOriginal(), method, args);
       }
@@ -235,14 +246,10 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
     int argsLength = args != null ? args.length : 0;
     Object[] args2 = new Object[argsLength + 1];
     args2[0] = target.getOriginal();
-    for (int i = 0; i < argsLength; i++) {
-      args2[i + 1] = args[i];
-    }
+    if (args != null) System.arraycopy(args, 0, args2, 1, argsLength);
 
     Method m = findMatchingMethod(listener, methodName, args2);
-    if (m != null) {
-      callListenerMethod(m, listener, args2);
-    }
+    if (m != null) callListenerMethod(m, listener, args2);
   }
 
   private void fireAfterEvents(
@@ -251,20 +258,15 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
 
     boolean isVoid =
         method.getReturnType() == Void.TYPE || method.getReturnType() == WebDriver.Timeouts.class;
+
     int argsLength = args != null ? args.length : 0;
     Object[] args2 = new Object[argsLength + 1 + (isVoid ? 0 : 1)];
     args2[0] = target.getOriginal();
-    for (int i = 0; i < argsLength; i++) {
-      args2[i + 1] = args[i];
-    }
-    if (!isVoid) {
-      args2[args2.length - 1] = res;
-    }
+    if (args != null) System.arraycopy(Objects.requireNonNull(args), 0, args2, 1, argsLength);
+    if (!isVoid) args2[args2.length - 1] = res;
 
     Method m = findMatchingMethod(listener, methodName, args2);
-    if (m != null) {
-      callListenerMethod(m, listener, args2);
-    }
+    if (m != null) callListenerMethod(m, listener, args2);
 
     try {
       if (target.getOriginal() instanceof WebDriver) {
@@ -280,6 +282,9 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
         listener.afterAnyOptionsCall((WebDriver.Options) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Timeouts) {
         listener.afterAnyTimeoutsCall((WebDriver.Timeouts) target.getOriginal(), method, args, res);
+      } else if (target.getOriginal() instanceof WebDriver.TargetLocator) {
+        listener.afterAnyTargetLocatorCall(
+            (WebDriver.TargetLocator) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Window) {
         listener.afterAnyWindowCall((WebDriver.Window) target.getOriginal(), method, args, res);
       }

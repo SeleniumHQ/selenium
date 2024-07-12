@@ -1,0 +1,16 @@
+module Selenium
+  module WebDriver
+    module Chrome
+      module Features
+        include WebDriver::Chromium::Features
+
+        CHROME_COMMANDS: Hash[Symbol, Array[Symbol | String]]
+        COMMANDS: Hash[Symbol, Array[Symbol | String]]
+
+        def command_list: -> Hash[Symbol, Array[Symbol | String]]
+
+        def commands: (Symbol command) -> Array[Symbol | String]
+      end
+    end
+  end
+end

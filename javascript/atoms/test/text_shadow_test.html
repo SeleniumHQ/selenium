@@ -32,45 +32,96 @@ limitations under the License.
     var findElement = bot.locators.findElement;
     var getText = bot.dom.getVisibleText;
 
-    customElements.define('custom-shadow-element',
+    customElements.define('open-shadow-element',
       class extends HTMLElement {
         constructor() {
-          {
-            super();
-            this.attachShadow({ mode: 'open' });
-          }
+          super();
+          this.attachShadow({ mode: 'open' });
         }
-      });
-    function setCustomElement(html) {
-      document.querySelector("custom-shadow-element").shadowRoot.innerHTML = html;
+      }
+    );
+
+    customElements.define('closed-shadow-element',
+      class extends HTMLElement {
+        constructor() {
+          super();
+          this._shadowRoot = this.attachShadow({ mode: 'closed' });
+        }
+      }
+    );
+
+    function setCustomElement(html, type='open') {
+      if (type == 'closed') {
+        document.querySelector(`closed-shadow-element`)._shadowRoot.innerHTML = html;
+      } else {
+        document.querySelector(`open-shadow-element`).shadowRoot.innerHTML = html;
+      }
     }
 
     function tearDown() {
-      let elem = document.querySelector("custom-shadow-element");
-      elem.shadowRoot.innerHTML = "";
+      let open = document.querySelector('open-shadow-element');
+      let closed = document.querySelector('closed-shadow-element');
 
+      open.shadowRoot.innerHTML = '';
+      closed._shadowRoot.innerHTML = '';
     }
 
     function testTextInShadowDOM() {
-      setCustomElement("<div><a href=# id=linkText>full link text</a></div>")
-      let elem = findElement({ tagName: "custom-shadow-element" });
-      let text = getText(elem);
-      assertEquals(text, "full link text");
+      setCustomElement('<div><a href=# id=linkText>full link text</a></div>');
+
+      let customEl = findElement({ tagName: 'open-shadow-element' });
+      let text = getText(customEl);
+      assertEquals('full link text', text);
+    }
+
+    function testTextForSlotValueInShadowDOM() {
+      setCustomElement('<slot><span>full</span></slot>');
+
+      let customEl = findElement({ id: 'custom-text' });
+      let text = getText(customEl);
+      assertEquals('custom', text);
+    }
+
+    function testTextForSlotAndExtraValueInShadowDOM() {
+      setCustomElement('<slot><span>full</span></slot> text');
+
+      let customEl = findElement({ id: 'custom-text' });
+      let text = getText(customEl);
+      assertEquals('custom text', text);
+    }
+
+    function testTextForDefaultSlotValueInShadowDOM() {
+      setCustomElement('<slot><span>full</span></slot> text');
+
+      let customEl = findElement({ tagName: 'open-shadow-element' });
+      let text = getText(customEl);
+      assertEquals('full text', text);
     }
 
     function testHiddenTextInShadowDOM() {
-      setCustomElement("<div><a href=# id=linkText>full <div style='display:none'>link</div> text</a></div>")
-      let elem = findElement({ tagName: "custom-shadow-element" });
-      let text = getText(elem);
-      assertEquals(text, "full text");
+      setCustomElement(
+        '<div><a href=# id=linkText>full <div style="display:none">link</div> text</a></div>'
+      );
+
+      let customEl = findElement({ tagName: 'open-shadow-element' });
+      let text = getText(customEl);
+      assertEquals('full text', text);
     }
 
+    function testTextForElementWithinClosedShadowDOM() {
+      setCustomElement('<a href=# id=linkText>full link text</a>', 'closed');
+      let customEl = findElement({ tagName: 'closed-shadow-element' });
+      let innerEl = findElement({ css: 'a' }, customEl._shadowRoot);
+      let text = getText(innerEl);
+      assertEquals('full link text', text);
+    }
   </script>
-
 </head>
 
 <body>
-  <custom-shadow-element></custom-shadow-element>
+  <open-shadow-element></open-shadow-element>
+  <open-shadow-element id="custom-text">custom</open-shadow-element>
+  <closed-shadow-element></closed-shadow-element>
 </body>
 
 </html>

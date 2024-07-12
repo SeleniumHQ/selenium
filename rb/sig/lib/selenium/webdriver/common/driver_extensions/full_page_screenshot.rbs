@@ -1,0 +1,15 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module FullPageScreenshot
+        include _TakeScreenshot
+
+        def save_full_page_screenshot: (untyped path) -> untyped
+
+        private
+
+        def full_screenshot: () -> untyped
+      end
+    end
+  end
+end

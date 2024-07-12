@@ -34,10 +34,11 @@ import org.openqa.selenium.remote.http.Message;
 
 class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
 
-  private static AttributeKey<Consumer<Message>> KEY = AttributeKey.newInstance("se-ws-handler");
-  private HttpHandler seleniumHandler;
+  private static final AttributeKey<Consumer<Message>> KEY =
+      AttributeKey.newInstance("se-ws-handler");
+  private final HttpHandler seleniumHandler;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler;
-  private SslContext sslCtx;
+  private final SslContext sslCtx;
   private final boolean allowCors;
 
   SeleniumHttpInitializer(

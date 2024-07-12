@@ -17,11 +17,11 @@
 
 'use strict'
 
-const assert = require('assert'),
-  fs = require('fs'),
-  path = require('path')
+const assert = require('node:assert'),
+  fs = require('node:fs'),
+  path = require('node:path')
 
-const io = require('../../io')
+const io = require('selenium-webdriver/io')
 
 describe('io', function () {
   describe('copy', function () {
@@ -48,17 +48,12 @@ describe('io', function () {
       if (process.platform === 'win32') {
         return // No symlinks on windows.
       }
-      fs.symlinkSync(
-        path.join(tmpDir, 'foo'),
-        path.join(tmpDir, 'symlinked-foo')
-      )
+      fs.symlinkSync(path.join(tmpDir, 'foo'), path.join(tmpDir, 'symlinked-foo'))
       return io.tmpFile().then(function (f) {
-        return io
-          .copy(path.join(tmpDir, 'symlinked-foo'), f)
-          .then(function (p) {
-            assert.strictEqual(p, f)
-            assert.strictEqual('Hello, world', fs.readFileSync(p, 'utf-8'))
-          })
+        return io.copy(path.join(tmpDir, 'symlinked-foo'), f).then(function (p) {
+          assert.strictEqual(p, f)
+          assert.strictEqual('Hello, world', fs.readFileSync(p, 'utf-8'))
+        })
       })
     })
 
@@ -74,7 +69,7 @@ describe('io', function () {
           },
           function () {
             // Do nothing; expected.
-          }
+          },
         )
     })
   })
@@ -91,14 +86,8 @@ describe('io', function () {
           return io.copyDir(dir, dst).then(function (ret) {
             assert.strictEqual(dst, ret)
 
-            assert.strictEqual(
-              'hello',
-              fs.readFileSync(path.join(dst, 'file1'), 'utf-8')
-            )
-            assert.strictEqual(
-              'goodbye',
-              fs.readFileSync(path.join(dst, 'sub/folder/file2'), 'utf-8')
-            )
+            assert.strictEqual('hello', fs.readFileSync(path.join(dst, 'file1'), 'utf-8'))
+            assert.strictEqual('goodbye', fs.readFileSync(path.join(dst, 'sub/folder/file2'), 'utf-8'))
           })
         })
       })
@@ -115,10 +104,7 @@ describe('io', function () {
         })
         .then(function (p) {
           assert.strictEqual('sub', path.basename(p))
-          assert.strictEqual(
-            'hi',
-            fs.readFileSync(path.join(p, 'foo'), 'utf-8')
-          )
+          assert.strictEqual('hi', fs.readFileSync(path.join(p, 'foo'), 'utf-8'))
         })
     })
 
@@ -138,18 +124,9 @@ describe('io', function () {
           })
         })
         .then(function (dir) {
-          assert.strictEqual(
-            'a',
-            fs.readFileSync(path.join(dir, 'foo'), 'utf-8')
-          )
-          assert.strictEqual(
-            'c',
-            fs.readFileSync(path.join(dir, 'baz'), 'utf-8')
-          )
-          assert.strictEqual(
-            'e',
-            fs.readFileSync(path.join(dir, 'sub/quot'), 'utf-8')
-          )
+          assert.strictEqual('a', fs.readFileSync(path.join(dir, 'foo'), 'utf-8'))
+          assert.strictEqual('c', fs.readFileSync(path.join(dir, 'baz'), 'utf-8'))
+          assert.strictEqual('e', fs.readFileSync(path.join(dir, 'sub/quot'), 'utf-8'))
 
           assert.ok(!fs.existsSync(path.join(dir, 'bar')))
           assert.ok(!fs.existsSync(path.join(dir, 'sub/quux')))
@@ -169,25 +146,14 @@ describe('io', function () {
 
           return io.tmpDir().then(function (dst) {
             return io.copyDir(src, dst, function (f) {
-              return (
-                f !== path.join(src, 'foo') && f !== path.join(src, 'sub/quot')
-              )
+              return f !== path.join(src, 'foo') && f !== path.join(src, 'sub/quot')
             })
           })
         })
         .then(function (dir) {
-          assert.strictEqual(
-            'b',
-            fs.readFileSync(path.join(dir, 'bar'), 'utf-8')
-          )
-          assert.strictEqual(
-            'c',
-            fs.readFileSync(path.join(dir, 'baz'), 'utf-8')
-          )
-          assert.strictEqual(
-            'd',
-            fs.readFileSync(path.join(dir, 'sub/quux'), 'utf-8')
-          )
+          assert.strictEqual('b', fs.readFileSync(path.join(dir, 'bar'), 'utf-8'))
+          assert.strictEqual('c', fs.readFileSync(path.join(dir, 'baz'), 'utf-8'))
+          assert.strictEqual('d', fs.readFileSync(path.join(dir, 'sub/quux'), 'utf-8'))
 
           assert.ok(!fs.existsSync(path.join(dir, 'foo')))
           assert.ok(!fs.existsSync(path.join(dir, 'sub/quot')))
@@ -207,7 +173,7 @@ describe('io', function () {
     it('returns a rejected promise if input value is invalid', function () {
       return io.exists(undefined).then(
         () => assert.fail('should have failed'),
-        (e) => assert.ok(e instanceof TypeError)
+        (e) => assert.ok(e instanceof TypeError),
       )
     })
 
@@ -290,12 +256,10 @@ describe('io', function () {
 
     let dirs
     beforeEach(() => {
-      return Promise.all([io.tmpDir(), io.tmpDir(), io.tmpDir()]).then(
-        (arr) => {
-          dirs = arr
-          process.env['PATH'] = arr.join(path.delimiter)
-        }
-      )
+      return Promise.all([io.tmpDir(), io.tmpDir(), io.tmpDir()]).then((arr) => {
+        dirs = arr
+        process.env['PATH'] = arr.join(path.delimiter)
+      })
     })
 
     it('returns null if file cannot be found', () => {
@@ -359,14 +323,14 @@ describe('io', function () {
     it('catches errors from invalid input', function () {
       return io.read({}).then(
         () => assert.fail('should have failed'),
-        (e) => assert.ok(e instanceof TypeError)
+        (e) => assert.ok(e instanceof TypeError),
       )
     })
 
     it('rejects returned promise if file does not exist', function () {
       return io.read(path.join(tmpDir, 'not-there')).then(
         () => assert.fail('should have failed'),
-        (e) => assert.strictEqual('ENOENT', e.code)
+        (e) => assert.strictEqual('ENOENT', e.code),
       )
     })
   })
@@ -385,9 +349,7 @@ describe('io', function () {
     })
 
     it('does nothing if the directory already exists', function () {
-      return io
-        .tmpDir()
-        .then((dir) => io.mkdirp(dir).then((d) => assert.strictEqual(d, dir)))
+      return io.tmpDir().then((dir) => io.mkdirp(dir).then((d) => assert.strictEqual(d, dir)))
     })
   })
 

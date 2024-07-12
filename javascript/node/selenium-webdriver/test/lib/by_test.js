@@ -17,8 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const by = require('../../lib/by')
+const assert = require('node:assert')
+const by = require('selenium-webdriver/lib/by')
 
 describe('by', function () {
   describe('By', function () {
@@ -89,16 +89,12 @@ describe('by', function () {
 
   describe('RelativeBy', function () {
     it('marshalls the RelativeBy object', function () {
-      let relative = by
-        .locateWith(by.By.tagName('p'))
-        .above(by.By.name('foobar'))
+      let relative = by.locateWith(by.By.tagName('p')).above(by.By.name('foobar'))
 
       let expected = {
         relative: {
           root: { 'tag name': 'p' },
-          filters: [
-            { kind: 'above', args: [{ 'css selector': '*[name="foobar"]' }] },
-          ],
+          filters: [{ kind: 'above', args: [{ 'css selector': '*[name="foobar"]' }] }],
         },
       }
       assert.deepStrictEqual(relative.marshall(), expected)

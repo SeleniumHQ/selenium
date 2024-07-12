@@ -17,9 +17,8 @@
 
 'use strict'
 
-const assert = require('assert')
-const virtualAuthenticatorCredential =
-  require('../../lib/virtual_authenticator').Credential
+const assert = require('node:assert')
+const virtualAuthenticatorCredential = require('selenium-webdriver/lib/virtual_authenticator').Credential
 
 describe('Credentials', function () {
   const BASE64_ENCODED_PK = `MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbBOu5Lhs4vpowbCnmCyLUpIE7JM9sm9QXzye2G+jr+Kr
@@ -56,7 +55,7 @@ describe('Credentials', function () {
       rpId,
       userHandle,
       privateKey,
-      signCount
+      signCount,
     )
 
     let testCredentialId = new Uint8Array([1, 2, 3, 4])
@@ -70,7 +69,7 @@ describe('Credentials', function () {
       credential.id().length == testCredentialId.length &&
         credential.id().every((item) => testCredentialId.includes(item)) &&
         testCredentialId.every((item) => credential.id().includes(item)),
-      true
+      true,
     )
     if (credential.isResidentCredential() == true) {
       assert(true)
@@ -88,28 +87,17 @@ describe('Credentials', function () {
      */
     assert.equal(
       credential.userHandle().length == testUserHandle.length &&
-        credential
-          .userHandle()
-          .every((item) => testUserHandle.includes(item)) &&
+        credential.userHandle().every((item) => testUserHandle.includes(item)) &&
         testUserHandle.every((item) => credential.userHandle().includes(item)),
-      true
+      true,
     )
-    assert.equal(
-      credential.privateKey(),
-      Buffer.from(BASE64_ENCODED_PK, 'base64url').toString('binary')
-    )
+    assert.equal(credential.privateKey(), Buffer.from(BASE64_ENCODED_PK, 'base64url').toString('binary'))
     assert.equal(credential.signCount(), 0)
   })
 
   it('can testRkDisabledCredential', function () {
     const { _id, rpId, privateKey, signCount } = data
-    const credential =
-      virtualAuthenticatorCredential.createNonResidentCredential(
-        _id,
-        rpId,
-        privateKey,
-        signCount
-      )
+    const credential = virtualAuthenticatorCredential.createNonResidentCredential(_id, rpId, privateKey, signCount)
 
     let testCredentialId = new Uint8Array([1, 2, 3, 4])
 
@@ -122,7 +110,7 @@ describe('Credentials', function () {
       credential.id().length == testCredentialId.length &&
         credential.id().every((item) => testCredentialId.includes(item)) &&
         testCredentialId.every((item) => credential.id().includes(item)),
-      true
+      true,
     )
 
     if (credential.isResidentCredential() == false) {
@@ -145,14 +133,11 @@ describe('Credentials', function () {
       rpId,
       userHandle,
       privateKey,
-      signCount
+      signCount,
     )
 
     let credential_dict = credential.toDict()
-    assert.equal(
-      credential_dict['credentialId'],
-      Buffer.from(new Uint8Array([1, 2, 3, 4])).toString('base64url')
-    )
+    assert.equal(credential_dict['credentialId'], Buffer.from(new Uint8Array([1, 2, 3, 4])).toString('base64url'))
 
     if (credential_dict['isResidentCredential'] == true) {
       assert(true)
@@ -161,22 +146,14 @@ describe('Credentials', function () {
     }
 
     assert.equal(credential_dict['rpId'], 'localhost')
-    assert.equal(
-      credential_dict['userHandle'],
-      Buffer.from(new Uint8Array([1])).toString('base64url')
-    )
-    assert.equal(
-      credential_dict['privateKey'],
-      Buffer.from(privateKey, 'binary').toString('base64url')
-    )
+    assert.equal(credential_dict['userHandle'], Buffer.from(new Uint8Array([1])).toString('base64url'))
+    assert.equal(credential_dict['privateKey'], Buffer.from(privateKey, 'binary').toString('base64url'))
     assert.equal(credential_dict['signCount'], 0)
   })
 
   it('can testFromDict', function () {
     let credential_data = {
-      credentialId: Buffer.from(new Uint8Array([1, 2, 3, 4])).toString(
-        'base64url'
-      ),
+      credentialId: Buffer.from(new Uint8Array([1, 2, 3, 4])).toString('base64url'),
       isResidentCredential: true,
       rpId: 'localhost',
       userHandle: Buffer.from(new Uint8Array([1])).toString('base64url'),
@@ -184,15 +161,13 @@ describe('Credentials', function () {
       signCount: 0,
     }
 
-    let credential = new virtualAuthenticatorCredential().fromDict(
-      credential_data
-    )
+    let credential = new virtualAuthenticatorCredential().fromDict(credential_data)
     let testCredentialId = new Uint8Array([1, 2, 3, 4])
     assert.equal(
       credential.id().length == testCredentialId.length &&
         credential.id().every((item) => testCredentialId.includes(item)) &&
         testCredentialId.every((item) => credential.id().includes(item)),
-      true
+      true,
     )
 
     if (credential.isResidentCredential() == true) {
@@ -212,17 +187,12 @@ describe('Credentials', function () {
      */
     assert.equal(
       credential.userHandle().length == testUserHandle.length &&
-        credential
-          .userHandle()
-          .every((item) => testUserHandle.includes(item)) &&
+        credential.userHandle().every((item) => testUserHandle.includes(item)) &&
         testUserHandle.every((item) => credential.userHandle().includes(item)),
-      true
+      true,
     )
 
-    assert.equal(
-      credential.privateKey(),
-      Buffer.from(BASE64_ENCODED_PK, 'base64url').toString('binary')
-    )
+    assert.equal(credential.privateKey(), Buffer.from(BASE64_ENCODED_PK, 'base64url').toString('binary'))
     assert.equal(credential.signCount(), 0)
   })
 })

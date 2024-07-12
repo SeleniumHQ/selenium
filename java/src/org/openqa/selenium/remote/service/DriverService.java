@@ -21,7 +21,6 @@ import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -197,7 +196,7 @@ public class DriverService implements Closeable {
         if (getDefaultDriverOptions().getBrowserName().isEmpty()) {
           throw new WebDriverException("Driver executable is null and browser name is not set.");
         }
-        this.executable = DriverFinder.getPath(this, getDefaultDriverOptions()).getDriverPath();
+        this.executable = new DriverFinder(this, getDefaultDriverOptions()).getDriverPath();
       }
       LOG.fine(String.format("Starting driver at %s with %s", this.executable, this.args));
 
@@ -223,7 +222,6 @@ public class DriverService implements Closeable {
                       ? StartOrDie.PROCESS_DIED
                       : StartOrDie.PROCESS_IS_ACTIVE;
                 } catch (InterruptedException ex) {
-                  process.shutdown();
                   return null;
                 }
               },
@@ -247,6 +245,7 @@ public class DriverService implements Closeable {
             process = null;
             throw new WebDriverException("Driver server process died prematurely.");
           case PROCESS_IS_ACTIVE:
+            process.shutdown();
             throw new WebDriverException("Timed out waiting for driver server to bind the port.");
         }
       } catch (ExecutionException e) {
@@ -299,6 +298,11 @@ public class DriverService implements Closeable {
         try {
           URL killUrl = new URL(url.toString() + "/shutdown");
           new UrlChecker().waitUntilUnavailable(3, SECONDS, killUrl);
+          try {
+            process.waitFor(Duration.ofSeconds(10));
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          }
         } catch (MalformedURLException e) {
           toThrow = new WebDriverException(e);
         } catch (UrlChecker.TimeoutException e) {
@@ -415,7 +419,7 @@ public class DriverService implements Closeable {
      */
     @Beta
     public B withEnvironment(Map<String, String> environment) {
-      this.environment = ImmutableMap.copyOf(environment);
+      this.environment = Map.copyOf(environment);
       return (B) this;
     }
 

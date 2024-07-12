@@ -49,31 +49,20 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.drivers.Browser;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-class OverallGridTest {
+class OverallGridTest extends JupiterTestBase {
 
   private Server<?> server;
-  private WebDriver driver;
-  private WebDriver remoteWebDriver;
-  private Wait<WebDriver> wait;
 
   @BeforeEach
   public void setup() {
     server = createStandalone();
-
-    driver = new WebDriverBuilder().get();
-
-    wait = new WebDriverWait(driver, Duration.ofSeconds(10));
   }
 
   @AfterEach
   public void tearDown() {
-    safelyCall(() -> driver.quit());
-    safelyCall(() -> remoteWebDriver.quit());
     safelyCall(() -> server.stop());
   }
 
@@ -101,10 +90,15 @@ class OverallGridTest {
 
   @Test
   void shouldIncrementSessionCountWhenSessionStarts() {
-    remoteWebDriver = new RemoteWebDriver(server.getUrl(), Browser.detect().getCapabilities());
-    driver.get(whereIs(server, "/ui#/sessions"));
+    WebDriver remoteWebDriver =
+        new RemoteWebDriver(server.getUrl(), Browser.detect().getCapabilities());
+    try {
+      driver.get(whereIs(server, "/ui#/sessions"));
 
-    wait.until(textToBe(By.cssSelector("div[data-testid='session-count']"), "1"));
+      wait.until(textToBe(By.cssSelector("div[data-testid='session-count']"), "1"));
+    } finally {
+      remoteWebDriver.quit();
+    }
   }
 
   private Server<?> createStandalone() {

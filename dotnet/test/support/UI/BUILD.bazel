@@ -13,9 +13,6 @@ dotnet_nunit_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = SMALL_TESTS,
-    private_deps = [
-        framework("nuget", "NETStandard.Library"),
-    ],
     target_frameworks = ["net7.0"],
     deps = [
         "//dotnet/src/support",
@@ -43,9 +40,6 @@ dotnet_nunit_test_suite(
     ],
     data = [
         "//dotnet/test/common:test-data",
-    ],
-    private_deps = [
-        framework("nuget", "NETStandard.Library"),
     ],
     target_frameworks = ["net7.0"],
     deps = [

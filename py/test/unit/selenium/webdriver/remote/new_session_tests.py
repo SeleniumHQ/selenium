@@ -22,6 +22,7 @@ import pytest
 
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.options import ArgOptions
+from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.proxy import ProxyType
 from selenium.webdriver.remote import webdriver
@@ -51,7 +52,7 @@ def test_works_as_context_manager(mocker):
 
 
 @pytest.mark.parametrize("browser_name", ["firefox", "chrome", "ie"])
-def test_accepts_options_to_remote_driver(mocker, browser_name):
+def test_acepts_options_to_remote_driver(mocker, browser_name):
     options = import_module(f"selenium.webdriver.{browser_name}.options")
     mock = mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.start_session")
 
@@ -77,7 +78,7 @@ def test_always_match_if_2_of_the_same_options():
         "capabilities": {
             "alwaysMatch": {
                 "browserName": "chrome",
-                "pageLoadStrategy": "normal",
+                "pageLoadStrategy": PageLoadStrategy.normal,
             },
             "firstMatch": [
                 {"goog:chromeOptions": {"args": ["foo"], "extensions": []}},
@@ -95,14 +96,14 @@ def test_first_match_when_2_different_option_types():
 
     expected = {
         "capabilities": {
-            "alwaysMatch": {"pageLoadStrategy": "normal"},
+            "alwaysMatch": {"pageLoadStrategy": PageLoadStrategy.normal},
             "firstMatch": [
                 {"browserName": "chrome", "goog:chromeOptions": {"extensions": [], "args": []}},
                 {
                     "browserName": "firefox",
                     "acceptInsecureCerts": True,
                     "moz:debuggerAddress": True,
-                    "moz:firefoxOptions": {"args": ["foo"]},
+                    "moz:firefoxOptions": {"args": ["foo"], "prefs": {"remote.active-protocols": 3}},
                 },
             ],
         }

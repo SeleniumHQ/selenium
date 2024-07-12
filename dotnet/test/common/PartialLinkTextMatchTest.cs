@@ -50,7 +50,7 @@ namespace OpenQA.Selenium
             Assert.That(elements, Is.Not.Null);
             Assert.AreEqual(6, elements.Count);
         }
-        
+
         [Test]
         public void DriverCanGetLinkByLinkTestIgnoringTrailingWhitespace()
         {

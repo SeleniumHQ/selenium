@@ -29,12 +29,9 @@ public class BiDi implements Closeable {
 
   private final Duration timeout = Duration.ofSeconds(30);
   private final Connection connection;
-  private final BiDiSessionStatus status;
 
   public BiDi(Connection connection) {
     this.connection = Require.nonNull("WebSocket connection", connection);
-    this.status =
-        send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
   }
 
   @Override
@@ -54,7 +51,7 @@ public class BiDi implements Closeable {
     return connection.sendAndWait(command, timeout);
   }
 
-  public <X> void addListener(Event<X> event, Consumer<X> handler) {
+  public <X> long addListener(Event<X> event, Consumer<X> handler) {
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
 
@@ -62,10 +59,10 @@ public class BiDi implements Closeable {
         new Command<>(
             "session.subscribe", Map.of("events", Collections.singletonList(event.getMethod()))));
 
-    connection.addListener(event, handler);
+    return connection.addListener(event, handler);
   }
 
-  <X> void addListener(String browsingContextId, Event<X> event, Consumer<X> handler) {
+  public <X> void addListener(String browsingContextId, Event<X> event, Consumer<X> handler) {
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Browsing context id", browsingContextId);
     Require.nonNull("Handler to call", handler);
@@ -82,7 +79,7 @@ public class BiDi implements Closeable {
     connection.addListener(event, handler);
   }
 
-  <X> void addListener(Set<String> browsingContextIds, Event<X> event, Consumer<X> handler) {
+  public <X> long addListener(Set<String> browsingContextIds, Event<X> event, Consumer<X> handler) {
     Require.nonNull("List of browsing context ids", browsingContextIds);
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
@@ -96,7 +93,7 @@ public class BiDi implements Closeable {
                 "events",
                 Collections.singletonList(event.getMethod()))));
 
-    connection.addListener(event, handler);
+    return connection.addListener(event, handler);
   }
 
   public <X> void clearListener(Event<X> event) {
@@ -114,11 +111,15 @@ public class BiDi implements Closeable {
     }
   }
 
+  public void removeListener(long id) {
+    connection.removeListener(id);
+  }
+
   public void clearListeners() {
     connection.clearListeners();
   }
 
   public BiDiSessionStatus getBidiSessionStatus() {
-    return status;
+    return send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
   }
 }

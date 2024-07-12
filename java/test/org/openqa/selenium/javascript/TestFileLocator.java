@@ -72,13 +72,13 @@ class TestFileLocator {
     Path testDir;
     if (runfiles != null) {
       // Running with bazel.
-      testDir = runfiles.resolve("selenium").resolve(testDirName);
+      testDir = runfiles.resolve("_main").resolve(testDirName);
     } else {
       // Legacy.
       testDir = InProject.locate(testDirName);
     }
 
-    Require.state("Test directory", testDir.toFile()).isDirectory();
+    Require.state("Test directory", testDir).isDirectory();
 
     return testDir;
   }
@@ -101,7 +101,7 @@ class TestFileLocator {
         testFile
             .toAbsolutePath()
             .toString()
-            .replace(baseDir.toAbsolutePath().toString() + File.separator, "")
+            .replace(baseDir.toAbsolutePath() + File.separator, "")
             .replace(File.separator, "/");
     if (path.endsWith(".js")) {
       path = "common/generated/" + path;

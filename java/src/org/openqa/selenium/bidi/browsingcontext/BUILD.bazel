@@ -1,0 +1,26 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "browsingcontext",
+    srcs = glob(
+        [
+            "*.java",
+        ],
+    ),
+    visibility = [
+        "//java/src/org/openqa/selenium/bidi:__subpackages__",
+        "//java/src/org/openqa/selenium/firefox:__subpackages__",
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+        "//java/test/org/openqa/selenium/bidi:__subpackages__",
+        "//java/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/bidi",
+        "//java/src/org/openqa/selenium/bidi/script",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote/http",
+        artifact("com.google.auto.service:auto-service-annotations"),
+    ],
+)

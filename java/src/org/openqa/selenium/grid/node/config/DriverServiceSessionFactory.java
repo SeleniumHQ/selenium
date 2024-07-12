@@ -22,7 +22,6 @@ import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
@@ -34,6 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.openqa.selenium.Capabilities;
@@ -50,7 +50,6 @@ import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
@@ -131,12 +130,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), this.getClass().getName());
 
       DriverService service = builder.build();
-      if (service.getExecutable() == null) {
-        Result result = DriverFinder.getPath(service, capabilities);
-        service.setExecutable(result.getDriverPath());
-        if (result.getBrowserPath() != null && !result.getBrowserPath().isEmpty()) {
-          capabilities = setBrowserBinary(capabilities, result.getBrowserPath());
-        }
+      DriverFinder finder = new DriverFinder(service, capabilities);
+      service.setExecutable(finder.getDriverPath());
+      if (finder.hasBrowserPath()) {
+        capabilities = setBrowserBinary(capabilities, finder.getBrowserPath());
       }
 
       Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
@@ -188,7 +185,6 @@ public class DriverServiceSessionFactory implements SessionFactory {
         }
 
         caps = readDevToolsEndpointAndVersion(caps);
-        caps = readBiDiEndpoint(caps);
         caps = readVncEndpoint(capabilities, caps);
 
         span.addEvent("Driver service created session", attributeMap);
@@ -217,7 +213,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
             "Error while creating session with the driver service. "
                 + "Stopping driver service: "
                 + e.getMessage();
-        LOG.warning(errorMessage);
+        LOG.log(Level.WARNING, errorMessage, e);
 
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
@@ -230,12 +226,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
       EXCEPTION.accept(attributeMap, e);
       String errorMessage =
           "Error while creating session with the driver service. " + e.getMessage();
-      LOG.warning(errorMessage);
+      LOG.log(Level.WARNING, errorMessage, e);
 
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
-      return Either.left(new SessionNotCreatedException(e.getMessage()));
+      return Either.left(new SessionNotCreatedException(errorMessage));
     } finally {
       span.close();
     }
@@ -283,29 +279,6 @@ public class DriverServiceSessionFactory implements SessionFactory {
     return caps;
   }
 
-  private Capabilities readBiDiEndpoint(Capabilities caps) {
-
-    Optional<String> webSocketUrl =
-        Optional.ofNullable((String) caps.getCapability("webSocketUrl"));
-
-    Optional<URI> websocketUri =
-        webSocketUrl.map(
-            uri -> {
-              try {
-                return new URI(uri);
-              } catch (URISyntaxException e) {
-                LOG.warning(e.getMessage());
-              }
-              return null;
-            });
-
-    if (websocketUri.isPresent()) {
-      return new PersistentCapabilities(caps).setCapability("se:bidi", websocketUri.get());
-    }
-
-    return caps;
-  }
-
   private Capabilities readVncEndpoint(Capabilities requestedCaps, Capabilities returnedCaps) {
     String seVncEnabledCap = "se:vncEnabled";
     String seNoVncPortCap = "se:noVncPort";
@@ -326,9 +299,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
   // reject session requests when they cannot parse the specific capabilities (like platform or
   // browser version).
   private Capabilities removeCapability(Capabilities caps, String capability) {
-    MutableCapabilities noPlatformName = new MutableCapabilities(new HashMap<>(caps.asMap()));
-    noPlatformName.setCapability(capability, (String) null);
-    return new PersistentCapabilities(noPlatformName);
+    MutableCapabilities removableCaps = new MutableCapabilities(new HashMap<>(caps.asMap()));
+    removableCaps.setCapability(capability, (String) null);
+    return new PersistentCapabilities(removableCaps);
   }
 
   private Capabilities setInitialCapabilityValue(Capabilities caps, String key, Object value) {
@@ -353,13 +326,16 @@ public class DriverServiceSessionFactory implements SessionFactory {
           Map<String, Object> vendorOptions =
               (Map<String, Object>) options.getCapability(vendorOptionsCapability);
           vendorOptions.put("binary", browserPath);
-          return new PersistentCapabilities(options)
-              .setCapability(vendorOptionsCapability, vendorOptions);
+          MutableCapabilities toReturn = new MutableCapabilities(options);
+          toReturn.setCapability(vendorOptionsCapability, vendorOptions);
+          toReturn.setCapability("browserVersion", (String) null);
+          return new PersistentCapabilities(toReturn);
         } catch (Exception e) {
-          LOG.warning(
+          LOG.log(
+              Level.WARNING,
               String.format(
-                  "Exception while setting the browser binary path. %s: %s",
-                  options, e.getMessage()));
+                  "Exception while setting the browser binary path. Options: %s", options),
+              e);
         }
       }
     }

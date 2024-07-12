@@ -66,21 +66,29 @@ public class Connection implements Closeable {
             return thread;
           });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
-  private final WebSocket socket;
+  private final AtomicLong EVENT_CALLBACK_ID = new AtomicLong(1);
+  private WebSocket socket;
   private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks =
       new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
-  private final Map<Event<?>, List<Consumer<?>>> eventCallbacks = new HashMap<>();
+  private final Map<Event<?>, Map<Long, Consumer<?>>> eventCallbacks = new HashMap<>();
   private final HttpClient client;
-  private final AtomicBoolean underlyingSocketClosed;
+  private final AtomicBoolean underlyingSocketClosed = new AtomicBoolean();
 
   public Connection(HttpClient client, String url) {
     Require.nonNull("HTTP client", client);
     Require.nonNull("URL to connect to", url);
 
     this.client = client;
-    socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
-    underlyingSocketClosed = new AtomicBoolean();
+    // If WebDriver close() is called, it closes the session if it is the last browsing context.
+    // It also closes the WebSocket from the remote end.
+    // If WebDriver quit() is called, it also tries to close an already closed websocket and that
+    // causes errors.
+    // Ideally, such errors should not prevent freeing up resources.
+    // This measure is needed until "session.end" from BiDi is implemented by the browsers.
+    if (!underlyingSocketClosed.get()) {
+      socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
+    }
   }
 
   private static class NamedConsumer<X> implements Consumer<X> {
@@ -173,17 +181,20 @@ public class Connection implements Closeable {
     }
   }
 
-  public <X> void addListener(Event<X> event, Consumer<X> handler) {
+  public <X> long addListener(Event<X> event, Consumer<X> handler) {
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
+
+    long id = EVENT_CALLBACK_ID.getAndIncrement();
 
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      eventCallbacks.computeIfAbsent(event, (key) -> new ArrayList<>()).add(handler);
+      eventCallbacks.computeIfAbsent(event, key -> new HashMap<>()).put(id, handler);
     } finally {
       lock.unlock();
     }
+    return id;
   }
 
   public <X> void clearListener(Event<X> event) {
@@ -191,6 +202,25 @@ public class Connection implements Closeable {
     lock.lock();
     try {
       eventCallbacks.remove(event);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  public void removeListener(long id) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      List<Event<?>> list = new ArrayList<>();
+      eventCallbacks.forEach(
+          (k, v) -> {
+            v.remove(id);
+            if (v.isEmpty()) {
+              list.add(k);
+            }
+          });
+
+      list.forEach(eventCallbacks::remove);
     } finally {
       lock.unlock();
     }
@@ -230,7 +260,10 @@ public class Connection implements Closeable {
 
   @Override
   public void close() {
-    socket.close();
+    if (!underlyingSocketClosed.get()) {
+      underlyingSocketClosed.set(true);
+      socket.close();
+    }
     client.close();
   }
 
@@ -344,7 +377,7 @@ public class Connection implements Closeable {
 
                 final Object finalValue = value;
 
-                for (Consumer<?> action : event.getValue()) {
+                for (Consumer<?> action : event.getValue().values()) {
                   @SuppressWarnings("unchecked")
                   Consumer<Object> obj = (Consumer<Object>) action;
                   LOG.log(

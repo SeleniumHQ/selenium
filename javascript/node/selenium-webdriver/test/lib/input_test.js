@@ -17,11 +17,11 @@
 
 'use strict'
 
-const assert = require('assert')
-const command = require('../../lib/command')
-const error = require('../../lib/error')
-const input = require('../../lib/input')
-const { WebElement } = require('../../lib/webdriver')
+const assert = require('node:assert')
+const command = require('selenium-webdriver/lib/command')
+const error = require('selenium-webdriver/lib/error')
+const input = require('selenium-webdriver/lib/input')
+const { WebElement } = require('selenium-webdriver/lib/webdriver')
 
 describe('input.Actions', function () {
   class StubExecutor {
@@ -34,21 +34,13 @@ describe('input.Actions', function () {
       const name = command.getName()
       const parameters = command.getParameters()
       this.commands.push({ name, parameters })
-      return (
-        this.responses.shift() ||
-        Promise.reject(new Error('unexpected command: ' + command.getName()))
-      )
+      return this.responses.shift() || Promise.reject(new Error('unexpected command: ' + command.getName()))
     }
   }
 
   describe('perform()', function () {
     it('omits idle devices', async function () {
-      let executor = new StubExecutor(
-        Promise.resolve(),
-        Promise.resolve(),
-        Promise.resolve(),
-        Promise.resolve()
-      )
+      let executor = new StubExecutor(Promise.resolve(), Promise.resolve(), Promise.resolve(), Promise.resolve())
 
       await new input.Actions(executor).perform()
       assert.deepStrictEqual(executor.commands, [])
@@ -210,10 +202,7 @@ describe('input.Actions', function () {
       const executor = new StubExecutor(Promise.resolve())
       const actions = new input.Actions(executor)
 
-      await actions
-        .pause(100, actions.keyboard())
-        .pause(100, actions.mouse())
-        .perform()
+      await actions.pause(100, actions.keyboard()).pause(100, actions.mouse()).perform()
 
       assert.deepStrictEqual(executor.commands, [
         {
@@ -247,10 +236,7 @@ describe('input.Actions', function () {
       const executor = new StubExecutor(Promise.resolve())
       const actions = new input.Actions(executor, { async: true })
 
-      await actions
-        .pause(100, actions.keyboard())
-        .pause(100, actions.mouse())
-        .perform()
+      await actions.pause(100, actions.keyboard()).pause(100, actions.mouse()).perform()
 
       assert.deepStrictEqual(executor.commands, [
         {
@@ -324,10 +310,7 @@ describe('input.Actions', function () {
     it('rejects keys that are not a single code point', function () {
       const executor = new StubExecutor(Promise.resolve())
       const actions = new input.Actions(executor)
-      assert.throws(
-        () => actions.keyDown('\u1E9B\u0323'),
-        error.InvalidArgumentError
-      )
+      assert.throws(() => actions.keyDown('\u1E9B\u0323'), error.InvalidArgumentError)
     })
   })
 
@@ -355,10 +338,7 @@ describe('input.Actions', function () {
     it('rejects keys that are not a single code point', function () {
       const executor = new StubExecutor(Promise.resolve())
       const actions = new input.Actions(executor)
-      assert.throws(
-        () => actions.keyUp('\u1E9B\u0323'),
-        error.InvalidArgumentError
-      )
+      assert.throws(() => actions.keyUp('\u1E9B\u0323'), error.InvalidArgumentError)
     })
   })
 
@@ -842,30 +822,12 @@ describe('input.Actions', function () {
       const e = new WebElement(null, 'abc123')
 
       assert.throws(() => actions.dragAndDrop(e), error.InvalidArgumentError)
-      assert.throws(
-        () => actions.dragAndDrop(e, null),
-        error.InvalidArgumentError
-      )
-      assert.throws(
-        () => actions.dragAndDrop(e, {}),
-        error.InvalidArgumentError
-      )
-      assert.throws(
-        () => actions.dragAndDrop(e, { x: 0 }),
-        error.InvalidArgumentError
-      )
-      assert.throws(
-        () => actions.dragAndDrop(e, { y: 0 }),
-        error.InvalidArgumentError
-      )
-      assert.throws(
-        () => actions.dragAndDrop(e, { x: 0, y: 'a' }),
-        error.InvalidArgumentError
-      )
-      assert.throws(
-        () => actions.dragAndDrop(e, { x: 'a', y: 0 }),
-        error.InvalidArgumentError
-      )
+      assert.throws(() => actions.dragAndDrop(e, null), error.InvalidArgumentError)
+      assert.throws(() => actions.dragAndDrop(e, {}), error.InvalidArgumentError)
+      assert.throws(() => actions.dragAndDrop(e, { x: 0 }), error.InvalidArgumentError)
+      assert.throws(() => actions.dragAndDrop(e, { y: 0 }), error.InvalidArgumentError)
+      assert.throws(() => actions.dragAndDrop(e, { x: 0, y: 'a' }), error.InvalidArgumentError)
+      assert.throws(() => actions.dragAndDrop(e, { x: 'a', y: 0 }), error.InvalidArgumentError)
     })
   })
 })

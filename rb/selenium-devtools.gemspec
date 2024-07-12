@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 root = File.realpath(File.dirname(__FILE__))
-raise "cwd must be #{root} when reading gemspec" if root != Dir.pwd
-
 $LOAD_PATH.push(File.expand_path('lib', root))
 require 'selenium/devtools/version'
 

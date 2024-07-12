@@ -20,10 +20,12 @@ package org.openqa.selenium.remote;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
+import org.openqa.selenium.logging.LocalLogs;
+import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-public class TracedCommandExecutor implements CommandExecutor {
+public class TracedCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private final CommandExecutor delegate;
   private final Tracer tracer;
@@ -42,13 +44,20 @@ public class TracedCommandExecutor implements CommandExecutor {
       }
       commandSpan.setAttribute("command", command.getName());
       Map<String, ?> parameters = command.getParameters();
-      if (parameters != null && parameters.size() > 0) {
+      if (parameters != null && !parameters.isEmpty()) {
         for (Map.Entry<String, ?> parameter : parameters.entrySet()) {
           commandSpan.setAttribute(
               "parameter." + parameter.getKey(), Objects.toString(parameter.getValue(), "null"));
         }
       }
       return delegate.execute(command);
+    }
+  }
+
+  @Override
+  public void setLocalLogs(LocalLogs logs) {
+    if (delegate instanceof NeedsLocalLogs) {
+      ((NeedsLocalLogs) delegate).setLocalLogs(logs);
     }
   }
 }

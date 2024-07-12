@@ -17,13 +17,13 @@
 
 'use strict'
 
-const assert = require('assert')
-const fs = require('fs')
-const path = require('path')
+const assert = require('node:assert')
+const fs = require('node:fs')
+const path = require('node:path')
 
-const io = require('../../io')
-const zip = require('../../io/zip')
-const { InvalidArgumentError } = require('../../lib/error')
+const io = require('selenium-webdriver/io')
+const zip = require('selenium-webdriver/io/zip')
+const { InvalidArgumentError } = require('selenium-webdriver/lib/error')
 const { locate } = require('../../lib/test/resources')
 
 const XPI_PATH = locate('common/extensions/webextensions-selenium-example.xpi')
@@ -71,10 +71,7 @@ describe('io/zip', function () {
             .then((d) => {
               assertContents(path.join(d, 'foo'), 'a file')
               assertContents(path.join(d, 'a/b/c/carrot'), 'an orange carrot')
-              assertContents(
-                path.join(d, 'a/b/c/d/e/elephant'),
-                'e is for elephant'
-              )
+              assertContents(path.join(d, 'a/b/c/d/e/elephant'), 'e is for elephant')
             })
         })
     })
@@ -91,9 +88,7 @@ describe('io/zip', function () {
             assert.ok(z.has('foo'))
             return z.getFile('foo')
           })
-          .then((buffer) =>
-            assert.strictEqual(buffer.toString('utf8'), 'hello, world!')
-          )
+          .then((buffer) => assert.strictEqual(buffer.toString('utf8'), 'hello, world!'))
       })
 
       it('returns an error if file is not in archive', function () {
@@ -101,7 +96,7 @@ describe('io/zip', function () {
         assert.ok(!z.has('some-file'))
         return z.getFile('some-file').then(
           () => assert.fail('should have failed'),
-          (e) => assert.strictEqual(e.constructor, InvalidArgumentError)
+          (e) => assert.strictEqual(e.constructor, InvalidArgumentError),
         )
       })
 
@@ -115,7 +110,7 @@ describe('io/zip', function () {
           .then(() => z.getFile('foo'))
           .then(
             () => assert.fail('should have failed'),
-            (e) => assert.strictEqual(e.constructor, InvalidArgumentError)
+            (e) => assert.strictEqual(e.constructor, InvalidArgumentError),
           )
           .then(() => z.getFile('foo/aFile'))
           .then((b) => assert.strictEqual(b.toString('utf8'), 'hello, world!'))
@@ -128,10 +123,6 @@ describe('io/zip', function () {
   }
 
   function assertContents(p, c) {
-    assert.strictEqual(
-      fs.readFileSync(p, 'utf8'),
-      c,
-      `unexpected file contents for ${p}`
-    )
+    assert.strictEqual(fs.readFileSync(p, 'utf8'), c, `unexpected file contents for ${p}`)
   }
 })

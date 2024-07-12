@@ -1,7 +1,7 @@
-using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using System;
+using System.Collections.Generic;
 
 namespace OpenQA.Selenium
 {

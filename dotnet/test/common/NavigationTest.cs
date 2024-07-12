@@ -1,5 +1,6 @@
-using System;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium
 {
@@ -26,7 +27,7 @@ namespace OpenQA.Selenium
 
             driver.Url = macbethPage;
             driver.Url = simpleTestPage;
-            
+
             navigation.Back();
             Assert.AreEqual(macbethTitle, driver.Title);
 
@@ -40,7 +41,7 @@ namespace OpenQA.Selenium
             INavigation navigation;
             navigation = driver.Navigate();
             Assert.That(() => navigation.GoToUrl((Uri)null), Throws.InstanceOf<ArgumentNullException>());
-            // new Uri("") and new Uri("isidsji30342??éåµñ©æ") 
+            // new Uri("") and new Uri("isidsji30342??éåµñ©æ")
             // throw an exception, so we needn't worry about them.
         }
 
@@ -90,5 +91,73 @@ namespace OpenQA.Selenium
             Assert.AreEqual("What's for dinner?", changedDiv.Text);
         }
 
+        [Test]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
+        public Task ShouldNotHaveProblemNavigatingWithNoPagesBrowsedAsync()
+        {
+            var navigation = driver.Navigate();
+            Assert.DoesNotThrowAsync(async () => await navigation.BackAsync());
+            Assert.DoesNotThrowAsync(async () => await navigation.ForwardAsync());
+            return Task.CompletedTask;
+        }
+
+        [Test]
+        public async Task ShouldGoBackAndForwardAsync()
+        {
+            INavigation navigation = driver.Navigate();
+
+            await navigation.GoToUrlAsync(macbethPage);
+            await navigation.GoToUrlAsync(simpleTestPage);
+
+            await navigation.BackAsync();
+            Assert.AreEqual(macbethTitle, driver.Title);
+
+            await navigation.ForwardAsync();
+            Assert.AreEqual(simpleTestTitle, driver.Title);
+        }
+
+        [Test]
+        public void ShouldAcceptInvalidUrlsUsingUrisAsync()
+        {
+            INavigation navigation = driver.Navigate();
+            Assert.That(async () => await navigation.GoToUrlAsync((Uri)null), Throws.InstanceOf<ArgumentNullException>());
+        }
+
+        [Test]
+        public async Task ShouldGoToUrlUsingStringAsync()
+        {
+            var navigation = driver.Navigate();
+
+            await navigation.GoToUrlAsync(macbethPage);
+            Assert.AreEqual(macbethTitle, driver.Title);
+
+            await navigation.GoToUrlAsync(simpleTestPage);
+            Assert.AreEqual(simpleTestTitle, driver.Title);
+        }
+
+        [Test]
+        public void ShouldGoToUrlUsingUriAsync()
+        {
+            var navigation = driver.Navigate();
+
+            navigation.GoToUrlAsync(new Uri(macbethPage));
+            Assert.AreEqual(driver.Title, macbethTitle);
+            navigation.GoToUrl(new Uri(simpleTestPage));
+            Assert.AreEqual(simpleTestTitle, driver.Title);
+        }
+
+        [Test]
+        public async Task ShouldRefreshPageAsync()
+        {
+            await driver.Navigate().GoToUrlAsync(javascriptPage);
+            IWebElement changedDiv = driver.FindElement(By.Id("dynamo"));
+            driver.FindElement(By.Id("updatediv")).Click();
+
+            Assert.AreEqual("Fish and chips!", changedDiv.Text);
+            await driver.Navigate().RefreshAsync();
+
+            changedDiv = driver.FindElement(By.Id("dynamo"));
+            Assert.AreEqual("What's for dinner?", changedDiv.Text);
+        }
     }
 }

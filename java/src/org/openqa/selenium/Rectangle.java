@@ -17,14 +17,15 @@
 
 package org.openqa.selenium;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class Rectangle {
 
-  public int x;
-  public int y;
-  public int height;
-  public int width;
+  public final int x;
+  public final int y;
+  public final int height;
+  public final int width;
 
   public Rectangle(int x, int y, int height, int width) {
     this.x = x;
@@ -62,6 +63,10 @@ public class Rectangle {
 
   public Dimension getDimension() {
     return new Dimension(width, height);
+  }
+
+  private Map<String, Object> toJson() {
+    return Map.of("width", width, "height", height, "x", x, "y", y);
   }
 
   @Override

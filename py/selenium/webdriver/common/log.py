@@ -81,7 +81,7 @@ class Log:
             yield event
 
         payload = json.loads(evnt.value.payload)
-        elements: list = self.driver.find_elements(By.CSS_SELECTOR, f"*[data-__webdriver_id={payload['target']}]")
+        elements: list = self.driver.find_elements(By.CSS_SELECTOR, f"*[data-__webdriver_id={payload['target']}")
         if not elements:
             elements.append(None)
         event["element"] = elements[0]
@@ -138,9 +138,6 @@ class Log:
         async with session.wait_for(self.devtools.runtime.ConsoleAPICalled) as messages:
             yield console
 
-        if event_type == Console.ERROR:
-            console["message"] = messages.value.args[0].value
-            console["level"] = messages.value.args[0].type_
-        if event_type == Console.ALL:
+        if event_type == Console.ALL or event_type.value == messages.value.type_:
             console["message"] = messages.value.args[0].value
             console["level"] = messages.value.args[0].type_

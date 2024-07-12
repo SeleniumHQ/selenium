@@ -1,10 +1,9 @@
+using Moq;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
 using System.Collections.ObjectModel;
-using OpenQA.Selenium.Internal;
-using Moq;
+using System.Text;
 
 namespace OpenQA.Selenium.Support.Events
 {
@@ -59,12 +58,15 @@ Navigated back
 Navigating forward
 Navigated forward
 ";
+            string normalizedExpectedLog = expectedLog.Replace("\r\n", "\n").Replace("\r", "\n");
             mockDriver.VerifySet(x => x.Url = "http://www.get.com", Times.Once);
             mockDriver.Verify(x => x.Navigate(), Times.Exactly(3));
-            mockNavigation.Verify(x => x.GoToUrl("http://www.navigate-to.com"), Times.Once);
-            mockNavigation.Verify(x => x.Back(), Times.Once);
-            mockNavigation.Verify(x => x.Forward(), Times.Once);
-            Assert.AreEqual(expectedLog, log.ToString());
+            mockNavigation.Verify(x => x.GoToUrlAsync("http://www.navigate-to.com"), Times.Once);
+            mockNavigation.Verify(x => x.BackAsync(), Times.Once);
+            mockNavigation.Verify(x => x.ForwardAsync(), Times.Once);
+
+            string normalizedActualLog =  log.ToString().Replace("\r\n", "\n").Replace("\r", "\n");
+            Assert.AreEqual(normalizedExpectedLog, normalizedActualLog);
         }
 
         [Test]
@@ -190,10 +192,10 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
             {
                 testedDriver.ExecuteScript("foo", element);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // This is the error we're trying to fix
-                throw e;
+                throw;
             }
         }
 

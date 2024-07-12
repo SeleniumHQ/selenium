@@ -43,9 +43,9 @@
 
 const by = require('./by')
 const error = require('./error')
-const webdriver = require('./webdriver'),
-  Condition = webdriver.Condition,
-  WebElementCondition = webdriver.WebElementCondition
+const webdriver = require('./webdriver')
+const Condition = webdriver.Condition
+const WebElementCondition = webdriver.WebElementCondition
 
 /**
  * Creates a condition that will wait until the input driver is able to switch
@@ -96,7 +96,7 @@ function ableToSwitchToFrame(frame) {
           if (!(e instanceof error.NoSuchFrameError)) {
             throw e
           }
-        }
+        },
       )
   }
 }
@@ -119,8 +119,7 @@ function alertIsPresent() {
             // XXX: Workaround for GeckoDriver error `TypeError: can't convert null
             // to object`. For more details, see
             // https://github.com/SeleniumHQ/selenium/pull/2137
-            (e instanceof error.WebDriverError &&
-              e.message === `can't convert null to object`)
+            (e instanceof error.WebDriverError && e.message === `can't convert null to object`)
           )
         ) {
           throw e
@@ -137,9 +136,7 @@ function alertIsPresent() {
  * @return {!Condition<boolean>} The new condition.
  */
 function titleIs(title) {
-  return new Condition('for title to be ' + JSON.stringify(title), function (
-    driver
-  ) {
+  return new Condition('for title to be ' + JSON.stringify(title), function (driver) {
     return driver.getTitle().then(function (t) {
       return t === title
     })
@@ -155,14 +152,11 @@ function titleIs(title) {
  * @return {!Condition<boolean>} The new condition.
  */
 function titleContains(substr) {
-  return new Condition(
-    'for title to contain ' + JSON.stringify(substr),
-    function (driver) {
-      return driver.getTitle().then(function (title) {
-        return title.indexOf(substr) !== -1
-      })
-    }
-  )
+  return new Condition('for title to contain ' + JSON.stringify(substr), function (driver) {
+    return driver.getTitle().then(function (title) {
+      return title.indexOf(substr) !== -1
+    })
+  })
 }
 
 /**
@@ -188,9 +182,7 @@ function titleMatches(regex) {
  * @return {!Condition<boolean>} The new condition.
  */
 function urlIs(url) {
-  return new Condition('for URL to be ' + JSON.stringify(url), function (
-    driver
-  ) {
+  return new Condition('for URL to be ' + JSON.stringify(url), function (driver) {
     return driver.getCurrentUrl().then(function (u) {
       return u === url
     })
@@ -206,14 +198,11 @@ function urlIs(url) {
  * @return {!Condition<boolean>} The new condition.
  */
 function urlContains(substrUrl) {
-  return new Condition(
-    'for URL to contain ' + JSON.stringify(substrUrl),
-    function (driver) {
-      return driver.getCurrentUrl().then(function (url) {
-        return url && url.includes(substrUrl)
-      })
-    }
-  )
+  return new Condition('for URL to contain ' + JSON.stringify(substrUrl), function (driver) {
+    return driver.getCurrentUrl().then(function (url) {
+      return url && url.includes(substrUrl)
+    })
+  })
 }
 
 /**
@@ -240,16 +229,12 @@ function urlMatches(regex) {
  */
 function elementLocated(locator) {
   locator = by.checkedLocator(locator)
-  let locatorStr =
-    typeof locator === 'function' ? 'by function()' : locator + ''
-  return new WebElementCondition(
-    'for element to be located ' + locatorStr,
-    function (driver) {
-      return driver.findElements(locator).then(function (elements) {
-        return elements[0]
-      })
-    }
-  )
+  let locatorStr = typeof locator === 'function' ? 'by function()' : locator + ''
+  return new WebElementCondition('for element to be located ' + locatorStr, function (driver) {
+    return driver.findElements(locator).then(function (elements) {
+      return elements[0]
+    })
+  })
 }
 
 /**
@@ -262,16 +247,12 @@ function elementLocated(locator) {
  */
 function elementsLocated(locator) {
   locator = by.checkedLocator(locator)
-  let locatorStr =
-    typeof locator === 'function' ? 'by function()' : locator + ''
-  return new Condition(
-    'for at least one element to be located ' + locatorStr,
-    function (driver) {
-      return driver.findElements(locator).then(function (elements) {
-        return elements.length > 0 ? elements : null
-      })
-    }
-  )
+  let locatorStr = typeof locator === 'function' ? 'by function()' : locator + ''
+  return new Condition('for at least one element to be located ' + locatorStr, function (driver) {
+    return driver.findElements(locator).then(function (elements) {
+      return elements.length > 0 ? elements : null
+    })
+  })
 }
 
 /**
@@ -293,7 +274,7 @@ function stalenessOf(element) {
           return true
         }
         throw e
-      }
+      },
     )
   })
 }
@@ -404,9 +385,7 @@ function elementTextIs(element, text) {
  */
 function elementTextContains(element, substr) {
   return new WebElementCondition('until element text contains', function () {
-    return element
-      .getText()
-      .then((t) => (t.indexOf(substr) != -1 ? element : null))
+    return element.getText().then((t) => (t.indexOf(substr) != -1 ? element : null))
   })
 }
 

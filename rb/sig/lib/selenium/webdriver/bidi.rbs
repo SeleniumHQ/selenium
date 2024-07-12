@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      @ws: WebSocketConnection
+
+      @session: Session
+
+      def initialize: (url: String) -> void
+
+      def close: () -> nil
+
+      def callbacks: () -> Hash[untyped, untyped]
+
+      def session: () -> Session
+
+      def send_cmd: (untyped method, **untyped params) -> untyped
+
+      def error_message: (Hash[String,String] message) -> String
+    end
+  end
+end

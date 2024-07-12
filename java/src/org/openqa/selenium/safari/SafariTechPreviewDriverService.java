@@ -35,6 +35,7 @@ import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 /** Manages the life and death of SafariDriver Technology Preview. */
@@ -96,9 +97,8 @@ public class SafariTechPreviewDriverService extends DriverService {
   /**
    * Configures and returns a new {@link SafariTechPreviewDriverService} using the default
    * configuration. In this configuration, the service will use the SafariDriver executable
-   * identified by the {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService,
-   * Capabilities)}. Each service created by this method will be configured to use a free port on
-   * the current system.
+   * identified by the {@link DriverFinder#getDriverPath()} (DriverService, Capabilities)}. Each
+   * service created by this method will be configured to use a free port on the current system.
    *
    * @return A new SafariTechPreviewDriverService using the default configuration.
    */

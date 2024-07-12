@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module Edge
+      @path: String?
+
+      def self.path=: (String path) -> String
+
+      def self.path: () -> String?
+    end
+  end
+end

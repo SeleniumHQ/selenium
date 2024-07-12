@@ -18,8 +18,8 @@
 'use strict'
 
 describe('error', function () {
-  let assert = require('assert')
-  let error = require('../../lib/error')
+  let assert = require('node:assert')
+  let error = require('selenium-webdriver/lib/error')
 
   describe('encodeError', function () {
     describe('defaults to an unknown error', function () {
@@ -82,7 +82,7 @@ describe('error', function () {
         (e) => {
           assert.strictEqual(e.constructor, error.WebDriverError)
           return true
-        }
+        },
       )
     })
 
@@ -92,7 +92,7 @@ describe('error', function () {
         (e) => {
           assert.strictEqual(e.constructor, error.WebDriverError)
           return true
-        }
+        },
       )
 
       assert.throws(
@@ -100,7 +100,7 @@ describe('error', function () {
         (e) => {
           assert.strictEqual(e.constructor, error.WebDriverError)
           return true
-        }
+        },
       )
 
       assert.throws(
@@ -108,7 +108,7 @@ describe('error', function () {
         (e) => {
           assert.strictEqual(e.constructor, error.WebDriverError)
           return true
-        }
+        },
       )
     })
 
@@ -152,7 +152,7 @@ describe('error', function () {
           assert.strictEqual(e.message, 'oops')
           assert.strictEqual(e.remoteStacktrace, '')
           return true
-        }
+        },
       )
     })
 
@@ -170,7 +170,7 @@ describe('error', function () {
             assert.strictEqual(e.message, 'oops')
             assert.strictEqual(e.remoteStacktrace, 'some-stacktrace')
             return true
-          }
+          },
         )
       })
     }
@@ -188,7 +188,7 @@ describe('error', function () {
             (e) => {
               assert.strictEqual(e.remoteStacktrace, 'some-stacktrace')
               return true
-            }
+            },
           )
         })
       }
@@ -247,7 +247,7 @@ describe('error', function () {
             assert.strictEqual(e.message, 'hi')
             assert.strictEqual(e.getAlertText(), 'alert text here')
             return true
-          }
+          },
         )
       })
 
@@ -265,7 +265,7 @@ describe('error', function () {
             assert.strictEqual(e.message, 'hi')
             assert.strictEqual(e.getAlertText(), '')
             return true
-          }
+          },
         )
       })
     })
@@ -280,7 +280,7 @@ describe('error', function () {
             assert.strictEqual(expectedType, e.constructor)
             assert.strictEqual(e.message, 'hi')
             return true
-          }
+          },
         )
       })
     }

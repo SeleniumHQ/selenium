@@ -17,10 +17,8 @@
 
 package org.openqa.selenium;
 
-/**
- * Thrown by {@link org.openqa.selenium.ContextAware#context(String)}
- * WebDriver.switchTo().context(String name)}.
- */
+/** Thrown by {@link org.openqa.selenium.ContextAware#context(String)}. */
+@Deprecated
 public class NoSuchContextException extends NotFoundException {
 
   public NoSuchContextException(String reason) {

@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      class TypingInteraction < Interaction
+        @type: untyped
+
+        @key: untyped
+
+        attr_reader type: untyped
+
+        def initialize: (untyped source, untyped type, untyped key) -> void
+
+        def assert_source: (untyped source) -> (untyped | nil)
+
+        def assert_type: (untyped type) -> untyped
+
+        def encode: () -> { type: untyped, value: untyped }
+      end
+    end
+  end
+end

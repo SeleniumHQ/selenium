@@ -54,7 +54,8 @@ class OsProcess {
   private final Executor executor = new DaemonExecutor();
 
   private volatile OutputStream drainTo;
-  private SeleniumWatchDog executeWatchdog = new SeleniumWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
+  private final SeleniumWatchDog executeWatchdog =
+      new SeleniumWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
   private PumpStreamHandler streamHandler;
 
   private final org.apache.commons.exec.CommandLine cl;

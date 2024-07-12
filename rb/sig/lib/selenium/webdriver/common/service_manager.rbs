@@ -1,0 +1,61 @@
+module Selenium
+  module WebDriver
+    class ServiceManager
+      @executable_path: untyped
+
+      @host: untyped
+
+      @port: untyped
+
+      @io: untyped
+
+      @extra_args: untyped
+
+      @shutdown_supported: untyped
+
+      @uri: untyped
+
+      @process: untyped
+
+      @socket_lock: untyped
+
+      START_TIMEOUT: Integer
+
+      SOCKET_LOCK_TIMEOUT: Integer
+
+      STOP_TIMEOUT: Integer
+
+      def initialize: (untyped config) -> void
+
+      def start: () -> untyped
+
+      def stop: () -> untyped
+
+      def uri: () -> untyped
+
+      private
+
+      def build_process: (*untyped command) -> untyped
+
+      def connect_to_server: () { (untyped) -> untyped } -> untyped
+
+      def find_free_port: () -> untyped
+
+      def start_process: () -> untyped
+
+      def stop_process: () -> (nil | untyped)
+
+      def stop_server: () -> untyped
+
+      def process_running?: () -> untyped
+
+      def process_exited?: () -> untyped
+
+      def connect_until_stable: () -> untyped?
+
+      def cannot_connect_error_text: () -> String
+
+      def socket_lock: () -> untyped
+    end
+  end
+end

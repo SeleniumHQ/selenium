@@ -1,5 +1,5 @@
-using System;
 using NUnit.Framework;
+using System;
 
 namespace OpenQA.Selenium
 {
@@ -56,10 +56,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldSwitchToFrameByNameAndBackToDefaultContent() 
+        public void ShouldSwitchToFrameByNameAndBackToDefaultContent()
         {
             driver.Url = framesPage;
-            
+
             driver.SwitchTo().Frame("first");
             Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "1");
 
@@ -93,7 +93,7 @@ namespace OpenQA.Selenium
         public void ShouldSwitchToFrameByIndexAndBackToDefaultContent()
         {
             driver.Url = framesPage;
-            
+
             driver.SwitchTo().Frame(0);
             Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "1");
 

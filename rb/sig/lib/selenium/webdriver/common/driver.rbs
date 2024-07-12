@@ -1,0 +1,79 @@
+module Selenium
+  module WebDriver
+    class Driver
+      include SearchContext
+
+      include TakesScreenshot
+
+      @devtools: untyped
+      @navigate: untyped
+
+      @script: untyped
+      @service_manager: untyped
+
+      def self.for: (untyped browser, Hash[untyped, untyped] opts) -> untyped
+
+      def initialize: (?bridge: Support::EventFiringBridge? bridge, ?listener: Support::AbstractEventListener? listener, **untyped opts) -> void
+
+      def inspect: () -> String
+
+      def status: () -> Hash[untyped, untyped]
+
+      def navigate: () -> Navigation
+
+      def switch_to: () -> TargetLocator
+
+      def manage: () -> Manager
+
+      def action: (**untyped opts) -> ActionBuilder
+
+      def get: (String url) -> untyped
+
+      def current_url: () -> String
+
+      def title: () -> String
+
+      def page_source: () -> String
+
+      def quit: () -> WebDriver::Remote::Response?
+
+      def close: () -> WebDriver::Remote::Response?
+
+      def window_handles: () -> Array[String]
+
+      def window_handle: () -> String
+
+      def execute_script: (String script, *untyped args) -> untyped
+
+      def execute_async_script: (String script, *untyped args) -> untyped
+
+      def add_virtual_authenticator: (untyped options) -> VirtualAuthenticator
+
+      alias first find_element
+
+      alias all find_elements
+
+      alias script execute_script
+
+      def []: (String | Hash[untyped, untyped] sel) -> Element
+
+      def browser: () -> Symbol
+
+      def capabilities: () -> untyped
+
+      def ref: () -> ::Array[:driver | nil]
+
+      private
+
+      attr_reader bridge: untyped
+
+      def create_bridge: (caps: untyped, url: untyped, ?http_client: untyped) -> untyped
+
+      def service_url: (untyped service) -> untyped
+
+      def screenshot: () -> untyped
+
+      def add_extensions: (String browser) -> void
+    end
+  end
+end

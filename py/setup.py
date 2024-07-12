@@ -19,6 +19,7 @@ from distutils.command.install import INSTALL_SCHEMES
 from os.path import dirname, join, abspath
 from setuptools import setup
 from setuptools.command.install import install
+from setuptools_rust import Binding, RustExtension
 
 
 for scheme in INSTALL_SCHEMES.values():
@@ -27,9 +28,9 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "4.15.0",
+    'version': "4.23.0.dev202406201609",
     'license': 'Apache 2.0',
-    'description': 'Python bindings for Selenium',
+    'description': 'Official Python bindings for Selenium WebDriver.',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
     'url': 'https://github.com/SeleniumHQ/selenium/',
     'project_urls': {
@@ -38,7 +39,7 @@ setup_args = {
         'Documentation': 'https://www.selenium.dev/documentation/overview/',
         'Source Code': 'https://github.com/SeleniumHQ/selenium/tree/trunk/py',
     },
-    'python_requires': '~=3.7',
+    'python_requires': '~=3.8',
     'classifiers': ['Development Status :: 5 - Production/Stable',
                     'Intended Audience :: Developers',
                     'License :: OSI Approved :: Apache Software License',
@@ -48,9 +49,12 @@ setup_args = {
                     'Topic :: Software Development :: Testing',
                     'Topic :: Software Development :: Libraries',
                     'Programming Language :: Python',
-                    'Programming Language :: Python :: 3.7',
                     'Programming Language :: Python :: 3.8',
-                    'Programming Language :: Python :: 3.9'],
+                    'Programming Language :: Python :: 3.9',
+                    'Programming Language :: Python :: 3.10',
+                    'Programming Language :: Python :: 3.11',
+                    'Programming Language :: Python :: 3.12',
+                    ],
     'package_dir': {
         'selenium': 'selenium',
         'selenium.common': 'selenium/common',
@@ -59,22 +63,32 @@ setup_args = {
     'packages': ['selenium',
                  'selenium.common',
                  'selenium.webdriver',
-                 'selenium.webdriver.chromium',
                  'selenium.webdriver.chrome',
+                 'selenium.webdriver.chromium',
                  'selenium.webdriver.common',
-                 'selenium.webdriver.common.html5',
-                 'selenium.webdriver.support',
+                 'selenium.webdriver.edge',
                  'selenium.webdriver.firefox',
                  'selenium.webdriver.ie',
-                 'selenium.webdriver.edge',
                  'selenium.webdriver.remote',
-                 'selenium.webdriver.support', ],
+                 'selenium.webdriver.safari',
+                 'selenium.webdriver.support',
+                 'selenium.webdriver.webkitgtk',
+                 'selenium.webdriver.wpewebkit',
+                 ],
     'include_package_data': True,
     'install_requires': [
         "urllib3[socks]>=1.26,<3",
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
+        "typing_extensions~= 4.9.0",
+        "websocket-client==1.8.0",
+    ],
+    'rust_extensions': [
+        RustExtension(
+            {"selenium-manager": "selenium.webdriver.common.selenium-manager"},
+            binding=Binding.Exec
+        )
     ],
     'zip_safe': False
 }

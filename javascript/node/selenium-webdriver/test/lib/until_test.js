@@ -17,14 +17,14 @@
 
 'use strict'
 
-const assert = require('assert')
+const assert = require('node:assert')
 
-const By = require('../../lib/by').By
-const CommandName = require('../../lib/command').Name
-const error = require('../../lib/error')
-const until = require('../../lib/until')
-const webdriver = require('../../lib/webdriver'),
-  WebElement = webdriver.WebElement
+const By = require('selenium-webdriver/lib/by').By
+const CommandName = require('selenium-webdriver/lib/command').Name
+const error = require('selenium-webdriver/lib/error')
+const until = require('selenium-webdriver/lib/until')
+const webdriver = require('selenium-webdriver/lib/webdriver')
+const WebElement = webdriver.WebElement
 
 describe('until', function () {
   let driver, executor
@@ -65,9 +65,7 @@ describe('until', function () {
       executor.on(CommandName.SWITCH_TO_FRAME, function () {
         throw e
       })
-      return driver
-        .wait(until.ableToSwitchToFrame(0), 100)
-        .then(fail, (e2) => assert.strictEqual(e2, e))
+      return driver.wait(until.ableToSwitchToFrame(0), 100).then(fail, (e2) => assert.strictEqual(e2, e))
     })
 
     const ELEMENT_ID = 'some-element-id'
@@ -77,18 +75,10 @@ describe('until', function () {
       if (typeof expectedId === 'string') {
         expectedId = WebElement.buildId(expectedId)
       } else {
-        assert.strictEqual(
-          typeof expectedId,
-          'number',
-          'must be string or number'
-        )
+        assert.strictEqual(typeof expectedId, 'number', 'must be string or number')
       }
       return (cmd) => {
-        assert.deepStrictEqual(
-          cmd.getParameter('id'),
-          expectedId,
-          'frame ID not specified'
-        )
+        assert.deepStrictEqual(cmd.getParameter('id'), expectedId, 'frame ID not specified')
         return true
       }
     }
@@ -107,17 +97,12 @@ describe('until', function () {
 
     it('byWebElementPromise', function () {
       executor.on(CommandName.SWITCH_TO_FRAME, onSwitchFrame(ELEMENT_ID))
-      var el = new webdriver.WebElementPromise(
-        driver,
-        Promise.resolve(new webdriver.WebElement(driver, ELEMENT_ID))
-      )
+      var el = new webdriver.WebElementPromise(driver, Promise.resolve(new webdriver.WebElement(driver, ELEMENT_ID)))
       return driver.wait(until.ableToSwitchToFrame(el), 100)
     })
 
     it('byLocator', function () {
-      executor.on(CommandName.FIND_ELEMENTS, () => [
-        WebElement.buildId(ELEMENT_ID),
-      ])
+      executor.on(CommandName.FIND_ELEMENTS, () => [WebElement.buildId(ELEMENT_ID)])
       executor.on(CommandName.SWITCH_TO_FRAME, onSwitchFrame(ELEMENT_ID))
       return driver.wait(until.ableToSwitchToFrame(By.id('foo')), 100)
     })
@@ -139,15 +124,10 @@ describe('until', function () {
         throw new error.NoSuchFrameError()
       })
 
-      return driver
-        .wait(until.ableToSwitchToFrame(0), 100)
-        .then(fail, function (e) {
-          assert.ok(count > 0)
-          assert.ok(
-            e.message.startsWith('Waiting to be able to switch to frame'),
-            'Wrong message: ' + e.message
-          )
-        })
+      return driver.wait(until.ableToSwitchToFrame(0), 100).then(fail, function (e) {
+        assert.ok(count > 0)
+        assert.ok(e.message.startsWith('Waiting to be able to switch to frame'), 'Wrong message: ' + e.message)
+      })
     })
   })
 
@@ -211,7 +191,7 @@ describe('until', function () {
           },
           function (error) {
             assert.strictEqual(error, webDriverError)
-          }
+          },
         )
       })
     })
@@ -239,11 +219,9 @@ describe('until', function () {
     var titles = ['foo', 'froogle', 'aaaabc', 'aabbbc', 'google']
     executor.on(CommandName.GET_TITLE, () => titles.shift())
 
-    return driver
-      .wait(until.titleMatches(/^a{2,3}b+c$/), 3000)
-      .then(function () {
-        assert.deepStrictEqual(titles, ['google'])
-      })
+    return driver.wait(until.titleMatches(/^a{2,3}b+c$/), 3000).then(function () {
+      assert.deepStrictEqual(titles, ['google'])
+    })
   })
 
   it('testUntilUrlIs', function () {
@@ -256,11 +234,7 @@ describe('until', function () {
   })
 
   it('testUntilUrlContains', function () {
-    var urls = [
-      'http://foo.com',
-      'https://groups.froogle.com',
-      'http://google.com',
-    ]
+    var urls = ['http://foo.com', 'https://groups.froogle.com', 'http://google.com']
     executor.on(CommandName.GET_CURRENT_URL, () => urls.shift())
 
     return driver.wait(until.urlContains('oogle.com'), 3000).then(function () {
@@ -278,11 +252,7 @@ describe('until', function () {
   })
 
   it('testUntilElementLocated', function () {
-    var responses = [
-      [],
-      [WebElement.buildId('abc123'), WebElement.buildId('foo')],
-      ['end'],
-    ]
+    var responses = [[], [WebElement.buildId('abc123'), WebElement.buildId('foo')], ['end']]
     executor.on(CommandName.FIND_ELEMENTS, () => responses.shift())
 
     let element = driver.wait(until.elementLocated(By.id('quux')), 2000)
@@ -301,33 +271,22 @@ describe('until', function () {
         fail('expected condition to timeout')
       }
 
-      return driver
-        .wait(until.elementLocated(locator), 100)
-        .then(expectedFailure, function (error) {
-          var expected = 'Waiting for element to be located ' + locatorStr
-          var lines = error.message.split(/\n/, 2)
-          assert.strictEqual(lines[0], expected)
+      return driver.wait(until.elementLocated(locator), 100).then(expectedFailure, function (error) {
+        var expected = 'Waiting for element to be located ' + locatorStr
+        var lines = error.message.split(/\n/, 2)
+        assert.strictEqual(lines[0], expected)
 
-          let regex = /^Wait timed out after \d+ms$/
-          assert.ok(
-            regex.test(lines[1]),
-            `Lines <${lines[1]}> does not match ${regex}`
-          )
-        })
+        let regex = /^Wait timed out after \d+ms$/
+        assert.ok(regex.test(lines[1]), `Lines <${lines[1]}> does not match ${regex}`)
+      })
     }
 
     it('byLocator', function () {
-      return runNoElementFoundTest(
-        By.id('quux'),
-        'By(css selector, *[id="quux"])'
-      )
+      return runNoElementFoundTest(By.id('quux'), 'By(css selector, *[id="quux"])')
     })
 
     it('byHash', function () {
-      return runNoElementFoundTest(
-        { id: 'quux' },
-        'By(css selector, *[id="quux"])'
-      )
+      return runNoElementFoundTest({ id: 'quux' }, 'By(css selector, *[id="quux"])')
     })
 
     it('byFunction', function () {
@@ -336,11 +295,7 @@ describe('until', function () {
   })
 
   it('testUntilElementsLocated', function () {
-    var responses = [
-      [],
-      [WebElement.buildId('abc123'), WebElement.buildId('foo')],
-      ['end'],
-    ]
+    var responses = [[], [WebElement.buildId('abc123'), WebElement.buildId('foo')], ['end']]
     executor.on(CommandName.FIND_ELEMENTS, () => responses.shift())
 
     return driver
@@ -364,34 +319,22 @@ describe('until', function () {
         fail('expected condition to timeout')
       }
 
-      return driver
-        .wait(until.elementsLocated(locator), 100)
-        .then(expectedFailure, function (error) {
-          var expected =
-            'Waiting for at least one element to be located ' + locatorStr
-          var lines = error.message.split(/\n/, 2)
-          assert.strictEqual(lines[0], expected)
+      return driver.wait(until.elementsLocated(locator), 100).then(expectedFailure, function (error) {
+        var expected = 'Waiting for at least one element to be located ' + locatorStr
+        var lines = error.message.split(/\n/, 2)
+        assert.strictEqual(lines[0], expected)
 
-          let regex = /^Wait timed out after \d+ms$/
-          assert.ok(
-            regex.test(lines[1]),
-            `Lines <${lines[1]}> does not match ${regex}`
-          )
-        })
+        let regex = /^Wait timed out after \d+ms$/
+        assert.ok(regex.test(lines[1]), `Lines <${lines[1]}> does not match ${regex}`)
+      })
     }
 
     it('byLocator', function () {
-      return runNoElementsFoundTest(
-        By.id('quux'),
-        'By(css selector, *[id="quux"])'
-      )
+      return runNoElementsFoundTest(By.id('quux'), 'By(css selector, *[id="quux"])')
     })
 
     it('byHash', function () {
-      return runNoElementsFoundTest(
-        { id: 'quux' },
-        'By(css selector, *[id="quux"])'
-      )
+      return runNoElementsFoundTest({ id: 'quux' }, 'By(css selector, *[id="quux"])')
     })
 
     it('byFunction', function () {
@@ -410,9 +353,7 @@ describe('until', function () {
     })
 
     var el = new webdriver.WebElement(driver, { ELEMENT: 'foo' })
-    return driver
-      .wait(until.stalenessOf(el), 2000)
-      .then(() => assert.strictEqual(count, 3))
+    return driver.wait(until.stalenessOf(el), 2000).then(() => assert.strictEqual(count, 3))
   })
 
   describe('element state conditions', function () {
@@ -445,98 +386,64 @@ describe('until', function () {
     }
 
     it('elementIsVisible', function () {
-      return runElementStateTest(
-        until.elementIsVisible,
-        CommandName.IS_ELEMENT_DISPLAYED,
-        [false, false, true]
-      )
+      return runElementStateTest(until.elementIsVisible, CommandName.IS_ELEMENT_DISPLAYED, [false, false, true])
     })
 
     it('elementIsNotVisible', function () {
-      return runElementStateTest(
-        until.elementIsNotVisible,
-        CommandName.IS_ELEMENT_DISPLAYED,
-        [true, true, false]
-      )
+      return runElementStateTest(until.elementIsNotVisible, CommandName.IS_ELEMENT_DISPLAYED, [true, true, false])
     })
 
     it('elementIsEnabled', function () {
-      return runElementStateTest(
-        until.elementIsEnabled,
-        CommandName.IS_ELEMENT_ENABLED,
-        [false, false, true]
-      )
+      return runElementStateTest(until.elementIsEnabled, CommandName.IS_ELEMENT_ENABLED, [false, false, true])
     })
 
     it('elementIsDisabled', function () {
-      return runElementStateTest(
-        until.elementIsDisabled,
-        CommandName.IS_ELEMENT_ENABLED,
-        [true, true, false]
-      )
+      return runElementStateTest(until.elementIsDisabled, CommandName.IS_ELEMENT_ENABLED, [true, true, false])
     })
 
     it('elementIsSelected', function () {
-      return runElementStateTest(
-        until.elementIsSelected,
-        CommandName.IS_ELEMENT_SELECTED,
-        [false, false, true]
-      )
+      return runElementStateTest(until.elementIsSelected, CommandName.IS_ELEMENT_SELECTED, [false, false, true])
     })
 
     it('elementIsNotSelected', function () {
-      return runElementStateTest(
-        until.elementIsNotSelected,
-        CommandName.IS_ELEMENT_SELECTED,
-        [true, true, false]
-      )
+      return runElementStateTest(until.elementIsNotSelected, CommandName.IS_ELEMENT_SELECTED, [true, true, false])
     })
 
     it('elementTextIs', function () {
-      return runElementStateTest(
-        until.elementTextIs,
+      return runElementStateTest(until.elementTextIs, 'foobar', CommandName.GET_ELEMENT_TEXT, [
+        'foo',
+        'fooba',
         'foobar',
-        CommandName.GET_ELEMENT_TEXT,
-        ['foo', 'fooba', 'foobar']
-      )
+      ])
     })
 
     it('elementTextContains', function () {
-      return runElementStateTest(
-        until.elementTextContains,
-        'bar',
-        CommandName.GET_ELEMENT_TEXT,
-        ['foo', 'foobaz', 'foobarbaz']
-      )
+      return runElementStateTest(until.elementTextContains, 'bar', CommandName.GET_ELEMENT_TEXT, [
+        'foo',
+        'foobaz',
+        'foobarbaz',
+      ])
     })
 
     it('elementTextMatches', function () {
-      return runElementStateTest(
-        until.elementTextMatches,
-        /fo+bar{3}/,
-        CommandName.GET_ELEMENT_TEXT,
-        ['foo', 'foobar', 'fooobarrr']
-      )
+      return runElementStateTest(until.elementTextMatches, /fo+bar{3}/, CommandName.GET_ELEMENT_TEXT, [
+        'foo',
+        'foobar',
+        'fooobarrr',
+      ])
     })
   })
 
   describe('WebElementCondition', function () {
     it('fails if wait completes with a non-WebElement value', function () {
-      let result = driver.wait(
-        new webdriver.WebElementCondition('testing', () => 123),
-        1000
-      )
+      let result = driver.wait(new webdriver.WebElementCondition('testing', () => 123), 1000)
 
       return result.then(
         () => assert.fail('expected to fail'),
         function (e) {
           assert.ok(e instanceof TypeError)
-          assert.strictEqual(
-            'WebElementCondition did not resolve to a WebElement: ' +
-              '[object Number]',
-            e.message
-          )
-        }
+          assert.strictEqual('WebElementCondition did not resolve to a WebElement: ' + '[object Number]', e.message)
+        },
       )
     })
   })

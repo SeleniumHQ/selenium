@@ -1,3 +1,20 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +52,7 @@ public class ExtensionsTest extends JupiterTestBase {
     Path extension = InProject.locate(EXT_XPI);
 
     String id = ((HasExtensions) driver).installExtension(extension);
-    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+    assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     driver.get(pages.blankPage);
     WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
@@ -52,7 +69,7 @@ public class ExtensionsTest extends JupiterTestBase {
     Path extension = InProject.locate(EXT_UNSIGNED_ZIP);
 
     String id = ((HasExtensions) driver).installExtension(extension, true);
-    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+    assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     driver.get(pages.blankPage);
     WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
@@ -69,7 +86,7 @@ public class ExtensionsTest extends JupiterTestBase {
     Path extension = InProject.locate(EXT_SIGNED_ZIP);
 
     String id = ((HasExtensions) driver).installExtension(extension);
-    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+    assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     driver.get(pages.blankPage);
     WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
@@ -86,7 +103,7 @@ public class ExtensionsTest extends JupiterTestBase {
     Path extension = InProject.locate(EXT_UNSIGNED_DIR);
 
     String id = ((HasExtensions) driver).installExtension(extension, true);
-    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+    assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     driver.get(pages.blankPage);
     WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
@@ -103,7 +120,7 @@ public class ExtensionsTest extends JupiterTestBase {
     Path extension = InProject.locate(EXT_SIGNED_DIR);
 
     String id = ((HasExtensions) driver).installExtension(extension);
-    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+    assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     driver.get(pages.blankPage);
     WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));

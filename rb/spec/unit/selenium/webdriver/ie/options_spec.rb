@@ -57,6 +57,7 @@ module Selenium
                                        use_legacy_file_upload_dialog_handling: true,
                                        attach_to_edge_chrome: true,
                                        edge_executable_path: '/path/to/edge',
+                                       silent: true,
                                        'custom:options': {foo: 'bar'})
 
             expect(opts.args.to_a).to eq(%w[foo bar])
@@ -87,6 +88,7 @@ module Selenium
             expect(opts.timeouts).to eq(script: 40000, page_load: 400000, implicit: 1)
             expect(opts.set_window_rect).to be(false)
             expect(opts.options[:'custom:options']).to eq(foo: 'bar')
+            expect(opts.silent).to be_truthy
           end
 
           it 'has native events on by default' do
@@ -131,6 +133,7 @@ module Selenium
                                        platform_name: 'win10',
                                        accept_insecure_certs: false,
                                        page_load_strategy: 'eager',
+                                       silent: true,
                                        unhandled_prompt_behavior: 'accept',
                                        strict_file_interactability: true,
                                        timeouts: {script: 40000,
@@ -187,7 +190,8 @@ module Selenium
                                                'ie.usePerProcessProxy' => true,
                                                'ie.useLegacyFileUploadDialogHandling' => true,
                                                'ie.edgechromium' => true,
-                                               'ie.edgepath' => '/path/to/edge'})
+                                               'ie.edgepath' => '/path/to/edge',
+                                               'silent' => true})
           end
         end
       end # Options

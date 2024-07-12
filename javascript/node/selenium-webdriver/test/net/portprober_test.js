@@ -17,9 +17,9 @@
 
 'use strict'
 
-const assert = require('assert')
-const net = require('net')
-const portprober = require('../../net/portprober')
+const assert = require('node:assert')
+const net = require('node:net')
+const portprober = require('selenium-webdriver/net/portprober')
 const host = '127.0.0.1'
 
 describe('isFree', function () {

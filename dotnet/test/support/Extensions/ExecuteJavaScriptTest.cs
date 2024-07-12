@@ -1,8 +1,8 @@
+using Moq;
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Moq;
-using NUnit.Framework;
 
 namespace OpenQA.Selenium.Support.Extensions
 {

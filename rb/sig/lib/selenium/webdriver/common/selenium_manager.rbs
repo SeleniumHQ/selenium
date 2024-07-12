@@ -1,0 +1,30 @@
+module Selenium
+  module WebDriver
+    class SeleniumManager
+      include _Platform
+      include Open3
+
+      self.@bin_path: String
+
+      self.@binary: String
+
+      attr_writer self.bin_path: String
+
+      def self.bin_path: () -> String
+
+      def self.binary_paths: (Array[String] arguments) -> Hash[untyped, Array[String]]
+
+      private
+
+      def self.generate_command: (untyped binary, untyped options) -> untyped
+
+      def self.binary: () -> String
+
+      def self.validate_location: (untyped location) -> untyped
+
+      def self.run: (String | Array[String] command) -> Hash[String, Array[String]]
+
+      def self.platform_location: -> String
+    end
+  end
+end

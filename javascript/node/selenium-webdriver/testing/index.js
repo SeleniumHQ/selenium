@@ -32,7 +32,10 @@
 
 'use strict'
 
-const { isatty } = require('tty')
+const fs = require('node:fs')
+const path = require('node:path')
+const { isatty } = require('node:tty')
+const { runfiles } = require('@bazel/runfiles')
 const chrome = require('../chrome')
 const edge = require('../edge')
 const firefox = require('../firefox')
@@ -41,7 +44,7 @@ const remote = require('../remote')
 const safari = require('../safari')
 const { Browser } = require('../lib/capabilities')
 const { Builder } = require('../index')
-const { getPath } = require('../common/driverFinder')
+const { getBinaryPaths } = require('../common/driverFinder')
 
 /**
  * Describes a browser targeted by a {@linkplain suite test suite}.
@@ -72,15 +75,19 @@ TargetBrowser.prototype.platform
 function color(c, s) {
   return isatty(process.stdout) ? `\u001b[${c}m${s}\u001b[0m` : s
 }
+
 function green(s) {
   return color(32, s)
 }
+
 function cyan(s) {
   return color(36, s)
 }
+
 function info(msg) {
   console.info(`${green('[INFO]')} ${msg}`)
 }
+
 function warn(msg) {
   console.warn(`${cyan('[WARNING]')} ${msg}`)
 }
@@ -118,15 +125,15 @@ function getAvailableBrowsers() {
   info(`Searching for WebDriver executables installed on the current system...`)
 
   let targets = [
-    [getPath(new chrome.Options()), Browser.CHROME],
-    [getPath(new edge.Options()), Browser.EDGE],
-    [getPath(new firefox.Options()), Browser.FIREFOX],
+    [getBinaryPaths(new chrome.Options()), Browser.CHROME],
+    [getBinaryPaths(new edge.Options()), Browser.EDGE],
+    [getBinaryPaths(new firefox.Options()), Browser.FIREFOX],
   ]
   if (process.platform === 'win32') {
-    targets.push([getPath(new ie.Options()), Browser.INTERNET_EXPLORER])
+    targets.push([getBinaryPaths(new ie.Options()), Browser.INTERNET_EXPLORER])
   }
   if (process.platform === 'darwin') {
-    targets.push([getPath(new safari.Options()), Browser.SAFARI])
+    targets.push([getBinaryPaths(new safari.Options()), Browser.SAFARI])
   }
 
   let availableBrowsers = []
@@ -214,7 +221,7 @@ function init(force = false) {
   if (seleniumJar && seleniumUrl) {
     throw Error(
       'Ambiguous test configuration: both SELENIUM_REMOTE_URL' +
-        ' && SELENIUM_SERVER_JAR environment variables are set'
+        ' && SELENIUM_SERVER_JAR environment variables are set',
     )
   }
 
@@ -223,14 +230,12 @@ function init(force = false) {
     throw Error(
       'Ambiguous test configuration: when either the SELENIUM_REMOTE_URL or' +
         ' SELENIUM_SERVER_JAR environment variable is set, the' +
-        ' SELENIUM_BROWSER variable must also be set.'
+        ' SELENIUM_BROWSER variable must also be set.',
     )
   }
 
   targetBrowsers = envBrowsers.length > 0 ? envBrowsers : getAvailableBrowsers()
-  info(
-    `Running tests against [${targetBrowsers.map((b) => b.name).join(', ')}]`
-  )
+  info(`Running tests against [${targetBrowsers.map((b) => b.name).join(', ')}]`)
 
   after(function () {
     if (seleniumServer) {
@@ -240,8 +245,7 @@ function init(force = false) {
 }
 
 const TARGET_MAP = /** !WeakMap<!Environment, !TargetBrowser> */ new WeakMap()
-const URL_MAP =
-  /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */ new WeakMap()
+const URL_MAP = /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */ new WeakMap()
 
 /**
  * Defines the environment a {@linkplain suite test suite} is running against.
@@ -254,9 +258,7 @@ class Environment {
    *     Selenium server to test against.
    */
   constructor(browser, url = undefined) {
-    browser = /** @type {!TargetBrowser} */ (
-      Object.seal(Object.assign({}, browser))
-    )
+    browser = /** @type {!TargetBrowser} */ (Object.seal(Object.assign({}, browser)))
 
     TARGET_MAP.set(this, browser)
     URL_MAP.set(this, url || null)
@@ -289,6 +291,37 @@ class Environment {
     const urlOrServer = URL_MAP.get(this)
 
     const builder = new Builder()
+
+    // Sniff the environment variables for paths to use for the common browsers
+    // Chrome
+    if ('SE_CHROMEDRIVER' in process.env) {
+      const found = locate(process.env.SE_CHROMEDRIVER)
+      const service = new chrome.ServiceBuilder(found)
+      builder.setChromeService(service)
+    }
+    if ('SE_CHROME' in process.env) {
+      const binary = locate(process.env.SE_CHROME)
+      const options = new chrome.Options()
+      options.setChromeBinaryPath(binary)
+      options.setAcceptInsecureCerts(true)
+      options.addArguments('disable-infobars', 'disable-breakpad', 'disable-dev-shm-usage', 'no-sandbox')
+      builder.setChromeOptions(options)
+    }
+    // Edge
+    // Firefox
+    if ('SE_GECKODRIVER' in process.env) {
+      const found = locate(process.env.SE_GECKODRIVER)
+      const service = new firefox.ServiceBuilder(found)
+      builder.setFirefoxService(service)
+    }
+    if ('SE_FIREFOX' in process.env) {
+      const binary = locate(process.env.SE_FIREFOX)
+      const options = new firefox.Options()
+      options.enableBidi()
+      options.setBinary(binary)
+      builder.setFirefoxOptions(options)
+    }
+
     builder.disableEnvironmentOverrides()
 
     const realBuild = builder.build
@@ -301,6 +334,11 @@ class Environment {
 
       if (browser.name === 'firefox') {
         builder.setCapability('moz:debuggerAddress', true)
+      }
+
+      // Enable BiDi for supporting browsers.
+      if (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE) {
+        builder.setCapability('webSocketUrl', true)
       }
 
       if (typeof urlOrServer === 'string') {
@@ -401,7 +439,7 @@ function suite(fn, options = undefined) {
           seleniumServer = new remote.SeleniumServer(seleniumJar)
 
           const startTimeout = 65 * 1000
-          // eslint-disable-next-line no-inner-declarations
+
           function startSelenium() {
             if (typeof this.timeout === 'function') {
               this.timeout(startTimeout) // For mocha.
@@ -495,10 +533,63 @@ function getTestHook(name) {
     throw TypeError(
       `Expected global.${name} to be a function, but is ${type}.` +
         ' This can happen if you try using this module when running with' +
-        ' node directly instead of using jasmine or mocha'
+        ' node directly instead of using jasmine or mocha',
     )
   }
   return fn
+}
+
+function locate(fileLike) {
+  if (fs.existsSync(fileLike)) {
+    return fileLike
+  }
+
+  try {
+    return runfiles.resolve(fileLike)
+  } catch {
+    // Fall through
+  }
+
+  // Is the item in the workspace?
+  try {
+    return runfiles.resolveWorkspaceRelative(fileLike)
+  } catch {
+    // Fall through
+  }
+
+  // Find the repo mapping file
+  let repoMappingFile
+  try {
+    repoMappingFile = runfiles.resolve('_repo_mapping')
+  } catch {
+    throw new Error('Unable to locate (no repo mapping file): ' + fileLike)
+  }
+  const lines = fs.readFileSync(repoMappingFile, { encoding: 'utf8' }).split('\n')
+
+  // Build a map of "repo we declared we need" to "path"
+  const mapping = {}
+  for (const line of lines) {
+    if (line.startsWith(',')) {
+      const parts = line.split(',', 3)
+      mapping[parts[1]] = parts[2]
+    }
+  }
+
+  // Get the first segment of the path
+  const pathSegments = fileLike.split('/')
+  if (!pathSegments.length) {
+    throw new Error('Unable to locate ' + fileLike)
+  }
+
+  pathSegments[0] = mapping[pathSegments[0]] ? mapping[pathSegments[0]] : '_main'
+
+  try {
+    return runfiles.resolve(path.join(...pathSegments))
+  } catch {
+    // Fall through
+  }
+
+  throw new Error('Unable to find ' + fileLike)
 }
 
 // PUBLIC API

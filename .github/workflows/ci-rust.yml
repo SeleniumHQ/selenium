@@ -2,6 +2,18 @@ name: CI - Rust
 
 on:
   workflow_call:
+    inputs:
+      release:
+        required: false
+        type: string
+        default: false
+      branch:
+        required: false
+        type: string
+        default: trunk
+    secrets:
+      SELENIUM_CI_TOKEN:
+        required: true
   workflow_dispatch:
 
 jobs:
@@ -28,4 +40,234 @@ jobs:
       name: Tests (${{ matrix.os }})
       cache-key: rust-test
       os: ${{ matrix.os }}
-      run: bazel test --test_env=RUST_BACKTRACE=1 --flaky_test_attempts=3 //rust/...
+      run: bazel test --test_env=RUST_BACKTRACE=full --test_env=RUST_TEST_NOCAPTURE=1 --flaky_test_attempts=3 //rust/...
+
+  windows-stable:
+    name: "Windows Stable"
+    runs-on: windows-latest
+    needs: tests
+    if: github.event_name != 'schedule'
+    env:
+      RUSTFLAGS: '-Ctarget-feature=+crt-static'
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      - name: "Update Rust"
+        run: |
+          rustup update
+          rustup toolchain install stable-i686-pc-windows-msvc
+          rustup default stable-i686-pc-windows-msvc
+          rustc -vV
+      - name: "Build release binary"
+        run: cargo build --release
+        working-directory: rust
+      - name: "Rename binary"
+        run: mv rust/target/release/selenium-manager.exe selenium-manager-windows.exe
+      - name: "Upload release binary"
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-manager-windows
+          path: selenium-manager-windows.exe
+          retention-days: 6
+
+  windows-debug:
+    name: "Windows Debug"
+    runs-on: windows-latest
+    needs: tests
+    if: github.event_name != 'schedule'
+    env:
+      RUSTFLAGS: '-Ctarget-feature=+crt-static'
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      - name: "Update Rust"
+        run: |
+          rustup update
+          rustup toolchain install stable-i686-pc-windows-msvc
+          rustup default stable-i686-pc-windows-msvc
+          rustc -vV
+      - name: "Build release binary"
+        run: cargo build --profile dev
+        working-directory: rust
+      - name: "Rename binary"
+        run: mv rust/target/debug/selenium-manager.exe selenium-manager-windows-debug.exe
+      - name: "Upload release binary"
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-manager-windows-debug
+          path: selenium-manager-windows-debug.exe
+          retention-days: 6
+
+  linux-stable:
+    name: "Linux Stable"
+    runs-on: ubuntu-latest
+    needs: tests
+    if: github.event_name != 'schedule'
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      - name: "Update Rust"
+        run: |
+          rustup update
+          rustc -vV
+      - name: "Install cross"
+        run: |
+          cargo install cross --git https://github.com/cross-rs/cross
+      - name: "Build release binary"
+        run: cross build --target x86_64-unknown-linux-musl --release
+        working-directory: rust
+      - name: "Rename binary"
+        run: mv rust/target/x86_64-unknown-linux-musl/release/selenium-manager selenium-manager-linux
+      - name: "Upload release binary"
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-manager-linux
+          path: selenium-manager-linux
+          retention-days: 6
+
+  linux-debug:
+    name: "Linux Debug"
+    runs-on: ubuntu-latest
+    needs: tests
+    if: github.event_name != 'schedule'
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      - name: "Update Rust"
+        run: |
+          rustup update
+          rustc -vV
+      - name: "Install cross"
+        run: |
+          cargo install cross --git https://github.com/cross-rs/cross
+      - name: "Build release binary"
+        run: |
+          cross build --target x86_64-unknown-linux-musl --profile dev
+          cd target/x86_64-unknown-linux-musl/debug
+          tar -cvf ../../../../selenium-manager-linux-debug.tar selenium-manager
+        working-directory: rust
+      - name: "Upload release binary"
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-manager-linux-debug
+          path: selenium-manager-linux-debug.tar
+          retention-days: 6
+
+  macos-stable:
+    name: "MacOS Stable"
+    runs-on: macos-13
+    needs: tests
+    if: github.event_name != 'schedule'
+    env:
+      RUSTFLAGS: '-Ctarget-feature=+crt-static'
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      - name: "Update Rust"
+        run: |
+          rustup update
+          rustup target add aarch64-apple-darwin
+          rustc -vV
+      - name: "Build release binary"
+        run: |
+          cargo build --target x86_64-apple-darwin --release
+          cargo build --target aarch64-apple-darwin --release
+          lipo -create -output target/selenium-manager-macos \
+            target/aarch64-apple-darwin/release/selenium-manager \
+            target/x86_64-apple-darwin/release/selenium-manager
+        working-directory: rust
+      - name: "Upload release binary"
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-manager-macos
+          path: rust/target/selenium-manager-macos
+          retention-days: 6
+
+  macos-debug:
+    name: "MacOS Debug"
+    runs-on: macos-13
+    needs: tests
+    if: github.event_name != 'schedule'
+    env:
+      RUSTFLAGS: '-Ctarget-feature=+crt-static'
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      - name: "Update Rust"
+        run: |
+          rustup update
+          rustup target add aarch64-apple-darwin
+          rustc -vV
+      - name: "Build release binary"
+        run: |
+          cargo build --target x86_64-apple-darwin --profile dev
+          cargo build --target aarch64-apple-darwin --profile dev
+          lipo -create -output target/selenium-manager \
+            target/aarch64-apple-darwin/debug/selenium-manager \
+            target/x86_64-apple-darwin/debug/selenium-manager
+          cd target
+          tar -cvf ../../selenium-manager-macos-debug.tar selenium-manager
+        working-directory: rust
+      - name: "Upload release binary"
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-manager-macos-debug
+          path: selenium-manager-macos-debug.tar
+          retention-days: 6
+
+  release:
+    name: "Release Binaries"
+    runs-on: ubuntu-latest
+    needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug ]
+    if: github.event_name != 'schedule' && github.repository_owner == 'seleniumhq' && (github.ref == 'refs/heads/trunk' || inputs.release == 'true')
+    steps:
+      - name: "Checkout selenium_manager_artifacts"
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          repository: SeleniumHQ/selenium_manager_artifacts
+      - name: "Download Artifacts"
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: "Prepare and Commit"
+        run: |
+          linux_sha=$(shasum -a 256 artifacts/selenium-manager-linux/selenium-manager-linux | awk '{print $1}')
+          macos_sha=$(shasum -a 256 artifacts/selenium-manager-macos/selenium-manager-macos | awk '{print $1}')
+          windows_sha=$(shasum -a 256 artifacts/selenium-manager-windows/selenium-manager-windows.exe | awk '{print $1}')
+          echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"linux\": \"$linux_sha\"}" > latest.json
+          git config --local user.email "selenium-ci@users.noreply.github.com"
+          git config --local user.name "Selenium CI Bot"
+          git add latest.json
+          git commit -m "Update hash values for latest binaries"
+          short_hash=$(git rev-parse --short HEAD)
+          echo "TAG_NAME=selenium-manager-$short_hash" >> $GITHUB_ENV
+          git tag ${{ env.TAG_NAME }}
+          git push && git push --tags
+      - name: "Release"
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          repository: SeleniumHQ/selenium_manager_artifacts
+          tag_name: ${{ env.TAG_NAME }}
+          draft: false
+          prerelease: false
+          files: |
+            artifacts/selenium-manager-linux/selenium-manager-linux
+            artifacts/selenium-manager-macos/selenium-manager-macos
+            artifacts/selenium-manager-windows/selenium-manager-windows.exe
+            artifacts/selenium-manager-linux-debug/selenium-manager-linux-debug.tar
+            artifacts/selenium-manager-macos-debug/selenium-manager-macos-debug.tar
+            artifacts/selenium-manager-windows-debug/selenium-manager-windows-debug.exe

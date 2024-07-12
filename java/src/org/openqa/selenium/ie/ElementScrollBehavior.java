@@ -22,7 +22,7 @@ public enum ElementScrollBehavior {
   BOTTOM(1),
   ;
 
-  private int value;
+  private final int value;
 
   ElementScrollBehavior(int value) {
     this.value = value;

@@ -1,6 +1,6 @@
-using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using System;
 using System.Drawing;
 
 namespace OpenQA.Selenium
@@ -101,7 +101,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
             driver.FindElement(By.Id("button2")).Click();
-            long scrollTop = GetScrollTop();
+            double scrollTop = GetScrollTop();
             driver.FindElement(By.Id("button1")).Click();
             Assert.AreEqual(scrollTop, GetScrollTop());
         }
@@ -217,7 +217,7 @@ namespace OpenQA.Selenium
         public void ShouldNotScrollWhenGettingElementSize()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
-            long scrollTop = GetScrollTop();
+            double scrollTop = GetScrollTop();
             Size ignoredSize = driver.FindElement(By.Id("button1")).Size;
             Assert.AreEqual(scrollTop, GetScrollTop());
         }
@@ -250,9 +250,9 @@ namespace OpenQA.Selenium
             Assert.IsFalse(checkbox.Selected, "Checkbox should not be selected after click");
         }
 
-        private long GetScrollTop()
+        private double GetScrollTop()
         {
-            return (long)((IJavaScriptExecutor)driver).ExecuteScript("return document.body.scrollTop;");
+            return double.Parse(((IJavaScriptExecutor)driver).ExecuteScript("return document.body.scrollTop;").ToString());
         }
 
         private Func<bool> TitleToBe(string desiredTitle)

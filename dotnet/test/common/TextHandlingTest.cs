@@ -1,6 +1,6 @@
-using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using System;
 using System.Text.RegularExpressions;
 
 namespace OpenQA.Selenium
@@ -146,7 +146,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             string text = driver.FindElement(By.Id("preformatted")).Text;
 
-            Assert.That(text, Is.EqualTo("   This section has a preformatted" +NewLine +
+            Assert.That(text, Is.EqualTo("   This section has a preformatted" + NewLine +
                 "    text block    " + NewLine +
                 "  split in four lines" + NewLine +
                 "         "));
@@ -176,7 +176,7 @@ namespace OpenQA.Selenium
             textarea.SendKeys(expectedText);
 
             string seenText = textarea.GetAttribute("value");
-            Assert.AreEqual(expectedText ,seenText);
+            Assert.AreEqual(expectedText, seenText);
         }
 
         [Test]

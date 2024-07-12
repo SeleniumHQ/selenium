@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -39,19 +40,22 @@ namespace OpenQA.Selenium.Environment
                 webserverProcess.Start();
                 DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));
                 bool isRunning = false;
+
+                // Poll until the webserver is correctly serving pages.
+                using var httpClient = new HttpClient();
+
                 while (!isRunning && DateTime.Now < timeout)
                 {
-                    // Poll until the webserver is correctly serving pages.
-                    HttpWebRequest request = WebRequest.Create("http://localhost:6000/wd/hub/status") as HttpWebRequest;
                     try
                     {
-                        HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                        using var response = httpClient.GetAsync("http://localhost:6000/wd/hub/status").GetAwaiter().GetResult();
+
                         if (response.StatusCode == HttpStatusCode.OK)
                         {
                             isRunning = true;
                         }
                     }
-                    catch (WebException)
+                    catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
                     {
                     }
                 }
@@ -65,14 +69,15 @@ namespace OpenQA.Selenium.Environment
 
         public void Stop()
         {
-            if (autoStart && (webserverProcess != null && !webserverProcess.HasExited))
+            if (autoStart && webserverProcess != null && !webserverProcess.HasExited)
             {
-                HttpWebRequest request = WebRequest.Create("http://localhost:6000/selenium-server/driver?cmd=shutDownSeleniumServer") as HttpWebRequest;
+                using var httpClient = new HttpClient();
+
                 try
                 {
-                    request.GetResponse();
+                    using var response = httpClient.GetAsync("http://localhost:6000/selenium-server/driver?cmd=shutDownSeleniumServer").GetAwaiter().GetResult();
                 }
-                catch (WebException)
+                catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
                 {
                 }
 
