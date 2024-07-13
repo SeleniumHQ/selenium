@@ -1,7 +1,7 @@
 module Selenium
   module WebDriver
     module Error
-      def self.for_error: (String error) -> (WebDriverError |
+      def self.for_error: (String? error) -> Class?
 
       SUPPORT_MSG: String
 
@@ -11,7 +11,7 @@ module Selenium
 
       class WebDriverError < StandardError
         def initialize: (?String msg) -> void
-        
+
         def class_name: -> Symbol?
       end
 
