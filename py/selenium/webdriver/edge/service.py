@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
+from typing import Mapping, Optional, Sequence
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
@@ -34,21 +34,31 @@ class Service(service.ChromiumService):
     """
 
     def __init__(
-        self,
-        executable_path: str = None,
-        port: int = 0,
-        log_output: SubprocessStdAlias = None,
-        service_args: typing.Optional[typing.List[str]] = None,
-        env: typing.Optional[typing.Mapping[str, str]] = None,
-        **kwargs,
+      self,
+      executable_path: str = None,
+      port: int = 0,
+      log_output: SubprocessStdAlias = None,
+      service_args: Optional[Sequence[str]] = None,
+      env: Optional[Mapping[str, str]] = None,
+      **kwargs,
     ) -> None:
-        self.service_args = service_args or []
+        self._service_args = service_args or []
 
         super().__init__(
             executable_path=executable_path,
             port=port,
-            service_args=service_args,
+            service_args=self.service_args,
             log_output=log_output,
             env=env,
             **kwargs,
         )
+
+    @property
+    def service_args(self):
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value):
+        if not isinstance(value, Sequence):
+            raise TypeError("service args must be a sequence")
+        self._service_args = value
