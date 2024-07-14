@@ -14,8 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
-from typing import List
+from typing import List, Sequence, Optional
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
@@ -25,14 +24,14 @@ class Service(service.Service):
     """Object that manages the starting and stopping of the IEDriver."""
 
     def __init__(
-        self,
-        executable_path: str = None,
-        port: int = 0,
-        host: typing.Optional[str] = None,
-        service_args: typing.Optional[typing.List[str]] = None,
-        log_level: typing.Optional[str] = None,
-        log_output: SubprocessStdAlias = None,
-        **kwargs,
+      self,
+      executable_path: str = None,
+      port: int = 0,
+      host: Optional[str] = None,
+      service_args: Optional[Sequence[str]] = None,
+      log_level: Optional[str] = None,
+      log_output: SubprocessStdAlias = None,
+      **kwargs,
     ) -> None:
         """Creates a new instance of the Service.
 
@@ -45,11 +44,11 @@ class Service(service.Service):
          - log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
            Default is "stdout".
         """
-        self.service_args = service_args or []
+        self._service_args = service_args or []
         if host:
-            self.service_args.append(f"--host={host}")
+            self._service_args.append(f"--host={host}")
         if log_level:
-            self.service_args.append(f"--log-level={log_level}")
+            self._service_args.append(f"--log-level={log_level}")
 
         super().__init__(
             executable_path=executable_path,
@@ -59,4 +58,14 @@ class Service(service.Service):
         )
 
     def command_line_args(self) -> List[str]:
-        return [f"--port={self.port}"] + self.service_args
+        return [f"--port={self.port}"] + self._service_args
+
+    @property
+    def service_args(self):
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value):
+        if not isinstance(value, Sequence):
+            raise TypeError("Service args must be a sequence")
+        self._service_args = value
