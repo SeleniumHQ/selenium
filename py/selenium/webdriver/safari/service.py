@@ -15,7 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import List, Sequence, Optional, Mapping
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import Sequence
 
 from selenium.webdriver.common import service
 
@@ -31,13 +34,13 @@ class Service(service.Service):
     """
 
     def __init__(
-      self,
-      executable_path: str = None,
-      port: int = 0,
-      service_args: Optional[Sequence[str]] = None,
-      env: Optional[Mapping[str, str]] = None,
-      reuse_service=False,
-      **kwargs,
+        self,
+        executable_path: str = None,
+        port: int = 0,
+        service_args: Optional[Sequence[str]] = None,
+        env: Optional[Mapping[str, str]] = None,
+        reuse_service=False,
+        **kwargs,
     ) -> None:
         self._service_args = service_args or []
 

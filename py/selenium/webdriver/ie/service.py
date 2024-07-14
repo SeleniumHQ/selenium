@@ -14,7 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import List, Sequence, Optional
+from typing import List
+from typing import Optional
+from typing import Sequence
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
@@ -24,14 +26,14 @@ class Service(service.Service):
     """Object that manages the starting and stopping of the IEDriver."""
 
     def __init__(
-      self,
-      executable_path: str = None,
-      port: int = 0,
-      host: Optional[str] = None,
-      service_args: Optional[Sequence[str]] = None,
-      log_level: Optional[str] = None,
-      log_output: SubprocessStdAlias = None,
-      **kwargs,
+        self,
+        executable_path: str = None,
+        port: int = 0,
+        host: Optional[str] = None,
+        service_args: Optional[Sequence[str]] = None,
+        log_level: Optional[str] = None,
+        log_output: SubprocessStdAlias = None,
+        **kwargs,
     ) -> None:
         """Creates a new instance of the Service.
 

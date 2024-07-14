@@ -14,7 +14,10 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import List, Optional, Mapping, Sequence
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import Sequence
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service

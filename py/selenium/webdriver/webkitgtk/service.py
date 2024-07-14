@@ -14,7 +14,10 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import Optional, List, Mapping, Sequence
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import Sequence
 
 from selenium.webdriver.common import service
 
@@ -33,13 +36,13 @@ class Service(service.Service):
     """
 
     def __init__(
-      self,
-      executable_path: str = DEFAULT_EXECUTABLE_PATH,
-      port: int = 0,
-      log_path: Optional[str] = None,
-      service_args: Optional[Sequence[str]] = None,
-      env: Optional[Mapping[str, str]] = None,
-      **kwargs,
+        self,
+        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        port: int = 0,
+        log_path: Optional[str] = None,
+        service_args: Optional[Sequence[str]] = None,
+        env: Optional[Mapping[str, str]] = None,
+        **kwargs,
     ):
         self._service_args = service_args or []
         log_file = open(log_path, "wb") if log_path else None
