@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
+from typing import Optional, List, Mapping, Sequence
 
 from selenium.webdriver.common import service
 
@@ -33,15 +33,15 @@ class Service(service.Service):
     """
 
     def __init__(
-        self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
-        port: int = 0,
-        log_path: typing.Optional[str] = None,
-        service_args: typing.Optional[typing.List[str]] = None,
-        env: typing.Optional[typing.Mapping[str, str]] = None,
-        **kwargs,
+      self,
+      executable_path: str = DEFAULT_EXECUTABLE_PATH,
+      port: int = 0,
+      log_path: Optional[str] = None,
+      service_args: Optional[Sequence[str]] = None,
+      env: Optional[Mapping[str, str]] = None,
+      **kwargs,
     ):
-        self.service_args = service_args or []
+        self._service_args = service_args or []
         log_file = open(log_path, "wb") if log_path else None
         super().__init__(
             executable_path=executable_path,
@@ -51,5 +51,15 @@ class Service(service.Service):
             **kwargs,
         )  # type: ignore
 
-    def command_line_args(self) -> typing.List[str]:
-        return ["-p", f"{self.port}"] + self.service_args
+    def command_line_args(self) -> List[str]:
+        return ["-p", f"{self.port}"] + self._service_args
+
+    @property
+    def service_args(self):
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value):
+        if not isinstance(value, Sequence):
+            raise TypeError("service args must be a sequence")
+        self._service_args = value
