@@ -17,7 +17,6 @@
 from typing import List
 from typing import Mapping
 from typing import Optional
-from typing import Sequence
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
@@ -39,7 +38,7 @@ class Service(service.Service):
         self,
         executable_path: str = None,
         port: int = 0,
-        service_args: Optional[Sequence[str]] = None,
+        service_args: Optional[List[str]] = None,
         log_output: SubprocessStdAlias = None,
         env: Optional[Mapping[str, str]] = None,
         **kwargs,
@@ -63,11 +62,11 @@ class Service(service.Service):
         return ["--port", f"{self.port}"] + self._service_args
 
     @property
-    def service_args(self):
+    def service_args(self) -> List[str]:
         return self._service_args
 
     @service_args.setter
-    def service_args(self, value):
-        if not isinstance(value, Sequence):
-            raise TypeError("service args must be a sequence")
+    def service_args(self, value: List[str]):
+        if not isinstance(value, List):
+            raise TypeError("service args must be a List of strings")
         self._service_args = value
