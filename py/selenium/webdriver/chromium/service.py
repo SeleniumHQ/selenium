@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
+from typing import List, Optional, Mapping, Sequence
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
@@ -32,18 +32,18 @@ class ChromiumService(service.Service):
     """
 
     def __init__(
-        self,
-        executable_path: str = None,
-        port: int = 0,
-        service_args: typing.Optional[typing.List[str]] = None,
-        log_output: SubprocessStdAlias = None,
-        env: typing.Optional[typing.Mapping[str, str]] = None,
-        **kwargs,
+      self,
+      executable_path: str = None,
+      port: int = 0,
+      service_args: Optional[Sequence[str]] = None,
+      log_output: SubprocessStdAlias = None,
+      env: Optional[Mapping[str, str]] = None,
+      **kwargs,
     ) -> None:
-        self.service_args = service_args or []
+        self._service_args = service_args or []
 
         if isinstance(log_output, str):
-            self.service_args.append(f"--log-path={log_output}")
+            self._service_args.append(f"--log-path={log_output}")
             self.log_output = None
         else:
             self.log_output = log_output
@@ -56,5 +56,15 @@ class ChromiumService(service.Service):
             **kwargs,
         )
 
-    def command_line_args(self) -> typing.List[str]:
-        return [f"--port={self.port}"] + self.service_args
+    @property
+    def service_args(self):
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value):
+        if not isinstance(value, Sequence):
+            raise TypeError("service args must be a sequence")
+        self._service_args = value
+
+    def command_line_args(self) -> List[str]:
+        return [f"--port={self.port}"] + self._service_args
