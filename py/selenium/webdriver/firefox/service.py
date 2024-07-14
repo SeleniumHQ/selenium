@@ -14,8 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
-from typing import List
+from typing import List, Optional, Mapping, Sequence
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
@@ -37,12 +36,12 @@ class Service(service.Service):
         self,
         executable_path: str = None,
         port: int = 0,
-        service_args: typing.Optional[typing.List[str]] = None,
+        service_args: Optional[Sequence[str]] = None,
         log_output: SubprocessStdAlias = None,
-        env: typing.Optional[typing.Mapping[str, str]] = None,
+        env: Optional[Mapping[str, str]] = None,
         **kwargs,
     ) -> None:
-        self.service_args = service_args or []
+        self._service_args = service_args or []
 
         super().__init__(
             executable_path=executable_path,
@@ -53,9 +52,19 @@ class Service(service.Service):
         )
 
         # Set a port for CDP
-        if "--connect-existing" not in self.service_args:
-            self.service_args.append("--websocket-port")
-            self.service_args.append(f"{utils.free_port()}")
+        if "--connect-existing" not in self._service_args:
+            self._service_args.append("--websocket-port")
+            self._service_args.append(f"{utils.free_port()}")
 
     def command_line_args(self) -> List[str]:
-        return ["--port", f"{self.port}"] + self.service_args
+        return ["--port", f"{self.port}"] + self._service_args
+
+    @property
+    def service_args(self):
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value):
+        if not isinstance(value, Sequence):
+            raise TypeError("service args must be a sequence")
+        self._service_args = value
