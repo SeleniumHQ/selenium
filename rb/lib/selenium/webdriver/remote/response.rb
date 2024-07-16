@@ -57,9 +57,9 @@ module Selenium
         end
 
         def add_cause(ex, error, backtrace)
-          raise Error::WebDriverError, backtrace
-        rescue Error::WebDriverError
-          raise ex
+          cause = Error::WebDriverError.new(backtrace)
+          cause.set_backtrace(backtrace)
+          raise ex, cause: cause
         rescue Error.for_error(error)
           ex
         end

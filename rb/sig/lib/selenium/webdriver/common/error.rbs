@@ -10,7 +10,7 @@ module Selenium
       URLS: Hash[Symbol, String]
 
       class WebDriverError < StandardError
-        def initialize: (?String msg) -> void
+        def initialize: (?String | Array[String] msg) -> void
 
         def class_name: -> Symbol?
       end
