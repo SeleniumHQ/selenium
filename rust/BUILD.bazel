@@ -95,6 +95,21 @@ rust_library(
     deps = all_crate_deps(normal = True),
 )
 
+filegroup(
+    name = "selenium_manager_srcs",
+    srcs = [
+        "Cargo.lock",
+        "Cargo.toml",
+        ":selenium_manager_rs_srcs",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "selenium_manager_rs_srcs",
+    srcs = glob(["src/**/*.rs"]),
+)
+
 rust_test(
     name = "unit",
     size = "small",

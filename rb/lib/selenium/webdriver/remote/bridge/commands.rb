@@ -155,8 +155,20 @@ module Selenium
           remove_credential: [:delete,
                               'session/:session_id/webauthn/authenticator/:authenticatorId/credentials/:credentialId'],
           remove_all_credentials: [:delete, 'session/:session_id/webauthn/authenticator/:authenticatorId/credentials'],
-          set_user_verified: [:post, 'session/:session_id/webauthn/authenticator/:authenticatorId/uv']
+          set_user_verified: [:post, 'session/:session_id/webauthn/authenticator/:authenticatorId/uv'],
 
+          #
+          # federated-credential management
+          #
+
+          get_fedcm_title: [:get, 'session/:session_id/fedcm/gettitle'],
+          get_fedcm_dialog_type: [:get, 'session/:session_id/fedcm/getdialogtype'],
+          get_fedcm_account_list: [:get, 'session/:session_id/fedcm/accountlist'],
+          click_fedcm_dialog_button: [:post, 'session/:session_id/fedcm/clickdialogbutton'],
+          cancel_fedcm_dialog: [:post, 'session/:session_id/fedcm/canceldialog'],
+          select_fedcm_account: [:post, 'session/:session_id/fedcm/selectaccount'],
+          set_fedcm_delay: [:post, 'session/:session_id/fedcm/setdelayenabled'],
+          reset_fedcm_cooldown: [:post, 'session/:session_id/fedcm/resetcooldown']
         }.freeze
       end # Bridge
     end # Remote
