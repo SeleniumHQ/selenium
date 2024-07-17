@@ -43,7 +43,6 @@ import org.openqa.selenium.ScriptKey;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.BiDi;
-import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.devtools.CdpInfo;
@@ -67,7 +66,6 @@ import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
-import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
@@ -104,7 +102,7 @@ public class ChromiumDriver extends RemoteWebDriver
   private Optional<Connection> connection;
   private final Optional<DevTools> devTools;
   private final Optional<URI> biDiUri;
-  private final Optional<BiDi> biDi;
+  private Optional<BiDi> biDi;
   protected HasCasting casting;
   protected HasCdp cdp;
   private final Map<Integer, ScriptKey> scriptKeys = new HashMap<>();
@@ -136,8 +134,6 @@ public class ChromiumDriver extends RemoteWebDriver
               }
               return null;
             });
-
-    this.biDi = createBiDi(biDiUri);
 
     Optional<URI> reportedUri =
         CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities);
@@ -346,31 +342,13 @@ public class ChromiumDriver extends RemoteWebDriver
     return devTools;
   }
 
-  private Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
-    if (biDiUri.isEmpty()) {
-      return Optional.empty();
-    }
-
-    URI wsUri =
-        biDiUri.orElseThrow(
-            () ->
-                new BiDiException(
-                    "Check if this browser version supports BiDi and if the 'webSocketUrl: true'"
-                        + " capability is set."));
-
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
-    HttpClient wsClient = clientFactory.createClient(wsConfig);
-
-    org.openqa.selenium.bidi.Connection biDiConnection =
-        new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
-
-    return Optional.of(new BiDi(biDiConnection));
-  }
-
   @Override
   public Optional<BiDi> maybeGetBiDi() {
     return biDi;
+  }
+  
+  public void setBiDi(BiDi bidi) {
+    this.biDi = Optional.of(bidi);
   }
 
   @Override

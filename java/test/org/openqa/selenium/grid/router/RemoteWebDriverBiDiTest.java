@@ -45,6 +45,7 @@ import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.script.Source;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.router.DeploymentTypes.Deployment;
 import org.openqa.selenium.remote.Augmenter;
@@ -93,9 +94,33 @@ class RemoteWebDriverBiDiTest {
   }
 
   @Test
-  @Ignore(IE)
-  @Ignore(SAFARI)
-  @NotYetImplemented(EDGE)
+  void canPortNavigateToBiDi() {
+    Browser browser = Browser.FIREFOX;
+
+    Deployment deployment =
+        DeploymentTypes.STANDALONE.start(
+            browser.getCapabilities(),
+            new TomlConfig(
+                new StringReader(
+                    "[node]\n"
+                        + "selenium-manager = false\n"
+                        + "driver-implementation = "
+                        + browser.displayName())));
+
+    AppServer server = new NettyAppServer();
+    server.start();
+
+    FirefoxOptions options = new FirefoxOptions();
+    // Enable BiDi
+    options.setCapability("webSocketUrl", true);
+    options.merge(Browser.FIREFOX.getCapabilities());
+
+    WebDriver driver = new RemoteWebDriver(deployment.getServer().getUrl(), options);
+    String page = server.whereIs("/bidi/logEntryAdded.html");
+    driver.get(page);
+  }
+
+  @Test
   void canListenToLogs() throws ExecutionException, InterruptedException, TimeoutException {
     driver = new Augmenter().augment(driver);
 

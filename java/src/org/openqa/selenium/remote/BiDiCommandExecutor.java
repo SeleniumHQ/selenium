@@ -15,15 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.bidi;
+package org.openqa.selenium.remote;
 
-import java.util.Optional;
+import java.io.IOException;
 
-public interface HasBiDi {
-  Optional<BiDi> maybeGetBiDi();
+public class BiDiCommandExecutor implements CommandExecutor {
 
-  default BiDi getBiDi() {
-    return maybeGetBiDi()
-        .orElseThrow(() -> new BiDiException("Unable to create a BiDi connection"));
+  private final RemoteWebDriver driver;
+  private final BiDiCommandMapper commandMapper;
+
+  public BiDiCommandExecutor(RemoteWebDriver driver) {
+    this.driver = driver;
+    commandMapper = new BiDiCommandMapper(driver);
+  }
+
+  @Override
+  public Response execute(Command command) throws IOException {
+    return commandMapper.map(command).apply(command, driver);
   }
 }

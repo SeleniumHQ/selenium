@@ -60,4 +60,8 @@ public class TracedCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       ((NeedsLocalLogs) delegate).setLocalLogs(logs);
     }
   }
+
+  public CommandExecutor getDelegate() {
+    return delegate;
+  }
 }

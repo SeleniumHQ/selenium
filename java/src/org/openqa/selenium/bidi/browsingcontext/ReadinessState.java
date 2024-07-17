@@ -18,18 +18,39 @@
 package org.openqa.selenium.bidi.browsingcontext;
 
 public enum ReadinessState {
-  NONE("none"),
-  INTERACTIVE("interactive"),
-  COMPLETE("complete");
+  // Mapping the page load strategy values used in BiDi To Classic
+  // Refer: https://w3c.github.io/webdriver-bidi/#type-browsingContext-ReadinessState
+  // Refer: https://www.w3.org/TR/webdriver2/#navigation
+  NONE("none", "none"),
+  INTERACTIVE("interactive", "eager"),
+  COMPLETE("complete", "normal");
 
-  private final String text;
+  private final String readinessState;
 
-  ReadinessState(String text) {
-    this.text = text;
+  private final String pageLoadStrategy;
+
+  ReadinessState(String readinessState, String pageLoadStrategy) {
+    this.readinessState = readinessState;
+    this.pageLoadStrategy = pageLoadStrategy;
+  }
+
+  public String getPageLoadStrategy() {
+    return pageLoadStrategy;
+  }
+
+  public static ReadinessState getReadinessState(String pageLoadStrategy) {
+    if (pageLoadStrategy != null) {
+      for (ReadinessState b : ReadinessState.values()) {
+        if (pageLoadStrategy.equalsIgnoreCase(b.pageLoadStrategy)) {
+          return b;
+        }
+      }
+    }
+    return null;
   }
 
   @Override
   public String toString() {
-    return String.valueOf(text);
+    return String.valueOf(readinessState);
   }
 }
