@@ -18,10 +18,10 @@
 'use strict'
 
 const assert = require('node:assert')
-const chrome = require('../../chrome')
+const chrome = require('selenium-webdriver/chrome')
 const test = require('../../lib/test')
 const { ignore } = require('../../lib/test')
-const { Browser } = require('../../index')
+const { Browser } = require('selenium-webdriver/index')
 
 test.suite(
   function (env) {
@@ -61,6 +61,7 @@ test.suite(
 
 const checkPermission = (driver, permission) => {
   return driver.executeAsyncScript((permission, callback) => {
+    // eslint-disable-next-line
     navigator.permissions.query({ name: permission }).then((result) => callback(result.state))
   }, permission)
 }
