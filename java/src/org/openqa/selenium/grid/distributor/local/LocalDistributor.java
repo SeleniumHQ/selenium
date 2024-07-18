@@ -878,11 +878,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
           model.getSnapshot().stream()
               .filter(node -> node.getExternalUri().equals(uri))
               .findFirst();
-      if (nodeStatus.isPresent()) {
-        return nodes.get(nodeStatus.get().getNodeId());
-      } else {
-        return null;
-      }
+      return nodeStatus.map(status -> nodes.get(status.getNodeId())).orElse(null);
     } finally {
       readLock.unlock();
     }

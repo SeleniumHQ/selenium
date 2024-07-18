@@ -77,11 +77,7 @@ module Selenium
       # A command failed because the referenced element is no longer attached to the DOM.
       #
 
-      class StaleElementReferenceError < WebDriverError
-        def initialize(msg = '')
-          super("#{msg}; #{SUPPORT_MSG} #{URLS[:StaleElementReferenceError]}")
-        end
-      end
+      class StaleElementReferenceError < WebDriverError; end
 
       #
       # A command failed because the referenced shadow root is no longer attached to the DOM.
