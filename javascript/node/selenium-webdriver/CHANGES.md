@@ -1,17 +1,13 @@
 ## 4.23.0
---> update versions to nightly
---> [js][bidi] Fix the event unsubscribe method. Update modules to have close methods. (#14192)
---> Bump JS dependencies (#14193)
---> [js + bazel]: Run Node browser tests on the RBE (#14194)
-If you `cd` into `javascript/node/selenium-webdriver` a `pnpm`-based workflow should still work.
-This PR also removes a now unused ci-javascript.yml file: everything that this used to do is now handled by the RBE.
---> [bidi][js] Add methods to add/remove handlers in Script module (#14230)
---> [bidi] Add source type to log entry (#14244)
---> [bidi][js] Add dom mutation handlers (#14238)
-Related to #13992.
---> [bidi][js] Add high-level script pinning APIs (#14250)
---> [bidi][js] Deprecate argument value wrapper class (#14251)
---> Update supported versions for Chrome DevTools
+ - Expose pnpm as a tool we can use
+ - [bidi] Fix the event unsubscribe method. Update modules to have close methods. (#14192)
+ - Run Node browser tests on the RBE (#14194)
+ - [bidi] Add methods to add/remove handlers in Script module (#14230)
+ - [bidi] Add source type to log entry (#14244)
+ - [bidi] Add dom mutation handlers (#14238)
+ - [bidi] Add high-level script pinning APIs (#14250)
+ - [bidi] Deprecate argument value wrapper class (#14251)
+ - Add CDP for Chrome 127 and remove 124
 
 ## 4.22.0
 
