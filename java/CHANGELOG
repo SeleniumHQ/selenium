@@ -1,3 +1,39 @@
+v4.23.0
+======
+--> [java] use Files.notExists to check files #14088
+--> [java] Setting proxy in SM only when it is needed.
+Fixes #14162
+--> [java] Removing `LocateNodeParameters.Builder`, deprecated since 4.20
+--> [bidi][java] Remove the method that converts node value to RemoteWebElement
+Adding dependency on "remote" in build file is causing circular dependency. Tried a few approaches but could not find a feasible solution. Also, this part can be added in the BiDiDelegator in the future when we port the findElement method.
+--> [bidi] [java] Ensure the listeners returns an id (#14215)
+--> [bidi] [java] Fix the adding and the removing listener
+--> [bidi][java] Ensure empty values are removed from the call back map
+--> [bidi][java] Avoid creating new instances of log entry event
+--> [bidi] Add source type to log entry (#14244)
+--> [java] Revert workaround for old netty http client (addendum to #12843) (#14134)
+* [java] Revert workaround for old netty http client (addendum to #12843)
+Workaround was made as part of the fix (3f7f57cf) the bug #11750 which was specific for netty client only.
+Since #12843 the netty client was removed.
+* Running format script
+--> Remove 'browserName' capability from stereotype when using RelaySession (#14247)
+* Remove 'browserName' capability from stereotype. We expect it to be present is SessionRequest
+* Only remove 'browserName' when 'appium:app' is present
+* Formatting file
+--> [java] Merge android specific parameters in chrome options (#14217)
+* added androidOptions in merge method
+* applied suggestions
+* applying format.sh
+* import assertEquals
+* fix for importi Optional
+--> [java] custom duration for Actions constructor (#14085)
+--> [java] Consistent UTF-8 Encoding and Code Enhancements (#14218)
+* made the use of UTF8 encoding consistent throughout
+* replaced for loop with enchanced for in DockerOptions
+* removed unnecessary unboxing in test noErrorNoCry
+* applied format.sh
+--> Update supported versions for Chrome DevTools
+
 v4.22.0
 ======
 

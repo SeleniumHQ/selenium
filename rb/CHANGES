@@ -1,3 +1,11 @@
+4.23.0 (2024-07-18)
+=========================
+--> update versions to nightly
+--> [rb] Add FedCM support to the ruby selenium client (#13796)
+--> [rb] Add URLs constant to update error messages (#14174)
+--> [rb] Add backtrace locations and cause to errors (#14170)
+--> Update supported versions for Chrome DevTools
+
 4.22.0 (2024-06-20)
 =========================
 

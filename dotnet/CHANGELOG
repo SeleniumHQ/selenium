@@ -1,3 +1,40 @@
+v4.23.0
+======
+--> [dotnet] Log http requests/responses via internal DiagnosticsHttpHandler (#13978)
+* [dotnet] Add Execution Context
+* Added http status code validation
+* update validation http status code validation as int
+* Update http validation status code from 299 to 399
+* Logs Response to HttpClientHandler
+* update name
+* revert http response message logger
+* Remove White Space
+* fix build error
+* Update InterceptAsync Summary
+* Update Logger field initialization
+* Remove logger parameter in ResponseLoggerInterceptor method
+* fix comment to add responseBody inside the if statement
+* Update Delegating Handler and Remove unable to push files in local
+* Update from null validation to status code
+* Fix comment
+* fix minor comments and adjust logic improvement
+* Revert "fix minor comments and adjust logic improvement"
+This reverts commit 4240536639ea0d242a3cd0df3bcf68db201a68e1.
+* Null check for response content
+* Requests/Responses as single log message
+* Pass logger from upstream
+* Fix missing responses in log
+* Put log message in parallel with sending a request
+--> [dotnet] Kick off sending of request and log it in parallel
+--> [dotnet] Return back protected synchronous Execute method in WebDriver
+--> [dotnet] Quit fails after not successful new session (#14242)
+* [dotnet] do not execute Quit command when sessionId is not available
+If new session creation fails a Quit() method is called which calls Dispose and then Quit command, unfortunately in this case
+session is still not created and it throws null reference exception and this hides the actual exception
+* [dotnet] ignore exceptions from Quit when new session fails
+In order to propagate the original error when session fails, surround the Quit call in try/catch in case it also throws an exception.
+--> Update supported versions for Chrome DevTools
+
 v4.22.0
 ======
 
