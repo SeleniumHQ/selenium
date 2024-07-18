@@ -45,7 +45,7 @@ csharp_library(
     data = [
         "//common/manager:selenium-manager-macos",
     ],
-    target_frameworks = ["net7.0"],
+    target_frameworks = ["net8.0"],
     visibility = [
         "//dotnet/test:__subpackages__",
     ],
@@ -85,7 +85,7 @@ dotnet_nunit_test_suite(
     data = [
         ":test-data",
     ],
-    target_frameworks = ["net7.0"],
+    target_frameworks = ["net8.0"],
     deps = [
         ":fixtures",
         "//dotnet/src/webdriver",
