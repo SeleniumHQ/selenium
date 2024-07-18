@@ -1,3 +1,11 @@
+4.23.0 (2024-07-18)
+=========================
+* Add FedCM support to the ruby selenium client (#13796)
+* Add URLs constant to update error messages (#14174)
+* Update selenium manager types (#14189)
+* Add backtrace locations and cause to errors (#14170)
+* Add CDP for Chrome 127 and remove 124
+
 4.22.0 (2024-06-20)
 =========================
 
