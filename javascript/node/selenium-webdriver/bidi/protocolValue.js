@@ -185,7 +185,11 @@ class LocalValue {
     return new LocalValue(NonPrimitiveType.CHANNEL, value)
   }
 
-  toJson() {
+  static createReferenceValue(handle, sharedId) {
+    return new ReferenceValue(handle, sharedId)
+  }
+
+  asMap() {
     let toReturn = {}
     toReturn[TYPE_CONSTANT] = this.type
 

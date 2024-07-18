@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V125;
+    using CurrentCdpVersion = V126;
 
     [TestFixture]
-    [IgnoreBrowser(Selenium.Browser.Edge, "While CDP 125 is released for Edge")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "While CDP 126 is released for Edge")]
     public class DevToolsPerformanceTest : DevToolsTestFixture
     {
         [Test]

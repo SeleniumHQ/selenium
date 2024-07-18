@@ -1,3 +1,19 @@
+v4.22.0
+======
+
+* [grid] Log unsuccessful attempts to create a session
+* [grid] Prevent UrlChecker leaking threads on timeout
+* Add convenience for enabling BiDi (#14029)
+* Eliminate assumption of mutable list argument in SeleniumManager.getBinaryPaths() (#14036)
+* Add 'toJson' method to Rectangle class to produce expected serialization (#14038)
+* Let TracedCommandExecutor delegate NeedsLocalLogs calls
+* Add preference to enable CDP in Firefox by default (#14091)
+* [grid] Video file name set independently in dynamic grid via se:videoName (#14148)
+* Add CDP for Chrome 126 and remove 123
+* EdgeOptions.useWebView to return "this" (#14157)
+* Various minor performance improvements and code cleanup (#14054)
+* Use java.nio to check files (#14088)
+
 v4.21.0
 ======
 

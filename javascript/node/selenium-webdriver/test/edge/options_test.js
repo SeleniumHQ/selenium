@@ -19,8 +19,8 @@
 
 const assert = require('node:assert')
 const fs = require('node:fs')
-const edge = require('../../edge')
-const symbols = require('../../lib/symbols')
+const edge = require('selenium-webdriver/edge')
+const symbols = require('selenium-webdriver/lib/symbols')
 const test = require('../../lib/test')
 const { locate } = require('../../lib/test/resources')
 
