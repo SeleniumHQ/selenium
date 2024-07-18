@@ -193,7 +193,7 @@ To automatically update and pin new dependencies, run:
 
 You can run Python code locally by updating generated files in the python directory using:
 ```shell
-./go py:update
+./go py:build
 ```
 
 To install Selenium locally based on a specific commit, you can use:
