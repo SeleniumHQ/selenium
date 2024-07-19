@@ -14,10 +14,11 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
+
 from abc import ABCMeta
 from abc import abstractmethod
 from enum import Enum
+from typing import Optional
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy
@@ -456,9 +457,9 @@ class BaseOptions(metaclass=ABCMeta):
 
     def enable_mobile(
         self,
-        android_package: typing.Optional[str] = None,
-        android_activity: typing.Optional[str] = None,
-        device_serial: typing.Optional[str] = None,
+        android_package: Optional[str] = None,
+        android_activity: Optional[str] = None,
+        device_serial: Optional[str] = None,
     ) -> None:
         """Enables mobile browser use for browsers that support it.
 

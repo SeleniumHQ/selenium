@@ -14,7 +14,10 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
+
+from typing import Any
+from typing import List
+from typing import Tuple
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -103,12 +106,10 @@ class EventFiringWebDriver:
     def find_element(self, by=By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
+    def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
-    def _dispatch(
-        self, l_call: str, l_args: typing.Tuple[typing.Any, ...], d_call: str, d_args: typing.Tuple[typing.Any, ...]
-    ):
+    def _dispatch(self, l_call: str, l_args: Tuple[Any, ...], d_call: str, d_args: Tuple[Any, ...]):
         getattr(self._listener, f"before_{l_call}")(*l_args)
         try:
             result = getattr(self._driver, d_call)(*d_args)
@@ -187,7 +188,7 @@ class EventFiringWebElement:
     def find_element(self, by=By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
+    def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
     def _dispatch(self, l_call, l_args, d_call, d_args):

@@ -30,18 +30,23 @@ import itertools
 import json
 import logging
 import pathlib
-import typing
 from collections import defaultdict
 from contextlib import asynccontextmanager
 from contextlib import contextmanager
 from dataclasses import dataclass
+from typing import Any
+from typing import AsyncGenerator
+from typing import AsyncIterator
+from typing import Generator
+from typing import Type
+from typing import TypeVar
 
 import trio
 from trio_websocket import ConnectionClosed as WsConnectionClosed
 from trio_websocket import connect_websocket_url
 
 logger = logging.getLogger("trio_cdp")
-T = typing.TypeVar("T")
+T = TypeVar("T")
 MAX_WS_MESSAGE_SIZE = 2**24
 
 devtools = None
@@ -184,7 +189,7 @@ class CmEventProxy:
     value set that contains the returned event.
     """
 
-    value: typing.Any = None
+    value: Any = None
 
 
 class CdpBase:
@@ -197,7 +202,7 @@ class CdpBase:
         self.inflight_cmd = {}
         self.inflight_result = {}
 
-    async def execute(self, cmd: typing.Generator[dict, T, typing.Any]) -> T:
+    async def execute(self, cmd: Generator[dict, T, Any]) -> T:
         """Execute a command on the server and wait for the result.
 
         :param cmd: any CDP command
@@ -230,7 +235,7 @@ class CdpBase:
         return receiver
 
     @asynccontextmanager
-    async def wait_for(self, event_type: typing.Type[T], buffer_size=10) -> typing.AsyncGenerator[CmEventProxy, None]:
+    async def wait_for(self, event_type: Type[T], buffer_size=10) -> AsyncGenerator[CmEventProxy, None]:
         """Wait for an event of the given type and return it.
 
         This is an async context manager, so you should open it inside
@@ -398,7 +403,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
         await self.ws.aclose()
 
     @asynccontextmanager
-    async def open_session(self, target_id) -> typing.AsyncIterator[CdpSession]:
+    async def open_session(self, target_id) -> AsyncIterator[CdpSession]:
         """This context manager opens a session and enables the "simple" style
         of calling CDP APIs.
 
@@ -460,7 +465,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
 
 
 @asynccontextmanager
-async def open_cdp(url) -> typing.AsyncIterator[CdpConnection]:
+async def open_cdp(url) -> AsyncIterator[CdpConnection]:
     """This async context manager opens a connection to the browser specified
     by ``url`` before entering the block, then closes the connection when the
     block exits.

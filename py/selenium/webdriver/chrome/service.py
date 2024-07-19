@@ -14,7 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
+from typing import List
+from typing import Mapping
+from typing import Optional
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
@@ -35,9 +37,9 @@ class Service(service.ChromiumService):
         self,
         executable_path=None,
         port: int = 0,
-        service_args: typing.Optional[typing.List[str]] = None,
+        service_args: Optional[List[str]] = None,
         log_output: SubprocessStdAlias = None,
-        env: typing.Optional[typing.Mapping[str, str]] = None,
+        env: Optional[Mapping[str, str]] = None,
         **kwargs,
     ) -> None:
         super().__init__(
