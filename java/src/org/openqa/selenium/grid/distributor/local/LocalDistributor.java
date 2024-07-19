@@ -505,7 +505,9 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
     readLock.lock();
     try {
       return model.getSnapshot().stream()
-          .filter(node -> !DOWN.equals(node.getAvailability()))
+          .filter(
+              node ->
+                  !DOWN.equals(node.getAvailability()) && !DRAINING.equals(node.getAvailability()))
           .collect(toImmutableSet());
     } finally {
       readLock.unlock();
