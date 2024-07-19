@@ -91,6 +91,14 @@ module Selenium
         @options[name] = value
       end
 
+      def enable_bidi!
+        @options[:web_socket_url] = true
+      end
+
+      def bidi?
+        !!@options[:web_socket_url]
+      end
+
       def ==(other)
         return false unless other.is_a? self.class
 
