@@ -1,3 +1,26 @@
+v4.23.0
+======
+* Use Files.notExists to check files #14088
+* Setting proxy in SM only when it is needed.
+* Remove `LocateNodeParameters.Builder`, deprecated since 4.20
+* Remove usage of deprecated methods in Require.java
+* Delete tests referencing deprecated methods in Require.java
+* [bidi] Remove the method that converts node value to RemoteWebElement
+* [bidi] Ensure the listeners returns an id (#14215)
+* [bidi] Fix the adding and the removing listener
+* [bidi] Ensure empty values are removed from the call back map
+* [bidi] Avoid creating new instances of log entry event
+* [bidi] Add source type to log entry (#14244)
+* Revert workaround for old netty http client (addendum to #12843) (#14134)
+* [grid] Remove 'browserName' capability from stereotype when using RelaySession (#14247)
+* Merge android specific parameters in chrome options (#14217)
+* Add custom duration for Actions constructor (#14085)
+* Consistent UTF-8 Encoding and Code Enhancements (#14218)
+* [grid] Set session-request-timeout as client readTimeout in RemoteNewSessionQueue (#14272)
+* [bidi]Add high-level logging APIs (#14225)
+* Add CDP for Chrome 127 and remove 124
+
+
 v4.22.0
 ======
 

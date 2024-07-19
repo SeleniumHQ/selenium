@@ -15,15 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v124;
+package org.openqa.selenium.remote;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+import java.util.function.Consumer;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.bidi.log.ConsoleLogEntry;
+import org.openqa.selenium.bidi.log.JavascriptLogEntry;
 
-@AutoService(CdpInfo.class)
-public class v124CdpInfo extends CdpInfo {
+@Beta
+public interface Script {
 
-  public v124CdpInfo() {
-    super(124, v124Domains::new);
-  }
+  long addConsoleMessageHandler(Consumer<ConsoleLogEntry> consumer);
+
+  void removeConsoleMessageHandler(long id);
+
+  long addJavaScriptErrorHandler(Consumer<JavascriptLogEntry> consumer);
+
+  void removeJavaScriptErrorHandler(long id);
 }

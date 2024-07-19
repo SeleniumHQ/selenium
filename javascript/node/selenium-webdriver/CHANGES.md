@@ -1,3 +1,15 @@
+## 4.23.0
+
+- Expose pnpm as a tool we can use
+- [bidi] Fix the event unsubscribe method. Update modules to have close methods. (#14192)
+- Run Node browser tests on the RBE (#14194)
+- [bidi] Add methods to add/remove handlers in Script module (#14230)
+- [bidi] Add source type to log entry (#14244)
+- [bidi] Add dom mutation handlers (#14238)
+- [bidi] Add high-level script pinning APIs (#14250)
+- [bidi] Deprecate argument value wrapper class (#14251)
+- Add CDP for Chrome 127 and remove 124
+
 ## 4.22.0
 
 - [bidi] Add types for user prompt related events (#14097)
