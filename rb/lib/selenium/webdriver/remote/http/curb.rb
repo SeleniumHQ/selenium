@@ -37,6 +37,13 @@ module Selenium
         #
 
         class Curb < Common
+          attr_accessor :timeout
+
+          def initialize(timeout: nil)
+            @timeout = timeout
+            super()
+          end
+
           def quit_errors
             [Curl::Err::RecvError] + super
           end
@@ -53,7 +60,7 @@ module Selenium
             client.headers = headers
 
             # http://github.com/taf2/curb/issues/issue/33
-            client.head   = false
+            client.head = false
             client.delete = false
 
             case verb
@@ -80,15 +87,16 @@ module Selenium
             @client ||= begin
               c = Curl::Easy.new
 
-              c.max_redirects   = MAX_REDIRECTS
+              c.max_redirects = MAX_REDIRECTS
               c.follow_location = true
-              c.timeout         = @timeout if @timeout
-              c.verbose         = WebDriver.logger.debug?
-
+              c.timeout = timeout if timeout
+              c.verbose = WebDriver.logger.debug?
               c
             end
           end
-        end # Curb
+        end
+
+        # Curb
       end # Http
     end # Remote
   end # WebDriver

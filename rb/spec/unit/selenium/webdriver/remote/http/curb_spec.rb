@@ -17,24 +17,35 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'uri'
-require 'selenium/webdriver/remote/server_error'
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module Remote
-      autoload :Features,     'selenium/webdriver/remote/features'
-      autoload :Bridge,       'selenium/webdriver/remote/bridge'
-      autoload :BiDiBridge,   'selenium/webdriver/remote/bidi_bridge'
-      autoload :Driver,       'selenium/webdriver/remote/driver'
-      autoload :Response,     'selenium/webdriver/remote/response'
-      autoload :Capabilities, 'selenium/webdriver/remote/capabilities'
-
       module Http
-        autoload :Common, 'selenium/webdriver/remote/http/common'
-        autoload :Curb, 'selenium/webdriver/remote/http/curb'
-        autoload :Default, 'selenium/webdriver/remote/http/default'
-      end
-    end
-  end
-end
+        describe Curb do
+          subject(:curb) { described_class.new }
+
+          it 'assigns default timeout to 0.0' do
+            http = curb.send :client
+
+            expect(http.timeout).to eq 0.0
+          end
+
+          it 'sets the timeout' do
+            curb.timeout = 20
+            expect(curb.timeout).to eq 20
+          end
+
+          describe '#initialize' do
+            let(:curb) { described_class.new(timeout: 10) }
+
+            it 'is initialized with timeout' do
+              expect(curb.timeout).to eq 10
+            end
+          end
+        end
+      end # Http
+    end # Remote
+  end # WebDriver
+end # Selenium
