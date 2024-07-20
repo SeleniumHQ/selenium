@@ -16,16 +16,14 @@
 // limitations under the License.
 // </copyright>
 
-using Newtonsoft.Json;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 
 namespace OpenQA.Selenium
 {
@@ -178,7 +176,7 @@ namespace OpenQA.Selenium
             Dictionary<string, object> result;
             try
             {
-                Dictionary<string, object> deserializedOutput = JsonConvert.DeserializeObject<Dictionary<string, object>>(output, new ResponseValueJsonConverter());
+                Dictionary<string, object> deserializedOutput = JsonSerializer.Deserialize<Dictionary<string, object>>(output);
                 result = deserializedOutput["result"] as Dictionary<string, object>;
             }
             catch (Exception ex)
