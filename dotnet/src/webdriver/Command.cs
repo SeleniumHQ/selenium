@@ -16,7 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -31,16 +30,6 @@ namespace OpenQA.Selenium
         private SessionId commandSessionId;
         private string commandName;
         private Dictionary<string, object> commandParameters = new Dictionary<string, object>();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Command"/> class using a command name and a JSON-encoded string for the parameters.
-        /// </summary>
-        /// <param name="name">Name of the command</param>
-        /// <param name="jsonParameters">Parameters for the command as a JSON-encoded string.</param>
-        public Command(string name, string jsonParameters)
-            : this(null, name, ConvertParametersFromJson(jsonParameters))
-        {
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Command"/> class for a Session
@@ -115,17 +104,6 @@ namespace OpenQA.Selenium
         public override string ToString()
         {
             return string.Concat("[", this.SessionId, "]: ", this.Name, " ", this.ParametersAsJsonString);
-        }
-
-        /// <summary>
-        /// Gets the command parameters as a <see cref="Dictionary{K, V}"/>, with a string key, and an object value.
-        /// </summary>
-        /// <param name="value">The JSON-encoded string representing the command parameters.</param>
-        /// <returns>A <see cref="Dictionary{K, V}"/> with a string keys, and an object value. </returns>
-        private static Dictionary<string, object> ConvertParametersFromJson(string value)
-        {
-            Dictionary<string, object> parameters = JsonSerializer.Deserialize<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
-            return parameters;
         }
     }
 }
