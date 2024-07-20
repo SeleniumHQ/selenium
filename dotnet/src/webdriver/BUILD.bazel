@@ -25,8 +25,8 @@ generated_assembly_info(
     version = ASSEMBLY_VERSION,
 )
 
-csharp_library(
-    name = "webdriver",
+[csharp_library(
+    name = "webdriver-{}".format(tf),
     srcs = [
         ":assembly-info",
     ] + glob([
@@ -36,7 +36,7 @@ csharp_library(
     internals_visible_to = [
         "WebDriver.Common.Tests",
     ],
-    langversion = "10.0",
+    langversion = "12.0",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -45,16 +45,15 @@ csharp_library(
         "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
-        "netstandard2.0",
+        tf
     ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-        framework("nuget", "NETStandard.Library"),
         framework("nuget", "Newtonsoft.Json"),
     ],
-)
+) for tf in ["netstandard2.0", "net8.0"]]
 
 csharp_library(
     name = "webdriver-strongnamed",
@@ -80,7 +79,6 @@ csharp_library(
         "//dotnet:__subpackages__",
     ],
     deps = [
-        framework("nuget", "NETStandard.Library"),
         framework("nuget", "Newtonsoft.Json"),
     ],
 )
@@ -137,7 +135,8 @@ nuget_pack(
     },
     id = "Selenium.WebDriver",
     libs = {
-        ":webdriver": "WebDriver",
+        ":webdriver-net8.0": "WebDriver",
+        ":webdriver-netstandard2.0": "WebDriver",
     },
     nuspec_template = "WebDriver.nuspec",
     tags = [
