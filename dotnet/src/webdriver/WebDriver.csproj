@@ -55,6 +55,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Text.Json" Version="8.0.4" />
+  </ItemGroup>
+
   <PropertyGroup>
     <BaseImagePath>..\..\..\bazel-bin\dotnet\src\webdriver\images</BaseImagePath>
   </PropertyGroup>
