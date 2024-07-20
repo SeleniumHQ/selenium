@@ -55,8 +55,8 @@ generated_assembly_info(
     ],
 ) for tf in ["netstandard2.0", "net8.0"]]
 
-csharp_library(
-    name = "webdriver-strongnamed",
+[csharp_library(
+    name = "webdriver-{}-strongnamed".format(tf),
     srcs = [
         ":assembly-info",
     ] + glob([
@@ -73,7 +73,7 @@ csharp_library(
         "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
-        "netstandard2.0",
+        tf
     ],
     visibility = [
         "//dotnet:__subpackages__",
@@ -81,7 +81,7 @@ csharp_library(
     deps = [
         framework("nuget", "Newtonsoft.Json"),
     ],
-)
+) for tf in ["netstandard2.0", "net8.0"]]
 
 copy_file(
     name = "readme",
@@ -161,7 +161,8 @@ nuget_pack(
     },
     id = "Selenium.WebDriver.StrongNamed",
     libs = {
-        ":webdriver-strongnamed": "WebDriver.StrongNamed",
+        ":webdriver-net8.0-strongnamed": "WebDriver.StrongNamed",
+        ":webdriver-netstandard2.0-strongnamed": "WebDriver.StrongNamed",
     },
     nuspec_template = "WebDriver.StrongNamed.nuspec",
     property_group_vars = {
