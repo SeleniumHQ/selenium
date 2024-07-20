@@ -290,7 +290,7 @@ namespace OpenQA.Selenium.DevTools
                     if (modified.IsError)
                     {
                         var errorMessage = modified.Result["message"].GetValue<string>();
-                        var errorData = modified.Result["dadta"].GetValue<string>();
+                        var errorData = modified.Result["data"]?.GetValue<string>();
 
                         var exceptionMessage = $"{commandName}: {errorMessage}";
                         if (!string.IsNullOrWhiteSpace(errorData))
