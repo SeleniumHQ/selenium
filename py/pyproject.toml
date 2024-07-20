@@ -10,3 +10,10 @@ build-backend = "setuptools.build_meta"
 profile = "black"
 py_version=38
 force_single_line = true
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
+
+[tool.docformatter]
+recursive = true
