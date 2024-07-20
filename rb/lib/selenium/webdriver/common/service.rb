@@ -69,6 +69,7 @@ module Selenium
       def initialize(path: nil, port: nil, log: nil, args: nil)
         port ||= self.class::DEFAULT_PORT
         args ||= []
+        path ||= self.class::PATH
 
         @executable_path = path
         @host = Platform.localhost

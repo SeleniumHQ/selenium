@@ -24,6 +24,7 @@ module Selenium
         DEFAULT_PORT = 5555
         EXECUTABLE = 'IEDriverServer'
         SHUTDOWN_SUPPORTED = true
+        PATH = ENV.fetch('SE_IEDRIVER', nil)
       end # Server
     end # IE
   end # WebDriver

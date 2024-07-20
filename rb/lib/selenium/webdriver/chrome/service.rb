@@ -24,6 +24,7 @@ module Selenium
         DEFAULT_PORT = 9515
         EXECUTABLE = 'chromedriver'
         SHUTDOWN_SUPPORTED = true
+        PATH = ENV.fetch('SE_CHROMEDRIVER', nil)
 
         def log
           return @log unless @log.is_a? String

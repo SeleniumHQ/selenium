@@ -24,7 +24,7 @@ module Selenium
         DEFAULT_PORT = 9515
         EXECUTABLE = 'msedgedriver'
         SHUTDOWN_SUPPORTED = true
-
+        PATH = ENV.fetch('SE_EDGEDRIVER', nil)
         def log
           return @log unless @log.is_a? String
 
