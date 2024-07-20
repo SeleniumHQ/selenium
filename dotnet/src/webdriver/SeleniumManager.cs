@@ -24,6 +24,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace OpenQA.Selenium
 {
@@ -85,7 +86,7 @@ namespace OpenQA.Selenium
                 argsBuilder.Append(" --debug");
             }
 
-            Dictionary<string, object> output = RunCommand(BinaryFullPath, argsBuilder.ToString());
+            var output = RunCommand(BinaryFullPath, argsBuilder.ToString());
             Dictionary<string, string> binaryPaths = new Dictionary<string, string>();
             binaryPaths.Add("browser_path", (string)output["browser_path"]);
             binaryPaths.Add("driver_path", (string)output["driver_path"]);
@@ -107,7 +108,7 @@ namespace OpenQA.Selenium
         /// <returns>
         /// the standard output of the execution.
         /// </returns>
-        private static Dictionary<string, object> RunCommand(string fileName, string arguments)
+        private static JsonNode RunCommand(string fileName, string arguments)
         {
             Process process = new Process();
             process.StartInfo.FileName = BinaryFullPath;
@@ -173,42 +174,54 @@ namespace OpenQA.Selenium
             }
 
             string output = outputBuilder.ToString().Trim();
-            Dictionary<string, object> result;
+            JsonNode resultJsonNode;
             try
             {
-                Dictionary<string, object> deserializedOutput = JsonSerializer.Deserialize<Dictionary<string, object>>(output);
-                result = deserializedOutput["result"] as Dictionary<string, object>;
+                var deserializedOutput = JsonSerializer.Deserialize<Dictionary<string, JsonNode>>(output);
+                resultJsonNode = deserializedOutput["result"];
             }
             catch (Exception ex)
             {
                 throw new WebDriverException($"Error deserializing Selenium Manager's response: {output}", ex);
             }
 
-            if (result.ContainsKey("logs"))
+            if (resultJsonNode["logs"] is not null)
             {
-                Dictionary<string, string> logs = result["logs"] as Dictionary<string, string>;
-                foreach (KeyValuePair<string, string> entry in logs)
+                var logs = resultJsonNode["logs"];
+                foreach (var entry in logs.AsArray())
                 {
-                    switch (entry.Key)
+                    switch (entry.GetPropertyName())
                     {
                         case "WARN":
                             if (_logger.IsEnabled(LogEventLevel.Warn))
                             {
-                                _logger.Warn(entry.Value);
+                                _logger.Warn(entry.GetValue<string>());
                             }
                             break;
                         case "DEBUG":
-                        case "INFO":
-                            if (_logger.IsEnabled(LogEventLevel.Debug) && (entry.Key == "DEBUG" || entry.Key == "INFO"))
+                            if (_logger.IsEnabled(LogEventLevel.Debug))
                             {
-                                _logger.Debug(entry.Value);
+                                _logger.Debug(entry.GetValue<string>());
+                            }
+                            break;
+                        case "INFO":
+                            if (_logger.IsEnabled(LogEventLevel.Info))
+                            {
+                                _logger.Info(entry.GetValue<string>());
                             }
                             break;
                     }
                 }
             }
 
-            return result;
+            return resultJsonNode;
+        }
+
+        struct SeleniumManagerLogEntry
+        {
+            public string Level { get; set; }
+
+            public string Message { get; set; }
         }
     }
 }
