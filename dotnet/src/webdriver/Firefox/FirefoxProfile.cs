@@ -16,12 +16,12 @@
 // limitations under the License.
 // </copyright>
 
+using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Text.Json;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -300,7 +300,7 @@ namespace OpenQA.Selenium.Firefox
                 using (StreamReader reader = new StreamReader(defaultPrefsStream))
                 {
                     string defaultPreferences = reader.ReadToEnd();
-                    Dictionary<string, object> deserializedPreferences = JsonSerializer.Deserialize<Dictionary<string, object>>(defaultPreferences);
+                    Dictionary<string, object> deserializedPreferences = JsonConvert.DeserializeObject<Dictionary<string, object>>(defaultPreferences, new ResponseValueJsonConverter());
                     Dictionary<string, object> immutableDefaultPreferences = deserializedPreferences["frozen"] as Dictionary<string, object>;
                     Dictionary<string, object> editableDefaultPreferences = deserializedPreferences["mutable"] as Dictionary<string, object>;
                     this.profilePreferences = new Preferences(immutableDefaultPreferences, editableDefaultPreferences);
