@@ -83,7 +83,18 @@ namespace OpenQA.Selenium.Internal
             }
             else if (reader.TokenType == JsonTokenType.Number)
             {
-                processedObject = reader.GetInt64();
+                if (reader.TryGetInt64(out long longValue))
+                {
+                    processedObject = longValue;
+                }
+                else if (reader.TryGetDouble(out double doubleValue))
+                {
+                    processedObject = doubleValue;
+                }
+                else
+                {
+                    throw new JsonException($"Unrecognized '{JsonElement.ParseValue(ref reader)}' token as a number value.");
+                }
             }
             else
             {
