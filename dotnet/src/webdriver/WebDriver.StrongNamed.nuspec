@@ -24,7 +24,10 @@
     </releaseNotes>
     <dependencies>
       <group targetFramework="netstandard2.0">
-        <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="8.0.4" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net8.0">
+        
       </group>
     </dependencies>
     <frameworkAssemblies>

@@ -25,8 +25,8 @@ generated_assembly_info(
     version = ASSEMBLY_VERSION,
 )
 
-[csharp_library(
-    name = "webdriver-{}".format(tf),
+csharp_library(
+    name = "webdriver-netstandard2.0",
     srcs = [
         ":assembly-info",
     ] + glob([
@@ -45,26 +45,30 @@ generated_assembly_info(
         "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
-        tf
+        "netstandard2.0"
     ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-        framework("nuget", "Newtonsoft.Json"),
+	    framework("nuget", "NETStandard.Library"),
+        framework("nuget", "System.Memory"),
+        framework("nuget", "System.Text.Json"),
     ],
-) for tf in ["netstandard2.0", "net8.0"]]
+)
 
-[csharp_library(
-    name = "webdriver-{}-strongnamed".format(tf),
+csharp_library(
+    name = "webdriver-net8.0",
     srcs = [
         ":assembly-info",
     ] + glob([
         "**/*.cs",
     ]) + devtools_version_targets(),
-    out = "WebDriver.StrongNamed",
-    keyfile = "//dotnet:WebDriver.snk",
-    langversion = "10.0",
+    out = "WebDriver",
+    internals_visible_to = [
+        "WebDriver.Common.Tests",
+    ],
+    langversion = "12.0",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -73,15 +77,73 @@ generated_assembly_info(
         "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
-        tf
+        "net8.0"
     ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-        framework("nuget", "Newtonsoft.Json"),
+        
     ],
-) for tf in ["netstandard2.0", "net8.0"]]
+)
+
+csharp_library(
+    name = "webdriver-netstandard2.0-strongnamed",
+    srcs = [
+        ":assembly-info",
+    ] + glob([
+        "**/*.cs",
+    ]) + devtools_version_targets(),
+    out = "WebDriver.StrongNamed",
+    keyfile = "//dotnet:WebDriver.snk",
+    langversion = "12.0",
+    resources = [
+        "//javascript/atoms/fragments:find-elements.js",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/cdp-support:mutation-listener.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
+    ],
+    target_frameworks = [
+        "netstandard2.0"
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
+    deps = [
+	    framework("nuget", "NETStandard.Library"),
+        framework("nuget", "System.Memory"),
+        framework("nuget", "System.Text.Json"),
+    ],
+)
+
+csharp_library(
+    name = "webdriver-net8.0-strongnamed",
+    srcs = [
+        ":assembly-info",
+    ] + glob([
+        "**/*.cs",
+    ]) + devtools_version_targets(),
+    out = "WebDriver.StrongNamed",
+    keyfile = "//dotnet:WebDriver.snk",
+    langversion = "12.0",
+    resources = [
+        "//javascript/atoms/fragments:find-elements.js",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/cdp-support:mutation-listener.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
+    ],
+    target_frameworks = [
+        "net8.0"
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
+    deps = [
+        
+    ],
+)
 
 copy_file(
     name = "readme",
