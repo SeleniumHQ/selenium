@@ -34,6 +34,7 @@ namespace OpenQA.Selenium
         /// Gets the ID of the element whose value is changing.
         /// </summary>
         [JsonPropertyName("target")]
+        [JsonInclude]
         public string TargetId
         {
             get { return this.targetId; }
@@ -44,6 +45,7 @@ namespace OpenQA.Selenium
         /// Gets the name of the attribute that is changing.
         /// </summary>
         [JsonPropertyName("name")]
+        [JsonInclude]
         public string AttributeName
         {
             get { return this.attributeName; }
@@ -54,6 +56,7 @@ namespace OpenQA.Selenium
         /// Gets the value to which the attribute is being changed.
         /// </summary>
         [JsonPropertyName("value")]
+        [JsonInclude]
         public string AttributeValue
         {
             get { return this.attributeValue; }
@@ -64,6 +67,7 @@ namespace OpenQA.Selenium
         /// Gets the value from which the attribute has been changed.
         /// </summary>
         [JsonPropertyName("oldValue")]
+        [JsonInclude]
         public string AttributeOriginalValue
         {
             get { return this.attributeOriginalValue; }
