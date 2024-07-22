@@ -216,12 +216,5 @@ namespace OpenQA.Selenium
 
             return resultJsonNode;
         }
-
-        struct SeleniumManagerLogEntry
-        {
-            public string Level { get; set; }
-
-            public string Message { get; set; }
-        }
     }
 }
