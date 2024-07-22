@@ -38,6 +38,15 @@ module Selenium
         expect { div.shadow_root }.to raise_error(Error::NoSuchShadowRootError)
       end
 
+      it 'raises error if the shadow root is detached', exclude: {browser: :safari, reason: 'NoMethodError'} do
+        driver.navigate.to url_for('simpleTest.html')
+        div = driver.find_element(css: 'div')
+        driver.execute_script('arguments[0].attachShadow({ mode: "open" });', div)
+        root = div.shadow_root
+        driver.execute_script('arguments[0].remove();', div)
+        expect { root.find_element(css: '#x') }.to raise_error(Error::DetachedShadowRootError)
+      end
+
       it 'gets shadow root from script',
          exclude: {browser: :safari, reason: 'returns correct node, but references shadow root as a element'} do
         shadow_root = custom_element.shadow_root

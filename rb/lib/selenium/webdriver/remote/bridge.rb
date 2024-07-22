@@ -301,6 +301,7 @@ module Selenium
         #
 
         def local_storage_item(key, value = nil)
+          WebDriver.logger.deprecate('local_storage_item(key, value)', id: :local_storage_item)
           if value
             execute_script("localStorage.setItem('#{key}', '#{value}')")
           else
@@ -309,22 +310,27 @@ module Selenium
         end
 
         def remove_local_storage_item(key)
+          WebDriver.logger.deprecate('remove_local_storage_item(key)', id: :remove_local_storage_item)
           execute_script("localStorage.removeItem('#{key}')")
         end
 
         def local_storage_keys
+          WebDriver.logger.deprecate('local_storage_keys', id: :local_storage_keys)
           execute_script('return Object.keys(localStorage)')
         end
 
         def clear_local_storage
+          WebDriver.logger.deprecate('clear_local_storage', id: :clear_local_storage)
           execute_script('localStorage.clear()')
         end
 
         def local_storage_size
+          WebDriver.logger.deprecate('local_storage_size', id: :local_storage_size)
           execute_script('return localStorage.length')
         end
 
         def session_storage_item(key, value = nil)
+          WebDriver.logger.deprecate('session_storage_item(key, value)', id: :session_storage_item)
           if value
             execute_script("sessionStorage.setItem('#{key}', '#{value}')")
           else
@@ -333,18 +339,22 @@ module Selenium
         end
 
         def remove_session_storage_item(key)
+          WebDriver.logger.deprecate('remove_session_storage_item(key)', id: :remove_session_storage_item)
           execute_script("sessionStorage.removeItem('#{key}')")
         end
 
         def session_storage_keys
+          WebDriver.logger.deprecate('session_storage_keys', id: :session_storage_keys)
           execute_script('return Object.keys(sessionStorage)')
         end
 
         def clear_session_storage
+          WebDriver.logger.deprecate('clear_session_storage', id: :clear_session_storage)
           execute_script('sessionStorage.clear()')
         end
 
         def session_storage_size
+          WebDriver.logger.deprecate('session_storage_size', id: :session_storage_size)
           execute_script('return sessionStorage.length')
         end
 
