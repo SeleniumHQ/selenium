@@ -249,6 +249,7 @@ namespace OpenQA.Selenium
         /// <remarks>This property only exists so that the JSON serializer can serialize a
         /// cookie without resorting to a custom converter.</remarks>
         [JsonPropertyName("expiry")]
+        [JsonInclude]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         internal long? ExpirySeconds
         {
