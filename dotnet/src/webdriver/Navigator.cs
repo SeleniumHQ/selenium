@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebDriverBiDi.BrowsingContext;
 
 namespace OpenQA.Selenium
 {
@@ -28,6 +29,14 @@ namespace OpenQA.Selenium
     internal class Navigator : INavigation
     {
         private WebDriver driver;
+        private string browsingContextId;
+        private static readonly Dictionary<string, ReadinessState> PageLoadStrategyMapper = new()
+        {
+            {"normal", ReadinessState.Complete},
+            {"eager", ReadinessState.Interactive},
+            {"none", ReadinessState.None}
+        };
+        private ReadinessState readinessState;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Navigator"/> class
@@ -36,6 +45,9 @@ namespace OpenQA.Selenium
         public Navigator(WebDriver driver)
         {
             this.driver = driver;
+            this.browsingContextId = driver.CurrentWindowHandle;
+            string strategyCap = driver.Capabilities.GetCapability("pageLoadStrategy") as string;
+            this.readinessState = strategyCap == null ? ReadinessState.Complete : PageLoadStrategyMapper[strategyCap];
         }
 
         /// <summary>
@@ -55,7 +67,17 @@ namespace OpenQA.Selenium
         /// <returns>A task object representing the asynchronous operation.</returns>
         public async Task BackAsync()
         {
-            await this.driver.InternalExecuteAsync(DriverCommand.GoBack, null).ConfigureAwait(false);
+            if (this.driver.BiDiDriver != null)
+            {
+                var traverseHistoryCommandParameters =
+                    new TraverseHistoryCommandParameters(this.browsingContextId, -1);
+                await this.driver.BiDiDriver.BrowsingContext.TraverseHistoryAsync(traverseHistoryCommandParameters)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                await this.driver.InternalExecuteAsync(DriverCommand.GoBack, null).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -75,7 +97,17 @@ namespace OpenQA.Selenium
         /// <returns>A task object representing the asynchronous operation.</returns>
         public async Task ForwardAsync()
         {
-            await this.driver.InternalExecuteAsync(DriverCommand.GoForward, null).ConfigureAwait(false);
+            if (this.driver.BiDiDriver != null)
+            {
+                var traverseHistoryCommandParameters =
+                    new TraverseHistoryCommandParameters(this.browsingContextId, 1);
+                await this.driver.BiDiDriver.BrowsingContext.TraverseHistoryAsync(traverseHistoryCommandParameters)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                await this.driver.InternalExecuteAsync(DriverCommand.GoForward, null).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -102,11 +134,22 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException(nameof(url), "URL cannot be null.");
             }
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>
+            if (this.driver.BiDiDriver != null)
             {
-                { "url", url }
-            };
-            await this.driver.InternalExecuteAsync(DriverCommand.Get, parameters).ConfigureAwait(false);
+                NavigateCommandParameters navigateCommandParameters = new NavigateCommandParameters(this.browsingContextId, url)
+                    {
+                        Wait = this.readinessState
+                    };
+                await driver.BiDiDriver.BrowsingContext.NavigateAsync(navigateCommandParameters).ConfigureAwait(false);
+            }
+            else
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>
+                {
+                    { "url", url }
+                };
+                await this.driver.InternalExecuteAsync(DriverCommand.Get, parameters).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -153,8 +196,19 @@ namespace OpenQA.Selenium
         /// <returns>A task object representing the asynchronous operation.</returns>
         public async Task RefreshAsync()
         {
-            // driver.SwitchTo().DefaultContent();
-            await this.driver.InternalExecuteAsync(DriverCommand.Refresh, null).ConfigureAwait(false);
+            if (this.driver.BiDiDriver != null)
+            {
+                var reloadCommandParameters =
+                    new ReloadCommandParameters(this.browsingContextId)
+                    {
+                        Wait =  this.readinessState
+                    };
+                await this.driver.BiDiDriver.BrowsingContext.ReloadAsync(reloadCommandParameters).ConfigureAwait(false);
+            }
+            else
+            {
+                await this.driver.InternalExecuteAsync(DriverCommand.Refresh, null).ConfigureAwait(false);
+            }
         }
     }
 }
