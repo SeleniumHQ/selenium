@@ -37,13 +37,13 @@ csharp_library(
     ]) + [":assembly-info"],
     out = "WebDriver.Support",
     target_frameworks = [
-        "netstandard2.0", "net8.0"
+        "netstandard2.0",
     ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-        "//dotnet/src/webdriver",
+        "//dotnet/src/webdriver:webdriver-netstandard2.0",
     ],
 )
 
@@ -76,14 +76,14 @@ csharp_library(
     out = "WebDriver.Support.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
     target_frameworks = [
-        "netstandard2.0", "net8.0",
+        "netstandard2.0",
 
     ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-        "//dotnet/src/webdriver:webdriver-strongnamed",
+        "//dotnet/src/webdriver:webdriver-netstandard2.0-strongnamed",
     ],
 )
 
