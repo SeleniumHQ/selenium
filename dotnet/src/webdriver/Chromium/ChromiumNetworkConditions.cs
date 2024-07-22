@@ -89,6 +89,7 @@ namespace OpenQA.Selenium.Chromium
         }
 
         [JsonPropertyName("latency")]
+        [JsonInclude]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         internal long? SerializableLatency
         {
