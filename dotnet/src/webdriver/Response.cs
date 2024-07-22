@@ -16,11 +16,11 @@
 // limitations under the License.
 // </copyright>
 
-using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text.Json.Nodes;
+using System.Text.Json;
 
 namespace OpenQA.Selenium
 {
@@ -140,7 +140,15 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
         public static Response FromJson(string value)
         {
-            Dictionary<string, object> deserializedResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
+            var jsonSerializerOptions = new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new ResponseValueJsonConverter()
+                }
+            };
+
+            Dictionary<string, object> deserializedResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(value, jsonSerializerOptions);
             Response response = new Response(deserializedResponse);
             return response;
         }
@@ -152,13 +160,43 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
         public static Response FromErrorJson(string value)
         {
-            var deserializedResponse = JsonNode.Parse(value).AsObject();
+            var jsonSerializerOptions = new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new ResponseValueJsonConverter()
+                }
+            };
+
+            var deserializedResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(value, jsonSerializerOptions);
 
             var response = new Response();
 
+            if (!deserializedResponse.TryGetValue("value", out var valueObject))
+            {
+                throw new WebDriverException($"The 'value' property was not found in the response:{Environment.NewLine}{value}");
+            }
+
+            if (valueObject is not Dictionary<string, object> valueDictionary)
+            {
+                throw new WebDriverException($"The 'value' property is not a dictionary of <string, object>{Environment.NewLine}{value}");
+            }
+
+            response.Value = valueDictionary;
+
+            if (!valueDictionary.TryGetValue("error", out var errorObject))
+            {
+                throw new WebDriverException($"The 'value > error' property was not found in the response:{Environment.NewLine}{value}");
+            }
+
+            if (errorObject is not string)
+            {
+                throw new WebDriverException($"The 'value > error' property is not a string{Environment.NewLine}{value}");
+            }
+
             response.Value = deserializedResponse["value"];
 
-            response.Status = WebDriverError.ResultFromError(deserializedResponse["error"].ToString());
+            response.Status = WebDriverError.ResultFromError(errorObject.ToString());
 
             return response;
         }
@@ -169,7 +207,7 @@ namespace OpenQA.Selenium
         /// <returns>A JSON-encoded string representing this <see cref="Response"/> object.</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonSerializer.Serialize(this);
         }
 
         /// <summary>
