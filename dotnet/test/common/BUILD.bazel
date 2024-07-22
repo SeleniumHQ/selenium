@@ -50,7 +50,7 @@ csharp_library(
         "//dotnet/test:__subpackages__",
     ],
     deps = [
-        "//dotnet/src/webdriver",
+        "//dotnet/src/webdriver-net8.0",
         "@rules_dotnet//tools/runfiles",
         framework("nuget", "Newtonsoft.Json"),
         framework("nuget", "NUnit"),
