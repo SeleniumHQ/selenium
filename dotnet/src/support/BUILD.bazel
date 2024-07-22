@@ -1,7 +1,6 @@
 load(
     "//dotnet:defs.bzl",
     "csharp_library",
-    "framework",
     "generated_assembly_info",
     "nuget_pack",
 )
@@ -77,7 +76,6 @@ csharp_library(
     keyfile = "//dotnet:WebDriver.snk",
     target_frameworks = [
         "netstandard2.0",
-
     ],
     visibility = [
         "//dotnet:__subpackages__",

@@ -45,13 +45,13 @@ csharp_library(
         "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
-        "netstandard2.0"
+        "netstandard2.0",
     ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-	    framework("nuget", "NETStandard.Library"),
+        framework("nuget", "NETStandard.Library"),
         framework("nuget", "System.Memory"),
         framework("nuget", "System.Text.Json"),
     ],
@@ -77,13 +77,12 @@ csharp_library(
         "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
-        "net8.0"
+        "net8.0",
     ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-        
     ],
 )
 
@@ -105,13 +104,13 @@ csharp_library(
         "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
-        "netstandard2.0"
+        "netstandard2.0",
     ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-	    framework("nuget", "NETStandard.Library"),
+        framework("nuget", "NETStandard.Library"),
         framework("nuget", "System.Memory"),
         framework("nuget", "System.Text.Json"),
     ],
@@ -135,13 +134,12 @@ csharp_library(
         "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
-        "net8.0"
+        "net8.0",
     ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-        
     ],
 )
 
