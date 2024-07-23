@@ -28,6 +28,11 @@ namespace OpenQA.Selenium
     /// </summary>
     public class Command
     {
+        private readonly static JsonSerializerOptions s_jsonSerializerOptions = new()
+        {
+            Converters = { new ResponseValueJsonConverter() }
+        };
+
         private SessionId commandSessionId;
         private string commandName;
         private Dictionary<string, object> commandParameters = new Dictionary<string, object>();
@@ -124,12 +129,7 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="Dictionary{K, V}"/> with a string keys, and an object value. </returns>
         private static Dictionary<string, object> ConvertParametersFromJson(string value)
         {
-            var jsonSerializerOptions = new JsonSerializerOptions
-            {
-                Converters = { new ResponseValueJsonConverter() }
-            };
-
-            Dictionary<string, object> parameters = JsonSerializer.Deserialize<Dictionary<string, object>>(value, jsonSerializerOptions);
+            Dictionary<string, object> parameters = JsonSerializer.Deserialize<Dictionary<string, object>>(value, s_jsonSerializerOptions);
             return parameters;
         }
     }

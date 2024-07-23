@@ -29,6 +29,11 @@ namespace OpenQA.Selenium
     /// </summary>
     public class Response
     {
+        private readonly static JsonSerializerOptions s_jsonSerializerOptions = new()
+        {
+            Converters = { new ResponseValueJsonConverter() }
+        };
+
         private object responseValue;
         private string responseSessionId;
         private WebDriverResult responseStatus;
@@ -140,15 +145,7 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
         public static Response FromJson(string value)
         {
-            var jsonSerializerOptions = new JsonSerializerOptions
-            {
-                Converters =
-                {
-                    new ResponseValueJsonConverter()
-                }
-            };
-
-            Dictionary<string, object> deserializedResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(value, jsonSerializerOptions);
+            Dictionary<string, object> deserializedResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(value, s_jsonSerializerOptions);
             Response response = new Response(deserializedResponse);
             return response;
         }
@@ -160,15 +157,7 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
         public static Response FromErrorJson(string value)
         {
-            var jsonSerializerOptions = new JsonSerializerOptions
-            {
-                Converters =
-                {
-                    new ResponseValueJsonConverter()
-                }
-            };
-
-            var deserializedResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(value, jsonSerializerOptions);
+            var deserializedResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(value, s_jsonSerializerOptions);
 
             var response = new Response();
 
