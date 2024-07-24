@@ -122,7 +122,7 @@ def url_to_be(url: str) -> Callable[[WebDriver], Union[bool, List[WebElement], W
     """
 
     def _predicate(driver: WebDriver) -> Union[bool, List[WebElement], WebElement, Literal[False]]:
-        return url == driver.current_url or Literal[False]
+        return url == driver.current_url or False
 
     return _predicate
 
