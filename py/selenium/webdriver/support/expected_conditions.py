@@ -114,15 +114,15 @@ def url_matches(pattern: str) -> Callable[[WebDriver], bool]:
     return _predicate
 
 
-def url_to_be(url: str) -> Callable[[WebDriver], bool]:
+def url_to_be(url: str) -> Callable[[WebDriver], Union[bool, List[WebElement], WebElement, Literal[False]]]:
     """An expectation for checking the current url.
 
     url is the expected url, which must be an exact match returns True
     if the url matches, false otherwise.
     """
 
-    def _predicate(driver: WebDriver):
-        return url == driver.current_url
+    def _predicate(driver: WebDriver) -> Union[bool, List[WebElement], WebElement, Literal[False]]:
+        return url == driver.current_url or Literal[False]
 
     return _predicate
 
