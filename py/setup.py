@@ -81,8 +81,8 @@ setup_args = {
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
-        "typing_extensions~= 4.9.0",
-        "websocket-client==1.8.0",
+        "typing_extensions~=4.9",
+        "websocket-client~=1.8",
     ],
     'rust_extensions': [
         RustExtension(
