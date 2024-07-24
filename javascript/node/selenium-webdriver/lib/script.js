@@ -121,7 +121,7 @@ class Script {
     await this.#initScript()
     await this.#script.removePreloadScript(id)
   }
-  
+
   async execute(script, ...args) {
     await this.#initScript()
 
