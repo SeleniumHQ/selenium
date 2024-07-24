@@ -1,5 +1,19 @@
 [
   {
+    "tag_name": "nightly",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-java-4.23.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.23.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.23.0.zip"
+      }
+    ]
+  },
+  {
     "tag_name": "selenium-4.23.0",
     "assets": [
       {
@@ -927,26 +941,6 @@
       },
       {
         "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-3/selenium-server-4.0.0-beta-3.jar"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-4.0.0-beta-2",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-2/selenium-dotnet-4.0.0-beta2.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-2/selenium-dotnet-strongnamed-4.0.0-beta2.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-2/selenium-html-runner-4.0.0-beta-2.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-2/selenium-java-4.0.0-beta-2.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0-beta-2/selenium-server-4.0.0-beta-2.jar"
       }
     ]
   }
