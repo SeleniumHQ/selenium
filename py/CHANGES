@@ -1,3 +1,7 @@
+Selenium 4.23.1
+
+* Fix 14278 and match ordering of dependencies (#14297)
+
 Selenium 4.23.0
 
 * Disable strict time stamps in Firefox profile (#14168)
