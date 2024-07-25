@@ -343,11 +343,11 @@ public class Script implements Closeable {
     this.bidi.send(new Command<>("script.removePreloadScript", Map.of("script", id)));
   }
 
-  public void onMessage(Consumer<Message> consumer) {
+  public long onMessage(Consumer<Message> consumer) {
     if (browsingContextIds.isEmpty()) {
-      this.bidi.addListener(messageEvent, consumer);
+      return this.bidi.addListener(messageEvent, consumer);
     } else {
-      this.bidi.addListener(browsingContextIds, messageEvent, consumer);
+      return this.bidi.addListener(browsingContextIds, messageEvent, consumer);
     }
   }
 
