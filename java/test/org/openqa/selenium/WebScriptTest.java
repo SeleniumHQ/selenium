@@ -245,4 +245,47 @@ class WebScriptTest extends JupiterTestBase {
 
     Assertions.assertThat(latch.await(10, SECONDS)).isFalse();
   }
+
+  @Test
+  void canPinScript() throws ExecutionException, InterruptedException, TimeoutException {
+    CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
+
+    ((RemoteWebDriver) driver).script().pin("() => { console.log('Hello!'); }");
+
+    long id = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(future::complete);
+
+    page = server.whereIs("/bidi/logEntryAdded.html");
+    driver.get(page);
+
+    ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
+
+    assertThat(logEntry.getText()).isEqualTo("Hello!");
+
+    ((RemoteWebDriver) driver).script().removeConsoleMessageHandler(id);
+  }
+
+  @Test
+  void canUnpinScript() throws ExecutionException, InterruptedException, TimeoutException {
+    CountDownLatch latch = new CountDownLatch(2);
+
+    String pinnedScript =
+        ((RemoteWebDriver) driver).script().pin("() => { console.log('Hello!'); }");
+
+    long id =
+        ((RemoteWebDriver) driver)
+            .script()
+            .addConsoleMessageHandler(consoleLogEntry -> latch.countDown());
+
+    page = server.whereIs("/bidi/logEntryAdded.html");
+
+    driver.get(page);
+
+    ((RemoteWebDriver) driver).script().unpin(pinnedScript);
+
+    driver.get(page);
+
+    assertThat(latch.getCount()).isEqualTo(1L);
+
+    ((RemoteWebDriver) driver).script().removeConsoleMessageHandler(id);
+  }
 }

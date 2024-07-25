@@ -36,4 +36,8 @@ public interface Script {
   long addDomMutationHandler(Consumer<DomMutation> event);
 
   void removeDomMutationHandler(long id);
+
+  String pin(String script);
+
+  void unpin(String id);
 }
