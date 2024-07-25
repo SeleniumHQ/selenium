@@ -248,7 +248,7 @@ class RemoteConnection:
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
-    def __init__(self, remote_server_addr: str, keep_alive: bool = False, ignore_proxy: bool = False):
+    def __init__(self, remote_server_addr: str, keep_alive: bool = False, ignore_proxy: bool = False, proxy_url: str = None):
         self.keep_alive = keep_alive
         self._url = remote_server_addr
 
@@ -271,7 +271,7 @@ class RemoteConnection:
                         ignore_proxy = True
                         break
 
-        self._proxy_url = self._get_proxy_url() if not ignore_proxy else None
+        self._proxy_url = proxy_url if proxy_url else self._get_proxy_url() if not ignore_proxy else None
         if keep_alive:
             self._conn = self._get_connection_manager()
         self._commands = remote_commands
