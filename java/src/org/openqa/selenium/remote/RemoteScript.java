@@ -121,4 +121,14 @@ class RemoteScript implements Script {
   public void removeDomMutationHandler(long id) {
     this.biDi.removeListener(id);
   }
+
+  @Override
+  public String pin(String script) {
+    return this.script.addPreloadScript(script);
+  }
+
+  @Override
+  public void unpin(String id) {
+    this.script.removePreloadScript(id);
+  }
 }
