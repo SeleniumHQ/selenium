@@ -17,14 +17,17 @@
 
 package org.openqa.selenium;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.fail;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import java.util.concurrent.*;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +36,9 @@ import org.openqa.selenium.bidi.log.JavascriptLogEntry;
 import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.remote.DomMutation;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JupiterTestBase;
 
 class WebScriptTest extends JupiterTestBase {
@@ -185,5 +190,59 @@ class WebScriptTest extends JupiterTestBase {
     assertThat(logEntry2.getText()).isEqualTo("Error: Not working");
     assertThat(logEntry2.getType()).isEqualTo("javascript");
     assertThat(logEntry2.getLevel()).isEqualTo(LogLevel.ERROR);
+  }
+
+  @Test
+  void canAddDomMutationHandler() throws InterruptedException {
+    AtomicReference<DomMutation> seen = new AtomicReference<>();
+    CountDownLatch latch = new CountDownLatch(1);
+
+    ((RemoteWebDriver) driver)
+        .script()
+        .addDomMutationHandler(
+            mutation -> {
+              seen.set(mutation);
+              latch.countDown();
+            });
+
+    driver.get(pages.dynamicPage);
+
+    WebElement reveal = driver.findElement(By.id("reveal"));
+    reveal.click();
+    WebElement revealed = driver.findElement(By.id("revealed"));
+
+    new WebDriverWait(driver, Duration.ofSeconds(10)).until(visibilityOf(revealed));
+
+    Assertions.assertThat(latch.await(10, SECONDS)).isTrue();
+    assertThat(seen.get().getAttributeName()).isEqualTo("style");
+    assertThat(seen.get().getCurrentValue()).isEmpty();
+    assertThat(seen.get().getOldValue()).isEqualTo("display:none;");
+  }
+
+  @Test
+  void canRemoveDomMutationHandler() throws InterruptedException {
+    AtomicReference<DomMutation> seen = new AtomicReference<>();
+    CountDownLatch latch = new CountDownLatch(1);
+
+    long id =
+        ((RemoteWebDriver) driver)
+            .script()
+            .addDomMutationHandler(
+                mutation -> {
+                  seen.set(mutation);
+                  latch.countDown();
+                });
+
+    driver.get(pages.dynamicPage);
+
+    ((RemoteWebDriver) driver).script().removeDomMutationHandler(id);
+
+    WebElement reveal = driver.findElement(By.id("reveal"));
+    reveal.click();
+    WebElement revealed = driver.findElement(By.id("revealed"));
+
+    new WebDriverWait(driver, Duration.ofSeconds(10)).until(visibilityOf(revealed));
+
+    Assertions.assertThat(latch.await(10, SECONDS)).isFalse();
   }
 }
