@@ -17,23 +17,36 @@
 
 package org.openqa.selenium.remote;
 
-import java.util.function.Consumer;
-import org.openqa.selenium.Beta;
-import org.openqa.selenium.bidi.log.ConsoleLogEntry;
-import org.openqa.selenium.bidi.log.JavascriptLogEntry;
+import org.openqa.selenium.WebElement;
 
-@Beta
-public interface Script {
+public class DomMutation {
 
-  long addConsoleMessageHandler(Consumer<ConsoleLogEntry> consumer);
+  private final WebElement element;
+  private final String attributeName;
+  private final String currentValue;
+  private final String oldValue;
 
-  void removeConsoleMessageHandler(long id);
+  public DomMutation(
+      WebElement element, String attributeName, String currentValue, String oldValue) {
+    this.element = element;
+    this.attributeName = attributeName;
+    this.currentValue = currentValue;
+    this.oldValue = oldValue;
+  }
 
-  long addJavaScriptErrorHandler(Consumer<JavascriptLogEntry> consumer);
+  public WebElement getElement() {
+    return element;
+  }
 
-  void removeJavaScriptErrorHandler(long id);
+  public String getAttributeName() {
+    return attributeName;
+  }
 
-  long addDomMutationHandler(Consumer<DomMutation> event);
+  public String getCurrentValue() {
+    return currentValue;
+  }
 
-  void removeDomMutationHandler(long id);
+  public String getOldValue() {
+    return oldValue;
+  }
 }
