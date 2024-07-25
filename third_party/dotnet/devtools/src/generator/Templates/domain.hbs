@@ -3,6 +3,7 @@ namespace {{rootNamespace}}.{{domain.Name}}
 {
     using System;
     using System.Collections.Generic;
+    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -60,7 +61,7 @@ namespace {{rootNamespace}}.{{domain.Name}}
                 if (m_eventMap.ContainsKey(e.EventName))
                 {
                     var eventData = m_eventMap[e.EventName];
-                    var eventArgs = e.EventData.ToObject(eventData.EventArgsType);
+                    var eventArgs = e.EventData.Deserialize(eventData.EventArgsType);
                     eventData.EventInvoker(eventArgs);
                 }
             }
