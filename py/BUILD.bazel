@@ -228,7 +228,6 @@ pkg_files(
     name = "selenium-sdist-pkg",
     srcs = [
         "CHANGES",
-        "MANIFEST.in",
         "README.rst",
         "pyproject.toml",
         "setup.py",
