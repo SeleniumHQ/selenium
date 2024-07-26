@@ -3,7 +3,8 @@ requires = ["setuptools", "setuptools-rust"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-where = ["selenium"]
+include = ["selenium*"]
+exclude = ["test*"]
 namespaces = false
 # include-package-data is `true` by default in pyproject.toml
 
