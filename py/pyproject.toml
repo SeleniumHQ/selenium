@@ -18,5 +18,5 @@ markers = [
     "no_driver_after_test: If there are no drivers after the test it will create a new one."
 ]
 addopts = "-ra"
-python_files = "test_*.py, *_test.py"
+python_files = ["test_*.py", "*_test.py"]
 testpaths = ["test"]
