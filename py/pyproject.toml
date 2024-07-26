@@ -14,6 +14,7 @@ selenium_package = [
                     "*.json", 
                     "*.xpi", 
                     "*.js",
+                    "py.typed",
                     "selenium.egg-info *",
                     "selenium-manager", 
                     "selenium-manager.exe",
