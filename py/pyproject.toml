@@ -10,15 +10,15 @@ namespaces = false
 
 [tool.setuptools.package-data]
 selenium_package = [
-                    "*.py", 
-                    "*.rst",
-                    "*.json", 
-                    "*.xpi", 
-                    "*.js",
-                    "py.typed",
-                    "selenium.egg-info *",
-                    "selenium-manager", 
-                    "selenium-manager.exe",
-                    "CHANGES",
-                    "LICENSE"
-                    ]
+    "*.py", 
+    "*.rst",
+    "*.json", 
+    "*.xpi", 
+    "*.js",
+    "py.typed",
+    "selenium.egg-info *",
+    "selenium-manager", 
+    "selenium-manager.exe",
+    "CHANGES",
+    "LICENSE"
+]
