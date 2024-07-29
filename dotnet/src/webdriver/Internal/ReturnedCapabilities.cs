@@ -16,11 +16,11 @@
 // limitations under the License.
 // </copyright>
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Text.Json;
 
 namespace OpenQA.Selenium.Internal
 {
@@ -153,7 +153,7 @@ namespace OpenQA.Selenium.Internal
         /// <returns>String of capabilities being used</returns>
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(this.capabilities, Formatting.Indented);
+            return JsonSerializer.Serialize(this.capabilities, new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

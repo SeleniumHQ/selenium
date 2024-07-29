@@ -203,6 +203,36 @@ public abstract class HttpClientTestBase {
                     ClientConfig.defaultConfig().readTimeout(Duration.ofMillis(500))));
   }
 
+  @Test
+  public void shouldAllowConfigurationFromSystemProperties() {
+    delegate =
+        req -> {
+          try {
+            Thread.sleep(1100);
+          } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+          }
+          return new HttpResponse().setContent(Contents.utf8String("Connection timed out"));
+        };
+    try {
+      System.setProperty("webdriver.httpclient.connectionTimeout", "1");
+      System.setProperty("webdriver.httpclient.readTimeout", "300");
+      System.setProperty("webdriver.httpclient.version", "HTTP_1_1");
+      ClientConfig clientConfig = ClientConfig.defaultConfig();
+      assertThat(clientConfig.connectionTimeout()).isEqualTo(Duration.ofSeconds(1));
+      assertThat(clientConfig.readTimeout()).isEqualTo(Duration.ofSeconds(300));
+      assertThat(clientConfig.version()).isEqualTo("HTTP_1_1");
+      HttpClient client =
+          createFactory().createClient(clientConfig.baseUri(URI.create(server.whereIs("/"))));
+      HttpRequest request = new HttpRequest(GET, "/delayed");
+      assertThatExceptionOfType(TimeoutException.class).isThrownBy(() -> client.execute(request));
+    } finally {
+      System.clearProperty("webdriver.httpclient.connectionTimeout");
+      System.clearProperty("webdriver.httpclient.readTimeout");
+      System.clearProperty("webdriver.httpclient.version");
+    }
+  }
+
   private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers) {
     return executeWithinServer(
         new HttpRequest(GET, "/foo"),
