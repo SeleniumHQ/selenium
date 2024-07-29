@@ -679,7 +679,7 @@ namespace :rb do
     nightly = args.delete('nightly')
 
     if nightly
-      Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
+      Bazel.execute('run', ['--stamp'], '//rb:selenium-webdriver-bump-nightly-version')
       Bazel.execute('run', ['--stamp'], '//rb:selenium-webdriver-release-nightly')
     else
       Bazel.execute('run', ['--stamp'], '//rb:selenium-webdriver-release')
