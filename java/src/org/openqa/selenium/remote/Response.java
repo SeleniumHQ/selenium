@@ -77,11 +77,10 @@ public class Response {
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof Response)) {
+    if (!(o instanceof Response that)) {
       return false;
     }
 
-    Response that = (Response) o;
     return Objects.equals(value, that.value)
         && Objects.equals(sessionId, that.sessionId)
         && Objects.equals(status, that.status)
@@ -97,23 +96,20 @@ public class Response {
     ErrorCodes errorCodes = new ErrorCodes();
     Response response = new Response();
 
-    if (json.get("error") instanceof String) {
-      String state = (String) json.get("error");
+    if (json.get("error") instanceof String state) {
       response.setState(state);
       response.setStatus(errorCodes.toStatus(state, Optional.empty()));
       response.setValue(json.get("message"));
     }
 
-    if (json.get("state") instanceof String) {
-      String state = (String) json.get("state");
+    if (json.get("state") instanceof String state) {
       response.setState(state);
       response.setStatus(errorCodes.toStatus(state, Optional.empty()));
     }
 
     if (json.get("status") != null) {
       Object status = json.get("status");
-      if (status instanceof String) {
-        String state = (String) status;
+      if (status instanceof String state) {
         response.setState(state);
         response.setStatus(errorCodes.toStatus(state, Optional.empty()));
       } else {

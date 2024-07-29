@@ -73,11 +73,10 @@ public class Event {
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof Event)) {
+    if (!(o instanceof Event that)) {
       return false;
     }
 
-    Event that = (Event) o;
     return Objects.equals(this.getId(), that.getId())
         && Objects.equals(this.getType(), that.getType())
         && Objects.equals(this.getRawData(), that.getRawData());

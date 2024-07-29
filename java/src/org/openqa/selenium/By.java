@@ -159,11 +159,9 @@ public abstract class By {
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof By)) {
+    if (!(o instanceof By that)) {
       return false;
     }
-
-    By that = (By) o;
 
     return this.toString().equals(that.toString());
   }
@@ -364,10 +362,9 @@ public abstract class By {
 
       @Override
       public boolean equals(Object o) {
-        if (!(o instanceof Parameters)) {
+        if (!(o instanceof Parameters that)) {
           return false;
         }
-        Parameters that = (Parameters) o;
         return using.equals(that.using) && Objects.equals(value, that.value);
       }
 

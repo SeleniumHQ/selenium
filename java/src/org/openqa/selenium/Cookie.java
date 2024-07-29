@@ -274,11 +274,9 @@ public class Cookie implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Cookie)) {
+    if (!(o instanceof Cookie cookie)) {
       return false;
     }
-
-    Cookie cookie = (Cookie) o;
 
     if (!name.equals(cookie.name)) {
       return false;
