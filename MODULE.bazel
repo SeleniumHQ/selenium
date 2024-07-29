@@ -78,7 +78,7 @@ use_repo(esbuild, "esbuild_toolchains")
 register_toolchains("@esbuild_toolchains//:all")
 
 dotnet = use_extension("@rules_dotnet//dotnet:extensions.bzl", "dotnet")
-dotnet.toolchain(dotnet_version = "7.0.400")
+dotnet.toolchain(dotnet_version = "8.0.203")
 use_repo(dotnet, "dotnet_toolchains")
 
 selenium_paket = use_extension("//dotnet:paket.nuget_extension.bzl", "nuget_extension")

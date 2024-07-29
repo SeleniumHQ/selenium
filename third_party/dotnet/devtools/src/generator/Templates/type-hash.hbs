@@ -12,7 +12,8 @@ namespace {{rootNamespace}}.{{domain.Name}}
         /// <summary>
         /// {{xml-code-comment Description 2}}
         ///</summary>
-        [JsonProperty("{{Name}}"{{#if Optional}}, DefaultValueHandling = DefaultValueHandling.Ignore{{/if}})]
+        [JsonPropertyName("{{Name}}")]
+        {{#if Optional}}[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]{{/if}}
         public {{typemap ../context}} {{dehumanize Name}}
         {
             get;
