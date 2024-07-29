@@ -52,6 +52,8 @@ csharp_library(
     ],
     deps = [
         framework("nuget", "NETStandard.Library"),
+        framework("nuget", "Microsoft.Bcl.AsyncInterfaces"),
+        framework("nuget", "System.Threading.Tasks.Extensions"),
         framework("nuget", "System.Memory"),
         framework("nuget", "System.Text.Json"),
     ],
@@ -111,6 +113,8 @@ csharp_library(
     ],
     deps = [
         framework("nuget", "NETStandard.Library"),
+        framework("nuget", "Microsoft.Bcl.AsyncInterfaces"),
+        framework("nuget", "System.Threading.Tasks.Extensions"),
         framework("nuget", "System.Memory"),
         framework("nuget", "System.Text.Json"),
     ],
