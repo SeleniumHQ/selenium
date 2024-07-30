@@ -187,6 +187,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         caps = readDevToolsEndpointAndVersion(caps);
         caps = readVncEndpoint(capabilities, caps);
+        caps = readContainerName(capabilities, caps);
 
         span.addEvent("Driver service created session", attributeMap);
         final HttpClient fClient = client;
@@ -297,6 +298,16 @@ public class DriverServiceSessionFactory implements SessionFactory {
               .setCapability("se:vncLocalAddress", vncLocalAddress)
               .setCapability(seVncEnabledCap, true);
     }
+    return returnedCaps;
+  }
+
+  private Capabilities readContainerName(Capabilities requestedCaps, Capabilities returnedCaps) {
+    String seContainerNameCap = "se:containerName";
+    String seContainerName = String.valueOf(requestedCaps.getCapability(seContainerNameCap));
+
+    returnedCaps =
+        new PersistentCapabilities(returnedCaps).setCapability(seContainerNameCap, seContainerName);
+
     return returnedCaps;
   }
 
