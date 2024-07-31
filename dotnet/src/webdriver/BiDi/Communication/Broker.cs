@@ -135,9 +135,9 @@ public class Broker : IAsyncDisposable
             }
             catch (Exception ex)
             {
-                if (_logger.IsEnabled(LogEventLevel.Warn))
+                if (_logger.IsEnabled(LogEventLevel.Error))
                 {
-                    _logger.Warn($"Unhandled error processing BiDi event: {ex}");
+                    _logger.Error($"Unhandled error processing BiDi event: {ex}");
                 }
             }
         }
