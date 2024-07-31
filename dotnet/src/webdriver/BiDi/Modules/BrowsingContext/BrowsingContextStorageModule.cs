@@ -5,7 +5,7 @@ namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 
 public class BrowsingContextStorageModule(BrowsingContext context, StorageModule storageModule)
 {
-    public Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = default)
+    public Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null)
     {
         options ??= new();
 
@@ -14,7 +14,7 @@ public class BrowsingContextStorageModule(BrowsingContext context, StorageModule
         return storageModule.GetCookiesAsync(options);
     }
 
-    public async Task<PartitionKey> DeleteCookiesAsync(DeleteCookiesOptions? options = default)
+    public async Task<PartitionKey> DeleteCookiesAsync(DeleteCookiesOptions? options = null)
     {
         options ??= new();
 
@@ -25,7 +25,7 @@ public class BrowsingContextStorageModule(BrowsingContext context, StorageModule
         return res.PartitionKey;
     }
 
-    public async Task<PartitionKey> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = default)
+    public async Task<PartitionKey> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null)
     {
         options ??= new();
 

@@ -13,7 +13,7 @@ public abstract record Locator
     public static CssLocator Css(string value)
         => new(value);
 
-    public static InnerTextLocator InnerText(string value, bool? ignoreCase = default, MatchType? matchType = default, long? maxDepth = default)
+    public static InnerTextLocator InnerText(string value, bool? ignoreCase = null, MatchType? matchType = null, long? maxDepth = null)
         => new(value) { IgnoreCase = ignoreCase, MatchType = matchType, MaxDepth = maxDepth };
 
     public static XPathLocator XPath(string value)

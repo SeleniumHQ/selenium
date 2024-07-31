@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Communication;
 
-public abstract class EventHandler(string eventName, Type eventArgsType, IEnumerable<BrowsingContext>? contexts = default)
+public abstract class EventHandler(string eventName, Type eventArgsType, IEnumerable<BrowsingContext>? contexts = null)
 {
     public string EventName { get; } = eventName;
     public Type EventArgsType { get; set; } = eventArgsType;
@@ -14,7 +14,7 @@ public abstract class EventHandler(string eventName, Type eventArgsType, IEnumer
     public abstract ValueTask InvokeAsync(object args);
 }
 
-internal class AsyncEventHandler<TEventArgs>(string eventName, Func<TEventArgs, Task> func, IEnumerable<BrowsingContext>? contexts = default)
+internal class AsyncEventHandler<TEventArgs>(string eventName, Func<TEventArgs, Task> func, IEnumerable<BrowsingContext>? contexts = null)
     : EventHandler(eventName, typeof(TEventArgs), contexts) where TEventArgs : EventArgs
 {
     private readonly Func<TEventArgs, Task> _func = func;
@@ -25,7 +25,7 @@ internal class AsyncEventHandler<TEventArgs>(string eventName, Func<TEventArgs, 
     }
 }
 
-internal class SyncEventHandler<TEventArgs>(string eventName, Action<TEventArgs> action, IEnumerable<BrowsingContext>? contexts = default)
+internal class SyncEventHandler<TEventArgs>(string eventName, Action<TEventArgs> action, IEnumerable<BrowsingContext>? contexts = null)
     : EventHandler(eventName, typeof(TEventArgs), contexts) where TEventArgs : EventArgs
 {
     private readonly Action<TEventArgs> _action = action;

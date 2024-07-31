@@ -7,7 +7,7 @@ namespace OpenQA.Selenium.BiDi.Modules.Script;
 
 public sealed class ScriptModule(Broker broker) : Module(broker)
 {
-    public async Task<RemoteValue> EvaluateAsync(string expression, bool awaitPromise, Target target, EvaluateOptions? options = default)
+    public async Task<RemoteValue> EvaluateAsync(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
     {
         var @params = new EvaluateCommandParameters(expression, target, awaitPromise);
 
@@ -28,7 +28,7 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
         return ((EvaluateResultSuccess)result).Result;
     }
 
-    public async Task<RemoteValue> CallFunctionAsync(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = default)
+    public async Task<RemoteValue> CallFunctionAsync(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
     {
         var @params = new CallFunctionCommandParameters(functionDeclaration, awaitPromise, target);
 
@@ -51,7 +51,7 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
         return ((EvaluateResultSuccess)result).Result;
     }
 
-    public async Task<IReadOnlyList<RealmInfo>> GetRealmsAsync(GetRealmsOptions? options = default)
+    public async Task<IReadOnlyList<RealmInfo>> GetRealmsAsync(GetRealmsOptions? options = null)
     {
         var @params = new GetRealmsCommandParameters();
 
@@ -66,7 +66,7 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
         return result.Realms;
     }
 
-    public async Task<PreloadScript> AddPreloadScriptAsync(string functionDeclaration, AddPreloadScriptOptions? options = default)
+    public async Task<PreloadScript> AddPreloadScriptAsync(string functionDeclaration, AddPreloadScriptOptions? options = null)
     {
         var @params = new AddPreloadScriptCommandParameters(functionDeclaration);
 
@@ -82,7 +82,7 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
         return result.Script;
     }
 
-    public async Task RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = default)
+    public async Task RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null)
     {
         var @params = new RemovePreloadScriptCommandParameters(script);
 

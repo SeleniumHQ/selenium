@@ -60,17 +60,17 @@ public class BiDi : IAsyncDisposable
         return bidi;
     }
 
-    public Task<Modules.BrowsingContext.BrowsingContext> CreateBrowsingContextAsync(Modules.BrowsingContext.BrowsingContextType type, Modules.BrowsingContext.CreateOptions? options = default)
+    public Task<Modules.BrowsingContext.BrowsingContext> CreateBrowsingContextAsync(Modules.BrowsingContext.BrowsingContextType type, Modules.BrowsingContext.CreateOptions? options = null)
     {
         return BrowsingContextModule.CreateAsync(type, options);
     }
 
-    public Task<IReadOnlyList<Modules.BrowsingContext.BrowsingContextInfo>> GetBrowsingContextTreeAsync(Modules.BrowsingContext.GetTreeOptions? options = default)
+    public Task<IReadOnlyList<Modules.BrowsingContext.BrowsingContextInfo>> GetBrowsingContextTreeAsync(Modules.BrowsingContext.GetTreeOptions? options = null)
     {
         return BrowsingContextModule.GetTreeAsync(options);
     }
 
-    public async Task EndAsync(Modules.Session.EndOptions? options = default)
+    public async Task EndAsync(Modules.Session.EndOptions? options = null)
     {
         await SessionModule.EndAsync(options).ConfigureAwait(false);
 
@@ -84,42 +84,42 @@ public class BiDi : IAsyncDisposable
         await EndAsync().ConfigureAwait(false);
     }
 
-    public Task<Subscription> OnBrowsingContextCreatedAsync(Func<Modules.BrowsingContext.BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = default)
+    public Task<Subscription> OnBrowsingContextCreatedAsync(Func<Modules.BrowsingContext.BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnContextCreatedAsync(handler, options);
     }
 
-    public Task<Subscription> OnBrowsingContextCreatedAsync(Action<Modules.BrowsingContext.BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = default)
+    public Task<Subscription> OnBrowsingContextCreatedAsync(Action<Modules.BrowsingContext.BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnContextCreatedAsync(handler, options);
     }
 
-    public Task<Subscription> OnBrowsingContextDestroyedAsync(Func<Modules.BrowsingContext.BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = default)
+    public Task<Subscription> OnBrowsingContextDestroyedAsync(Func<Modules.BrowsingContext.BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnContextDestroyedAsync(handler, options);
     }
 
-    public Task<Subscription> OnBrowsingContextDestroyedAsync(Action<Modules.BrowsingContext.BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = default)
+    public Task<Subscription> OnBrowsingContextDestroyedAsync(Action<Modules.BrowsingContext.BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnContextDestroyedAsync(handler, options);
     }
 
-    public Task<Subscription> OnUserPromptOpenedAsync(Func<Modules.BrowsingContext.UserPromptOpenedEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = default)
+    public Task<Subscription> OnUserPromptOpenedAsync(Func<Modules.BrowsingContext.UserPromptOpenedEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnUserPromptOpenedAsync(handler, options);
     }
 
-    public Task<Subscription> OnUserPromptOpenedAsync(Action<Modules.BrowsingContext.UserPromptOpenedEventArgs> handler, BrowsingContextsSubscriptionOptions? options = default)
+    public Task<Subscription> OnUserPromptOpenedAsync(Action<Modules.BrowsingContext.UserPromptOpenedEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnUserPromptOpenedAsync(handler, options);
     }
 
-    public Task<Subscription> OnUserPromptClosedAsync(Func<Modules.BrowsingContext.UserPromptClosedEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = default)
+    public Task<Subscription> OnUserPromptClosedAsync(Func<Modules.BrowsingContext.UserPromptClosedEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnUserPromptClosedAsync(handler, options);
     }
 
-    public Task<Subscription> OnUserPromptClosedAsync(Action<Modules.BrowsingContext.UserPromptClosedEventArgs> handler, BrowsingContextsSubscriptionOptions? options = default)
+    public Task<Subscription> OnUserPromptClosedAsync(Action<Modules.BrowsingContext.UserPromptClosedEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnUserPromptClosedAsync(handler, options);
     }

@@ -172,7 +172,7 @@ public class Broker : IAsyncDisposable
         return await tcs.Task.ConfigureAwait(false);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options = default)
+    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options = null)
         where TEventArgs : EventArgs
     {
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
@@ -199,7 +199,7 @@ public class Broker : IAsyncDisposable
         }
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options = default)
+    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options = null)
         where TEventArgs : EventArgs
     {
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);

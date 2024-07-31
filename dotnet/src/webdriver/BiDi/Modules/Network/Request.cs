@@ -14,7 +14,7 @@ public class Request
 
     public string Id { get; private set; }
 
-    public Task ContinueAsync(ContinueRequestOptions? options = default)
+    public Task ContinueAsync(ContinueRequestOptions? options = null)
     {
         return _bidi.Network.ContinueRequestAsync(this, options);
     }
@@ -24,27 +24,27 @@ public class Request
         return _bidi.Network.FailRequestAsync(this);
     }
 
-    public Task ProvideResponseAsync(ProvideResponseOptions? options = default)
+    public Task ProvideResponseAsync(ProvideResponseOptions? options = null)
     {
         return _bidi.Network.ProvideResponseAsync(this, options);
     }
 
-    public Task ContinueResponseAsync(ContinueResponseOptions? options = default)
+    public Task ContinueResponseAsync(ContinueResponseOptions? options = null)
     {
         return _bidi.Network.ContinueResponseAsync(this, options);
     }
 
-    public Task ContinueWithAuthAsync(AuthCredentials credentials, ContinueWithAuthOptions? options = default)
+    public Task ContinueWithAuthAsync(AuthCredentials credentials, ContinueWithAuthOptions? options = null)
     {
         return _bidi.Network.ContinueWithAuthAsync(this, credentials, options);
     }
 
-    public Task ContinueWithAuthAsync(ContinueWithDefaultAuthOptions? options = default)
+    public Task ContinueWithAuthAsync(ContinueWithDefaultAuthOptions? options = null)
     {
         return _bidi.Network.ContinueWithAuthAsync(this, options);
     }
 
-    public Task ContinueWithAuthAsync(ContinueWithCancelledAuthOptions? options = default)
+    public Task ContinueWithAuthAsync(ContinueWithCancelledAuthOptions? options = null)
     {
         return _bidi.Network.ContinueWithAuthAsync(this, options);
     }

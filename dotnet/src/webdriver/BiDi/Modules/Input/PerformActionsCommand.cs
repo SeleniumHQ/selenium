@@ -50,7 +50,7 @@ public record KeySourceActions : SourceActions
         return this;
     }
 
-    public KeySourceActions Pause(long? duration = default)
+    public KeySourceActions Pause(long? duration = null)
     {
         Actions.Add(new KeyPauseAction { Duration = duration });
 

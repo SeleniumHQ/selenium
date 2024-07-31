@@ -38,134 +38,134 @@ public class BrowsingContext
 
     public BrowsingContextInputModule Input => _inputModule.Value;
 
-    public Task<NavigateResult> NavigateAsync(string url, NavigateOptions? options = default)
+    public Task<NavigateResult> NavigateAsync(string url, NavigateOptions? options = null)
     {
         return _bidi.BrowsingContextModule.NavigateAsync(this, url, options);
     }
 
-    public Task<NavigateResult> ReloadAsync(ReloadOptions? options = default)
+    public Task<NavigateResult> ReloadAsync(ReloadOptions? options = null)
     {
         return _bidi.BrowsingContextModule.ReloadAsync(this, options);
     }
 
-    public Task ActivateAsync(ActivateOptions? options = default)
+    public Task ActivateAsync(ActivateOptions? options = null)
     {
         return _bidi.BrowsingContextModule.ActivateAsync(this, options);
     }
 
-    public Task<IReadOnlyList<Script.NodeRemoteValue>> LocateNodesAsync(Locator locator, LocateNodesOptions? options = default)
+    public Task<IReadOnlyList<Script.NodeRemoteValue>> LocateNodesAsync(Locator locator, LocateNodesOptions? options = null)
     {
         return _bidi.BrowsingContextModule.LocateNodesAsync(this, locator, options);
     }
 
-    public Task<CaptureScreenshotResult> CaptureScreenshotAsync(CaptureScreenshotOptions? options = default)
+    public Task<CaptureScreenshotResult> CaptureScreenshotAsync(CaptureScreenshotOptions? options = null)
     {
         return _bidi.BrowsingContextModule.CaptureScreenshotAsync(this, options);
     }
 
-    public Task CloseAsync(CloseOptions? options = default)
+    public Task CloseAsync(CloseOptions? options = null)
     {
         return _bidi.BrowsingContextModule.CloseAsync(this, options);
     }
 
-    public Task TraverseHistoryAsync(int delta, TraverseHistoryOptions? options = default)
+    public Task TraverseHistoryAsync(int delta, TraverseHistoryOptions? options = null)
     {
         return _bidi.BrowsingContextModule.TraverseHistoryAsync(this, delta, options);
     }
 
-    public Task NavigateBackAsync(TraverseHistoryOptions? options = default)
+    public Task NavigateBackAsync(TraverseHistoryOptions? options = null)
     {
         return TraverseHistoryAsync(-1, options);
     }
 
-    public Task NavigateForwardAsync(TraverseHistoryOptions? options = default)
+    public Task NavigateForwardAsync(TraverseHistoryOptions? options = null)
     {
         return TraverseHistoryAsync(1, options);
     }
 
-    public Task SetViewportAsync(SetViewportOptions? options = default)
+    public Task SetViewportAsync(SetViewportOptions? options = null)
     {
         return _bidi.BrowsingContextModule.SetViewportAsync(this, options);
     }
 
-    public async Task<string> PrintAsync(PrintOptions? options = default)
+    public async Task<string> PrintAsync(PrintOptions? options = null)
     {
         var result = await _bidi.BrowsingContextModule.PrintAsync(this, options).ConfigureAwait(false);
 
         return result.Data;
     }
 
-    public Task HandleUserPromptAsync(HandleUserPromptOptions? options = default)
+    public Task HandleUserPromptAsync(HandleUserPromptOptions? options = null)
     {
         return _bidi.BrowsingContextModule.HandleUserPromptAsync(this, options);
     }
 
-    public Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnNavigationStartedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnNavigationStartedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnNavigationStartedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnNavigationStartedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnFragmentNavigatedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnFragmentNavigatedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnFragmentNavigatedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnFragmentNavigatedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnFragmentNavigatedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnFragmentNavigatedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnDomContentLoadedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnDomContentLoadedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnDomContentLoadedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnLoadAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnLoadAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnLoadAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnLoadAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnLoadAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnLoadAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnDownloadWillBeginAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnDownloadWillBeginAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnDownloadWillBeginAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnDownloadWillBeginAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnDownloadWillBeginAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnDownloadWillBeginAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnNavigationAbortedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnNavigationAbortedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnNavigationAbortedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnNavigationAbortedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnNavigationAbortedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnNavigationAbortedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnNavigationFailedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnNavigationFailedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnNavigationFailedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnNavigationFailedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnNavigationFailedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnNavigationFailedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnDomContentLoadedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = default)
+    public Task<Subscription> OnDomContentLoadedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnDomContentLoadedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }

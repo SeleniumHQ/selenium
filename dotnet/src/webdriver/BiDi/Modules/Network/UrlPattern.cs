@@ -7,7 +7,7 @@ namespace OpenQA.Selenium.BiDi.Modules.Network;
 [JsonDerivedType(typeof(UrlPatternString), "string")]
 public abstract record UrlPattern
 {
-    public static UrlPatternPattern Patter(string? protocol = default, string? hostname = default, string? port = default, string? pathname = default, string? search = default)
+    public static UrlPatternPattern Patter(string? protocol = null, string? hostname = null, string? port = null, string? pathname = null, string? search = null)
         => new() { Protocol = protocol, Hostname = hostname, Port = port, Pathname = pathname, Search = search };
 
     public static UrlPatternString String(string pattern) => new UrlPatternString(pattern);

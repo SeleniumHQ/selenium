@@ -5,7 +5,7 @@ namespace OpenQA.Selenium.BiDi.Modules.Input;
 
 public sealed class InputModule(Broker broker) : Module(broker)
 {
-    public async Task PerformActionsAsync(BrowsingContext.BrowsingContext context, PerformActionsOptions? options = default)
+    public async Task PerformActionsAsync(BrowsingContext.BrowsingContext context, PerformActionsOptions? options = null)
     {
         var @params = new PerformActionsCommandParameters(context);
 
@@ -17,7 +17,7 @@ public sealed class InputModule(Broker broker) : Module(broker)
         await Broker.ExecuteCommandAsync(new PerformActionsCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = default)
+    public async Task ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null)
     {
         var @params = new ReleaseActionsCommandParameters(context);
 

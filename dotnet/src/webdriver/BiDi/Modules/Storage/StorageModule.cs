@@ -5,7 +5,7 @@ namespace OpenQA.Selenium.BiDi.Modules.Storage;
 
 public class StorageModule(Broker broker) : Module(broker)
 {
-    public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = default)
+    public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null)
     {
         var @params = new GetCookiesCommandParameters();
 
@@ -18,7 +18,7 @@ public class StorageModule(Broker broker) : Module(broker)
         return await Broker.ExecuteCommandAsync<GetCookiesResult>(new GetCookiesCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task<DeleteCookiesResult> DeleteCookiesAsync(DeleteCookiesOptions? options = default)
+    public async Task<DeleteCookiesResult> DeleteCookiesAsync(DeleteCookiesOptions? options = null)
     {
         var @params = new DeleteCookiesCommandParameters();
 
@@ -31,7 +31,7 @@ public class StorageModule(Broker broker) : Module(broker)
         return await Broker.ExecuteCommandAsync<DeleteCookiesResult>(new DeleteCookiesCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = default)
+    public async Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null)
     {
         var @params = new SetCookieCommandParameters(cookie);
 
