@@ -144,7 +144,7 @@ js_library(
     deb_archive(
         name = "linux_edge",
         url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_127.0.2651.74-1_amd64.deb",
-        sha256 = "533f5228cf9ffa30b135ca9d84a8b0f53a82bf63",
+        sha256 = "5d7363177d366c0247a304c9dc9caa09158d7768a632736c8cf36b0278340328",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
