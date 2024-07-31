@@ -4,7 +4,6 @@ using System.Net.WebSockets;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text.Json;
-using System.Diagnostics;
 using System.Text;
 using OpenQA.Selenium.Internal.Logging;
 
@@ -54,7 +53,7 @@ public class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 
         if (_logger.IsEnabled(LogEventLevel.Trace))
         {
-            Debug.WriteLine($"BIDI SND >> {buffer.Length} > {Encoding.UTF8.GetString(buffer)}");
+            _logger.Trace($"BIDI SND >> {buffer.Length} > {Encoding.UTF8.GetString(buffer)}");
         }
 
         await _webSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);

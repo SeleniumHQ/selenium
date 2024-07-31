@@ -1,9 +1,9 @@
 using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using OpenQA.Selenium.BiDi.Communication.Transport;
+using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -14,13 +14,13 @@ namespace OpenQA.Selenium.BiDi.Communication;
 
 public class Broker : IAsyncDisposable
 {
+    private readonly ILogger _logger = Log.GetLogger<Broker>();
+
     private readonly BiDi _bidi;
     private readonly ITransport _transport;
 
     private readonly ConcurrentDictionary<int, TaskCompletionSource<object>> _pendingCommands = new();
     private readonly BlockingCollection<MessageEvent> _pendingEvents = [];
-
-
 
     private readonly ConcurrentDictionary<string, List<EventHandler>> _eventHandlers = new();
 
@@ -135,8 +135,10 @@ public class Broker : IAsyncDisposable
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unhandled error processing BiDi event: {ex}");
-                Console.WriteLine($"Unhandled error processing BiDi event: {ex}");
+                if (_logger.IsEnabled(LogEventLevel.Warn))
+                {
+                    _logger.Warn($"Unhandled error processing BiDi event: {ex}");
+                }
             }
         }
     }
