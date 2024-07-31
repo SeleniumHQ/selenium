@@ -41,7 +41,11 @@ linter.register(name = "rust-rustfmt")
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
 node.toolchain(node_version = "20.9.0")
 
-pnpm = use_extension("@aspect_rules_js//npm:extensions.bzl", "pnpm", dev_dependency = True)
+pnpm = use_extension(
+    "@aspect_rules_js//npm:extensions.bzl",
+    "pnpm",
+    dev_dependency = True,
+)
 use_repo(pnpm, "pnpm")
 
 npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
@@ -347,8 +351,7 @@ use_repo(
     "linux_beta_firefox",
     "linux_chrome",
     "linux_chromedriver",
-    # Commenting out `linux_edge` since this is not created, but it really should be.
-    #"linux_edge",
+    "linux_edge",
     "linux_edgedriver",
     "linux_firefox",
     "linux_geckodriver",
