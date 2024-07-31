@@ -7,7 +7,7 @@ internal class LocateNodesCommand(LocateNodesCommandParameters @params) : Comman
 
 internal record LocateNodesCommandParameters(BrowsingContext Context, Locator Locator) : CommandParameters
 {
-    public ulong? MaxNodeCount { get; set; }
+    public long? MaxNodeCount { get; set; }
 
     public Script.SerializationOptions? SerializationOptions { get; set; }
 
@@ -16,7 +16,7 @@ internal record LocateNodesCommandParameters(BrowsingContext Context, Locator Lo
 
 public record LocateNodesOptions : CommandOptions
 {
-    public ulong? MaxNodeCount { get; set; }
+    public long? MaxNodeCount { get; set; }
 
     public Script.SerializationOptions? SerializationOptions { get; set; }
 

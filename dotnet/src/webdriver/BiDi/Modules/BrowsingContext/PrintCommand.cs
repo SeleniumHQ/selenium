@@ -16,7 +16,7 @@ internal record PrintCommandParameters(BrowsingContext Context) : CommandParamet
     public Page? Page { get; set; }
 
     // TODO: It also supports strings
-    public IEnumerable<ulong>? PageRanges { get; set; }
+    public IEnumerable<long>? PageRanges { get; set; }
 
     public double? Scale { get; set; }
 
@@ -34,7 +34,7 @@ public record PrintOptions : CommandOptions
     public Page? Page { get; set; }
 
     // TODO: It also supports strings
-    public IEnumerable<ulong>? PageRanges { get; set; }
+    public IEnumerable<long>? PageRanges { get; set; }
 
     public double? Scale { get; set; }
 

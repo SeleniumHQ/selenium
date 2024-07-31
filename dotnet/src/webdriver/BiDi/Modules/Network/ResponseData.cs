@@ -10,9 +10,9 @@ public record ResponseData(string Url,
                           bool FromCache,
                           IReadOnlyList<Header> Headers,
                           string MymeType,
-                          ulong BytesReceived,
-                          ulong? HeadersSize,
-                          ulong? BodySize,
+                          long BytesReceived,
+                          long? HeadersSize,
+                          long? BodySize,
                           ResponseContent Content)
 {
     [JsonInclude]

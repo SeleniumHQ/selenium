@@ -50,7 +50,7 @@ public record KeySourceActions : SourceActions
         return this;
     }
 
-    public KeySourceActions Pause(ulong? duration = default)
+    public KeySourceActions Pause(long? duration = default)
     {
         Actions.Add(new KeyPauseAction { Duration = duration });
 
@@ -66,7 +66,7 @@ public abstract record KeySourceAction;
 
 public record KeyPauseAction : KeySourceAction
 {
-    public ulong? Duration { get; set; }
+    public long? Duration { get; set; }
 }
 
 public record KeyDownAction(string Value) : KeySourceAction;

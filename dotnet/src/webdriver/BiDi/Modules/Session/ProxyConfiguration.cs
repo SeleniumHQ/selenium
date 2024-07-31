@@ -24,7 +24,7 @@ public record ManualProxyConfiguration : ProxyConfiguration
 
     public string? SocksProxy { get; set; }
 
-    public ulong? SocksVersion { get; set; }
+    public long? SocksVersion { get; set; }
 }
 
 public record PacProxyConfiguration(string ProxyAutoconfigUrl) : ProxyConfiguration;

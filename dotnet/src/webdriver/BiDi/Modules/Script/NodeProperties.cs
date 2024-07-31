@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
-public record NodeProperties(ulong NodeType, ulong ChildNodeCount)
+public record NodeProperties(long NodeType, long ChildNodeCount)
 {
     [JsonInclude]
     public IReadOnlyDictionary<string, string>? Attributes { get; internal set; }

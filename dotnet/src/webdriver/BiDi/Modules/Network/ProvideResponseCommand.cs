@@ -15,7 +15,7 @@ internal record ProvideResponseCommandParameters(Request Request) : CommandParam
 
     public string? ReasonPhrase { get; set; }
 
-    public ulong? StatusCode { get; set; }
+    public long? StatusCode { get; set; }
 }
 
 public record ProvideResponseOptions : CommandOptions
@@ -28,5 +28,5 @@ public record ProvideResponseOptions : CommandOptions
 
     public string? ReasonPhrase { get; set; }
 
-    public ulong? StatusCode { get; set; }
+    public long? StatusCode { get; set; }
 }

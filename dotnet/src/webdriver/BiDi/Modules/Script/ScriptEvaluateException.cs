@@ -8,7 +8,7 @@ public class ScriptEvaluateException(EvaluateResultException evaluateResultExcep
 
     public string Text => _evaluateResultException.ExceptionDetails.Text;
 
-    public ulong ColumNumber => _evaluateResultException.ExceptionDetails.ColumnNumber;
+    public long ColumNumber => _evaluateResultException.ExceptionDetails.ColumnNumber;
 
     public override string Message => $"{Text}{Environment.NewLine}{_evaluateResultException.ExceptionDetails.StackTrace}";
 }

@@ -7,14 +7,14 @@ internal class GetTreeCommand(GetTreeCommandParameters @params) : Command<GetTre
 
 internal record GetTreeCommandParameters : CommandParameters
 {
-    public ulong? MaxDepth { get; set; }
+    public long? MaxDepth { get; set; }
 
     public BrowsingContext? Root { get; set; }
 }
 
 public record GetTreeOptions : CommandOptions
 {
-    public ulong? MaxDepth { get; set; }
+    public long? MaxDepth { get; set; }
 
     public BrowsingContext? Root { get; set; }
 }
