@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -219,8 +218,6 @@ public class GeckoDriverService extends FirefoxDriverService {
 
     @Override
     protected List<String> createArgs() {
-      Locale.setDefault(Locale.US);
-
       List<String> args = new ArrayList<>();
       args.add(String.format("--port=%d", getPort()));
 
