@@ -206,8 +206,9 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   void shouldLaunchSuccessfullyWithArabicDate() {
-    Locale arabicLocal = new Locale("ar", "EG");
-    Locale.setDefault(arabicLocal);
+    Locale arabicLocale = new Locale("ar", "EG");
+    Locale.setDefault(arabicLocale);
+    Locale.setDefault(Locale.US);
 
     int port = PortProber.findFreePort();
     ChromeDriverService.Builder builder = new ChromeDriverService.Builder();
@@ -217,7 +218,5 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
     driver = new ChromeDriver(service, (ChromeOptions) CHROME.getCapabilities());
     driver.get(pages.simpleTestPage);
     assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
-
-    Locale.setDefault(Locale.US);
   }
 }
