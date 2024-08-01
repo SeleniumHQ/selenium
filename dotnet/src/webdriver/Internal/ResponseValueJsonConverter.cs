@@ -16,87 +16,89 @@
 // limitations under the License.
 // </copyright>
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.Internal
 {
     /// <summary>
     /// Converts the response to JSON
     /// </summary>
-    internal class ResponseValueJsonConverter : JsonConverter
+    internal class ResponseValueJsonConverter : JsonConverter<object>
     {
-        /// <summary>
-        /// Checks if the object can be converted
-        /// </summary>
-        /// <param name="objectType">The object to be converted</param>
-        /// <returns>True if it can be converted or false if can't be</returns>
-        public override bool CanConvert(Type objectType)
+        public override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return true;
+            return this.ProcessToken(ref reader, options);
         }
 
-        /// <summary>
-        /// Process the reader to return an object from JSON
-        /// </summary>
-        /// <param name="reader">A JSON reader</param>
-        /// <param name="objectType">Type of the object</param>
-        /// <param name="existingValue">The existing value of the object</param>
-        /// <param name="serializer">JSON Serializer</param>
-        /// <returns>Object created from JSON</returns>
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
         {
-            return this.ProcessToken(reader);
+            JsonSerializer.Serialize(writer, value, options);
         }
 
-        /// <summary>
-        /// Writes objects to JSON. Currently not implemented
-        /// </summary>
-        /// <param name="writer">JSON Writer Object</param>
-        /// <param name="value">Value to be written</param>
-        /// <param name="serializer">JSON Serializer </param>
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            if (serializer != null)
-            {
-                serializer.Serialize(writer, value);
-            }
-        }
-
-        private object ProcessToken(JsonReader reader)
+        private object ProcessToken(ref Utf8JsonReader reader, JsonSerializerOptions options)
         {
             // Recursively processes a token. This is required for elements that next other elements.
             object processedObject = null;
-            if (reader != null)
+
+            if (reader.TokenType == JsonTokenType.StartObject)
             {
-                reader.DateParseHandling = DateParseHandling.None;
-                if (reader.TokenType == JsonToken.StartObject)
+                Dictionary<string, object> dictionaryValue = new Dictionary<string, object>();
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
                 {
-                    Dictionary<string, object> dictionaryValue = new Dictionary<string, object>();
-                    while (reader.Read() && reader.TokenType != JsonToken.EndObject)
-                    {
-                        string elementKey = reader.Value.ToString();
-                        reader.Read();
-                        dictionaryValue.Add(elementKey, this.ProcessToken(reader));
-                    }
-
-                    processedObject = dictionaryValue;
+                    string elementKey = reader.GetString();
+                    reader.Read();
+                    dictionaryValue.Add(elementKey, this.ProcessToken(ref reader, options));
                 }
-                else if (reader.TokenType == JsonToken.StartArray)
-                {
-                    List<object> arrayValue = new List<object>();
-                    while (reader.Read() && reader.TokenType != JsonToken.EndArray)
-                    {
-                        arrayValue.Add(this.ProcessToken(reader));
-                    }
 
-                    processedObject = arrayValue.ToArray();
+                processedObject = dictionaryValue;
+            }
+            else if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                List<object> arrayValue = new List<object>();
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+                {
+                    arrayValue.Add(this.ProcessToken(ref reader, options));
+                }
+
+                processedObject = arrayValue.ToArray();
+            }
+            else if (reader.TokenType == JsonTokenType.Null)
+            {
+                processedObject = null;
+            }
+            else if (reader.TokenType == JsonTokenType.False)
+            {
+                processedObject = false;
+            }
+            else if (reader.TokenType == JsonTokenType.True)
+            {
+                processedObject = true;
+            }
+            else if (reader.TokenType == JsonTokenType.String)
+            {
+                processedObject = reader.GetString();
+            }
+            else if (reader.TokenType == JsonTokenType.Number)
+            {
+                if (reader.TryGetInt64(out long longValue))
+                {
+                    processedObject = longValue;
+                }
+                else if (reader.TryGetDouble(out double doubleValue))
+                {
+                    processedObject = doubleValue;
                 }
                 else
                 {
-                    processedObject = reader.Value;
+                    throw new JsonException($"Unrecognized '{JsonElement.ParseValue(ref reader)}' token as a number value.");
                 }
+            }
+            else
+            {
+                throw new JsonException($"Unrecognized '{reader.TokenType}' token type while parsing command response.");
             }
 
             return processedObject;
