@@ -141,32 +141,10 @@ js_library(
 """,
     )
 
-    deb_archive(
-        name = "linux_edge",
-        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_127.0.2651.74-1_amd64.deb",
-        sha256 = "5d7363177d366c0247a304c9dc9caa09158d7768a632736c8cf36b0278340328",
-        build_file_content = """
-load("@aspect_rules_js//js:defs.bzl", "js_library")
-package(default_visibility = ["//visibility:public"])
-
-filegroup(
-    name = "files",
-    srcs = glob(["**/*"]),
-)
-
-exports_files(["opt/microsoft/msedge/microsoft-edge"])
-
-js_library(
-    name = "edge-js",
-    data = [":files"],
-)
-""",
-    )
-
     http_archive(
         name = "linux_edgedriver",
-        url = "https://msedgedriver.azureedge.net/127.0.2651.72/edgedriver_linux64.zip",
-        sha256 = "d549371e14bd6f3522d58ba88328cc411af86146b48f923fb9a9072569032103",
+        url = "https://msedgedriver.azureedge.net/127.0.2651.74/edgedriver_linux64.zip",
+        sha256 = "b0d0356fdbb270d1c503184b84ea83b70e1e1b62697f39ffec4457b38382af91",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -182,8 +160,8 @@ js_library(
 
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.azureedge.net/127.0.2651.72/edgedriver_mac64.zip",
-        sha256 = "bf409629b5a0e741048bb825dfe41a2327e2a90640e06c755c4df65596a569f0",
+        url = "https://msedgedriver.azureedge.net/127.0.2651.74/edgedriver_mac64.zip",
+        sha256 = "2ec351cb1d4d3838b1c0917a513d14282560cd90b7b376d665cf981546274525",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
