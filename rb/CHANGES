@@ -1,3 +1,25 @@
+4.23.0 (2024-07-18)
+=========================
+* Add FedCM support to the ruby selenium client (#13796)
+* Add URLs constant to update error messages (#14174)
+* Update selenium manager types (#14189)
+* Add backtrace locations and cause to errors (#14170)
+* Add CDP for Chrome 127 and remove 124
+
+4.22.0 (2024-06-20)
+=========================
+
+* Force UTF-8 encoding on logger (see #6937)
+* Don't crash when ChildProcess is already killed (see #14032)
+* Manage bidi instance on the bridge not the driver (#14071)
+* Implement High Level Logging API with BiDi (#14073)
+* Fix bug with message deletion in Guard class
+* Change output for Guard class
+* Implement toggle for BiDi and Classic implementations (#14092)
+* Add preference to enable CDP in Firefox by default (#14091)
+* Add support for the w3c silent option for the ruby library (#14152)
+* Add CDP for Chrome 126 and remove 123
+
 4.21.1 (2024-05-16)
 =========================
 

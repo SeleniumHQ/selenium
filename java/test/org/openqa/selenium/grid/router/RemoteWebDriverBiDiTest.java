@@ -42,6 +42,7 @@ import org.openqa.selenium.bidi.browsingcontext.NavigationResult;
 import org.openqa.selenium.bidi.log.ConsoleLogEntry;
 import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.bidi.module.LogInspector;
+import org.openqa.selenium.bidi.script.Source;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.grid.config.TomlConfig;
@@ -108,8 +109,10 @@ class RemoteWebDriverBiDiTest {
 
       ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
+      Source source = logEntry.getSource();
+      assertThat(source.getBrowsingContext().isPresent()).isTrue();
+      assertThat(source.getRealm()).isNotNull();
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
-      assertThat(logEntry.getRealm()).isNull();
       assertThat(logEntry.getArgs().size()).isEqualTo(1);
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);

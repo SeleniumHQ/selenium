@@ -124,6 +124,8 @@ public class RemoteWebDriver
   private Logs remoteLogs;
   private LocalLogs localLogs;
 
+  private Script remoteScript;
+
   // For cglib
   protected RemoteWebDriver() {
     this.capabilities = init(new ImmutableCapabilities());
@@ -484,6 +486,13 @@ public class RemoteWebDriver
   @Override
   public Options manage() {
     return new RemoteWebDriverOptions();
+  }
+
+  public Script script() {
+    if (this.remoteScript == null) {
+      this.remoteScript = new RemoteScript(this);
+    }
+    return this.remoteScript;
   }
 
   protected JsonToWebElementConverter getElementConverter() {

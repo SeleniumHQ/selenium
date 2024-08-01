@@ -1,17 +1,21 @@
 module Selenium
   module WebDriver
     module Error
-      def self.for_error: (untyped error) -> untyped
+      def self.for_error: (String? error) -> Class?
 
       SUPPORT_MSG: String
 
       ERROR_URL: String
 
+      URLS: Hash[Symbol, String]
+
       class WebDriverError < StandardError
+        def initialize: (?String | Array[String] msg) -> void
+
+        def class_name: -> Symbol?
       end
 
       class NoSuchElementError < WebDriverError
-        def initialize: (?String msg) -> void
       end
 
       class NoSuchFrameError < WebDriverError
@@ -21,7 +25,6 @@ module Selenium
       end
 
       class StaleElementReferenceError < WebDriverError
-        def initialize: (?String msg) -> void
       end
 
       class DetachedShadowRootError < WebDriverError
@@ -58,7 +61,6 @@ module Selenium
       end
 
       class InvalidSelectorError < WebDriverError
-        def initialize: (?::String msg) -> void
       end
 
       class SessionNotCreatedError < WebDriverError
@@ -98,7 +100,6 @@ module Selenium
       end
 
       class NoSuchDriverError < WebDriverError
-        def initialize: (?String msg) -> void
       end
     end
   end

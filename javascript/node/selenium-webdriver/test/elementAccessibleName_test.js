@@ -19,7 +19,7 @@
 
 const assert = require('node:assert')
 const test = require('../lib/test')
-const { By, Browser } = require('../index')
+const { By, Browser } = require('selenium-webdriver')
 const { ignore } = require('../lib/test')
 
 test.suite(

@@ -59,17 +59,6 @@ jobs:
       contains(join(github.event.commits.*.message), '[java]') ||
       contains(github.event.pull_request.title, '[java]')
 
-  javascript:
-    name: JavaScript
-    needs: check
-    uses: ./.github/workflows/ci-javascript.yml
-    if: >
-      github.event_name == 'schedule' ||
-      github.event_name == 'workflow_dispatch' ||
-      contains(needs.check.outputs.targets, '//javascript') ||
-      contains(join(github.event.commits.*.message), '[js]') ||
-      contains(github.event.pull_request.title, '[js]')
-
   python:
     name: Python
     needs: check
