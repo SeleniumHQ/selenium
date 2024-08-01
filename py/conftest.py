@@ -320,7 +320,7 @@ def server(request):
 
 @pytest.fixture(autouse=True, scope="session")
 def webserver(request):
-    host = get_lan_ip() if request.config.getoption("use_lan_ip") else "0.0.0.0"
+    host = get_lan_ip() if request.config.getoption("use_lan_ip") else None
 
     webserver = SimpleWebServer(host=host)
     webserver.start()
