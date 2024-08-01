@@ -22,12 +22,16 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.HasBiDi;
@@ -35,6 +39,11 @@ import org.openqa.selenium.bidi.log.ConsoleLogEntry;
 import org.openqa.selenium.bidi.log.JavascriptLogEntry;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.script.ChannelValue;
+import org.openqa.selenium.bidi.script.EvaluateResult;
+import org.openqa.selenium.bidi.script.EvaluateResultExceptionValue;
+import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
+import org.openqa.selenium.bidi.script.LocalValue;
+import org.openqa.selenium.bidi.script.RemoteValue;
 import org.openqa.selenium.json.Json;
 
 @Beta
@@ -130,5 +139,31 @@ class RemoteScript implements Script {
   @Override
   public void unpin(String id) {
     this.script.removePreloadScript(id);
+  }
+
+  @Override
+  public RemoteValue execute(String script, Object... args) {
+    String browsingContextId = this.driver.getWindowHandle();
+
+    List<LocalValue> arguments = new ArrayList<>();
+
+    Arrays.stream(args).forEach(arg -> arguments.add(LocalValue.getArgument(arg)));
+
+    EvaluateResult result =
+        this.script.callFunctionInBrowsingContext(
+            browsingContextId,
+            script,
+            true,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
+
+    if (result.getResultType().equals(EvaluateResult.Type.SUCCESS)) {
+      return ((EvaluateResultSuccess) result).getResult();
+    } else {
+      throw new WebDriverException(
+          "Error while executing script: "
+              + ((EvaluateResultExceptionValue) result).getExceptionDetails().getText());
+    }
   }
 }
