@@ -19,8 +19,8 @@
 
 const assert = require('node:assert')
 const test = require('../lib/test')
-const { By } = require('..')
-const { UnknownCommandError } = require('../lib/error')
+const { By } = require('selenium-webdriver')
+const { UnknownCommandError } = require('selenium-webdriver/lib/error')
 
 test.suite(function (env) {
   let driver

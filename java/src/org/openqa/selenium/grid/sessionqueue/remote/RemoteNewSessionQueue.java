@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionqueue.remote;
 
+import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -25,6 +26,7 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,7 @@ import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.TypeToken;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -77,14 +80,17 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   public static NewSessionQueue create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
     URI uri = new NewSessionQueueOptions(config).getSessionQueueUri();
+    Duration sessionRequestTimeout = new NewSessionQueueOptions(config).getSessionRequestTimeout();
     HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
 
     SecretOptions secretOptions = new SecretOptions(config);
     Secret registrationSecret = secretOptions.getRegistrationSecret();
 
     try {
+      ClientConfig clientConfig =
+          defaultConfig().readTimeout(sessionRequestTimeout).baseUrl(uri.toURL());
       return new RemoteNewSessionQueue(
-          tracer, clientFactory.createClient(uri.toURL()), registrationSecret);
+          tracer, clientFactory.createClient(clientConfig), registrationSecret);
     } catch (MalformedURLException e) {
       throw new UncheckedIOException(e);
     }

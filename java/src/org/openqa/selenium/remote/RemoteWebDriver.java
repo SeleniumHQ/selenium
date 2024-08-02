@@ -110,6 +110,10 @@ public class RemoteWebDriver
         TakesScreenshot {
 
   private static final Logger LOG = Logger.getLogger(RemoteWebDriver.class.getName());
+
+  /** Boolean system property that defines whether the tracing is enabled or not. */
+  private static final String WEBDRIVER_REMOTE_ENABLE_TRACING = "webdriver.remote.enableTracing";
+
   private final ElementLocation elementLocation = new ElementLocation();
   private Level level = Level.FINE;
   private ErrorHandler errorHandler = new ErrorHandler();
@@ -124,13 +128,18 @@ public class RemoteWebDriver
   private Logs remoteLogs;
   private LocalLogs localLogs;
 
+  private Script remoteScript;
+
   // For cglib
   protected RemoteWebDriver() {
     this.capabilities = init(new ImmutableCapabilities());
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
-    this(getDefaultServerURL(), Require.nonNull("Capabilities", capabilities), true);
+    this(
+        getDefaultServerURL(),
+        Require.nonNull("Capabilities", capabilities),
+        Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true")));
   }
 
   public RemoteWebDriver(Capabilities capabilities, boolean enableTracing) {
@@ -139,7 +148,9 @@ public class RemoteWebDriver
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
     this(
-        createExecutor(Require.nonNull("Server URL", remoteAddress), true),
+        createExecutor(
+            Require.nonNull("Server URL", remoteAddress),
+            Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true"))),
         Require.nonNull("Capabilities", capabilities));
   }
 
@@ -484,6 +495,13 @@ public class RemoteWebDriver
   @Override
   public Options manage() {
     return new RemoteWebDriverOptions();
+  }
+
+  public Script script() {
+    if (this.remoteScript == null) {
+      this.remoteScript = new RemoteScript(this);
+    }
+    return this.remoteScript;
   }
 
   protected JsonToWebElementConverter getElementConverter() {

@@ -18,34 +18,35 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Browser } = require('../../')
+const { Browser } = require('selenium-webdriver')
 const { suite } = require('../../lib/test')
-const Network = require('../../bidi/network')
-const { AddInterceptParameters } = require('../../bidi/addInterceptParameters')
-const { InterceptPhase } = require('../../bidi/interceptPhase')
-const { UrlPattern } = require('../../bidi/urlPattern')
+const Network = require('selenium-webdriver/bidi/network')
+const { AddInterceptParameters } = require('selenium-webdriver/bidi/addInterceptParameters')
+const { InterceptPhase } = require('selenium-webdriver/bidi/interceptPhase')
+const { UrlPattern } = require('selenium-webdriver/bidi/urlPattern')
 
 suite(
   function (env) {
     let driver
+    let network
 
     beforeEach(async function () {
       driver = await env.builder().build()
+      network = await Network(driver)
     })
 
     afterEach(async function () {
+      await network.close()
       await driver.quit()
     })
 
     describe('Add Intercept parameters test', function () {
       it('can add intercept phase', async function () {
-        const network = await Network(driver)
         const intercept = await network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT))
         assert.notEqual(intercept, null)
       })
 
       it('can add intercept phases', async function () {
-        const network = await Network(driver)
         const intercept = await network.addIntercept(
           new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED, InterceptPhase.BEFORE_REQUEST_SENT),
         )
@@ -53,7 +54,6 @@ suite(
       })
 
       it('can add string url pattern', async function () {
-        const network = await Network(driver)
         const intercept = await network.addIntercept(
           new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT).urlStringPattern(
             'http://localhost:4444/basicAuth',
@@ -63,7 +63,6 @@ suite(
       })
 
       it('can add string url patterns', async function () {
-        const network = await Network(driver)
         const intercept = await network.addIntercept(
           new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT).urlStringPatterns([
             'http://localhost:4444/basicAuth',
@@ -74,7 +73,6 @@ suite(
       })
 
       it('can add url pattern', async function () {
-        const network = await Network(driver)
         const urlPattern = new UrlPattern().protocol('http').hostname('localhost').port(4444).pathname('basicAuth')
         const intercept = await network.addIntercept(
           new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT).urlPattern(urlPattern),
@@ -83,7 +81,6 @@ suite(
       })
 
       it('can add url patterns', async function () {
-        const network = await Network(driver)
         const urlPattern1 = new UrlPattern()
           .protocol('http')
           .hostname('localhost')
