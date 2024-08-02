@@ -8,10 +8,10 @@ dotnet_nunit_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = SMALL_TESTS,
-    target_frameworks = ["net7.0"],
+    target_frameworks = ["net8.0"],
     deps = [
         "//dotnet/src/support",
-        "//dotnet/src/webdriver",
+        "//dotnet/src/webdriver:webdriver-net8.0",
         "//dotnet/test/common:fixtures",
         framework("nuget", "NUnit"),
         framework("nuget", "Moq"),
@@ -36,10 +36,10 @@ dotnet_nunit_test_suite(
     data = [
         "//dotnet/test/common:test-data",
     ],
-    target_frameworks = ["net7.0"],
+    target_frameworks = ["net8.0"],
     deps = [
         "//dotnet/src/support",
-        "//dotnet/src/webdriver",
+        "//dotnet/src/webdriver:webdriver-net8.0",
         "//dotnet/test/common:fixtures",
         framework("nuget", "NUnit"),
     ],

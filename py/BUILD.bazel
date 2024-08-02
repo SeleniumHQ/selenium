@@ -62,7 +62,7 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.23.0"
+SE_VERSION = "4.24.0.dev202407312116"
 
 BROWSER_VERSIONS = [
     "v85",
@@ -196,11 +196,11 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
-        requirement("typing_extensions"),
+        requirement("urllib3"),
         requirement("trio"),
         requirement("trio_websocket"),
-        requirement("urllib3"),
         requirement("certifi"),
+        requirement("typing_extensions"),
         requirement("websocket-client"),
     ],
 )
@@ -295,8 +295,8 @@ py_wheel(
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
-        "typing_extensions~=4.9.0",
-        "websocket-client==1.8.0",
+        "typing_extensions~=4.9",
+        "websocket-client~=1.8",
     ],
     strip_path_prefixes = [
         "py/",

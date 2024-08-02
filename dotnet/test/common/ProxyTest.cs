@@ -1,5 +1,3 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System.Collections.Generic;
 
@@ -171,62 +169,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ManualProxyToJson()
-        {
-            Proxy proxy = new Proxy();
-            proxy.Kind = ProxyKind.Manual;
-            proxy.HttpProxy = "http.proxy:1234";
-            proxy.FtpProxy = "ftp.proxy";
-            proxy.SslProxy = "ssl.proxy";
-            proxy.AddBypassAddresses("localhost", "127.0.0.*");
-            proxy.SocksProxy = "socks.proxy:65555";
-            proxy.SocksVersion = 5;
-            proxy.SocksUserName = "test1";
-            proxy.SocksPassword = "test2";
-
-            string jsonValue = JsonConvert.SerializeObject(proxy);
-            JObject json = JObject.Parse(jsonValue);
-
-            Assert.That(json.ContainsKey("proxyType"), Is.True, "proxyType not set - JSON = {0}", jsonValue);
-            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("manual"));
-
-            Assert.That(json.ContainsKey("ftpProxy"), Is.True);
-            Assert.That(json["ftpProxy"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["ftpProxy"].Value<string>(), Is.EqualTo("ftp.proxy"));
-
-            Assert.That(json.ContainsKey("httpProxy"), Is.True);
-            Assert.That(json["httpProxy"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["httpProxy"].Value<string>(), Is.EqualTo("http.proxy:1234"));
-
-            Assert.That(json.ContainsKey("sslProxy"), Is.True);
-            Assert.That(json["sslProxy"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["sslProxy"].Value<string>(), Is.EqualTo("ssl.proxy"));
-
-            Assert.That(json.ContainsKey("socksProxy"), Is.True);
-            Assert.That(json["socksProxy"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["socksProxy"].Value<string>(), Is.EqualTo("socks.proxy:65555"));
-
-            Assert.That(json.ContainsKey("socksVersion"), Is.True);
-            Assert.That(json["socksVersion"].Type, Is.EqualTo(JTokenType.Integer));
-            Assert.That(json["socksVersion"].Value<int>(), Is.EqualTo(5));
-
-            Assert.That(json.ContainsKey("socksUsername"), Is.True);
-            Assert.That(json["socksUsername"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["socksUsername"].Value<string>(), Is.EqualTo("test1"));
-
-            Assert.That(json.ContainsKey("socksPassword"), Is.True);
-            Assert.That(json["socksPassword"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["socksPassword"].Value<string>(), Is.EqualTo("test2"));
-
-            Assert.That(json.ContainsKey("noProxy"), Is.True);
-            Assert.That(json["noProxy"].Type, Is.EqualTo(JTokenType.Array));
-            Assert.That(json["noProxy"].ToObject<string[]>(), Is.EqualTo(new string[] { "localhost", "127.0.0.*" }));
-
-            Assert.That(json.Count, Is.EqualTo(9));
-        }
-
-        [Test]
         public void PacProxyFromDictionary()
         {
             Dictionary<string, object> proxyData = new Dictionary<string, object>();
@@ -247,27 +189,6 @@ namespace OpenQA.Selenium
             Assert.That(proxy.SocksPassword, Is.Null);
             Assert.That(proxy.BypassProxyAddresses, Is.Null);
             Assert.That(proxy.IsAutoDetect, Is.False);
-        }
-
-        [Test]
-        public void PacProxyToJson()
-        {
-            Proxy proxy = new Proxy();
-            proxy.Kind = ProxyKind.ProxyAutoConfigure;
-            proxy.ProxyAutoConfigUrl = "http://aaa/bbb.pac";
-
-            string jsonValue = JsonConvert.SerializeObject(proxy);
-            JObject json = JObject.Parse(jsonValue);
-
-
-            Assert.That(json.ContainsKey("proxyType"), Is.True, "proxyType not set - JSON = {0}", jsonValue);
-            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String), "proxyType is not a string - JSON = {0}", jsonValue);
-            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("pac"), "proxyType not 'pac' - JSON = {0}", jsonValue);
-
-            Assert.That(json.ContainsKey("proxyAutoconfigUrl"), Is.True);
-            Assert.That(json["proxyAutoconfigUrl"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["proxyAutoconfigUrl"].Value<string>(), Is.EqualTo("http://aaa/bbb.pac"));
-            Assert.That(json.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -294,24 +215,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void AutoDetectProxyToJson()
-        {
-            Proxy proxy = new Proxy();
-            proxy.Kind = ProxyKind.AutoDetect;
-            proxy.IsAutoDetect = true;
-
-            JsonSerializerSettings settings = new JsonSerializerSettings();
-
-            string jsonValue = JsonConvert.SerializeObject(proxy);
-            JObject json = JObject.Parse(jsonValue);
-
-            Assert.That(json.ContainsKey("proxyType"), Is.True, "proxyType not set - JSON = {0}", jsonValue);
-            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String), "proxyType is not a string - JSON = {0}", jsonValue);
-            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("autodetect"), "proxyType not 'autodetect' - JSON = {0}", jsonValue);
-            Assert.That(json.Count, Is.EqualTo(1), "more than one object in serialization - JSON = {0}", jsonValue);
-        }
-
-        [Test]
         public void SystemProxyFromDictionary()
         {
             Dictionary<string, object> proxyData = new Dictionary<string, object>();
@@ -334,21 +237,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void SystemProxyToJson()
-        {
-            Proxy proxy = new Proxy();
-            proxy.Kind = ProxyKind.System;
-
-            string jsonValue = JsonConvert.SerializeObject(proxy);
-            JObject json = JObject.Parse(jsonValue);
-
-            Assert.That(json.ContainsKey("proxyType"), Is.True, "proxyType not set - JSON = {0}", jsonValue);
-            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String), "proxyType is not a string - JSON = {0}", jsonValue);
-            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("system"), "proxyType not 'system' - JSON = {0}", jsonValue);
-            Assert.That(json.Count, Is.EqualTo(1), "more than one object in serialization - JSON = {0}", jsonValue);
-        }
-
-        [Test]
         public void DirectProxyFromDictionary()
         {
             Dictionary<string, object> proxyData = new Dictionary<string, object>();
@@ -368,21 +256,6 @@ namespace OpenQA.Selenium
             Assert.That(proxy.BypassProxyAddresses, Is.Null);
             Assert.That(proxy.IsAutoDetect, Is.False);
             Assert.That(proxy.ProxyAutoConfigUrl, Is.Null);
-        }
-
-        [Test]
-        public void DirectProxyToJson()
-        {
-            Proxy proxy = new Proxy();
-            proxy.Kind = ProxyKind.Direct;
-
-            string jsonValue = JsonConvert.SerializeObject(proxy);
-            JObject json = JObject.Parse(jsonValue);
-
-            Assert.That(json.ContainsKey("proxyType"), Is.True, "proxyType not set - JSON = {0}", jsonValue);
-            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String), "proxyType is not a string - JSON = {0}", jsonValue);
-            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("direct"), "proxyType not 'direct' - JSON = {0}", jsonValue);
-            Assert.That(json.Count, Is.EqualTo(1), "more than one object in serialization - JSON = {0}", jsonValue);
         }
 
         [Test]
