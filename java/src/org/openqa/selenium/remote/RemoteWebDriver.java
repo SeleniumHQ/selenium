@@ -126,6 +126,8 @@ public class RemoteWebDriver
 
   private Script remoteScript;
 
+  private Network remoteNetwork;
+
   // For cglib
   protected RemoteWebDriver() {
     this.capabilities = init(new ImmutableCapabilities());
@@ -493,6 +495,13 @@ public class RemoteWebDriver
       this.remoteScript = new RemoteScript(this);
     }
     return this.remoteScript;
+  }
+
+  public Network network() {
+    if (this.remoteNetwork == null) {
+      this.remoteNetwork = new RemoteNetwork(this);
+    }
+    return this.remoteNetwork;
   }
 
   protected JsonToWebElementConverter getElementConverter() {
