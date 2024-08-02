@@ -23,6 +23,7 @@ goog.require('bot.locators');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.math.Rect');
+goog.require('goog.style');
 
 
 /**
@@ -79,23 +80,44 @@ bot.locators.relative.above_ = function (selector) {
 
 
 /**
- * Relative locator to find elements that are below the expected one. "Below"
- * is defined as where the top of the element found by `selector` is below the
- * bottom of an element we're comparing to.
- *
+ * Relative locator to find elements that are below the expected one. An element is "below" either when:
+ * 1. The bottom of the element found by `selector` is above the top of an element we're comparing to
+ * 2. Or the bottom of the element found by `selector` is at the same vertical position as the element we're comparing
+ * to and the two elements are cells of the same table.
  * @param {!Element|function():!Element|!Object} selector Mechanism to be used to find the element.
  * @return {!Filter} A function that determines whether the selector is below the given element.
  * @private
  */
 bot.locators.relative.below_ = function (selector) {
-  return bot.locators.relative.proximity_(
-    selector,
-    function (rect1, rect2) {
-      var bottom = rect1.top + rect1.height;
-      return bottom < rect2.top;
-    });
+  var toReturn = function (compareTo) {
+    var element = bot.locators.relative.resolve_(selector);
+    var rect1 = bot.dom.getClientRect(element);
+    var rect2 = bot.dom.getClientRect(compareTo);
+    var bottom = rect1.top + rect1.height;
+    return (bottom < rect2.top) || ((bottom == rect2.top) && twoElementsAreCellsOfSameTable(element, compareTo));
+  };
+  return toReturn;
 };
 
+/**
+ * Verifies if element and compareTo are table cells (i.e. td or th elements) and if they are part of the same table.
+ * @param {*} element Base element of the comparison (for example, for the bot.locators.relative.rightOf_ method, it
+ * would be the element we want to find an element to the right of)
+ * @param {*} compareTo Current element
+ * @returns True only if element and compareTo are table cells (i.e. td or th elements) and if they are part of the same
+ * table.
+ */
+function twoElementsAreCellsOfSameTable(element, compareTo) {
+  var tableCellsTagNames = ["TD", "TH"];
+  var elementAndCompareToAreTableCellElements =
+      tableCellsTagNames.includes(element.tagName) &&
+      tableCellsTagNames.includes(compareTo.tagName);
+  var cssSelector = "table";
+  var elementTable = element.closest(cssSelector);
+  var compareToTable = compareTo.closest(cssSelector);
+  var elementAndCompareToAreFromSameTable = elementTable.isEqualNode(compareToTable);
+  return elementAndCompareToAreTableCellElements && elementAndCompareToAreFromSameTable;
+}
 
 /**
  * Relative locator to find elements that are to the left of the expected one.
@@ -122,14 +144,15 @@ bot.locators.relative.leftOf_ = function (selector) {
  * @private
  */
 bot.locators.relative.rightOf_ = function (selector) {
-  return bot.locators.relative.proximity_(
-    selector,
-    function (rect1, rect2) {
-      var right = rect1.left + rect1.width;
-      return right < rect2.left;
-    });
+  var toReturn = function (compareTo) {
+    var element = bot.locators.relative.resolve_(selector);
+    var rect1 = bot.dom.getClientRect(element);
+    var rect2 = bot.dom.getClientRect(compareTo);
+    var right = rect1.left + rect1.width;
+    return (right < rect2.left) || ((right == rect2.left) && twoElementsAreCellsOfSameTable(element, compareTo));
+  };
+  return toReturn;
 };
-
 
 /**
  * Find elements within (by default) 50 pixels of the selected element. An
