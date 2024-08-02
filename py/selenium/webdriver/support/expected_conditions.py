@@ -114,15 +114,15 @@ def url_matches(pattern: str) -> Callable[[WebDriver], bool]:
     return _predicate
 
 
-def url_to_be(url: str) -> Callable[[WebDriver], Union[bool, List[WebElement], WebElement, Literal[False]]]:
+def url_to_be(url: str) -> Callable[[WebDriver], bool]:
     """An expectation for checking the current url.
 
     url is the expected url, which must be an exact match returns True
     if the url matches, false otherwise.
     """
 
-    def _predicate(driver: WebDriver) -> Union[bool, List[WebElement], WebElement, Literal[False]]:
-        return url == driver.current_url or False
+    def _predicate(driver: WebDriver):
+        return url == driver.current_url
 
     return _predicate
 
@@ -491,7 +491,7 @@ def element_attribute_to_include(locator: Tuple[str, str], attribute_: str) -> C
     return _predicate
 
 
-def any_of(*expected_conditions: Callable[[D], T]) -> Callable[[D], Union[Literal[False], T]]:
+def any_of(*expected_conditions: Callable[[D], Union[T, Literal[False]]]) -> Callable[[D], Union[Literal[False], T]]:
     """An expectation that any of multiple expected conditions is true.
 
     Equivalent to a logical 'OR'. Returns results of the first matching
