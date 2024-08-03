@@ -5,7 +5,6 @@ PATH
       selenium-webdriver (~> 4.2)
     selenium-webdriver (4.24.0.nightly)
       base64 (~> 0.2)
-      curb (~> 1.0.5)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -36,7 +35,6 @@ GEM
       bigdecimal
       rexml
     csv (3.3.0)
-    curb (1.0.5)
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -176,6 +174,7 @@ PLATFORMS
   universal-java-1.8
   universal-java-17
   universal-java-18
+  universal-java-21
   x64-mingw32
   x86_64-darwin-22
 

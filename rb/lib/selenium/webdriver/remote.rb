@@ -32,7 +32,6 @@ module Selenium
 
       module Http
         autoload :Common, 'selenium/webdriver/remote/http/common'
-        autoload :Curb, 'selenium/webdriver/remote/http/curb'
         autoload :Default, 'selenium/webdriver/remote/http/default'
       end
     end

@@ -48,12 +48,12 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_dependency 'base64', ['~> 0.2']
-  s.add_dependency 'curb', ['~> 1.0.5']
   s.add_dependency 'logger', ['~> 1.4']
   s.add_dependency 'rexml', ['~> 3.2', '>= 3.2.5']
   s.add_dependency 'rubyzip', ['>= 1.2.2', '< 3.0']
   s.add_dependency 'websocket', ['~> 1.0']
 
+  s.add_dependency 'curb', ['~> 1.0.5']
   s.add_development_dependency 'git', ['~> 1.19']
   s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rake', ['~> 13.0']
