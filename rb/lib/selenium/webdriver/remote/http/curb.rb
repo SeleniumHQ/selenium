@@ -94,9 +94,7 @@ module Selenium
               c
             end
           end
-        end
-
-        # Curb
+        end # Curb
       end # Http
     end # Remote
   end # WebDriver

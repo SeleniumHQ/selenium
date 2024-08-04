@@ -18,6 +18,7 @@
 # under the License.
 
 require File.expand_path('../../spec_helper', __dir__)
+load 'selenium/webdriver/remote/http/curb.rb'
 
 module Selenium
   module WebDriver
