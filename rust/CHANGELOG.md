@@ -1,6 +1,7 @@
 0.4.23
 ======
 
+* No logical changes in this release.
 
 0.4.22
 ======
