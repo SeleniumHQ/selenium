@@ -27,6 +27,8 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.drivers.Browser;
 
 class WebNetworkTest extends JupiterTestBase {
 
@@ -45,6 +47,8 @@ class WebNetworkTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(Browser.CHROME)
+  @NotYetImplemented(Browser.EDGE)
   void canAddAuthenticationHandler() {
     ((RemoteWebDriver) driver)
         .network()
@@ -57,6 +61,8 @@ class WebNetworkTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(Browser.CHROME)
+  @NotYetImplemented(Browser.EDGE)
   void canRemoveAuthenticationHandler() {
     long id =
         ((RemoteWebDriver) driver)
@@ -72,6 +78,8 @@ class WebNetworkTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(Browser.CHROME)
+  @NotYetImplemented(Browser.EDGE)
   void canClearAuthenticationHandlers() {
     ((RemoteWebDriver) driver)
         .network()
