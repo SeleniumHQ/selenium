@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { PrimitiveType, NonPrimitiveType, RemoteType } = require('./protocolType')
+const { PrimitiveType, NonPrimitiveType, RemoteType, SpecialNumberType } = require('./protocolType')
 
 const TYPE_CONSTANT = 'type'
 const VALUE_CONSTANT = 'value'
@@ -189,6 +189,88 @@ class LocalValue {
     return new ReferenceValue(handle, sharedId)
   }
 
+  static getArgument(argument) {
+    let localValue = null
+
+    if (
+      argument === SpecialNumberType.NAN ||
+      argument === SpecialNumberType.MINUS_ZERO ||
+      argument === SpecialNumberType.INFINITY ||
+      argument === SpecialNumberType.MINUS_INFINITY
+    ) {
+      localValue = LocalValue.createSpecialNumberValue(argument)
+      return localValue
+    }
+
+    const type = typeof argument
+
+    switch (type) {
+      case PrimitiveType.STRING:
+        localValue = LocalValue.createStringValue(argument)
+        break
+      case PrimitiveType.NUMBER:
+        localValue = LocalValue.createNumberValue(argument)
+        break
+      case PrimitiveType.BOOLEAN:
+        localValue = LocalValue.createBooleanValue(argument)
+        break
+      case PrimitiveType.BIGINT:
+        localValue = LocalValue.createBigIntValue(argument.toString())
+        break
+      case PrimitiveType.UNDEFINED:
+        localValue = LocalValue.createUndefinedValue()
+        break
+      case NonPrimitiveType.OBJECT:
+        if (argument === null) {
+          localValue = LocalValue.createNullValue()
+          break
+        }
+        if (argument instanceof Date) {
+          localValue = LocalValue.createDateValue(argument)
+        } else if (argument instanceof Map) {
+          const map = []
+
+          argument.forEach((value, key) => {
+            let objectKey
+            if (typeof key === 'string') {
+              objectKey = key
+            } else {
+              objectKey = LocalValue.getArgument(key)
+            }
+            const objectValue = LocalValue.getArgument(value)
+            map.push([objectKey, objectValue])
+          })
+          localValue = new LocalValue(NonPrimitiveType.MAP, map)
+        } else if (argument instanceof Set) {
+          const set = []
+          argument.forEach((value) => {
+            set.push(LocalValue.getArgument(value))
+          })
+          localValue = LocalValue.createSetValue(set)
+        } else if (argument instanceof Array) {
+          const arr = []
+          argument.forEach((value) => {
+            arr.push(LocalValue.getArgument(value))
+          })
+          localValue = LocalValue.createArrayValue(arr)
+        } else if (argument instanceof RegExp) {
+          localValue = LocalValue.createRegularExpressionValue({
+            pattern: argument.source,
+            flags: argument.flags,
+          })
+        } else {
+          let value = []
+          Object.entries(argument).forEach((entry) => {
+            value.push([LocalValue.getArgument(entry[0]), LocalValue.getArgument(entry[1])])
+          })
+          localValue = new LocalValue(NonPrimitiveType.OBJECT, value)
+        }
+        break
+    }
+
+    return localValue
+  }
+
   asMap() {
     let toReturn = {}
     toReturn[TYPE_CONSTANT] = this.type
@@ -246,7 +328,7 @@ class RemoteValue {
   }
 
   deserializeValue(value, type) {
-    if ([NonPrimitiveType.MAP, NonPrimitiveType.OBJECT].includes(type)) {
+    if (type === NonPrimitiveType.OBJECT) {
       return Object.fromEntries(value)
     } else if (type === NonPrimitiveType.REGULAR_EXPRESSION) {
       return new RegExpValue(value.pattern, value.flags)
