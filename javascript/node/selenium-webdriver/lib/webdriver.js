@@ -44,6 +44,7 @@ const BIDI = require('../bidi')
 const { PinnedScript } = require('./pinnedScript')
 const JSZip = require('jszip')
 const Script = require('./script')
+const Network = require('./network')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -656,6 +657,7 @@ function filterNonW3CCaps(capabilities) {
  */
 class WebDriver {
   #script = undefined
+  #network = undefined
   /**
    * @param {!(./session.Session|IThenable<!./session.Session>)} session Either
    *     a known session or a promise that will be resolved to a session.
@@ -1114,6 +1116,16 @@ class WebDriver {
     }
 
     return this.#script
+  }
+
+  network() {
+    // The Network maintains state of the callbacks.
+    // Returning a new instance of the same driver will not work while removing callbacks.
+    if (this.#network === undefined) {
+      this.#network = new Network(this)
+    }
+
+    return this.#network
   }
 
   validatePrintPageParams(keys, object) {
