@@ -17,8 +17,13 @@
 
 package org.openqa.selenium.remote;
 
-import java.util.HashMap;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Predicate;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
@@ -33,47 +38,85 @@ class RemoteNetwork implements Network {
   private final BiDi biDi;
   private final org.openqa.selenium.bidi.module.Network network;
 
-  private final Map<Long, String> authCallbackIdMap = new HashMap<>();
+  private final Map<Long, AuthDetails> authHandlers = new ConcurrentHashMap<>();
+
+  private final AtomicLong callBackId = new AtomicLong(1);
 
   public RemoteNetwork(WebDriver driver) {
     this.biDi = ((HasBiDi) driver).getBiDi();
     this.network = new org.openqa.selenium.bidi.module.Network(driver);
+
+    interceptAuthTraffic();
+  }
+
+  private void interceptAuthTraffic() {
+    this.network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
+
+    network.onAuthRequired(
+        responseDetails -> {
+          String requestId = responseDetails.getRequest().getRequestId();
+
+          try {
+            URL url = new URL(responseDetails.getRequest().getUrl());
+            Optional<UsernameAndPassword> authCredentials = getAuthCredentials(url);
+            if (authCredentials.isPresent()) {
+              network.continueWithAuth(requestId, authCredentials.get());
+              return;
+            }
+          } catch (MalformedURLException e) {
+            // Fall through
+          }
+
+          network.continueWithAuthNoCredentials(requestId);
+        });
+  }
+
+  private Optional<UsernameAndPassword> getAuthCredentials(URL url) {
+    return authHandlers.values().stream()
+        .filter(authDetails -> authDetails.getFilter().test(url))
+        .map(AuthDetails::getUsernameAndPassword)
+        .findFirst();
   }
 
   @Override
   public long addAuthenticationHandler(UsernameAndPassword usernameAndPassword) {
-    String intercept =
-        network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
+    return addAuthenticationHandler(url -> true, usernameAndPassword);
+  }
 
-    long id =
-        network.onAuthRequired(
-            responseDetails ->
-                network.continueWithAuth(
-                    responseDetails.getRequest().getRequestId(), usernameAndPassword));
+  @Override
+  public long addAuthenticationHandler(
+      Predicate<URL> filter, UsernameAndPassword usernameAndPassword) {
+    long id = this.callBackId.incrementAndGet();
 
-    authCallbackIdMap.put(id, intercept);
+    authHandlers.put(id, new AuthDetails(filter, usernameAndPassword));
     return id;
   }
 
   @Override
   public void removeAuthenticationHandler(long id) {
-    String intercept = authCallbackIdMap.get(id);
-
-    if (intercept != null) {
-      network.removeIntercept(intercept);
-      this.biDi.removeListener(id);
-      authCallbackIdMap.remove(id);
-    }
+    authHandlers.remove(id);
   }
 
   @Override
   public void clearAuthenticationHandlers() {
-    authCallbackIdMap.forEach(
-        (callback, intercept) -> {
-          network.removeIntercept(intercept);
-          this.biDi.removeListener(callback);
-        });
+    authHandlers.clear();
+  }
 
-    authCallbackIdMap.clear();
+  private class AuthDetails {
+    private final Predicate<URL> filter;
+    private final UsernameAndPassword usernameAndPassword;
+
+    public AuthDetails(Predicate<URL> filter, UsernameAndPassword usernameAndPassword) {
+      this.filter = filter;
+      this.usernameAndPassword = usernameAndPassword;
+    }
+
+    public Predicate<URL> getFilter() {
+      return filter;
+    }
+
+    public UsernameAndPassword getUsernameAndPassword() {
+      return usernameAndPassword;
+    }
   }
 }

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import java.net.URL;
+import java.util.function.Predicate;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.UsernameAndPassword;
 
@@ -24,6 +26,8 @@ import org.openqa.selenium.UsernameAndPassword;
 public interface Network {
 
   long addAuthenticationHandler(UsernameAndPassword usernameAndPassword);
+
+  long addAuthenticationHandler(Predicate<URL> filter, UsernameAndPassword usernameAndPassword);
 
   void removeAuthenticationHandler(long id);
 

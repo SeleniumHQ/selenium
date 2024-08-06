@@ -20,6 +20,8 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.net.URL;
+import java.util.function.Predicate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,6 +60,25 @@ class WebNetworkTest extends JupiterTestBase {
     driver.get(page);
 
     assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
+  }
+
+  @Test
+  @NotYetImplemented(Browser.CHROME)
+  @NotYetImplemented(Browser.EDGE)
+  void canAddAuthenticationHandlerWithFilter() {
+    Predicate<URL> filter = url -> url.getPath().contains("basicAuth");
+
+    long id =
+        ((RemoteWebDriver) driver)
+            .network()
+            .addAuthenticationHandler(filter, new UsernameAndPassword("test", "test"));
+
+    ((RemoteWebDriver) driver).network().removeAuthenticationHandler(id);
+    page = server.whereIs("basicAuth");
+    driver.get(page);
+
+    assertThatExceptionOfType(UnhandledAlertException.class)
+        .isThrownBy(() -> driver.findElement(By.tagName("h1")));
   }
 
   @Test
