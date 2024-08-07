@@ -35,7 +35,6 @@
 const fs = require('node:fs')
 const path = require('node:path')
 const { isatty } = require('node:tty')
-const { runfiles } = require('@bazel/runfiles')
 const chrome = require('../chrome')
 const edge = require('../edge')
 const firefox = require('../firefox')
@@ -45,6 +44,18 @@ const safari = require('../safari')
 const { Browser } = require('../lib/capabilities')
 const { Builder } = require('../index')
 const { getBinaryPaths } = require('../common/driverFinder')
+
+let runfiles;
+try {
+  // Attempt to require @bazel/runfiles
+  runfiles = require('@bazel/runfiles').runfiles;
+} catch (error) {
+  // Handle error if @bazel/runfiles is not supported by mocha
+  console.error('Error requiring @bazel/runfiles:', error.message);
+  console.error('Note: If you are running tests with Mocha or Jasmine, this module is not needed.');
+  console.error('For more details, see: https://github.com/bazelbuild/rules_nodejs/issues/3770');
+  runfiles = null; // Set to null if not available
+}
 
 /**
  * Describes a browser targeted by a {@linkplain suite test suite}.
