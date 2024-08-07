@@ -40,9 +40,9 @@ class RelativeLocatorTest extends JupiterTestBase {
     driver.get("https://www.w3schools.com/html/html_tables.asp");
 
     By contactNameForTargetCompany =
-      RelativeLocator.with(By.tagName("td"))
-        .toRightOf(By.xpath("//td[text()='Alfreds Futterkiste']"))
-        .below(By.xpath("//th[text()='Contact']"));
+        RelativeLocator.with(By.tagName("td"))
+            .toRightOf(By.xpath("//td[text()='Alfreds Futterkiste']"))
+            .below(By.xpath("//th[text()='Contact']"));
 
     String actualName = driver.findElement(contactNameForTargetCompany).getText();
 
