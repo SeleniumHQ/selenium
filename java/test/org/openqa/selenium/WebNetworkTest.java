@@ -68,17 +68,50 @@ class WebNetworkTest extends JupiterTestBase {
   void canAddAuthenticationHandlerWithFilter() {
     Predicate<URL> filter = url -> url.getPath().contains("basicAuth");
 
-    long id =
-        ((RemoteWebDriver) driver)
-            .network()
-            .addAuthenticationHandler(filter, new UsernameAndPassword("test", "test"));
+    ((RemoteWebDriver) driver)
+        .network()
+        .addAuthenticationHandler(filter, new UsernameAndPassword("test", "test"));
 
-    ((RemoteWebDriver) driver).network().removeAuthenticationHandler(id);
     page = server.whereIs("basicAuth");
     driver.get(page);
 
-    assertThatExceptionOfType(UnhandledAlertException.class)
-        .isThrownBy(() -> driver.findElement(By.tagName("h1")));
+    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
+  }
+
+  @Test
+  @NotYetImplemented(Browser.CHROME)
+  @NotYetImplemented(Browser.EDGE)
+  void canAddMultipleAuthenticationHandlersWithFilter() {
+    ((RemoteWebDriver) driver)
+        .network()
+        .addAuthenticationHandler(url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+
+    ((RemoteWebDriver) driver)
+        .network()
+        .addAuthenticationHandler(url -> url.getPath().contains("test"), new UsernameAndPassword("test1", "test1"));
+
+    page = server.whereIs("basicAuth");
+    driver.get(page);
+
+    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
+  }
+
+  @Test
+  @NotYetImplemented(Browser.CHROME)
+  @NotYetImplemented(Browser.EDGE)
+  void canAddMultipleAuthenticationHandlersWithTheSameFilter() {
+    ((RemoteWebDriver) driver)
+        .network()
+        .addAuthenticationHandler(url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+
+    ((RemoteWebDriver) driver)
+        .network()
+        .addAuthenticationHandler(url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+
+    page = server.whereIs("basicAuth");
+    driver.get(page);
+
+    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
   }
 
   @Test
@@ -101,7 +134,23 @@ class WebNetworkTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(Browser.CHROME)
   @NotYetImplemented(Browser.EDGE)
+  void canRemoveAuthenticationHandlerThatDoesNotExist() {
+    ((RemoteWebDriver) driver).network().removeAuthenticationHandler(5);
+    page = server.whereIs("basicAuth");
+    driver.get(page);
+
+    assertThatExceptionOfType(UnhandledAlertException.class)
+        .isThrownBy(() -> driver.findElement(By.tagName("h1")));
+  }
+
+  @Test
+  @NotYetImplemented(Browser.CHROME)
+  @NotYetImplemented(Browser.EDGE)
   void canClearAuthenticationHandlers() {
+    ((RemoteWebDriver) driver)
+        .network()
+        .addAuthenticationHandler(url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+
     ((RemoteWebDriver) driver)
         .network()
         .addAuthenticationHandler(new UsernameAndPassword("test", "test"));

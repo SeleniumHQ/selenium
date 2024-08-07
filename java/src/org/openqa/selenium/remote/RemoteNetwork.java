@@ -24,6 +24,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
@@ -34,6 +36,8 @@ import org.openqa.selenium.bidi.network.InterceptPhase;
 
 @Beta
 class RemoteNetwork implements Network {
+
+  private static final Logger LOG = Logger.getLogger(RemoteNetwork.class.getName());
 
   private final BiDi biDi;
   private final org.openqa.selenium.bidi.module.Network network;
@@ -64,7 +68,7 @@ class RemoteNetwork implements Network {
               return;
             }
           } catch (MalformedURLException e) {
-            // Fall through
+            LOG.warning("Received Malformed URL: " + e.getMessage());
           }
 
           network.continueWithAuthNoCredentials(requestId);
