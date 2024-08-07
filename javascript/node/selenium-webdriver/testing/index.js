@@ -45,16 +45,17 @@ const { Browser } = require('../lib/capabilities')
 const { Builder } = require('../index')
 const { getBinaryPaths } = require('../common/driverFinder')
 
-let runfiles;
+let runfiles
 try {
   // Attempt to require @bazel/runfiles
-  runfiles = require('@bazel/runfiles').runfiles;
+  runfiles = require('@bazel/runfiles').runfiles
 } catch (error) {
   // Handle error if @bazel/runfiles is not supported by mocha
-  console.error('Error requiring @bazel/runfiles:', error.message);
-  console.error('Note: If you are running tests with Mocha or Jasmine, this module is not needed.');
-  console.error('For more details, see: https://github.com/bazelbuild/rules_nodejs/issues/3770');
-  runfiles = null; // Set to null if not available
+  const errorMessage = `Error requiring @bazel/runfiles: ${error.message}\n
+   Note: If you are running tests with Mocha or Jasmine, this module is not needed.\n
+   For more details, see: https://github.com/bazelbuild/rules_nodejs/issues/3770`
+  console.error(errorMessage)
+  runfiles = null // Set to null if not available
 }
 
 /**
