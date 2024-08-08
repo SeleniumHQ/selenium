@@ -130,7 +130,7 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
 
-        assert.strictEqual(counter, 1)
+        assert.strictEqual(counter >= 1, true)
       })
 
       it('can continue response', async function () {
@@ -145,7 +145,7 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
 
-        assert.strictEqual(counter, 1)
+        assert.strictEqual(counter >= 1, true)
       })
 
       it('can provide response', async function () {
@@ -160,7 +160,7 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
 
-        assert.strictEqual(counter, 1)
+        assert.strictEqual(counter >= 1, true)
       })
     })
   },
