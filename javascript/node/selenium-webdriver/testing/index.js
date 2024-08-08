@@ -44,7 +44,6 @@ const safari = require('../safari')
 const { Browser } = require('../lib/capabilities')
 const { Builder } = require('../index')
 const { getBinaryPaths } = require('../common/driverFinder')
-const { process } = require('node:process')
 
 let runfiles
 try {
