@@ -84,11 +84,13 @@ class WebNetworkTest extends JupiterTestBase {
   void canAddMultipleAuthenticationHandlersWithFilter() {
     ((RemoteWebDriver) driver)
         .network()
-        .addAuthenticationHandler(url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+        .addAuthenticationHandler(
+            url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
 
     ((RemoteWebDriver) driver)
         .network()
-        .addAuthenticationHandler(url -> url.getPath().contains("test"), new UsernameAndPassword("test1", "test1"));
+        .addAuthenticationHandler(
+            url -> url.getPath().contains("test"), new UsernameAndPassword("test1", "test1"));
 
     page = server.whereIs("basicAuth");
     driver.get(page);
@@ -102,11 +104,13 @@ class WebNetworkTest extends JupiterTestBase {
   void canAddMultipleAuthenticationHandlersWithTheSameFilter() {
     ((RemoteWebDriver) driver)
         .network()
-        .addAuthenticationHandler(url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+        .addAuthenticationHandler(
+            url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
 
     ((RemoteWebDriver) driver)
         .network()
-        .addAuthenticationHandler(url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+        .addAuthenticationHandler(
+            url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
 
     page = server.whereIs("basicAuth");
     driver.get(page);
@@ -149,7 +153,8 @@ class WebNetworkTest extends JupiterTestBase {
   void canClearAuthenticationHandlers() {
     ((RemoteWebDriver) driver)
         .network()
-        .addAuthenticationHandler(url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+        .addAuthenticationHandler(
+            url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
 
     ((RemoteWebDriver) driver)
         .network()
