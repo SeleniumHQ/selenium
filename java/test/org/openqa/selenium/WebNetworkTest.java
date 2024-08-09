@@ -20,7 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.function.Predicate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +66,7 @@ class WebNetworkTest extends JupiterTestBase {
   @Ignore(Browser.CHROME)
   @Ignore(Browser.EDGE)
   void canAddAuthenticationHandlerWithFilter() {
-    Predicate<URL> filter = url -> url.getPath().contains("basicAuth");
+    Predicate<URI> filter = uri -> uri.getPath().contains("basicAuth");
 
     ((RemoteWebDriver) driver)
         .network()
@@ -85,12 +85,12 @@ class WebNetworkTest extends JupiterTestBase {
     ((RemoteWebDriver) driver)
         .network()
         .addAuthenticationHandler(
-            url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+            uri -> uri.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
 
     ((RemoteWebDriver) driver)
         .network()
         .addAuthenticationHandler(
-            url -> url.getPath().contains("test"), new UsernameAndPassword("test1", "test1"));
+            uri -> uri.getPath().contains("test"), new UsernameAndPassword("test1", "test1"));
 
     page = server.whereIs("basicAuth");
     driver.get(page);
@@ -105,12 +105,12 @@ class WebNetworkTest extends JupiterTestBase {
     ((RemoteWebDriver) driver)
         .network()
         .addAuthenticationHandler(
-            url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+            uri -> uri.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
 
     ((RemoteWebDriver) driver)
         .network()
         .addAuthenticationHandler(
-            url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+            uri -> uri.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
 
     page = server.whereIs("basicAuth");
     driver.get(page);
@@ -154,7 +154,7 @@ class WebNetworkTest extends JupiterTestBase {
     ((RemoteWebDriver) driver)
         .network()
         .addAuthenticationHandler(
-            url -> url.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
+            uri -> uri.getPath().contains("basicAuth"), new UsernameAndPassword("test", "test"));
 
     ((RemoteWebDriver) driver)
         .network()

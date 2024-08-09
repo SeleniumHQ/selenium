@@ -17,14 +17,12 @@
 
 package org.openqa.selenium.remote;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
@@ -35,8 +33,6 @@ import org.openqa.selenium.bidi.network.InterceptPhase;
 
 @Beta
 class RemoteNetwork implements Network {
-
-  private static final Logger LOG = Logger.getLogger(RemoteNetwork.class.getName());
 
   private final BiDi biDi;
   private final org.openqa.selenium.bidi.module.Network network;
@@ -59,24 +55,20 @@ class RemoteNetwork implements Network {
         responseDetails -> {
           String requestId = responseDetails.getRequest().getRequestId();
 
-          try {
-            URL url = new URL(responseDetails.getRequest().getUrl());
-            Optional<UsernameAndPassword> authCredentials = getAuthCredentials(url);
-            if (authCredentials.isPresent()) {
-              network.continueWithAuth(requestId, authCredentials.get());
-              return;
-            }
-          } catch (MalformedURLException e) {
-            LOG.warning("Received Malformed URL: " + e.getMessage());
+          URI uri = URI.create(responseDetails.getRequest().getUrl());
+          Optional<UsernameAndPassword> authCredentials = getAuthCredentials(uri);
+          if (authCredentials.isPresent()) {
+            network.continueWithAuth(requestId, authCredentials.get());
+            return;
           }
 
           network.continueWithAuthNoCredentials(requestId);
         });
   }
 
-  private Optional<UsernameAndPassword> getAuthCredentials(URL url) {
+  private Optional<UsernameAndPassword> getAuthCredentials(URI uri) {
     return authHandlers.values().stream()
-        .filter(authDetails -> authDetails.getFilter().test(url))
+        .filter(authDetails -> authDetails.getFilter().test(uri))
         .map(AuthDetails::getUsernameAndPassword)
         .findFirst();
   }
@@ -88,7 +80,7 @@ class RemoteNetwork implements Network {
 
   @Override
   public long addAuthenticationHandler(
-      Predicate<URL> filter, UsernameAndPassword usernameAndPassword) {
+      Predicate<URI> filter, UsernameAndPassword usernameAndPassword) {
     long id = this.callBackId.incrementAndGet();
 
     authHandlers.put(id, new AuthDetails(filter, usernameAndPassword));
@@ -106,15 +98,15 @@ class RemoteNetwork implements Network {
   }
 
   private class AuthDetails {
-    private final Predicate<URL> filter;
+    private final Predicate<URI> filter;
     private final UsernameAndPassword usernameAndPassword;
 
-    public AuthDetails(Predicate<URL> filter, UsernameAndPassword usernameAndPassword) {
+    public AuthDetails(Predicate<URI> filter, UsernameAndPassword usernameAndPassword) {
       this.filter = filter;
       this.usernameAndPassword = usernameAndPassword;
     }
 
-    public Predicate<URL> getFilter() {
+    public Predicate<URI> getFilter() {
       return filter;
     }
 
