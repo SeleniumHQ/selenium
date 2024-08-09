@@ -368,6 +368,26 @@ def element_to_be_clickable(
 
     return _predicate
 
+def elements_not_overlapping(element1: WebElement, element2:WebElement) -> Callable[[Any], bool]:
+    """An Expectation for checking that two elements do not overlap on the DOM
+    
+    elements are WebElement objects
+    """
+    
+    if staleness_of(element1):
+        return True
+    if staleness_of(element2):
+        return True
+
+    def _predicate(_):
+        rect1 = element1.rect
+        rect2 = element2.rect
+        return (rect1['x'] + rect1['width'] < rect2['x'] or
+                rect2['x'] + rect2['width'] < rect1['x'] or
+                rect1['y'] + rect1['height'] < rect2['y'] or
+                rect2['y'] + rect2['height'] < rect1['y'])
+
+    return _predicate
 
 def staleness_of(element: WebElement) -> Callable[[Any], bool]:
     """Wait until an element is no longer attached to the DOM.
