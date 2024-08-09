@@ -123,7 +123,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    * @return self
    */
   public M setHeader(String name, String value) {
-    return removeHeader(name).addHeader(name.toLowerCase(), value);
+    return removeHeader(name.toLowerCase()).addHeader(name.toLowerCase(), value);
   }
 
   /**
