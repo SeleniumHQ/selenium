@@ -210,6 +210,7 @@ maven.install(
         "org.bouncycastle:bcpkix-jdk18on:1.78.1",
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
         "org.hsqldb:hsqldb:2.7.3",
+        "org.jspecify:jspecify:1.0.0",
         "org.junit.jupiter:junit-jupiter-api:5.10.3",
         "org.junit.jupiter:junit-jupiter-engine:5.10.3",
         "org.junit.jupiter:junit-jupiter-params:5.10.3",
