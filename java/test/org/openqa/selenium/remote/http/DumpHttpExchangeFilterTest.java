@@ -34,7 +34,7 @@ class DumpHttpExchangeFilterTest {
         dumpFilter.requestLogMessage(
             new HttpRequest(GET, "/foo").addHeader("Peas", "and Sausages"));
 
-    assertThat(reqLog).contains("Peas");
+    assertThat(reqLog).contains("peas");
     assertThat(reqLog).contains("and Sausages");
 
     String resLog =
@@ -43,7 +43,7 @@ class DumpHttpExchangeFilterTest {
                 .addHeader("Cheese", "Brie")
                 .setContent(string("Hello, World!", UTF_8)));
 
-    assertThat(resLog).contains("Cheese");
+    assertThat(resLog).contains("cheese");
     assertThat(resLog).contains("Brie");
   }
 
