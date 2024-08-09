@@ -25,10 +25,10 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import java.io.Closeable;
 import java.io.StringReader;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -207,27 +207,27 @@ public class Connection implements Closeable {
     }
   }
 
-  public void removeListener(long id) {
+  public Optional<Event<?>> removeListener(long id) {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      List<Event<?>> list = new ArrayList<>();
-      eventCallbacks.forEach(
-          (k, v) -> {
-            v.remove(id);
-            if (v.isEmpty()) {
-              list.add(k);
-            }
-          });
+      Optional<Map.Entry<Event<?>, Map<Long, Consumer<?>>>> event =
+          eventCallbacks.entrySet().stream()
+              .filter((e) -> e.getValue().remove(id) != null)
+              .findAny();
 
-      list.forEach(eventCallbacks::remove);
+      if (event.isPresent() && event.get().getValue().isEmpty()) {
+        eventCallbacks.remove(event.get().getKey());
+      }
+
+      return event.map(Map.Entry::getKey);
     } finally {
       lock.unlock();
     }
   }
 
   public <X> boolean isEventSubscribed(Event<X> event) {
-    Lock lock = callbacksLock.writeLock();
+    Lock lock = callbacksLock.readLock();
     lock.lock();
     try {
       return eventCallbacks.containsKey(event);

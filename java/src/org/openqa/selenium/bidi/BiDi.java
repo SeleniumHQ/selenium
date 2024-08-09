@@ -20,7 +20,9 @@ package org.openqa.selenium.bidi;
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.openqa.selenium.internal.Require;
@@ -112,7 +114,12 @@ public class BiDi implements Closeable {
   }
 
   public void removeListener(long id) {
-    connection.removeListener(id);
+    Optional<Event<?>> event = connection.removeListener(id);
+
+    if (event.isPresent() && !connection.isEventSubscribed(event.get())) {
+      send(
+          new Command<>("session.unsubscribe", Map.of("events", List.of(event.get().getMethod()))));
+    }
   }
 
   public void clearListeners() {
