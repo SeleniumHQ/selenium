@@ -99,6 +99,17 @@ module Selenium
               storage.fetch('no-such-key')
             }.to raise_error(IndexError, /missing key/)
           end
+
+          it 'logs a deprecated warning when calling a deprecated method' do
+            storage_type = storage.is_a?(HTML5::LocalStorage) ? 'local' : 'session'
+
+            expect { storage['foo'] }.to have_deprecated(:"#{storage_type}_storage_item")
+            expect { storage['foo'] = 'bar' }.to have_deprecated(:"#{storage_type}_storage_item")
+            expect { storage.delete('foo') }.to have_deprecated(:"remove_#{storage_type}_storage_item")
+            expect { storage.size }.to have_deprecated(:"#{storage_type}_storage_size")
+            expect { storage.clear }.to have_deprecated(:"clear_#{storage_type}_storage")
+            expect { storage.keys }.to have_deprecated(:"#{storage_type}_storage_keys")
+          end
         end
 
         describe 'local storage' do

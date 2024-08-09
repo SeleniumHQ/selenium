@@ -15,15 +15,38 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v124;
+package org.openqa.selenium.remote;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+import org.openqa.selenium.WebElement;
 
-@AutoService(CdpInfo.class)
-public class v124CdpInfo extends CdpInfo {
+public class DomMutation {
 
-  public v124CdpInfo() {
-    super(124, v124Domains::new);
+  private final WebElement element;
+  private final String attributeName;
+  private final String currentValue;
+  private final String oldValue;
+
+  public DomMutation(
+      WebElement element, String attributeName, String currentValue, String oldValue) {
+    this.element = element;
+    this.attributeName = attributeName;
+    this.currentValue = currentValue;
+    this.oldValue = oldValue;
+  }
+
+  public WebElement getElement() {
+    return element;
+  }
+
+  public String getAttributeName() {
+    return attributeName;
+  }
+
+  public String getCurrentValue() {
+    return currentValue;
+  }
+
+  public String getOldValue() {
+    return oldValue;
   }
 }

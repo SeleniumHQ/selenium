@@ -29,6 +29,24 @@ module Selenium
           driver.find_element(id: 'nonexistent')
         }.to raise_error(WebDriver::Error::NoSuchElementError, /#no-such-element-exception/)
       end
+
+      it 'has backtrace locations' do
+        driver.find_element(id: 'nonexistent')
+      rescue WebDriver::Error::NoSuchElementError => e
+        expect(e.backtrace_locations).not_to be_empty
+      end
+
+      it 'has cause' do
+        driver.find_element(id: 'nonexistent')
+      rescue WebDriver::Error::NoSuchElementError => e
+        expect(e.cause).to be_a(WebDriver::Error::WebDriverError)
+      end
+
+      it 'has backtrace' do
+        driver.find_element(id: 'nonexistent')
+      rescue WebDriver::Error::NoSuchElementError => e
+        expect(e.backtrace).not_to be_empty
+      end
     end
   end # WebDriver
 end # Selenium

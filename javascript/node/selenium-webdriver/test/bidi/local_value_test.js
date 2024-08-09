@@ -350,9 +350,9 @@ suite(
 
         let resultValue = result.result.value
 
-        assert.equal(Object.keys(resultValue).length, 1)
-        assert.equal(resultValue['foobar'].type, 'string')
-        assert.equal(resultValue['foobar'].value, 'foobar')
+        assert.equal(resultValue[0][0], 'foobar')
+        assert.equal(resultValue[0][1].type, 'string')
+        assert.equal(resultValue[0][1].value, 'foobar')
       })
 
       it('can call function with object argument', async function () {
