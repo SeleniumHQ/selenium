@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class HttpMessageTest {
@@ -32,7 +31,7 @@ class HttpMessageTest {
   @Test
   void allHeadersAreAdded() {
     for (HttpMessage<?> message :
-      Arrays.asList(new HttpRequest(HttpMethod.GET, "/"), new HttpResponse())) {
+        Arrays.asList(new HttpRequest(HttpMethod.GET, "/"), new HttpResponse())) {
       message.addHeader("Content-Length", "1024");
       message.addHeader("Content-length", "2048");
       message.addHeader("content-length", "4096");
@@ -50,7 +49,7 @@ class HttpMessageTest {
   @Test
   void readingIsCaseInsensitive() {
     for (HttpMessage<?> message :
-      Arrays.asList(new HttpRequest(HttpMethod.GET, "/"), new HttpResponse())) {
+        Arrays.asList(new HttpRequest(HttpMethod.GET, "/"), new HttpResponse())) {
       message.addHeader("Content-Length", "1024");
       message.addHeader("Content-length", "2048");
       message.addHeader("content-length", "4096");
@@ -62,7 +61,7 @@ class HttpMessageTest {
   @Test
   void replacingIsCaseInsensitive() {
     for (HttpMessage<?> message :
-      Arrays.asList(new HttpRequest(HttpMethod.GET, "/"), new HttpResponse())) {
+        Arrays.asList(new HttpRequest(HttpMethod.GET, "/"), new HttpResponse())) {
       message.addHeader("Content-Length", "1024");
       message.addHeader("Content-length", "2048");
       message.addHeader("content-length", "4096");
@@ -83,7 +82,7 @@ class HttpMessageTest {
   @Test
   void allHeadersAreRemoved() {
     for (HttpMessage<?> message :
-      Arrays.asList(new HttpRequest(HttpMethod.GET, "/"), new HttpResponse())) {
+        Arrays.asList(new HttpRequest(HttpMethod.GET, "/"), new HttpResponse())) {
       message.addHeader("Content-Length", "1024");
       message.addHeader("Content-length", "2048");
       message.addHeader("content-length", "4096");
