@@ -187,7 +187,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         caps = readDevToolsEndpointAndVersion(caps);
         caps = readVncEndpoint(capabilities, caps);
-        caps = readContainerName(capabilities, caps);
+        caps = readPrefixedCaps(capabilities, caps);
 
         span.addEvent("Driver service created session", attributeMap);
         final HttpClient fClient = client;
@@ -301,14 +301,21 @@ public class DriverServiceSessionFactory implements SessionFactory {
     return returnedCaps;
   }
 
-  private Capabilities readContainerName(Capabilities requestedCaps, Capabilities returnedCaps) {
-    String seContainerNameCap = "se:containerName";
-    String seContainerName = String.valueOf(requestedCaps.getCapability(seContainerNameCap));
+  private Capabilities readPrefixedCaps(Capabilities requestedCaps, Capabilities returnedCaps) {
 
-    returnedCaps =
-        new PersistentCapabilities(returnedCaps).setCapability(seContainerNameCap, seContainerName);
+    PersistentCapabilities returnPrefixedCaps = new PersistentCapabilities(returnedCaps);
 
-    return returnedCaps;
+    Map<String, Object> requestedCapsMap = requestedCaps.asMap();
+    Map<String, Object> returnedCapsMap = returnedCaps.asMap();
+
+    requestedCapsMap.forEach(
+        (k, v) -> {
+          if (k.startsWith("se:") && !returnedCapsMap.containsKey(k)) {
+            returnPrefixedCaps.setCapability(k, v);
+          }
+        });
+
+    return returnPrefixedCaps;
   }
 
   // We remove a capability before sending the caps to the driver because some drivers will
