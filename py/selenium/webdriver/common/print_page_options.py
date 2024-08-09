@@ -19,6 +19,7 @@
 from typing import TYPE_CHECKING
 from typing import List
 from typing import Optional
+from typing import Type
 
 if TYPE_CHECKING:
     from typing import Literal
@@ -125,10 +126,9 @@ class _PageOrientationDescriptor:
 class _ValidateTypeDescriptor:
     """Base Class Descriptor which validates type of any subclass attribute."""
 
-    expected_type = None
-
-    def __init__(self, name, expected_type):
+    def __init__(self, name, expected_type: Type):
         self.name = name
+        self.expected_type = expected_type
 
     def __get__(self, obj, cls):
         return obj._print_options.get(self.name, None)
@@ -142,19 +142,22 @@ class _ValidateTypeDescriptor:
 class _ValidateBackGround(_ValidateTypeDescriptor):
     """Expected type of background attribute."""
 
-    expected_type = bool
+    def __init__(self, name):
+        super().__init__(name, bool)
 
 
 class _ValidateShrinkToFit(_ValidateTypeDescriptor):
-    """Expected type of shirnk to fit attribute."""
+    """Expected type of shrink to fit attribute."""
 
-    expected_type = bool
+    def __init__(self, name):
+        super().__init__(name, bool)
 
 
 class _ValidatePageRanges(_ValidateTypeDescriptor):
-    """Excepted type of page ranges attribute."""
+    """Expected type of page ranges attribute."""
 
-    expected_type = list
+    def __init__(self, name):
+        super().__init__(name, list)
 
 
 class PrintOptions:
@@ -190,7 +193,7 @@ class PrintOptions:
     - Set
         - `self.page_width` = `value`
 
-    Patameters
+    Parameters
     ----------
     `value`: `float`
 
@@ -210,7 +213,7 @@ class PrintOptions:
     - Get
         - `self.margin_top`
     - Set
-        - `slef.margin_top` = `value`
+        - `self.margin_top` = `value`
 
     Parameters
     ----------
@@ -253,7 +256,7 @@ class PrintOptions:
     -----
     - Get
         - `self.margin_left`
-    -Set
+    - Set
         - `self.margin_left` = `value`
 
     Parameters
@@ -334,13 +337,13 @@ class PrintOptions:
         - `None`
     """
 
-    background = _ValidateBackGround("background", bool)
+    background = _ValidateBackGround("background")
     """Gets and Sets background:
 
     Usage
     -----
     - Get
-        - `self.backgorund`
+        - `self.background`
     - Set
         - `self.background` = `value`
 
@@ -356,7 +359,7 @@ class PrintOptions:
         - `None`
     """
 
-    shrink_to_fit = _ValidateShrinkToFit("shrinkToFit", bool)
+    shrink_to_fit = _ValidateShrinkToFit("shrinkToFit")
     """Gets and Sets shrink_to_fit:
 
     Usage
@@ -378,7 +381,7 @@ class PrintOptions:
         - `None`
     """
 
-    page_ranges = _ValidatePageRanges("pageRanges", list)
+    page_ranges = _ValidatePageRanges("pageRanges")
     """Gets and Sets page_ranges:
 
     Usage
@@ -415,4 +418,4 @@ class PrintOptions:
             raise ValueError(f"{property_name} should be an integer or a float")
 
         if value < 0:
-            raise ValueError(f"{property_name} cannot be less then 0")
+            raise ValueError(f"{property_name} cannot be less than 0")
