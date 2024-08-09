@@ -19,16 +19,16 @@
 
 const assert = require('node:assert')
 
-const chrome = require('../chrome')
-const edge = require('../edge')
-const error = require('../lib/error')
-const firefox = require('../firefox')
-const ie = require('../ie')
-const safari = require('../safari')
+const chrome = require('selenium-webdriver/chrome')
+const edge = require('selenium-webdriver/edge')
+const error = require('selenium-webdriver/lib/error')
+const firefox = require('selenium-webdriver/firefox')
+const ie = require('selenium-webdriver/ie')
+const safari = require('selenium-webdriver/safari')
 const test = require('../lib/test')
-const { Browser } = require('../lib/capabilities')
+const { Browser } = require('selenium-webdriver/lib/capabilities')
 const { Pages } = require('../lib/test')
-const { Builder, Capabilities } = require('..')
+const { Builder, Capabilities } = require('selenium-webdriver')
 
 test.suite(function (env) {
   const BROWSER_MAP = new Map([

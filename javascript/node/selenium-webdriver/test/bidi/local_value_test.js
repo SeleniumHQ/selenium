@@ -18,14 +18,13 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Browser } = require('../../')
+const { Browser } = require('selenium-webdriver/')
 const { suite } = require('../../lib/test')
 
-const ScriptManager = require('../../bidi/scriptManager')
-const { LocalValue, RegExpValue } = require('../../bidi/protocolValue')
-const { ArgumentValue } = require('../../bidi/argumentValue')
-const { EvaluateResultType } = require('../../bidi/evaluateResult')
-const { SpecialNumberType } = require('../../bidi/protocolType')
+const ScriptManager = require('selenium-webdriver/bidi/scriptManager')
+const { LocalValue, RegExpValue } = require('selenium-webdriver/bidi/protocolValue')
+const { EvaluateResultType } = require('selenium-webdriver/bidi/evaluateResult')
+const { SpecialNumberType } = require('selenium-webdriver/bidi/protocolType')
 
 suite(
   function (env) {
@@ -44,7 +43,7 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(LocalValue.createUndefinedValue())
+        let value = LocalValue.createUndefinedValue()
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -67,7 +66,7 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(LocalValue.createNullValue())
+        let value = LocalValue.createNullValue()
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -90,7 +89,7 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(LocalValue.createSpecialNumberValue(SpecialNumberType.MINUS_ZERO))
+        let value = LocalValue.createSpecialNumberValue(SpecialNumberType.MINUS_ZERO)
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -115,7 +114,7 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(LocalValue.createSpecialNumberValue(SpecialNumberType.INFINITY))
+        let value = LocalValue.createSpecialNumberValue(SpecialNumberType.INFINITY)
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -140,7 +139,7 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(LocalValue.createSpecialNumberValue(SpecialNumberType.MINUS_INFINITY))
+        let value = LocalValue.createSpecialNumberValue(SpecialNumberType.MINUS_INFINITY)
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -165,7 +164,7 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(LocalValue.createNumberValue(1.4))
+        let value = LocalValue.createNumberValue(1.4)
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -190,7 +189,7 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(LocalValue.createBooleanValue(true))
+        let value = LocalValue.createBooleanValue(true)
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -215,7 +214,7 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(LocalValue.createBigIntValue('42'))
+        let value = LocalValue.createBigIntValue('42')
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -241,7 +240,7 @@ suite(
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
         let arrayValue = [LocalValue.createStringValue('foobar')]
-        let value = new ArgumentValue(LocalValue.createArrayValue(arrayValue))
+        let value = LocalValue.createArrayValue(arrayValue)
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -272,7 +271,7 @@ suite(
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
         let setValue = [LocalValue.createStringValue('foobar')]
-        let value = new ArgumentValue(LocalValue.createSetValue(setValue))
+        let value = LocalValue.createSetValue(setValue)
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -302,7 +301,7 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(LocalValue.createDateValue('2022-05-31T13:47:29.000Z'))
+        let value = LocalValue.createDateValue('2022-05-31T13:47:29.000Z')
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -329,7 +328,7 @@ suite(
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
         let mapValue = { foobar: LocalValue.createStringValue('foobar') }
-        let value = new ArgumentValue(LocalValue.createMapValue(mapValue))
+        let value = LocalValue.createMapValue(mapValue)
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -351,9 +350,9 @@ suite(
 
         let resultValue = result.result.value
 
-        assert.equal(Object.keys(resultValue).length, 1)
-        assert.equal(resultValue['foobar'].type, 'string')
-        assert.equal(resultValue['foobar'].value, 'foobar')
+        assert.equal(resultValue[0][0], 'foobar')
+        assert.equal(resultValue[0][1].type, 'string')
+        assert.equal(resultValue[0][1].value, 'foobar')
       })
 
       it('can call function with object argument', async function () {
@@ -361,7 +360,7 @@ suite(
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
         let mapValue = { foobar: LocalValue.createStringValue('foobar') }
-        let value = new ArgumentValue(LocalValue.createObjectValue(mapValue))
+        let value = LocalValue.createObjectValue(mapValue)
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(
@@ -391,7 +390,7 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let value = new ArgumentValue(LocalValue.createRegularExpressionValue(new RegExpValue('foo', 'g')))
+        let value = LocalValue.createRegularExpressionValue(new RegExpValue('foo', 'g'))
         argumentValues.push(value)
 
         const result = await manager.callFunctionInBrowsingContext(

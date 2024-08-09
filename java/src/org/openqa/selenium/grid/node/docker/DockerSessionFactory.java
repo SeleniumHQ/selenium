@@ -197,6 +197,7 @@ public class DockerSessionFactory implements SessionFactory {
             String.format(
                 "Unable to connect to docker server (container id: %s)", container.getId());
         LOG.warning(message);
+        client.close();
         return Either.left(new RetrySessionRequestException(message));
       }
       LOG.info(String.format("Server is ready (container id: %s)", container.getId()));
@@ -222,6 +223,7 @@ public class DockerSessionFactory implements SessionFactory {
         container.stop(Duration.ofMinutes(1));
         String message = "Unable to create session: " + e.getMessage();
         LOG.log(Level.WARNING, message, e);
+        client.close();
         return Either.left(new SessionNotCreatedException(message));
       }
 
@@ -348,9 +350,10 @@ public class DockerSessionFactory implements SessionFactory {
     Container videoContainer = docker.create(containerConfig);
     videoContainer.start();
     String videoContainerIp = runningInDocker ? videoContainer.inspect().getIp() : "localhost";
+    URI videoContainerUrl = URI.create(String.format("http://%s:%s", videoContainerIp, videoPort));
+    HttpClient videoClient =
+        clientFactory.createClient(ClientConfig.defaultConfig().baseUri(videoContainerUrl));
     try {
-      URL videoContainerUrl = new URL(String.format("http://%s:%s", videoContainerIp, videoPort));
-      HttpClient videoClient = clientFactory.createClient(videoContainerUrl);
       LOG.fine(String.format("Waiting for video recording... (id: %s)", videoContainer.getId()));
       waitForServerToStart(videoClient, Duration.ofMinutes(1));
     } catch (Exception e) {
@@ -360,6 +363,8 @@ public class DockerSessionFactory implements SessionFactory {
               "Unable to verify video recording started (container id: %s), %s",
               videoContainer.getId(), e.getMessage());
       LOG.warning(message);
+      videoClient.close();
+      return null;
     }
     LOG.info(String.format("Video container started (id: %s)", videoContainer.getId()));
     return videoContainer;
@@ -373,13 +378,16 @@ public class DockerSessionFactory implements SessionFactory {
     // Capabilities set to env vars with higher precedence
     setCapsToEnvVars(sessionRequestCapabilities, envVars);
     envVars.put("DISPLAY_CONTAINER_NAME", containerIp);
-    Optional<String> testName = ofNullable(getTestName(sessionRequestCapabilities));
-    testName.ifPresent(name -> envVars.put("SE_VIDEO_FILE_NAME", String.format("%s.mp4", name)));
+    Optional<String> videoName =
+        ofNullable(getVideoFileName(sessionRequestCapabilities, "se:videoName"))
+            .or(() -> ofNullable(getVideoFileName(sessionRequestCapabilities, "se:name")));
+    videoName.ifPresent(name -> envVars.put("SE_VIDEO_FILE_NAME", String.format("%s.mp4", name)));
     return envVars;
   }
 
-  private String getTestName(Capabilities sessionRequestCapabilities) {
-    Optional<Object> testName = ofNullable(sessionRequestCapabilities.getCapability("se:name"));
+  private String getVideoFileName(Capabilities sessionRequestCapabilities, String capabilityName) {
+    Optional<Object> testName =
+        ofNullable(sessionRequestCapabilities.getCapability(capabilityName));
     if (testName.isPresent()) {
       String name = testName.get().toString();
       if (!name.isEmpty()) {

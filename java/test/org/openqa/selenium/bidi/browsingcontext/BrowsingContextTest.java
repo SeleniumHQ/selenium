@@ -23,7 +23,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -42,7 +41,6 @@ import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 class BrowsingContextTest extends JupiterTestBase {
 
@@ -417,7 +415,6 @@ class BrowsingContextTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(FIREFOX)
   void canSetViewportWithDevicePixelRatio() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
     driver.get(appServer.whereIs("formPage.html"));

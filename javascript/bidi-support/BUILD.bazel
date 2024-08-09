@@ -1,0 +1,13 @@
+package(default_visibility = [
+    "//dotnet/src/webdriver:__pkg__",
+    "//java/src/org/openqa/selenium/bidi:__pkg__",
+    "//java/src/org/openqa/selenium/remote:__pkg__",
+    "//javascript:__pkg__",
+    "//javascript:__subpackages__",
+    "//javascript/node/selenium-webdriver:__pkg__",
+    "//javascript/node/selenium-webdriver/lib/atoms:__subpackages__",
+])
+
+exports_files([
+    "bidi-mutation-listener.js",
+])

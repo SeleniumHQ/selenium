@@ -26,7 +26,7 @@ filegroup(
     srcs = [
         "Rakefile",
     ],
-    visibility = ["//rb:__subpackages__",],
+    visibility = ["//rb:__subpackages__"],
 )
 
 alias(

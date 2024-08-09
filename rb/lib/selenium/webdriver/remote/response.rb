@@ -28,7 +28,7 @@ module Selenium
         attr_reader :code, :payload
 
         def initialize(code, payload = nil)
-          @code    = code
+          @code = code
           @payload = payload || {}
 
           assert_ok
@@ -37,11 +37,8 @@ module Selenium
         def error
           error, message, backtrace = process_error
           klass = Error.for_error(error) || return
-
           ex = klass.new(message)
-          ex.set_backtrace(caller)
-          add_backtrace ex, backtrace
-
+          add_cause(ex, error, backtrace)
           ex
         end
 
@@ -59,34 +56,12 @@ module Selenium
           raise Error::ServerError, self
         end
 
-        def add_backtrace(ex, server_trace)
-          return unless server_trace
-
-          backtrace = case server_trace
-                      when Array
-                        backtrace_from_remote(server_trace)
-                      when String
-                        server_trace.split("\n")
-                      end
-
-          ex.set_backtrace(backtrace + ex.backtrace)
-        end
-
-        def backtrace_from_remote(server_trace)
-          server_trace.filter_map do |frame|
-            next unless frame.is_a?(Hash)
-
-            file = frame['fileName']
-            line = frame['lineNumber']
-            meth = frame['methodName']
-
-            class_name = frame['className']
-            file = "#{class_name}(#{file})" if class_name
-
-            meth = 'unknown' if meth.nil? || meth.empty?
-
-            "[remote server] #{file}:#{line}:in `#{meth}'"
-          end
+        def add_cause(ex, error, backtrace)
+          cause = Error::WebDriverError.new
+          cause.set_backtrace(backtrace)
+          raise ex, cause: cause
+        rescue Error.for_error(error)
+          ex
         end
 
         def process_error
