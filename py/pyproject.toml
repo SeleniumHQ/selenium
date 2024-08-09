@@ -17,6 +17,5 @@ markers = [
     "xfail_webkitgtk: Tests expected to fail in webkitgtk",
     "no_driver_after_test: If there are no drivers after the test it will create a new one."
 ]
-addopts = ""
 python_files = ["test_*.py", "*_test.py"]
 testpaths = ["test"]
