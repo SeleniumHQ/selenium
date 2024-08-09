@@ -121,6 +121,22 @@ class Script {
     await this.#initScript()
     await this.#script.removePreloadScript(id)
   }
+
+  async execute(script, ...args) {
+    await this.#initScript()
+
+    const browsingContextId = await this.#driver.getWindowHandle()
+
+    const argumentList = []
+
+    args.forEach((arg) => {
+      argumentList.push(LocalValue.getArgument(arg))
+    })
+
+    const response = await this.#script.callFunctionInBrowsingContext(browsingContextId, script, true, argumentList)
+
+    return response.result
+  }
 }
 
 module.exports = Script
