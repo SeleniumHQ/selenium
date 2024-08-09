@@ -332,8 +332,7 @@ py_library(
         "test/selenium/webdriver/support/conftest.py",
     ],
     data = [
-        "pytest.ini",
-        "setup.cfg",
+        "pyproject.toml",
         "test/selenium/webdriver/common/test_file.txt",
         "test/selenium/webdriver/common/test_file2.txt",
         ":webextensions-selenium-example-unsigned-zip",

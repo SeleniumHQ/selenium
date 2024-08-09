@@ -1,3 +1,10 @@
 [build-system]
 requires = ["setuptools", "setuptools-rust"]
 build-backend = "setuptools.build_meta"
+
+[tool.flake8]
+exclude = [".tox", "docs/source/conf.py", "*venv"]
+# Disable this once black is applied throughout & line length is better handled.
+ignore = ["E501", "E203"]
+# This does nothing for now as E501 is ignored.
+max-line-length = 120
