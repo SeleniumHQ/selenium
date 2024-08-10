@@ -10,13 +10,7 @@ set -x
 bazel test --config=remote-ci --build_tests_only \
   --test_tag_filters=-exclusive-if-local,-skip-remote \
   --keep_going --flaky_test_attempts=2 \
-  //dotnet/...  \
-  //java/... \
-  //javascript/atoms/... \
-  //javascript/node/selenium-webdriver/... \
-  //javascript/webdriver/... \
-  //py/... \
-  //rb/spec/... -- $(cat .skipped-tests | tr '\n' ' ')
+  //... -- $(cat .skipped-tests | tr '\n' ' ')
 
 # Build the packages we want to ship to users
 bazel build --config=remote-ci \
