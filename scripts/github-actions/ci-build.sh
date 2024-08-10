@@ -4,12 +4,6 @@ set -eufo pipefail
 # We want to see what's going on
 set -x
 
-# The NPM repository rule wants to write to the HOME directory
-# but that's configured for the remote build machines, so run
-# that repository rule first so that the subsequent remote
-# build runs successfully. We don't care what the output is.
-bazel query @npm//:all >/dev/null
-
 # Now run the tests. The engflow build uses pinned browsers
 # so this should be fine
 # shellcheck disable=SC2046
