@@ -18,8 +18,11 @@
 package org.openqa.selenium;
 
 import java.util.Objects;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /** Similar to Point - implement locally to avoid depending on GWT. */
+@NullMarked
 public class Dimension {
   public final int width;
   public final int height;
@@ -38,7 +41,7 @@ public class Dimension {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (!(o instanceof Dimension)) {
       return false;
     }

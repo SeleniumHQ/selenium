@@ -19,7 +19,10 @@ package org.openqa.selenium;
 
 import java.util.Map;
 import java.util.Objects;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class Rectangle {
 
   public final int x;
@@ -70,7 +73,7 @@ public class Rectangle {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }
