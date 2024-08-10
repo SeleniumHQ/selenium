@@ -547,13 +547,12 @@ function getTestHook(name) {
 }
 
 function locate(fileLike) {
-  if (!runfiles) {
-    // eslint-disable-next-line n/no-process-exit
-    process.exit(1)
-  }
-
   if (fs.existsSync(fileLike)) {
     return fileLike
+  }
+
+  if (!runfiles) {
+    throw new Error('Unable to find ' + fileLike)
   }
 
   try {
