@@ -5,7 +5,6 @@ PATH
       selenium-webdriver (~> 4.2)
     selenium-webdriver (4.24.0.nightly)
       base64 (~> 0.2)
-      curb (~> 1.0.5)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -44,6 +43,7 @@ GEM
     drb (2.2.1)
     ffi (1.17.0)
     ffi (1.17.0-java)
+    ffi (1.17.0-x64-mingw32)
     ffi (1.17.0-x86_64-darwin)
     fileutils (1.7.2)
     git (1.19.1)
@@ -181,6 +181,7 @@ PLATFORMS
   x86_64-darwin-22
 
 DEPENDENCIES
+  curb (~> 1.0.5)
   debug (~> 1.7)
   git (~> 1.19)
   rack (~> 2.0)
