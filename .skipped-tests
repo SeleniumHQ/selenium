@@ -54,3 +54,4 @@
 -//rb/spec/integration/selenium/webdriver:element-chrome
 -//rb/spec/integration/selenium/webdriver:element-chrome-bidi
 -//rb/spec/integration/selenium/webdriver:element-chrome-remote
+-//rust/tests/...

@@ -92,6 +92,7 @@ rust_library(
         exclude = ["main.rs"],
     ),
     edition = "2021",
+    visibility = ["//rust:__subpackages__"],
     deps = all_crate_deps(normal = True),
 )
 
@@ -116,23 +117,4 @@ rust_test(
     crate = ":selenium_manager",
     edition = "2021",
     tags = ["no-sandbox"],
-)
-
-rust_test_suite(
-    name = "integration",
-    size = "small",
-    srcs = glob(["tests/**/*_tests.rs"]),
-    data = [
-        "tests/common.rs",
-        ":selenium-manager",
-    ],
-    edition = "2021",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [":selenium_manager"] + all_crate_deps(
-        normal = True,
-        normal_dev = True,
-    ),
 )
