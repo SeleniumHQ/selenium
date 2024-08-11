@@ -27,7 +27,7 @@ module Selenium
         describe Curb do
           subject(:curb) { described_class.new }
 
-          unless Platform.jruby?
+          unless Platform.jruby? || Platform.windows? || Platform.linux?
             it 'assigns default timeout to 0.0' do
               http = curb.send :client
 

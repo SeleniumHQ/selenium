@@ -17,7 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'curb'
+begin
+  require 'curb'
+rescue LoadError
+  # Curb is not supported by the platform
+end
 
 module Selenium
   module WebDriver
