@@ -63,13 +63,15 @@ public class ClientConfig {
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
         null,
-        Duration.ofSeconds(10),
-        Duration.ofMinutes(3),
+        Duration.ofSeconds(
+            Long.parseLong(System.getProperty("webdriver.httpclient.connectionTimeout", "10"))),
+        Duration.ofSeconds(
+            Long.parseLong(System.getProperty("webdriver.httpclient.readTimeout", "180"))),
         DEFAULT_FILTER,
         null,
         null,
         null,
-        null);
+        System.getProperty("webdriver.httpclient.version", null));
   }
 
   public ClientConfig baseUri(URI baseUri) {

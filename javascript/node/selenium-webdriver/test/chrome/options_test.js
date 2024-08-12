@@ -19,8 +19,8 @@
 
 const assert = require('node:assert')
 const fs = require('node:fs')
-const chrome = require('../../chrome')
-const symbols = require('../../lib/symbols')
+const chrome = require('selenium-webdriver/chrome')
+const symbols = require('selenium-webdriver/lib/symbols')
 const test = require('../../lib/test')
 const { locate } = require('../../lib/test/resources')
 

@@ -416,6 +416,28 @@ class BaseOptions(metaclass=ABCMeta):
         - `None`
     """
 
+    web_socket_url = _BaseOptionsDescriptor("webSocketUrl")
+    """Gets and Sets WebSocket URL.
+
+    Usage
+    -----
+    - Get
+        - `self.web_socket_url`
+    - Set
+        - `self.web_socket_url` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+
+    Returns
+    -------
+    - Get
+        - `bool`
+    - Set
+        - `None`
+    """
+
     def __init__(self) -> None:
         super().__init__()
         self._caps = self.default_capabilities

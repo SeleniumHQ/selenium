@@ -29,6 +29,7 @@ module Selenium
         EXTENSIONS = [DriverExtensions::HasCDP,
                       DriverExtensions::HasBiDi,
                       DriverExtensions::HasCasting,
+                      DriverExtensions::HasFedCmDialog,
                       DriverExtensions::HasNetworkConditions,
                       DriverExtensions::HasNetworkInterception,
                       DriverExtensions::HasWebStorage,

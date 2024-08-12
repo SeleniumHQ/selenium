@@ -351,6 +351,35 @@ class LocalNodeTest {
   }
 
   @Test
+  void responseCapsShowContainerName() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+
+    String gridUrl = "http://localhost:7890/subPath";
+    URI uri = new URI(gridUrl);
+    Capabilities stereotype = new ImmutableCapabilities("se:containerName", "container-1");
+
+    LocalNode.Builder builder =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+            .add(
+                stereotype,
+                new TestSessionFactory(
+                    (id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())));
+    LocalNode localNode = builder.build();
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        localNode.newSession(
+            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+    assertThat(response.isRight()).isTrue();
+
+    CreateSessionResponse sessionResponse = response.right();
+    Capabilities capabilities = sessionResponse.getSession().getCapabilities();
+    Object seContainerName = capabilities.getCapability("se:containerName");
+    assertThat(seContainerName).isNotNull();
+    assertThat(seContainerName).isEqualTo("container-1");
+  }
+
+  @Test
   void cdpIsDisabledAndResponseCapsShowThat() throws URISyntaxException {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();

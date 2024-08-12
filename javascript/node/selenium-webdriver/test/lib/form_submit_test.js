@@ -19,7 +19,7 @@
 
 const assert = require('node:assert')
 const test = require('../../lib/test')
-const until = require('../../lib/until')
+const until = require('selenium-webdriver/lib/until')
 const Pages = test.Pages
 
 test.suite(

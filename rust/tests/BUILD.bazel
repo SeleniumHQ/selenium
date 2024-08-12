@@ -1,0 +1,26 @@
+load("@crates//:defs.bzl", "all_crate_deps")
+load("//rust:defs.bzl", "rust_test_suite", "rustfmt_config")
+
+rustfmt_config(
+    name = "enable-rustfmt",
+)
+
+rust_test_suite(
+    name = "integration",
+    size = "small",
+    srcs = glob(["**/*_tests.rs"]),
+    data = [
+        "common.rs",
+        "//rust:selenium-manager",
+    ],
+    edition = "2021",
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
+    deps = ["//rust:selenium_manager"] + all_crate_deps(
+        package_name = "rust",
+        normal = True,
+        normal_dev = True,
+    ),
+)

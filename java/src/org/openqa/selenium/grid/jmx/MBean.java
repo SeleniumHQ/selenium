@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.jmx;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -36,7 +34,6 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import javax.management.RuntimeOperationsException;
 
 public class MBean implements DynamicMBean {
 
@@ -224,7 +221,7 @@ public class MBean implements DynamicMBean {
         return ((Map<?, ?>) res)
             .entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
-      } else if(res instanceof Number) {
+      } else if (res instanceof Number) {
         return res;
       } else {
         return res.toString();
@@ -249,8 +246,7 @@ public class MBean implements DynamicMBean {
     AttributeList resultList = new AttributeList();
 
     // if attributeNames is empty, return an empty result list
-    if (attributes == null || attributes.length == 0)
-      return resultList;
+    if (attributes == null || attributes.length == 0) return resultList;
 
     for (int i = 0; i < attributes.length; i++) {
       Object value = getAttribute(attributes[i]);

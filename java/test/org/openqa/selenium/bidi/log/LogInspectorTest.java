@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.module.LogInspector;
+import org.openqa.selenium.bidi.script.Source;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -62,9 +63,10 @@ class LogInspectorTest extends JupiterTestBase {
       driver.findElement(By.id("consoleLog")).click();
 
       ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
-
+      Source source = logEntry.getSource();
+      assertThat(source.getBrowsingContext().isPresent()).isTrue();
+      assertThat(source.getRealm()).isNotNull();
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
-      assertThat(logEntry.getRealm()).isNull();
       assertThat(logEntry.getArgs().size()).isEqualTo(1);
       assertThat(logEntry.getArgs().get(0).getType()).isEqualTo("string");
       assertThat(logEntry.getType()).isEqualTo("console");
@@ -86,7 +88,6 @@ class LogInspectorTest extends JupiterTestBase {
       ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
-      assertThat(logEntry.getRealm()).isNull();
       assertThat(logEntry.getArgs().size()).isEqualTo(1);
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
@@ -100,7 +101,6 @@ class LogInspectorTest extends JupiterTestBase {
       ConsoleLogEntry errorLogEntry = errorLogfuture.get(5, TimeUnit.SECONDS);
 
       assertThat(errorLogEntry.getText()).isEqualTo("I am console error");
-      assertThat(errorLogEntry.getRealm()).isNull();
       assertThat(errorLogEntry.getArgs().size()).isEqualTo(1);
       assertThat(errorLogEntry.getType()).isEqualTo("console");
       assertThat(errorLogEntry.getLevel()).isEqualTo(LogLevel.ERROR);
@@ -122,6 +122,10 @@ class LogInspectorTest extends JupiterTestBase {
       driver.findElement(By.id("jsException")).click();
 
       JavascriptLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
+
+      Source source = logEntry.getSource();
+      assertThat(source.getBrowsingContext().isPresent()).isTrue();
+      assertThat(source.getRealm()).isNotNull();
 
       assertThat(logEntry.getText()).isEqualTo("Error: Not working");
       assertThat(logEntry.getType()).isEqualTo("javascript");
@@ -218,7 +222,6 @@ class LogInspectorTest extends JupiterTestBase {
 
       ConsoleLogEntry consoleLogEntry = logEntry.getConsoleLogEntry().get();
       assertThat(consoleLogEntry.getText()).isEqualTo("Hello, world!");
-      assertThat(consoleLogEntry.getRealm()).isNull();
       assertThat(consoleLogEntry.getArgs().size()).isEqualTo(1);
       assertThat(consoleLogEntry.getType()).isEqualTo("console");
       assertThat(consoleLogEntry.getLevel()).isEqualTo(LogLevel.INFO);
@@ -243,7 +246,6 @@ class LogInspectorTest extends JupiterTestBase {
       ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
-      assertThat(logEntry.getRealm()).isNull();
       assertThat(logEntry.getArgs().size()).isEqualTo(1);
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);

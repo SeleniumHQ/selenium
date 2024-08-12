@@ -68,9 +68,9 @@ class Timeouts:
             before throwing an error.
         """
 
-        self.implicit_wait = implicit_wait
-        self.page_load = page_load
-        self.script = script
+        self._implicit_wait = self._convert(implicit_wait)
+        self._page_load = self._convert(page_load)
+        self._script = self._convert(script)
 
     # Creating descriptor objects
     implicit_wait = _TimeoutsDescriptor("_implicit_wait")

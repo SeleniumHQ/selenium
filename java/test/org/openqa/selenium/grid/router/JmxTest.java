@@ -27,7 +27,6 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.logging.Logger;
-
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
@@ -50,7 +49,6 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.jmx.JMXHelper;
-import org.openqa.selenium.grid.jmx.MBean;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -89,9 +87,7 @@ class JmxTest {
       assertThat(attributeInfoArray).hasSize(3);
 
       AttributeList attributeList = getAttributeList(name, attributeInfoArray);
-      assertThat(attributeList)
-        .isNotNull()
-        .hasSize(3);
+      assertThat(attributeList).isNotNull().hasSize(3);
 
       String uriValue = (String) beanServer.getAttribute(name, "Uri");
       assertThat(uriValue).isEqualTo(baseServerOptions.getExternalUri().toString());
@@ -139,9 +135,7 @@ class JmxTest {
       assertThat(attributeInfo).hasSize(9);
 
       AttributeList attributeList = getAttributeList(name, attributeInfo);
-      assertThat(attributeList)
-        .isNotNull()
-        .hasSize(9);
+      assertThat(attributeList).isNotNull().hasSize(9);
 
       Object currentSessions = beanServer.getAttribute(name, "CurrentSessions");
       assertNumberAttribute(currentSessions, 0);
@@ -196,9 +190,7 @@ class JmxTest {
       assertThat(attributeInfoArray).hasSize(2);
 
       AttributeList attributeList = getAttributeList(name, attributeInfoArray);
-      assertThat(attributeList)
-        .isNotNull()
-        .hasSize(2);
+      assertThat(attributeList).isNotNull().hasSize(2);
 
       Object requestTimeout = beanServer.getAttribute(name, "RequestTimeoutSeconds");
       assertNumberAttribute(requestTimeout, newSessionQueueOptions.getRequestTimeoutSeconds());
@@ -244,9 +236,7 @@ class JmxTest {
       assertThat(attributeInfoArray).hasSize(1);
 
       AttributeList attributeList = getAttributeList(name, attributeInfoArray);
-      assertThat(attributeList)
-        .isNotNull()
-        .hasSize(1);
+      assertThat(attributeList).isNotNull().hasSize(1);
 
       Object size = beanServer.getAttribute(name, "NewSessionQueueSize");
       assertNumberAttribute(size, 0);
@@ -315,9 +305,7 @@ class JmxTest {
       assertThat(attributeInfoArray).hasSize(4);
 
       AttributeList attributeList = getAttributeList(name, attributeInfoArray);
-      assertThat(attributeList)
-        .isNotNull()
-        .hasSize(4);
+      assertThat(attributeList).isNotNull().hasSize(4);
 
       Object nodeUpCount = beanServer.getAttribute(name, "NodeUpCount");
       LOG.info("Node up count=" + nodeUpCount);
@@ -337,7 +325,8 @@ class JmxTest {
     }
   }
 
-  private AttributeList getAttributeList(ObjectName name, MBeanAttributeInfo[] attributeInfoArray) throws InstanceNotFoundException, ReflectionException {
+  private AttributeList getAttributeList(ObjectName name, MBeanAttributeInfo[] attributeInfoArray)
+      throws InstanceNotFoundException, ReflectionException {
     String[] attributeNames = new String[attributeInfoArray.length];
     for (int i = 0; i < attributeInfoArray.length; i++) {
       attributeNames[i] = attributeInfoArray[i].getName();
@@ -365,5 +354,4 @@ class JmxTest {
     assertCommonNumberAttributes(attribute);
     assertThat(Float.parseFloat(attribute.toString())).isEqualTo(expectedValue);
   }
-
 }

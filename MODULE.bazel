@@ -1,7 +1,7 @@
 module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.3.2")
-bazel_dep(name = "aspect_bazel_lib", version = "2.7.7")
+bazel_dep(name = "aspect_bazel_lib", version = "2.7.9")
 bazel_dep(name = "aspect_rules_esbuild", version = "0.20.1")
 bazel_dep(name = "aspect_rules_js", version = "1.42.3")
 bazel_dep(name = "aspect_rules_ts", version = "2.4.2")
@@ -39,7 +39,14 @@ linter.configure(
 linter.register(name = "rust-rustfmt")
 
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
-node.toolchain(node_version = "18.17.0")
+node.toolchain(node_version = "20.9.0")
+
+pnpm = use_extension(
+    "@aspect_rules_js//npm:extensions.bzl",
+    "pnpm",
+    dev_dependency = True,
+)
+use_repo(pnpm, "pnpm")
 
 npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
 npm.npm_translate_lock(
@@ -75,7 +82,7 @@ use_repo(esbuild, "esbuild_toolchains")
 register_toolchains("@esbuild_toolchains//:all")
 
 dotnet = use_extension("@rules_dotnet//dotnet:extensions.bzl", "dotnet")
-dotnet.toolchain(dotnet_version = "7.0.400")
+dotnet.toolchain(dotnet_version = "8.0.203")
 use_repo(dotnet, "dotnet_toolchains")
 
 selenium_paket = use_extension("//dotnet:paket.nuget_extension.bzl", "nuget_extension")
@@ -162,11 +169,11 @@ maven.install(
     name = "maven",
     artifacts = [
         "com.beust:jcommander:1.82",
-        "com.github.javaparser:javaparser-core:3.25.10",
-        "com.github.spotbugs:spotbugs:4.8.5",
+        "com.github.javaparser:javaparser-core:3.26.1",
+        "com.github.spotbugs:spotbugs:4.8.6",
         "com.github.stephenc.jcip:jcip-annotations:1.0-1",
-        "com.google.code.gson:gson:2.10.1",
-        "com.google.guava:guava:33.2.0-jre",
+        "com.google.code.gson:gson:2.11.0",
+        "com.google.guava:guava:33.2.1-jre",
         "com.google.auto:auto-common:1.2.2",
         "com.google.auto.service:auto-service:1.1.1",
         "com.google.auto.service:auto-service-annotations:1.1.1",
@@ -174,44 +181,45 @@ maven.install(
         "com.graphql-java:graphql-java:20.2",
         "com.graphql-java:java-dataloader:3.2.0",
         "dev.failsafe:failsafe:3.3.2",
-        "io.grpc:grpc-context:1.64.0",
+        "io.grpc:grpc-context:1.65.1",
         "io.lettuce:lettuce-core:6.3.2.RELEASE",
-        "io.netty:netty-buffer:4.1.109.Final",
-        "io.netty:netty-codec-http:4.1.109.Final",
-        "io.netty:netty-codec-http2:4.1.109.Final",
-        "io.netty:netty-common:4.1.109.Final",
-        "io.netty:netty-handler:4.1.109.Final",
-        "io.netty:netty-handler-proxy:4.1.109.Final",
-        "io.netty:netty-transport:4.1.109.Final",
-        "io.opentelemetry:opentelemetry-api:1.38.0",
-        "io.opentelemetry:opentelemetry-context:1.38.0",
-        "io.opentelemetry:opentelemetry-exporter-logging:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk-common:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk-testing:1.38.0",
-        "io.opentelemetry:opentelemetry-sdk-trace:1.38.0",
+        "io.netty:netty-buffer:4.1.111.Final",
+        "io.netty:netty-codec-http:4.1.111.Final",
+        "io.netty:netty-codec-http2:4.1.111.Final",
+        "io.netty:netty-common:4.1.111.Final",
+        "io.netty:netty-handler:4.1.111.Final",
+        "io.netty:netty-handler-proxy:4.1.111.Final",
+        "io.netty:netty-transport:4.1.111.Final",
+        "io.opentelemetry:opentelemetry-api:1.40.0",
+        "io.opentelemetry:opentelemetry-context:1.40.0",
+        "io.opentelemetry:opentelemetry-exporter-logging:1.40.0",
+        "io.opentelemetry:opentelemetry-sdk:1.40.0",
+        "io.opentelemetry:opentelemetry-sdk-common:1.40.0",
+        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.40.0",
+        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.40.0",
+        "io.opentelemetry:opentelemetry-sdk-testing:1.40.0",
+        "io.opentelemetry:opentelemetry-sdk-trace:1.40.0",
         "io.opentelemetry.semconv:opentelemetry-semconv:1.25.0-alpha",
         "io.ous:jtoml:2.0.0",
         "it.ozimov:embedded-redis:0.7.3",
-        "net.bytebuddy:byte-buddy:1.14.15",
-        "org.htmlunit:htmlunit-core-js:4.1.0",
+        "net.bytebuddy:byte-buddy:1.14.18",
+        "org.htmlunit:htmlunit-core-js:4.3.0",
         "org.apache.commons:commons-exec:1.4.0",
         "org.apache.logging.log4j:log4j-core:2.23.1",
-        "org.assertj:assertj-core:3.25.3",
+        "org.assertj:assertj-core:3.26.3",
         "org.bouncycastle:bcpkix-jdk18on:1.78.1",
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
-        "org.hsqldb:hsqldb:2.7.2",
-        "org.junit.jupiter:junit-jupiter-api:5.10.2",
-        "org.junit.jupiter:junit-jupiter-engine:5.10.2",
-        "org.junit.jupiter:junit-jupiter-params:5.10.2",
-        "org.junit.platform:junit-platform-launcher:1.10.2",
-        "org.junit.platform:junit-platform-reporting:1.10.2",
-        "org.junit.platform:junit-platform-commons:1.10.2",
-        "org.junit.platform:junit-platform-engine:1.10.2",
+        "org.hsqldb:hsqldb:2.7.3",
+        "org.jspecify:jspecify:1.0.0",
+        "org.junit.jupiter:junit-jupiter-api:5.10.3",
+        "org.junit.jupiter:junit-jupiter-engine:5.10.3",
+        "org.junit.jupiter:junit-jupiter-params:5.10.3",
+        "org.junit.platform:junit-platform-launcher:1.10.3",
+        "org.junit.platform:junit-platform-reporting:1.10.3",
+        "org.junit.platform:junit-platform-commons:1.10.3",
+        "org.junit.platform:junit-platform-engine:1.10.3",
         "org.mockito:mockito-core:5.12.0",
-        "org.redisson:redisson:3.30.0",
+        "org.redisson:redisson:3.33.0",
         "org.slf4j:slf4j-api:2.0.13",
         "org.slf4j:slf4j-jdk14:2.0.13",
         "org.zeromq:jeromq:0.6.0",

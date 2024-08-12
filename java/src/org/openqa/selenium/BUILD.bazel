@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "javadoc")
+load("//java:defs.bzl", "artifact", "java_dist_zip", "java_export", "java_import", "javadoc")
 load("//java:version.bzl", "SE_VERSION")
 load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
@@ -32,8 +32,8 @@ java_export(
     pom_template = ":template-pom",
     visibility = ["//visibility:public"],
     deps = [
-        # Nothing from third party
         ":manifest",
+        artifact("org.jspecify:jspecify"),
     ],
 )
 
