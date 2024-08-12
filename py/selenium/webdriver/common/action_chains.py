@@ -251,6 +251,9 @@ class ActionChains:
          - y: Y coordinate to move to, as a positive integer.
         """
 
+        if x < 0 or y < 0:
+            raise ValueError("Coordinates x and y must be non-negative integers") 
+
         self.w3c_actions.pointer_action.move_to_location(x, y)
         self.w3c_actions.key_action.pause()
 
