@@ -159,7 +159,7 @@ class JmxTest {
       assertNumberAttribute(usedSlots, 0);
 
       Object load = beanServer.getAttribute(name, "Load");
-      assertNumberAttribute(attributeList, 0.0f);
+      assertNumberAttribute(load, 0.0f);
 
       String remoteNodeUri = (String) beanServer.getAttribute(name, "RemoteNodeUri");
       assertThat(remoteNodeUri).isEqualTo(nodeUri.toString());
