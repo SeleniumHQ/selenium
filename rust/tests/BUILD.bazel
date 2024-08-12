@@ -1,5 +1,5 @@
 load("@crates//:defs.bzl", "all_crate_deps")
-load("//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rust_test_suite", "rustfmt_config")
+load("//rust:defs.bzl", "rust_test_suite", "rustfmt_config")
 
 rustfmt_config(
     name = "enable-rustfmt",
