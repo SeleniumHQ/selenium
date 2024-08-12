@@ -32,4 +32,12 @@ public interface Script {
   long addJavaScriptErrorHandler(Consumer<JavascriptLogEntry> consumer);
 
   void removeJavaScriptErrorHandler(long id);
+
+  long addDomMutationHandler(Consumer<DomMutation> event);
+
+  void removeDomMutationHandler(long id);
+
+  String pin(String script);
+
+  void unpin(String id);
 }

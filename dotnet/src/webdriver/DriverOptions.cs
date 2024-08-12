@@ -16,12 +16,12 @@
 // limitations under the License.
 // </copyright>
 
-using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.Json;
 
 namespace OpenQA.Selenium
 {
@@ -395,7 +395,7 @@ namespace OpenQA.Selenium
         /// <returns>A string representation of this <see cref="DriverOptions"/>.</returns>
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(this.ToDictionary(), Formatting.Indented);
+            return JsonSerializer.Serialize(this.ToDictionary(), new JsonSerializerOptions { WriteIndented = true });
         }
 
         /// <summary>
