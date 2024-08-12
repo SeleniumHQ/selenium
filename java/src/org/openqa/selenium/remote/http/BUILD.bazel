@@ -7,6 +7,9 @@ java_export(
     srcs = glob(["**/*.java"]),
     maven_coordinates = "org.seleniumhq.selenium:selenium-http:%s" % SE_VERSION,
     pom_template = "//java/src/org/openqa/selenium:template-pom",
+    tags = [
+        "release-artifact",
+    ],
     uses = [
         "org.openqa.selenium.remote.http.HttpClient$Factory",
     ],

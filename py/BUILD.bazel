@@ -302,6 +302,9 @@ py_wheel(
         "py/",
     ],
     summary = "Official Python bindings for Selenium WebDriver",
+    tags = [
+        "release-artifact",
+    ],
     version = SE_VERSION,
     visibility = ["//visibility:public"],
     deps = [
