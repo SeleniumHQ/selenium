@@ -151,3 +151,17 @@ fn browser_path_test(#[case] os: String, #[case] browser: String, #[case] browse
         assert!(!stdout.contains("WARN"));
     }
 }
+
+#[test]
+fn invalid_browser_path_test() {
+    let mut cmd = get_selenium_manager();
+    cmd.args([
+        "--browser",
+        "chrome",
+        "--browser-path",
+        "/bad/path/google-chrome-wrong",
+    ])
+    .assert()
+    .code(DATAERR)
+    .failure();
+}
