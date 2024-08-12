@@ -1061,19 +1061,18 @@ pub trait SeleniumManager {
         cmd_version_arg: &str,
     ) -> Result<Option<String>, Error> {
         let mut browser_path = self.get_browser_path().to_string();
-        let mut escaped_browser_path = self.get_escaped_path(&browser_path);
         if browser_path.is_empty() {
             if let Some(path) = self.detect_browser_path() {
                 browser_path = path_to_string(&path);
-                escaped_browser_path = self.get_escaped_path(&browser_path);
             }
-        } else if !Path::new(&escaped_browser_path).exists() {
+        } else if !Path::new(&browser_path).exists() {
             self.set_fallback_driver_from_cache(false);
             return Err(anyhow!(format_one_arg(
                 "Browser path does not exist: {}",
                 &browser_path,
             )));
         }
+        let escaped_browser_path = self.get_escaped_path(browser_path.to_string());
 
         let mut commands = Vec::new();
         if WINDOWS.is(self.get_os()) {
@@ -1123,7 +1122,7 @@ pub trait SeleniumManager {
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = self.get_escaped_path(&path_to_string(&path));
+                    browser_path = self.get_escaped_path(path_to_string(&path));
                 }
                 _ => return Ok(None),
             }
@@ -1319,9 +1318,9 @@ pub trait SeleniumManager {
         canon_path
     }
 
-    fn get_escaped_path(&self, string_path: &str) -> String {
-        let mut escaped_path = string_path.to_string();
-        let path = Path::new(string_path);
+    fn get_escaped_path(&self, string_path: String) -> String {
+        let mut escaped_path = string_path.clone();
+        let path = Path::new(&string_path);
 
         if path.exists() {
             escaped_path = self.canonicalize_path(path.to_path_buf());
@@ -1332,7 +1331,7 @@ pub trait SeleniumManager {
                     Command::new_single(format_one_arg(ESCAPE_COMMAND, escaped_path.as_str()));
                 escaped_path = run_shell_command("bash", "-c", escape_command).unwrap_or_default();
                 if escaped_path.is_empty() {
-                    escaped_path = string_path.to_string();
+                    escaped_path = string_path.clone();
                 }
             }
         }
