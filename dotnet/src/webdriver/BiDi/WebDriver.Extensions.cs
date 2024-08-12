@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
+using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
@@ -16,7 +16,7 @@ public static class WebDriverExtensions
         return bidi;
     }
 
-    public static async Task<BrowsingContext> AsBidirectionalBrowsingContextAsync(this IWebDriver webDriver)
+    public static async Task<BrowsingContext> AsBidirectionalContextAsync(this IWebDriver webDriver)
     {
         var bidi = await webDriver.AsBidirectionalAsync();
 
