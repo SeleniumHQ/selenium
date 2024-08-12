@@ -19,6 +19,7 @@
 -//javascript/atoms:test-chrome
 -//javascript/atoms:test-edge
 -//javascript/atoms:test-firefox-beta
+-//javascript/chrome-driver/...
 -//javascript/node/selenium-webdriver:test-bidi-network-test.js-chrome
 -//javascript/node/selenium-webdriver:test-builder-test.js-chrome
 -//javascript/node/selenium-webdriver:test-builder-test.js-firefox
@@ -54,3 +55,4 @@
 -//rb/spec/integration/selenium/webdriver:element-chrome
 -//rb/spec/integration/selenium/webdriver:element-chrome-bidi
 -//rb/spec/integration/selenium/webdriver:element-chrome-remote
+-//rust/tests/...
