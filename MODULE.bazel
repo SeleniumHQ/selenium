@@ -1,7 +1,7 @@
 module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.3.2")
-bazel_dep(name = "aspect_bazel_lib", version = "2.7.7")
+bazel_dep(name = "aspect_bazel_lib", version = "2.7.9")
 bazel_dep(name = "aspect_rules_esbuild", version = "0.20.1")
 bazel_dep(name = "aspect_rules_js", version = "1.42.3")
 bazel_dep(name = "aspect_rules_ts", version = "2.4.2")
@@ -41,7 +41,11 @@ linter.register(name = "rust-rustfmt")
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
 node.toolchain(node_version = "20.9.0")
 
-pnpm = use_extension("@aspect_rules_js//npm:extensions.bzl", "pnpm", dev_dependency = True)
+pnpm = use_extension(
+    "@aspect_rules_js//npm:extensions.bzl",
+    "pnpm",
+    dev_dependency = True,
+)
 use_repo(pnpm, "pnpm")
 
 npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
@@ -206,6 +210,7 @@ maven.install(
         "org.bouncycastle:bcpkix-jdk18on:1.78.1",
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
         "org.hsqldb:hsqldb:2.7.3",
+        "org.jspecify:jspecify:1.0.0",
         "org.junit.jupiter:junit-jupiter-api:5.10.3",
         "org.junit.jupiter:junit-jupiter-engine:5.10.3",
         "org.junit.jupiter:junit-jupiter-params:5.10.3",
@@ -347,8 +352,7 @@ use_repo(
     "linux_beta_firefox",
     "linux_chrome",
     "linux_chromedriver",
-    # Commenting out `linux_edge` since this is not created, but it really should be.
-    #"linux_edge",
+    "linux_edge",
     "linux_edgedriver",
     "linux_firefox",
     "linux_geckodriver",

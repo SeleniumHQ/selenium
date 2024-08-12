@@ -146,6 +146,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
         capabilities = removeCapability(capabilities, "browserVersion");
       }
 
+      HttpClient client = null;
       try {
         service.start();
 
@@ -154,7 +155,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         ClientConfig clientConfig =
             ClientConfig.defaultConfig().readTimeout(sessionTimeout).baseUrl(serviceURL);
-        HttpClient client = clientFactory.createClient(clientConfig);
+        client = clientFactory.createClient(clientConfig);
 
         Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
 
@@ -186,8 +187,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         caps = readDevToolsEndpointAndVersion(caps);
         caps = readVncEndpoint(capabilities, caps);
+        caps = readPrefixedCaps(capabilities, caps);
 
         span.addEvent("Driver service created session", attributeMap);
+        final HttpClient fClient = client;
         return Either.right(
             new DefaultActiveSession(
                 tracer,
@@ -201,8 +204,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
                 Instant.now()) {
               @Override
               public void stop() {
-                service.stop();
-                client.close();
+                try (fClient) {
+                  service.stop();
+                }
               }
             });
       } catch (Exception e) {
@@ -217,7 +221,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-        service.stop();
+        try (final HttpClient fClient = client) {
+          service.stop();
+        }
         return Either.left(new SessionNotCreatedException(errorMessage));
       }
     } catch (Exception e) {
@@ -293,6 +299,23 @@ public class DriverServiceSessionFactory implements SessionFactory {
               .setCapability(seVncEnabledCap, true);
     }
     return returnedCaps;
+  }
+
+  private Capabilities readPrefixedCaps(Capabilities requestedCaps, Capabilities returnedCaps) {
+
+    PersistentCapabilities returnPrefixedCaps = new PersistentCapabilities(returnedCaps);
+
+    Map<String, Object> requestedCapsMap = requestedCaps.asMap();
+    Map<String, Object> returnedCapsMap = returnedCaps.asMap();
+
+    requestedCapsMap.forEach(
+        (k, v) -> {
+          if (k.startsWith("se:") && !returnedCapsMap.containsKey(k)) {
+            returnPrefixedCaps.setCapability(k, v);
+          }
+        });
+
+    return returnPrefixedCaps;
   }
 
   // We remove a capability before sending the caps to the driver because some drivers will

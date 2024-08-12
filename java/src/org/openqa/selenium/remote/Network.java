@@ -15,28 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+package org.openqa.selenium.remote;
 
-import java.util.List;
-import org.jspecify.annotations.NullMarked;
+import java.net.URI;
+import java.util.function.Predicate;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.UsernameAndPassword;
 
-@NullMarked
-public interface SearchContext {
-  /**
-   * Find all elements within the current context using the given mechanism.
-   *
-   * @param by The locating mechanism to use
-   * @return A list of all {@link WebElement}s, or an empty list if nothing matches
-   * @see org.openqa.selenium.By
-   */
-  List<WebElement> findElements(By by);
+@Beta
+public interface Network {
 
-  /**
-   * Find the first {@link WebElement} using the given method.
-   *
-   * @param by The locating mechanism
-   * @return The first matching element on the current context
-   * @throws NoSuchElementException If no matching elements are found
-   */
-  WebElement findElement(By by);
+  long addAuthenticationHandler(UsernameAndPassword usernameAndPassword);
+
+  long addAuthenticationHandler(Predicate<URI> filter, UsernameAndPassword usernameAndPassword);
+
+  void removeAuthenticationHandler(long id);
+
+  void clearAuthenticationHandlers();
 }
