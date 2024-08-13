@@ -38,7 +38,7 @@ which = "6.0.2"
 
 [dev-dependencies]
 assert_cmd = "2.0.16"
-rstest = "0.22.0"
+rstest = "0.19.0"
 is_executable = "1.0.1"
 
 [profile.release]

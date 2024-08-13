@@ -1,5 +1,5 @@
 {
-  "checksum": "8057e64c78d29d956d3dcb9405811dca8528ceac02cf813d73b25117727faeff",
+  "checksum": "4ef6c22ec363acd77306d3758c75001ec6e6164f8f964457ff9af16470c5cf13",
   "crates": {
     "addr2line 0.21.0": {
       "name": "addr2line",
@@ -9251,54 +9251,6 @@
       ],
       "license_file": "LICENSE-APACHE"
     },
-    "proc-macro-crate 3.1.0": {
-      "name": "proc-macro-crate",
-      "version": "3.1.0",
-      "package_url": "https://github.com/bkchr/proc-macro-crate",
-      "repository": {
-        "Http": {
-          "url": "https://static.crates.io/crates/proc-macro-crate/3.1.0/download",
-          "sha256": "6d37c51ca738a55da99dc0c4a34860fd675453b8b36209178c2249bb13651284"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "proc_macro_crate",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "allow_empty": false,
-              "include": [
-                "**/*.rs"
-              ]
-            }
-          }
-        }
-      ],
-      "library_target_name": "proc_macro_crate",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "deps": {
-          "common": [
-            {
-              "id": "toml_edit 0.21.1",
-              "target": "toml_edit"
-            }
-          ],
-          "selects": {}
-        },
-        "edition": "2021",
-        "version": "3.1.0"
-      },
-      "license": "MIT OR Apache-2.0",
-      "license_ids": [
-        "Apache-2.0",
-        "MIT"
-      ],
-      "license_file": "LICENSE-APACHE"
-    },
     "proc-macro2 1.0.82": {
       "name": "proc-macro2",
       "version": "1.0.82",
@@ -10718,14 +10670,14 @@
       "license_ids": [],
       "license_file": "LICENSE"
     },
-    "rstest 0.22.0": {
+    "rstest 0.19.0": {
       "name": "rstest",
-      "version": "0.22.0",
+      "version": "0.19.0",
       "package_url": "https://github.com/la10736/rstest",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/rstest/0.22.0/download",
-          "sha256": "7b423f0e62bdd61734b67cd21ff50871dfaeb9cc74f869dcd6af974fbcb19936"
+          "url": "https://static.crates.io/crates/rstest/0.19.0/download",
+          "sha256": "9d5316d2a1479eeef1ea21e7f9ddc67c191d497abc8fc3ba2467857abbb68330"
         }
       },
       "targets": [
@@ -10750,7 +10702,6 @@
         "crate_features": {
           "common": [
             "async-timeout",
-            "crate-name",
             "default"
           ],
           "selects": {}
@@ -10772,13 +10723,13 @@
         "proc_macro_deps": {
           "common": [
             {
-              "id": "rstest_macros 0.22.0",
+              "id": "rstest_macros 0.19.0",
               "target": "rstest_macros"
             }
           ],
           "selects": {}
         },
-        "version": "0.22.0"
+        "version": "0.19.0"
       },
       "license": "MIT OR Apache-2.0",
       "license_ids": [
@@ -10787,14 +10738,14 @@
       ],
       "license_file": "LICENSE-APACHE"
     },
-    "rstest_macros 0.22.0": {
+    "rstest_macros 0.19.0": {
       "name": "rstest_macros",
-      "version": "0.22.0",
+      "version": "0.19.0",
       "package_url": "https://github.com/la10736/rstest",
       "repository": {
         "Http": {
-          "url": "https://static.crates.io/crates/rstest_macros/0.22.0/download",
-          "sha256": "c5e1711e7d14f74b12a58411c542185ef7fb7f2e7f8ee6e2940a883628522b42"
+          "url": "https://static.crates.io/crates/rstest_macros/0.19.0/download",
+          "sha256": "04a9df72cc1f67020b0d63ad9bfe4a323e459ea7eb68e03bd9824db49f9a4c25"
         }
       },
       "targets": [
@@ -10830,8 +10781,7 @@
         ],
         "crate_features": {
           "common": [
-            "async-timeout",
-            "crate-name"
+            "async-timeout"
           ],
           "selects": {}
         },
@@ -10844,10 +10794,6 @@
             {
               "id": "glob 0.3.1",
               "target": "glob"
-            },
-            {
-              "id": "proc-macro-crate 3.1.0",
-              "target": "proc_macro_crate"
             },
             {
               "id": "proc-macro2 1.0.82",
@@ -10866,7 +10812,7 @@
               "target": "relative_path"
             },
             {
-              "id": "rstest_macros 0.22.0",
+              "id": "rstest_macros 0.19.0",
               "target": "build_script_build"
             },
             {
@@ -10881,7 +10827,7 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "0.22.0"
+        "version": "0.19.0"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -12018,7 +11964,7 @@
               "target": "is_executable"
             },
             {
-              "id": "rstest 0.22.0",
+              "id": "rstest 0.19.0",
               "target": "rstest"
             }
           ],
@@ -14875,70 +14821,6 @@
         },
         "edition": "2021",
         "version": "0.6.8"
-      },
-      "license": "MIT OR Apache-2.0",
-      "license_ids": [
-        "Apache-2.0",
-        "MIT"
-      ],
-      "license_file": "LICENSE-APACHE"
-    },
-    "toml_edit 0.21.1": {
-      "name": "toml_edit",
-      "version": "0.21.1",
-      "package_url": "https://github.com/toml-rs/toml",
-      "repository": {
-        "Http": {
-          "url": "https://static.crates.io/crates/toml_edit/0.21.1/download",
-          "sha256": "6a8534fd7f78b5405e860340ad6575217ce99f38d4d5c8f2442cb5ecb50090e1"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "toml_edit",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "allow_empty": false,
-              "include": [
-                "**/*.rs"
-              ]
-            }
-          }
-        }
-      ],
-      "library_target_name": "toml_edit",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "crate_features": {
-          "common": [
-            "default",
-            "display",
-            "parse"
-          ],
-          "selects": {}
-        },
-        "deps": {
-          "common": [
-            {
-              "id": "indexmap 2.2.6",
-              "target": "indexmap"
-            },
-            {
-              "id": "toml_datetime 0.6.8",
-              "target": "toml_datetime"
-            },
-            {
-              "id": "winnow 0.5.40",
-              "target": "winnow"
-            }
-          ],
-          "selects": {}
-        },
-        "edition": "2021",
-        "version": "0.21.1"
       },
       "license": "MIT OR Apache-2.0",
       "license_ids": [
@@ -18328,52 +18210,6 @@
       ],
       "license_file": "license-apache-2.0"
     },
-    "winnow 0.5.40": {
-      "name": "winnow",
-      "version": "0.5.40",
-      "package_url": "https://github.com/winnow-rs/winnow",
-      "repository": {
-        "Http": {
-          "url": "https://static.crates.io/crates/winnow/0.5.40/download",
-          "sha256": "f593a95398737aeed53e489c785df13f3618e41dbcd6718c6addbf1395aa6876"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "winnow",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "allow_empty": false,
-              "include": [
-                "**/*.rs"
-              ]
-            }
-          }
-        }
-      ],
-      "library_target_name": "winnow",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "crate_features": {
-          "common": [
-            "alloc",
-            "default",
-            "std"
-          ],
-          "selects": {}
-        },
-        "edition": "2021",
-        "version": "0.5.40"
-      },
-      "license": "MIT",
-      "license_ids": [
-        "MIT"
-      ],
-      "license_file": "LICENSE-MIT"
-    },
     "winnow 0.6.18": {
       "name": "winnow",
       "version": "0.6.18",
@@ -19868,6 +19704,6 @@
   "direct_dev_deps": [
     "assert_cmd 2.0.16",
     "is_executable 1.0.1",
-    "rstest 0.22.0"
+    "rstest 0.19.0"
   ]
 }
