@@ -1,3 +1,19 @@
 [build-system]
 requires = ["setuptools", "setuptools-rust"]
 build-backend = "setuptools.build_meta"
+
+[tool.isort]
+# isort is a common python tool for keeping imports nicely formatted.
+# Automatically keep imports alphabetically sorted, on single lines in
+# PEP recommended sections (https://peps.python.org/pep-0008/#imports)
+# files or individual lines can be ignored via `# isort:skip|# isort:skip_file`.
+profile = "black"
+py_version=38
+force_single_line = true
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
+
+[tool.docformatter]
+recursive = true
