@@ -45,6 +45,35 @@ suite(
         assert.equal(source.includes('Access granted'), true)
       })
 
+      it('can add authentication handler with filter', async function () {
+        await driver.network().addAuthenticationHandler('genie', 'bottle', 'basicAuth')
+        await driver.get(Pages.basicAuth)
+
+        await driver.wait(until.elementLocated(By.css('pre')))
+        let source = await driver.getPageSource()
+        assert.equal(source.includes('Access granted'), true)
+      })
+
+      it('can add multiple authentication handlers with filter', async function () {
+        await driver.network().addAuthenticationHandler('genie', 'bottle', 'basicAuth')
+        await driver.network().addAuthenticationHandler('test', 'test', 'test')
+        await driver.get(Pages.basicAuth)
+
+        await driver.wait(until.elementLocated(By.css('pre')))
+        let source = await driver.getPageSource()
+        assert.equal(source.includes('Access granted'), true)
+      })
+
+      it('can add multiple authentication handlers with the same filter', async function () {
+        await driver.network().addAuthenticationHandler('genie', 'bottle', 'basicAuth')
+        await driver.network().addAuthenticationHandler('genie', 'bottle', 'basicAuth')
+        await driver.get(Pages.basicAuth)
+
+        await driver.wait(until.elementLocated(By.css('pre')))
+        let source = await driver.getPageSource()
+        assert.equal(source.includes('Access granted'), true)
+      })
+
       it('can remove authentication handler', async function () {
         const id = await driver.network().addAuthenticationHandler('genie', 'bottle')
 
@@ -59,8 +88,20 @@ suite(
         }
       })
 
+      it('can remove authentication handler', async function () {
+        await driver.network().removeAuthenticationHandler(10)
+
+        try {
+          await driver.get(Pages.basicAuth)
+          await driver.wait(until.elementLocated(By.css('pre')))
+          assert.fail('Page should not be loaded')
+        } catch (e) {
+          assert.strictEqual(e.name, 'UnexpectedAlertOpenError')
+        }
+      })
+
       it('can clear authentication handlers', async function () {
-        await driver.network().addAuthenticationHandler('genie', 'bottle')
+        await driver.network().addAuthenticationHandler('genie', 'bottle', 'basicAuth')
 
         await driver.network().addAuthenticationHandler('bottle', 'genie')
 
