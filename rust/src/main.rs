@@ -265,7 +265,7 @@ fn main() {
                 log.warn(&err);
                 flush_and_exit(OK, log, Some(err));
             } else {
-                log.error(&err);
+                log.error(format!("{:?}", err));
                 flush_and_exit(DATAERR, log, Some(err));
             }
         });
