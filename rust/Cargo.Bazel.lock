@@ -1,5 +1,5 @@
 {
-  "checksum": "d3b4f76b61f6e1c21a4bd8b7905b2b82a1dee313ae0632e04a1c1a7a2e49d414",
+  "checksum": "4ef6c22ec363acd77306d3758c75001ec6e6164f8f964457ff9af16470c5cf13",
   "crates": {
     "addr2line 0.21.0": {
       "name": "addr2line",
@@ -11951,14 +11951,7 @@
               "target": "zip"
             }
           ],
-          "selects": {
-            "cfg(target_os = \"windows\")": [
-              {
-                "id": "windows-sys 0.59.0",
-                "target": "windows_sys"
-              }
-            ]
-          }
+          "selects": {}
         },
         "deps_dev": {
           "common": [
@@ -19706,7 +19699,6 @@
     "toml 0.8.19",
     "walkdir 2.5.0",
     "which 6.0.2",
-    "windows-sys 0.59.0",
     "zip 2.1.6"
   ],
   "direct_dev_deps": [
