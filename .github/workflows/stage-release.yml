@@ -6,6 +6,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
 
 jobs:
   github-release:
@@ -20,7 +21,6 @@ jobs:
       - name: Extract version from branch name
         id: extract_version
         run: |
-          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
           VERSION=$(echo $BRANCH_NAME | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
       - name: Prep git
