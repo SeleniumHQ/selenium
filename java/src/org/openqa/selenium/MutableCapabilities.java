@@ -22,8 +22,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
+@NullMarked
 public class MutableCapabilities implements Capabilities {
 
   private static final Set<String> OPTION_KEYS;
@@ -81,7 +84,7 @@ public class MutableCapabilities implements Capabilities {
     setCapability(capabilityName, (Object) value);
   }
 
-  public void setCapability(String key, Object value) {
+  public void setCapability(String key, @Nullable Object value) {
     Require.nonNull("Capability name", key);
 
     // We have to special-case some keys and values because of the popular idiom of calling
@@ -107,7 +110,7 @@ public class MutableCapabilities implements Capabilities {
   }
 
   @Override
-  public Object getCapability(String capabilityName) {
+  public @Nullable Object getCapability(String capabilityName) {
     return caps.get(capabilityName);
   }
 
@@ -126,7 +129,7 @@ public class MutableCapabilities implements Capabilities {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (!(o instanceof Capabilities)) {
       return false;
     }
