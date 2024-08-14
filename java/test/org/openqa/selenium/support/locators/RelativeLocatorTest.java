@@ -37,7 +37,7 @@ class RelativeLocatorTest extends JupiterTestBase {
 
   @Test
   void shouldBeAbleToFindElementWithToRightOfAndBelowWithBorderCollapseInTable() {
-    driver.get("https://www.w3schools.com/html/html_tables.asp");
+    driver.get(appServer.whereIs("relative_locators.html"));
 
     By contactNameForTargetCompany =
         RelativeLocator.with(By.tagName("td"))
