@@ -16,6 +16,8 @@
 // under the License.
 package org.openqa.selenium;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Indicates a driver or an HTML element that can capture a screenshot and store it in different
  * ways.
@@ -29,6 +31,7 @@ package org.openqa.selenium;
  *
  * @see OutputType
  */
+@NullMarked
 public interface TakesScreenshot {
   /**
    * Capture the screenshot and store it in the specified location.
