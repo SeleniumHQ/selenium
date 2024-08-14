@@ -90,7 +90,7 @@ class Log:
             yield event
 
         payload = json.loads(evnt.value.payload)
-        elements = self.driver.find_elements(By.CSS_SELECTOR, f"*[data-__webdriver_id={payload['target']}]")
+        elements: list = self.driver.find_elements(By.CSS_SELECTOR, f"*[data-__webdriver_id={payload['target']}]")
         if not elements:
             elements.append(None)
         event["element"] = elements[0]
@@ -116,11 +116,11 @@ class Log:
         await session.execute(self.devtools.page.enable())
         session = self.cdp.get_session_context("runtime.enable")
         await session.execute(self.devtools.runtime.enable())
-        js_exception: Dict[str, Any] = {"timestamp": None, "exception_details": None}
+        js_exception = self.devtools.runtime.ExceptionThrown(None, None)
         async with session.wait_for(self.devtools.runtime.ExceptionThrown) as exception:
             yield js_exception
-        js_exception["timestamp"] = exception.value.timestamp
-        js_exception["exception_details"] = exception.value.exception_details
+        js_exception.timestamp = exception.value.timestamp
+        js_exception.exception_details = exception.value.exception_details
 
     @asynccontextmanager
     async def add_listener(self, event_type) -> AsyncGenerator[Dict[str, Any], None]:
