@@ -149,6 +149,10 @@ jobs:
       - name: Setup curl for Ubuntu
         if: inputs.os == 'ubuntu'
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+      - name: Setup curl for Windows
+        if: inputs.os == 'windows'
+        uses: msys2/setup-msys2@v2
+        run: pacman -S mingw-w64-x86_64-curl
       - name: Run Bazel
         run: ${{ inputs.run }}
       - name: Start SSH session
