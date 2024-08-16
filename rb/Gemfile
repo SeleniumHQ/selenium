@@ -4,8 +4,9 @@ source 'https://rubygems.org'
 Dir["#{__dir__}/*.gemspec"].each do |spec|
   gemspec name: File.basename(spec, '.gemspec')
 end
-
-Bundler.settings.set_local('build.curb', '--with-curl-dir="C:\ProgramData\chocolatey\lib\curl\tools"')
+if RUBY_PLATFORM.match?(/mingw|mswin/)
+  Bundler.settings.set_local('build.curb', '--with-curl-dir="C:\ProgramData\chocolatey\lib\curl\tools"')
+end
 
 gem 'curb', '~> 1.0.5', require: false, platforms: %i[mri mingw x64_mingw]
 gem 'debug', '~> 1.7', require: false, platforms: %i[mri mingw x64_mingw]
