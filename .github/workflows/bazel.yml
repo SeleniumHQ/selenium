@@ -147,7 +147,7 @@ jobs:
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable
       - name: Setup libcurl
-        if: inputs.os == 'linux'
+        if: inputs.os == 'ubuntu'
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Run Bazel
         run: ${{ inputs.run }}
