@@ -5,6 +5,8 @@ Dir["#{__dir__}/*.gemspec"].each do |spec|
   gemspec name: File.basename(spec, '.gemspec')
 end
 
+Bundler.settings.set_local('build.curb', '--with-curl-dir="C:\ProgramData\chocolatey\lib\curl\tools"')
+
 gem 'curb', '~> 1.0.5', require: false, platforms: %i[mri mingw x64_mingw]
 gem 'debug', '~> 1.7', require: false, platforms: %i[mri mingw x64_mingw]
 gem 'steep', '~> 1.5.0', require: false, platforms: %i[mri mingw x64_mingw]
