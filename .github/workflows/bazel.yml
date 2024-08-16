@@ -152,9 +152,8 @@ jobs:
       - name: Setup curl for Windows
         if: inputs.os == 'windows'
         uses: crazy-max/ghaction-chocolatey@v3
-        run: choco install curl
         with:
-          args: ''
+          args: 'install curl'
       - name: Run Bazel
         run: ${{ inputs.run }}
       - name: Start SSH session
