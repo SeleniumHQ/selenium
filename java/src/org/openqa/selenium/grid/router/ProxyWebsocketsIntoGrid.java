@@ -71,7 +71,20 @@ public class ProxyWebsocketsIntoGrid
       WebSocket upstream =
           client.openSocket(new HttpRequest(GET, uri), new ForwardingListener(downstream));
 
-      return Optional.of(upstream::send);
+      return Optional.of(
+          (msg) -> {
+            try {
+              upstream.send(msg);
+            } finally {
+              if (msg instanceof CloseMessage) {
+                try {
+                  client.close();
+                } catch (Exception e) {
+                  LOG.log(Level.WARNING, "Failed to shutdown the client of " + sessionUri, e);
+                }
+              }
+            }
+          });
 
     } catch (NoSuchSessionException e) {
       LOG.warning("Attempt to connect to non-existent session: " + uri);

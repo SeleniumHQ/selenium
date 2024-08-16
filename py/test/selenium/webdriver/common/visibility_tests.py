@@ -29,6 +29,7 @@ def test_should_allow_the_user_to_tell_if_an_element_is_displayed_or_not(driver,
     assert driver.find_element(by=By.ID, value="none").is_displayed() is False
     assert driver.find_element(by=By.ID, value="suppressedParagraph").is_displayed() is False
     assert driver.find_element(by=By.ID, value="hidden").is_displayed() is False
+    assert driver.find_element(by=By.ID, value="aParentFormId").is_displayed() is True
 
 
 def test_visibility_should_take_into_account_parent_visibility(driver, pages):

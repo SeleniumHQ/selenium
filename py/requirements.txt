@@ -2,8 +2,8 @@ async-generator==1.10
 attrs==23.2.0
 certifi==2023.11.17
 cffi==1.16.0
-cryptography==42.0.7
-debugpy==1.8.1
+cryptography==42.0.8
+debugpy==1.8.5
 h11==0.14.0
 idna==3.7
 importlib-metadata==6.8.0

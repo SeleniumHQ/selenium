@@ -230,7 +230,20 @@ public class ProxyNodeWebsockets
         client.openSocket(
             new HttpRequest(GET, uri.toString()),
             new ForwardingListener(downstream, sessionConsumer, sessionId));
-    return upstream::send;
+
+    return (msg) -> {
+      try {
+        upstream.send(msg);
+      } finally {
+        if (msg instanceof CloseMessage) {
+          try {
+            client.close();
+          } catch (Exception e) {
+            LOG.log(Level.WARNING, "Failed to shutdown the client of " + uri, e);
+          }
+        }
+      }
+    };
   }
 
   private static class ForwardingListener implements WebSocket.Listener {
