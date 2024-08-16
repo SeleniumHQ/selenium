@@ -152,7 +152,8 @@ jobs:
       - name: Setup curl for Windows
         if: inputs.os == 'windows'
         uses: msys2/setup-msys2@v2
-        run: pacman -S mingw-w64-x86_64-curl
+        with: 
+          pacman -S mingw-w64-x86_64-curl
       - name: Run Bazel
         run: ${{ inputs.run }}
       - name: Start SSH session
