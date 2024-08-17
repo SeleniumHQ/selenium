@@ -244,7 +244,7 @@ ruby = use_extension("@rules_ruby//ruby:extensions.bzl", "ruby")
 ruby.toolchain(
     name = "ruby",
     version_file = "//:rb/.ruby-version",
-    msys2_packages = ["libcurl", "libyaml"]
+    msys2_packages = ["curl"]
 )
 ruby.bundle_fetch(
     name = "bundle",
