@@ -70,7 +70,8 @@ public class LocalNodeFactory {
             .enableCdp(nodeOptions.isCdpEnabled())
             .enableBiDi(nodeOptions.isBiDiEnabled())
             .enableManagedDownloads(nodeOptions.isManagedDownloadsEnabled())
-            .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
+            .heartbeatPeriod(nodeOptions.getHeartbeatPeriod())
+            .connectionLimitPerSession(nodeOptions.getConnectionLimitPerSession());
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);

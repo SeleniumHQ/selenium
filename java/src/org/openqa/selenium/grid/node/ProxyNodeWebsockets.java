@@ -94,6 +94,13 @@ public class ProxyNodeWebsockets
       return Optional.empty();
     }
 
+    // ensure one session does not open to many connections, this might have a negative impact on
+    // the grid health
+    if (!node.tryAcquireConnection(id)) {
+      LOG.warning("Too many websocket connections initiated by " + id);
+      return Optional.empty();
+    }
+
     Session session = node.getSession(id);
     Capabilities caps = session.getCapabilities();
     LOG.fine("Scanning for endpoint: " + caps);

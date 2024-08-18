@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 import org.openqa.selenium.Capabilities;
@@ -98,6 +99,8 @@ public class OneShotNode extends Node {
   private final Duration heartbeatPeriod;
   private final URI gridUri;
   private final UUID slotId = UUID.randomUUID();
+  private final int connectionLimitPerSession;
+  private final AtomicInteger connectionCounter = new AtomicInteger();
   private RemoteWebDriver driver;
   private SessionId sessionId;
   private HttpClient client;
@@ -114,7 +117,8 @@ public class OneShotNode extends Node {
       URI uri,
       URI gridUri,
       Capabilities stereotype,
-      WebDriverInfo driverInfo) {
+      WebDriverInfo driverInfo,
+      int connectionLimitPerSession) {
     super(tracer, id, uri, registrationSecret, Require.positive(sessionTimeout));
 
     this.heartbeatPeriod = heartbeatPeriod;
@@ -122,6 +126,7 @@ public class OneShotNode extends Node {
     this.gridUri = Require.nonNull("Public Grid URI", gridUri);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.driverInfo = Require.nonNull("Driver info", driverInfo);
+    this.connectionLimitPerSession = connectionLimitPerSession;
 
     new JMXHelper().register(this);
   }
@@ -177,7 +182,8 @@ public class OneShotNode extends Node {
             .getPublicGridUri()
             .orElseThrow(() -> new ConfigException("Unable to determine public grid address")),
         stereotype,
-        driverInfo);
+        driverInfo,
+        nodeOptions.getConnectionLimitPerSession());
   }
 
   @Override
@@ -355,6 +361,11 @@ public class OneShotNode extends Node {
   @Override
   public boolean isSessionOwner(SessionId id) {
     return driver != null && sessionId.equals(id);
+  }
+
+  @Override
+  public boolean tryAcquireConnection(SessionId id) {
+    return sessionId.equals(id) && connectionLimitPerSession > connectionCounter.getAndIncrement();
   }
 
   @Override

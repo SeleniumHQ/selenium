@@ -59,6 +59,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -127,6 +128,7 @@ public class LocalNode extends Node {
   private final int configuredSessionCount;
   private final boolean cdpEnabled;
   private final boolean managedDownloadsEnabled;
+  private final int connectionLimitPerSession;
 
   private final boolean bidiEnabled;
   private final AtomicBoolean drainAfterSessions = new AtomicBoolean();
@@ -153,7 +155,8 @@ public class LocalNode extends Node {
       Duration heartbeatPeriod,
       List<SessionSlot> factories,
       Secret registrationSecret,
-      boolean managedDownloadsEnabled) {
+      boolean managedDownloadsEnabled,
+      int connectionLimitPerSession) {
     super(
         tracer,
         new NodeId(UUID.randomUUID()),
@@ -176,6 +179,7 @@ public class LocalNode extends Node {
     this.cdpEnabled = cdpEnabled;
     this.bidiEnabled = bidiEnabled;
     this.managedDownloadsEnabled = managedDownloadsEnabled;
+    this.connectionLimitPerSession = connectionLimitPerSession;
 
     this.healthCheck =
         healthCheck == null
@@ -572,6 +576,24 @@ public class LocalNode extends Node {
   public boolean isSessionOwner(SessionId id) {
     Require.nonNull("Session ID", id);
     return currentSessions.getIfPresent(id) != null;
+  }
+
+  @Override
+  public boolean tryAcquireConnection(SessionId id) throws NoSuchSessionException {
+    SessionSlot slot = currentSessions.getIfPresent(id);
+
+    if (slot == null) {
+      return false;
+    }
+
+    if (connectionLimitPerSession == -1) {
+      // no limit
+      return true;
+    }
+
+    AtomicLong counter = slot.getConnectionCounter();
+
+    return connectionLimitPerSession > counter.getAndIncrement();
   }
 
   @Override
@@ -978,6 +1000,7 @@ public class LocalNode extends Node {
     private HealthCheck healthCheck;
     private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
     private boolean managedDownloadsEnabled = false;
+    private int connectionLimitPerSession = -1;
 
     private Builder(Tracer tracer, EventBus bus, URI uri, URI gridUri, Secret registrationSecret) {
       this.tracer = Require.nonNull("Tracer", tracer);
@@ -1032,6 +1055,11 @@ public class LocalNode extends Node {
       return this;
     }
 
+    public Builder connectionLimitPerSession(int connectionLimitPerSession) {
+      this.connectionLimitPerSession = connectionLimitPerSession;
+      return this;
+    }
+
     public LocalNode build() {
       return new LocalNode(
           tracer,
@@ -1048,7 +1076,8 @@ public class LocalNode extends Node {
           heartbeatPeriod,
           factories.build(),
           registrationSecret,
-          managedDownloadsEnabled);
+          managedDownloadsEnabled,
+          connectionLimitPerSession);
     }
 
     public Advanced advanced() {

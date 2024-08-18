@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.node.config;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_CONNECTION_LIMIT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_ENABLE_BIDI;
@@ -76,6 +77,14 @@ public class NodeFlags implements HasRoles {
               + "This will release the slot for other tests.")
   @ConfigValue(section = NODE_SECTION, name = "session-timeout", example = "60")
   public int sessionTimeout = DEFAULT_SESSION_TIMEOUT;
+
+  @Parameter(
+      names = {"--connection-limit-per-session"},
+      description =
+          "Let X be the maximum number of websocket connections per session.This will ensure one"
+              + " session is not able to exhaust the connection limit of the host")
+  @ConfigValue(section = NODE_SECTION, name = "connection-limit-per-session", example = "8")
+  public int connectionLimitPerSession = DEFAULT_CONNECTION_LIMIT;
 
   @Parameter(
       names = {"--detect-drivers"},
