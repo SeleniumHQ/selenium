@@ -21,6 +21,16 @@ java_plugin(
     ],
 )
 
+java_plugin(
+    name = "nullaway",
+    visibility = [
+        "//java:__subpackages__",
+    ],
+    deps = [
+        artifact("com.uber.nullaway:nullaway"),
+    ]
+)
+
 java_library(
     name = "auto-service",
     exported_plugins = [
