@@ -18,13 +18,10 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.openqa.selenium.By;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.JupiterTestBase;
-
 
 class ModernModalTest extends JupiterTestBase {
 
@@ -42,7 +39,7 @@ class ModernModalTest extends JupiterTestBase {
   void testLinkOpensModal() {
     driver.get(pages.modernModalPage);
     driver.findElement(By.id("trigger-modal-link")).click();
-    
+
     WebElement modal = driver.findElement(By.id("modalContent"));
     wait.until(visibilityOf(modal));
     assertThat(modal.isDisplayed()).isTrue();
