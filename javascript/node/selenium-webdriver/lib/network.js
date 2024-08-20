@@ -75,7 +75,12 @@ class Network {
 
   async removeAuthenticationHandler(id) {
     await this.#init()
-    this.#authHandlers.delete(id)
+
+    if (this.#authHandlers.has(id)) {
+      this.#authHandlers.delete(id)
+    } else {
+      throw Error(`Callback with id ${id} not found`)
+    }
   }
 
   async clearAuthenticationHandlers() {

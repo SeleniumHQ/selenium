@@ -88,15 +88,12 @@ suite(
         }
       })
 
-      it('can remove authentication handler that does not exist', async function () {
-        await driver.network().removeAuthenticationHandler(10)
-
+      it('throws an error when remove authentication handler that does not exist', async function () {
         try {
-          await driver.get(Pages.basicAuth)
-          await driver.wait(until.elementLocated(By.css('pre')))
-          assert.fail('Page should not be loaded')
+          await driver.network().removeAuthenticationHandler(10)
+          assert.fail('Expected error not thrown. Non-existent handler cannot be removed')
         } catch (e) {
-          assert.strictEqual(e.name, 'UnexpectedAlertOpenError')
+          assert.strictEqual(e.message, 'Callback with id 10 not found')
         }
       })
 
