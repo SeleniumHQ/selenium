@@ -50,9 +50,6 @@ import org.openqa.selenium.testing.NoDriverBeforeTest;
 
 class ChromeDriverFunctionalTest extends JupiterTestBase {
 
-  private final String CLIPBOARD_READ = "clipboard-read";
-  private final String CLIPBOARD_WRITE = "clipboard-write";
-
   @Test
   @NoDriverBeforeTest
   public void builderGeneratesDefaultChromeOptions() {
@@ -109,7 +106,9 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
     HasPermissions permissions = (HasPermissions) driver;
 
     driver.get(pages.clicksPage);
+    String CLIPBOARD_READ = "clipboard-read";
     assumeThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
+    String CLIPBOARD_WRITE = "clipboard-write";
     assumeThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
 
     permissions.setPermission(CLIPBOARD_READ, "denied");
