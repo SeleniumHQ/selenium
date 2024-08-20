@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'curb'
+
 module Selenium
   module WebDriver
     module Remote
