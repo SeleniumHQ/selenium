@@ -19,6 +19,11 @@
 
 require File.expand_path('../../spec_helper', __dir__)
 require 'selenium/webdriver/remote/http/curb'
+begin
+  require 'curb'
+rescue LoadError
+  raise 'Curb is not supported by this platform. Try installing Curl'
+end
 
 module Selenium
   module WebDriver
