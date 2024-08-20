@@ -18,7 +18,7 @@
 # under the License.
 
 require File.expand_path('../../spec_helper', __dir__)
-return if RUBY_ENGINE == 'jruby'
+return if Selenium::WebDriver::Platform.jruby? || Selenium::WebDriver::Platform.truffleruby?
 
 require 'selenium/webdriver/remote/http/curb'
 require 'curb'
