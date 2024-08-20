@@ -1,3 +1,24 @@
 [build-system]
 requires = ["setuptools", "setuptools-rust"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["selenium*"]
+exclude = ["test*"]
+namespaces = false
+# include-package-data is `true` by default in pyproject.toml
+
+[tool.setuptools.package-data]
+selenium_package = [
+    "*.py", 
+    "*.rst",
+    "*.json", 
+    "*.xpi", 
+    "*.js",
+    "py.typed",
+    "selenium.egg-info *",
+    "selenium-manager", 
+    "selenium-manager.exe",
+    "CHANGES",
+    "LICENSE"
+]
