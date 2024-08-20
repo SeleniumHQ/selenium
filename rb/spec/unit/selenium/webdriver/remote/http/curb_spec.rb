@@ -18,11 +18,9 @@
 # under the License.
 
 require File.expand_path('../../spec_helper', __dir__)
-require 'selenium/webdriver/remote/http/curb'
-begin
+unless Platform.jruby?
+  require 'selenium/webdriver/remote/http/curb'
   require 'curb'
-rescue LoadError
-  # Curb is not supported by this platform
 end
 
 module Selenium
@@ -32,7 +30,7 @@ module Selenium
         describe Curb do
           subject(:curb) { described_class.new }
 
-          unless Platform.jruby? || Platform.windows? || Platform.linux?
+          unless Platform.jruby?
             it 'assigns default timeout to 0.0' do
               http = curb.send :client
 
