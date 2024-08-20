@@ -17,11 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+return if Platform.jruby?
+
 require File.expand_path('../../spec_helper', __dir__)
-unless Platform.jruby?
-  require 'selenium/webdriver/remote/http/curb'
-  require 'curb'
-end
+require 'selenium/webdriver/remote/http/curb'
+require 'curb'
 
 module Selenium
   module WebDriver
@@ -29,25 +29,22 @@ module Selenium
       module Http
         describe Curb do
           subject(:curb) { described_class.new }
+          it 'assigns default timeout to 0.0' do
+            http = curb.send :client
 
-          unless Platform.jruby?
-            it 'assigns default timeout to 0.0' do
-              http = curb.send :client
+            expect(http.timeout).to eq 0.0
+          end
 
-              expect(http.timeout).to eq 0.0
-            end
+          it 'sets the timeout' do
+            curb.timeout = 20
+            expect(curb.timeout).to eq 20
+          end
 
-            it 'sets the timeout' do
-              curb.timeout = 20
-              expect(curb.timeout).to eq 20
-            end
+          describe '#initialize' do
+            let(:curb) { described_class.new(timeout: 10) }
 
-            describe '#initialize' do
-              let(:curb) { described_class.new(timeout: 10) }
-
-              it 'is initialized with timeout' do
-                expect(curb.timeout).to eq 10
-              end
+            it 'is initialized with timeout' do
+              expect(curb.timeout).to eq 10
             end
           end
         end
