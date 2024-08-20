@@ -35,6 +35,7 @@ GEM
       bigdecimal
       rexml
     csv (3.3.0)
+    curb (1.0.5)
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -42,6 +43,7 @@ GEM
     drb (2.2.1)
     ffi (1.17.0)
     ffi (1.17.0-java)
+    ffi (1.17.0-x64-mingw32)
     ffi (1.17.0-x86_64-darwin)
     fileutils (1.7.2)
     git (1.19.1)
@@ -174,10 +176,12 @@ PLATFORMS
   universal-java-1.8
   universal-java-17
   universal-java-18
+  universal-java-21
   x64-mingw32
   x86_64-darwin-22
 
 DEPENDENCIES
+  curb (~> 1.0.5)
   debug (~> 1.7)
   git (~> 1.19)
   rack (~> 2.0)
