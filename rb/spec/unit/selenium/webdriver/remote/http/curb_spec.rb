@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-return if Platform.jruby?
+return if RUBY_PLATFORM.include?('java')
 
 require File.expand_path('../../spec_helper', __dir__)
 require 'selenium/webdriver/remote/http/curb'
