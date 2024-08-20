@@ -221,6 +221,8 @@ public class MBean implements DynamicMBean {
         return ((Map<?, ?>) res)
             .entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
+      } else if (res instanceof Number) {
+        return res;
       } else {
         return res.toString();
       }
@@ -241,7 +243,17 @@ public class MBean implements DynamicMBean {
 
   @Override
   public AttributeList getAttributes(String[] attributes) {
-    return null;
+    AttributeList resultList = new AttributeList();
+
+    // if attributeNames is empty, return an empty result list
+    if (attributes == null || attributes.length == 0) return resultList;
+
+    for (int i = 0; i < attributes.length; i++) {
+      Object value = getAttribute(attributes[i]);
+      resultList.add(new Attribute(attributes[i], value));
+    }
+
+    return resultList;
   }
 
   @Override

@@ -208,7 +208,7 @@ public abstract class HttpClientTestBase {
     delegate =
         req -> {
           try {
-            Thread.sleep(1100);
+            Thread.sleep(3000);
           } catch (InterruptedException e) {
             throw new RuntimeException(e);
           }
@@ -216,11 +216,11 @@ public abstract class HttpClientTestBase {
         };
     try {
       System.setProperty("webdriver.httpclient.connectionTimeout", "1");
-      System.setProperty("webdriver.httpclient.readTimeout", "300");
+      System.setProperty("webdriver.httpclient.readTimeout", "2");
       System.setProperty("webdriver.httpclient.version", "HTTP_1_1");
       ClientConfig clientConfig = ClientConfig.defaultConfig();
       assertThat(clientConfig.connectionTimeout()).isEqualTo(Duration.ofSeconds(1));
-      assertThat(clientConfig.readTimeout()).isEqualTo(Duration.ofSeconds(300));
+      assertThat(clientConfig.readTimeout()).isEqualTo(Duration.ofSeconds(2));
       assertThat(clientConfig.version()).isEqualTo("HTTP_1_1");
       HttpClient client =
           createFactory().createClient(clientConfig.baseUri(URI.create(server.whereIs("/"))));
