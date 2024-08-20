@@ -22,7 +22,7 @@ require 'selenium/webdriver/remote/http/curb'
 begin
   require 'curb'
 rescue LoadError
-  raise 'Curb is not supported by this platform. Try installing Curl'
+  # Curb is not supported by this platform
 end
 
 module Selenium
