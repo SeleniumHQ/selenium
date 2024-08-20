@@ -88,7 +88,7 @@ suite(
         }
       })
 
-      it('can remove authentication handler', async function () {
+      it('can remove authentication handler that does not exist', async function () {
         await driver.network().removeAuthenticationHandler(10)
 
         try {
