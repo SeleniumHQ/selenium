@@ -117,6 +117,9 @@ maven_bom(
         "//java/src/org/openqa/selenium:core",
     ] + CDP_DEPS,
     maven_coordinates = "org.seleniumhq.selenium:selenium-bom:%s" % SE_VERSION,
+    tags = [
+        "release-artifact",
+    ],
 )
 
 java_export(
@@ -130,6 +133,9 @@ java_export(
         "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
+    tags = [
+        "release-artifact",
+    ],
     uses = [
         "org.openqa.selenium.WebDriverInfo",
         "org.openqa.selenium.cli.CliCommand",

@@ -15,6 +15,9 @@ java_export(
         ":manager-macos",
         ":manager-windows",
     ],
+    tags = [
+        "release-artifact",
+    ],
     visibility = [
         "//visibility:public",
     ],
