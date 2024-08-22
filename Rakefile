@@ -331,7 +331,7 @@ task ios_driver: [
 # ./go java:package['--config=release']
 desc 'Create stamped zipped assets for Java for uploading to GitHub'
 task :'java-release-zip' do
-  Rake::Task['java:package'].invoke('--stamp')
+  Rake::Task['java:package'].invoke('--config=remote_release')
 end
 
 task 'release-java': %i[java-release-zip publish-maven]
@@ -450,7 +450,7 @@ namespace :node do
     nightly = args.delete('nightly')
     Rake::Task['node:version'].invoke('nightly') if nightly
 
-    Bazel.execute('run', ['--stamp'], '//javascript/node/selenium-webdriver:selenium-webdriver.publish')
+    Bazel.execute('run', ['--config=release'], '//javascript/node/selenium-webdriver:selenium-webdriver.publish')
   end
 
   desc 'Release Node npm package'
@@ -513,7 +513,7 @@ namespace :py do
     Rake::Task['py:version'].invoke('nightly') if nightly
 
     command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
-    Bazel.execute('run', ['--stamp'], command)
+    Bazel.execute('run', ['--config=release'], command)
   end
 
   desc 'generate and copy files required for local development'
@@ -680,10 +680,10 @@ namespace :rb do
 
     if nightly
       Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
-      Bazel.execute('run', ['--stamp'], '//rb:selenium-webdriver-release-nightly')
+      Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
     else
-      Bazel.execute('run', ['--stamp'], '//rb:selenium-webdriver-release')
-      Bazel.execute('run', ['--stamp'], '//rb:selenium-devtools-release')
+      Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release')
+      Bazel.execute('run', ['--config=release'], '//rb:selenium-devtools-release')
     end
   end
 
@@ -753,7 +753,7 @@ namespace :dotnet do
     args = arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['dotnet:version'].invoke('nightly') if nightly
-    Rake::Task['dotnet:package'].invoke('--stamp')
+    Rake::Task['dotnet:package'].invoke('--config=remote_release')
 
     api_key = ENV.fetch('NUGET_API_KEY', nil)
     push_destination = 'https://api.nuget.org/v3/index.json'
@@ -839,7 +839,7 @@ namespace :java do
 
   desc 'Package Java bindings and grid into releasable packages and stage for release'
   task :package do |_task, arguments|
-    args = arguments.to_a.compact.empty? ? ['--stamp'] : arguments.to_a.compact
+    args = arguments.to_a.compact.empty? ? ['--config=release'] : arguments.to_a.compact
     Bazel.execute('build', args, '//java/src/org/openqa/selenium:client-zip')
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:server-zip')
     Bazel.execute('build', args, '//java/src/org/openqa/selenium/grid:executable-grid')
@@ -872,9 +872,10 @@ namespace :java do
     ENV['GPG_SIGN'] = (!nightly).to_s
 
     Rake::Task['java:version'].invoke if nightly
-    Rake::Task['java:package'].invoke('--stamp')
-    Rake::Task['java:build'].invoke('--stamp')
-    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('run', ['--stamp'], target) }
+    Rake::Task['java:package'].invoke('--config=release')
+    Rake::Task['java:build'].invoke('--config=release')
+    # Because we want to `run` things, we can't use the `release` config
+    JAVA_RELEASE_TARGETS.each { |target| Bazel.execute('run', ['--config=release'], target) }
   end
 
   desc 'Install jars to local m2 directory'
