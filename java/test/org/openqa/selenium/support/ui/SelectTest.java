@@ -26,6 +26,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -150,6 +151,24 @@ class SelectTest {
 
     Select select = new Select(element);
     select.selectByVisibleText("fish");
+
+    verify(firstOption).click();
+  }
+
+  @Test
+  void shouldAllowOptionsToBeSelectedByContainsVisibleText() {
+    String parameterText = "foo";
+
+    final WebElement firstOption = mockOption("first", false);
+
+    final WebElement element = mockSelectWebElement("multiple");
+    when(element.findElements(By.xpath(".//option[contains(., " + Quotes.escape(parameterText) + ")]")))
+      .thenReturn(Collections.singletonList(firstOption));
+    when(firstOption.getText()).thenReturn("foo bar");
+    when(firstOption.isEnabled()).thenReturn(true);
+
+    Select select = new Select(element);
+    select.selectByContainsVisibleText(parameterText);
 
     verify(firstOption).click();
   }
@@ -302,5 +321,8 @@ class SelectTest {
 
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> select.selectByVisibleText("also not there"));
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> select.selectByContainsVisibleText("also not there"));
   }
 }

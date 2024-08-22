@@ -154,6 +154,67 @@ public class Select implements ISelect, WrapsElement {
     }
   }
 
+  /**
+   * Selects all options that display text matching or containing the provided argument.
+   * This method first attempts to find an exact match and, if not found, will then attempt
+   * to find options that contain the specified text as a substring.
+   *
+   * For example, when given "Bar", this would select an option like:
+   *
+   * <p>&lt;option value="foo"&gt;Bar&lt;/option&gt;
+   *
+   * And also select an option like:
+   *
+   * <p>&lt;option value="baz"&gt;FooBar&lt;/option&gt; or &lt;option value="baz"&gt;1년납&lt;/option&gt; when "1년" is provided.
+   *
+   * @param text The visible text to match against. It can be a full or partial match of the option text.
+   * @throws NoSuchElementException If no matching option elements are found
+   */
+  @Override
+  public void selectByContainsVisibleText(String text) {
+    assertSelectIsEnabled();
+
+    // try to find the option via XPATH ...
+    List<WebElement> options =
+      element.findElements(
+        By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
+
+    for (WebElement option : options) {
+      setSelected(option, true);
+      if (!isMultiple()) {
+        return;
+      }
+    }
+
+    boolean matched = !options.isEmpty();
+    if (!matched) {
+      String searchText = text.contains(" ") ? getLongestSubstringWithoutSpace(text) : text;
+
+      List<WebElement> candidates;
+      if (searchText.isEmpty()) {
+        candidates = element.findElements(By.tagName("option"));
+      } else {
+        candidates = element.findElements(
+          By.xpath(".//option[contains(., " + Quotes.escape(searchText) + ")]"));
+      }
+
+      String trimmed = text.trim();
+      for (WebElement option : candidates) {
+        if (option.getText().contains(trimmed)) {
+          setSelected(option, true);
+          if (!isMultiple()) {
+            return;
+          }
+          matched = true;
+        }
+      }
+    }
+
+    if (!matched) {
+      throw new NoSuchElementException("Cannot locate option with text: " + text);
+    }
+  }
+
   private String getLongestSubstringWithoutSpace(String s) {
     String result = "";
     StringTokenizer st = new StringTokenizer(s, " ");

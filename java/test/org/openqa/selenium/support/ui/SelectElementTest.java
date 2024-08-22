@@ -136,6 +136,23 @@ class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
+  void shouldAllowOptionsToBeSelectedByContainsVisibleText() {
+    WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
+
+    Select select = new Select(selectElement);
+    select.selectByContainsVisibleText("select");
+    WebElement firstSelected = select.getFirstSelectedOption();
+    int selectedOptionCount = select.getAllSelectedOptions().size();
+
+    assertThat(firstSelected.getText()).isEqualTo("select_1");
+    assertThat(selectedOptionCount).isEqualTo(4);
+
+    select.deselectAll();
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> select.selectByContainsVisibleText("select_12"));
+  }
+
+  @Test
   @Ignore(ALL)
   public void shouldNotAllowInvisibleOptionsToBeSelectedByVisibleText() {
     WebElement selectElement = driver.findElement(By.id("invisi_select"));
