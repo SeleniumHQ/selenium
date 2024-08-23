@@ -16,26 +16,30 @@
 # under the License.
 
 
-def session_subscribe(*events, browsing_contexts=[]):
+def session_subscribe(*events, browsing_contexts=None):
     cmd_dict = {
         "method": "session.subscribe",
         "params": {
             "events": events,
         },
     }
+    if browsing_contexts is None:
+        browsing_contexts = []
     if browsing_contexts:
         cmd_dict["params"]["browsingContexts"] = browsing_contexts
     _ = yield cmd_dict
     return None
 
 
-def session_unsubscribe(*events, browsing_contexts=[]):
+def session_unsubscribe(*events, browsing_contexts=None):
     cmd_dict = {
         "method": "session.unsubscribe",
         "params": {
             "events": events,
         },
     }
+    if browsing_contexts is None:
+        browsing_contexts = []
     if browsing_contexts:
         cmd_dict["params"]["browsingContexts"] = browsing_contexts
     _ = yield cmd_dict
