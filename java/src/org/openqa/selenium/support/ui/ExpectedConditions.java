@@ -626,7 +626,7 @@ public class ExpectedConditions {
       public WebElement apply(WebDriver driver) {
         WebElement element = visibilityOfElementLocated(locator).apply(driver);
         try {
-          if (element != null && element.isEnabled() && (element.getCssValue('pointer-events').toLowerCase() != 'none')) {
+          if (element != null && element.isEnabled() && (element.getCssValue("pointer-events").toLowerCase() != "none")) {
             return element;
           }
           return null;
@@ -655,7 +655,7 @@ public class ExpectedConditions {
       public WebElement apply(WebDriver driver) {
         WebElement visibleElement = visibilityOf(element).apply(driver);
         try {
-          if (visibleElement != null && visibleElement.isEnabled() && (visibleElement.getCssValue('pointer-events').toLowerCase() != 'none')) {
+          if (visibleElement != null && visibleElement.isEnabled() && (visibleElement.getCssValue("pointer-events").toLowerCase() != "none")) {
             return visibleElement;
           }
           return null;
