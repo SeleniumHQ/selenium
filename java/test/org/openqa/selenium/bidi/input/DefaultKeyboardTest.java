@@ -199,9 +199,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(
-      value = CHROME,
-      reason = "https://github.com/GoogleChromeLabs/chromium-bidi/issues/2321")
-  @NotYetImplemented(
       value = EDGE,
       reason = "https://github.com/GoogleChromeLabs/chromium-bidi/issues/2321")
   public void testSelectionSelectBySymbol() {
