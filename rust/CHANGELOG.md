@@ -1,3 +1,8 @@
+0.4.24
+======
+--> [rust] Use Firefox history major releases endpoint for version discovery
+--> [rust] Use the Debug format specifier to display error messages (#14388)
+
 0.4.23
 ======
 
