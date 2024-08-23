@@ -1,3 +1,25 @@
+## 4.24.0
+--> [nightly] Bumping to nightly versions
+--> [js] expose selenium version for node.js (#14325)
+added version to index.js
+--> [js]: Update npm deps
+--> [bidi][js] Add authentication handlers (#14345)
+* [bidi][js] Add authentication handlers
+* Fix imports
+--> [bidi][js] Add high-level script command (#14293)
+* [bidi][js] Add high-level script command
+* Fix formatting
+* Fix tests
+* Fix linting
+--> [JS]: Handle optional dependency for @bazel/runfiles (#14352)
+* [JS]: Handle optional dependency for @bazel/runfiles
+* fix lint issue
+* [js]: remove console msg and safe exit if runfiles never found
+* [js]: fix rbe build(use global node process)
+* [JS]:Fix error handling for missing runfiles
+--> [ci] Use a tag to figure out what we might want to release (#14378)
+--> Update supported versions for Chrome DevTools
+
 ## 4.23.0
 
 - Expose pnpm as a tool we can use

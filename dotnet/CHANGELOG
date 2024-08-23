@@ -1,3 +1,8 @@
+v4.24.0
+======
+--> [dotnet] Migration from `Newtonsoft.Json` to `System.Text.Json` package (#14292)
+--> Update supported versions for Chrome DevTools
+
 v4.23.0
 ======
 * Log http requests/responses via internal DiagnosticsHttpHandler (#13978)

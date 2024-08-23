@@ -1,3 +1,13 @@
+4.24.0 (2024-08-23)
+=========================
+--> [rb] Deprecate WebStorage JS methods (#14276)
+--> [rb] BUGFIX: Add stamp to nightly build (#14320)
+* Add stamp to nightly build
+* Update version.rb
+* Revert rakefile changes
+--> Add timeout and tests for curb, also added the gem curb that was not part of selenium (#14285)
+--> Update supported versions for Chrome DevTools
+
 4.23.0 (2024-07-18)
 =========================
 * Add FedCM support to the ruby selenium client (#13796)

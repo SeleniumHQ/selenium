@@ -1,3 +1,22 @@
+v4.24.0
+======
+--> [java] Add "se" prefixed capabilities to session response (#14323)
+* [java] Add "se:containerName" to session response
+* Ensure all prefixed caps in request are added in response
+--> [bidi][java] return the id of the listener added
+--> [grid] shutdown the websocket on unexpected failures
+--> [java] Add JSpecify annotations to WebElement and SearchContext (#14319)
+[java] Add JSpecify annotations to WebElement and SearchContext (#14291)
+--> [java] Add JSpecify annotations for WebDriver and 3 other interfaces (#14371)
+--> Implement getAttributes() method of MBean, and update Number-based MBean attributes to return Number objects instead of Strings (#14153)
+--> [grid] shutdown the client related to a websocket
+--> [grid] release the upstream websocket
+--> [grid] close the httpclient after connecting the websocket failed
+--> [bidi][java] Add execute script high-level API (#14330)
+Related to #13992
+--> [ci] Use a tag to figure out what we might want to release (#14378)
+--> Update supported versions for Chrome DevTools
+
 v4.23.1
 ======
 * [bidi] Add dom mutation handler support (#14304)
