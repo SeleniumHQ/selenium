@@ -1,7 +1,7 @@
 v4.24.0
 ======
---> [dotnet] Migration from `Newtonsoft.Json` to `System.Text.Json` package (#14292)
---> Update supported versions for Chrome DevTools
+* Migration from `Newtonsoft.Json` to `System.Text.Json` package (#14292)
+* Add CDP for Chrome 128 and remove 125
 
 v4.23.0
 ======
@@ -9,7 +9,7 @@ v4.23.0
 * Kick off sending of request and log it in parallel
 * Return back protected synchronous Execute method in WebDriver
 * Fixed calling quit after not successful new session (#14242)
-* Add CDP for Chrome 127 and remove 124
+* Add CDP for Chrome 12 and remove 124
 
 
 v4.22.0

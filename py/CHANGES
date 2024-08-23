@@ -1,17 +1,9 @@
 Selenium 4.24.0
---> [py] Updating version to nightly
---> [nightly] Bumping to nightly versions
---> [py] Allow overriding `GLOBAL_DEFAULT_TIMEOUT` (#14354)
-Allow overriding `GLOBAL_DEFAULT_TIMEOUT`.
---> [py] fix mypy errors for `timeouts.py` and `print_page_options.py` (#14362)
-Fixed some typo errors as well
---> [py] fix mypy errors for `input_device.py`, `ie/options.py` and `selenium_manager.py` (#14377)
---> [py] fix type errors for `log.py`, `chromium/options.py`, `websocket_connection.py` and `chrome/options.py` (#14392)
-* fix type errors for `log.py`
-* fix type errors for `chromium/options.py`
-* ignore mypy stub type error for `websocket_connection.py`
-* fix type errors for `chrome/options.py`
-* fix failing RBE tests due to `log.py`
+* Allow overriding `GLOBAL_DEFAULT_TIMEOUT` (#14354)
+* fix mypy errors for `timeouts.py` and `print_page_options.py` (#14362)
+* fix mypy errors for `input_device.py`, `ie/options.py` and `selenium_manager.py` (#14377)
+* fix type errors for `log.py`, `chromium/options.py`, `websocket_connection.py` and `chrome/options.py` (#14392)
+* Add CDP for Chrome 128 and remove 125
 
 Selenium 4.23.1
 
