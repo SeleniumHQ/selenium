@@ -64,16 +64,10 @@ module Selenium
         return unless @pid
         return if exited?
 
-        WebDriver.logger.debug("Sending TERM to process: #{@pid}", id: :process)
-        terminate(@pid)
-        poll_for_exit(timeout)
-
-        WebDriver.logger.debug("  -> stopped #{@pid}", id: :process)
-      rescue TimeoutError, Errno::EINVAL
-        WebDriver.logger.debug("    -> sending KILL to process: #{@pid}", id: :process)
-        kill(@pid)
-        wait
-        WebDriver.logger.debug("      -> killed #{@pid}", id: :process)
+        terminate_and_wait_else_kill(timeout)
+      rescue Errno::ECHILD, Errno::ESRCH => e
+        # Process exited earlier than terminate/kill could catch
+        WebDriver.logger.debug("    -> process: #{@pid} does not exist (#{e.class.name})", id: :process)
       end
 
       def alive?
@@ -91,6 +85,9 @@ module Selenium
         WebDriver.logger.debug("  -> exit code is #{exit_code.inspect}", id: :process)
 
         !!exit_code
+      rescue Errno::ECHILD, Errno::ESRCH
+        WebDriver.logger.debug("  -> process: #{@pid} already finished", id: :process)
+        return true
       end
 
       def poll_for_exit(timeout)
@@ -110,20 +107,29 @@ module Selenium
 
       private
 
+      def terminate_and_wait_else_kill(timeout)
+        WebDriver.logger.debug("Sending TERM to process: #{@pid}", id: :process)
+        terminate(@pid)
+        poll_for_exit(timeout)
+
+        WebDriver.logger.debug("  -> stopped #{@pid}", id: :process)
+      rescue TimeoutError, Errno::EINVAL
+        WebDriver.logger.debug("    -> sending KILL to process: #{@pid}", id: :process)
+        kill(@pid)
+        wait
+        WebDriver.logger.debug("      -> killed #{@pid}", id: :process)
+      end
+
       def terminate(pid)
         Process.kill(SIGTERM, pid)
       end
 
       def kill(pid)
         Process.kill(SIGKILL, pid)
-      rescue Errno::ECHILD, Errno::ESRCH
-        # already dead
       end
 
       def waitpid2(pid, flags = 0)
         Process.waitpid2(pid, flags)
-      rescue Errno::ECHILD
-        # already dead
       end
     end # ChildProcess
   end # WebDriver
