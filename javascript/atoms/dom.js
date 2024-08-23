@@ -198,6 +198,11 @@ bot.dom.isEnabled = function(el) {
     return false;
   }
 
+  // check for whether the element has pointer-events: none
+  if (bot.dom.hasPointerEventsDisabled_(el)) {
+    return false;
+  }
+
   // The element is not explicitly disabled, but if it is an OPTION or OPTGROUP,
   // we must test if it inherits its state from a parent.
   if (el.parentNode &&

@@ -64,6 +64,11 @@ def test_should_return_the_value_of_the_disabled_attribute_as_false_if_not_set(d
     pElement = driver.find_element(By.ID, "peas")
     assert pElement.get_attribute("disabled") is None
     assert pElement.is_enabled()
+    
+def test_should_return_false_for_enabled_element_with_pointer_events_set_to_none(driver, pages):
+    pages.load("formPage.html")
+    inputElement = driver.find_element(By.ID, "pointerEventsNone")
+    assert not inputElement.is_enabled()
 
 
 def test_should_return_the_value_of_the_index_attribute_even_if_it_is_missing(driver, pages):
