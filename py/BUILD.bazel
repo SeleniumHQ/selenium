@@ -66,7 +66,7 @@ SE_VERSION = "4.24.0.dev202407312116"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v125",
+    "v128",
     "v126",
     "v127",
 ]
