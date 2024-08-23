@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Error, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe Error, exclusive: { bidi: false, reason: 'Not yet implemented with BiDi' } do
       it 'raises an appropriate error' do
         driver.navigate.to url_for('xhtmlTest.html')
 
@@ -46,6 +46,13 @@ module Selenium
         driver.find_element(id: 'nonexistent')
       rescue WebDriver::Error::NoSuchElementError => e
         expect(e.backtrace).not_to be_empty
+      end
+
+      it 'has backtrace when using a remote server' do
+        options = Selenium::WebDriver::Options.chrome
+        Selenium::WebDriver.for :remote, url: 'http://localhost:4444/wd/hub', options: options
+      rescue WebDriver::Error::SessionNotCreatedError => e
+        expect(e.cause).to be_a(WebDriver::Error::WebDriverError)
       end
     end
   end # WebDriver
