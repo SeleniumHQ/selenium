@@ -77,7 +77,7 @@ rust_binary(
     name = "selenium-manager",
     srcs = ["src/main.rs"],
     edition = "2021",
-    version = "0.4.23-nightly",
+    version = "0.4.24",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",
