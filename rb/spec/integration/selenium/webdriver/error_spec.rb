@@ -48,7 +48,7 @@ module Selenium
         expect(e.backtrace).not_to be_empty
       end
 
-      it 'has backtrace when using a remote server' do
+      it 'has backtrace when using a remote server', only: {driver: :remote} do
         options = Selenium::WebDriver::Options.chrome
         Selenium::WebDriver.for :remote, url: 'http://localhost:4444/wd/hub', options: options
       rescue WebDriver::Error::SessionNotCreatedError => e

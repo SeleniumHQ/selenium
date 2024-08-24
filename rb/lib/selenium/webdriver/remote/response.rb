@@ -71,14 +71,14 @@ module Selenium
 
             file = frame['fileName']
             line = frame['lineNumber']
-            meth = frame['methodName']
+            method = frame['methodName']
 
             class_name = frame['className']
             file = "#{class_name}(#{file})" if class_name
 
-            meth = 'unknown' if meth.nil? || meth.empty?
+            method = 'unknown' if method.nil? || method.empty?
 
-            "[remote server] #{file}:#{line}:in `#{meth}'"
+            "[remote server] #{file}:#{line}:in `#{method}'"
           end
         end
 
