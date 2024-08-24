@@ -146,6 +146,9 @@ jobs:
       - name: Setup Safari
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable
+      - name: Setup curl for Ubuntu
+        if: inputs.os == 'ubuntu'
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Run Bazel
         run: ${{ inputs.run }}
       - name: Start SSH session

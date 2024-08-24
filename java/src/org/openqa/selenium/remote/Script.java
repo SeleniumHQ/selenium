@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.bidi.log.ConsoleLogEntry;
 import org.openqa.selenium.bidi.log.JavascriptLogEntry;
+import org.openqa.selenium.bidi.script.RemoteValue;
 
 @Beta
 public interface Script {
@@ -40,4 +41,6 @@ public interface Script {
   String pin(String script);
 
   void unpin(String id);
+
+  RemoteValue execute(String script, Object... args);
 }

@@ -1,3 +1,17 @@
+v4.23.1
+======
+* [bidi] Add dom mutation handler support (#14304)
+* [grid] Exclude status DRAINING when distributor getting available nodes (#14282)
+* [bidi] Add script pinning methods (#14305)
+* Allow setting JDKHttpClient connectionTimeout, readTimeout, version via system property (#14306)
+* remove package org.openqa.selenium.grid.session.remote (#14295)
+* close the HttClient in case starting the session fails
+* Adding system property to disable tracing `webdriver.remote.enableTracing`
+* wait for the close response #14280
+* [bidi] Add authentication handlers (#14334)
+* [grid] ensure the local_sessionmap.remove event is raised (#14337)
+* [bidi] Add filter auth handler (#14349)
+
 v4.23.0
 ======
 * Use Files.notExists to check files #14088

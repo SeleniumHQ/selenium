@@ -215,6 +215,7 @@ public class RelaySessionFactory implements SessionFactory {
                 "Error while creating session with the service %s. %s", serviceUrl, e.getMessage());
         attributeMap.put(EXCEPTION_MESSAGE.getKey(), errorMessage);
         span.addEvent(EXCEPTION_EVENT.getKey(), attributeMap);
+        client.close();
         return Either.left(new SessionNotCreatedException(errorMessage));
       }
     } catch (Exception e) {

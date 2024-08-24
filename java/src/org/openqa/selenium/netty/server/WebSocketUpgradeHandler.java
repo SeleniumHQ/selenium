@@ -44,10 +44,15 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.AttributeKey;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.Message;
 
 // Plenty of code in this class is taken from Netty's own
@@ -56,6 +61,7 @@ import org.openqa.selenium.remote.http.Message;
 
 class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
 
+  private static final Logger LOG = Logger.getLogger(WebSocketUpgradeHandler.class.getName());
   private final AttributeKey<Consumer<Message>> key;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> factory;
   private WebSocketServerHandshaker handshaker;
@@ -159,10 +165,15 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
 
   private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
     if (frame instanceof CloseWebSocketFrame) {
-      CloseWebSocketFrame close = (CloseWebSocketFrame) frame.retain();
-      handshaker.close(ctx.channel(), close);
-      // Pass on to the rest of the channel
-      ctx.fireChannelRead(close);
+      try {
+        CloseWebSocketFrame close = (CloseWebSocketFrame) frame.retain();
+        handshaker.close(ctx.channel(), close);
+        // Pass on to the rest of the channel
+        ctx.fireChannelRead(close);
+      } finally {
+        // set null to ensure we do not send another close
+        ctx.channel().attr(key).set(null);
+      }
     } else if (frame instanceof PingWebSocketFrame) {
       ctx.write(new PongWebSocketFrame(frame.isFinalFragment(), frame.rsv(), frame.content()));
     } else if (frame instanceof PongWebSocketFrame) {
@@ -180,6 +191,44 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-    ctx.close();
+    try {
+      Consumer<Message> consumer = ctx.channel().attr(key).getAndSet(null);
+
+      if (consumer != null) {
+        byte[] reason = Objects.toString(cause).getBytes(UTF_8);
+
+        // the spec defines it as max 123 bytes encoded in UTF_8
+        if (reason.length > 123) {
+          reason = Arrays.copyOf(reason, 123);
+          Arrays.fill(reason, 120, 123, (byte) '.');
+        }
+
+        try {
+          consumer.accept(new CloseMessage(1011, new String(reason, UTF_8)));
+        } catch (Exception ex) {
+          LOG.log(Level.FINE, "failed to send the close message, code: 1011", ex);
+        }
+      }
+    } finally {
+      LOG.log(Level.FINE, "exception caught, close the context", cause);
+      ctx.close();
+    }
+  }
+
+  @Override
+  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    try {
+      super.channelInactive(ctx);
+    } finally {
+      Consumer<Message> consumer = ctx.channel().attr(key).getAndSet(null);
+
+      if (consumer != null) {
+        try {
+          consumer.accept(new CloseMessage(1001, "channel got inactive"));
+        } catch (Exception ex) {
+          LOG.log(Level.FINE, "failed to send the close message, code: 1001", ex);
+        }
+      }
+    }
   }
 }

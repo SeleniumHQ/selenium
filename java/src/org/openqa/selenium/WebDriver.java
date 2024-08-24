@@ -22,6 +22,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 
@@ -46,6 +48,7 @@ import org.openqa.selenium.logging.Logs;
  * <p>Most implementations of this interface follow <a href="https://w3c.github.io/webdriver/">W3C
  * WebDriver specification</a>
  */
+@NullMarked
 public interface WebDriver extends SearchContext {
   // Navigation
 
@@ -74,7 +77,7 @@ public interface WebDriver extends SearchContext {
    *
    * @return The URL of the page currently loaded in the browser
    */
-  String getCurrentUrl();
+  @Nullable String getCurrentUrl();
 
   // General properties
 
@@ -87,7 +90,7 @@ public interface WebDriver extends SearchContext {
    * @return The title of the current page, with leading and trailing whitespace stripped, or null
    *     if one is not already set
    */
-  String getTitle();
+  @Nullable String getTitle();
 
   /**
    * Find all elements within the current page using the given mechanism. This method is affected by
@@ -142,7 +145,7 @@ public interface WebDriver extends SearchContext {
    *
    * @return The source of the current page
    */
-  String getPageSource();
+  @Nullable String getPageSource();
 
   /**
    * Close the current window, quitting the browser if it's the last window currently open.
@@ -261,7 +264,7 @@ public interface WebDriver extends SearchContext {
      * @param name the name of the cookie
      * @return the cookie, or null if no cookie with the given name is present
      */
-    Cookie getCookieNamed(String name);
+    @Nullable Cookie getCookieNamed(String name);
 
     /**
      * @return the interface for managing driver timeouts.

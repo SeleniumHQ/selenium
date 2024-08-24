@@ -201,9 +201,10 @@ suite(
         assert.equal(response.resultType, EvaluateResultType.SUCCESS)
         assert.equal(response.result.type, 'map')
 
-        const sharedId = response.result.value.sharedId
+        const value = response.result.value[0]
 
-        assert.strictEqual(sharedId.value, nodeId)
+        assert.strictEqual(value[1].type, 'string')
+        assert.strictEqual(value[1].value, nodeId)
       })
 
       it('can find element', async function () {

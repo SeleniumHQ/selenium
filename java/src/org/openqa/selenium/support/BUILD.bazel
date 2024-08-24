@@ -13,6 +13,9 @@ java_export(
         "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
+    tags = [
+        "release-artifact",
+    ],
     visibility = ["//visibility:public"],
     exports = [
         ":page-factory",

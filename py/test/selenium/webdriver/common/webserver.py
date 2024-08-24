@@ -138,7 +138,7 @@ class SimpleWebServer:
 
     def __init__(self, host=DEFAULT_HOST_IP, port=DEFAULT_PORT):
         self.stop_serving = False
-        host = host
+        host = host if host else DEFAULT_HOST_IP
         port = port
         while True:
             try:
@@ -171,7 +171,8 @@ class SimpleWebServer:
 
     def where_is(self, path, localhost=False) -> str:
         # True force serve the page from localhost
-        if localhost:
+        # 0.0.0.0 shouldn't be used as a destination address, so fallback to localhost
+        if localhost or self.host == "0.0.0.0":
             return f"http://{DEFAULT_HOST}:{self.port}/{path}"
         return f"http://{self.host}:{self.port}/{path}"
 

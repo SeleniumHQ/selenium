@@ -16,8 +16,8 @@
 // limitations under the License.
 // </copyright>
 
-using Newtonsoft.Json.Linq;
 using System;
+using System.Text.Json.Nodes;
 
 namespace OpenQA.Selenium.DevTools
 {
@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="domainName">The domain on which the event is to be raised.</param>
         /// <param name="eventName">The name of the event to be raised.</param>
         /// <param name="eventData">The data for the event to be raised.</param>
-        public DevToolsEventReceivedEventArgs(string domainName, string eventName, JToken eventData)
+        public DevToolsEventReceivedEventArgs(string domainName, string eventName, JsonNode eventData)
         {
             DomainName = domainName;
             EventName = eventName;
@@ -52,6 +52,6 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Gets the data with which the event is to be raised.
         /// </summary>
-        public JToken EventData { get; private set; }
+        public JsonNode EventData { get; private set; }
     }
 }

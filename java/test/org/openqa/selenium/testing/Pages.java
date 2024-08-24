@@ -54,6 +54,7 @@ public class Pages {
   public String mapVisibilityPage;
   public String metaRedirectPage;
   public String missedJsReferencePage;
+  public String modernModalPage;
   public String mouseInteractionPage;
   public String mouseOverPage;
   public String mouseTrackerPage;
@@ -119,6 +120,7 @@ public class Pages {
     mapVisibilityPage = appServer.whereIs("map_visibility.html");
     metaRedirectPage = appServer.whereIs("meta-redirect.html");
     missedJsReferencePage = appServer.whereIs("missedJsReference.html");
+    modernModalPage = appServer.whereIs("modal_dialogs/modern_modal.html");
     mouseInteractionPage = appServer.whereIs("mouse_interaction.html");
     mouseOverPage = appServer.whereIs("mouseOver.html");
     mouseTrackerPage = appServer.whereIs("mousePositionTracker.html");

@@ -1,7 +1,7 @@
 module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.3.2")
-bazel_dep(name = "aspect_bazel_lib", version = "2.7.7")
+bazel_dep(name = "aspect_bazel_lib", version = "2.7.9")
 bazel_dep(name = "aspect_rules_esbuild", version = "0.20.1")
 bazel_dep(name = "aspect_rules_js", version = "1.42.3")
 bazel_dep(name = "aspect_rules_ts", version = "2.4.2")
@@ -41,7 +41,11 @@ linter.register(name = "rust-rustfmt")
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
 node.toolchain(node_version = "20.9.0")
 
-pnpm = use_extension("@aspect_rules_js//npm:extensions.bzl", "pnpm", dev_dependency = True)
+pnpm = use_extension(
+    "@aspect_rules_js//npm:extensions.bzl",
+    "pnpm",
+    dev_dependency = True,
+)
 use_repo(pnpm, "pnpm")
 
 npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
@@ -78,7 +82,7 @@ use_repo(esbuild, "esbuild_toolchains")
 register_toolchains("@esbuild_toolchains//:all")
 
 dotnet = use_extension("@rules_dotnet//dotnet:extensions.bzl", "dotnet")
-dotnet.toolchain(dotnet_version = "7.0.400")
+dotnet.toolchain(dotnet_version = "8.0.203")
 use_repo(dotnet, "dotnet_toolchains")
 
 selenium_paket = use_extension("//dotnet:paket.nuget_extension.bzl", "nuget_extension")
@@ -206,6 +210,7 @@ maven.install(
         "org.bouncycastle:bcpkix-jdk18on:1.78.1",
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
         "org.hsqldb:hsqldb:2.7.3",
+        "org.jspecify:jspecify:1.0.0",
         "org.junit.jupiter:junit-jupiter-api:5.10.3",
         "org.junit.jupiter:junit-jupiter-engine:5.10.3",
         "org.junit.jupiter:junit-jupiter-params:5.10.3",
@@ -238,6 +243,10 @@ use_repo(maven, "maven", "unpinned_maven")
 ruby = use_extension("@rules_ruby//ruby:extensions.bzl", "ruby")
 ruby.toolchain(
     name = "ruby",
+    msys2_packages = [
+        "curl",
+        "libyaml",
+    ],
     version_file = "//:rb/.ruby-version",
 )
 ruby.bundle_fetch(
@@ -252,27 +261,38 @@ ruby.bundle_fetch(
         "abbrev-0.1.2": "ad1b4eaaaed4cb722d5684d63949e4bde1d34f2a95e20db93aecfe7cbac74242",
         "activesupport-7.1.3.2": "ad8445b7ae4a6d3acc5f88c8c5f437eb0b54062032aaf44856c7b6d3855b8b2e",
         "addressable-2.8.6": "798f6af3556641a7619bad1dce04cdb6eb44b0216a991b0396ea7339276f2b47",
+        "activesupport-7.1.3.4": "455bbc43d82e5ba20daa25f0888b80c9f7e2d80ca0cc96cea3e6acfec3e40309",
+        "addressable-2.8.7": "462986537cf3735ab5f3c0f557f14155d778f4b43ea4f485a9deb9c8f7c58232",
         "ast-2.4.2": "1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12",
         "base64-0.2.0": "0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507",
         "bigdecimal-3.1.7": "e799b369a0005fc6d62eed7ef19139ac9bc319cc51470c637b9dcdf593600133",
         "bigdecimal-3.1.7-java": "955f5c7aa90136874b494655e42ed70d81382abb0f49f1b42f374a1660e33c63",
         "concurrent-ruby-1.2.3": "82fdd3f8a0816e28d513e637bb2b90a45d7b982bdf4f3a0511722d2e495801e2",
+        "bigdecimal-3.1.8": "a89467ed5a44f8ae01824af49cbc575871fa078332e8f77ea425725c1ffe27be",
+        "bigdecimal-3.1.8-java": "b9e94c14623fff8575f17a10320852219bbba92ecff4977571503d942687326e",
+        "concurrent-ruby-1.3.3": "4f9cd28965c4dcf83ffd3ea7304f9323277be8525819cb18a3b61edcb56a7c6a",
         "connection_pool-2.4.1": "0f40cf997091f1f04ff66da67eabd61a9fe0d4928b9a3645228532512fab62f4",
         "crack-1.0.0": "c83aefdb428cdc7b66c7f287e488c796f055c0839e6e545fec2c7047743c4a49",
         "csv-3.3.0": "0bbd1defdc31134abefed027a639b3723c2753862150f4c3ee61cab71b20d67d",
+        "curb-1.0.5": "2c4755dfb5d6190e9ebb4407b23ac5a5c2c226be1449e6d3bdf625656352efd1",
         "debug-1.9.2": "48e026c0852c7a10c60263e2e527968308958e266231e36d64e3efcabec7e7fc",
         "diff-lcs-1.5.1": "273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe",
         "drb-2.2.1": "e9d472bf785f558b96b25358bae115646da0dbfd45107ad858b0bc0d935cb340",
         "ffi-1.16.3": "6d3242ff10c87271b0675c58d68d3f10148fabc2ad6da52a18123f06078871fb",
         "ffi-1.16.3-java": "6f107fcd7c96f9c96f7e57db749b99502cc2f65665f7b2241d087a8f8c01d42c",
         "ffi-1.16.3-x64-mingw32": "6ec709011e3955e97033fa77907a8ab89a9150137d4c45c82c77399b909c9259",
+        "ffi-1.17.0": "51630e43425078311c056ca75f961bb3bda1641ab36e44ad4c455e0b0e4a231c",
+        "ffi-1.17.0-java": "f65f022616970fcde83fe176393eb873a7b959ef2703f94931cf0af6ab55ec7a",
+        "ffi-1.17.0-x86_64-darwin": "fdcd48c69db3303ef95aec5c64d6275fcf9878a02c0bec0afddc506ceca0f56b",
         "fileutils-1.7.2": "36a0fb324218263e52b486ad7408e9a295378fe8edc9fd343709e523c0980631",
         "git-1.19.1": "b0a422d9f6517353c48a330d6114de4db9e0c82dbe7202964a1d9f1fbc827d70",
         "hashdiff-1.1.0": "b5465f0e7375f1ee883f53a766ece4dbc764b7674a7c5ffd76e79b2f5f6fc9c9",
         "i18n-1.14.4": "c7deedead0866ea9102975a4eab7968f53de50793a0c211a37808f75dd187551",
+        "i18n-1.14.5": "26dcbc05e364b57e27ab430148b3377bc413987d34cc042336271d8f42e9d1b9",
         "io-console-0.7.2": "f0dccff252f877a4f60d04a4dc6b442b185ebffb4b320ab69212a92b48a7a221",
         "io-console-0.7.2-java": "73aa382f8832b116613ceaf57b8ff5bf73dfedcaf39f0aa5420e10f63a4543ed",
         "irb-1.12.0": "07634937fbb7d28d07e46da50d0aa43b4d2f7258174d08de4e32dfb57c10539d",
+        "irb-1.14.0": "53d805013bbd194874b8c13a56aca6aebcd11dd79166d88724f8a434fedde615",
         "jar-dependencies-0.4.1": "b2df2f1ecbff15334ce20ea7fdd5b8d8161faab67761ff72c7647d728e40d387",
         "json-2.7.2": "1898b5cbc81cd36c0fd4d0b7ad2682c39fb07c5ff682fc6265f678f550d4982c",
         "json-2.7.2-java": "138e3038b5361b3d06ee2e8aa2be00bed0d0de4ef5f1553fc5935e5b93aca7ee",
@@ -280,29 +300,43 @@ ruby.bundle_fetch(
         "listen-3.9.0": "db9e4424e0e5834480385197c139cb6b0ae0ef28cc13310cfd1ca78377d59c67",
         "logger-1.6.0": "0ab7c120262dd8de2a18cb8d377f1f318cbe98535160a508af9e7710ff43ef3e",
         "minitest-5.22.3": "ea84676290cb5e2b4f31f25751af6050aa90d3e43e4337141c3e3e839611981e",
+        "minitest-5.24.1": "31ec31ac9088d9e21fcc5a5487912234de83966f24368241b2bef03d7012464a",
         "mutex_m-0.2.0": "b6ef0c6c842ede846f2ec0ade9e266b1a9dac0bc151682b04835e8ebd54840d5",
         "parallel-1.24.0": "5bf38efb9b37865f8e93d7a762727f8c5fc5deb19949f4040c76481d5eee9397",
         "parser-3.3.0.5": "7748313e505ca87045dc0465c776c802043f777581796eb79b1654c5d19d2687",
+        "parallel-1.25.1": "12e089b9aa36ea2343f6e93f18cfcebd031798253db8260590d26a7f70b1ab90",
+        "parser-3.3.4.0": "8d247769c3873fe92201d591a7463384022a1a25e214853df5d6806623179e82",
         "psych-5.1.2": "337322f58fc2bf24827d2b9bd5ab595f6a72971867d151bb39980060ea40a368",
         "psych-5.1.2-java": "1dd68dc609eddbc884e6892e11da942e16f7256bd30ebde9d35449d43043a6fe",
         "public_suffix-5.0.5": "72c340218bb384610536919988705cc29e09749c0021fd7005f715c7e5dfc493",
         "racc-1.7.3": "b785ab8a30ec43bce073c51dbbe791fd27000f68d1c996c95da98bf685316905",
         "racc-1.7.3-java": "b2ad737e788cfa083263ce7c9290644bb0f2c691908249eb4f6eb48ed2815dbf",
+        "public_suffix-6.0.1": "61d44e1cab5cbbbe5b31068481cf16976dd0dc1b6b07bd95617ef8c5e3e00c6f",
+        "racc-1.8.1": "4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f",
+        "racc-1.8.1-java": "54f2e6d1e1b91c154013277d986f52a90e5ececbe91465d29172e49342732b98",
         "rack-2.2.9": "fd6301a97a1c1e955e68f85c861fcb1cde6145a32c532e1ea321a72ff8cc4042",
         "rainbow-3.1.1": "039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a",
         "rake-13.2.1": "46cb38dae65d7d74b6020a4ac9d48afed8eb8149c040eccf0523bec91907059d",
         "rb-fsevent-0.11.2": "43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe",
         "rb-inotify-0.10.1": "050062d4f31d307cca52c3f6a7f4b946df8de25fc4bd373e1a5142e41034a7ca",
         "rbs-3.4.4": "1376d2604a00832641bb47521595e63a1c0d1cc241ded383ba48ddb4396de5a8",
+        "rb-inotify-0.11.1": "a0a700441239b0ff18eb65e3866236cd78613d6b9f78fea1f9ac47a85e47be6e",
+        "rbs-3.5.2": "ac4a0ff5de832402fc30324028e00c3e8914af3de0abcba7a5cf21d38602f3bb",
         "rchardet-1.8.0": "693acd5253d5ade81a51940697955f6dd4bb2f0d245bda76a8e23deec70a52c7",
         "rdoc-6.6.3.1": "39f7b749229ab5ad9d21c81586151c1dd7a549fa8be4070ee09b524f9c656345",
         "regexp_parser-2.9.0": "81a00ba141cec0d4b4bf58cb80cd9193e5180836d3fa6ef623f7886d3ba8bdd9",
         "reline-0.5.3": "2c46747a1dfd03e100f0666d8a374cf2930c3e734298af9b39e5fe8d35b42035",
         "rexml-3.2.6": "e0669a2d4e9f109951cb1fde723d8acd285425d81594a2ea929304af50282816",
+        "rdoc-6.7.0": "b17d5f0f57b0853d7b880d4360a32c7caf8dbb81f8503a36426df809e617f379",
+        "regexp_parser-2.9.2": "5a27e767ad634f8a4b544520d5cd28a0db7aa1198a5d7c9d7e11d7b3d9066446",
+        "reline-0.5.9": "5d2dd7ed0fd078e79a05e4eaa47dc91b8dacec7358e9e1dd6d9c4636cff7d378",
+        "rexml-3.3.2": "4513686f858d0ff2e5a412d734c8a192e16cb1df4cb2063f56b72a8ad4c5257f",
         "rspec-3.13.0": "d490914ac1d5a5a64a0e1400c1d54ddd2a501324d703b8cfe83f458337bab993",
         "rspec-core-3.13.0": "557792b4e88da883d580342b263d9652b6a10a12d5bda9ef967b01a48f15454c",
         "rspec-expectations-3.13.0": "621d48c62262f955421eaa418130744760802cad47e781df70dba4d9f897102e",
         "rspec-mocks-3.13.0": "735a891215758d77cdb5f4721fffc21078793959d1f0ee4a961874311d9b7f66",
+        "rspec-expectations-3.13.1": "814cf8dadc797b00be55a84d7bc390c082735e5c914e62cbe8d0e19774b74200",
+        "rspec-mocks-3.13.1": "087189899c337937bcf1d66a50dc3fc999ac88335bbeba4d385c2a38c87d7b38",
         "rspec-support-3.13.1": "48877d4f15b772b7538f3693c22225f2eda490ba65a0515c4e7cf6f2f17de70f",
         "rubocop-1.63.3": "17a31f16658f2fbb20bc7bcb4a841a06f7368da4f3be8a50365ad61e658d5f44",
         "rubocop-ast-1.31.2": "7c206fb094553779923eca862aceece3913ce384f1bf85730208228e884578ec",
@@ -311,20 +345,31 @@ ruby.bundle_fetch(
         "rubocop-performance-1.21.0": "ec54fa8991c2d538af7bc958361d63bdb3df2e53032da393e9903ea5e4f74a9a",
         "rubocop-rspec-2.29.1": "534ee81a3006e7379ec6203687ef7c06ca1d137b7d6d67c2777b680b1ce82e13",
         "rubocop-rspec_rails-2.28.3": "9769f2077cca8af2269193ba0450e0317ae1827a132c19149fdbeecaaca32818",
+        "rubocop-1.65.0": "624316407a3f8e3999c6f75c528471ed3d4513ca39cec3bede1964c69630e4a1",
+        "rubocop-ast-1.31.3": "1b07d618d8776993ec6053a706d1c09f0bf15139fd69415924656cbff07e7818",
+        "rubocop-capybara-2.21.0": "5d264efdd8b6c7081a3d4889decf1451a1cfaaec204d81534e236bc825b280ab",
+        "rubocop-factory_bot-2.26.1": "8de13cd4edcee5ca800f255188167ecef8dbfc3d1fae9f15734e9d2e755392aa",
+        "rubocop-performance-1.21.1": "5cf20002a544275ad6aa99abca4b945d2a2ed71be925c38fe83700360ed8734e",
+        "rubocop-rake-0.6.0": "56b6f22189af4b33d4f4e490a555c09f1281b02f4d48c3a61f6e8fe5f401d8db",
+        "rubocop-rspec-2.31.0": "2bae19388d78e1ceace44cd95fd34f3209f4ef20cac1b168d0a1325cbba3d672",
+        "rubocop-rspec_rails-2.29.1": "4ae95abbe9ca5a9b6d8be14e50d230fb5b6ba033b05d4c0981b5b76fc44988e4",
         "ruby-progressbar-1.13.0": "80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33",
         "rubyzip-2.3.2": "3f57e3935dc2255c414484fbf8d673b4909d8a6a57007ed754dde39342d2373f",
         "securerandom-0.3.1": "98f0450c0ea46d2f9a4b6db4f391dbd83dc08049592eada155739f40e0341bde",
         "steep-1.5.3": "7c6302a4d5932d0a46176ebc79766e52b853c223a85525aa2f8911e345123b85",
         "stringio-3.1.0": "c1f6263ae03a15025e51194ab19b06b15e06adcaaedb7f5f6c06ab60f5d67718",
+        "stringio-3.1.1": "53456e14175c594e0e8eb2206a1be33f3974d4fe21c131e628908b05c8c2ae1e",
         "strscan-3.1.0": "01b8a81d214fbf7b5308c6fb51b5972bbfc4a6aa1f166fd3618ba97e0fcd5555",
         "strscan-3.1.0-java": "8645aa76e017e21764c6df572d2d79fcc1672284014f5bdbd806278cdbcd11b0",
         "terminal-table-3.0.2": "f951b6af5f3e00203fb290a669e0a85c5dd5b051b3b023392ccfd67ba5abae91",
         "tzinfo-2.0.6": "8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b",
         "unicode-display_width-2.5.0": "7e7681dcade1add70cb9fda20dd77f300b8587c81ebbd165d14fd93144ff0ab4",
         "webmock-3.23.0": "100787435c1f556129a238c11cc7cbee38cb9c2864709c6a0dcdcf822545f31f",
+        "webmock-3.23.1": "0fa738c0767d1c4ec8cc57f6b21998f0c238c8a5b32450df1c847f2767140d95",
         "webrick-1.8.1": "19411ec6912911fd3df13559110127ea2badd0c035f7762873f58afc803e158f",
         "websocket-1.2.10": "2cc1a4a79b6e63637b326b4273e46adcddf7871caa5dc5711f2ca4061a629fa8",
         "yard-0.9.36": "5505736c1b00c926f71053a606ab75f02070c5960d0778b901fe9d8b0a470be4",
+        "websocket-1.2.11": "b7e7a74e2410b5e85c25858b26b3322f29161e300935f70a0e0d3c35e0462737",
     },
     gemfile = "//:rb/Gemfile",
     gemfile_lock = "//:rb/Gemfile.lock",

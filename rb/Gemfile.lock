@@ -3,7 +3,7 @@ PATH
   specs:
     selenium-devtools (0.127.0)
       selenium-webdriver (~> 4.2)
-    selenium-webdriver (4.23.0)
+    selenium-webdriver (4.24.0.nightly)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -35,12 +35,16 @@ GEM
       bigdecimal
       rexml
     csv (3.3.0)
+    curb (1.0.5)
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
     diff-lcs (1.5.1)
     drb (2.2.1)
     ffi (1.17.0)
+    ffi (1.17.0-java)
+    ffi (1.17.0-x64-mingw32)
+    ffi (1.17.0-x86_64-darwin)
     fileutils (1.7.2)
     git (1.19.1)
       addressable (~> 2.8)
@@ -49,9 +53,11 @@ GEM
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     io-console (0.7.2)
+    io-console (0.7.2-java)
     irb (1.14.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    jar-dependencies (0.4.1)
     json (2.7.2)
     json (2.7.2-java)
     language_server-protocol (3.17.0.3)
@@ -67,9 +73,11 @@ GEM
       racc
     psych (5.1.2)
       stringio
-    public_suffix (6.0.0)
-    racc (1.8.0)
-    racc (1.8.0-java)
+    psych (5.1.2-java)
+      jar-dependencies (>= 0.1.7)
+    public_suffix (6.0.1)
+    racc (1.8.1)
+    racc (1.8.1-java)
     rack (2.2.9)
     rainbow (3.1.1)
     rake (13.2.1)
@@ -168,10 +176,12 @@ PLATFORMS
   universal-java-1.8
   universal-java-17
   universal-java-18
+  universal-java-21
   x64-mingw32
   x86_64-darwin-22
 
 DEPENDENCIES
+  curb (~> 1.0.5)
   debug (~> 1.7)
   git (~> 1.19)
   rack (~> 2.0)
@@ -189,4 +199,4 @@ DEPENDENCIES
   yard (~> 0.9.11, >= 0.9.36)
 
 BUNDLED WITH
-   2.2.33
+   2.5.14
