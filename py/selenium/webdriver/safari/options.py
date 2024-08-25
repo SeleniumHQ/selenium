@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
+from typing import Dict
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
@@ -111,5 +111,5 @@ class Options(ArgOptions):
     """
 
     @property
-    def default_capabilities(self) -> typing.Dict[str, str]:
+    def default_capabilities(self) -> Dict[str, str]:
         return DesiredCapabilities.SAFARI.copy()

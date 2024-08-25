@@ -18,13 +18,16 @@ import errno
 import logging
 import os
 import subprocess
-import typing
 from abc import ABC
 from abc import abstractmethod
 from io import IOBase
 from platform import system
 from subprocess import PIPE
 from time import sleep
+from typing import Any
+from typing import List
+from typing import Mapping
+from typing import Optional
 from urllib import request
 from urllib.error import URLError
 
@@ -51,7 +54,7 @@ class Service(ABC):
         executable_path: str = None,
         port: int = 0,
         log_output: SubprocessStdAlias = None,
-        env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
+        env: Optional[Mapping[Any, Any]] = None,
         **kwargs,
     ) -> None:
         if isinstance(log_output, str):
@@ -76,7 +79,7 @@ class Service(ABC):
         return f"http://{utils.join_host_port('localhost', self.port)}"
 
     @abstractmethod
-    def command_line_args(self) -> typing.List[str]:
+    def command_line_args(self) -> List[str]:
         """A List of program arguments (excluding the executable)."""
         raise NotImplementedError("This method needs to be implemented in a sub class")
 
