@@ -9,7 +9,6 @@ namespace OpenQA.Selenium.DevTools
     using CurrentCdpVersion = V128;
 
     [TestFixture]
-    [IgnoreBrowser(Selenium.Browser.Edge, "While CDP 128 is released for Edge")]
     public class DevToolsNetworkTest : DevToolsTestFixture
     {
         [Test]
