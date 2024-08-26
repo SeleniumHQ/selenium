@@ -12,10 +12,11 @@ bazel_dep(name = "contrib_rules_jvm", version = "0.27.0")
 bazel_dep(name = "platforms", version = "0.0.10")
 
 # Required for the closure rules
-bazel_dep(name = "protobuf", dev_dependency = True, repo_name = "com_google_protobuf", version = "21.7")
+bazel_dep(name = "protobuf", version = "21.7", dev_dependency = True, repo_name = "com_google_protobuf")
 
 # Required for rules_rust to import the crates properly
-bazel_dep(name = "rules_cc", dev_dependency = True, version = "0.0.9")
+bazel_dep(name = "rules_cc", version = "0.0.9", dev_dependency = True)
+
 bazel_dep(name = "rules_dotnet", version = "0.15.1")
 bazel_dep(name = "rules_java", version = "7.6.3")
 bazel_dep(name = "rules_jvm_external", version = "6.1")
@@ -27,21 +28,17 @@ bazel_dep(name = "rules_proto", version = "6.0.0")
 bazel_dep(name = "rules_ruby", version = "0.11.0")
 
 linter = use_extension("@apple_rules_lint//lint:extensions.bzl", "linter")
-
 linter.configure(
     name = "java-spotbugs",
     config = "//java:spotbugs-config",
 )
-
 linter.configure(
     name = "rust-rustfmt",
     config = "//rust:enable-rustfmt",
 )
-
 linter.register(name = "rust-rustfmt")
 
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
-
 node.toolchain(node_version = "20.9.0")
 
 pnpm = use_extension(
@@ -49,11 +46,9 @@ pnpm = use_extension(
     "pnpm",
     dev_dependency = True,
 )
-
 use_repo(pnpm, "pnpm")
 
 npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
-
 npm.npm_translate_lock(
     name = "npm",
     data = [
@@ -68,7 +63,6 @@ npm.npm_translate_lock(
     update_pnpm_lock = True,
     verify_node_modules_ignored = "//:.bazelignore",
 )
-
 use_repo(npm, "npm")
 
 rules_ts_ext = use_extension(
@@ -76,68 +70,52 @@ rules_ts_ext = use_extension(
     "ext",
     dev_dependency = True,
 )
-
 rules_ts_ext.deps(
     ts_version = "4.9.5",
 )
-
 use_repo(rules_ts_ext, "npm_typescript")
 
 esbuild = use_extension("@aspect_rules_esbuild//esbuild:extensions.bzl", "esbuild")
-
 esbuild.toolchain(esbuild_version = "0.19.9")
-
 use_repo(esbuild, "esbuild_toolchains")
 
 register_toolchains("@esbuild_toolchains//:all")
 
 dotnet = use_extension("@rules_dotnet//dotnet:extensions.bzl", "dotnet")
-
 dotnet.toolchain(dotnet_version = "8.0.203")
-
 use_repo(dotnet, "dotnet_toolchains")
 
 selenium_paket = use_extension("//dotnet:paket.nuget_extension.bzl", "nuget_extension")
-
 use_repo(selenium_paket, "paket.nuget")
 
 register_toolchains("@dotnet_toolchains//:all")
 
 oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
-
 oci.pull(
     name = "java_image_base",
     digest = "sha256:161a1d97d592b3f1919801578c3a47c8e932071168a96267698f4b669c24c76d",
     image = "gcr.io/distroless/java17",
 )
-
 oci.pull(
     name = "firefox_standalone",
     digest = "sha256:b6d8279268b3183d0d33e667e82fec1824298902f77718764076de763673124f",
     image = "index.docker.io/selenium/standalone-firefox",
 )
-
 oci.pull(
     name = "chrome_standalone",
     digest = "sha256:1b809a961a0a77787a7cccac74ddc5570b7e89747f925b8469ddb9a6624d4ece",
     image = "index.docker.io/selenium/standalone-chrome",
 )
-
 use_repo(oci, "chrome_standalone", "firefox_standalone", "java_image_base")
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
-
 python.toolchain(
     is_default = True,
     python_version = "3.8",
 )
-
 python.toolchain(python_version = "3.9")
-
 python.toolchain(python_version = "3.10")
-
 python.toolchain(python_version = "3.11")
-
 use_repo(python, "pythons_hub")
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
@@ -162,8 +140,8 @@ register_toolchains("@pythons_hub//:all")
 
 # https://github.com/bazelbuild/rules_jvm_external/pull/1079
 archive_override(
-    integrity = "sha256-yS8Qes1PLbYbe10b1WSgl0Auqn/1Wlxg8O3wSr7a/Sg=",
     module_name = "rules_jvm_external",
+    integrity = "sha256-yS8Qes1PLbYbe10b1WSgl0Auqn/1Wlxg8O3wSr7a/Sg=",
     patch_strip = 1,
     patches = ["//java:rules_jvm_external_javadoc.patch"],
     strip_prefix = "rules_jvm_external-f572a26116c7ef71d8842dd056c2605782f7be8d",
@@ -171,7 +149,6 @@ archive_override(
 )
 
 java_toolchains = use_extension("@rules_java//java:extensions.bzl", "toolchains")
-
 use_repo(
     java_toolchains,
     "remote_java_tools",
@@ -188,7 +165,6 @@ use_repo(
 )
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
-
 maven.install(
     name = "maven",
     artifacts = [
@@ -262,11 +238,9 @@ maven.install(
     ],
     strict_visibility = True,
 )
-
 use_repo(maven, "maven", "unpinned_maven")
 
 ruby = use_extension("@rules_ruby//ruby:extensions.bzl", "ruby")
-
 ruby.toolchain(
     name = "ruby",
     msys2_packages = [
@@ -275,7 +249,6 @@ ruby.toolchain(
     ],
     version_file = "//:rb/.ruby-version",
 )
-
 ruby.bundle_fetch(
     name = "bundle",
     srcs = [
@@ -365,13 +338,11 @@ ruby.bundle_fetch(
     gemfile = "//:rb/Gemfile",
     gemfile_lock = "//:rb/Gemfile.lock",
 )
-
 use_repo(ruby, "bundle", "ruby", "ruby_toolchains")
 
 register_toolchains("@ruby_toolchains//:all")
 
 selenium_manager_artifacts = use_extension("//common:selenium_manager.bzl", "selenium_manager_artifacts")
-
 use_repo(
     selenium_manager_artifacts,
     "download_sm_linux",
@@ -380,7 +351,6 @@ use_repo(
 )
 
 pin_browsers_extension = use_extension("//common:repositories.bzl", "pin_browsers_extension")
-
 use_repo(
     pin_browsers_extension,
     "linux_beta_firefox",
