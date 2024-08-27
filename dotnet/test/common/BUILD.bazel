@@ -65,7 +65,7 @@ csharp_library(
 
 dotnet_nunit_test_suite(
     name = "AllTests",
-    size = "large",
+    size = "small",
     srcs = glob([
         "**/*Test.cs",
         "**/*Tests.cs",
