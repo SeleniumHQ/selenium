@@ -67,9 +67,9 @@ namespace OpenQA.Selenium.Environment
             {
                 browser = Browser.Chrome;
                 options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);
-                options.UseWebSocketUrl = true;
+                //options.UseWebSocketUrl = true;
                 // Reasoning : https://github.com/SeleniumHQ/selenium/pull/14429#issuecomment-2311614822
-                options.UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore;
+                //options.UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore;
 
                 var chromeOptions = (ChromeOptions)options;
                 chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
