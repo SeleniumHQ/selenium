@@ -765,30 +765,8 @@ pub trait SeleniumManager {
 
         // Use driver in PATH when the user has not specified any browser version
         if use_driver_in_path {
-            let version = driver_in_path_version.unwrap();
             let path = driver_in_path.unwrap();
-            let major_version = self.get_major_version(&version)?;
 
-            // Display warning if the discovered driver version is not the same as the driver in PATH
-            if !self.get_driver_version().is_empty()
-                && (self.is_firefox() && !version.eq(self.get_driver_version()))
-                || (!self.is_firefox() && !major_version.eq(&self.get_major_browser_version()))
-            {
-                self.get_logger().warn(format!(
-                    "The {} version ({}) detected in PATH at {} might not be compatible with \
-                    the detected {} version ({}); currently, {} {} is recommended for {} {}.*, \
-                    so it is advised to delete the driver in PATH and retry",
-                    self.get_driver_name(),
-                    &version,
-                    path,
-                    self.get_browser_name(),
-                    self.get_browser_version(),
-                    self.get_driver_name(),
-                    self.get_driver_version(),
-                    self.get_browser_name(),
-                    self.get_major_browser_version()
-                ));
-            }
             if self.is_skip_driver_in_path() {
                 self.get_logger().debug(format!(
                     "Skipping {} in path: {}",
@@ -796,6 +774,29 @@ pub trait SeleniumManager {
                     path
                 ));
             } else {
+                let version = driver_in_path_version.unwrap();
+                let major_version = self.get_major_version(&version)?;
+
+                // Display warning if the discovered driver version is not the same as the driver in PATH
+                if !self.get_driver_version().is_empty()
+                    && (self.is_firefox() && !version.eq(self.get_driver_version()))
+                    || (!self.is_firefox() && !major_version.eq(&self.get_major_browser_version()))
+                {
+                    self.get_logger().warn(format!(
+                        "The {} version ({}) detected in PATH at {} might not be compatible with \
+                    the detected {} version ({}); currently, {} {} is recommended for {} {}.*, \
+                    so it is advised to delete the driver in PATH and retry",
+                        self.get_driver_name(),
+                        &version,
+                        path,
+                        self.get_browser_name(),
+                        self.get_browser_version(),
+                        self.get_driver_name(),
+                        self.get_driver_version(),
+                        self.get_browser_name(),
+                        self.get_major_browser_version()
+                    ));
+                }
                 self.set_driver_version(version.to_string());
                 return Ok(PathBuf::from(path));
             }
