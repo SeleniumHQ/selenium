@@ -17,7 +17,7 @@ jobs:
         with:
           script: |
             const comment = context.payload.comment.body;
-            const triggerStrings = ['www.mediafire.com', 'Download'];
+            const triggerStrings = ['www.mediafire.com'];
             return triggerStrings.some(triggerString => comment.includes(triggerString));
 
       - name: Delete comment if it contains any of the specific strings
