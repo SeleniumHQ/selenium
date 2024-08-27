@@ -139,8 +139,6 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
   void canListenToNavigationStartedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
