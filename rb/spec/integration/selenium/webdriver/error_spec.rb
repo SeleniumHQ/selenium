@@ -48,7 +48,10 @@ module Selenium
         expect(e.backtrace).not_to be_empty
       end
 
-      it 'has backtrace when using a remote server' do
+      it 'has backtrace when using a remote server',
+         except: {browser: :firefox,
+                  reason: 'Firefox throws Selenium::WebDriver::Error::InvalidArgumentError'},
+         only: {driver: :remote} do
         create_driver!(binary: '/path/to/nonexistent/chrome')
       rescue WebDriver::Error::SessionNotCreatedError => e
         expect(e.backtrace).not_to be_empty
