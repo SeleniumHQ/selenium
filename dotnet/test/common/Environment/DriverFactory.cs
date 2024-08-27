@@ -68,12 +68,11 @@ namespace OpenQA.Selenium.Environment
                 browser = Browser.Chrome;
                 options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);
                 options.UseWebSocketUrl = true;
+                // Reasoning : https://github.com/SeleniumHQ/selenium/pull/14429#issuecomment-2311614822
+                options.UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore;
 
                 var chromeOptions = (ChromeOptions)options;
                 chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
-
-                // Reasoning : https://github.com/SeleniumHQ/selenium/pull/14429#issuecomment-2311614822
-                chromeOptions.SetCapability("unhandledPromptBehavior", "ignore");
 
                 service = CreateService<ChromeDriverService>();
                 if (!string.IsNullOrEmpty(this.browserBinaryLocation))
@@ -92,8 +91,6 @@ namespace OpenQA.Selenium.Environment
 
                 var edgeOptions = (EdgeOptions)options;
                 edgeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
-                // Reasoning : https://github.com/SeleniumHQ/selenium/pull/14429#issuecomment-2311614822
-                edgeOptions.SetCapability("unhandledPromptBehavior", "ignore");
 
                 service = CreateService<EdgeDriverService>();
                 if (!string.IsNullOrEmpty(this.browserBinaryLocation))
