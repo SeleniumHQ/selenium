@@ -262,4 +262,8 @@ impl Logger {
             print!("{}", self.get_json_blog(&self.minimal_json));
         }
     }
+
+    pub fn is_debug_enabled(&self) -> bool {
+        self.debug || self.trace
+    }
 }

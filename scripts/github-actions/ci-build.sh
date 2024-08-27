@@ -13,9 +13,4 @@ bazel test --config=remote-ci --build_tests_only \
   //... -- $(cat .skipped-tests | tr '\n' ' ')
 
 # Build the packages we want to ship to users
-bazel build --config=remote-ci \
-  //dotnet:all \
-  //java/src/... \
-  //javascript/node/selenium-webdriver:selenium-webdriver \
-  //py:selenium-wheel \
-  //rb:selenium-devtools //rb:selenium-webdriver
+bazel build --config=remote-ci --build_tag_filters=release-artifact //...

@@ -68,11 +68,29 @@ public class ProxyWebsocketsIntoGrid
 
       HttpClient client =
           clientFactory.createClient(ClientConfig.defaultConfig().baseUri(sessionUri));
-      WebSocket upstream =
-          client.openSocket(new HttpRequest(GET, uri), new ForwardingListener(downstream));
+      try {
+        WebSocket upstream =
+            client.openSocket(new HttpRequest(GET, uri), new ForwardingListener(downstream));
 
-      return Optional.of(upstream::send);
-
+        return Optional.of(
+            (msg) -> {
+              try {
+                upstream.send(msg);
+              } finally {
+                if (msg instanceof CloseMessage) {
+                  try {
+                    client.close();
+                  } catch (Exception e) {
+                    LOG.log(Level.WARNING, "Failed to shutdown the client of " + sessionUri, e);
+                  }
+                }
+              }
+            });
+      } catch (Exception e) {
+        LOG.log(Level.WARNING, "Connecting to upstream websocket failed", e);
+        client.close();
+        return Optional.empty();
+      }
     } catch (NoSuchSessionException e) {
       LOG.warning("Attempt to connect to non-existent session: " + uri);
       return Optional.empty();

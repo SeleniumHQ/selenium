@@ -165,10 +165,15 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
 
   private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
     if (frame instanceof CloseWebSocketFrame) {
-      CloseWebSocketFrame close = (CloseWebSocketFrame) frame.retain();
-      handshaker.close(ctx.channel(), close);
-      // Pass on to the rest of the channel
-      ctx.fireChannelRead(close);
+      try {
+        CloseWebSocketFrame close = (CloseWebSocketFrame) frame.retain();
+        handshaker.close(ctx.channel(), close);
+        // Pass on to the rest of the channel
+        ctx.fireChannelRead(close);
+      } finally {
+        // set null to ensure we do not send another close
+        ctx.channel().attr(key).set(null);
+      }
     } else if (frame instanceof PingWebSocketFrame) {
       ctx.write(new PongWebSocketFrame(frame.isFinalFragment(), frame.rsv(), frame.content()));
     } else if (frame instanceof PongWebSocketFrame) {
@@ -187,7 +192,7 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
     try {
-      Consumer<Message> consumer = ctx.channel().attr(key).get();
+      Consumer<Message> consumer = ctx.channel().attr(key).getAndSet(null);
 
       if (consumer != null) {
         byte[] reason = Objects.toString(cause).getBytes(UTF_8);
@@ -201,12 +206,29 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
         try {
           consumer.accept(new CloseMessage(1011, new String(reason, UTF_8)));
         } catch (Exception ex) {
-          LOG.log(Level.FINE, "failed to send the close message", ex);
+          LOG.log(Level.FINE, "failed to send the close message, code: 1011", ex);
         }
       }
     } finally {
       LOG.log(Level.FINE, "exception caught, close the context", cause);
       ctx.close();
+    }
+  }
+
+  @Override
+  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    try {
+      super.channelInactive(ctx);
+    } finally {
+      Consumer<Message> consumer = ctx.channel().attr(key).getAndSet(null);
+
+      if (consumer != null) {
+        try {
+          consumer.accept(new CloseMessage(1001, "channel got inactive"));
+        } catch (Exception ex) {
+          LOG.log(Level.FINE, "failed to send the close message, code: 1001", ex);
+        }
+      }
     }
   }
 }

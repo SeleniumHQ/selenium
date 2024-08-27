@@ -63,6 +63,9 @@ npm_package(
         "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
     ],
     package = "selenium-webdriver",
+    tags = [
+        "release-artifact",
+    ],
     version = VERSION,
     visibility = ["//visibility:public"],
 )

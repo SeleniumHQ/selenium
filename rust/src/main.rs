@@ -265,7 +265,11 @@ fn main() {
                 log.warn(&err);
                 flush_and_exit(OK, log, Some(err));
             } else {
-                log.error(&err);
+                let error_msg = log
+                    .is_debug_enabled()
+                    .then(|| format!("{:?}", err))
+                    .unwrap_or_else(|| err.to_string());
+                log.error(error_msg);
                 flush_and_exit(DATAERR, log, Some(err));
             }
         });

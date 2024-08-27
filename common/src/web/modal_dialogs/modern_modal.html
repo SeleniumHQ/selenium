@@ -1,0 +1,88 @@
+<html>
+<head>
+  <title>Modern Modal</title>
+  <style>
+    /* Modal background */
+    #modalBackground {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    /* Modal content */
+    #modalContent {
+      position: absolute; 
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 250px;
+      height: 200px;
+      z-index: 2;
+
+      /* Center the modal */
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Close button */
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <p>Modal dialog sample</p>
+
+  <input id="trigger-modal-btn" type="button" value="trigger modal" onclick="openModal();">
+
+  <a id="trigger-modal-link" href="javascript:openModal()">trigger modal</a>
+
+  <!-- Modal structure -->
+  <div id="modalBackground">
+    <div id="modalContent">
+      <span id="modal-close" class="close" onclick="closeModal()">&times;</span>
+      <span id="modal-text">I am a modal</span>
+      <input type="text" id="modal-input"/>
+    </div>
+  </div>
+
+  <script>
+    function openModal() {
+      // Display the modal and dim the background
+      document.getElementById('modalBackground').style.display = 'block';
+    }
+
+    function closeModal() {
+      // Hide the modal and remove the dimming effect
+      document.getElementById('modalBackground').style.display = 'none';
+    }
+
+    // Optional: Close the modal when clicking outside of it
+    window.onclick = function(event) {
+      var modal = document.getElementById('modalBackground');
+      if (event.target == modal) {
+        closeModal();
+      }
+    }
+  </script>
+</body>
+</html>
