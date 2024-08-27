@@ -32,14 +32,13 @@ jobs:
               comment_id: commentId
             });
 
-      - name: Block user if comment contains any of the specific strings
+      - name: Block user from the org if their comment contained any of the banned strings
         if: steps.check_comment.outputs.result == 'true'
         uses: actions/github-script@v7
         with:
           script: |
-            const userId = context.payload.comment.user.id;
-            await github.rest.users.block({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              user_id: userId
+            const username = context.payload.comment.user.login
+            await github.rest.orgs.blockUser({
+              org: context.repo.owner,
+              username: username
             });
