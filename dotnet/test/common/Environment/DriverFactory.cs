@@ -73,7 +73,7 @@ namespace OpenQA.Selenium.Environment
                 chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
 
                 // Reasoning : https://github.com/SeleniumHQ/selenium/pull/14429#issuecomment-2311614822
-                chromeOptions.SetCapability(CapabilityType.UnhandledPromptBehavior, "ignore");
+                chromeOptions.SetCapability("unhandledPromptBehavior", "ignore");
 
                 service = CreateService<ChromeDriverService>();
                 if (!string.IsNullOrEmpty(this.browserBinaryLocation))
@@ -93,7 +93,7 @@ namespace OpenQA.Selenium.Environment
                 var edgeOptions = (EdgeOptions)options;
                 edgeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
                 // Reasoning : https://github.com/SeleniumHQ/selenium/pull/14429#issuecomment-2311614822
-                edgeOptions.SetCapability(CapabilityType.UnhandledPromptBehavior, "ignore");
+                edgeOptions.SetCapability("unhandledPromptBehavior", "ignore");
 
                 service = CreateService<EdgeDriverService>();
                 if (!string.IsNullOrEmpty(this.browserBinaryLocation))
