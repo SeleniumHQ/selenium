@@ -71,3 +71,11 @@ jobs:
       java-version: 17
       run: |
         bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+
+  nullaway-checks:
+    name: NullAway Checks
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: NullAway Checks
+      java-version: 17
+      run: bazel build //java/... --//java:nullaway_level=ERROR

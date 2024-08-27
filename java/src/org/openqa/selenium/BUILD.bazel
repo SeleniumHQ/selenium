@@ -38,14 +38,6 @@ java_export(
         ":manifest",
         artifact("org.jspecify:jspecify"),
     ],
-    plugins = [
-        "//java:nullaway"
-    ],
-    javacopts = [
-        '-Xep:NullAway:WARN',
-        '-XepOpt:NullAway:AnnotatedPackages=org.openqa.selenium',
-        '-XepOpt:NullAway:JSpecifyMode=true'
-    ],
 )
 
 java_export(

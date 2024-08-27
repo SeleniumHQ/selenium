@@ -1,5 +1,6 @@
 load("@contrib_rules_jvm//java:defs.bzl", "spotbugs_config")
 load(":defs.bzl", "artifact")
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 
 exports_files(
     srcs = [
@@ -52,4 +53,24 @@ spotbugs_config(
     visibility = [
         "//visibility:public",
     ],
+)
+
+string_flag(
+    name = "nullaway_level",
+    values = ["NONE", "WARN", "ERROR"],
+    build_setting_default = "NONE",
+)
+
+config_setting(
+    name = "use_nullaway_level_warn",
+    flag_values = {
+        ":nullaway_level": "WARN",
+    },
+)
+
+config_setting(
+    name = "use_nullaway_level_error",
+    flag_values = {
+        ":nullaway_level": "ERROR",
+    },
 )
