@@ -34,7 +34,6 @@ import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 class BrowsingContextInspectorTest extends JupiterTestBase {
 
@@ -139,8 +138,6 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
   void canListenToNavigationStartedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
