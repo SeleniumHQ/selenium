@@ -299,8 +299,20 @@
   <span class='label'>remove_credential:</span> <span class='lbracket'>[</span><span class='symbol'>:delete</span><span class='comma'>,</span>
                       <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/webauthn/authenticator/:authenticatorId/credentials/:credentialId</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>remove_all_credentials:</span> <span class='lbracket'>[</span><span class='symbol'>:delete</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/webauthn/authenticator/:authenticatorId/credentials</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>set_user_verified:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/webauthn/authenticator/:authenticatorId/uv</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='label'>set_user_verified:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/webauthn/authenticator/:authenticatorId/uv</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
 
+  <span class='comment'>#
+</span>  <span class='comment'># federated-credential management
+</span>  <span class='comment'>#
+</span>
+  <span class='label'>get_fedcm_title:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/fedcm/gettitle</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>get_fedcm_dialog_type:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/fedcm/getdialogtype</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>get_fedcm_account_list:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/fedcm/accountlist</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>click_fedcm_dialog_button:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/fedcm/clickdialogbutton</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>cancel_fedcm_dialog:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/fedcm/canceldialog</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>select_fedcm_account:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/fedcm/selectaccount</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>set_fedcm_delay:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/fedcm/setdelayenabled</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>reset_fedcm_cooldown:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/fedcm/resetcooldown</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
 <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
@@ -758,6 +770,30 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#cancel_fedcm_dialog-instance_method" title="#cancel_fedcm_dialog (instance method)">#<strong>cancel_fedcm_dialog</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>federated-credential management.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#clear_element-instance_method" title="#clear_element (instance method)">#<strong>clear_element</strong>(element)  &#x21d2; Object </a>
     
 
@@ -825,6 +861,28 @@
   <span class="summary_signature">
     
       <a href="#click_element-instance_method" title="#click_element (instance method)">#<strong>click_element</strong>(element)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#click_fedcm_dialog_button-instance_method" title="#click_fedcm_dialog_button (instance method)">#<strong>click_fedcm_dialog_button</strong>  &#x21d2; Object </a>
     
 
     
@@ -1468,6 +1526,116 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#fedcm_account_list-instance_method" title="#fedcm_account_list (instance method)">#<strong>fedcm_account_list</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fedcm_delay-instance_method" title="#fedcm_delay (instance method)">#<strong>fedcm_delay</strong>(enabled)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fedcm_dialog_type-instance_method" title="#fedcm_dialog_type (instance method)">#<strong>fedcm_dialog_type</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fedcm_subtitle-instance_method" title="#fedcm_subtitle (instance method)">#<strong>fedcm_subtitle</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fedcm_title-instance_method" title="#fedcm_title (instance method)">#<strong>fedcm_title</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#find_element_by-instance_method" title="#find_element_by (instance method)">#<strong>find_element_by</strong>(how, what, parent_ref = [])  &#x21d2; Object </a>
     
 
@@ -2030,6 +2198,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#reset_fedcm_cooldown-instance_method" title="#reset_fedcm_cooldown (instance method)">#<strong>reset_fedcm_cooldown</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#resize_window-instance_method" title="#resize_window (instance method)">#<strong>resize_window</strong>(width, height, handle = :current)  &#x21d2; Object </a>
     
 
@@ -2053,6 +2243,28 @@
   <span class="summary_signature">
     
       <a href="#screenshot-instance_method" title="#screenshot (instance method)">#<strong>screenshot</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#select_fedcm_account-instance_method" title="#select_fedcm_account (instance method)">#<strong>select_fedcm_account</strong>(index)  &#x21d2; Object </a>
     
 
     
@@ -3083,12 +3295,12 @@
       <pre class="lines">
 
 
-397
-398
-399</pre>
+407
+408
+409</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 397</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 407</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_action'>action</span><span class='lparen'>(</span><span class='label'>async:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>devices:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='int'>250</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../ActionBuilder.html#initialize-instance_method" title="Selenium::WebDriver::ActionBuilder#initialize (method)">new</a></span></span> <span class='kw'>self</span><span class='comma'>,</span> <span class='label'>async:</span> <span class='id identifier rubyid_async'>async</span><span class='comma'>,</span> <span class='label'>devices:</span> <span class='id identifier rubyid_devices'>devices</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='id identifier rubyid_duration'>duration</span>
@@ -3128,12 +3340,12 @@
       <pre class="lines">
 
 
-525
-526
-527</pre>
+535
+536
+537</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 525</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 535</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_active_element'>active_element</span>
   <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span></span><span class='period'>.</span><span class='id identifier rubyid_element_class'><span class='object_link'><a href="#element_class-class_method" title="Selenium::WebDriver::Remote::Bridge.element_class (method)">element_class</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_element_id_from'>element_id_from</span><span class='lparen'>(</span><span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:get_active_element</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -3158,12 +3370,12 @@
       <pre class="lines">
 
 
-373
-374
-375</pre>
+383
+384
+385</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 373</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 383</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_cookie'>add_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_cookie'>cookie</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:add_cookie</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>cookie:</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='rbrace'>}</span>
@@ -3188,12 +3400,12 @@
       <pre class="lines">
 
 
-585
-586
-587</pre>
+595
+596
+597</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 585</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 595</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_credential'>add_credential</span><span class='lparen'>(</span><span class='id identifier rubyid_credential'>credential</span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:add_credential</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>authenticatorId:</span> <span class='id identifier rubyid_id'>id</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_credential'>credential</span>
@@ -3229,13 +3441,13 @@
       <pre class="lines">
 
 
-576
-577
-578
-579</pre>
+586
+587
+588
+589</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 576</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 586</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_virtual_authenticator'>add_virtual_authenticator</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_authenticator_id'>authenticator_id</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:add_virtual_authenticator</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
@@ -3343,13 +3555,13 @@
       <pre class="lines">
 
 
-605
-606
-607
-608</pre>
+655
+656
+657
+658</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 605</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 655</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_bidi'>bidi</span>
   <span class='id identifier rubyid_msg'>msg</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BiDi must be enabled by setting #web_socket_url to true in options class</span><span class='tstring_end'>&#39;</span></span>
@@ -3397,6 +3609,47 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="cancel_fedcm_dialog-instance_method">
+  
+    #<strong>cancel_fedcm_dialog</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>federated-credential management</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+619
+620
+621</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 619</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_cancel_fedcm_dialog'>cancel_fedcm_dialog</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:cancel_fedcm_dialog</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="clear_element-instance_method">
   
     #<strong>clear_element</strong>(element)  &#x21d2; <tt>Object</tt> 
@@ -3411,12 +3664,12 @@
       <pre class="lines">
 
 
-424
-425
-426</pre>
+434
+435
+436</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 424</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 434</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_element'>clear_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:element_clear</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3441,14 +3694,16 @@
       <pre class="lines">
 
 
-319
-320
-321</pre>
+322
+323
+324
+325</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 319</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 322</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_local_storage'>clear_local_storage</span>
+  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>clear_local_storage</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:clear_local_storage</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>localStorage.clear()</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -3471,14 +3726,16 @@
       <pre class="lines">
 
 
-343
-344
-345</pre>
+351
+352
+353
+354</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 343</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 351</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_session_storage'>clear_session_storage</span>
+  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>clear_session_storage</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:clear_session_storage</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sessionStorage.clear()</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -3501,15 +3758,45 @@
       <pre class="lines">
 
 
-414
-415
-416</pre>
+424
+425
+426</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 414</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 424</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click_element'>click_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:element_click</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="click_fedcm_dialog_button-instance_method">
+  
+    #<strong>click_fedcm_dialog_button</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+651
+652
+653</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 651</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_click_fedcm_dialog_button'>click_fedcm_dialog_button</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:click_fedcm_dialog_button</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>dialogButton:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ConfirmIdpLoginContinue</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -3561,12 +3848,12 @@
       <pre class="lines">
 
 
-610
-611
-612</pre>
+660
+661
+662</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 610</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 660</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_command_list'>command_list</span>
   <span class='const'><span class='object_link'><a href="#COMMANDS-constant" title="Selenium::WebDriver::Remote::Bridge::COMMANDS (constant)">COMMANDS</a></span></span>
@@ -3591,12 +3878,12 @@
       <pre class="lines">
 
 
-381
-382
-383</pre>
+391
+392
+393</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 381</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 391</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_cookie</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span>
@@ -3621,12 +3908,12 @@
       <pre class="lines">
 
 
-385
-386
-387</pre>
+395
+396
+397</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 385</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 395</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookies'>cookies</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_all_cookies</span>
@@ -3745,12 +4032,12 @@
       <pre class="lines">
 
 
-589
-590
-591</pre>
+599
+600
+601</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 589</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 599</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_credentials'>credentials</span><span class='lparen'>(</span><span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_credentials</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>authenticatorId:</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rbrace'>}</span>
@@ -3775,12 +4062,12 @@
       <pre class="lines">
 
 
-389
-390
-391</pre>
+399
+400
+401</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 389</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 399</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_all_cookies'>delete_all_cookies</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:delete_all_cookies</span>
@@ -3805,12 +4092,12 @@
       <pre class="lines">
 
 
-377
-378
-379</pre>
+387
+388
+389</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 377</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 387</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_cookie'>delete_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:delete_cookie</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span>
@@ -3865,12 +4152,12 @@
       <pre class="lines">
 
 
-469
-470
-471</pre>
+479
+480
+481</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 469</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 479</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_aria_label'>element_aria_label</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_aria_label</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3895,12 +4182,12 @@
       <pre class="lines">
 
 
-465
-466
-467</pre>
+475
+476
+477</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 465</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 475</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_aria_role'>element_aria_role</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_aria_role</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3925,13 +4212,13 @@
       <pre class="lines">
 
 
-452
-453
-454
-455</pre>
+462
+463
+464
+465</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 452</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 462</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_attribute'>element_attribute</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_debug'><span class='object_link'><a href="../Logger.html#debug-instance_method" title="Selenium::WebDriver::Logger#debug (method)">debug</a></span></span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Using script for :getAttribute of </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:script</span>
@@ -3979,13 +4266,13 @@
       <pre class="lines">
 
 
-512
-513
-514
-515</pre>
+522
+523
+524
+525</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 512</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 522</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_displayed?'>element_displayed?</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_debug'><span class='object_link'><a href="../Logger.html#debug-instance_method" title="Selenium::WebDriver::Logger#debug (method)">debug</a></span></span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Using script for :isDisplayed</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:script</span>
@@ -4011,12 +4298,12 @@
       <pre class="lines">
 
 
-457
-458
-459</pre>
+467
+468
+469</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 457</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 467</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_dom_attribute'>element_dom_attribute</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_attribute</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span>
@@ -4063,12 +4350,12 @@
       <pre class="lines">
 
 
-504
-505
-506</pre>
+514
+515
+516</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 504</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 514</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_enabled?'>element_enabled?</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:is_element_enabled</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4093,14 +4380,14 @@
       <pre class="lines">
 
 
-481
-482
-483
-484
-485</pre>
+491
+492
+493
+494
+495</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 481</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 491</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_location'>element_location</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_rect</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4127,13 +4414,13 @@
       <pre class="lines">
 
 
-493
-494
-495
-496</pre>
+503
+504
+505
+506</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 493</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 503</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_location_once_scrolled_into_view'>element_location_once_scrolled_into_view</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_send_keys_to_element'>send_keys_to_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -4159,12 +4446,12 @@
       <pre class="lines">
 
 
-461
-462
-463</pre>
+471
+472
+473</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 461</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 471</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_property'>element_property</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_property</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span>
@@ -4189,14 +4476,14 @@
       <pre class="lines">
 
 
-487
-488
-489
-490
-491</pre>
+497
+498
+499
+500
+501</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 487</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 497</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_rect'>element_rect</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_rect</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4275,12 +4562,12 @@
       <pre class="lines">
 
 
-508
-509
-510</pre>
+518
+519
+520</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 508</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 518</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_selected?'>element_selected?</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:is_element_selected</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4305,14 +4592,14 @@
       <pre class="lines">
 
 
-498
-499
-500
-501
-502</pre>
+508
+509
+510
+511
+512</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 498</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 508</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_size'>element_size</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_rect</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4350,12 +4637,12 @@
       <pre class="lines">
 
 
-448
-449
-450</pre>
+458
+459
+460</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 448</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 458</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_tag_name'>element_tag_name</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_tag_name</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4380,12 +4667,12 @@
       <pre class="lines">
 
 
-477
-478
-479</pre>
+487
+488
+489</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 477</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 487</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_text'>element_text</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_text</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4410,12 +4697,12 @@
       <pre class="lines">
 
 
-473
-474
-475</pre>
+483
+484
+485</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 473</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 483</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_value'>element_value</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_element_property'>element_property</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>value</span><span class='tstring_end'>&#39;</span></span>
@@ -4440,12 +4727,12 @@
       <pre class="lines">
 
 
-517
-518
-519</pre>
+527
+528
+529</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 517</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 527</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_value_of_css_property'>element_value_of_css_property</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_prop'>prop</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_css_value</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>property_name:</span> <span class='id identifier rubyid_prop'>prop</span>
@@ -4470,13 +4757,13 @@
       <pre class="lines">
 
 
-360
-361
-362
-363</pre>
+370
+371
+372
+373</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 360</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 370</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execute_async_script'>execute_async_script</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:execute_async_script</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>script:</span> <span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='label'>args:</span> <span class='id identifier rubyid_args'>args</span><span class='rbrace'>}</span>
@@ -4513,17 +4800,167 @@
       <pre class="lines">
 
 
-355
-356
-357
-358</pre>
+365
+366
+367
+368</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 355</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 365</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:execute_script</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>script:</span> <span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='label'>args:</span> <span class='id identifier rubyid_args'>args</span><span class='rbrace'>}</span>
   <span class='id identifier rubyid_unwrap_script_result'>unwrap_script_result</span> <span class='id identifier rubyid_result'>result</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fedcm_account_list-instance_method">
+  
+    #<strong>fedcm_account_list</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+639
+640
+641</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 639</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_fedcm_account_list'>fedcm_account_list</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_fedcm_account_list</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fedcm_delay-instance_method">
+  
+    #<strong>fedcm_delay</strong>(enabled)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+643
+644
+645</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 643</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_fedcm_delay'>fedcm_delay</span><span class='lparen'>(</span><span class='id identifier rubyid_enabled'>enabled</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_fedcm_delay</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>enabled:</span> <span class='id identifier rubyid_enabled'>enabled</span><span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fedcm_dialog_type-instance_method">
+  
+    #<strong>fedcm_dialog_type</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+627
+628
+629</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 627</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_fedcm_dialog_type'>fedcm_dialog_type</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_fedcm_dialog_type</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fedcm_subtitle-instance_method">
+  
+    #<strong>fedcm_subtitle</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+635
+636
+637</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 635</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_fedcm_subtitle'>fedcm_subtitle</span>
+  <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:get_fedcm_title</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>subtitle</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fedcm_title-instance_method">
+  
+    #<strong>fedcm_title</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+631
+632
+633</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 631</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_fedcm_title'>fedcm_title</span>
+  <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:get_fedcm_title</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>title</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -4545,26 +4982,26 @@
       <pre class="lines">
 
 
-531
-532
-533
-534
-535
-536
-537
-538
-539
-540
 541
 542
 543
 544
 545
 546
-547</pre>
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 531</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 541</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_element_by'>find_element_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent_ref'>parent_ref</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span> <span class='op'>=</span> <span class='ivar'>@locator_converter</span><span class='period'>.</span><span class='id identifier rubyid_convert'>convert</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='rparen'>)</span>
@@ -4603,26 +5040,26 @@
       <pre class="lines">
 
 
-549
-550
-551
-552
-553
-554
-555
-556
-557
-558
 559
 560
 561
 562
 563
 564
-565</pre>
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 549</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 559</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_elements_by'>find_elements_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent_ref'>parent_ref</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span> <span class='op'>=</span> <span class='ivar'>@locator_converter</span><span class='period'>.</span><span class='id identifier rubyid_convert'>convert</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='rparen'>)</span>
@@ -4809,12 +5246,14 @@
 306
 307
 308
-309</pre>
+309
+310</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 303</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_local_storage_item'>local_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>local_storage_item(key, value)</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:local_storage_item</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span>
     <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>localStorage.setItem(&#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;, &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;)</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
   <span class='kw'>else</span>
@@ -4841,14 +5280,16 @@
       <pre class="lines">
 
 
-315
-316
-317</pre>
+317
+318
+319
+320</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 315</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 317</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_local_storage_keys'>local_storage_keys</span>
+  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>local_storage_keys</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:local_storage_keys</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return Object.keys(localStorage)</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -4871,14 +5312,16 @@
       <pre class="lines">
 
 
-323
-324
-325</pre>
+327
+328
+329
+330</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 323</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 327</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_local_storage_size'>local_storage_size</span>
+  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>local_storage_size</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:local_storage_size</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return localStorage.length</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -4912,12 +5355,12 @@
       <pre class="lines">
 
 
-369
-370
-371</pre>
+379
+380
+381</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 369</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 379</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_manage'>manage</span>
   <span class='ivar'>@manage</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Manager.html" title="Selenium::WebDriver::Manager (class)">Manager</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Manager.html#initialize-instance_method" title="Selenium::WebDriver::Manager#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
@@ -5121,12 +5564,12 @@
       <pre class="lines">
 
 
-410
-411
-412</pre>
+420
+421
+422</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 410</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 420</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_print_page'>print_page</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:print_page</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>options:</span> <span class='id identifier rubyid_options'>options</span><span class='rbrace'>}</span>
@@ -5217,12 +5660,12 @@
       <pre class="lines">
 
 
-406
-407
-408</pre>
+416
+417
+418</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 406</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 416</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release_actions'>release_actions</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:release_actions</span>
@@ -5247,12 +5690,12 @@
       <pre class="lines">
 
 
-597
-598
-599</pre>
+607
+608
+609</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 597</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 607</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_all_credentials'>remove_all_credentials</span><span class='lparen'>(</span><span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:remove_all_credentials</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>authenticatorId:</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rbrace'>}</span>
@@ -5277,12 +5720,12 @@
       <pre class="lines">
 
 
-593
-594
-595</pre>
+603
+604
+605</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 593</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 603</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_credential'>remove_credential</span><span class='lparen'>(</span><span class='id identifier rubyid_credential_id'>credential_id</span><span class='comma'>,</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:remove_credential</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>credentialId:</span> <span class='id identifier rubyid_credential_id'>credential_id</span><span class='comma'>,</span> <span class='label'>authenticatorId:</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rbrace'>}</span>
@@ -5307,14 +5750,16 @@
       <pre class="lines">
 
 
-311
 312
-313</pre>
+313
+314
+315</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 311</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 312</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_local_storage_item'>remove_local_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>remove_local_storage_item(key)</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:remove_local_storage_item</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>localStorage.removeItem(&#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;)</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -5337,14 +5782,16 @@
       <pre class="lines">
 
 
-335
-336
-337</pre>
+341
+342
+343
+344</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 335</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 341</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_session_storage_item'>remove_session_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>remove_session_storage_item(key)</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:remove_session_storage_item</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sessionStorage.removeItem(&#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;)</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -5367,12 +5814,12 @@
       <pre class="lines">
 
 
-581
-582
-583</pre>
+591
+592
+593</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 581</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 591</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_virtual_authenticator'>remove_virtual_authenticator</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:remove_virtual_authenticator</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>authenticatorId:</span> <span class='id identifier rubyid_id'>id</span><span class='rbrace'>}</span>
@@ -5406,6 +5853,36 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reposition_window'>reposition_window</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_set_window_rect'>set_window_rect</span><span class='lparen'>(</span><span class='label'>x:</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="reset_fedcm_cooldown-instance_method">
+  
+    #<strong>reset_fedcm_cooldown</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+647
+648
+649</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 647</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_reset_fedcm_cooldown'>reset_fedcm_cooldown</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:reset_fedcm_cooldown</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -5499,6 +5976,36 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="select_fedcm_account-instance_method">
+  
+    #<strong>select_fedcm_account</strong>(index)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+623
+624
+625</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 623</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_select_fedcm_account'>select_fedcm_account</span><span class='lparen'>(</span><span class='id identifier rubyid_index'>index</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:select_fedcm_account</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>accountIndex:</span> <span class='id identifier rubyid_index'>index</span><span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="send_actions-instance_method">
   
     #<strong>send_actions</strong>(data)  &#x21d2; <tt>Object</tt> 
@@ -5513,12 +6020,12 @@
       <pre class="lines">
 
 
-402
-403
-404</pre>
+412
+413
+414</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 402</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 412</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_actions'>send_actions</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:actions</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>actions:</span> <span class='id identifier rubyid_data'>data</span><span class='rbrace'>}</span>
@@ -5543,14 +6050,14 @@
       <pre class="lines">
 
 
-418
-419
-420
-421
-422</pre>
+428
+429
+430
+431
+432</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 418</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 428</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys_to_element'>send_keys_to_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_keys'>keys</span> <span class='op'>=</span> <span class='id identifier rubyid_upload_if_necessary'>upload_if_necessary</span><span class='lparen'>(</span><span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@file_detector</span>
@@ -5618,18 +6125,20 @@
       <pre class="lines">
 
 
-327
-328
-329
-330
-331
 332
-333</pre>
+333
+334
+335
+336
+337
+338
+339</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 327</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 332</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_storage_item'>session_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session_storage_item(key, value)</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:session_storage_item</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span>
     <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sessionStorage.setItem(&#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;, &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;)</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
   <span class='kw'>else</span>
@@ -5656,14 +6165,16 @@
       <pre class="lines">
 
 
-339
-340
-341</pre>
+346
+347
+348
+349</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 339</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 346</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_storage_keys'>session_storage_keys</span>
+  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session_storage_keys</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:session_storage_keys</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return Object.keys(sessionStorage)</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -5686,14 +6197,16 @@
       <pre class="lines">
 
 
-347
-348
-349</pre>
+356
+357
+358
+359</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 347</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 356</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_storage_size'>session_storage_size</span>
+  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session_storage_size</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:session_storage_size</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return sessionStorage.length</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -5750,13 +6263,13 @@
       <pre class="lines">
 
 
-567
-568
-569
-570</pre>
+577
+578
+579
+580</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 567</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 577</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shadow_root'>shadow_root</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_id'>id</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_shadow_root</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -5812,24 +6325,24 @@
       <pre class="lines">
 
 
-428
-429
-430
-431
-432
-433
-434
-435
-436
-437
 438
 439
 440
 441
-442</pre>
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 428</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 438</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submit_element'>submit_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_script'>script</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/* submitForm */ var form = arguments[0];\n</span><span class='tstring_end'>&quot;</span></span> \
@@ -6119,12 +6632,12 @@
       <pre class="lines">
 
 
-601
-602
-603</pre>
+611
+612
+613</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 601</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 611</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_user_verified'>user_verified</span><span class='lparen'>(</span><span class='id identifier rubyid_verified'>verified</span><span class='comma'>,</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_user_verified</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>authenticatorId:</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>isUserVerified:</span> <span class='id identifier rubyid_verified'>verified</span><span class='rbrace'>}</span>
@@ -6316,7 +6829,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Jun 24 14:57:04 2024 by
+  Generated on Wed Aug 28 15:37:50 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.36 (ruby-3.0.6).
 </div>

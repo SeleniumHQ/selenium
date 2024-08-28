@@ -303,7 +303,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='comma'>,</span> <span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='ivar'>@code</span>    <span class='op'>=</span> <span class='id identifier rubyid_code'>code</span>
+  <span class='ivar'>@code</span> <span class='op'>=</span> <span class='id identifier rubyid_code'>code</span>
   <span class='ivar'>@payload</span> <span class='op'>=</span> <span class='id identifier rubyid_payload'>payload</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 
   <span class='id identifier rubyid_assert_ok'>assert_ok</span>
@@ -443,12 +443,12 @@
       <pre class="lines">
 
 
-48
-49
-50</pre>
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='ivar'>@payload</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span>
@@ -492,10 +492,7 @@
 40
 41
 42
-43
-44
-45
-46</pre>
+43</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 37</span>
@@ -503,11 +500,8 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_error'>error</span>
   <span class='id identifier rubyid_error'>error</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='comma'>,</span> <span class='id identifier rubyid_backtrace'>backtrace</span> <span class='op'>=</span> <span class='id identifier rubyid_process_error'>process_error</span>
   <span class='id identifier rubyid_klass'>klass</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='period'>.</span><span class='id identifier rubyid_for_error'><span class='object_link'><a href="../Error.html#for_error-class_method" title="Selenium::WebDriver::Error.for_error (method)">for_error</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_error'>error</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='kw'>return</span>
-
   <span class='id identifier rubyid_ex'>ex</span> <span class='op'>=</span> <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_ex'>ex</span><span class='period'>.</span><span class='id identifier rubyid_set_backtrace'>set_backtrace</span><span class='lparen'>(</span><span class='id identifier rubyid_caller'>caller</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_add_backtrace'>add_backtrace</span> <span class='id identifier rubyid_ex'>ex</span><span class='comma'>,</span> <span class='id identifier rubyid_backtrace'>backtrace</span>
-
+  <span class='id identifier rubyid_add_cause'>add_cause</span><span class='lparen'>(</span><span class='id identifier rubyid_ex'>ex</span><span class='comma'>,</span> <span class='id identifier rubyid_error'>error</span><span class='comma'>,</span> <span class='id identifier rubyid_backtrace'>backtrace</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_ex'>ex</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -520,7 +514,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Jun 24 14:57:04 2024 by
+  Generated on Wed Aug 28 15:37:50 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.36 (ruby-3.0.6).
 </div>
