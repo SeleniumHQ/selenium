@@ -386,7 +386,16 @@ pub trait SeleniumManager {
             // Check browser in PATH
             let browser_in_path = self.find_browser_in_path();
             if let Some(path) = &browser_in_path {
-                self.set_browser_path(path_to_string(path));
+                if self.is_skip_browser_in_path() {
+                    self.get_logger().debug(format!(
+                        "Skipping {} in path: {}",
+                        self.get_browser_name(),
+                        path.display()
+                    ));
+                    return None;
+                } else {
+                    self.set_browser_path(path_to_string(path));
+                }
             }
             browser_in_path
         }
@@ -756,32 +765,41 @@ pub trait SeleniumManager {
 
         // Use driver in PATH when the user has not specified any browser version
         if use_driver_in_path {
-            let version = driver_in_path_version.unwrap();
             let path = driver_in_path.unwrap();
-            let major_version = self.get_major_version(&version)?;
 
-            // Display warning if the discovered driver version is not the same as the driver in PATH
-            if !self.get_driver_version().is_empty()
-                && (self.is_firefox() && !version.eq(self.get_driver_version()))
-                || (!self.is_firefox() && !major_version.eq(&self.get_major_browser_version()))
-            {
-                self.get_logger().warn(format!(
-                    "The {} version ({}) detected in PATH at {} might not be compatible with \
+            if self.is_skip_driver_in_path() {
+                self.get_logger().debug(format!(
+                    "Skipping {} in path: {}",
+                    self.get_driver_name(),
+                    path
+                ));
+            } else {
+                let version = driver_in_path_version.unwrap();
+                let major_version = self.get_major_version(&version)?;
+
+                // Display warning if the discovered driver version is not the same as the driver in PATH
+                if !self.get_driver_version().is_empty()
+                    && (self.is_firefox() && !version.eq(self.get_driver_version()))
+                    || (!self.is_firefox() && !major_version.eq(&self.get_major_browser_version()))
+                {
+                    self.get_logger().warn(format!(
+                        "The {} version ({}) detected in PATH at {} might not be compatible with \
                     the detected {} version ({}); currently, {} {} is recommended for {} {}.*, \
                     so it is advised to delete the driver in PATH and retry",
-                    self.get_driver_name(),
-                    &version,
-                    path,
-                    self.get_browser_name(),
-                    self.get_browser_version(),
-                    self.get_driver_name(),
-                    self.get_driver_version(),
-                    self.get_browser_name(),
-                    self.get_major_browser_version()
-                ));
+                        self.get_driver_name(),
+                        &version,
+                        path,
+                        self.get_browser_name(),
+                        self.get_browser_version(),
+                        self.get_driver_name(),
+                        self.get_driver_version(),
+                        self.get_browser_name(),
+                        self.get_major_browser_version()
+                    ));
+                }
+                self.set_driver_version(version.to_string());
+                return Ok(PathBuf::from(path));
             }
-            self.set_driver_version(version.to_string());
-            return Ok(PathBuf::from(path));
         }
 
         // If driver was not in the PATH, try to find it in the cache
@@ -1410,6 +1428,26 @@ pub trait SeleniumManager {
     fn set_avoid_browser_download(&mut self, avoid_browser_download: bool) {
         if avoid_browser_download {
             self.get_config_mut().avoid_browser_download = true;
+        }
+    }
+
+    fn is_skip_driver_in_path(&self) -> bool {
+        self.get_config().skip_driver_in_path
+    }
+
+    fn set_skip_driver_in_path(&mut self, skip_driver_in_path: bool) {
+        if skip_driver_in_path {
+            self.get_config_mut().skip_driver_in_path = true;
+        }
+    }
+
+    fn is_skip_browser_in_path(&self) -> bool {
+        self.get_config().skip_browser_in_path
+    }
+
+    fn set_skip_browser_in_path(&mut self, skip_browser_in_path: bool) {
+        if skip_browser_in_path {
+            self.get_config_mut().skip_browser_in_path = true;
         }
     }
 

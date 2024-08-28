@@ -421,7 +421,7 @@ public class JdkHttpClient implements HttpClient {
         switch (response.statusCode()) {
           case 303:
             method = HttpMethod.GET;
-            // fall-through
+          // fall-through
           case 301:
           case 302:
           case 307:
