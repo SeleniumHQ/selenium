@@ -55,7 +55,6 @@ org.openqa.selenium.grid.router.httpd
 org.openqa.selenium.grid.security
 org.openqa.selenium.grid.server
 org.openqa.selenium.grid.session
-org.openqa.selenium.grid.session.remote
 org.openqa.selenium.grid.sessionmap
 org.openqa.selenium.grid.sessionmap.config
 org.openqa.selenium.grid.sessionmap.httpd

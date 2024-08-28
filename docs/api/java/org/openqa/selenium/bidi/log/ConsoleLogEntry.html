@@ -94,12 +94,12 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.bidi.log.LogLevel,java.lang.String,long,java.lang.String,java.lang.String,java.lang.String,java.util.List,org.openqa.selenium.bidi.log.StackTrace)" class="member-name-link">ConsoleLogEntry</a><wbr>(<a href="LogLevel.html" title="enum class in org.openqa.selenium.bidi.log">LogLevel</a>&nbsp;level,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.bidi.log.LogLevel,org.openqa.selenium.bidi.script.Source,java.lang.String,long,java.lang.String,java.lang.String,java.util.List,org.openqa.selenium.bidi.log.StackTrace)" class="member-name-link">ConsoleLogEntry</a><wbr>(<a href="LogLevel.html" title="enum class in org.openqa.selenium.bidi.log">LogLevel</a>&nbsp;level,
+ <a href="../script/Source.html" title="class in org.openqa.selenium.bidi.script">Source</a>&nbsp;source,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text,
  long&nbsp;timestamp,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;method,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;realm,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../script/RemoteValue.html" title="class in org.openqa.selenium.bidi.script">RemoteValue</a>&gt;&nbsp;args,
  <a href="StackTrace.html" title="class in org.openqa.selenium.bidi.log">StackTrace</a>&nbsp;stackTrace)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
@@ -126,9 +126,6 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMethod()" class="member-name-link">getMethod</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getRealm()" class="member-name-link">getRealm</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -137,7 +134,7 @@ loadScripts(document, 'script');</script>
 <code><a href="GenericLogEntry.html#getType()">getType</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.openqa.selenium.bidi.log.BaseLogEntry">Methods inherited from class&nbsp;org.openqa.selenium.bidi.log.<a href="BaseLogEntry.html" title="class in org.openqa.selenium.bidi.log">BaseLogEntry</a></h3>
-<code><a href="BaseLogEntry.html#getLevel()">getLevel</a>, <a href="BaseLogEntry.html#getStackTrace()">getStackTrace</a>, <a href="BaseLogEntry.html#getText()">getText</a>, <a href="BaseLogEntry.html#getTimestamp()">getTimestamp</a></code></div>
+<code><a href="BaseLogEntry.html#getLevel()">getLevel</a>, <a href="BaseLogEntry.html#getSource()">getSource</a>, <a href="BaseLogEntry.html#getStackTrace()">getStackTrace</a>, <a href="BaseLogEntry.html#getText()">getText</a>, <a href="BaseLogEntry.html#getTimestamp()">getTimestamp</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
@@ -153,14 +150,14 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.openqa.selenium.bidi.log.LogLevel,java.lang.String,long,java.lang.String,java.lang.String,java.lang.String,java.util.List,org.openqa.selenium.bidi.log.StackTrace)">
+<section class="detail" id="&lt;init&gt;(org.openqa.selenium.bidi.log.LogLevel,org.openqa.selenium.bidi.script.Source,java.lang.String,long,java.lang.String,java.lang.String,java.util.List,org.openqa.selenium.bidi.log.StackTrace)">
 <h3>ConsoleLogEntry</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ConsoleLogEntry</span><wbr><span class="parameters">(<a href="LogLevel.html" title="enum class in org.openqa.selenium.bidi.log">LogLevel</a>&nbsp;level,
+ <a href="../script/Source.html" title="class in org.openqa.selenium.bidi.script">Source</a>&nbsp;source,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text,
  long&nbsp;timestamp,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;method,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;realm,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../script/RemoteValue.html" title="class in org.openqa.selenium.bidi.script">RemoteValue</a>&gt;&nbsp;args,
  <a href="StackTrace.html" title="class in org.openqa.selenium.bidi.log">StackTrace</a>&nbsp;stackTrace)</span></div>
 </section>
@@ -177,12 +174,6 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getMethod()">
 <h3>getMethod</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getMethod</span>()</div>
-</section>
-</li>
-<li>
-<section class="detail" id="getRealm()">
-<h3>getRealm</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getRealm</span>()</div>
 </section>
 </li>
 <li>

@@ -82,7 +82,8 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome">ChromeDriver</a></code>, <code><a href="chromium/ChromiumDriver.html" title="class in org.openqa.selenium.chromium">ChromiumDriver</a></code>, <code><a href="edge/EdgeDriver.html" title="class in org.openqa.selenium.edge">EdgeDriver</a></code>, <code><a href="firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a></code>, <code><a href="ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></code>, <code><a href="remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code>, <code><a href="safari/SafariDriver.html" title="class in org.openqa.selenium.safari">SafariDriver</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">WebDriver</span><span class="extends-implements">
+<div class="type-signature"><span class="annotations">@NullMarked
+</span><span class="modifiers">public interface </span><span class="element-name type-name-label">WebDriver</span><span class="extends-implements">
 extends <a href="SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></span></div>
 <div class="block">WebDriver is a remote control interface that enables introspection and control of user agents
  (browsers). The methods in this interface fall into three categories:
@@ -169,17 +170,17 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Load a new web page in the current browser window.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getCurrentUrl()" class="member-name-link">getCurrentUrl</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Get a string representing the current URL that the browser is looking at.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getPageSource()" class="member-name-link">getPageSource</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Get the source of the last loaded page.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getTitle()" class="member-name-link">getTitle</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Get the title of the current page.</div>
@@ -259,7 +260,7 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <li>
 <section class="detail" id="getCurrentUrl()">
 <h3>getCurrentUrl</h3>
-<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getCurrentUrl</span>()</div>
+<div class="member-signature"><span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getCurrentUrl</span>()</div>
 <div class="block">Get a string representing the current URL that the browser is looking at.
 
  <p>See <a href="https://w3c.github.io/webdriver/#get-current-url">W3C WebDriver
@@ -273,7 +274,7 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <li>
 <section class="detail" id="getTitle()">
 <h3>getTitle</h3>
-<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getTitle</span>()</div>
+<div class="member-signature"><span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getTitle</span>()</div>
 <div class="block">Get the title of the current page.
 
  <p>See <a href="https://w3c.github.io/webdriver/#get-title">W3C WebDriver specification</a> for
@@ -347,7 +348,7 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <li>
 <section class="detail" id="getPageSource()">
 <h3>getPageSource</h3>
-<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getPageSource</span>()</div>
+<div class="member-signature"><span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getPageSource</span>()</div>
 <div class="block">Get the source of the last loaded page. If the page has been modified after loading (for
  example, by Javascript) there is no guarantee that the returned text is that of the modified
  page. Please consult the documentation of the particular driver being used to determine whether

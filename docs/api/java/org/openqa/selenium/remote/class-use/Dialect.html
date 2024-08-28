@@ -61,10 +61,8 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.session">org.openqa.selenium.grid.session</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.session.remote">org.openqa.selenium.grid.session.remote</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.remote">org.openqa.selenium.remote</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.remote">org.openqa.selenium.remote</a></div>
-<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -175,79 +173,6 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">ActiveSession.</span><code><a href="../../grid/session/ActiveSession.html#getUpstreamDialect()" class="member-name-link">getUpstreamDialect</a>()</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="org.openqa.selenium.grid.session.remote">
-<h2>Uses of <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a> in <a href="../../grid/session/remote/package-summary.html">org.openqa.selenium.grid.session.remote</a></h2>
-<div class="caption"><span>Methods in <a href="../../grid/session/remote/package-summary.html">org.openqa.selenium.grid.session.remote</a> that return <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Method</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code><a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">RemoteSession.</span><code><a href="../../grid/session/remote/RemoteSession.html#getDownstreamDialect()" class="member-name-link">getDownstreamDialect</a>()</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">RemoteSession.</span><code><a href="../../grid/session/remote/RemoteSession.html#getUpstreamDialect()" class="member-name-link">getUpstreamDialect</a>()</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-</div>
-<div class="caption"><span>Methods in <a href="../../grid/session/remote/package-summary.html">org.openqa.selenium.grid.session.remote</a> with parameters of type <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Method</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>protected abstract <a href="../../grid/session/ActiveSession.html" title="interface in org.openqa.selenium.grid.session">ActiveSession</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">RemoteSession.Factory.</span><code><a href="../../grid/session/remote/RemoteSession.Factory.html#newActiveSession(X,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.http.HttpHandler,org.openqa.selenium.remote.SessionId,java.util.Map)" class="member-name-link">newActiveSession</a><wbr>(<a href="../../grid/session/remote/RemoteSession.Factory.html" title="type parameter in RemoteSession.Factory">X</a>&nbsp;additionalData,
- <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a>&nbsp;downstream,
- <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a>&nbsp;upstream,
- <a href="../http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;codec,
- <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;capabilities)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>protected <a href="../../grid/session/remote/ServicedSession.html" title="class in org.openqa.selenium.grid.session.remote">ServicedSession</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ServicedSession.Factory.</span><code><a href="../../grid/session/remote/ServicedSession.Factory.html#newActiveSession(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.http.HttpHandler,org.openqa.selenium.remote.SessionId,java.util.Map)" class="member-name-link">newActiveSession</a><wbr>(<a href="../service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
- <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a>&nbsp;downstream,
- <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a>&nbsp;upstream,
- <a href="../http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;codec,
- <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;capabilities)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-</div>
-<div class="caption"><span>Method parameters in <a href="../../grid/session/remote/package-summary.html">org.openqa.selenium.grid.session.remote</a> with type arguments of type <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Method</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>protected <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../../grid/session/ActiveSession.html" title="interface in org.openqa.selenium.grid.session">ActiveSession</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">RemoteSession.Factory.</span><code><a href="../../grid/session/remote/RemoteSession.Factory.html#performHandshake(org.openqa.selenium.remote.tracing.Tracer,X,java.net.URL,java.util.Set,org.openqa.selenium.Capabilities)" class="member-name-link">performHandshake</a><wbr>(<a href="../tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
- <a href="../../grid/session/remote/RemoteSession.Factory.html" title="type parameter in RemoteSession.Factory">X</a>&nbsp;additionalData,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a>&nbsp;url,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a>&gt;&nbsp;downstreamDialects,
- <a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-</div>
-<div class="caption"><span>Constructors in <a href="../../grid/session/remote/package-summary.html">org.openqa.selenium.grid.session.remote</a> with parameters of type <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier</div>
-<div class="table-header col-second">Constructor</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-second even-row-color"><code><a href="../../grid/session/remote/RemoteSession.html#%3Cinit%3E(org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.http.HttpHandler,org.openqa.selenium.remote.SessionId,java.util.Map)" class="member-name-link">RemoteSession</a><wbr>(<a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a>&nbsp;downstream,
- <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a>&nbsp;upstream,
- <a href="../http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;codec,
- <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;capabilities)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../../grid/session/remote/ServicedSession.html#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.http.HttpHandler,org.openqa.selenium.remote.SessionId,java.util.Map)" class="member-name-link">ServicedSession</a><wbr>(<a href="../service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
- <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a>&nbsp;downstream,
- <a href="../Dialect.html" title="enum class in org.openqa.selenium.remote">Dialect</a>&nbsp;upstream,
- <a href="../http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;codec,
- <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;capabilities)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
