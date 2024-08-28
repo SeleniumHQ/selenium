@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.print_page_options &#8212; Selenium 4.22.0 documentation</title>
+    <title>selenium.webdriver.common.print_page_options &#8212; Selenium 4.24.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css?v=89b800e6" />
     
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=c1b4a597"></script>
     <script src="../../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
     
@@ -24,7 +24,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.24.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.print_page_options</a></li> 
       </ul>
@@ -57,6 +57,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
@@ -163,10 +164,9 @@
 <span class="k">class</span> <span class="nc">_ValidateTypeDescriptor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base Class Descriptor which validates type of any subclass attribute.&quot;&quot;&quot;</span>
 
-    <span class="n">expected_type</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span> <span class="o">=</span> <span class="n">expected_type</span>
 
     <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_print_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -180,19 +180,22 @@
 <span class="k">class</span> <span class="nc">_ValidateBackGround</span><span class="p">(</span><span class="n">_ValidateTypeDescriptor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Expected type of background attribute.&quot;&quot;&quot;</span>
 
-    <span class="n">expected_type</span> <span class="o">=</span> <span class="nb">bool</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_ValidateShrinkToFit</span><span class="p">(</span><span class="n">_ValidateTypeDescriptor</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expected type of shirnk to fit attribute.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expected type of shrink to fit attribute.&quot;&quot;&quot;</span>
 
-    <span class="n">expected_type</span> <span class="o">=</span> <span class="nb">bool</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_ValidatePageRanges</span><span class="p">(</span><span class="n">_ValidateTypeDescriptor</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Excepted type of page ranges attribute.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expected type of page ranges attribute.&quot;&quot;&quot;</span>
 
-    <span class="n">expected_type</span> <span class="o">=</span> <span class="nb">list</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="PrintOptions"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.print_page_options.html#selenium.webdriver.common.print_page_options.PrintOptions">[docs]</a><span class="k">class</span> <span class="nc">PrintOptions</span><span class="p">:</span>
@@ -228,7 +231,7 @@
 <span class="sd">    - Set</span>
 <span class="sd">        - `self.page_width` = `value`</span>
 
-<span class="sd">    Patameters</span>
+<span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    `value`: `float`</span>
 
@@ -248,7 +251,7 @@
 <span class="sd">    - Get</span>
 <span class="sd">        - `self.margin_top`</span>
 <span class="sd">    - Set</span>
-<span class="sd">        - `slef.margin_top` = `value`</span>
+<span class="sd">        - `self.margin_top` = `value`</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -291,7 +294,7 @@
 <span class="sd">    -----</span>
 <span class="sd">    - Get</span>
 <span class="sd">        - `self.margin_left`</span>
-<span class="sd">    -Set</span>
+<span class="sd">    - Set</span>
 <span class="sd">        - `self.margin_left` = `value`</span>
 
 <span class="sd">    Parameters</span>
@@ -372,13 +375,13 @@
 <span class="sd">        - `None`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">background</span> <span class="o">=</span> <span class="n">_ValidateBackGround</span><span class="p">(</span><span class="s2">&quot;background&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+    <span class="n">background</span> <span class="o">=</span> <span class="n">_ValidateBackGround</span><span class="p">(</span><span class="s2">&quot;background&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets background:</span>
 
 <span class="sd">    Usage</span>
 <span class="sd">    -----</span>
 <span class="sd">    - Get</span>
-<span class="sd">        - `self.backgorund`</span>
+<span class="sd">        - `self.background`</span>
 <span class="sd">    - Set</span>
 <span class="sd">        - `self.background` = `value`</span>
 
@@ -394,7 +397,7 @@
 <span class="sd">        - `None`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">shrink_to_fit</span> <span class="o">=</span> <span class="n">_ValidateShrinkToFit</span><span class="p">(</span><span class="s2">&quot;shrinkToFit&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+    <span class="n">shrink_to_fit</span> <span class="o">=</span> <span class="n">_ValidateShrinkToFit</span><span class="p">(</span><span class="s2">&quot;shrinkToFit&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets shrink_to_fit:</span>
 
 <span class="sd">    Usage</span>
@@ -416,7 +419,7 @@
 <span class="sd">        - `None`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">page_ranges</span> <span class="o">=</span> <span class="n">_ValidatePageRanges</span><span class="p">(</span><span class="s2">&quot;pageRanges&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="n">page_ranges</span> <span class="o">=</span> <span class="n">_ValidatePageRanges</span><span class="p">(</span><span class="s2">&quot;pageRanges&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets page_ranges:</span>
 
 <span class="sd">    Usage</span>
@@ -453,7 +456,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">property_name</span><span class="si">}</span><span class="s2"> should be an integer or a float&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">property_name</span><span class="si">}</span><span class="s2"> cannot be less then 0&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">property_name</span><span class="si">}</span><span class="s2"> cannot be less than 0&quot;</span><span class="p">)</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -485,7 +488,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.24.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.print_page_options</a></li> 
       </ul>

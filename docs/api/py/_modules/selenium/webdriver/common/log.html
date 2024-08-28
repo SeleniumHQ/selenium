@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.log &#8212; Selenium 4.22.0 documentation</title>
+    <title>selenium.webdriver.common.log &#8212; Selenium 4.24.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css?v=89b800e6" />
     
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=c1b4a597"></script>
     <script src="../../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
     
@@ -24,7 +24,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.24.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.log</a></li> 
       </ul>
@@ -57,6 +57,10 @@
 <span class="kn">import</span> <span class="nn">pkgutil</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">asynccontextmanager</span>
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">AsyncGenerator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
 
@@ -83,10 +87,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span> <span class="o">=</span> <span class="n">bidi_session</span><span class="o">.</span><span class="n">cdp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devtools</span> <span class="o">=</span> <span class="n">bidi_session</span><span class="o">.</span><span class="n">devtools</span>
         <span class="n">_pkg</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mutation_listener_js</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s2">&quot;mutation-listener.js&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="c1"># Ensure _mutation_listener_js is not None before decoding</span>
+        <span class="n">_mutation_listener_js_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s2">&quot;mutation-listener.js&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_mutation_listener_js_bytes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed to load mutation-listener.js&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mutation_listener_js</span> <span class="o">=</span> <span class="n">_mutation_listener_js_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Log.mutation_events"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.log.html#selenium.webdriver.common.log.Log.mutation_events">[docs]</a>    <span class="nd">@asynccontextmanager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">mutation_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">mutation_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Listen for mutation events and emit them as they are found.</span>
 
 <span class="sd">        :Usage:</span>
@@ -114,12 +122,13 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">pin_script</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mutation_listener_js</span><span class="p">,</span> <span class="n">script_key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;return </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_mutation_listener_js</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">event</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">event</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">runtime</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">BindingCalled</span><span class="p">)</span> <span class="k">as</span> <span class="n">evnt</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">event</span>
 
         <span class="n">payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">evnt</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
-        <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;*[data-__webdriver_id=</span><span class="si">{</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;*[data-__webdriver_id=</span><span class="si">{</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">elements</span><span class="p">:</span>
             <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="n">event</span><span class="p">[</span><span class="s2">&quot;element&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -128,7 +137,7 @@
         <span class="n">event</span><span class="p">[</span><span class="s2">&quot;old_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;oldValue&quot;</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Log.add_js_error_listener"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.log.html#selenium.webdriver.common.log.Log.add_js_error_listener">[docs]</a>    <span class="nd">@asynccontextmanager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">add_js_error_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">add_js_error_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Listen for JS errors and when the contextmanager exits check if</span>
 <span class="sd">        there were JS Errors.</span>
 
@@ -152,7 +161,7 @@
         <span class="n">js_exception</span><span class="o">.</span><span class="n">exception_details</span> <span class="o">=</span> <span class="n">exception</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">exception_details</span></div>
 
 <div class="viewcode-block" id="Log.add_listener"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.log.html#selenium.webdriver.common.log.Log.add_listener">[docs]</a>    <span class="nd">@asynccontextmanager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Listen for certain events that are passed in.</span>
 
 <span class="sd">        :Args:</span>
@@ -172,7 +181,7 @@
         <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
         <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">&quot;runtime.enable&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
-        <span class="n">console</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="n">console</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">ConsoleAPICalled</span><span class="p">)</span> <span class="k">as</span> <span class="n">messages</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">console</span>
 
@@ -210,7 +219,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.24.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.log</a></li> 
       </ul>

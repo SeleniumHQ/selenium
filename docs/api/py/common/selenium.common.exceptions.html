@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.common.exceptions &#8212; Selenium 4.22.0 documentation</title>
+    <title>selenium.common.exceptions &#8212; Selenium 4.24.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3e3a1e00"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c1b4a597"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
@@ -25,7 +25,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.24.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">selenium.common.exceptions</a></li> 
       </ul>
     </div>  
@@ -146,6 +146,13 @@
 <dt class="sig sig-object py" id="selenium.common.exceptions.WebDriverException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">WebDriverException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#WebDriverException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.WebDriverException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base webdriver exception.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.WebDriverException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.WebDriverException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.WebDriverException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.WebDriverException.args" title="Permalink to this definition">¶</a></dt>
@@ -164,6 +171,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.InvalidSwitchToTargetException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidSwitchToTargetException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidSwitchToTargetException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidSwitchToTargetException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when frame or window target to be switched doesn’t exist.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.InvalidSwitchToTargetException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.InvalidSwitchToTargetException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.InvalidSwitchToTargetException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.InvalidSwitchToTargetException.args" title="Permalink to this definition">¶</a></dt>
@@ -182,6 +196,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchFrameException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">NoSuchFrameException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchFrameException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchFrameException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when frame target to be switched doesn’t exist.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchFrameException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.NoSuchFrameException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchFrameException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.NoSuchFrameException.args" title="Permalink to this definition">¶</a></dt>
@@ -205,6 +226,13 @@ of the active window handles in the following way:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="n">driver</span><span class="o">.</span><span class="n">window_handles</span>
 </pre></div>
 </div>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchWindowException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.NoSuchWindowException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchWindowException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.NoSuchWindowException.args" title="Permalink to this definition">¶</a></dt>
@@ -232,6 +260,13 @@ for how to write a wait wrapper to wait for an element to appear.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchElementException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.NoSuchElementException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchElementException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.NoSuchElementException.args" title="Permalink to this definition">¶</a></dt>
@@ -254,6 +289,13 @@ set self.__traceback__ to tb and return self.</p>
 browser you are testing against.  Some browsers may have different
 property names for the same property.  (IE8’s .innerText vs. Firefox
 .textContent)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchAttributeException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.NoSuchAttributeException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchAttributeException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.NoSuchAttributeException.args" title="Permalink to this definition">¶</a></dt>
@@ -273,6 +315,13 @@ set self.__traceback__ to tb and return self.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">NoSuchShadowRootException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchShadowRootException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchShadowRootException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when trying to access the shadow root of an element when it does
 not have a shadow root attached.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchShadowRootException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.NoSuchShadowRootException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchShadowRootException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.NoSuchShadowRootException.args" title="Permalink to this definition">¶</a></dt>
@@ -304,6 +353,13 @@ node is rebuilt.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.StaleElementReferenceException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.StaleElementReferenceException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.StaleElementReferenceException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.StaleElementReferenceException.args" title="Permalink to this definition">¶</a></dt>
@@ -325,6 +381,13 @@ set self.__traceback__ to tb and return self.</p>
 an invalid state.</p>
 <p>This can be caused by attempting to clear an element that isn’t both
 editable and resettable.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.InvalidElementStateException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.InvalidElementStateException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.InvalidElementStateException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.InvalidElementStateException.args" title="Permalink to this definition">¶</a></dt>
@@ -345,6 +408,13 @@ set self.__traceback__ to tb and return self.</p>
 <dd><p>Thrown when an unexpected alert has appeared.</p>
 <p>Usually raised when  an unexpected modal is blocking the webdriver
 from executing commands.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.UnexpectedAlertPresentException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.UnexpectedAlertPresentException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.UnexpectedAlertPresentException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.UnexpectedAlertPresentException.args" title="Permalink to this definition">¶</a></dt>
@@ -365,6 +435,13 @@ set self.__traceback__ to tb and return self.</p>
 <dd><p>Thrown when switching to no presented alert.</p>
 <p>This can be caused by calling an operation on the Alert() class when
 an alert is not yet on the screen.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.NoAlertPresentException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.NoAlertPresentException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.NoAlertPresentException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.NoAlertPresentException.args" title="Permalink to this definition">¶</a></dt>
@@ -386,6 +463,13 @@ set self.__traceback__ to tb and return self.</p>
 so is not able to be interacted with.</p>
 <p>Most commonly encountered when trying to click or read text of an
 element that is hidden from view.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.ElementNotVisibleException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.ElementNotVisibleException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.ElementNotVisibleException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.ElementNotVisibleException.args" title="Permalink to this definition">¶</a></dt>
@@ -405,6 +489,13 @@ set self.__traceback__ to tb and return self.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">ElementNotInteractableException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotInteractableException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotInteractableException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when an element is present in the DOM but interactions with that
 element will hit another element due to paint order.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.ElementNotInteractableException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.ElementNotInteractableException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.ElementNotInteractableException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.ElementNotInteractableException.args" title="Permalink to this definition">¶</a></dt>
@@ -424,6 +515,13 @@ set self.__traceback__ to tb and return self.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">ElementNotSelectableException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotSelectableException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotSelectableException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when trying to select an unselectable element.</p>
 <p>For example, selecting a ‘script’ element.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.ElementNotSelectableException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.ElementNotSelectableException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.ElementNotSelectableException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.ElementNotSelectableException.args" title="Permalink to this definition">¶</a></dt>
@@ -443,6 +541,13 @@ set self.__traceback__ to tb and return self.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidCookieDomainException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidCookieDomainException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidCookieDomainException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when attempting to add a cookie under a different domain than the
 current URL.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.InvalidCookieDomainException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.InvalidCookieDomainException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.InvalidCookieDomainException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.InvalidCookieDomainException.args" title="Permalink to this definition">¶</a></dt>
@@ -461,6 +566,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.UnableToSetCookieException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnableToSetCookieException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnableToSetCookieException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.UnableToSetCookieException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when a driver fails to set a cookie.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.UnableToSetCookieException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.UnableToSetCookieException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.UnableToSetCookieException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.UnableToSetCookieException.args" title="Permalink to this definition">¶</a></dt>
@@ -479,6 +591,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.TimeoutException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">TimeoutException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#TimeoutException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.TimeoutException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when a command does not complete in enough time.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.TimeoutException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.TimeoutException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.TimeoutException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.TimeoutException.args" title="Permalink to this definition">¶</a></dt>
@@ -498,6 +617,13 @@ set self.__traceback__ to tb and return self.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">MoveTargetOutOfBoundsException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#MoveTargetOutOfBoundsException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.MoveTargetOutOfBoundsException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when the target provided to the <cite>ActionsChains</cite> move() method is
 invalid, i.e. out of document.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.MoveTargetOutOfBoundsException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.MoveTargetOutOfBoundsException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.MoveTargetOutOfBoundsException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.MoveTargetOutOfBoundsException.args" title="Permalink to this definition">¶</a></dt>
@@ -516,6 +642,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.UnexpectedTagNameException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnexpectedTagNameException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnexpectedTagNameException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.UnexpectedTagNameException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when a support class did not get an expected web element.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.UnexpectedTagNameException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.UnexpectedTagNameException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.UnexpectedTagNameException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.UnexpectedTagNameException.args" title="Permalink to this definition">¶</a></dt>
@@ -539,6 +672,13 @@ return a WebElement.</p>
 and it is either syntactically invalid (i.e. it is not a xpath
 expression) or the expression does not select WebElements (e.g.
 “count(//input)”).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.InvalidSelectorException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.InvalidSelectorException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.InvalidSelectorException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.InvalidSelectorException.args" title="Permalink to this definition">¶</a></dt>
@@ -559,6 +699,13 @@ set self.__traceback__ to tb and return self.</p>
 <dd><p>Thrown when IME support is not available.</p>
 <p>This exception is thrown for every IME-related method call if IME
 support is not available on the machine.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.ImeNotAvailableException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.ImeNotAvailableException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.ImeNotAvailableException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.ImeNotAvailableException.args" title="Permalink to this definition">¶</a></dt>
@@ -577,6 +724,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.ImeActivationFailedException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">ImeActivationFailedException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ImeActivationFailedException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.ImeActivationFailedException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when activating an IME engine has failed.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.ImeActivationFailedException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.ImeActivationFailedException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.ImeActivationFailedException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.ImeActivationFailedException.args" title="Permalink to this definition">¶</a></dt>
@@ -595,6 +749,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.InvalidArgumentException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidArgumentException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidArgumentException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidArgumentException" title="Permalink to this definition">¶</a></dt>
 <dd><p>The arguments passed to a command are either invalid or malformed.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.InvalidArgumentException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.InvalidArgumentException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.InvalidArgumentException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.InvalidArgumentException.args" title="Permalink to this definition">¶</a></dt>
@@ -613,6 +774,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.JavascriptException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">JavascriptException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#JavascriptException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.JavascriptException" title="Permalink to this definition">¶</a></dt>
 <dd><p>An error occurred while executing JavaScript supplied by the user.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.JavascriptException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.JavascriptException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.JavascriptException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.JavascriptException.args" title="Permalink to this definition">¶</a></dt>
@@ -632,6 +800,13 @@ set self.__traceback__ to tb and return self.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">NoSuchCookieException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchCookieException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchCookieException" title="Permalink to this definition">¶</a></dt>
 <dd><p>No cookie matching the given path name was found amongst the associated
 cookies of the current browsing context’s active document.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchCookieException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.NoSuchCookieException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchCookieException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.NoSuchCookieException.args" title="Permalink to this definition">¶</a></dt>
@@ -650,6 +825,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.ScreenshotException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">ScreenshotException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ScreenshotException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.ScreenshotException" title="Permalink to this definition">¶</a></dt>
 <dd><p>A screen capture was made impossible.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.ScreenshotException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.ScreenshotException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.ScreenshotException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.ScreenshotException.args" title="Permalink to this definition">¶</a></dt>
@@ -670,6 +852,13 @@ set self.__traceback__ to tb and return self.</p>
 <dd><p>The Element Click command could not be completed because the element
 receiving the events is obscuring the element that was requested to be
 clicked.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.ElementClickInterceptedException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.ElementClickInterceptedException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.ElementClickInterceptedException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.ElementClickInterceptedException.args" title="Permalink to this definition">¶</a></dt>
@@ -689,6 +878,13 @@ set self.__traceback__ to tb and return self.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">InsecureCertificateException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InsecureCertificateException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.InsecureCertificateException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Navigation caused the user agent to hit a certificate warning, which is
 usually the result of an expired or invalid TLS certificate.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.InsecureCertificateException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.InsecureCertificateException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.InsecureCertificateException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.InsecureCertificateException.args" title="Permalink to this definition">¶</a></dt>
@@ -707,6 +903,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.InvalidCoordinatesException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidCoordinatesException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidCoordinatesException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidCoordinatesException" title="Permalink to this definition">¶</a></dt>
 <dd><p>The coordinates provided to an interaction’s operation are invalid.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.InvalidCoordinatesException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.InvalidCoordinatesException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.InvalidCoordinatesException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.InvalidCoordinatesException.args" title="Permalink to this definition">¶</a></dt>
@@ -726,6 +929,13 @@ set self.__traceback__ to tb and return self.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidSessionIdException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidSessionIdException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidSessionIdException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Occurs if the given session id is not in the list of active sessions,
 meaning the session either does not exist or that it’s not active.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.InvalidSessionIdException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.InvalidSessionIdException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.InvalidSessionIdException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.InvalidSessionIdException.args" title="Permalink to this definition">¶</a></dt>
@@ -744,6 +954,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.SessionNotCreatedException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">SessionNotCreatedException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#SessionNotCreatedException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.SessionNotCreatedException" title="Permalink to this definition">¶</a></dt>
 <dd><p>A new session could not be created.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.SessionNotCreatedException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.SessionNotCreatedException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.SessionNotCreatedException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.SessionNotCreatedException.args" title="Permalink to this definition">¶</a></dt>
@@ -763,6 +980,13 @@ set self.__traceback__ to tb and return self.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnknownMethodException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnknownMethodException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.UnknownMethodException" title="Permalink to this definition">¶</a></dt>
 <dd><p>The requested command matched a known URL but did not match any methods
 for that URL.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.UnknownMethodException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.UnknownMethodException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.UnknownMethodException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.UnknownMethodException.args" title="Permalink to this definition">¶</a></dt>
@@ -781,6 +1005,13 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchDriverException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.common.exceptions.</span></span><span class="sig-name descname"><span class="pre">NoSuchDriverException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacktrace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchDriverException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchDriverException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when driver is not specified and cannot be located.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchDriverException.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.NoSuchDriverException.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.common.exceptions.NoSuchDriverException.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.common.exceptions.NoSuchDriverException.args" title="Permalink to this definition">¶</a></dt>
@@ -809,166 +1040,199 @@ set self.__traceback__ to tb and return self.</p>
     <ul>
 <li><a class="reference internal" href="#">selenium.common.exceptions</a><ul>
 <li><a class="reference internal" href="#selenium.common.exceptions.WebDriverException"><code class="docutils literal notranslate"><span class="pre">WebDriverException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.WebDriverException.add_note"><code class="docutils literal notranslate"><span class="pre">WebDriverException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.WebDriverException.args"><code class="docutils literal notranslate"><span class="pre">WebDriverException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.WebDriverException.with_traceback"><code class="docutils literal notranslate"><span class="pre">WebDriverException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidSwitchToTargetException"><code class="docutils literal notranslate"><span class="pre">InvalidSwitchToTargetException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.InvalidSwitchToTargetException.add_note"><code class="docutils literal notranslate"><span class="pre">InvalidSwitchToTargetException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidSwitchToTargetException.args"><code class="docutils literal notranslate"><span class="pre">InvalidSwitchToTargetException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidSwitchToTargetException.with_traceback"><code class="docutils literal notranslate"><span class="pre">InvalidSwitchToTargetException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchFrameException"><code class="docutils literal notranslate"><span class="pre">NoSuchFrameException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.NoSuchFrameException.add_note"><code class="docutils literal notranslate"><span class="pre">NoSuchFrameException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchFrameException.args"><code class="docutils literal notranslate"><span class="pre">NoSuchFrameException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchFrameException.with_traceback"><code class="docutils literal notranslate"><span class="pre">NoSuchFrameException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchWindowException"><code class="docutils literal notranslate"><span class="pre">NoSuchWindowException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.NoSuchWindowException.add_note"><code class="docutils literal notranslate"><span class="pre">NoSuchWindowException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchWindowException.args"><code class="docutils literal notranslate"><span class="pre">NoSuchWindowException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchWindowException.with_traceback"><code class="docutils literal notranslate"><span class="pre">NoSuchWindowException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchElementException"><code class="docutils literal notranslate"><span class="pre">NoSuchElementException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.NoSuchElementException.add_note"><code class="docutils literal notranslate"><span class="pre">NoSuchElementException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchElementException.args"><code class="docutils literal notranslate"><span class="pre">NoSuchElementException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchElementException.with_traceback"><code class="docutils literal notranslate"><span class="pre">NoSuchElementException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchAttributeException"><code class="docutils literal notranslate"><span class="pre">NoSuchAttributeException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.NoSuchAttributeException.add_note"><code class="docutils literal notranslate"><span class="pre">NoSuchAttributeException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchAttributeException.args"><code class="docutils literal notranslate"><span class="pre">NoSuchAttributeException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchAttributeException.with_traceback"><code class="docutils literal notranslate"><span class="pre">NoSuchAttributeException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchShadowRootException"><code class="docutils literal notranslate"><span class="pre">NoSuchShadowRootException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.NoSuchShadowRootException.add_note"><code class="docutils literal notranslate"><span class="pre">NoSuchShadowRootException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchShadowRootException.args"><code class="docutils literal notranslate"><span class="pre">NoSuchShadowRootException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchShadowRootException.with_traceback"><code class="docutils literal notranslate"><span class="pre">NoSuchShadowRootException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.StaleElementReferenceException"><code class="docutils literal notranslate"><span class="pre">StaleElementReferenceException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.StaleElementReferenceException.add_note"><code class="docutils literal notranslate"><span class="pre">StaleElementReferenceException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.StaleElementReferenceException.args"><code class="docutils literal notranslate"><span class="pre">StaleElementReferenceException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.StaleElementReferenceException.with_traceback"><code class="docutils literal notranslate"><span class="pre">StaleElementReferenceException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidElementStateException"><code class="docutils literal notranslate"><span class="pre">InvalidElementStateException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.InvalidElementStateException.add_note"><code class="docutils literal notranslate"><span class="pre">InvalidElementStateException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidElementStateException.args"><code class="docutils literal notranslate"><span class="pre">InvalidElementStateException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidElementStateException.with_traceback"><code class="docutils literal notranslate"><span class="pre">InvalidElementStateException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnexpectedAlertPresentException"><code class="docutils literal notranslate"><span class="pre">UnexpectedAlertPresentException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.UnexpectedAlertPresentException.add_note"><code class="docutils literal notranslate"><span class="pre">UnexpectedAlertPresentException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnexpectedAlertPresentException.args"><code class="docutils literal notranslate"><span class="pre">UnexpectedAlertPresentException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnexpectedAlertPresentException.with_traceback"><code class="docutils literal notranslate"><span class="pre">UnexpectedAlertPresentException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoAlertPresentException"><code class="docutils literal notranslate"><span class="pre">NoAlertPresentException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.NoAlertPresentException.add_note"><code class="docutils literal notranslate"><span class="pre">NoAlertPresentException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoAlertPresentException.args"><code class="docutils literal notranslate"><span class="pre">NoAlertPresentException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoAlertPresentException.with_traceback"><code class="docutils literal notranslate"><span class="pre">NoAlertPresentException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementNotVisibleException"><code class="docutils literal notranslate"><span class="pre">ElementNotVisibleException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.ElementNotVisibleException.add_note"><code class="docutils literal notranslate"><span class="pre">ElementNotVisibleException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementNotVisibleException.args"><code class="docutils literal notranslate"><span class="pre">ElementNotVisibleException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementNotVisibleException.with_traceback"><code class="docutils literal notranslate"><span class="pre">ElementNotVisibleException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementNotInteractableException"><code class="docutils literal notranslate"><span class="pre">ElementNotInteractableException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.ElementNotInteractableException.add_note"><code class="docutils literal notranslate"><span class="pre">ElementNotInteractableException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementNotInteractableException.args"><code class="docutils literal notranslate"><span class="pre">ElementNotInteractableException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementNotInteractableException.with_traceback"><code class="docutils literal notranslate"><span class="pre">ElementNotInteractableException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementNotSelectableException"><code class="docutils literal notranslate"><span class="pre">ElementNotSelectableException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.ElementNotSelectableException.add_note"><code class="docutils literal notranslate"><span class="pre">ElementNotSelectableException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementNotSelectableException.args"><code class="docutils literal notranslate"><span class="pre">ElementNotSelectableException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementNotSelectableException.with_traceback"><code class="docutils literal notranslate"><span class="pre">ElementNotSelectableException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidCookieDomainException"><code class="docutils literal notranslate"><span class="pre">InvalidCookieDomainException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.InvalidCookieDomainException.add_note"><code class="docutils literal notranslate"><span class="pre">InvalidCookieDomainException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidCookieDomainException.args"><code class="docutils literal notranslate"><span class="pre">InvalidCookieDomainException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidCookieDomainException.with_traceback"><code class="docutils literal notranslate"><span class="pre">InvalidCookieDomainException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnableToSetCookieException"><code class="docutils literal notranslate"><span class="pre">UnableToSetCookieException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.UnableToSetCookieException.add_note"><code class="docutils literal notranslate"><span class="pre">UnableToSetCookieException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnableToSetCookieException.args"><code class="docutils literal notranslate"><span class="pre">UnableToSetCookieException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnableToSetCookieException.with_traceback"><code class="docutils literal notranslate"><span class="pre">UnableToSetCookieException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.TimeoutException"><code class="docutils literal notranslate"><span class="pre">TimeoutException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.TimeoutException.add_note"><code class="docutils literal notranslate"><span class="pre">TimeoutException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.TimeoutException.args"><code class="docutils literal notranslate"><span class="pre">TimeoutException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.TimeoutException.with_traceback"><code class="docutils literal notranslate"><span class="pre">TimeoutException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.MoveTargetOutOfBoundsException"><code class="docutils literal notranslate"><span class="pre">MoveTargetOutOfBoundsException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.MoveTargetOutOfBoundsException.add_note"><code class="docutils literal notranslate"><span class="pre">MoveTargetOutOfBoundsException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.MoveTargetOutOfBoundsException.args"><code class="docutils literal notranslate"><span class="pre">MoveTargetOutOfBoundsException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.MoveTargetOutOfBoundsException.with_traceback"><code class="docutils literal notranslate"><span class="pre">MoveTargetOutOfBoundsException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnexpectedTagNameException"><code class="docutils literal notranslate"><span class="pre">UnexpectedTagNameException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.UnexpectedTagNameException.add_note"><code class="docutils literal notranslate"><span class="pre">UnexpectedTagNameException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnexpectedTagNameException.args"><code class="docutils literal notranslate"><span class="pre">UnexpectedTagNameException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnexpectedTagNameException.with_traceback"><code class="docutils literal notranslate"><span class="pre">UnexpectedTagNameException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidSelectorException"><code class="docutils literal notranslate"><span class="pre">InvalidSelectorException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.InvalidSelectorException.add_note"><code class="docutils literal notranslate"><span class="pre">InvalidSelectorException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidSelectorException.args"><code class="docutils literal notranslate"><span class="pre">InvalidSelectorException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidSelectorException.with_traceback"><code class="docutils literal notranslate"><span class="pre">InvalidSelectorException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ImeNotAvailableException"><code class="docutils literal notranslate"><span class="pre">ImeNotAvailableException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.ImeNotAvailableException.add_note"><code class="docutils literal notranslate"><span class="pre">ImeNotAvailableException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ImeNotAvailableException.args"><code class="docutils literal notranslate"><span class="pre">ImeNotAvailableException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ImeNotAvailableException.with_traceback"><code class="docutils literal notranslate"><span class="pre">ImeNotAvailableException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ImeActivationFailedException"><code class="docutils literal notranslate"><span class="pre">ImeActivationFailedException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.ImeActivationFailedException.add_note"><code class="docutils literal notranslate"><span class="pre">ImeActivationFailedException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ImeActivationFailedException.args"><code class="docutils literal notranslate"><span class="pre">ImeActivationFailedException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ImeActivationFailedException.with_traceback"><code class="docutils literal notranslate"><span class="pre">ImeActivationFailedException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidArgumentException"><code class="docutils literal notranslate"><span class="pre">InvalidArgumentException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.InvalidArgumentException.add_note"><code class="docutils literal notranslate"><span class="pre">InvalidArgumentException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidArgumentException.args"><code class="docutils literal notranslate"><span class="pre">InvalidArgumentException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidArgumentException.with_traceback"><code class="docutils literal notranslate"><span class="pre">InvalidArgumentException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.JavascriptException"><code class="docutils literal notranslate"><span class="pre">JavascriptException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.JavascriptException.add_note"><code class="docutils literal notranslate"><span class="pre">JavascriptException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.JavascriptException.args"><code class="docutils literal notranslate"><span class="pre">JavascriptException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.JavascriptException.with_traceback"><code class="docutils literal notranslate"><span class="pre">JavascriptException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchCookieException"><code class="docutils literal notranslate"><span class="pre">NoSuchCookieException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.NoSuchCookieException.add_note"><code class="docutils literal notranslate"><span class="pre">NoSuchCookieException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchCookieException.args"><code class="docutils literal notranslate"><span class="pre">NoSuchCookieException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchCookieException.with_traceback"><code class="docutils literal notranslate"><span class="pre">NoSuchCookieException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ScreenshotException"><code class="docutils literal notranslate"><span class="pre">ScreenshotException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.ScreenshotException.add_note"><code class="docutils literal notranslate"><span class="pre">ScreenshotException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ScreenshotException.args"><code class="docutils literal notranslate"><span class="pre">ScreenshotException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ScreenshotException.with_traceback"><code class="docutils literal notranslate"><span class="pre">ScreenshotException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementClickInterceptedException"><code class="docutils literal notranslate"><span class="pre">ElementClickInterceptedException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.ElementClickInterceptedException.add_note"><code class="docutils literal notranslate"><span class="pre">ElementClickInterceptedException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementClickInterceptedException.args"><code class="docutils literal notranslate"><span class="pre">ElementClickInterceptedException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.ElementClickInterceptedException.with_traceback"><code class="docutils literal notranslate"><span class="pre">ElementClickInterceptedException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InsecureCertificateException"><code class="docutils literal notranslate"><span class="pre">InsecureCertificateException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.InsecureCertificateException.add_note"><code class="docutils literal notranslate"><span class="pre">InsecureCertificateException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InsecureCertificateException.args"><code class="docutils literal notranslate"><span class="pre">InsecureCertificateException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InsecureCertificateException.with_traceback"><code class="docutils literal notranslate"><span class="pre">InsecureCertificateException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidCoordinatesException"><code class="docutils literal notranslate"><span class="pre">InvalidCoordinatesException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.InvalidCoordinatesException.add_note"><code class="docutils literal notranslate"><span class="pre">InvalidCoordinatesException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidCoordinatesException.args"><code class="docutils literal notranslate"><span class="pre">InvalidCoordinatesException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidCoordinatesException.with_traceback"><code class="docutils literal notranslate"><span class="pre">InvalidCoordinatesException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidSessionIdException"><code class="docutils literal notranslate"><span class="pre">InvalidSessionIdException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.InvalidSessionIdException.add_note"><code class="docutils literal notranslate"><span class="pre">InvalidSessionIdException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidSessionIdException.args"><code class="docutils literal notranslate"><span class="pre">InvalidSessionIdException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.InvalidSessionIdException.with_traceback"><code class="docutils literal notranslate"><span class="pre">InvalidSessionIdException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.SessionNotCreatedException"><code class="docutils literal notranslate"><span class="pre">SessionNotCreatedException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.SessionNotCreatedException.add_note"><code class="docutils literal notranslate"><span class="pre">SessionNotCreatedException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.SessionNotCreatedException.args"><code class="docutils literal notranslate"><span class="pre">SessionNotCreatedException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.SessionNotCreatedException.with_traceback"><code class="docutils literal notranslate"><span class="pre">SessionNotCreatedException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnknownMethodException"><code class="docutils literal notranslate"><span class="pre">UnknownMethodException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.UnknownMethodException.add_note"><code class="docutils literal notranslate"><span class="pre">UnknownMethodException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnknownMethodException.args"><code class="docutils literal notranslate"><span class="pre">UnknownMethodException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.UnknownMethodException.with_traceback"><code class="docutils literal notranslate"><span class="pre">UnknownMethodException.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchDriverException"><code class="docutils literal notranslate"><span class="pre">NoSuchDriverException</span></code></a><ul>
+<li><a class="reference internal" href="#selenium.common.exceptions.NoSuchDriverException.add_note"><code class="docutils literal notranslate"><span class="pre">NoSuchDriverException.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchDriverException.args"><code class="docutils literal notranslate"><span class="pre">NoSuchDriverException.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.common.exceptions.NoSuchDriverException.with_traceback"><code class="docutils literal notranslate"><span class="pre">NoSuchDriverException.with_traceback()</span></code></a></li>
 </ul>
@@ -1008,7 +1272,7 @@ set self.__traceback__ to tb and return self.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.22.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.24.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">selenium.common.exceptions</a></li> 
       </ul>
     </div>
