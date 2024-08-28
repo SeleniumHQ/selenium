@@ -2,6 +2,53 @@
 requires = ["setuptools", "setuptools-rust"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "selenium"
+version = "4.24.0.dev202407241614"
+license = "Apache 2.0"
+description = "Official Python bindings for Selenium WebDriver."
+readme = "README.rst"
+requires-python = "~=3.8"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS :: MacOS X",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Libraries",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    ]
+dependencies = [
+    "urllib3[socks]>=1.26,<3",
+    "trio~=0.17",
+    "trio-websocket~=0.9",
+    "certifi>=2021.10.8",
+    "typing_extensions~=4.9",
+    "websocket-client~=1.8",
+    ]
+
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.packages.find]
+include = ["selenium*"]
+exclude = ["test*"]
+namespace = false
+
+[project.urls]
+Repository = "https://github.com/SeleniumHQ/selenium/"
+BugTracker = "https://github.com/SeleniumHQ/selenium/issues"
+Changelog = "https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES"
+Documentation = "https://www.selenium.dev/documentation/overview/"
+SourceCode = "https://github.com/SeleniumHQ/selenium/tree/trunk/py"
+
 [tool.pytest.ini_options]
 console_output_style = "progress"
 faulthandler_timeout = 60
