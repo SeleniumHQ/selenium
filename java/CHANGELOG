@@ -1,3 +1,19 @@
+v4.24.0
+======
+* Add "se" prefixed capabilities to session response (#14323)
+* Ensure all prefixed caps in request are added in response
+* [bidi] return the id of the listener added
+* [grid] shutdown the websocket on unexpected failures
+* Add JSpecify annotations to WebElement and SearchContext (#14291)
+* Add JSpecify annotations for WebDriver and 3 other interfaces (#14371)
+* Implement getAttributes() method of MBean, and update Number-based MBean attributes to return Number objects instead of Strings (#14153)
+* [grid] shutdown the client related to a websocket
+* [grid] release the upstream websocket
+* [grid] close the httpclient after connecting the websocket failed
+* [bidi] Add execute script high-level API (#14330)
+* [ci] Use a tag to figure out what we might want to release (#14378)
+* Add CDP for Chrome 128 and remove 125
+
 v4.23.1
 ======
 * [bidi] Add dom mutation handler support (#14304)
