@@ -20,8 +20,6 @@ import typing
 from selenium.webdriver.common import service
 
 DEFAULT_EXECUTABLE_PATH = shutil.which("WPEWebDriver")
-if DEFAULT_EXECUTABLE_PATH is None:
-    raise ValueError("WPEWebDriver executable not found in PATH")
 
 
 class Service(service.Service):
@@ -51,7 +49,7 @@ class Service(service.Service):
             log_output=log_output,
             env=env,
             **kwargs,
-        )
+        )  # type: ignore
 
     def command_line_args(self) -> typing.List[str]:
         return ["-p", f"{self.port}"] + self.service_args
