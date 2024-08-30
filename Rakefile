@@ -753,7 +753,7 @@ namespace :dotnet do
     args = arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['dotnet:version'].invoke('nightly') if nightly
-    Rake::Task['dotnet:package'].invoke('--config=remote_release')
+    Rake::Task['dotnet:package'].invoke('--config=release')
 
     api_key = ENV.fetch('NUGET_API_KEY', nil)
     push_destination = 'https://api.nuget.org/v3/index.json'
