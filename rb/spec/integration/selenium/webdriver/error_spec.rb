@@ -57,8 +57,8 @@ module Selenium
           raise 'This error needs to be risen for the pending test not to fail on local drivers'
         end
 
-        create_driver!(binary: '/path/to/nonexistent/chrome')
-      rescue WebDriver::Error::SessionNotCreatedError => e
+        driver.find_element(id: 'nonexistent')
+      rescue WebDriver::Error::NoSuchElementError => e
         expect(e.backtrace).not_to be_empty
       end
     end
