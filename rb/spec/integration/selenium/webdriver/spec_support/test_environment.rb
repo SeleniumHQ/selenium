@@ -31,7 +31,7 @@ module Selenium
           WebDriver.logger.ignore(:logger_info)
           SeleniumManager.bin_path = root.join('bazel-bin/rb/bin').to_s if File.exist?(root.join('bazel-bin/rb/bin'))
 
-          @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
+          @driver = ENV.fetch('WD_SPEC_DRIVER', 'firefox').tr('-', '_').to_sym
           @driver_instance = nil
           @remote_server = nil
         end

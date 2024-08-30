@@ -37,6 +37,12 @@ module Selenium
         it 'can be started outside driver' do
           expect(service_manager.uri).to be_a(URI)
         end
+
+        it 'uses the path from the environment' do
+          ENV['SE_CHROMEDRIVER'] = '/path/to/chromedriver'
+
+          expect(service.executable_path).to eq '/path/to/chromedriver'
+        end
       end
     end # Chrome
   end # WebDriver
