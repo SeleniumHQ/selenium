@@ -24,7 +24,7 @@ module Selenium
         DEFAULT_PORT = 4444
         EXECUTABLE = 'geckodriver'
         SHUTDOWN_SUPPORTED = false
-        PATH = ENV.fetch('SE_IEDRIVER', nil)
+        PATH = ENV.fetch('SE_GECKODRIVER', nil)
       end # Service
     end # Firefox
   end # WebDriver
