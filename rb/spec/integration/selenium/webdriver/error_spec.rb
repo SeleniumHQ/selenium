@@ -51,7 +51,12 @@ module Selenium
       it 'has backtrace when using a remote server',
          except: {browser: :firefox,
                   reason: 'Firefox throws Selenium::WebDriver::Error::InvalidArgumentError'},
-         only: {driver: :remote} do
+         only: {driver: :remote,
+                reason: 'This test should only apply to remote drivers'} do
+        unless driver.is_a?(WebDriver::Remote::Driver)
+          raise 'This error needs to be risen for the pending test not to fail on local drivers'
+        end
+
         create_driver!(binary: '/path/to/nonexistent/chrome')
       rescue WebDriver::Error::SessionNotCreatedError => e
         expect(e.backtrace).not_to be_empty
