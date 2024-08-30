@@ -97,7 +97,7 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v125:v125.publish
+  //java/src/org/openqa/selenium/devtools/v128:v128.publish
   //java/src/org/openqa/selenium/devtools/v126:v126.publish
   //java/src/org/openqa/selenium/devtools/v127:v127.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
@@ -753,7 +753,7 @@ namespace :dotnet do
     args = arguments.to_a.compact
     nightly = args.delete('nightly')
     Rake::Task['dotnet:version'].invoke('nightly') if nightly
-    Rake::Task['dotnet:package'].invoke('--config=remote_release')
+    Rake::Task['dotnet:package'].invoke('--config=release')
 
     api_key = ENV.fetch('NUGET_API_KEY', nil)
     push_destination = 'https://api.nuget.org/v3/index.json'

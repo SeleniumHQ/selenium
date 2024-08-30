@@ -58,6 +58,8 @@ pub struct ManagerConfig {
     pub language_binding: String,
     pub selenium_version: String,
     pub avoid_stats: bool,
+    pub skip_driver_in_path: bool,
+    pub skip_browser_in_path: bool,
 }
 
 impl ManagerConfig {
@@ -117,6 +119,8 @@ impl ManagerConfig {
             language_binding: StringKey(vec!["language-binding"], "").get_value(),
             selenium_version: StringKey(vec!["selenium-version"], "").get_value(),
             avoid_stats: BooleanKey("avoid-stats", false).get_value(),
+            skip_driver_in_path: BooleanKey("skip-driver-in-path", false).get_value(),
+            skip_browser_in_path: BooleanKey("skip-browser-in-path", false).get_value(),
         }
     }
 }
