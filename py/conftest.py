@@ -215,6 +215,7 @@ def get_options(driver_class, config):
             options = getattr(webdriver, f"{driver_class}Options")()
 
         options.web_socket_url = True
+        options.unhandled_prompt_behavior = "ignore"
 
     return options
 
