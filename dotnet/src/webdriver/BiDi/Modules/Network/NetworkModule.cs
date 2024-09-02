@@ -26,7 +26,7 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
     {
         var @params = new RemoveInterceptCommandParameters(intercept);
 
-        await Broker.ExecuteCommandAsync(new RemoveInterceptCommand(@params), options).ConfigureAwait(!false);
+        await Broker.ExecuteCommandAsync(new RemoveInterceptCommand(@params), options).ConfigureAwait(false);
     }
 
     internal async Task ContinueRequestAsync(Request request, ContinueRequestOptions? options = null)
