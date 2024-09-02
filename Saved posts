@@ -1,0 +1,39 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+# إعداد متصفح Chrome
+driver = webdriver.Chrome()
+
+# تسجيل الدخول إلى فيسبوك
+driver.get("https://www.facebook.com/")
+time.sleep(2)
+
+# أدخل بريدك الإلكتروني وكلمة المرور
+email_input = driver.find_element(By.ID, "email")
+password_input = driver.find_element(By.ID, "pass")
+
+email_input.send_keys("your_email")  # استبدل هذا ببريدك الإلكتروني
+password_input.send_keys("your_password")  # استبدل هذا بكلمة مرورك
+
+# اضغط على زر تسجيل الدخول
+login_button = driver.find_element(By.NAME, "login")
+login_button.click()
+time.sleep(5)
+
+# الانتقال إلى صفحة المحفوظات
+driver.get("https://www.facebook.com/saved/")
+time.sleep(5)
+
+# استخراج الروابط
+links = driver.find_elements(By.XPATH, "//a[contains(@href, 'facebook.com') and not(contains(@href, 'saved'))]")
+
+# حفظ الروابط في ملف نصي
+with open("saved_links.txt", "w") as file:
+    for link in links:
+        file.write(link.get_attribute("href") + "\n")
+
+print("تم حفظ الروابط في ملف saved_links.txt")
+
+# إغلاق المتصفح
+driver.quit()
