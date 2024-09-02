@@ -18,7 +18,7 @@ import typing
 
 from selenium.webdriver.common import service
 
-DEFAULT_EXECUTABLE_PATH = "WebKitWebDriver"
+DEFAULT_EXECUTABLE_PATH: str = "WebKitWebDriver"
 
 
 class Service(service.Service):
@@ -40,7 +40,7 @@ class Service(service.Service):
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
-    ):
+    ) -> None:
         self.service_args = service_args or []
         log_file = open(log_path, "wb") if log_path else None
         super().__init__(
@@ -49,7 +49,7 @@ class Service(service.Service):
             log_file=log_file,
             env=env,
             **kwargs,
-        )  # type: ignore
+        )
 
     def command_line_args(self) -> typing.List[str]:
         return ["-p", f"{self.port}"] + self.service_args
