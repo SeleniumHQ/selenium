@@ -39,11 +39,13 @@ module Selenium
         def ie(**opts)
           IE::Service.new(**opts)
         end
+
         alias internet_explorer ie
 
         def edge(**opts)
           Edge::Service.new(**opts)
         end
+
         alias microsoftedge edge
         alias msedge edge
 
@@ -88,15 +90,17 @@ module Selenium
       end
 
       def launch
-        @executable_path ||= begin
-          default_options = WebDriver.const_get("#{self.class.name&.split('::')&.[](2)}::Options").new
-          DriverFinder.new(default_options, self).driver_path
-        end
+        @executable_path ||= self.class::PATH || find_driver_path
         ServiceManager.new(self).tap(&:start)
       end
 
       def shutdown_supported
         self.class::SHUTDOWN_SUPPORTED
+      end
+
+      def find_driver_path
+        default_options = WebDriver.const_get("#{self.class.name&.split('::')&.[](2)}::Options").new
+        DriverFinder.new(default_options, self).driver_path
       end
     end # Service
   end # WebDriver
