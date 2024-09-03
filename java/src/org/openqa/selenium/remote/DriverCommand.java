@@ -163,6 +163,7 @@ public interface DriverCommand {
   String DELETE_DOWNLOADABLE_FILES = "deleteDownloadableFiles";
 
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
+    Require.nonNull("Capabilities", capabilities);
     return NEW_SESSION(singleton(capabilities));
   }
 
