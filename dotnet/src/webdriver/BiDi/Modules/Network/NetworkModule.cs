@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
@@ -7,7 +7,7 @@ namespace OpenQA.Selenium.BiDi.Modules.Network;
 
 public sealed class NetworkModule(Broker broker) : Module(broker)
 {
-    public async Task<Intercept> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null)
+    internal async Task<Intercept> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null)
     {
         var @params = new AddInterceptCommandParameters(phases);
 
@@ -22,7 +22,7 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
         return result.Intercept;
     }
 
-    public async Task RemoveInterceptAsync(Intercept intercept, RemoveInterceptOptions? options = null)
+    internal async Task RemoveInterceptAsync(Intercept intercept, RemoveInterceptOptions? options = null)
     {
         var @params = new RemoveInterceptCommandParameters(intercept);
 
