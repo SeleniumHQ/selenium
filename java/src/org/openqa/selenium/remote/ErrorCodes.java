@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.InvalidArgumentException;
@@ -53,7 +54,9 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
-/** Defines common error codes for the wire protocol. */
+/**
+ * Defines common error codes for the wire protocol.
+ */
 @Deprecated(forRemoval = true)
 public class ErrorCodes {
 
@@ -101,164 +104,164 @@ public class ErrorCodes {
   // exception to a W3C state, this KnownError provides the default exception and Json Wire Protocol
   // status to send.
   private static final Set<KnownError> KNOWN_ERRORS =
-      Set.of(
-          new KnownError(
-              ASYNC_SCRIPT_TIMEOUT,
-              "script timeout",
-              500,
-              ScriptTimeoutException.class,
-              true,
-              true),
-          new KnownError(
-              ELEMENT_CLICK_INTERCEPTED,
-              "element click intercepted",
-              400,
-              ElementClickInterceptedException.class,
-              true,
-              true),
-          new KnownError(
-              ELEMENT_NOT_INTERACTABLE,
-              "element not interactable",
-              400,
-              ElementNotInteractableException.class,
-              true,
-              true),
-          new KnownError(
-              INVALID_ARGUMENT,
-              "invalid argument",
-              400,
-              InvalidArgumentException.class,
-              true,
-              true),
-          new KnownError(
-              INVALID_COOKIE_DOMAIN,
-              "invalid cookie domain",
-              400,
-              InvalidCookieDomainException.class,
-              true,
-              true),
-          new KnownError(
-              INVALID_ELEMENT_STATE,
-              "invalid element state",
-              400,
-              InvalidElementStateException.class,
-              true,
-              true),
-          new KnownError(
-              INVALID_SELECTOR_ERROR,
-              "invalid selector",
-              400,
-              InvalidSelectorException.class,
-              true,
-              true),
-          new KnownError(
-              INVALID_XPATH_SELECTOR,
-              "invalid selector",
-              400,
-              InvalidSelectorException.class,
-              false,
-              false),
-          new KnownError(
-              INVALID_XPATH_SELECTOR_RETURN_TYPER,
-              "invalid selector",
-              400,
-              InvalidSelectorException.class,
-              false,
-              true),
-          new KnownError(
-              JAVASCRIPT_ERROR, "javascript error", 500, JavascriptException.class, true, true),
-          new KnownError(
-              METHOD_NOT_ALLOWED,
-              "unknown method",
-              405,
-              UnsupportedCommandException.class,
-              false,
-              false),
-          new KnownError(
-              METHOD_NOT_ALLOWED,
-              "unsupported operation",
-              500,
-              UnsupportedCommandException.class,
-              false,
-              true),
-          new KnownError(
-              MOVE_TARGET_OUT_OF_BOUNDS,
-              "move target out of bounds",
-              500,
-              MoveTargetOutOfBoundsException.class,
-              true,
-              true),
-          new KnownError(
-              NO_ALERT_PRESENT, "no such alert", 404, NoAlertPresentException.class, true, true),
-          new KnownError(
-              NO_SUCH_COOKIE, "no such cookie", 404, NoSuchCookieException.class, true, true),
-          new KnownError(
-              NO_SUCH_ELEMENT, "no such element", 404, NoSuchElementException.class, true, true),
-          new KnownError(
-              NO_SUCH_FRAME, "no such frame", 404, NoSuchFrameException.class, true, true),
-          new KnownError(
-              NO_SUCH_SESSION, "invalid session id", 404, NoSuchSessionException.class, true, true),
-          new KnownError(
-              NO_SUCH_SHADOW_ROOT,
-              "no such shadow root",
-              404,
-              NoSuchShadowRootException.class,
-              true,
-              true),
-          new KnownError(
-              NO_SUCH_WINDOW, "no such window", 404, NoSuchWindowException.class, true, true),
-          new KnownError(
-              SESSION_NOT_CREATED,
-              "session not created",
-              500,
-              SessionNotCreatedException.class,
-              true,
-              true),
-          new KnownError(
-              STALE_ELEMENT_REFERENCE,
-              "stale element reference",
-              404,
-              StaleElementReferenceException.class,
-              true,
-              true),
-          new KnownError(TIMEOUT, "timeout", 500, TimeoutException.class, true, true),
-          new KnownError(
-              XPATH_LOOKUP_ERROR,
-              "invalid selector",
-              400,
-              InvalidSelectorException.class,
-              false,
-              false),
-          new KnownError(
-              UNABLE_TO_CAPTURE_SCREEN,
-              "unable to capture screen",
-              500,
-              ScreenshotException.class,
-              true,
-              true),
-          new KnownError(
-              UNABLE_TO_SET_COOKIE,
-              "unable to set cookie",
-              500,
-              UnableToSetCookieException.class,
-              true,
-              true),
-          new KnownError(
-              UNEXPECTED_ALERT_PRESENT,
-              "unexpected alert open",
-              500,
-              UnhandledAlertException.class,
-              true,
-              true),
-          new KnownError(
-              UNHANDLED_ERROR, "unknown error", 500, WebDriverException.class, true, true),
-          new KnownError(
-              UNKNOWN_COMMAND,
-              "unknown command",
-              404,
-              UnsupportedCommandException.class,
-              true,
-              true));
+    Set.of(
+      new KnownError(
+        ASYNC_SCRIPT_TIMEOUT,
+        "script timeout",
+        500,
+        ScriptTimeoutException.class,
+        true,
+        true),
+      new KnownError(
+        ELEMENT_CLICK_INTERCEPTED,
+        "element click intercepted",
+        400,
+        ElementClickInterceptedException.class,
+        true,
+        true),
+      new KnownError(
+        ELEMENT_NOT_INTERACTABLE,
+        "element not interactable",
+        400,
+        ElementNotInteractableException.class,
+        true,
+        true),
+      new KnownError(
+        INVALID_ARGUMENT,
+        "invalid argument",
+        400,
+        InvalidArgumentException.class,
+        true,
+        true),
+      new KnownError(
+        INVALID_COOKIE_DOMAIN,
+        "invalid cookie domain",
+        400,
+        InvalidCookieDomainException.class,
+        true,
+        true),
+      new KnownError(
+        INVALID_ELEMENT_STATE,
+        "invalid element state",
+        400,
+        InvalidElementStateException.class,
+        true,
+        true),
+      new KnownError(
+        INVALID_SELECTOR_ERROR,
+        "invalid selector",
+        400,
+        InvalidSelectorException.class,
+        true,
+        true),
+      new KnownError(
+        INVALID_XPATH_SELECTOR,
+        "invalid selector",
+        400,
+        InvalidSelectorException.class,
+        false,
+        false),
+      new KnownError(
+        INVALID_XPATH_SELECTOR_RETURN_TYPER,
+        "invalid selector",
+        400,
+        InvalidSelectorException.class,
+        false,
+        true),
+      new KnownError(
+        JAVASCRIPT_ERROR, "javascript error", 500, JavascriptException.class, true, true),
+      new KnownError(
+        METHOD_NOT_ALLOWED,
+        "unknown method",
+        405,
+        UnsupportedCommandException.class,
+        false,
+        false),
+      new KnownError(
+        METHOD_NOT_ALLOWED,
+        "unsupported operation",
+        500,
+        UnsupportedCommandException.class,
+        false,
+        true),
+      new KnownError(
+        MOVE_TARGET_OUT_OF_BOUNDS,
+        "move target out of bounds",
+        500,
+        MoveTargetOutOfBoundsException.class,
+        true,
+        true),
+      new KnownError(
+        NO_ALERT_PRESENT, "no such alert", 404, NoAlertPresentException.class, true, true),
+      new KnownError(
+        NO_SUCH_COOKIE, "no such cookie", 404, NoSuchCookieException.class, true, true),
+      new KnownError(
+        NO_SUCH_ELEMENT, "no such element", 404, NoSuchElementException.class, true, true),
+      new KnownError(
+        NO_SUCH_FRAME, "no such frame", 404, NoSuchFrameException.class, true, true),
+      new KnownError(
+        NO_SUCH_SESSION, "invalid session id", 404, NoSuchSessionException.class, true, true),
+      new KnownError(
+        NO_SUCH_SHADOW_ROOT,
+        "no such shadow root",
+        404,
+        NoSuchShadowRootException.class,
+        true,
+        true),
+      new KnownError(
+        NO_SUCH_WINDOW, "no such window", 404, NoSuchWindowException.class, true, true),
+      new KnownError(
+        SESSION_NOT_CREATED,
+        "session not created",
+        500,
+        SessionNotCreatedException.class,
+        true,
+        true),
+      new KnownError(
+        STALE_ELEMENT_REFERENCE,
+        "stale element reference",
+        404,
+        StaleElementReferenceException.class,
+        true,
+        true),
+      new KnownError(TIMEOUT, "timeout", 500, TimeoutException.class, true, true),
+      new KnownError(
+        XPATH_LOOKUP_ERROR,
+        "invalid selector",
+        400,
+        InvalidSelectorException.class,
+        false,
+        false),
+      new KnownError(
+        UNABLE_TO_CAPTURE_SCREEN,
+        "unable to capture screen",
+        500,
+        ScreenshotException.class,
+        true,
+        true),
+      new KnownError(
+        UNABLE_TO_SET_COOKIE,
+        "unable to set cookie",
+        500,
+        UnableToSetCookieException.class,
+        true,
+        true),
+      new KnownError(
+        UNEXPECTED_ALERT_PRESENT,
+        "unexpected alert open",
+        500,
+        UnhandledAlertException.class,
+        true,
+        true),
+      new KnownError(
+        UNHANDLED_ERROR, "unknown error", 500, WebDriverException.class, true, true),
+      new KnownError(
+        UNKNOWN_COMMAND,
+        "unknown command",
+        404,
+        UnsupportedCommandException.class,
+        true,
+        true));
 
   static {
     {
@@ -298,11 +301,11 @@ public class ErrorCodes {
     }
 
     Set<String> possibleMatches =
-        KNOWN_ERRORS.stream()
-            .filter(knownError -> knownError.getJsonCode() == status)
-            .filter(KnownError::isCanonicalForW3C)
-            .map(KnownError::getW3cCode)
-            .collect(Collectors.toSet());
+      KNOWN_ERRORS.stream()
+        .filter(knownError -> knownError.jsonCode() == status)
+        .filter(KnownError::isCanonicalForW3C)
+        .map(KnownError::w3cCode)
+        .collect(Collectors.toSet());
 
     return onlyElement(possibleMatches, "unhandled error");
   }
@@ -313,32 +316,32 @@ public class ErrorCodes {
     }
 
     List<KnownError> possibleMatches =
-        KNOWN_ERRORS.stream()
-            .filter(knownError -> knownError.getW3cCode().equals(webdriverState))
-            .filter(KnownError::isCanonicalForW3C)
-            .sorted(Comparator.comparingInt(KnownError::getJsonCode))
-            .collect(Collectors.toList());
+      KNOWN_ERRORS.stream()
+        .filter(knownError -> knownError.w3cCode().equals(webdriverState))
+        .filter(KnownError::isCanonicalForW3C)
+        .sorted(Comparator.comparingInt(KnownError::jsonCode))
+        .toList();
 
     if (possibleMatches.isEmpty()) {
       return UNHANDLED_ERROR;
     }
     KnownError error = possibleMatches.get(0);
-    if (httpStatus.isPresent() && httpStatus.get() != error.getW3cHttpStatus()) {
+    if (httpStatus.isPresent() && httpStatus.get() != error.w3cHttpStatus()) {
       LOG.info(
-          String.format(
-              "HTTP Status: '%d' -> incorrect JSON status mapping for '%s' (%d expected)",
-              httpStatus.get(), webdriverState, error.getW3cHttpStatus()));
+        String.format(
+          "HTTP Status: '%d' -> incorrect JSON status mapping for '%s' (%d expected)",
+          httpStatus.get(), webdriverState, error.w3cHttpStatus()));
     }
-    return error.getJsonCode();
+    return error.jsonCode();
   }
 
   public int getHttpStatusCode(Throwable throwable) {
     return KNOWN_ERRORS.stream()
-        .filter(error -> error.getException().isAssignableFrom(throwable.getClass()))
-        .filter(KnownError::isCanonicalForW3C)
-        .map(KnownError::getW3cHttpStatus)
-        .findAny()
-        .orElse(HTTP_INTERNAL_ERROR);
+      .filter(error -> error.exception().isAssignableFrom(throwable.getClass()))
+      .filter(KnownError::isCanonicalForW3C)
+      .map(KnownError::w3cHttpStatus)
+      .findAny()
+      .orElse(HTTP_INTERNAL_ERROR);
   }
 
   /**
@@ -347,7 +350,7 @@ public class ErrorCodes {
    *
    * @param statusCode The status code to convert.
    * @return The exception type that corresponds to the provided status code or {@code null} if
-   *     {@code statusCode == 0}.
+   * {@code statusCode == 0}.
    */
   public Class<? extends WebDriverException> getExceptionType(int statusCode) {
     if (SUCCESS == statusCode) {
@@ -356,21 +359,21 @@ public class ErrorCodes {
 
     // We know that the tuple of (status code, exception) is distinct.
     Set<Class<? extends WebDriverException>> allPossibleExceptions =
-        KNOWN_ERRORS.stream()
-            .filter(knownError -> knownError.getJsonCode() == statusCode)
-            .map(KnownError::getException)
-            .collect(Collectors.toSet());
+      KNOWN_ERRORS.stream()
+        .filter(knownError -> knownError.jsonCode() == statusCode)
+        .map(KnownError::exception)
+        .collect(Collectors.toSet());
 
     return onlyElement(allPossibleExceptions, WebDriverException.class);
   }
 
   public Class<? extends WebDriverException> getExceptionType(String webdriverState) {
     Set<Class<? extends WebDriverException>> possibleMatches =
-        KNOWN_ERRORS.stream()
-            .filter(knownError -> knownError.getW3cCode().equals(webdriverState))
-            .filter(KnownError::isCanonicalForW3C)
-            .map(KnownError::getException)
-            .collect(Collectors.toSet());
+      KNOWN_ERRORS.stream()
+        .filter(knownError -> knownError.w3cCode().equals(webdriverState))
+        .filter(KnownError::isCanonicalForW3C)
+        .map(KnownError::exception)
+        .collect(Collectors.toSet());
 
     return onlyElement(possibleMatches, WebDriverException.class);
   }
@@ -381,11 +384,11 @@ public class ErrorCodes {
     }
 
     Set<Integer> possibleMatches =
-        KNOWN_ERRORS.stream()
-            .filter(knownError -> knownError.getException().equals(e.getClass()))
-            .filter(knownError -> knownError.isCanonicalJsonCodeForException)
-            .map(KnownError::getJsonCode)
-            .collect(Collectors.toSet());
+      KNOWN_ERRORS.stream()
+        .filter(knownError -> knownError.exception().equals(e.getClass()))
+        .filter(knownError -> knownError.isCanonicalJsonCodeForException)
+        .map(KnownError::jsonCode)
+        .collect(Collectors.toSet());
 
     return onlyElement(possibleMatches, UNHANDLED_ERROR);
   }
@@ -395,65 +398,28 @@ public class ErrorCodes {
       return false;
     }
     Set<KnownError> possibleMatches =
-        KNOWN_ERRORS.stream()
-            .filter(knownError -> knownError.getException().equals(rootCause.getClass()))
-            .collect(Collectors.toSet());
+      KNOWN_ERRORS.stream()
+        .filter(knownError -> knownError.exception().equals(rootCause.getClass()))
+        .collect(Collectors.toSet());
 
     return !possibleMatches.isEmpty();
   }
 
   private static <V> V onlyElement(Collection<V> values, V fallback) {
-    switch (values.size()) {
-      case 0:
-        return fallback;
-      case 1:
-        return values.iterator().next();
-      default:
-        throw new IllegalArgumentException("expected one value, found: " + values);
-    }
+    return switch (values.size()) {
+      case 0 -> fallback;
+      case 1 -> values.iterator().next();
+      default -> throw new IllegalArgumentException("expected one value, found: " + values);
+    };
   }
 
-  private static class KnownError {
-    private final int jsonCode;
-    private final String w3cCode;
-    private final int w3cHttpStatus;
-    private final Class<? extends WebDriverException> exception;
-    private final boolean isCanonicalJsonCodeForException;
-    private final boolean isCanonicalForW3C;
-
-    public KnownError(
-        int jsonCode,
-        String w3cCode,
-        int w3cHttpStatus,
-        Class<? extends WebDriverException> exception,
-        boolean isCanonicalJsonCodeForException,
-        boolean isCanonicalForW3C) {
-      this.jsonCode = jsonCode;
-      this.w3cCode = w3cCode;
-      this.w3cHttpStatus = w3cHttpStatus;
-      this.exception = exception;
-      this.isCanonicalJsonCodeForException = isCanonicalJsonCodeForException;
-      this.isCanonicalForW3C = isCanonicalForW3C;
-    }
-
-    public int getJsonCode() {
-      return jsonCode;
-    }
-
-    public String getW3cCode() {
-      return w3cCode;
-    }
-
-    public int getW3cHttpStatus() {
-      return w3cHttpStatus;
-    }
-
-    public Class<? extends WebDriverException> getException() {
-      return exception;
-    }
-
-    public boolean isCanonicalForW3C() {
-      return isCanonicalForW3C;
-    }
+  private record KnownError(
+    int jsonCode,
+    String w3cCode,
+    int w3cHttpStatus,
+    Class<? extends WebDriverException> exception,
+    boolean isCanonicalJsonCodeForException,
+    boolean isCanonicalForW3C
+  ) {
   }
 }
