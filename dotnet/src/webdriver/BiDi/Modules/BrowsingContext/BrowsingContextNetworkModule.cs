@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using System;
 using OpenQA.Selenium.BiDi.Modules.Network;
 
@@ -6,7 +6,7 @@ namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 
 public class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule networkModule)
 {
-    public async Task<Intercept> OnBeforeRequestSentAsync(AddInterceptOptions? interceptOptions, Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public async Task<Intercept> AddInterceptedRequestAsync(Func<BeforeRequestSentEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
     {
         interceptOptions ??= new();
 
@@ -19,7 +19,7 @@ public class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule
         return intercept;
     }
 
-    public async Task<Intercept> OnResponseStartedAsync(AddInterceptOptions? interceptOptions, Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public async Task<Intercept> AddInterceptedResponseAsync(Func<ResponseStartedEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
     {
         interceptOptions ??= new();
 
@@ -32,7 +32,7 @@ public class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule
         return intercept;
     }
 
-    public async Task<Intercept> OnAuthRequiredAsync(AddInterceptOptions? interceptOptions, Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public async Task<Intercept> AddInterceptedAuthenticationAsync(Func<AuthRequiredEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
     {
         interceptOptions ??= new();
 

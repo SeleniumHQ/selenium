@@ -29,6 +29,33 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
         await Broker.ExecuteCommandAsync(new RemoveInterceptCommand(@params), options).ConfigureAwait(false);
     }
 
+    public async Task<Intercept> AddInterceptedRequestAsync(Func<BeforeRequestSentEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
+    {
+        var intercept = await AddInterceptAsync([InterceptPhase.BeforeRequestSent], interceptOptions).ConfigureAwait(false);
+
+        await intercept.OnBeforeRequestSentAsync(handler, options).ConfigureAwait(false);
+
+        return intercept;
+    }
+
+    public async Task<Intercept> AddInterceptedResponseAsync(Func<ResponseStartedEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
+    {
+        var intercept = await AddInterceptAsync([InterceptPhase.ResponseStarted], interceptOptions).ConfigureAwait(false);
+
+        await intercept.OnResponseStartedAsync(handler, options).ConfigureAwait(false);
+
+        return intercept;
+    }
+
+    public async Task<Intercept> AddInterceptedAuthenticationAsync(Func<AuthRequiredEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
+    {
+        var intercept = await AddInterceptAsync([InterceptPhase.AuthRequired], interceptOptions).ConfigureAwait(false);
+
+        await intercept.OnAuthRequiredAsync(handler, options).ConfigureAwait(false);
+
+        return intercept;
+    }
+
     internal async Task ContinueRequestAsync(Request request, ContinueRequestOptions? options = null)
     {
         var @params = new ContinueRequestCommandParameters(request);
@@ -109,15 +136,6 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
         return await Broker.SubscribeAsync("network.beforeRequestSent", handler, options).ConfigureAwait(false);
     }
 
-    public async Task<Intercept> OnBeforeRequestSentAsync(AddInterceptOptions? interceptOptions, Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)
-    {
-        var intercept = await AddInterceptAsync([InterceptPhase.BeforeRequestSent], interceptOptions).ConfigureAwait(false);
-
-        await intercept.OnBeforeRequestSentAsync(handler, options).ConfigureAwait(false);
-
-        return intercept;
-    }
-
     public async Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("network.responseStarted", handler, options).ConfigureAwait(false);
@@ -126,15 +144,6 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
     public async Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("network.responseStarted", handler, options).ConfigureAwait(false);
-    }
-
-    public async Task<Intercept> OnResponseStartedAsync(AddInterceptOptions? interceptOptions, Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null)
-    {
-        var intercept = await AddInterceptAsync([InterceptPhase.ResponseStarted], interceptOptions).ConfigureAwait(false);
-
-        await intercept.OnResponseStartedAsync(handler, options).ConfigureAwait(false);
-
-        return intercept;
     }
 
     public async Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null)
@@ -160,14 +169,5 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
     internal async Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("network.authRequired", handler, options).ConfigureAwait(false);
-    }
-
-    public async Task<Intercept> OnAuthRequiredAsync(AddInterceptOptions? interceptOptions, Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
-    {
-        var intercept = await AddInterceptAsync([InterceptPhase.AuthRequired], interceptOptions).ConfigureAwait(false);
-
-        await intercept.OnAuthRequiredAsync(handler, options).ConfigureAwait(false);
-
-        return intercept;
     }
 }
