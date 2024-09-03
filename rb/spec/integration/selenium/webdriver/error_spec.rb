@@ -56,7 +56,7 @@ module Selenium
 
         # Navigate away to simulate session inactivity
         driver.execute_script('window.location.href = "about:blank";')
-        driver.url
+        driver.title
       rescue WebDriver::Error::SessionNotCreatedError => e
         expect(e.backtrace).not_to be_empty
       end
