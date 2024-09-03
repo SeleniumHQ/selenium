@@ -54,8 +54,9 @@ module Selenium
           raise 'This error needs to be risen for the pending test not to fail on local drivers'
         end
 
-        driver.quit
-        driver.find_element(id: 'nonexistent')
+        # Navigate away to simulate session inactivity
+        driver.execute_script('window.location.href = "about:blank";')
+        driver.url
       rescue WebDriver::Error::SessionNotCreatedError => e
         expect(e.backtrace).not_to be_empty
       end
