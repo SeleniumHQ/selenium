@@ -226,7 +226,7 @@ class WebElement(BaseWebElement):
                 remote_files = []
                 for file in local_files:
                     remote_files.append(self._upload(file))
-                value = "\n".join(remote_files)
+                value = tuple("\n".join(remote_files))
 
         self._execute(
             Command.SEND_KEYS_TO_ELEMENT, {"text": "".join(keys_to_typing(value)), "value": keys_to_typing(value)}
