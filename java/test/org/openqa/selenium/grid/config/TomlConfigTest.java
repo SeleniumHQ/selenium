@@ -30,9 +30,8 @@ class TomlConfigTest {
 
   @Test
   void shouldUseATableAsASection() {
-    String raw = "[cheeses]\nselected=brie";
+    String raw = "[cheeses]\nselected=\"brie\"";
     Config config = new TomlConfig(new StringReader(raw));
-
     assertThat(config.get("cheeses", "selected")).isEqualTo(Optional.of("brie"));
   }
 
@@ -41,7 +40,7 @@ class TomlConfigTest {
     String[] rawConfig =
         new String[] {
           "[cheeses]",
-          "default = manchego",
+          "default = \"manchego\"",
           "[[cheeses.type]]",
           "name = \"soft cheese\"",
           "default = \"brie\"",

@@ -222,6 +222,7 @@ maven.install(
         "org.redisson:redisson:3.35.0",
         "org.slf4j:slf4j-api:2.0.16",
         "org.slf4j:slf4j-jdk14:2.0.16",
+        "org.tomlj:tomlj:1.1.1",
         "org.zeromq:jeromq:0.6.0",
     ],
     excluded_artifacts = [

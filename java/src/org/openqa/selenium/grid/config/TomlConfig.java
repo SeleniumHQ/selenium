@@ -19,30 +19,27 @@ package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
-import io.ous.jtoml.JToml;
-import io.ous.jtoml.ParseException;
-import io.ous.jtoml.Toml;
-import io.ous.jtoml.TomlTable;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.openqa.selenium.internal.Require;
+import org.tomlj.*;
 
 public class TomlConfig implements Config {
 
-  private final Toml toml;
+  private final TomlParseResult toml;
 
   public TomlConfig(Reader reader) {
     try {
-      toml = JToml.parse(reader);
+      toml = Toml.parse(reader);
+      System.out.println(toml.toToml());
     } catch (IOException e) {
       throw new ConfigException("Unable to read TOML.", e);
-    } catch (ParseException e) {
+    } catch (TomlParseError e) {
       throw new ConfigException(
           e.getCause()
               + "\n Validate the config using https://www.toml-lint.com/. "
@@ -65,20 +62,41 @@ public class TomlConfig implements Config {
     Require.nonNull("Section to read", section);
     Require.nonNull("Option to read", option);
 
-    if (!toml.containsKey(section)) {
+    if (!toml.contains(section)) {
       return Optional.empty();
     }
-
+/*
+    if (toml.hasErrors()) {
+      System.out.println(toml.errors());
+    }
+*/
     Object raw = toml.get(section);
     if (!(raw instanceof TomlTable)) {
       throw new ConfigException(String.format("Section %s is not a section! %s", section, raw));
     }
 
-    TomlTable table = toml.getTomlTable(section);
+    TomlTable table = toml.getTable(section);
+    Object value = null;
+    if (table != null) {
+      value = table.get(option);
+    }
 
-    Object value = table.getOrDefault(option, null);
     if (value == null) {
       return Optional.empty();
+    }
+
+    if (value instanceof TomlArray) {
+     // System.out.println("Inside array... here");
+      TomlArray array = (TomlArray) value;
+      List<String> result = array.toList().stream()
+        .map(item -> {
+          if (item instanceof TomlTable) {
+            return getTableAsString((TomlTable) item);
+          }
+          return String.valueOf(item);
+        })
+        .collect(Collectors.toList());
+      return Optional.of(result);
     }
 
     if (value instanceof Collection) {
@@ -112,6 +130,15 @@ public class TomlConfig implements Config {
   @Override
   public Set<String> getSectionNames() {
     return ImmutableSortedSet.copyOf(toml.keySet());
+  }
+
+  public String getTableAsString(TomlTable table) {
+    List<String> result = new ArrayList<>();
+    for (Map.Entry<String, Object> entry : table.entrySet()) {
+      result.add(entry.getKey() + "=" + entry.getValue());
+    }
+
+    return String.join(" ", result);
   }
 
   @Override
