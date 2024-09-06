@@ -39,13 +39,11 @@ module Selenium
         def ie(**opts)
           IE::Service.new(**opts)
         end
-
         alias internet_explorer ie
 
         def edge(**opts)
           Edge::Service.new(**opts)
         end
-
         alias microsoftedge edge
         alias msedge edge
 
