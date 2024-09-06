@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
+from io import IOBase
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
@@ -44,7 +45,9 @@ class ChromiumService(service.Service):
 
         if isinstance(log_output, str):
             self.service_args.append(f"--log-path={log_output}")
-            self.log_output = None
+            self.log_output: typing.Optional[IOBase] = None
+        elif isinstance(log_output, IOBase):
+            self.log_output = log_output
         else:
             self.log_output = log_output
 
