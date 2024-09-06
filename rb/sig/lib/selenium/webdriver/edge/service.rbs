@@ -2,7 +2,6 @@ module Selenium
   module WebDriver
     module Edge
       class Service < WebDriver::Service
-
         @log: untyped
 
         DEFAULT_PORT: Integer

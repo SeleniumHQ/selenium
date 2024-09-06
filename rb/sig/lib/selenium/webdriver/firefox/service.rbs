@@ -6,7 +6,6 @@ module Selenium
 
         EXECUTABLE: "geckodriver"
 
-        PATH: String
         SHUTDOWN_SUPPORTED: false
       end
     end
