@@ -39,9 +39,16 @@ module Selenium
         end
 
         it 'uses the path from the environment' do
-          ENV['SE_GECKODRIVER'] = '/path/to/geckodriver'
+          ENV['SE_GECKODRIVER'] = DriverFinder.new(Options.new, described_class.new).driver_path
 
-          expect(service.executable_path).to eq '/path/to/geckodriver'
+          expect(service_manager.uri).to be_a(URI)
+        end
+
+        it 'updates the path after setting the environment variable' do
+          ENV['SE_GECKODRIVER'] = '/foo/bar'
+          service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
+
+          expect(service_manager.uri).to be_a(URI)
         end
       end
     end # Firefox

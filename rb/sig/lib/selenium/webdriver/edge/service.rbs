@@ -2,7 +2,6 @@ module Selenium
   module WebDriver
     module Edge
       class Service < WebDriver::Service
-        PATH: String
 
         @log: untyped
 

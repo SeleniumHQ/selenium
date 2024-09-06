@@ -21,14 +21,14 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    module Chrome
-      describe Service, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :chrome}] do
+    module IE
+      describe Service, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :ie}] do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 
         after { service_manager.stop }
 
-        it 'auto uses chromedriver' do
+        it 'auto uses iedriver' do
           service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
 
           expect(service_manager.uri).to be_a(URI)
@@ -39,18 +39,18 @@ module Selenium
         end
 
         it 'uses the path from the environment' do
-          ENV['SE_CHROMEDRIVER'] = DriverFinder.new(Options.new, described_class.new).driver_path
+          ENV['SE_IEIDRIVER'] = DriverFinder.new(Options.new, described_class.new).driver_path
 
           expect(service_manager.uri).to be_a(URI)
         end
 
         it 'updates the path after setting the environment variable' do
-          ENV['SE_CHROMEDRIVER'] = '/foo/bar'
+          ENV['SE_IEIDRIVER'] = '/foo/bar'
           service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
 
           expect(service_manager.uri).to be_a(URI)
         end
       end
-    end # Chrome
+    end # IE
   end # WebDriver
 end # Selenium

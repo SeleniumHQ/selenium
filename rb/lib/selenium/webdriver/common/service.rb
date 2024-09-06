@@ -71,7 +71,7 @@ module Selenium
       def initialize(path: nil, port: nil, log: nil, args: nil)
         port ||= self.class::DEFAULT_PORT
         args ||= []
-        path ||= self.class::PATH
+        path ||= env_path
 
         @executable_path = path
         @host = Platform.localhost
@@ -90,7 +90,7 @@ module Selenium
       end
 
       def launch
-        @executable_path ||= self.class::PATH || find_driver_path
+        @executable_path ||= env_path || find_driver_path
         ServiceManager.new(self).tap(&:start)
       end
 
@@ -101,6 +101,13 @@ module Selenium
       def find_driver_path
         default_options = WebDriver.const_get("#{self.class.name&.split('::')&.[](2)}::Options").new
         DriverFinder.new(default_options, self).driver_path
+      end
+
+      def env_path
+        class_name = self.class.name&.split('::')&.[](2)&.downcase
+        driver_name = class_name == 'firefox' ? 'gecko' : class_name
+        parsed_driver = "SE_#{driver_name&.upcase}DRIVER"
+        ENV.fetch(parsed_driver, nil)
       end
     end # Service
   end # WebDriver

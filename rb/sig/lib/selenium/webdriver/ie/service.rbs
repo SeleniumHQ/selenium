@@ -6,7 +6,6 @@ module Selenium
 
         EXECUTABLE: String
 
-        PATH: String
         SHUTDOWN_SUPPORTED: bool
       end
     end

@@ -2,8 +2,6 @@ module Selenium
   module WebDriver
     module Chrome
       class Service < WebDriver::Service
-        PATH: String
-
         @log: untyped
 
         DEFAULT_PORT: Integer
