@@ -56,7 +56,7 @@ module Selenium
 
         driver.send(:bridge).instance_variable_set(:@session_id, 'fake_session_id')
         driver.window_handle
-      rescue WebDriver::Error::SessionNotCreatedError => e
+      rescue WebDriver::Error::InvalidSessionIdError => e
         expect(e.backtrace).not_to be_empty
       end
     end
