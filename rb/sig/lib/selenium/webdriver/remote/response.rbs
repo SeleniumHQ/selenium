@@ -22,6 +22,8 @@ module Selenium
 
         def add_cause: (Error::WebDriverError ex, String error, Array[String] backtrace) -> Error::WebDriverError
 
+        def backtrace_from_remote: -> Array[String]
+
         def process_error: () -> Array[Hash[untyped, untyped]]
       end
     end
