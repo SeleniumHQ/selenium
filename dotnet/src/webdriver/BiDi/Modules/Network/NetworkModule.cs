@@ -29,7 +29,7 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
         await Broker.ExecuteCommandAsync(new RemoveInterceptCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task<Intercept> AddInterceptedRequestAsync(Func<BeforeRequestSentEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
+    public async Task<Intercept> InterceptRequestAsync(Func<BeforeRequestSentEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
     {
         var intercept = await AddInterceptAsync([InterceptPhase.BeforeRequestSent], interceptOptions).ConfigureAwait(false);
 
@@ -38,7 +38,7 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
         return intercept;
     }
 
-    public async Task<Intercept> AddInterceptedResponseAsync(Func<ResponseStartedEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
+    public async Task<Intercept> InterceptResponseAsync(Func<ResponseStartedEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
     {
         var intercept = await AddInterceptAsync([InterceptPhase.ResponseStarted], interceptOptions).ConfigureAwait(false);
 
@@ -47,7 +47,7 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
         return intercept;
     }
 
-    public async Task<Intercept> AddInterceptedAuthenticationAsync(Func<AuthRequiredEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
+    public async Task<Intercept> InterceptAuthenticationAsync(Func<AuthRequiredEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
     {
         var intercept = await AddInterceptAsync([InterceptPhase.AuthRequired], interceptOptions).ConfigureAwait(false);
 
