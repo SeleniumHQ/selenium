@@ -21,8 +21,8 @@ module Selenium
   module WebDriver
     module FedCM
       # Represents an account displayed in a FedCm account list.
-      # See: https://fedidcg.github.io/FedCM/#dictdef-identityprovideraccount
-      #      https://fedidcg.github.io/FedCM/#webdriver-accountlist
+      # See: https://w3c-fedid.github.io/FedCM/#dictdef-identityprovideraccount
+      #      https://w3c-fedid.github.io/FedCM/#webdriver-accountlist
       class Account
         LOGIN_STATE_SIGNIN = 'SignIn'
         LOGIN_STATE_SIGNUP = 'SignUp'

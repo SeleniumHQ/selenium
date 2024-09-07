@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Represents an open dialog of the Federated Credential Management API.
  *
- * @see <a href="https://fedidcg.github.io/FedCM/">https://fedidcg.github.io/FedCM/</a>
+ * @see <a href="https://w3c-fedid.github.io/FedCM/">https://w3c-fedid.github.io/FedCM/</a>
  */
 public interface FederatedCredentialManagementDialog {
 
