@@ -70,18 +70,16 @@ public class BiDi : IAsyncDisposable
         return BrowsingContextModule.GetTreeAsync(options);
     }
 
-    public async Task EndAsync(Modules.Session.EndOptions? options = null)
+    public Task EndAsync(Modules.Session.EndOptions? options = null)
     {
-        await SessionModule.EndAsync(options).ConfigureAwait(false);
-
-        await _broker.DisposeAsync().ConfigureAwait(false);
-
-        _transport?.Dispose();
+        return SessionModule.EndAsync(options);
     }
 
     public async ValueTask DisposeAsync()
     {
-        await EndAsync().ConfigureAwait(false);
+        await _broker.DisposeAsync().ConfigureAwait(false);
+
+        _transport?.Dispose();
     }
 
     public Task<Subscription> OnBrowsingContextCreatedAsync(Func<Modules.BrowsingContext.BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
