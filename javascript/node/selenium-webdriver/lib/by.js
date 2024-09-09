@@ -261,7 +261,7 @@ class By {
  *
  * Note: this method will likely be removed in the future please use
  * `locateWith`.
- * @param {By} The value returned from calling By.tagName()
+ * @param {By} tagName The value returned from calling By.tagName()
  * @returns
  */
 function withTagName(tagName) {
@@ -270,7 +270,7 @@ function withTagName(tagName) {
 
 /**
  * Start searching for relative objects using search criteria with By.
- * @param {string} A By map that shows how to find the initial element
+ * @param {string} by A By map that shows how to find the initial element
  * @returns {RelativeBy}
  */
 function locateWith(by) {
@@ -349,6 +349,58 @@ class RelativeBy {
   toRightOf(locatorOrElement) {
     this.filters.push({
       kind: 'right',
+      args: [getLocator(locatorOrElement)],
+    })
+    return this
+  }
+
+  /**
+   * Look for elements above the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  straightAbove(locatorOrElement) {
+    this.filters.push({
+      kind: 'straightAbove',
+      args: [getLocator(locatorOrElement)],
+    })
+    return this
+  }
+
+  /**
+   * Look for elements below the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  straightBelow(locatorOrElement) {
+    this.filters.push({
+      kind: 'straightBelow',
+      args: [getLocator(locatorOrElement)],
+    })
+    return this
+  }
+
+  /**
+   * Look for elements left the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  straightToLeftOf(locatorOrElement) {
+    this.filters.push({
+      kind: 'straightLeft',
+      args: [getLocator(locatorOrElement)],
+    })
+    return this
+  }
+
+  /**
+   * Look for elements right the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  straightToRightOf(locatorOrElement) {
+    this.filters.push({
+      kind: 'straightRight',
       args: [getLocator(locatorOrElement)],
     })
     return this

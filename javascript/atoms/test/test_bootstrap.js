@@ -55,11 +55,11 @@
     }
   }
 
-  // All of the files to load. Files are specified in the order they must be
+  // All the files to load. Files are specified in the order they must be
   // loaded, NOT alphabetical order.
   var files = [
     '../../../third_party/closure/goog/base.js',
-    '../../deps.js'
+    'deps.js'
   ];
 
   if (location.pathname.lastIndexOf('/filez/_main/javascript/', 0) === 0) {
