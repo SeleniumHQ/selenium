@@ -15,15 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v125;
+package org.openqa.selenium.remote;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+import java.net.URI;
+import java.util.function.Predicate;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.UsernameAndPassword;
 
-@AutoService(CdpInfo.class)
-public class v125CdpInfo extends CdpInfo {
+@Beta
+public interface Network {
 
-  public v125CdpInfo() {
-    super(125, v125Domains::new);
-  }
+  long addAuthenticationHandler(UsernameAndPassword usernameAndPassword);
+
+  long addAuthenticationHandler(Predicate<URI> filter, UsernameAndPassword usernameAndPassword);
+
+  void removeAuthenticationHandler(long id);
+
+  void clearAuthenticationHandlers();
 }

@@ -1,3 +1,33 @@
+v4.24.0
+======
+* Add "se" prefixed capabilities to session response (#14323)
+* Ensure all prefixed caps in request are added in response
+* [bidi] return the id of the listener added
+* [grid] shutdown the websocket on unexpected failures
+* Add JSpecify annotations to WebElement and SearchContext (#14291)
+* Add JSpecify annotations for WebDriver and 3 other interfaces (#14371)
+* Implement getAttributes() method of MBean, and update Number-based MBean attributes to return Number objects instead of Strings (#14153)
+* [grid] shutdown the client related to a websocket
+* [grid] release the upstream websocket
+* [grid] close the httpclient after connecting the websocket failed
+* [bidi] Add execute script high-level API (#14330)
+* [ci] Use a tag to figure out what we might want to release (#14378)
+* Add CDP for Chrome 128 and remove 125
+
+v4.23.1
+======
+* [bidi] Add dom mutation handler support (#14304)
+* [grid] Exclude status DRAINING when distributor getting available nodes (#14282)
+* [bidi] Add script pinning methods (#14305)
+* Allow setting JDKHttpClient connectionTimeout, readTimeout, version via system property (#14306)
+* remove package org.openqa.selenium.grid.session.remote (#14295)
+* close the HttClient in case starting the session fails
+* Adding system property to disable tracing `webdriver.remote.enableTracing`
+* wait for the close response #14280
+* [bidi] Add authentication handlers (#14334)
+* [grid] ensure the local_sessionmap.remove event is raised (#14337)
+* [bidi] Add filter auth handler (#14349)
+
 v4.23.0
 ======
 * Use Files.notExists to check files #14088

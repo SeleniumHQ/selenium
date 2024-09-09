@@ -62,11 +62,11 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.24.0.dev202407312116"
+SE_VERSION = "4.25.0.dev202408281539"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v125",
+    "v128",
     "v126",
     "v127",
 ]
@@ -302,6 +302,9 @@ py_wheel(
         "py/",
     ],
     summary = "Official Python bindings for Selenium WebDriver",
+    tags = [
+        "release-artifact",
+    ],
     version = SE_VERSION,
     visibility = ["//visibility:public"],
     deps = [
@@ -332,7 +335,7 @@ py_library(
         "test/selenium/webdriver/support/conftest.py",
     ],
     data = [
-        "pytest.ini",
+        "pyproject.toml",
         "setup.cfg",
         "test/selenium/webdriver/common/test_file.txt",
         "test/selenium/webdriver/common/test_file2.txt",

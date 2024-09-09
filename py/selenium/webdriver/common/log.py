@@ -19,6 +19,10 @@ import json
 import pkgutil
 from contextlib import asynccontextmanager
 from importlib import import_module
+from typing import Any
+from typing import AsyncGenerator
+from typing import Dict
+from typing import Optional
 
 from selenium.webdriver.common.by import By
 
@@ -45,10 +49,14 @@ class Log:
         self.cdp = bidi_session.cdp
         self.devtools = bidi_session.devtools
         _pkg = ".".join(__name__.split(".")[:-1])
-        self._mutation_listener_js = pkgutil.get_data(_pkg, "mutation-listener.js").decode("utf8").strip()
+        # Ensure _mutation_listener_js is not None before decoding
+        _mutation_listener_js_bytes: Optional[bytes] = pkgutil.get_data(_pkg, "mutation-listener.js")
+        if _mutation_listener_js_bytes is None:
+            raise ValueError("Failed to load mutation-listener.js")
+        self._mutation_listener_js = _mutation_listener_js_bytes.decode("utf8").strip()
 
     @asynccontextmanager
-    async def mutation_events(self) -> dict:
+    async def mutation_events(self) -> AsyncGenerator[Dict[str, Any], None]:
         """Listen for mutation events and emit them as they are found.
 
         :Usage:
@@ -76,12 +84,13 @@ class Log:
         )
         self.driver.pin_script(self._mutation_listener_js, script_key)
         self.driver.execute_script(f"return {self._mutation_listener_js}")
-        event = {}
+
+        event: Dict[str, Any] = {}
         async with runtime.wait_for(self.devtools.runtime.BindingCalled) as evnt:
             yield event
 
         payload = json.loads(evnt.value.payload)
-        elements: list = self.driver.find_elements(By.CSS_SELECTOR, f"*[data-__webdriver_id={payload['target']}")
+        elements: list = self.driver.find_elements(By.CSS_SELECTOR, f"*[data-__webdriver_id={payload['target']}]")
         if not elements:
             elements.append(None)
         event["element"] = elements[0]
@@ -90,7 +99,7 @@ class Log:
         event["old_value"] = payload["oldValue"]
 
     @asynccontextmanager
-    async def add_js_error_listener(self):
+    async def add_js_error_listener(self) -> AsyncGenerator[Dict[str, Any], None]:
         """Listen for JS errors and when the contextmanager exits check if
         there were JS Errors.
 
@@ -114,7 +123,7 @@ class Log:
         js_exception.exception_details = exception.value.exception_details
 
     @asynccontextmanager
-    async def add_listener(self, event_type) -> dict:
+    async def add_listener(self, event_type) -> AsyncGenerator[Dict[str, Any], None]:
         """Listen for certain events that are passed in.
 
         :Args:
@@ -134,7 +143,7 @@ class Log:
         await session.execute(self.devtools.page.enable())
         session = self.cdp.get_session_context("runtime.enable")
         await session.execute(self.devtools.runtime.enable())
-        console = {"message": None, "level": None}
+        console: Dict[str, Any] = {"message": None, "level": None}
         async with session.wait_for(self.devtools.runtime.ConsoleAPICalled) as messages:
             yield console
 

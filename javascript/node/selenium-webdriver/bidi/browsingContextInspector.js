@@ -127,10 +127,10 @@ class BrowsingContextInspector {
         let response = null
         if ('navigation' in params) {
           response = new NavigationInfo(params.context, params.navigation, params.timestamp, params.url)
-        } else if ('type' in params) {
-          response = new UserPromptOpened(params.context, params.type, params.message)
         } else if ('accepted' in params) {
           response = new UserPromptClosed(params.context, params.accepted, params.userText)
+        } else if ('type' in params) {
+          response = new UserPromptOpened(params.context, params.type, params.message)
         } else {
           response = new BrowsingContextInfo(params.context, params.url, params.children, params.parent)
         }

@@ -1,3 +1,10 @@
+0.4.24
+======
+
+* Use Firefox history major releases endpoint for version discovery
+* Use the Debug format specifier to display error messages (#14388)
+* Include arguments for skipping drivers and browsers in path (#14444)
+
 0.4.23
 ======
 

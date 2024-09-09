@@ -2,7 +2,7 @@ load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export", "java_library")
 load("//java:version.bzl", "SE_VERSION")
 
-cdp_version = "v125"
+cdp_version = "v128"
 
 java_export(
     name = cdp_version,
@@ -12,6 +12,9 @@ java_export(
         "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
+    tags = [
+        "release-artifact",
+    ],
     visibility = [
         "//visibility:public",
     ],
