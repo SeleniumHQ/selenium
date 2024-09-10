@@ -73,6 +73,9 @@ async def test_collect_log_mutations(driver, pages):
         async with log.mutation_events() as event:
             pages.load("dynamic.html")
             driver.find_element(By.ID, "reveal").click()
+            WebDriverWait(driver, 10).until(
+                lambda d: d.find_element(By.ID, "revealed").value_of_css_property("display") != "none"
+            )
             WebDriverWait(driver, 5).until(EC.visibility_of(driver.find_element(By.ID, "revealed")))
 
     assert event["attribute_name"] == "style"
