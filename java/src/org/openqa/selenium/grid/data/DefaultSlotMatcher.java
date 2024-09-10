@@ -18,8 +18,6 @@
 package org.openqa.selenium.grid.data;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import org.openqa.selenium.Capabilities;
 
@@ -43,13 +41,6 @@ import org.openqa.selenium.Capabilities;
  * the matching of these is implementation-specific to each driver.
  */
 public class DefaultSlotMatcher implements SlotMatcher, Serializable {
-
-  /*
-   List of prefixed extension capabilities we never should try to match, they should be
-   matched in the Node or in the browser driver.
-  */
-  private static final List<String> EXTENSION_CAPABILITIES_PREFIXES =
-      Arrays.asList("goog:", "moz:", "ms:", "se:");
 
   @Override
   public boolean matches(Capabilities stereotype, Capabilities capabilities) {
@@ -76,12 +67,13 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
 
     // At the end, a simple browser, browserVersion and platformName match
     boolean browserNameMatch =
-        (capabilities.getBrowserName() == null || capabilities.getBrowserName().isEmpty())
+        capabilities.getBrowserName() == null
+            || capabilities.getBrowserName().isEmpty()
             || Objects.equals(stereotype.getBrowserName(), capabilities.getBrowserName());
     boolean browserVersionMatch =
-        (capabilities.getBrowserVersion() == null
-                || capabilities.getBrowserVersion().isEmpty()
-                || Objects.equals(capabilities.getBrowserVersion(), "stable"))
+        capabilities.getBrowserVersion() == null
+            || capabilities.getBrowserVersion().isEmpty()
+            || Objects.equals(capabilities.getBrowserVersion(), "stable")
             || Objects.equals(stereotype.getBrowserVersion(), capabilities.getBrowserVersion());
     boolean platformNameMatch =
         capabilities.getPlatformName() == null
@@ -97,18 +89,16 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
         .filter(name -> !name.contains(":"))
         // Platform matching is special, we do it later
         .filter(name -> !"platformName".equalsIgnoreCase(name))
+        .filter(name -> capabilities.getCapability(name) != null)
         .map(
             name -> {
-              if (capabilities.getCapability(name) instanceof String) {
-                return stereotype
-                    .getCapability(name)
-                    .toString()
-                    .equalsIgnoreCase(capabilities.getCapability(name).toString());
-              } else {
-                return capabilities.getCapability(name) == null
-                    || Objects.equals(
-                        stereotype.getCapability(name), capabilities.getCapability(name));
+              if (stereotype.getCapability(name) instanceof String
+                  && capabilities.getCapability(name) instanceof String) {
+                return ((String) stereotype.getCapability(name))
+                    .equalsIgnoreCase((String) capabilities.getCapability(name));
               }
+              return Objects.equals(
+                  stereotype.getCapability(name), capabilities.getCapability(name));
             })
         .reduce(Boolean::logicalAnd)
         .orElse(true);
@@ -145,27 +135,22 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
   }
 
   private Boolean extensionCapabilitiesMatch(Capabilities stereotype, Capabilities capabilities) {
-    /*
-     We match extension capabilities when they are not prefixed with any of the
-     EXTENSION_CAPABILITIES_PREFIXES items. Also, we match them only when the capabilities
-     of the new session request contains that specific extension capability.
-    */
     return stereotype.getCapabilityNames().stream()
         .filter(name -> name.contains(":"))
-        .filter(name -> capabilities.asMap().containsKey(name))
-        .filter(name -> EXTENSION_CAPABILITIES_PREFIXES.stream().noneMatch(name::contains))
+        .filter(name -> capabilities.getCapability(name) != null)
         .map(
             name -> {
-              if (capabilities.getCapability(name) instanceof String) {
-                return stereotype
-                    .getCapability(name)
-                    .toString()
-                    .equalsIgnoreCase(capabilities.getCapability(name).toString());
-              } else {
-                return capabilities.getCapability(name) == null
-                    || Objects.equals(
-                        stereotype.getCapability(name), capabilities.getCapability(name));
+              if (stereotype.getCapability(name) instanceof String
+                  && capabilities.getCapability(name) instanceof String) {
+                return ((String) stereotype.getCapability(name))
+                    .equalsIgnoreCase((String) capabilities.getCapability(name));
               }
+              if (capabilities.getCapability(name) instanceof Number
+                  || capabilities.getCapability(name) instanceof Boolean) {
+                return Objects.equals(
+                    stereotype.getCapability(name), capabilities.getCapability(name));
+              }
+              return true;
             })
         .reduce(Boolean::logicalAnd)
         .orElse(true);

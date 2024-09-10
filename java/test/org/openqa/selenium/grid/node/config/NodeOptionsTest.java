@@ -63,6 +63,7 @@ import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.safari.SafariDriverInfo;
 
 @SuppressWarnings("DuplicatedCode")
@@ -148,7 +149,10 @@ class NodeOptionsTest {
               reported.add(caps);
               return Collections.singleton(HelperFactory.create(config, caps));
             });
-    String expected = driver.getDisplayName();
+    String expected =
+        "Edge".equals(driver.getDisplayName())
+            ? Browser.EDGE.browserName()
+            : driver.getDisplayName();
 
     Capabilities found =
         reported.stream()
