@@ -192,7 +192,7 @@ class CookieHandler implements HttpHandler {
     return builder.build();
   }
   private String escapeCookieValue(String value) {
-    if (value == null) {
+    if (value == null || value.isEmpty()) {
       return "";
     }
 
@@ -201,6 +201,9 @@ class CookieHandler implements HttpHandler {
       .replace(";", "\\;")
       .replace(",", "\\,")
       .replace("\r", "")
-      .replace("\n", "");
+      .replace("\n", "")
+      .replace("<", "&lt;")
+      .replace(">", "&gt;")
+      .replace("&", "&amp;");
   }
 }
