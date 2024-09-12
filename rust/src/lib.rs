@@ -1288,6 +1288,26 @@ pub trait SeleniumManager {
         }
     }
 
+    fn get_driver_mirror_versions_url_or_default<'a>(&'a self, default_url: &'a str) -> String {
+        let driver_mirror_url = self.get_driver_mirror_url();
+        if !driver_mirror_url.is_empty() {
+            let driver_versions_path = default_url.rfind('/').map(|i| &default_url[i + 1..]);
+            if let Some(path) = driver_versions_path {
+                let driver_mirror_versions_url = if driver_mirror_url.ends_with('/') {
+                    format!("{}{}", driver_mirror_url, path)
+                } else {
+                    format!("{}/{}", driver_mirror_url, path)
+                };
+                self.get_logger().debug(format!(
+                    "Using mirror URL to discover driver versions: {}",
+                    driver_mirror_versions_url
+                ));
+                return driver_mirror_versions_url;
+            }
+        }
+        default_url.to_string()
+    }
+
     fn get_driver_mirror_url_or_default<'a>(&'a self, default_url: &'a str) -> String {
         self.get_url_or_default(self.get_driver_mirror_url(), default_url)
     }
