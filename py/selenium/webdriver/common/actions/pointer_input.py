@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
+from typing import Union
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.remote.webelement import WebElement
@@ -60,7 +61,7 @@ class PointerInput(InputDevice):
     def create_pointer_cancel(self):
         self.add_action({"type": "pointerCancel"})
 
-    def create_pause(self, pause_duration: float) -> None:
+    def create_pause(self, pause_duration: Union[int, float] = 0) -> None:
         self.add_action({"type": "pause", "duration": int(pause_duration * 1000)})
 
     def encode(self):
