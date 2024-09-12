@@ -22,7 +22,7 @@ _copyright = """/*
 def get_atom_name(name):
     # Convert camelCase and snake_case to BIG_SNAKE_CASE
     name = os.path.basename(name)
-    name = re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
+    name = re.sub(r'(?<!^)(?<![_-])(?=[A-Z])', '_', name).lower()
     name = name.replace('-', '_').upper()
     return name
 
