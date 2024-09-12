@@ -68,9 +68,7 @@ class StressTest {
                 new StringReader(
                     "[node]\n"
                         + "driver-implementation = "
-                        + "\""
-                        + browser.displayName()
-                        + "\"")));
+                        + String.format("\"%s\"", browser.displayName()))));
     tearDowns.add(deployment);
 
     server = deployment.getServer();
