@@ -200,7 +200,6 @@ maven.install(
         "io.opentelemetry:opentelemetry-sdk-testing:1.41.0",
         "io.opentelemetry:opentelemetry-sdk-trace:1.41.0",
         "io.opentelemetry.semconv:opentelemetry-semconv:1.25.0-alpha",
-        "io.ous:jtoml:2.0.0",
         "it.ozimov:embedded-redis:0.7.3",
         "net.bytebuddy:byte-buddy:1.15.0",
         "org.htmlunit:htmlunit-core-js:4.4.0",
@@ -222,6 +221,7 @@ maven.install(
         "org.redisson:redisson:3.35.0",
         "org.slf4j:slf4j-api:2.0.16",
         "org.slf4j:slf4j-jdk14:2.0.16",
+        "org.tomlj:tomlj:1.1.1",
         "org.zeromq:jeromq:0.6.0",
     ],
     excluded_artifacts = [

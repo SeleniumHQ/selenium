@@ -21,6 +21,6 @@ java_library(
         "//java/src/org/openqa/selenium/json",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
-        artifact("io.ous:jtoml"),
+        artifact("org.tomlj:tomlj"),
     ],
 )

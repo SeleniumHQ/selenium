@@ -11,7 +11,6 @@ java_test_suite(
         "//java/src/org/openqa/selenium/json",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
-        artifact("io.ous:jtoml"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
     ] + JUNIT5_DEPS,
