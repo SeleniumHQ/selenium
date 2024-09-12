@@ -65,7 +65,12 @@ class StressTest {
         DeploymentTypes.DISTRIBUTED.start(
             browser.getCapabilities(),
             new TomlConfig(
-                new StringReader("[node]\n" + "driver-implementation = " + browser.displayName())));
+                new StringReader(
+                    "[node]\n"
+                        + "driver-implementation = "
+                        + "\""
+                        + browser.displayName()
+                        + "\"")));
     tearDowns.add(deployment);
 
     server = deployment.getServer();

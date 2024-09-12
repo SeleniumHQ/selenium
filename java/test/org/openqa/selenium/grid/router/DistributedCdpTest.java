@@ -68,7 +68,9 @@ class DistributedCdpTest {
                     "[node]\n"
                         + "selenium-manager = false\n"
                         + "driver-implementation = "
-                        + browser.displayName())));
+                        + "\""
+                        + browser.displayName()
+                        + "\"")));
 
     Server<?> server =
         new NettyServer(
