@@ -39,11 +39,12 @@ public class TomlConfig implements Config {
   private final Toml toml;
   private static final Logger LOG = Logger.getLogger(TomlConfig.class.getName());
 
-
   public TomlConfig(Reader reader) {
     try {
       toml = JToml.parse(reader);
-      LOG.warning("Please use quotes to denote strings. Upcoming TOML parser will require this and unquoted strings will throw an error in the future");
+      LOG.warning(
+          "Please use quotes to denote strings. Upcoming TOML parser will require this and unquoted"
+              + " strings will throw an error in the future");
     } catch (IOException e) {
       throw new ConfigException("Unable to read TOML.", e);
     } catch (ParseException e) {
