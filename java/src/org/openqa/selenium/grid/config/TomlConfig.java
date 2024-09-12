@@ -23,11 +23,17 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.openqa.selenium.internal.Require;
-import org.tomlj.*;
+import org.tomlj.Toml;
+import org.tomlj.TomlArray;
+import org.tomlj.TomlParseError;
+import org.tomlj.TomlParseResult;
+import org.tomlj.TomlTable;
 
 public class TomlConfig implements Config {
 
@@ -36,7 +42,13 @@ public class TomlConfig implements Config {
   public TomlConfig(Reader reader) {
     try {
       toml = Toml.parse(reader);
-      System.out.println(toml.toToml());
+
+      if (toml.hasErrors()) {
+        String error =
+            toml.errors().stream().map(TomlParseError::toString).collect(Collectors.joining("\n"));
+
+        throw new ConfigException(error);
+      }
     } catch (IOException e) {
       throw new ConfigException("Unable to read TOML.", e);
     } catch (TomlParseError e) {
@@ -65,11 +77,7 @@ public class TomlConfig implements Config {
     if (!toml.contains(section)) {
       return Optional.empty();
     }
-/*
-    if (toml.hasErrors()) {
-      System.out.println(toml.errors());
-    }
-*/
+
     Object raw = toml.get(section);
     if (!(raw instanceof TomlTable)) {
       throw new ConfigException(String.format("Section %s is not a section! %s", section, raw));
@@ -86,27 +94,17 @@ public class TomlConfig implements Config {
     }
 
     if (value instanceof TomlArray) {
-     // System.out.println("Inside array... here");
-      TomlArray array = (TomlArray) value;
-      List<String> result = array.toList().stream()
-        .map(item -> {
-          if (item instanceof TomlTable) {
-            return getTableAsString((TomlTable) item);
-          }
-          return String.valueOf(item);
-        })
-        .collect(Collectors.toList());
-      return Optional.of(result);
+      value = ((TomlArray) value).toList();
     }
 
     if (value instanceof Collection) {
       Collection<?> collection = (Collection<?>) value;
       // Case when an array of tables is used as config
       // https://toml.io/en/v1.0.0-rc.3#array-of-tables
-      if (collection.stream().anyMatch(item -> item instanceof TomlTable)) {
+      if (collection.stream().anyMatch(TomlTable.class::isInstance)) {
         return Optional.of(
             collection.stream()
-                .map(item -> (TomlTable) item)
+                .map(TomlTable.class::cast)
                 .map(TomlTable::toMap)
                 .map(this::toEntryList)
                 .flatMap(Collection::stream)
@@ -124,21 +122,12 @@ public class TomlConfig implements Config {
       return Optional.of(toEntryList(((TomlTable) value).toMap()));
     }
 
-    return Optional.of(ImmutableList.of(String.valueOf(value)));
+    return Optional.of(List.of(String.valueOf(value)));
   }
 
   @Override
   public Set<String> getSectionNames() {
     return ImmutableSortedSet.copyOf(toml.keySet());
-  }
-
-  public String getTableAsString(TomlTable table) {
-    List<String> result = new ArrayList<>();
-    for (Map.Entry<String, Object> entry : table.entrySet()) {
-      result.add(entry.getKey() + "=" + entry.getValue());
-    }
-
-    return String.join(" ", result);
   }
 
   @Override

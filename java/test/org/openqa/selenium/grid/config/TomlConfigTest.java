@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.StringReader;
 import java.util.Arrays;
@@ -33,6 +34,13 @@ class TomlConfigTest {
     String raw = "[cheeses]\nselected=\"brie\"";
     Config config = new TomlConfig(new StringReader(raw));
     assertThat(config.get("cheeses", "selected")).isEqualTo(Optional.of("brie"));
+  }
+
+  @Test
+  void shouldCheckForErrorsAndThrow() {
+    String raw = "[cheeses]\nselected=brie";
+    assertThatThrownBy(() -> new TomlConfig(new StringReader(raw)))
+        .isInstanceOf(ConfigException.class);
   }
 
   @Test
@@ -103,7 +111,7 @@ class TomlConfigTest {
     String[] rawConfig =
         new String[] {
           "[cheeses]",
-          "default = manchego",
+          "default = \"manchego\"",
           "[[cheeses.type]]",
           "name = \"soft cheese\"",
           "default = \"brie\"",
