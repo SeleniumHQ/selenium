@@ -22,10 +22,10 @@ import java.util.Map;
 /**
  * Represents an account displayed in a FedCM account list.
  *
- * @see <a href="https://fedidcg.github.io/FedCM/#dictdef-identityprovideraccount">
- *     https://fedidcg.github.io/FedCM/#dictdef-identityprovideraccount</a>
- * @see <a href="https://fedidcg.github.io/FedCM/#webdriver-accountlist">
- *     https://fedidcg.github.io/FedCM/#webdriver-accountlist</a>
+ * @see <a href="https://w3c-fedid.github.io/FedCM/#dictdef-identityprovideraccount">
+ *     https://w3c-fedid.github.io/FedCM/#dictdef-identityprovideraccount</a>
+ * @see <a href="https://w3c-fedid.github.io/FedCM/#webdriver-accountlist">
+ *     https://w3c-fedid.github.io/FedCM/#webdriver-accountlist</a>
  */
 public class FederatedCredentialManagementAccount {
   private final String accountId;

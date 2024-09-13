@@ -12447,7 +12447,7 @@ experimental domain FedCm
     parameters
       # Allows callers to disable the promise rejection delay that would
       # normally happen, if this is unimportant to what's being tested.
-      # (step 4 of https://fedidcg.github.io/FedCM/#browser-api-rp-sign-in)
+      # (step 4 of https://w3c-fedid.github.io/FedCM/#browser-api-rp-sign-in)
       optional boolean disableRejectionDelay
 
   command disable

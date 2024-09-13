@@ -65,7 +65,7 @@ Navigated forward
             mockNavigation.Verify(x => x.BackAsync(), Times.Once);
             mockNavigation.Verify(x => x.ForwardAsync(), Times.Once);
 
-            string normalizedActualLog =  log.ToString().Replace("\r\n", "\n").Replace("\r", "\n");
+            string normalizedActualLog = log.ToString().Replace("\r\n", "\n").Replace("\r", "\n");
             Assert.AreEqual(normalizedExpectedLog, normalizedActualLog);
         }
 
