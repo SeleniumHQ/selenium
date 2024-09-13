@@ -88,11 +88,9 @@ public class BrowsingContext
         return _bidi.BrowsingContextModule.SetViewportAsync(this, options);
     }
 
-    public async Task<string> PrintAsync(PrintOptions? options = null)
+    public Task<PrintResult> PrintAsync(PrintOptions? options = null)
     {
-        var result = await _bidi.BrowsingContextModule.PrintAsync(this, options).ConfigureAwait(false);
-
-        return result.Data;
+        return _bidi.BrowsingContextModule.PrintAsync(this, options);
     }
 
     public Task HandleUserPromptAsync(HandleUserPromptOptions? options = null)
