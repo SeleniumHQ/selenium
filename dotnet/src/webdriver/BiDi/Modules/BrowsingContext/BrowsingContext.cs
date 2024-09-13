@@ -100,6 +100,15 @@ public class BrowsingContext
         return _bidi.BrowsingContextModule.HandleUserPromptAsync(this, options);
     }
 
+    public Task<IReadOnlyList<BrowsingContextInfo>> GetTreeAsync(BrowsingContextGetTreeOptions? options = null)
+    {
+        options ??= new();
+
+        options.Root = this;
+
+        return _bidi.BrowsingContextModule.GetTreeAsync(options);
+    }
+
     public Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
     {
         return _bidi.BrowsingContextModule.OnNavigationStartedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
