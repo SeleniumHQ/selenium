@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Modules.Network;
 

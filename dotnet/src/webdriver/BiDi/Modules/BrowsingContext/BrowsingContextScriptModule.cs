@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Modules.Script;
 using System.Collections.Generic;
 
