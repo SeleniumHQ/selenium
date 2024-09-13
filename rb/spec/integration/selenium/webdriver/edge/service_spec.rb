@@ -37,19 +37,6 @@ module Selenium
         it 'can be started outside driver' do
           expect(service_manager.uri).to be_a(URI)
         end
-
-        it 'uses the path from the environment' do
-          ENV['SE_EDGEDRIVER'] = DriverFinder.new(Options.new, described_class.new).driver_path
-
-          expect(service_manager.uri).to be_a(URI)
-        end
-
-        it 'updates the path after setting the environment variable' do
-          ENV['SE_EDGEDRIVER'] = '/foo/bar'
-          service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
-
-          expect(service_manager.uri).to be_a(URI)
-        end
       end
     end # Edge
   end # WebDriver

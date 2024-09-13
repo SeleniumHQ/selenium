@@ -114,6 +114,23 @@ module Selenium
 
             expect(described_class).not_to have_received(:new)
           end
+
+          context 'with a path env variable' do
+            before { ENV['SE_SAFARIDRIVER'] = DriverFinder.new(Options.new, described_class.new).driver_path }
+
+            after { ENV.delete('SE_SAFARIDRIVER') }
+
+            it 'uses the path from the environment' do
+              expect(service_manager.uri).to be_a(URI)
+            end
+
+            it 'updates the path after setting the environment variable' do
+              ENV['SE_SAFARIDRIVER'] = '/foo/bar'
+              service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
+
+              expect(service_manager.uri).to be_a(URI)
+            end
+          end
         end
       end
     end # Safari
