@@ -19,6 +19,15 @@ public record AddInterceptOptions : CommandOptions
     public IEnumerable<UrlPattern>? UrlPatterns { get; set; }
 }
 
+public record BrowsingContextAddInterceptOptions : AddInterceptOptions
+{
+    internal new IEnumerable<BrowsingContext.BrowsingContext>? Contexts
+    {
+        get => base.Contexts;
+        set => base.Contexts = value;
+    }
+}
+
 public record AddInterceptResult(Intercept Intercept);
 
 public enum InterceptPhase

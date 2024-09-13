@@ -23,4 +23,13 @@ public record AddPreloadScriptOptions : CommandOptions
     public string? Sandbox { get; set; }
 }
 
+public record BrowsingContextAddPreloadScriptOptions : AddPreloadScriptOptions
+{
+    internal new IEnumerable<BrowsingContext.BrowsingContext>? Contexts
+    {
+        get => base.Contexts;
+        set => base.Contexts = value;
+    }
+}
+
 internal record AddPreloadScriptResult(PreloadScript Script);
