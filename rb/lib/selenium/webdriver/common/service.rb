@@ -102,10 +102,7 @@ module Selenium
       end
 
       def env_path
-        class_name = self.class.name&.split('::')&.[](2)&.downcase
-        driver_name = class_name == 'firefox' ? 'gecko' : class_name
-        parsed_driver = "SE_#{driver_name&.upcase}DRIVER"
-        ENV.fetch(parsed_driver, nil)
+        ENV.fetch(self.class::DRIVER_PATH_ENV_KEY, nil)
       end
     end # Service
   end # WebDriver
