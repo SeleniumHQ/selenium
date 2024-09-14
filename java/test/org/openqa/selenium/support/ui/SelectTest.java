@@ -251,6 +251,23 @@ class SelectTest {
   }
 
   @Test
+  void shouldAllowOptionsToDeSelectedByContainsVisibleText() {
+    String parameterText = "b";
+    final WebElement firstOption = mockOption("first", true);
+    final WebElement secondOption = mockOption("second", false);
+
+    final WebElement element = mockSelectWebElement("multiple");
+    when(element.findElements(By.xpath(".//option[contains(., " + Quotes.escape(parameterText) + ")]")))
+      .thenReturn(Arrays.asList(firstOption, secondOption));
+
+    Select select = new Select(element);
+    select.deSelectByContainsVisibleText(parameterText);
+
+    verify(firstOption).click();
+    verify(secondOption, never()).click();
+  }
+
+  @Test
   void shouldAllowOptionsToBeDeselectedByIndex() {
     final WebElement firstOption = mockOption("first", true, 2);
     final WebElement secondOption = mockOption("second", false, 1);

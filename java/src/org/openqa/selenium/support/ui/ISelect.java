@@ -125,4 +125,6 @@ public interface ISelect {
    * @param text The visible text to match against
    */
   void deselectByVisibleText(String text);
+
+  void deSelectByContainsVisibleText(String text);
 }
