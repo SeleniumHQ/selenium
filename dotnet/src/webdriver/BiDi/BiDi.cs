@@ -60,12 +60,12 @@ public class BiDi : IAsyncDisposable
         return bidi;
     }
 
-    public Task<Modules.BrowsingContext.BrowsingContext> CreateBrowsingContextAsync(Modules.BrowsingContext.BrowsingContextType type, Modules.BrowsingContext.CreateOptions? options = null)
+    public Task<Modules.BrowsingContext.BrowsingContext> CreateContextAsync(Modules.BrowsingContext.BrowsingContextType type, Modules.BrowsingContext.CreateOptions? options = null)
     {
         return BrowsingContextModule.CreateAsync(type, options);
     }
 
-    public Task<IReadOnlyList<Modules.BrowsingContext.BrowsingContextInfo>> GetBrowsingContextTreeAsync(Modules.BrowsingContext.GetTreeOptions? options = null)
+    public Task<IReadOnlyList<Modules.BrowsingContext.BrowsingContextInfo>> GetTreeAsync(Modules.BrowsingContext.GetTreeOptions? options = null)
     {
         return BrowsingContextModule.GetTreeAsync(options);
     }
@@ -82,22 +82,22 @@ public class BiDi : IAsyncDisposable
         _transport?.Dispose();
     }
 
-    public Task<Subscription> OnBrowsingContextCreatedAsync(Func<Modules.BrowsingContext.BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
+    public Task<Subscription> OnContextCreatedAsync(Func<Modules.BrowsingContext.BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnContextCreatedAsync(handler, options);
     }
 
-    public Task<Subscription> OnBrowsingContextCreatedAsync(Action<Modules.BrowsingContext.BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
+    public Task<Subscription> OnContextCreatedAsync(Action<Modules.BrowsingContext.BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnContextCreatedAsync(handler, options);
     }
 
-    public Task<Subscription> OnBrowsingContextDestroyedAsync(Func<Modules.BrowsingContext.BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
+    public Task<Subscription> OnContextDestroyedAsync(Func<Modules.BrowsingContext.BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnContextDestroyedAsync(handler, options);
     }
 
-    public Task<Subscription> OnBrowsingContextDestroyedAsync(Action<Modules.BrowsingContext.BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
+    public Task<Subscription> OnContextDestroyedAsync(Action<Modules.BrowsingContext.BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return BrowsingContextModule.OnContextDestroyedAsync(handler, options);
     }
