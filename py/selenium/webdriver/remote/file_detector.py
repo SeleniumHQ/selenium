@@ -50,3 +50,4 @@ class LocalFileDetector(FileDetector):
         with suppress(OSError):
             if Path(file_path).is_file():
                 return file_path
+        return None
