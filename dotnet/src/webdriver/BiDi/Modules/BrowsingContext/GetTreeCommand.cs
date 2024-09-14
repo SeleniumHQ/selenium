@@ -14,18 +14,21 @@ internal record GetTreeCommandParameters : CommandParameters
 
 public record GetTreeOptions : CommandOptions
 {
+    public GetTreeOptions() { }
+
+    internal GetTreeOptions(BrowsingContextGetTreeOptions? options)
+    {
+        MaxDepth = options?.MaxDepth;
+    }
+
     public long? MaxDepth { get; set; }
 
     public BrowsingContext? Root { get; set; }
 }
 
-public record BrowsingContextGetTreeOptions : GetTreeOptions
+public record BrowsingContextGetTreeOptions
 {
-    internal new BrowsingContext? Root
-    {
-        get => base.Root;
-        set => base.Root = value;
-    }
+    public long? MaxDepth { get; set; }
 }
 
 public record GetTreeResult(IReadOnlyList<BrowsingContextInfo> Contexts);

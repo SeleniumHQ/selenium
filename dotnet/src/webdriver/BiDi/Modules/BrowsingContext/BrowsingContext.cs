@@ -100,11 +100,12 @@ public class BrowsingContext
 
     public Task<IReadOnlyList<BrowsingContextInfo>> GetTreeAsync(BrowsingContextGetTreeOptions? options = null)
     {
-        options ??= new();
+        GetTreeOptions getTreeOptions = new(options)
+        {
+            Root = this
+        };
 
-        options.Root = this;
-
-        return _bidi.BrowsingContextModule.GetTreeAsync(options);
+        return _bidi.BrowsingContextModule.GetTreeAsync(getTreeOptions);
     }
 
     public Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
