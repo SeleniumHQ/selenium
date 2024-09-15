@@ -45,8 +45,5 @@ public record ElementClipRectangle(Script.SharedReference Element) : ClipRectang
 
 public record CaptureScreenshotResult(string Data)
 {
-    public byte[] AsBytes()
-    {
-        return System.Convert.FromBase64String(Data);
-    }
+    public byte[] ToByteArray() => System.Convert.FromBase64String(Data);
 }

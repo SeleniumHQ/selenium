@@ -67,6 +67,9 @@ csharp_library(
         "**/*.cs",
     ]) + devtools_version_targets(),
     out = "WebDriver",
+    defines = [
+        "NET8_0_OR_GREATER",
+    ],
     internals_visible_to = [
         "WebDriver.Common.Tests",
     ],
@@ -128,6 +131,9 @@ csharp_library(
         "**/*.cs",
     ]) + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
+    defines = [
+        "NET8_0_OR_GREATER",
+    ],
     keyfile = "//dotnet:WebDriver.snk",
     langversion = "12.0",
     resources = [
