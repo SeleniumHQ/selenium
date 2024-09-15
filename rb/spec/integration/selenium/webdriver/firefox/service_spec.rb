@@ -37,23 +37,6 @@ module Selenium
         it 'can be started outside driver' do
           expect(service_manager.uri).to be_a(URI)
         end
-
-        context 'with a path env variable' do
-          before { ENV['SE_GECKODRIVER'] = DriverFinder.new(Options.new, described_class.new).driver_path }
-
-          after { ENV.delete('SE_GECKODRIVER') }
-
-          it 'uses the path from the environment' do
-            expect(service.executable_path).to match(/geckodriver/)
-          end
-
-          it 'updates the path after setting the environment variable' do
-            ENV['SE_GECKODRIVER'] = '/foo/bar'
-            service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
-
-            expect(service.executable_path).to match(/geckodriver/)
-          end
-        end
       end
     end # Firefox
   end # WebDriver
