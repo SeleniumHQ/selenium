@@ -116,9 +116,8 @@ class CookieHandler implements HttpHandler {
   private void addCookie(HttpResponse response, Cookie cook) {
     StringBuilder cookie = new StringBuilder();
 
-    String name = escapeCookieValue(cook.getName());
-    String value = escapeCookieValue(cook.getValue());
-    cookie.append(name).append("=").append(value).append("; ");
+    String name = cook.getName();
+    cookie.append(name).append("=").append(cook.getValue()).append("; ");
 
     append(cookie, cook.getDomain(), str -> "Domain=" + str);
     append(cookie, cook.getPath(), str -> "Path=" + str);
@@ -190,45 +189,5 @@ class CookieHandler implements HttpHandler {
             });
 
     return builder.build();
-  }
-  private String escapeCookieValue(String value) {
-    if (value == null || value.isEmpty()) {
-      return "";
-    }
-
-    StringBuilder cookieValue = new StringBuilder();
-
-    for (char c : value.toCharArray()) {
-      switch (c) {
-        case '\\':
-          cookieValue.append("\\\\");
-          break;
-        case '"':
-          cookieValue.append("\\\"");
-          break;
-        case ';':
-          cookieValue.append("\\;");
-          break;
-        case ',':
-          cookieValue.append("\\,");
-          break;
-        case '\r':
-        case '\n':
-          // Skip carriage return and newline characters
-          break;
-        case '<':
-          cookieValue.append("&lt;");
-          break;
-        case '>':
-          cookieValue.append("&gt;");
-          break;
-        case '&':
-          cookieValue.append("&amp;");
-          break;
-        default:
-          cookieValue.append(c); // Append safe characters as they are
-      }
-    }
-    return cookieValue.toString();
   }
 }
