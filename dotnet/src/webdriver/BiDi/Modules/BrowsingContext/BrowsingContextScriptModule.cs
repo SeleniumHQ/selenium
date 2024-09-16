@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Modules.Script;
 using System.Collections.Generic;
 
@@ -8,11 +8,12 @@ public class BrowsingContextScriptModule(BrowsingContext context, ScriptModule s
 {
     public async Task<PreloadScript> AddPreloadScriptAsync(string functionDeclaration, BrowsingContextAddPreloadScriptOptions? options = null)
     {
-        options ??= new();
+        AddPreloadScriptOptions addPreloadScriptOptions = new(options)
+        {
+            Contexts = [context]
+        };
 
-        options.Contexts = [context];
-
-        return await scriptModule.AddPreloadScriptAsync(functionDeclaration, options).ConfigureAwait(false);
+        return await scriptModule.AddPreloadScriptAsync(functionDeclaration, addPreloadScriptOptions).ConfigureAwait(false);
     }
 
     public async Task<IReadOnlyList<RealmInfo>> GetRealmsAsync(GetRealmsOptions? options = null)

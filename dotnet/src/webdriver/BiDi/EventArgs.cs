@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
+using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi;

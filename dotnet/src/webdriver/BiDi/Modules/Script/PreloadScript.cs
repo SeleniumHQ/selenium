@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Modules.Script;
