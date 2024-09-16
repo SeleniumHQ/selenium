@@ -116,6 +116,7 @@ class CookieHandler implements HttpHandler {
   private void addCookie(HttpResponse response, Cookie cook) {
     StringBuilder cookie = new StringBuilder();
 
+    // TODO: escape string as necessary
     String name = cook.getName();
     cookie.append(name).append("=").append(cook.getValue()).append("; ");
 
