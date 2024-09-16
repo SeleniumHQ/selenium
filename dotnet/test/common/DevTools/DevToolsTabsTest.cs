@@ -22,7 +22,8 @@ namespace OpenQA.Selenium.DevTools
             driver.SwitchTo().Window(oldWindowHandle);
             driver.Close();
             Assert.That(
-                async () => {
+                async () =>
+                {
                     await domains.Console.Enable();
                 },
                 Throws.Nothing

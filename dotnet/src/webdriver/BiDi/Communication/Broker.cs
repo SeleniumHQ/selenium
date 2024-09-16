@@ -58,6 +58,7 @@ public class Broker : IAsyncDisposable
                 new RealmConverter(_bidi),
                 new RealmTypeConverter(),
                 new DateTimeOffsetConverter(),
+                new PrintPageRangeConverter(),
                 new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
                 
                 // https://github.com/dotnet/runtime/issues/72604
