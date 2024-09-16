@@ -1,4 +1,4 @@
-﻿namespace OpenQA.Selenium.BiDi.Modules.Network;
+namespace OpenQA.Selenium.BiDi.Modules.Network;
 
 public record SetCookieHeader(string Name, BytesValue Value)
 {

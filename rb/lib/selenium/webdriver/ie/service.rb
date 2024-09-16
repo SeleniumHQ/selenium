@@ -24,6 +24,7 @@ module Selenium
         DEFAULT_PORT = 5555
         EXECUTABLE = 'IEDriverServer'
         SHUTDOWN_SUPPORTED = true
+        DRIVER_PATH_ENV_KEY = 'SE_IEDRIVER'
       end # Server
     end # IE
   end # WebDriver

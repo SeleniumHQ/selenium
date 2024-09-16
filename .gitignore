@@ -141,3 +141,4 @@ javascript/node/selenium-webdriver/.vscode/settings.json
 
 dotnet-bin
 .metadata/
+.npmrc
