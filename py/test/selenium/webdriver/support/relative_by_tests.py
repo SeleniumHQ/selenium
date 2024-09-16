@@ -64,9 +64,7 @@ def test_should_be_able_to_combine_filters(driver, pages):
     pages.load("relative_locators.html")
 
     elements = driver.find_elements(
-        with_tag_name("td")
-        .above(driver.find_element(By.ID, "center"))
-        .to_right_of(driver.find_element(By.ID, "top"))
+        with_tag_name("td").above(driver.find_element(By.ID, "center")).to_right_of(driver.find_element(By.ID, "top"))
     )
 
     ids = [el.get_attribute("id") for el in elements]
@@ -76,9 +74,7 @@ def test_should_be_able_to_combine_filters(driver, pages):
 def test_should_be_able_to_combine_filters_by_locator(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(
-        with_tag_name("td").above({By.ID: "center"}).to_right_of({By.ID: "top"})
-    )
+    elements = driver.find_elements(with_tag_name("td").above({By.ID: "center"}).to_right_of({By.ID: "top"}))
 
     ids = [el.get_attribute("id") for el in elements]
     assert "topRight" in ids
@@ -142,7 +138,7 @@ def test_should_be_able_to_combine_straight_filters(driver, pages):
     )
 
     ids = [el.get_attribute("id") for el in elements]
-    assert ids.count() == 1
+    assert len(ids) == 1
     assert "bottomRight" in ids
 
 
@@ -220,7 +216,7 @@ def test_should_find_elements_above_another(driver, pages):
     elements = driver.find_elements(with_tag_name("td").above({By.ID: "center"}))
 
     ids = [el.get_attribute("id") for el in elements]
-    assert ids.count() == 3
+    assert len(ids) == 3
     assert "top" in ids
     assert "topLeft" in ids
     assert "topRight" in ids
@@ -232,7 +228,7 @@ def test_should_find_elements_below_another(driver, pages):
     elements = driver.find_elements(with_tag_name("td").below({By.ID: "center"}))
 
     ids = [el.get_attribute("id") for el in elements]
-    assert ids.count() == 3
+    assert len(ids) == 3
     assert "bottom" in ids
     assert "bottomLeft" in ids
     assert "bottomRight" in ids
@@ -244,7 +240,7 @@ def test_should_find_elements_left_of_another(driver, pages):
     elements = driver.find_elements(with_tag_name("td").to_left_of({By.ID: "center"}))
 
     ids = [el.get_attribute("id") for el in elements]
-    assert ids.count() == 3
+    assert len(ids) == 3
     assert "left" in ids
     assert "topLeft" in ids
     assert "bottomLeft" in ids
@@ -256,7 +252,7 @@ def test_should_find_elements_right_of_another(driver, pages):
     elements = driver.find_elements(with_tag_name("td").to_right_of({By.ID: "center"}))
 
     ids = [el.get_attribute("id") for el in elements]
-    assert ids.count() == 3
+    assert len(ids) == 3
     assert "right" in ids
     assert "topRight" in ids
     assert "bottomRight" in ids
@@ -268,7 +264,7 @@ def test_should_find_elements_straight_above_another(driver, pages):
     elements = driver.find_elements(with_tag_name("td").above({By.ID: "bottom"}))
 
     ids = [el.get_attribute("id") for el in elements]
-    assert ids.count() == 2
+    assert len(ids) == 2
     assert "top" in ids
     assert "center" in ids
 
@@ -279,7 +275,7 @@ def test_should_find_elements_straight_below_another(driver, pages):
     elements = driver.find_elements(with_tag_name("td").below({By.ID: "top"}))
 
     ids = [el.get_attribute("id") for el in elements]
-    assert ids.count() == 2
+    assert len(ids) == 2
     assert "bottom" in ids
     assert "center" in ids
 
@@ -290,7 +286,7 @@ def test_should_find_elements_straight_left_of_another(driver, pages):
     elements = driver.find_elements(with_tag_name("td").to_left_of({By.ID: "right"}))
 
     ids = [el.get_attribute("id") for el in elements]
-    assert ids.count() == 2
+    assert len(ids) == 2
     assert "left" in ids
     assert "center" in ids
 
@@ -301,7 +297,6 @@ def test_should_find_elements_straight_right_of_another(driver, pages):
     elements = driver.find_elements(with_tag_name("td").to_right_of({By.ID: "left"}))
 
     ids = [el.get_attribute("id") for el in elements]
-    assert ids.count() == 2
+    assert len(ids) == 2
     assert "right" in ids
     assert "center" in ids
-
