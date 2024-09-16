@@ -191,6 +191,7 @@ class CookieHandler implements HttpHandler {
 
     return builder.build();
   }
+
   private String escapeCookieValue(String value) {
     if (value == null || value.isEmpty()) {
       return "";
