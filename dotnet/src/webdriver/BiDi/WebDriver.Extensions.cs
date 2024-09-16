@@ -9,7 +9,7 @@ public static class WebDriverExtensions
     {
         var webSocketUrl = ((IHasCapabilities)webDriver).Capabilities.GetCapability("webSocketUrl");
 
-        if (webSocketUrl is null) throw new System.Exception("The driver is not compatible with bidirectional protocol.");
+        if (webSocketUrl is null) throw new System.Exception("The driver is not compatible with bidirectional protocol or it is not enabled in driver options.");
 
         var bidi = await BiDi.ConnectAsync(webSocketUrl.ToString()!).ConfigureAwait(false);
 

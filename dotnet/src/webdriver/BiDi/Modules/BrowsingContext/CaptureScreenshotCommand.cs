@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
@@ -45,8 +45,5 @@ public record ElementClipRectangle(Script.SharedReference Element) : ClipRectang
 
 public record CaptureScreenshotResult(string Data)
 {
-    public byte[] AsBytes()
-    {
-        return System.Convert.FromBase64String(Data);
-    }
+    public byte[] ToByteArray() => System.Convert.FromBase64String(Data);
 }

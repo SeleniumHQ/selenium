@@ -1,4 +1,4 @@
-﻿namespace OpenQA.Selenium.BiDi.Modules.Script;
+namespace OpenQA.Selenium.BiDi.Modules.Script;
 
 public record ChannelValue : LocalValue
 {
