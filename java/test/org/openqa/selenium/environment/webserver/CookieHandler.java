@@ -191,21 +191,44 @@ class CookieHandler implements HttpHandler {
 
     return builder.build();
   }
-
   private String escapeCookieValue(String value) {
     if (value == null || value.isEmpty()) {
       return "";
     }
 
-    return value
-        .replace("\\", "\\\\")
-        .replace("\"", "\\\"")
-        .replace(";", "\\;")
-        .replace(",", "\\,")
-        .replace("\r", "")
-        .replace("\n", "")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-        .replace("&", "&amp;");
+    StringBuilder cookieValue = new StringBuilder();
+
+    for (char c : value.toCharArray()) {
+      switch (c) {
+        case '\\':
+          cookieValue.append("\\\\");
+          break;
+        case '"':
+          cookieValue.append("\\\"");
+          break;
+        case ';':
+          cookieValue.append("\\;");
+          break;
+        case ',':
+          cookieValue.append("\\,");
+          break;
+        case '\r':
+        case '\n':
+          // Skip carriage return and newline characters
+          break;
+        case '<':
+          cookieValue.append("&lt;");
+          break;
+        case '>':
+          cookieValue.append("&gt;");
+          break;
+        case '&':
+          cookieValue.append("&amp;");
+          break;
+        default:
+          cookieValue.append(c); // Append safe characters as they are
+      }
+    }
+    return cookieValue.toString();
   }
 }
