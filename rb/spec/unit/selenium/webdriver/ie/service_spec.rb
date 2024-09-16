@@ -119,6 +119,28 @@ module Selenium
 
             expect(described_class).not_to have_received(:new)
           end
+
+          context 'with a path env variable' do
+            let(:service) { described_class.new }
+            let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
+
+            before do
+              ENV['SE_IEDRIVER'] = service_path
+            end
+
+            after { ENV.delete('SE_IEDRIVER') }
+
+            it 'uses the path from the environment' do
+              expect(service.executable_path).to match(/IEDriver/)
+            end
+
+            it 'updates the path after setting the environment variable' do
+              ENV['SE_IEDRIVER'] = '/foo/bar'
+              service.executable_path = service_path
+
+              expect(service.executable_path).to match(/IEDriver/)
+            end
+          end
         end
       end
     end # IE

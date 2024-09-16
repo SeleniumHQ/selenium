@@ -114,6 +114,28 @@ module Selenium
 
             expect(described_class).not_to have_received(:new)
           end
+
+          context 'with a path env variable' do
+            let(:service) { described_class.new }
+            let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
+
+            before do
+              ENV['SE_SAFARIDRIVER'] = service_path
+            end
+
+            after { ENV.delete('SE_SAFARIDRIVER') }
+
+            it 'uses the path from the environment' do
+              expect(service.executable_path).to match(/safaridriver/)
+            end
+
+            it 'updates the path after setting the environment variable' do
+              ENV['SE_SAFARIDRIVER'] = '/foo/bar'
+              service.executable_path = service_path
+
+              expect(service.executable_path).to match(/safaridriver/)
+            end
+          end
         end
       end
     end # Safari
