@@ -63,7 +63,8 @@ def test_should_be_able_to_find_elements_above_another_by_locator(driver, pages)
 def test_should_be_able_to_combine_filters(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(with_tag_name("td")
+    elements = driver.find_elements(
+        with_tag_name("td")
         .above(driver.find_element(By.ID, "center"))
         .to_right_of(driver.find_element(By.ID, "top"))
     )
@@ -75,7 +76,9 @@ def test_should_be_able_to_combine_filters(driver, pages):
 def test_should_be_able_to_combine_filters_by_locator(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(with_tag_name("td").above({By.ID: "center"}).to_right_of({By.ID: "top"}))
+    elements = driver.find_elements(
+        with_tag_name("td").above({By.ID: "center"}).to_right_of({By.ID: "top"})
+    )
 
     ids = [el.get_attribute("id") for el in elements]
     assert "topRight" in ids
@@ -84,7 +87,8 @@ def test_should_be_able_to_combine_filters_by_locator(driver, pages):
 def test_should_be_able_to_use_css_selectors(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "td")
+    elements = driver.find_elements(
+        locate_with(By.CSS_SELECTOR, "td")
         .above(driver.find_element(By.ID, "center"))
         .to_right_of(driver.find_element(By.ID, "top"))
     )
@@ -107,7 +111,8 @@ def test_should_be_able_to_use_css_selectors_by_locator(driver, pages):
 def test_should_be_able_to_use_xpath(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(locate_with(By.XPATH, "//td[1]")
+    elements = driver.find_elements(
+        locate_with(By.XPATH, "//td[1]")
         .below(driver.find_element(By.ID, "top"))
         .above(driver.find_element(By.ID, "bottomLeft"))
     )
@@ -119,7 +124,9 @@ def test_should_be_able_to_use_xpath(driver, pages):
 def test_should_be_able_to_use_xpath_by_locator(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(locate_with(By.XPATH, "//td[1]").below({By.ID: "top"}).above({By.ID: "bottomLeft"}))
+    elements = driver.find_elements(
+        locate_with(By.XPATH, "//td[1]").below({By.ID: "top"}).above({By.ID: "bottomLeft"})
+    )
 
     ids = [el.get_attribute("id") for el in elements]
     assert "left" in ids
@@ -128,7 +135,8 @@ def test_should_be_able_to_use_xpath_by_locator(driver, pages):
 def test_should_be_able_to_combine_straight_filters(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(with_tag_name("td")
+    elements = driver.find_elements(
+        with_tag_name("td")
         .straightBelow(driver.find_element(By.ID, "topRight"))
         .straight_to_right_of(driver.find_element(By.ID, "bottomLeft"))
     )
