@@ -1,6 +1,6 @@
 ## 4.24.1
 
--  Close CDP websocket connection on driver.quit (#14501)
+- Close CDP websocket connection on driver.quit (#14501)
 
 ## 4.24.0
 

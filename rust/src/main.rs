@@ -253,25 +253,28 @@ fn main() {
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
-            if let Some(best_driver_from_cache) =
-                selenium_manager.find_best_driver_from_cache().unwrap()
-            {
-                log.debug_or_warn(
-                    format!(
-                        "There was an error managing {} ({}); using driver found in the cache",
-                        selenium_manager.get_driver_name(),
-                        err
-                    ),
-                    selenium_manager.is_offline(),
-                );
-                log_driver_and_browser_path(
-                    log,
-                    &best_driver_from_cache,
-                    &selenium_manager.get_browser_path_or_latest_from_cache(),
-                    selenium_manager.get_receiver(),
-                );
-                flush_and_exit(OK, log, Some(err));
-            } else if selenium_manager.is_offline() {
+            if selenium_manager.is_fallback_driver_from_cache() {
+                if let Some(best_driver_from_cache) =
+                    selenium_manager.find_best_driver_from_cache().unwrap()
+                {
+                    log.debug_or_warn(
+                        format!(
+                            "There was an error managing {} ({}); using driver found in the cache",
+                            selenium_manager.get_driver_name(),
+                            err
+                        ),
+                        selenium_manager.is_offline(),
+                    );
+                    log_driver_and_browser_path(
+                        log,
+                        &best_driver_from_cache,
+                        &selenium_manager.get_browser_path_or_latest_from_cache(),
+                        selenium_manager.get_receiver(),
+                    );
+                    flush_and_exit(OK, log, Some(err));
+                }
+            }
+            if selenium_manager.is_offline() {
                 log.warn(&err);
                 flush_and_exit(OK, log, Some(err));
             } else {
