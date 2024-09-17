@@ -129,6 +129,28 @@ module Selenium
             expect(service.log).to be_nil
             expect(service.args).to eq ['--log-path=/path/to/log.txt']
           end
+
+          context 'with a path env variable' do
+            let(:service) { described_class.new }
+            let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
+
+            before do
+              ENV['SE_EDGEDRIVER'] = service_path
+            end
+
+            after { ENV.delete('SE_EDGEDRIVER') }
+
+            it 'uses the path from the environment' do
+              expect(service.executable_path).to match(/edgedriver/)
+            end
+
+            it 'updates the path after setting the environment variable' do
+              ENV['SE_EDGEDRIVER'] = '/foo/bar'
+              service.executable_path = service_path
+
+              expect(service.executable_path).to match(/edgedriver/)
+            end
+          end
         end
       end
     end # Edge
