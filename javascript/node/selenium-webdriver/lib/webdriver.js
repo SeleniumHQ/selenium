@@ -792,6 +792,10 @@ class WebDriver {
       if (this._wsConnection !== undefined) {
         this._wsConnection.close()
       }
+
+      if (this._bidi !== undefined) {
+        this._bidi.close()
+      }
     })
   }
 
@@ -1288,9 +1292,12 @@ class WebDriver {
    * @returns {BIDI}
    */
   async getBidi() {
-    const caps = await this.getCapabilities()
+    if (this._bidi === undefined) {
+      const caps = await this.getCapabilities()
     let WebSocketUrl = caps['map_'].get('webSocketUrl')
-    return new BIDI(WebSocketUrl.replace('localhost', '127.0.0.1'))
+    this._bidi = new BIDI(WebSocketUrl.replace('localhost', '127.0.0.1'))
+  }
+    return this._bidi;
   }
 
   /**
