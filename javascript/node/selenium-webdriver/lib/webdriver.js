@@ -1294,10 +1294,10 @@ class WebDriver {
   async getBidi() {
     if (this._bidi === undefined) {
       const caps = await this.getCapabilities()
-    let WebSocketUrl = caps['map_'].get('webSocketUrl')
-    this._bidi = new BIDI(WebSocketUrl.replace('localhost', '127.0.0.1'))
-  }
-    return this._bidi;
+      let WebSocketUrl = caps['map_'].get('webSocketUrl')
+      this._bidi = new BIDI(WebSocketUrl.replace('localhost', '127.0.0.1'))
+    }
+    return this._bidi
   }
 
   /**
