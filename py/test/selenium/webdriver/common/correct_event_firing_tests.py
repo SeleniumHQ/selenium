@@ -111,21 +111,20 @@ def test_clearing_an_element_should_cause_the_on_change_handler_to_fire(driver, 
     assert result.text == "Cleared"
 
 
-# TODO Currently Failing and needs fixing
-# def test_sending_keys_to_another_element_should_cause_the_blur_event_to_fire(driver, pages):
-#    pages.load("javascriptPage.html")
-#    element = driver.find_element(By.ID, "theworks")
-#    element.send_keys("foo")
-#    element2 = driver.find_element(By.ID, "changeable")
-#    element2.send_keys("bar")
-#    _assertEventFired(driver, "blur")
+def test_sending_keys_to_another_element_should_cause_the_blur_event_to_fire(driver, pages):
+    pages.load("javascriptPage.html")
+    element = driver.find_element(By.ID, "theworks")
+    element.send_keys("foo")
+    element2 = driver.find_element(By.ID, "changeable")
+    element2.send_keys("bar")
+    _assert_event_fired(driver, "blur")
 
-# TODO Currently Failing and needs fixing
-# def test_sending_keys_to_an_element_should_cause_the_focus_event_to_fire(driver, pages):
-#    pages.load("javascriptPage.html")
-#    element = driver.find_element(By.ID, "theworks")
-#    element.send_keys("foo")
-#    _assertEventFired(driver, "focus")
+
+def test_sending_keys_to_an_element_should_cause_the_focus_event_to_fire(driver, pages):
+    pages.load("javascriptPage.html")
+    element = driver.find_element(By.ID, "theworks")
+    element.send_keys("foo")
+    _assert_event_fired(driver, "focus")
 
 
 def _click_on_element_which_records_events(driver):
