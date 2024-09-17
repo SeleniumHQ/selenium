@@ -101,11 +101,14 @@ class RemoteNetwork implements Network {
 
           if (requestHandler.isPresent()) {
             RequestData interceptedRequest = beforeRequestSent.getRequest();
+
+            // Build the originalRequest object from the intercepted request details.
             HttpRequest originalRequest =
                 new HttpRequest(
                     HttpMethod.getHttpMethod(interceptedRequest.getMethod()),
                     interceptedRequest.getUrl());
 
+            // Populate the headers of the original request.
             interceptedRequest
                 .getHeaders()
                 .forEach(
