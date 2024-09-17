@@ -18,7 +18,7 @@ bazel_dep(name = "protobuf", version = "21.7", dev_dependency = True, repo_name 
 bazel_dep(name = "rules_cc", version = "0.0.9", dev_dependency = True)
 
 bazel_dep(name = "rules_dotnet", version = "0.15.1")
-bazel_dep(name = "rules_java", version = "7.6.3")
+bazel_dep(name = "rules_java", version = "7.11.1")
 bazel_dep(name = "rules_jvm_external", version = "6.3")
 bazel_dep(name = "rules_nodejs", version = "6.2.0")
 bazel_dep(name = "rules_oci", version = "1.7.6")
