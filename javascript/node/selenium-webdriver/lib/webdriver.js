@@ -789,8 +789,8 @@ class WebDriver {
       // If the websocket connection is not closed,
       // and we are running CDP sessions against the Selenium Grid,
       // the node process never exits since the websocket connection is open until the Grid is shutdown.
-      if (this._cdpConnection !== undefined) {
-        this._cdpConnection.close()
+      if (this._cdpWsConnection !== undefined) {
+        this._cdpWsConnection.close()
       }
 
       // Close the BiDi websocket connection
@@ -1246,18 +1246,18 @@ class WebDriver {
     this._wsUrl = await this.getWsUrl(debuggerUrl, target, caps)
     return new Promise((resolve, reject) => {
       try {
-        this._cdpConnection = new WebSocket(this._wsUrl.replace('localhost', '127.0.0.1'))
-        this._cdpConnection = new cdp.CdpConnection(this._cdpConnection)
+        this._cdpWsConnection = new WebSocket(this._wsUrl.replace('localhost', '127.0.0.1'))
+        this._cdpConnection = new cdp.CdpConnection(this._cdpWsConnection)
       } catch (err) {
         reject(err)
         return
       }
 
-      this._cdpConnection.on('open', async () => {
+      this._cdpWsConnection.on('open', async () => {
         await this.getCdpTargets()
       })
 
-      this._cdpConnection.on('message', async (message) => {
+      this._cdpWsConnection.on('message', async (message) => {
         const params = JSON.parse(message)
         if (params.result) {
           if (params.result.targetInfos) {
@@ -1278,7 +1278,7 @@ class WebDriver {
         }
       })
 
-      this._cdpConnection.on('error', (error) => {
+      this._cdpWsConnection.on('error', (error) => {
         reject(error)
       })
     })
@@ -1346,7 +1346,7 @@ class WebDriver {
    * @param connection CDP Connection
    */
   async register(username, password, connection) {
-    this._cdpConnection.on('message', (message) => {
+    this._cdpWsConnection.on('message', (message) => {
       const params = JSON.parse(message)
 
       if (params.method === 'Fetch.authRequired') {
@@ -1391,7 +1391,7 @@ class WebDriver {
    * @param callback callback called when we intercept requests.
    */
   async onIntercept(connection, httpResponse, callback) {
-    this._cdpConnection.on('message', (message) => {
+    this._cdpWsConnection.on('message', (message) => {
       const params = JSON.parse(message)
       if (params.method === 'Fetch.requestPaused') {
         const requestPausedParams = params['params']
@@ -1428,7 +1428,7 @@ class WebDriver {
    * @returns {Promise<void>}
    */
   async onLogEvent(connection, callback) {
-    this._cdpConnection.on('message', (message) => {
+    this._cdpWsConnection.on('message', (message) => {
       const params = JSON.parse(message)
       if (params.method === 'Runtime.consoleAPICalled') {
         const consoleEventParams = params['params']
@@ -1465,7 +1465,7 @@ class WebDriver {
   async onLogException(connection, callback) {
     await connection.execute('Runtime.enable', {}, null)
 
-    this._cdpConnection.on('message', (message) => {
+    this._cdpWsConnection.on('message', (message) => {
       const params = JSON.parse(message)
 
       if (params.method === 'Runtime.exceptionThrown') {
@@ -1518,7 +1518,7 @@ class WebDriver {
       null,
     )
 
-    this._cdpConnection.on('message', async (message) => {
+    this._cdpWsConnection.on('message', async (message) => {
       const params = JSON.parse(message)
       if (params.method === 'Runtime.bindingCalled') {
         let payload = JSON.parse(params['params']['payload'])
