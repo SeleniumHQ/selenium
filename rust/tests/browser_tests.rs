@@ -160,3 +160,12 @@ fn invalid_browser_path_test() {
     .code(DATAERR)
     .failure();
 }
+
+#[test]
+fn invalid_browser_version_test() {
+    let mut cmd = get_selenium_manager();
+    cmd.args(["--browser", "chrome", "--browser-version", "bad-version"])
+        .assert()
+        .code(DATAERR)
+        .failure();
+}

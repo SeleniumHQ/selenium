@@ -487,7 +487,11 @@ pub trait SeleniumManager {
                             discovered_major_browser_version,
                             major_browser_version,
                         ));
-                        download_browser = true;
+                        self.set_fallback_driver_from_cache(false);
+                        return Err(anyhow!(format!(
+                            "Invalid version {} provided",
+                            major_browser_version
+                        )));
                     } else {
                         self.set_browser_version(discovered_version);
                     }
