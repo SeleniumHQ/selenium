@@ -1,4 +1,4 @@
-﻿namespace OpenQA.Selenium.BiDi.Modules.Storage;
+namespace OpenQA.Selenium.BiDi.Modules.Storage;
 
 public class PartitionKey
 {

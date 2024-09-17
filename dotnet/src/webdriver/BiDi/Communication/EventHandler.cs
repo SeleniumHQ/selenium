@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
+using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

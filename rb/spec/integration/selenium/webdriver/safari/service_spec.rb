@@ -17,21 +17,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative '../spec_helper'
+
 module Selenium
   module WebDriver
-    module Edge
-      class Service < WebDriver::Service
-        DEFAULT_PORT = 9515
-        EXECUTABLE = 'msedgedriver'
-        SHUTDOWN_SUPPORTED = true
-        DRIVER_PATH_ENV_KEY = 'SE_EDGEDRIVER'
-        def log
-          return @log unless @log.is_a? String
+    module Safari
+      describe Service, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :safari}] do
+        let(:service) { described_class.new }
+        let(:service_manager) { service.launch }
 
-          @args << "--log-path=#{@log}"
-          @log = nil
+        after { service_manager.stop }
+
+        it 'auto uses safaridriver' do
+          service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
+
+          expect(service_manager.uri).to be_a(URI)
         end
-      end # Service
-    end # Edge
+
+        it 'can be started outside driver' do
+          expect(service_manager.uri).to be_a(URI)
+        end
+      end
+    end # Safari
   end # WebDriver
 end # Selenium

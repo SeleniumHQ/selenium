@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium.BiDi.Modules.Log;
+using OpenQA.Selenium.BiDi.Modules.Log;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
