@@ -25,7 +25,7 @@ from io import IOBase
 from platform import system
 from subprocess import PIPE
 from time import sleep
-from typing import cast
+from typing import cast, Optional
 from urllib import request
 from urllib.error import URLError
 
@@ -53,6 +53,7 @@ class Service(ABC):
         port: int = 0,
         log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
+        driver_path_env_key: str = None,
         **kwargs,
     ) -> None:
         if isinstance(log_output, str):
@@ -70,6 +71,7 @@ class Service(ABC):
         self.popen_kw = kwargs.pop("popen_kw", {})
         self.creation_flags = self.popen_kw.pop("creation_flags", 0)
         self.env = env or os.environ
+        self.DRIVER_PATH_ENV_KEY = driver_path_env_key
 
     @property
     def service_url(self) -> str:
@@ -236,3 +238,5 @@ class Service(ABC):
                     f"'{os.path.basename(self._path)}' executable may have wrong permissions."
                 ) from err
             raise
+    def env_path(self) -> Optional[str]:
+        return os.getenv(self.DRIVER_PATH_ENV_KEY, None)

@@ -51,7 +51,7 @@ class ChromiumDriver(RemoteWebDriver):
             options.binary_location = finder.get_browser_path()
             options.browser_version = None
 
-        self.service.path = finder.get_driver_path()
+        self.service.path = finder.get_driver_path() or self.service.env_path()
         self.service.start()
 
         executor = ChromiumRemoteConnection(
