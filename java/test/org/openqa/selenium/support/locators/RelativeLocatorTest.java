@@ -184,7 +184,7 @@ class RelativeLocatorTest extends JupiterTestBase {
 
     WebElement left = driver.findElement(By.id("left"));
 
-    List<WebElement> elements = driver.findElements(with(tagName("td")).straightAbove(left));
+    List<WebElement> elements = driver.findElements(with(tagName("td")).straightRight(left));
     List<String> ids =
         elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
