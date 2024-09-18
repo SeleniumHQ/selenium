@@ -5,7 +5,7 @@ namespace OpenQA.Selenium.BiDi;
 
 public static class WebDriverExtensions
 {
-    public static async Task<BiDi> AsBidirectionalAsync(this IWebDriver webDriver)
+    public static async Task<BiDi> AsBiDiAsync(this IWebDriver webDriver)
     {
         var webSocketUrl = ((IHasCapabilities)webDriver).Capabilities.GetCapability("webSocketUrl");
 
@@ -16,9 +16,9 @@ public static class WebDriverExtensions
         return bidi;
     }
 
-    public static async Task<BrowsingContext> AsBidirectionalContextAsync(this IWebDriver webDriver)
+    public static async Task<BrowsingContext> AsBiDiContextAsync(this IWebDriver webDriver)
     {
-        var bidi = await webDriver.AsBidirectionalAsync();
+        var bidi = await webDriver.AsBiDiAsync();
 
         var currentBrowsingContext = new BrowsingContext(bidi, webDriver.CurrentWindowHandle);
 
