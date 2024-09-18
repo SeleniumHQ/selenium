@@ -1,3 +1,12 @@
+4.25.0 (2024-09-18)
+=========================
+--> Setting nightly version
+--> [rb] Fix add_cause method not being able to process an array of hashes (#14433)
+--> replace `fedcm` links with new ones (#14478)
+replace all fedcm links with new ones
+--> [rb] Allow driver path to be set using ENV variables (#14287)
+--> Update supported versions for Chrome DevTools
+
 4.24.0 (2024-08-23)
 =========================
 * Deprecate WebStorage JS methods (#14276)

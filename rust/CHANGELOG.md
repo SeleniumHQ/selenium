@@ -1,3 +1,19 @@
+0.4.25
+======
+--> [rust] Reuse driver mirror URL (when available) to discover Firefox versions (#13941) (#14493)
+--> [rust] Selenium Manager errors when browser-path is wrong (#13352) (#14381)
+* [rust] Selenium Manager errors when browser-path is wrong (#13352)
+* [rust] Remove test data with incorrect browser path in macOS
+* Revert "[rust] Remove test data with incorrect browser path in macOS"
+This reverts commit 79c22d63c9823c9b6ccc9c8a8145426c6978b45e.
+* [rust] Escape browser path before checking existence
+* Revert "[rust] Escape browser path before checking existence"
+This reverts commit b876e2233ace321a41303a60cd1906aa071ed617.
+* [rust] Remove test data with incorrect browser path in macOS
+* [rust] Force window-sys crate version in Windows
+* Revert "[rust] Force window-sys crate version in Windows"
+This reverts commit a968a40e5afdd6d9de90cc190e2d2e380b5b9ee7.
+
 0.4.24
 ======
 

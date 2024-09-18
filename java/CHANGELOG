@@ -1,3 +1,7 @@
+v4.25.0
+======
+--> Update supported versions for Chrome DevTools
+
 v4.24.0
 ======
 * Add "se" prefixed capabilities to session response (#14323)

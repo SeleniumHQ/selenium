@@ -1,3 +1,39 @@
+v4.25.0
+======
+--> [dotnet] BiDi implementation (#14318)
+* Migrate
+* Use CLS compliant long instead of ulong
+* Use null instead of default for optional arguments
+* Use internal logging in websockettransport
+* Use internal logger in broker
+* Even with error log level
+* Simplify AsBidirectionalContextAsync
+* Fix ConfigureAwait in network module
+* Hide direct network interception
+* Rework public adding interception
+* Simplify network interception
+* Don't end session when disposing bidi driver
+--> [dotnet] Add BiDi OriginalOpener in browsing context info
+--> [dotnet] Forward subscription options in browser context for log module
+--> [dotnet] Adjust exception message when bidi is not enabled
+--> [dotnet] [bidi] Get tree from browsing context as root (#14495)
+--> [dotnet] [bidi] Enable implicit ways to specify page ranges for printing
+--> [dotnet] Fix formatting files content globally
+--> [dotnet] [bidi] Hide context from command options in contextual env
+--> [dotnet] Workaround using pre-processor directive (#14499)
+* [dotnet] Workaround using pre-processor directive
+* Fix formatting?
+* Fix formatting
+--> [dotnet] [bidi] Rename method of screenshot result to ToByteArray
+--> [dotnet] [bidi] Simplify browsing context to be just context
+Following to spec, it is implicitly clear that Context is exactly BrowsingCoontext. For RealmContext and UserContext we use fully qualified name.
+--> [dotnet] [bidi] Simplify browsing context type enumeration
+--> [dotnet] [bidi] Expose BiDi associated reference in browsing context
+--> [dotnet] [bidi] Rename entry point AsBidirectional to AsBiDirectional
+To keep aligned with naming and with other bindings
+--> [dotnet] [bidi] Consistent naming for main BiDi itself
+--> Update supported versions for Chrome DevTools
+
 v4.24.0
 ======
 * Migration from `Newtonsoft.Json` to `System.Text.Json` package (#14292)
