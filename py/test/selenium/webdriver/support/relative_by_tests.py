@@ -120,9 +120,7 @@ def test_should_be_able_to_use_xpath(driver, pages):
 def test_should_be_able_to_use_xpath_by_locator(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(
-        locate_with(By.XPATH, "//td[1]").below({By.ID: "top"}).above({By.ID: "bottomLeft"})
-    )
+    elements = driver.find_elements(locate_with(By.XPATH, "//td[1]").below({By.ID: "top"}).above({By.ID: "bottomLeft"}))
 
     ids = [el.get_attribute("id") for el in elements]
     assert "left" in ids
@@ -134,7 +132,7 @@ def test_should_be_able_to_combine_straight_filters(driver, pages):
     elements = driver.find_elements(
         with_tag_name("td")
         .straight_below(driver.find_element(By.ID, "topRight"))
-        .straight_to_right_of(driver.find_element(By.ID, "bottomLeft"))
+        .straight_right_of(driver.find_element(By.ID, "bottomLeft"))
     )
 
     ids = [el.get_attribute("id") for el in elements]
@@ -176,7 +174,7 @@ def test_near_locator_should_find_near_elements_by_locator(driver, pages):
 
 def test_near_locator_should_not_find_far_elements(driver, pages):
     pages.load("relative_locators.html")
-    rect3 = driver.find_element(By.ID, "rect3")
+    rect2 = driver.find_element(By.ID, "rect2")
 
     with pytest.raises(NoSuchElementException) as exc:
         driver.find_element(locate_with(By.ID, "rect4").near(rect3))
@@ -188,7 +186,7 @@ def test_near_locator_should_not_find_far_elements_by_locator(driver, pages):
     pages.load("relative_locators.html")
 
     with pytest.raises(NoSuchElementException) as exc:
-        driver.find_element(locate_with(By.ID, "rect4").near({By.ID: "rect3"}))
+        driver.find_element(locate_with(By.ID, "rect4").near({By.ID: "rect2"}))
 
     assert "Cannot locate relative element with: {'id': 'rect4'}" in exc.value.msg
 
