@@ -157,9 +157,9 @@ def test_no_such_element_is_raised_rather_than_index_error_by_locator(driver, pa
 
 def test_near_locator_should_find_near_elements(driver, pages):
     pages.load("relative_locators.html")
-    rect1 = driver.find_element(By.ID, "rect1")
+    rect = driver.find_element(By.ID, "rect1")
 
-    el = driver.find_element(locate_with(By.ID, "rect2").near(rect1))
+    el = driver.find_element(locate_with(By.ID, "rect2").near(rect))
 
     assert el.get_attribute("id") == "rect2"
 
@@ -174,10 +174,10 @@ def test_near_locator_should_find_near_elements_by_locator(driver, pages):
 
 def test_near_locator_should_not_find_far_elements(driver, pages):
     pages.load("relative_locators.html")
-    rect2 = driver.find_element(By.ID, "rect2")
+    rect = driver.find_element(By.ID, "rect2")
 
     with pytest.raises(NoSuchElementException) as exc:
-        driver.find_element(locate_with(By.ID, "rect4").near(rect3))
+        driver.find_element(locate_with(By.ID, "rect4").near(rect))
 
     assert "Cannot locate relative element with: {'id': 'rect4'}" in exc.value.msg
 
@@ -193,9 +193,9 @@ def test_near_locator_should_not_find_far_elements_by_locator(driver, pages):
 
 def test_near_locator_should_find_far_elements(driver, pages):
     pages.load("relative_locators.html")
-    rect3 = driver.find_element(By.ID, "rect3")
+    rect = driver.find_element(By.ID, "rect2")
 
-    el = driver.find_element(locate_with(By.ID, "rect4").near(rect3, 100))
+    el = driver.find_element(locate_with(By.ID, "rect4").near(rect, 100))
 
     assert el.get_attribute("id") == "rect4"
 
@@ -203,7 +203,7 @@ def test_near_locator_should_find_far_elements(driver, pages):
 def test_near_locator_should_find_far_elements_by_locator(driver, pages):
     pages.load("relative_locators.html")
 
-    el = driver.find_element(locate_with(By.ID, "rect4").near({By.ID: "rect3"}, 100))
+    el = driver.find_element(locate_with(By.ID, "rect4").near({By.ID: "rect2"}, 100))
 
     assert el.get_attribute("id") == "rect4"
 
