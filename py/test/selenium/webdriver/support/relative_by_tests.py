@@ -133,7 +133,7 @@ def test_should_be_able_to_combine_straight_filters(driver, pages):
 
     elements = driver.find_elements(
         with_tag_name("td")
-        .straightBelow(driver.find_element(By.ID, "topRight"))
+        .straight_below(driver.find_element(By.ID, "topRight"))
         .straight_to_right_of(driver.find_element(By.ID, "bottomLeft"))
     )
 
@@ -261,7 +261,7 @@ def test_should_find_elements_right_of_another(driver, pages):
 def test_should_find_elements_straight_above_another(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(with_tag_name("td").above({By.ID: "bottom"}))
+    elements = driver.find_elements(with_tag_name("td").straight_above({By.ID: "bottom"}))
 
     ids = [el.get_attribute("id") for el in elements]
     assert len(ids) == 2
@@ -272,7 +272,7 @@ def test_should_find_elements_straight_above_another(driver, pages):
 def test_should_find_elements_straight_below_another(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(with_tag_name("td").below({By.ID: "top"}))
+    elements = driver.find_elements(with_tag_name("td").straight_below({By.ID: "top"}))
 
     ids = [el.get_attribute("id") for el in elements]
     assert len(ids) == 2
@@ -283,7 +283,7 @@ def test_should_find_elements_straight_below_another(driver, pages):
 def test_should_find_elements_straight_left_of_another(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(with_tag_name("td").to_left_of({By.ID: "right"}))
+    elements = driver.find_elements(with_tag_name("td").straight_left_of({By.ID: "right"}))
 
     ids = [el.get_attribute("id") for el in elements]
     assert len(ids) == 2
@@ -294,7 +294,7 @@ def test_should_find_elements_straight_left_of_another(driver, pages):
 def test_should_find_elements_straight_right_of_another(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(with_tag_name("td").to_right_of({By.ID: "left"}))
+    elements = driver.find_elements(with_tag_name("td").straight_right_of({By.ID: "left"}))
 
     ids = [el.get_attribute("id") for el in elements]
     assert len(ids) == 2
