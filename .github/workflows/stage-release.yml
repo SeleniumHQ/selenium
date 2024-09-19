@@ -63,7 +63,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/dist/*.*"
-          bodyFile: "scripts/github-actions/release-notes.md"
+          bodyFile: "scripts/github-actions/release_header.md"
           draft: true
           generateReleaseNotes: true
           name: Selenium ${{ env.VERSION }}
