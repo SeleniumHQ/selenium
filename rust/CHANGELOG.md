@@ -1,3 +1,9 @@
+0.4.25
+======
+
+* Reuse driver mirror URL (when available) to discover Firefox versions (#13941) (#14493)
+* Selenium Manager errors when browser-path is wrong (#13352) (#14381)
+
 0.4.24
 ======
 
