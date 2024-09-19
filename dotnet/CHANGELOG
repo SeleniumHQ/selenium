@@ -1,3 +1,15 @@
+v4.25.0
+======
+* Add CDP for Chrome 129 and remove 126
+* BiDi implementation (#14318)
+* Add BiDi OriginalOpener in browsing context info
+* [bidi] Forward subscription options in browser context for log module
+* [bidi] Enable implicit ways to specify page ranges for printing
+* Workaround using pre-processor directive (#14499)
+* [bidi] Simplify browsing context type enumeration
+* [bidi] Expose BiDi associated reference in browsing context
+* [bidi] Rename entry point AsBidirectional to AsBiDirectional
+
 v4.24.0
 ======
 * Migration from `Newtonsoft.Json` to `System.Text.Json` package (#14292)
