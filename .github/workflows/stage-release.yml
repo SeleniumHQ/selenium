@@ -28,7 +28,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: '0'
-          ref: 'trunk'
       - name: Extract version from branch name
         if: github.event.pull_request.merged == true
         run: |
@@ -45,8 +44,8 @@ jobs:
           git config --local user.name "Selenium CI Bot"
       - name: Tag Release
         run: |
-          git tag selenium-${{ env.VERSION }}
-          git push origin selenium-${{ env.VERSION }}
+          git tag selenium-${{ env.VERSION }} || echo "Tag already exists"
+          git push origin selenium-${{ env.VERSION }} || echo "Tag already exists remotely"
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
