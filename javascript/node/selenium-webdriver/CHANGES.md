@@ -1,8 +1,6 @@
 ## 4.25.0
---> [js] Updating version to nightly
---> Fix formatting
---> [js][bidi] Fix flaky test for network event
---> Update supported versions for Chrome DevTools
+
+- Add CDP for Chrome 129 and remove 126
 
 ## 4.24.1
 
