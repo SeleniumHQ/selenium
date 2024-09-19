@@ -3,6 +3,11 @@ name: Release Staging
 on:
   pull_request:
     types: [ closed ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Selenium version to release'
+        required: true
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -11,17 +16,25 @@ env:
 jobs:
   github-release:
     if: >
-      github.event.pull_request.merged == true &&
+      (github.event.pull_request.merged == true &&
       github.repository_owner == 'seleniumhq' &&
-      startsWith(github.event.pull_request.head.ref, 'release-preparation-')
+      startsWith(github.event.pull_request.head.ref, 'release-preparation-')) ||
+      (github.event_name == 'workflow_dispatch' && 
+      github.event.inputs.version != '' && 
+      github.repository_owner == 'seleniumhq')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Extract version from branch name
-        id: extract_version
+        if: github.event.pull_request.merged == true
         run: |
           VERSION=$(echo $BRANCH_NAME | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Extract version from workflow input
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION=${{ inputs.version }}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
       - name: Prep git
         run: |
