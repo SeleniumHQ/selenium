@@ -1,4 +1,20 @@
 ## 4.25.0
+--> [js] Updating version to nightly
+--> Fix formatting
+--> [js][bidi] Fix flaky test for network event
+--> [build] Prepare for release of Selenium 4.25.0 (#14516)
+* Update pinned browser versions
+* Update supported versions for Chrome DevTools
+* Update selenium manager version
+* Update authors file
+* FIX CHANGELOGS BEFORE MERGING!
+Update versions and change logs to release Selenium 4.25.0
+* [create-pull-request] automated change
+* [ci] Using an existing EdgeDriver binary
+* [rb] Run format script
+* Updating change logs
+
+## 4.25.0
 
 - Add CDP for Chrome 129 and remove 126
 
