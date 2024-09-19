@@ -1,24 +1,5 @@
 4.25.0 (2024-09-19)
 =========================
---> Setting nightly version
---> [rb] Fix add_cause method not being able to process an array of hashes (#14433)
---> replace `fedcm` links with new ones (#14478)
-replace all fedcm links with new ones
---> [rb] Allow driver path to be set using ENV variables (#14287)
---> [build] Prepare for release of Selenium 4.25.0 (#14516)
-* Update pinned browser versions
-* Update supported versions for Chrome DevTools
-* Update selenium manager version
-* Update authors file
-* FIX CHANGELOGS BEFORE MERGING!
-Update versions and change logs to release Selenium 4.25.0
-* [create-pull-request] automated change
-* [ci] Using an existing EdgeDriver binary
-* [rb] Run format script
-* Updating change logs
-
-4.25.0 (2024-09-19)
-=========================
 * Add CDP for Chrome 129 and remove 126
 * Fix add_cause method not being able to process an array of hashes (#14433)
 * replace `fedcm` links with new ones (#14478)

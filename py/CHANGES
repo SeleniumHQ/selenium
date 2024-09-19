@@ -1,26 +1,4 @@
 Selenium 4.25.0
---> Setting nightly version
---> fix type errors for `service.py`, `cdp.py`, `webelement.py` and `remote_connection.py` (#14448)
-* fix type errors for `service.py`, `cdp.py`, `webelement.py` and `remote_connection.py`
-* remove raise error
---> fix type errors for `input_device` and `file_detector` (#14459)
---> fix type errors for `pointer_input.py`, `wheel_input.py` and `firefox/options.py` (#14476)
-* fix type errors fro `firefox/options.py`
-* fix more mypy errors
---> firefox_profile.py: use `with` statement in zipfile as Python 2.x support is dropped (#14489)
---> [build] Prepare for release of Selenium 4.25.0 (#14516)
-* Update pinned browser versions
-* Update supported versions for Chrome DevTools
-* Update selenium manager version
-* Update authors file
-* FIX CHANGELOGS BEFORE MERGING!
-Update versions and change logs to release Selenium 4.25.0
-* [create-pull-request] automated change
-* [ci] Using an existing EdgeDriver binary
-* [rb] Run format script
-* Updating change logs
-
-Selenium 4.25.0
 * Add CDP for Chrome 129 and remove 126
 * fix type errors for `service.py`, `cdp.py`, `webelement.py` and `remote_connection.py` (#14448)
 * fix type errors for `input_device` and `file_detector` (#14459)
