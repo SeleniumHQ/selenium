@@ -44,12 +44,6 @@ jobs:
         run: |
           git tag selenium-${{ env.VERSION }}
           git push origin selenium-${{ env.VERSION }}
-      - name: Update Nightly Tag to Remove pre-release
-        run: |
-          git fetch --tags
-          git tag -d nightly || echo "Nightly tag not found"
-          git tag nightly
-          git push origin refs/tags/nightly --force
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -59,6 +53,12 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Build and Stage Packages
         run: ./go all:package[--config=release]
+      - name: Update Nightly Tag to Remove pre-release
+        run: |
+          git fetch --tags
+          git tag -d nightly || echo "Nightly tag not found"
+          git tag nightly
+          git push origin refs/tags/nightly --force
       - name: Generate Draft Release
         uses: softprops/action-gh-release@v2
         with:
