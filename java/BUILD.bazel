@@ -1,6 +1,6 @@
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@contrib_rules_jvm//java:defs.bzl", "spotbugs_config")
 load(":defs.bzl", "artifact")
-load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 
 exports_files(
     srcs = [
@@ -29,7 +29,7 @@ java_plugin(
     ],
     deps = [
         artifact("com.uber.nullaway:nullaway"),
-    ]
+    ],
 )
 
 java_library(
@@ -57,8 +57,12 @@ spotbugs_config(
 
 string_flag(
     name = "nullaway_level",
-    values = ["NONE", "WARN", "ERROR"],
     build_setting_default = "NONE",
+    values = [
+        "NONE",
+        "WARN",
+        "ERROR",
+    ],
 )
 
 config_setting(

@@ -180,7 +180,7 @@ maven.install(
         "com.google.googlejavaformat:google-java-format:jar:1.23.0",
         "com.graphql-java:graphql-java:20.2",
         "com.graphql-java:java-dataloader:3.2.0",
-        "com.uber.nullaway:nullaway:0.11.2",
+        "com.uber.nullaway:nullaway:0.11.3",
         "dev.failsafe:failsafe:3.3.2",
         "io.grpc:grpc-context:1.66.0",
         "io.lettuce:lettuce-core:6.4.0.RELEASE",
