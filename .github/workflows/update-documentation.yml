@@ -229,6 +229,7 @@ jobs:
         with:
           name: node-docs-patch
           path: patches/
+          merge-multiple: true
       - name: Apply patches
         run: |
           for patch in patches/*.patch; do
