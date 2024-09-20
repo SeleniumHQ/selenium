@@ -46,7 +46,7 @@ jobs:
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: 'temurin'
@@ -58,7 +58,7 @@ jobs:
           git format-patch -1 HEAD --stdout > java-docs.patch
       - name: Upload patch
         if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'java'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: java-docs-patch
           path: java-docs.patch
@@ -76,7 +76,7 @@ jobs:
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: 'temurin'
@@ -88,7 +88,7 @@ jobs:
           git format-patch -1 HEAD --stdout > ruby-docs.patch
       - name: Upload patch
         if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'ruby'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ruby-docs-patch
           path: ruby-docs.patch
@@ -106,7 +106,7 @@ jobs:
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
       - name: Set up Python 3.8
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.8
       - name: Install dependencies
@@ -121,7 +121,7 @@ jobs:
           git format-patch -1 HEAD --stdout > python-docs.patch
       - name: Upload patch
         if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'python'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: python-docs-patch
           path: python-docs.patch
@@ -150,7 +150,7 @@ jobs:
           git format-patch -1 HEAD --stdout > dotnet-docs.patch
       - name: Upload patch
         if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'dotnet'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: dotnet-docs-patch
           path: dotnet-docs.patch
@@ -179,7 +179,7 @@ jobs:
           git format-patch -1 HEAD --stdout > node-docs.patch
       - name: Upload patch
         if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'node'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: node-docs-patch
           path: node-docs.patch
