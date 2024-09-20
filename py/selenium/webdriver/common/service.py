@@ -65,13 +65,13 @@ class Service(ABC):
         else:
             self.log_output = log_output
 
-        self._path = executable_path
         self.port = port or utils.free_port()
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.popen_kw = kwargs.pop("popen_kw", {})
         self.creation_flags = self.popen_kw.pop("creation_flags", 0)
         self.env = env or os.environ
         self.DRIVER_PATH_ENV_KEY = driver_path_env_key
+        self._path = self.env_path() or executable_path
 
     @property
     def service_url(self) -> str:
