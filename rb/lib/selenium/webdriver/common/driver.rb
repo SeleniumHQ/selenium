@@ -264,6 +264,15 @@ module Selenium
         bridge.add_virtual_authenticator(options)
       end
 
+      #
+      # @return [Network]
+      # @see Network
+      #
+
+      def network
+        @network ||= WebDriver::Network.new(bridge)
+      end
+
       #-------------------------------- sugar  --------------------------------
 
       #
