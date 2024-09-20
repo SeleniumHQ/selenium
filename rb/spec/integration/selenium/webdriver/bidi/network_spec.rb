@@ -24,6 +24,12 @@ module Selenium
     describe Network,
              only: {browser: %i[chrome edge firefox]} do
 
+      it 'adds auth handler' do
+        reset_driver!(web_socket_url: true) do |driver|
+          driver.network.add_auth_handler(username: 'user', password: 'pass')
+        end
+      end
+
       it 'errors when missing required args' do
         reset_driver!(web_socket_url: true) do |driver|
           msg = /Missing required arguments: response, username, password/

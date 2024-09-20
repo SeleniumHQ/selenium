@@ -20,13 +20,13 @@
 module Selenium
   module WebDriver
     class BiDi
-      class NetworkHandler
+      class AuthHandler
         def initialize(bidi)
           @bidi = bidi
         end
 
-        def add_auth_handler(**kwargs)
-          @bidi.send_cmd('network.addAuthHandler', **kwargs)
+        def add_auth_handler(**args)
+          @bidi.send_cmd('network.addAuthHandler', **args)
         end
       end # Network
     end # BiDi
