@@ -225,7 +225,7 @@ jobs:
           path: patches/
       - name: Download Node patch
         if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'node'
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: node-docs-patch
           path: patches/
