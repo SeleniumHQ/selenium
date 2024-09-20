@@ -27,6 +27,7 @@ module Selenium
       it 'adds auth handler' do
         reset_driver!(web_socket_url: true) do |driver|
           driver.network.add_auth_handler(username: 'user', password: 'pass')
+          expect(driver.auth_handlers.count).to eq 1
         end
       end
 
@@ -41,6 +42,22 @@ module Selenium
         reset_driver!(web_socket_url: true) do |driver|
           msg = /Invalid arguments: invalid, args/
           expect { driver.network.add_auth_handler(invalid: 'args') }.to raise_error(ArgumentError, msg)
+        end
+      end
+
+      it 'removes auth handler' do
+        reset_driver!(web_socket_url: true) do |driver|
+          id = driver.network.add_auth_handler(username: 'user', password: 'pass')
+          driver.network.remove_auth_handler(id)
+          expect(driver.auth_handlers.count).to eq 0
+        end
+      end
+
+      it 'clears auth handlers' do
+        reset_driver!(web_socket_url: true) do |driver|
+          driver.network.add_auth_handler(username: 'user', password: 'pass')
+          driver.network.clear_auth_handlers
+          expect(driver.auth_handlers.count).to eq 0
         end
       end
     end

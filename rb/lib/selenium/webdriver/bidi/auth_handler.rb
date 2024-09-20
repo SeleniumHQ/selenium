@@ -25,8 +25,8 @@ module Selenium
           @bidi = bidi
         end
 
-        def add_auth_handler(**args)
-          @bidi.send_cmd('network.addAuthHandler', **args)
+        def add_auth_handler(username, password)
+          @bidi.send_cmd('network.addAuthHandler', username, password)
         end
 
         def remove_auth_handler(id)
