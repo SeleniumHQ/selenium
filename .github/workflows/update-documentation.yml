@@ -80,6 +80,8 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
+      - name: Setup curl for Ubuntu
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Update Documentation
         if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'ruby'
         run: ./go rb:docs
