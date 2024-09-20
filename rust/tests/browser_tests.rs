@@ -169,3 +169,12 @@ fn invalid_browser_version_test() {
         .code(DATAERR)
         .failure();
 }
+
+#[test]
+fn valid_browser_version_pass_test() {
+    let mut cmd = get_selenium_manager();
+    cmd.args(["--browser", "chrome", "--browser-version", "127"])
+        .assert()
+        .code(0)
+        .success();
+}
