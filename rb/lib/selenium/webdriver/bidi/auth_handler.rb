@@ -28,6 +28,14 @@ module Selenium
         def add_auth_handler(**args)
           @bidi.send_cmd('network.addAuthHandler', **args)
         end
+
+        def remove_auth_handler(id)
+          @bidi.send_cmd('network.removeAuthHandler', id)
+        end
+
+        def clear_auth_handlers
+          @bidi.send_cmd('network.clearAuthHandlers')
+        end
       end # Network
     end # BiDi
   end # WebDriver
