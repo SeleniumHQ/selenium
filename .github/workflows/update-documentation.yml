@@ -212,6 +212,8 @@ jobs:
             git am < "$patch"
           done
           rm -rf patches/
+          git add -A
+          git commit -m "Updating API documentation for ${{ inputs.tag }}"
       - name: Push Branch
         run: git push origin api-docs-${{ inputs.tag }}
       - name: Documentation Pull Request
