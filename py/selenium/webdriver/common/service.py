@@ -238,5 +238,6 @@ class Service(ABC):
                     f"'{os.path.basename(self._path)}' executable may have wrong permissions."
                 ) from err
             raise
+
     def env_path(self) -> Optional[str]:
         return os.getenv(self.DRIVER_PATH_ENV_KEY, None)

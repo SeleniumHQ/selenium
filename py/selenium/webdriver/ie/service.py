@@ -47,7 +47,7 @@ class Service(service.Service):
            Default is "stdout".
         """
         self.service_args = service_args or []
-        driver_path_env_key = driver_path_env_key or 'SE_IEDRIVER'
+        driver_path_env_key = driver_path_env_key or "SE_IEDRIVER"
 
         if host:
             self.service_args.append(f"--host={host}")

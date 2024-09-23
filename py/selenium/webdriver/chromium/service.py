@@ -43,7 +43,7 @@ class ChromiumService(service.Service):
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
-        driver_path_env_key = driver_path_env_key or 'SE_CHROMEDRIVER'
+        driver_path_env_key = driver_path_env_key or "SE_CHROMEDRIVER"
 
         if isinstance(log_output, str):
             self.service_args.append(f"--log-path={log_output}")

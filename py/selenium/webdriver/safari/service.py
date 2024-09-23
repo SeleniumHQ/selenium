@@ -41,7 +41,7 @@ class Service(service.Service):
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
-        driver_path_env_key = driver_path_env_key or 'SE_SAFARIDRIVER'
+        driver_path_env_key = driver_path_env_key or "SE_SAFARIDRIVER"
 
         self.reuse_service = reuse_service
         super().__init__(
