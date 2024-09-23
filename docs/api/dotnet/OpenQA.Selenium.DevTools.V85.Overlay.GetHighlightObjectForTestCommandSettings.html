@@ -156,7 +156,7 @@ Class GetHighlightObjectForTestCommandSettings  <a class="header-action link-sec
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_GetHighlightObjectForTestCommandSettings_ColorFormat" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.GetHighlightObjectForTestCommandSettings.ColorFormat">
   ColorFormat
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/GetHighlightObjectForTestCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/GetHighlightObjectForTestCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The color format to get config with (default: hex).</p>
@@ -164,7 +164,8 @@ Class GetHighlightObjectForTestCommandSettings  <a class="header-action link-sec
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;colorFormat&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;colorFormat&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ColorFormat? ColorFormat { get; set; }</code></pre>
   </div>
 
@@ -222,7 +223,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_GetHighlightObjectForTestCommandSettings_IncludeDistance" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.GetHighlightObjectForTestCommandSettings.IncludeDistance">
   IncludeDistance
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/GetHighlightObjectForTestCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/GetHighlightObjectForTestCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether to include distance info.</p>
@@ -230,7 +231,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;includeDistance&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;includeDistance&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IncludeDistance { get; set; }</code></pre>
   </div>
 
@@ -255,7 +257,7 @@ public bool? IncludeDistance { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_GetHighlightObjectForTestCommandSettings_IncludeStyle" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.GetHighlightObjectForTestCommandSettings.IncludeStyle">
   IncludeStyle
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/GetHighlightObjectForTestCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/GetHighlightObjectForTestCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether to include style info.</p>
@@ -263,7 +265,8 @@ public bool? IncludeDistance { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;includeStyle&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;includeStyle&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IncludeStyle { get; set; }</code></pre>
   </div>
 
@@ -296,7 +299,7 @@ public bool? IncludeStyle { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeId&quot;)]
 public long NodeId { get; set; }</code></pre>
   </div>
 
@@ -321,7 +324,7 @@ public long NodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_GetHighlightObjectForTestCommandSettings_ShowAccessibilityInfo" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.GetHighlightObjectForTestCommandSettings.ShowAccessibilityInfo">
   ShowAccessibilityInfo
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/GetHighlightObjectForTestCommand.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/GetHighlightObjectForTestCommand.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether to show accessibility info (default: true).</p>
@@ -329,7 +332,8 @@ public long NodeId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;showAccessibilityInfo&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;showAccessibilityInfo&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? ShowAccessibilityInfo { get; set; }</code></pre>
   </div>
 

@@ -164,7 +164,7 @@ Class EvaluateOnCallFrameCommandSettings  <a class="header-action link-secondary
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;callFrameId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;callFrameId&quot;)]
 public string CallFrameId { get; set; }</code></pre>
   </div>
 
@@ -222,7 +222,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_EvaluateOnCallFrameCommandSettings_Expression" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.EvaluateOnCallFrameCommandSettings.Expression">
   Expression
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Expression to evaluate.</p>
@@ -230,7 +230,7 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;expression&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;expression&quot;)]
 public string Expression { get; set; }</code></pre>
   </div>
 
@@ -255,7 +255,7 @@ public string Expression { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_EvaluateOnCallFrameCommandSettings_GeneratePreview" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.EvaluateOnCallFrameCommandSettings.GeneratePreview">
   GeneratePreview
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether preview should be generated for the result.</p>
@@ -263,7 +263,8 @@ public string Expression { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;generatePreview&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;generatePreview&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? GeneratePreview { get; set; }</code></pre>
   </div>
 
@@ -288,7 +289,7 @@ public bool? GeneratePreview { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_EvaluateOnCallFrameCommandSettings_IncludeCommandLineAPI" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.EvaluateOnCallFrameCommandSettings.IncludeCommandLineAPI">
   IncludeCommandLineAPI
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Specifies whether command line API should be available to the evaluated expression, defaults
@@ -297,7 +298,8 @@ to false.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;includeCommandLineAPI&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;includeCommandLineAPI&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IncludeCommandLineAPI { get; set; }</code></pre>
   </div>
 
@@ -322,7 +324,7 @@ public bool? IncludeCommandLineAPI { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_EvaluateOnCallFrameCommandSettings_ObjectGroup" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.EvaluateOnCallFrameCommandSettings.ObjectGroup">
   ObjectGroup
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>String object group name to put result into (allows rapid releasing resulting object handles
@@ -331,7 +333,8 @@ using <code>releaseObjectGroup</code>).</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;objectGroup&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;objectGroup&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ObjectGroup { get; set; }</code></pre>
   </div>
 
@@ -356,7 +359,7 @@ public string ObjectGroup { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_EvaluateOnCallFrameCommandSettings_ReturnByValue" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.EvaluateOnCallFrameCommandSettings.ReturnByValue">
   ReturnByValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the result is expected to be a JSON object that should be sent by value.</p>
@@ -364,7 +367,8 @@ public string ObjectGroup { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;returnByValue&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;returnByValue&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? ReturnByValue { get; set; }</code></pre>
   </div>
 
@@ -389,7 +393,7 @@ public bool? ReturnByValue { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_EvaluateOnCallFrameCommandSettings_Silent" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.EvaluateOnCallFrameCommandSettings.Silent">
   Silent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>In silent mode exceptions thrown during evaluation are not reported and do not pause
@@ -398,7 +402,8 @@ execution. Overrides <code>setPauseOnException</code> state.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;silent&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;silent&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? Silent { get; set; }</code></pre>
   </div>
 
@@ -423,7 +428,7 @@ public bool? Silent { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_EvaluateOnCallFrameCommandSettings_ThrowOnSideEffect" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.EvaluateOnCallFrameCommandSettings.ThrowOnSideEffect">
   ThrowOnSideEffect
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether to throw an exception if side effect cannot be ruled out during evaluation.</p>
@@ -431,7 +436,8 @@ public bool? Silent { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;throwOnSideEffect&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;throwOnSideEffect&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? ThrowOnSideEffect { get; set; }</code></pre>
   </div>
 
@@ -456,7 +462,7 @@ public bool? ThrowOnSideEffect { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_EvaluateOnCallFrameCommandSettings_Timeout" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.EvaluateOnCallFrameCommandSettings.Timeout">
   Timeout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L108"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Terminate execution after timing out (number of milliseconds).</p>
@@ -464,7 +470,8 @@ public bool? ThrowOnSideEffect { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;timeout&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;timeout&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? Timeout { get; set; }</code></pre>
   </div>
 

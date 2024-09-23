@@ -151,7 +151,7 @@ Class PermissionDescriptor  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Browser_PermissionDescriptor_AllowWithoutSanitization" data-uid="OpenQA.Selenium.DevTools.V85.Browser.PermissionDescriptor.AllowWithoutSanitization">
   AllowWithoutSanitization
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/PermissionDescriptor.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/PermissionDescriptor.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>For &quot;clipboard&quot; permission, may specify allowWithoutSanitization.</p>
@@ -159,7 +159,8 @@ Class PermissionDescriptor  <a class="header-action link-secondary" title="View 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;allowWithoutSanitization&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;allowWithoutSanitization&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? AllowWithoutSanitization { get; set; }</code></pre>
   </div>
 
@@ -193,7 +194,7 @@ See <a href="https://cs.chromium.org/chromium/src/third_party/blink/renderer/mod
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;name&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
 public string Name { get; set; }</code></pre>
   </div>
 
@@ -218,7 +219,7 @@ public string Name { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Browser_PermissionDescriptor_Sysex" data-uid="OpenQA.Selenium.DevTools.V85.Browser.PermissionDescriptor.Sysex">
   Sysex
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/PermissionDescriptor.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/PermissionDescriptor.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>For &quot;midi&quot; permission, may also specify sysex control.</p>
@@ -226,7 +227,8 @@ public string Name { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;sysex&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sysex&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? Sysex { get; set; }</code></pre>
   </div>
 
@@ -251,7 +253,7 @@ public bool? Sysex { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Browser_PermissionDescriptor_Type" data-uid="OpenQA.Selenium.DevTools.V85.Browser.PermissionDescriptor.Type">
   Type
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/PermissionDescriptor.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/PermissionDescriptor.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>For &quot;wake-lock&quot; permission, must specify type as either &quot;screen&quot; or &quot;system&quot;.</p>
@@ -259,7 +261,8 @@ public bool? Sysex { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Type { get; set; }</code></pre>
   </div>
 
@@ -284,7 +287,7 @@ public string Type { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Browser_PermissionDescriptor_UserVisibleOnly" data-uid="OpenQA.Selenium.DevTools.V85.Browser.PermissionDescriptor.UserVisibleOnly">
   UserVisibleOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/PermissionDescriptor.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/PermissionDescriptor.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>For &quot;push&quot; permission, may specify userVisibleOnly.
@@ -293,7 +296,8 @@ Note that userVisibleOnly = true is the only currently supported type.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;userVisibleOnly&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;userVisibleOnly&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? UserVisibleOnly { get; set; }</code></pre>
   </div>
 

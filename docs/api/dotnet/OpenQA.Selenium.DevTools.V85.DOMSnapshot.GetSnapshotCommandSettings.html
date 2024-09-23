@@ -200,7 +200,7 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;computedStyleWhitelist&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;computedStyleWhitelist&quot;)]
 public string[] ComputedStyleWhitelist { get; set; }</code></pre>
   </div>
 
@@ -225,7 +225,7 @@ public string[] ComputedStyleWhitelist { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_GetSnapshotCommandSettings_IncludeEventListeners" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.GetSnapshotCommandSettings.IncludeEventListeners">
   IncludeEventListeners
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/GetSnapshotCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/GetSnapshotCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether or not to retrieve details of DOM listeners (default false).</p>
@@ -233,7 +233,8 @@ public string[] ComputedStyleWhitelist { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;includeEventListeners&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;includeEventListeners&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IncludeEventListeners { get; set; }</code></pre>
   </div>
 
@@ -258,7 +259,7 @@ public bool? IncludeEventListeners { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_GetSnapshotCommandSettings_IncludePaintOrder" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.GetSnapshotCommandSettings.IncludePaintOrder">
   IncludePaintOrder
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/GetSnapshotCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/GetSnapshotCommand.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether to determine and include the paint order index of LayoutTreeNodes (default false).</p>
@@ -266,7 +267,8 @@ public bool? IncludeEventListeners { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;includePaintOrder&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;includePaintOrder&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IncludePaintOrder { get; set; }</code></pre>
   </div>
 
@@ -291,7 +293,7 @@ public bool? IncludePaintOrder { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_GetSnapshotCommandSettings_IncludeUserAgentShadowTree" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.GetSnapshotCommandSettings.IncludeUserAgentShadowTree">
   IncludeUserAgentShadowTree
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/GetSnapshotCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/GetSnapshotCommand.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether to include UA shadow tree in the snapshot (default false).</p>
@@ -299,7 +301,8 @@ public bool? IncludePaintOrder { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;includeUserAgentShadowTree&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;includeUserAgentShadowTree&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IncludeUserAgentShadowTree { get; set; }</code></pre>
   </div>
 

@@ -150,7 +150,7 @@ Class VirtualAuthenticatorOptions  <a class="header-action link-secondary" title
 
   <h3 id="OpenQA_Selenium_DevTools_V85_WebAuthn_VirtualAuthenticatorOptions_AutomaticPresenceSimulation" data-uid="OpenQA.Selenium.DevTools.V85.WebAuthn.VirtualAuthenticatorOptions.AutomaticPresenceSimulation">
   AutomaticPresenceSimulation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/WebAuthn/VirtualAuthenticatorOptions.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/WebAuthn/VirtualAuthenticatorOptions.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set to true, tests of user presence will succeed immediately.
@@ -159,7 +159,8 @@ Otherwise, they will not be resolved. Defaults to true.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;automaticPresenceSimulation&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;automaticPresenceSimulation&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? AutomaticPresenceSimulation { get; set; }</code></pre>
   </div>
 
@@ -184,7 +185,7 @@ public bool? AutomaticPresenceSimulation { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_WebAuthn_VirtualAuthenticatorOptions_HasResidentKey" data-uid="OpenQA.Selenium.DevTools.V85.WebAuthn.VirtualAuthenticatorOptions.HasResidentKey">
   HasResidentKey
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/WebAuthn/VirtualAuthenticatorOptions.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/WebAuthn/VirtualAuthenticatorOptions.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Defaults to false.</p>
@@ -192,7 +193,8 @@ public bool? AutomaticPresenceSimulation { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;hasResidentKey&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;hasResidentKey&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? HasResidentKey { get; set; }</code></pre>
   </div>
 
@@ -217,7 +219,7 @@ public bool? HasResidentKey { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_WebAuthn_VirtualAuthenticatorOptions_HasUserVerification" data-uid="OpenQA.Selenium.DevTools.V85.WebAuthn.VirtualAuthenticatorOptions.HasUserVerification">
   HasUserVerification
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/WebAuthn/VirtualAuthenticatorOptions.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/WebAuthn/VirtualAuthenticatorOptions.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Defaults to false.</p>
@@ -225,7 +227,8 @@ public bool? HasResidentKey { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;hasUserVerification&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;hasUserVerification&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? HasUserVerification { get; set; }</code></pre>
   </div>
 
@@ -250,7 +253,7 @@ public bool? HasUserVerification { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_WebAuthn_VirtualAuthenticatorOptions_IsUserVerified" data-uid="OpenQA.Selenium.DevTools.V85.WebAuthn.VirtualAuthenticatorOptions.IsUserVerified">
   IsUserVerified
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/WebAuthn/VirtualAuthenticatorOptions.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/WebAuthn/VirtualAuthenticatorOptions.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets whether User Verification succeeds or fails for an authenticator.
@@ -259,7 +262,8 @@ Defaults to false.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;isUserVerified&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;isUserVerified&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IsUserVerified { get; set; }</code></pre>
   </div>
 
@@ -292,7 +296,7 @@ public bool? IsUserVerified { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;protocol&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;protocol&quot;)]
 public AuthenticatorProtocol Protocol { get; set; }</code></pre>
   </div>
 
@@ -317,7 +321,7 @@ public AuthenticatorProtocol Protocol { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_WebAuthn_VirtualAuthenticatorOptions_Transport" data-uid="OpenQA.Selenium.DevTools.V85.WebAuthn.VirtualAuthenticatorOptions.Transport">
   Transport
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/WebAuthn/VirtualAuthenticatorOptions.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/WebAuthn/VirtualAuthenticatorOptions.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>transport</p>
@@ -325,7 +329,7 @@ public AuthenticatorProtocol Protocol { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;transport&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;transport&quot;)]
 public AuthenticatorTransport Transport { get; set; }</code></pre>
   </div>
 

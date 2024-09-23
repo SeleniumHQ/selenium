@@ -150,7 +150,7 @@ Class EventListener  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMDebugger_EventListener_BackendNodeId" data-uid="OpenQA.Selenium.DevTools.V85.DOMDebugger.EventListener.BackendNodeId">
   BackendNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Node the listener is added to (if any).</p>
@@ -158,7 +158,8 @@ Class EventListener  <a class="header-action link-secondary" title="View source"
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;backendNodeId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;backendNodeId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? BackendNodeId { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public long? BackendNodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMDebugger_EventListener_ColumnNumber" data-uid="OpenQA.Selenium.DevTools.V85.DOMDebugger.EventListener.ColumnNumber">
   ColumnNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Column number in the script (0-based).</p>
@@ -191,7 +192,7 @@ public long? BackendNodeId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;columnNumber&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;columnNumber&quot;)]
 public long ColumnNumber { get; set; }</code></pre>
   </div>
 
@@ -216,7 +217,7 @@ public long ColumnNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMDebugger_EventListener_Handler" data-uid="OpenQA.Selenium.DevTools.V85.DOMDebugger.EventListener.Handler">
   Handler
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Event handler function value.</p>
@@ -224,7 +225,8 @@ public long ColumnNumber { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;handler&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;handler&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RemoteObject Handler { get; set; }</code></pre>
   </div>
 
@@ -249,7 +251,7 @@ public RemoteObject Handler { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMDebugger_EventListener_LineNumber" data-uid="OpenQA.Selenium.DevTools.V85.DOMDebugger.EventListener.LineNumber">
   LineNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Line number in the script (0-based).</p>
@@ -257,7 +259,7 @@ public RemoteObject Handler { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;lineNumber&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;lineNumber&quot;)]
 public long LineNumber { get; set; }</code></pre>
   </div>
 
@@ -282,7 +284,7 @@ public long LineNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMDebugger_EventListener_Once" data-uid="OpenQA.Selenium.DevTools.V85.DOMDebugger.EventListener.Once">
   Once
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>EventListener</code>'s once flag.</p>
@@ -290,7 +292,7 @@ public long LineNumber { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;once&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;once&quot;)]
 public bool Once { get; set; }</code></pre>
   </div>
 
@@ -315,7 +317,7 @@ public bool Once { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMDebugger_EventListener_OriginalHandler" data-uid="OpenQA.Selenium.DevTools.V85.DOMDebugger.EventListener.OriginalHandler">
   OriginalHandler
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Event original handler function value.</p>
@@ -323,7 +325,8 @@ public bool Once { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;originalHandler&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;originalHandler&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RemoteObject OriginalHandler { get; set; }</code></pre>
   </div>
 
@@ -348,7 +351,7 @@ public RemoteObject OriginalHandler { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMDebugger_EventListener_Passive" data-uid="OpenQA.Selenium.DevTools.V85.DOMDebugger.EventListener.Passive">
   Passive
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>EventListener</code>'s passive flag.</p>
@@ -356,7 +359,7 @@ public RemoteObject OriginalHandler { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;passive&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;passive&quot;)]
 public bool Passive { get; set; }</code></pre>
   </div>
 
@@ -381,7 +384,7 @@ public bool Passive { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMDebugger_EventListener_ScriptId" data-uid="OpenQA.Selenium.DevTools.V85.DOMDebugger.EventListener.ScriptId">
   ScriptId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Script id of the handler code.</p>
@@ -389,7 +392,7 @@ public bool Passive { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scriptId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scriptId&quot;)]
 public string ScriptId { get; set; }</code></pre>
   </div>
 
@@ -422,7 +425,7 @@ public string ScriptId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public string Type { get; set; }</code></pre>
   </div>
 
@@ -447,7 +450,7 @@ public string Type { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMDebugger_EventListener_UseCapture" data-uid="OpenQA.Selenium.DevTools.V85.DOMDebugger.EventListener.UseCapture">
   UseCapture
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/EventListener.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>EventListener</code>'s useCapture.</p>
@@ -455,7 +458,7 @@ public string Type { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;useCapture&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;useCapture&quot;)]
 public bool UseCapture { get; set; }</code></pre>
   </div>
 

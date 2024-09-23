@@ -150,7 +150,7 @@ Class LayoutTreeSnapshot  <a class="header-action link-secondary" title="View so
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeSnapshot_Bounds" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeSnapshot.Bounds">
   Bounds
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The absolute position bounding box.</p>
@@ -158,7 +158,7 @@ Class LayoutTreeSnapshot  <a class="header-action link-secondary" title="View so
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;bounds&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;bounds&quot;)]
 public double[][] Bounds { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public double[][] Bounds { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeSnapshot_ClientRects" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeSnapshot.ClientRects">
   ClientRects
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L96"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The client rect of nodes. Only available when includeDOMRects is set to true</p>
@@ -191,7 +191,8 @@ public double[][] Bounds { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;clientRects&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;clientRects&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double[][] ClientRects { get; set; }</code></pre>
   </div>
 
@@ -224,7 +225,7 @@ public double[][] ClientRects { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeIndex&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeIndex&quot;)]
 public long[] NodeIndex { get; set; }</code></pre>
   </div>
 
@@ -249,7 +250,7 @@ public long[] NodeIndex { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeSnapshot_OffsetRects" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeSnapshot.OffsetRects">
   OffsetRects
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L76"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The offset rect of nodes. Only available when includeDOMRects is set to true</p>
@@ -257,7 +258,8 @@ public long[] NodeIndex { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;offsetRects&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;offsetRects&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double[][] OffsetRects { get; set; }</code></pre>
   </div>
 
@@ -282,7 +284,7 @@ public double[][] OffsetRects { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeSnapshot_PaintOrders" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeSnapshot.PaintOrders">
   PaintOrders
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Global paint order index, which is determined by the stacking order of the nodes. Nodes
@@ -292,7 +294,8 @@ captureSnapshot was true.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;paintOrders&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;paintOrders&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long[] PaintOrders { get; set; }</code></pre>
   </div>
 
@@ -317,7 +320,7 @@ public long[] PaintOrders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeSnapshot_ScrollRects" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeSnapshot.ScrollRects">
   ScrollRects
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L86"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The scroll rect of nodes. Only available when includeDOMRects is set to true</p>
@@ -325,7 +328,8 @@ public long[] PaintOrders { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scrollRects&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scrollRects&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double[][] ScrollRects { get; set; }</code></pre>
   </div>
 
@@ -350,7 +354,7 @@ public double[][] ScrollRects { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeSnapshot_StackingContexts" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeSnapshot.StackingContexts">
   StackingContexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Stacking context information.</p>
@@ -358,7 +362,7 @@ public double[][] ScrollRects { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;stackingContexts&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;stackingContexts&quot;)]
 public RareBooleanData StackingContexts { get; set; }</code></pre>
   </div>
 
@@ -383,7 +387,7 @@ public RareBooleanData StackingContexts { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeSnapshot_Styles" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeSnapshot.Styles">
   Styles
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Array of indexes specifying computed style strings, filtered according to the <code>computedStyles</code> parameter passed to <code>captureSnapshot</code>.</p>
@@ -391,7 +395,7 @@ public RareBooleanData StackingContexts { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;styles&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;styles&quot;)]
 public string[][] Styles { get; set; }</code></pre>
   </div>
 
@@ -416,7 +420,7 @@ public string[][] Styles { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeSnapshot_Text" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeSnapshot.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeSnapshot.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Contents of the LayoutText, if any.</p>
@@ -424,7 +428,7 @@ public string[][] Styles { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;text&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;text&quot;)]
 public long[] Text { get; set; }</code></pre>
   </div>
 

@@ -150,7 +150,7 @@ Class AuthChallengeResponse  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Fetch_AuthChallengeResponse_Password" data-uid="OpenQA.Selenium.DevTools.V85.Fetch.AuthChallengeResponse.Password">
   Password
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/AuthChallengeResponse.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/AuthChallengeResponse.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The password to provide, possibly empty. Should only be set if response is
@@ -159,7 +159,8 @@ ProvideCredentials.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;password&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;password&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Password { get; set; }</code></pre>
   </div>
 
@@ -194,7 +195,7 @@ authentication or display a popup dialog box.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;response&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;response&quot;)]
 public AuthChallengeResponseResponseValues Response { get; set; }</code></pre>
   </div>
 
@@ -219,7 +220,7 @@ public AuthChallengeResponseResponseValues Response { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Fetch_AuthChallengeResponse_Username" data-uid="OpenQA.Selenium.DevTools.V85.Fetch.AuthChallengeResponse.Username">
   Username
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/AuthChallengeResponse.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/AuthChallengeResponse.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The username to provide, possibly empty. Should only be set if response is
@@ -228,7 +229,8 @@ ProvideCredentials.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;username&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;username&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Username { get; set; }</code></pre>
   </div>
 

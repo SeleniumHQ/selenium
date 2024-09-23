@@ -150,7 +150,7 @@ Class LayoutTreeNode  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeNode_BoundingBox" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeNode.BoundingBox">
   BoundingBox
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The bounding box in document coordinates. Note that scroll offset of the document is ignored.</p>
@@ -158,7 +158,7 @@ Class LayoutTreeNode  <a class="header-action link-secondary" title="View source
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;boundingBox&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;boundingBox&quot;)]
 public Rect BoundingBox { get; set; }</code></pre>
   </div>
 
@@ -191,7 +191,7 @@ public Rect BoundingBox { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;domNodeIndex&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;domNodeIndex&quot;)]
 public long DomNodeIndex { get; set; }</code></pre>
   </div>
 
@@ -216,7 +216,7 @@ public long DomNodeIndex { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeNode_InlineTextNodes" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeNode.InlineTextNodes">
   InlineTextNodes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The post-layout inline text nodes, if any.</p>
@@ -224,7 +224,8 @@ public long DomNodeIndex { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;inlineTextNodes&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;inlineTextNodes&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public InlineTextBox[] InlineTextNodes { get; set; }</code></pre>
   </div>
 
@@ -249,7 +250,7 @@ public InlineTextBox[] InlineTextNodes { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeNode_IsStackingContext" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeNode.IsStackingContext">
   IsStackingContext
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L76"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Set to true to indicate the element begins a new stacking context.</p>
@@ -257,7 +258,8 @@ public InlineTextBox[] InlineTextNodes { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;isStackingContext&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;isStackingContext&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IsStackingContext { get; set; }</code></pre>
   </div>
 
@@ -282,7 +284,7 @@ public bool? IsStackingContext { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeNode_LayoutText" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeNode.LayoutText">
   LayoutText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Contents of the LayoutText, if any.</p>
@@ -290,7 +292,8 @@ public bool? IsStackingContext { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;layoutText&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;layoutText&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string LayoutText { get; set; }</code></pre>
   </div>
 
@@ -315,7 +318,7 @@ public string LayoutText { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeNode_PaintOrder" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeNode.PaintOrder">
   PaintOrder
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Global paint order index, which is determined by the stacking order of the nodes. Nodes
@@ -325,7 +328,8 @@ getSnapshot was true.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;paintOrder&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;paintOrder&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? PaintOrder { get; set; }</code></pre>
   </div>
 
@@ -350,7 +354,7 @@ public long? PaintOrder { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_LayoutTreeNode_StyleIndex" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.LayoutTreeNode.StyleIndex">
   StyleIndex
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/LayoutTreeNode.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Index into the <code>computedStyles</code> array returned by <code>getSnapshot</code>.</p>
@@ -358,7 +362,8 @@ public long? PaintOrder { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;styleIndex&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;styleIndex&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? StyleIndex { get; set; }</code></pre>
   </div>
 

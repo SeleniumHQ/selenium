@@ -150,7 +150,7 @@ Class KeyPath  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="OpenQA_Selenium_DevTools_V85_IndexedDB_KeyPath_Array" data-uid="OpenQA.Selenium.DevTools.V85.IndexedDB.KeyPath.Array">
   Array
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/IndexedDB/KeyPath.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/IndexedDB/KeyPath.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Array value.</p>
@@ -158,7 +158,8 @@ Class KeyPath  <a class="header-action link-secondary" title="View source" href=
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;array&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;array&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string[] Array { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public string[] Array { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_IndexedDB_KeyPath_String" data-uid="OpenQA.Selenium.DevTools.V85.IndexedDB.KeyPath.String">
   String
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/IndexedDB/KeyPath.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/IndexedDB/KeyPath.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>String value.</p>
@@ -191,7 +192,8 @@ public string[] Array { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;string&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;string&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string String { get; set; }</code></pre>
   </div>
 
@@ -224,7 +226,7 @@ public string String { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public KeyPathTypeValues Type { get; set; }</code></pre>
   </div>
 

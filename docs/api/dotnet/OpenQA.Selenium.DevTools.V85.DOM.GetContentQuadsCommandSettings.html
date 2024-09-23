@@ -157,7 +157,7 @@ might return multiple quads for inline nodes.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_GetContentQuadsCommandSettings_BackendNodeId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.GetContentQuadsCommandSettings.BackendNodeId">
   BackendNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetContentQuadsCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetContentQuadsCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Identifier of the backend node.</p>
@@ -165,7 +165,8 @@ might return multiple quads for inline nodes.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;backendNodeId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;backendNodeId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? BackendNodeId { get; set; }</code></pre>
   </div>
 
@@ -231,7 +232,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? NodeId { get; set; }</code></pre>
   </div>
 
@@ -256,7 +258,7 @@ public long? NodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_GetContentQuadsCommandSettings_ObjectId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.GetContentQuadsCommandSettings.ObjectId">
   ObjectId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetContentQuadsCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetContentQuadsCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>JavaScript object id of the node wrapper.</p>
@@ -264,7 +266,8 @@ public long? NodeId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;objectId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;objectId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ObjectId { get; set; }</code></pre>
   </div>
 

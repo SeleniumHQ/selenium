@@ -158,7 +158,7 @@ Class SamplingHeapProfileNode  <a class="header-action link-secondary" title="Vi
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;callFrame&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;callFrame&quot;)]
 public CallFrame CallFrame { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public CallFrame CallFrame { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_HeapProfiler_SamplingHeapProfileNode_Children" data-uid="OpenQA.Selenium.DevTools.V85.HeapProfiler.SamplingHeapProfileNode.Children">
   Children
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/SamplingHeapProfileNode.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/SamplingHeapProfileNode.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Child nodes.</p>
@@ -191,7 +191,7 @@ public CallFrame CallFrame { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;children&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;children&quot;)]
 public SamplingHeapProfileNode[] Children { get; set; }</code></pre>
   </div>
 
@@ -216,7 +216,7 @@ public SamplingHeapProfileNode[] Children { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_HeapProfiler_SamplingHeapProfileNode_Id" data-uid="OpenQA.Selenium.DevTools.V85.HeapProfiler.SamplingHeapProfileNode.Id">
   Id
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/SamplingHeapProfileNode.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/SamplingHeapProfileNode.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Node id. Ids are unique across all profiles collected between startSampling and stopSampling.</p>
@@ -224,7 +224,7 @@ public SamplingHeapProfileNode[] Children { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;id&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
 public long Id { get; set; }</code></pre>
   </div>
 
@@ -249,7 +249,7 @@ public long Id { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_HeapProfiler_SamplingHeapProfileNode_SelfSize" data-uid="OpenQA.Selenium.DevTools.V85.HeapProfiler.SamplingHeapProfileNode.SelfSize">
   SelfSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/SamplingHeapProfileNode.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/SamplingHeapProfileNode.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Allocations size in bytes for the node excluding children.</p>
@@ -257,7 +257,7 @@ public long Id { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;selfSize&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;selfSize&quot;)]
 public double SelfSize { get; set; }</code></pre>
   </div>
 

@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_Debugger_SetScriptSourceCommandResponse" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetScriptSourceCommandResponse" class="text-break">
-Class SetScriptSourceCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
+Class SetScriptSourceCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -164,7 +164,7 @@ Class SetScriptSourceCommandResponse  <a class="header-action link-secondary" ti
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetScriptSourceCommandResponse_AsyncStackTrace" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetScriptSourceCommandResponse.AsyncStackTrace">
   AsyncStackTrace
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L83"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Async stack trace, if any.</p>
@@ -172,7 +172,8 @@ Class SetScriptSourceCommandResponse  <a class="header-action link-secondary" ti
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;asyncStackTrace&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;asyncStackTrace&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StackTrace AsyncStackTrace { get; set; }</code></pre>
   </div>
 
@@ -197,7 +198,7 @@ public StackTrace AsyncStackTrace { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetScriptSourceCommandResponse_AsyncStackTraceId" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetScriptSourceCommandResponse.AsyncStackTraceId">
   AsyncStackTraceId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L93"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Async stack trace, if any.</p>
@@ -205,7 +206,8 @@ public StackTrace AsyncStackTrace { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;asyncStackTraceId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;asyncStackTraceId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StackTraceId AsyncStackTraceId { get; set; }</code></pre>
   </div>
 
@@ -230,7 +232,7 @@ public StackTraceId AsyncStackTraceId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetScriptSourceCommandResponse_CallFrames" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetScriptSourceCommandResponse.CallFrames">
   CallFrames
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>New stack trace in case editing has happened while VM was stopped.</p>
@@ -238,7 +240,8 @@ public StackTraceId AsyncStackTraceId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;callFrames&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;callFrames&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public CallFrame[] CallFrames { get; set; }</code></pre>
   </div>
 
@@ -263,7 +266,7 @@ public CallFrame[] CallFrames { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetScriptSourceCommandResponse_ExceptionDetails" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetScriptSourceCommandResponse.ExceptionDetails">
   ExceptionDetails
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L103"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Exception details if any.</p>
@@ -271,7 +274,8 @@ public CallFrame[] CallFrames { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;exceptionDetails&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;exceptionDetails&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
   </div>
 
@@ -296,7 +300,7 @@ public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetScriptSourceCommandResponse_StackChanged" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetScriptSourceCommandResponse.StackChanged">
   StackChanged
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether current call stack  was modified after applying the changes.</p>
@@ -304,7 +308,8 @@ public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;stackChanged&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;stackChanged&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? StackChanged { get; set; }</code></pre>
   </div>
 
@@ -329,7 +334,7 @@ public bool? StackChanged { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L55" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L58" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_INavigation" data-uid="OpenQA.Selenium.INavigation" class="text-break">
-Interface INavigation  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L27"><i class="bi bi-code-slash"></i></a>
+Interface INavigation  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -122,7 +122,7 @@ navigate to a given URL.</p>
 
   <h3 id="OpenQA_Selenium_INavigation_Back" data-uid="OpenQA.Selenium.INavigation.Back">
   Back()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Move back a single entry in the browser's history.</p>
@@ -145,11 +145,44 @@ navigate to a given URL.</p>
 
 
 
+  <a id="OpenQA_Selenium_INavigation_BackAsync_" data-uid="OpenQA.Selenium.INavigation.BackAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_INavigation_BackAsync" data-uid="OpenQA.Selenium.INavigation.BackAsync">
+  BackAsync()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Move back a single entry in the browser's history as an asynchronous task.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task BackAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task object representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="OpenQA_Selenium_INavigation_Forward_" data-uid="OpenQA.Selenium.INavigation.Forward*"></a>
 
   <h3 id="OpenQA_Selenium_INavigation_Forward" data-uid="OpenQA.Selenium.INavigation.Forward">
   Forward()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Move a single &quot;item&quot; forward in the browser's history.</p>
@@ -175,11 +208,44 @@ navigate to a given URL.</p>
 
 
 
+  <a id="OpenQA_Selenium_INavigation_ForwardAsync_" data-uid="OpenQA.Selenium.INavigation.ForwardAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_INavigation_ForwardAsync" data-uid="OpenQA.Selenium.INavigation.ForwardAsync">
+  ForwardAsync()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Move a single &quot;item&quot; forward in the browser's history as an asynchronous task.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task ForwardAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task object representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="OpenQA_Selenium_INavigation_GoToUrl_" data-uid="OpenQA.Selenium.INavigation.GoToUrl*"></a>
 
   <h3 id="OpenQA_Selenium_INavigation_GoToUrl_System_String_" data-uid="OpenQA.Selenium.INavigation.GoToUrl(System.String)">
   GoToUrl(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Load a new web page in the current browser window.</p>
@@ -221,7 +287,7 @@ future calls against this interface will be against the freshly loaded page.</p>
 
   <h3 id="OpenQA_Selenium_INavigation_GoToUrl_System_Uri_" data-uid="OpenQA.Selenium.INavigation.GoToUrl(System.Uri)">
   GoToUrl(Uri)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Load a new web page in the current browser window.</p>
@@ -259,11 +325,89 @@ future calls against this interface will be against the freshly loaded page.</p>
 
 
 
+  <a id="OpenQA_Selenium_INavigation_GoToUrlAsync_" data-uid="OpenQA.Selenium.INavigation.GoToUrlAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_INavigation_GoToUrlAsync_System_String_" data-uid="OpenQA.Selenium.INavigation.GoToUrlAsync(System.String)">
+  GoToUrlAsync(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Navigate to a url as an asynchronous task.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task GoToUrlAsync(string url)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>url</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>String of where you want the browser to go.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task object representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_INavigation_GoToUrlAsync_" data-uid="OpenQA.Selenium.INavigation.GoToUrlAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_INavigation_GoToUrlAsync_System_Uri_" data-uid="OpenQA.Selenium.INavigation.GoToUrlAsync(System.Uri)">
+  GoToUrlAsync(Uri)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Navigate to a url as an asynchronous task.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task GoToUrlAsync(Uri url)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>url</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a></dt>
+    <dd><p>Uri object of where you want the browser to go.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task object representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="OpenQA_Selenium_INavigation_Refresh_" data-uid="OpenQA.Selenium.INavigation.Refresh*"></a>
 
   <h3 id="OpenQA_Selenium_INavigation_Refresh" data-uid="OpenQA.Selenium.INavigation.Refresh">
   Refresh()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Refreshes the current page.</p>
@@ -286,11 +430,44 @@ future calls against this interface will be against the freshly loaded page.</p>
 
 
 
+  <a id="OpenQA_Selenium_INavigation_RefreshAsync_" data-uid="OpenQA.Selenium.INavigation.RefreshAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_INavigation_RefreshAsync" data-uid="OpenQA.Selenium.INavigation.RefreshAsync">
+  RefreshAsync()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reload the current page as an asynchronous task.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task RefreshAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task object representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L27" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/INavigation.cs/#L28" class="edit-link">Edit this page</a>
         </div>
 
 

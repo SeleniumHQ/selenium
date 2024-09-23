@@ -150,7 +150,7 @@ Class DataEntry  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CacheStorage_DataEntry_RequestHeaders" data-uid="OpenQA.Selenium.DevTools.V85.CacheStorage.DataEntry.RequestHeaders">
   RequestHeaders
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Request headers</p>
@@ -158,7 +158,7 @@ Class DataEntry  <a class="header-action link-secondary" title="View source" hre
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;requestHeaders&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;requestHeaders&quot;)]
 public Header[] RequestHeaders { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public Header[] RequestHeaders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CacheStorage_DataEntry_RequestMethod" data-uid="OpenQA.Selenium.DevTools.V85.CacheStorage.DataEntry.RequestMethod">
   RequestMethod
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Request method.</p>
@@ -191,7 +191,7 @@ public Header[] RequestHeaders { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;requestMethod&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;requestMethod&quot;)]
 public string RequestMethod { get; set; }</code></pre>
   </div>
 
@@ -224,7 +224,7 @@ public string RequestMethod { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;requestURL&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;requestURL&quot;)]
 public string RequestURL { get; set; }</code></pre>
   </div>
 
@@ -249,7 +249,7 @@ public string RequestURL { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CacheStorage_DataEntry_ResponseHeaders" data-uid="OpenQA.Selenium.DevTools.V85.CacheStorage.DataEntry.ResponseHeaders">
   ResponseHeaders
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Response headers</p>
@@ -257,7 +257,7 @@ public string RequestURL { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseHeaders&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseHeaders&quot;)]
 public Header[] ResponseHeaders { get; set; }</code></pre>
   </div>
 
@@ -282,7 +282,7 @@ public Header[] ResponseHeaders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CacheStorage_DataEntry_ResponseStatus" data-uid="OpenQA.Selenium.DevTools.V85.CacheStorage.DataEntry.ResponseStatus">
   ResponseStatus
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>HTTP response status code.</p>
@@ -290,7 +290,7 @@ public Header[] ResponseHeaders { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseStatus&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseStatus&quot;)]
 public long ResponseStatus { get; set; }</code></pre>
   </div>
 
@@ -315,7 +315,7 @@ public long ResponseStatus { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CacheStorage_DataEntry_ResponseStatusText" data-uid="OpenQA.Selenium.DevTools.V85.CacheStorage.DataEntry.ResponseStatusText">
   ResponseStatusText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>HTTP response status text.</p>
@@ -323,7 +323,7 @@ public long ResponseStatus { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseStatusText&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseStatusText&quot;)]
 public string ResponseStatusText { get; set; }</code></pre>
   </div>
 
@@ -348,7 +348,7 @@ public string ResponseStatusText { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CacheStorage_DataEntry_ResponseTime" data-uid="OpenQA.Selenium.DevTools.V85.CacheStorage.DataEntry.ResponseTime">
   ResponseTime
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Number of seconds since epoch.</p>
@@ -356,7 +356,7 @@ public string ResponseStatusText { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseTime&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseTime&quot;)]
 public double ResponseTime { get; set; }</code></pre>
   </div>
 
@@ -381,7 +381,7 @@ public double ResponseTime { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CacheStorage_DataEntry_ResponseType" data-uid="OpenQA.Selenium.DevTools.V85.CacheStorage.DataEntry.ResponseType">
   ResponseType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CacheStorage/DataEntry.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>HTTP response type</p>
@@ -389,7 +389,7 @@ public double ResponseTime { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseType&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseType&quot;)]
 public CachedResponseType ResponseType { get; set; }</code></pre>
   </div>
 

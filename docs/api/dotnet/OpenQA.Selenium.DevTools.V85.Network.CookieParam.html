@@ -150,7 +150,7 @@ Class CookieParam  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CookieParam_Domain" data-uid="OpenQA.Selenium.DevTools.V85.Network.CookieParam.Domain">
   Domain
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Cookie domain.</p>
@@ -158,7 +158,8 @@ Class CookieParam  <a class="header-action link-secondary" title="View source" h
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;domain&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;domain&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Domain { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public string Domain { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CookieParam_Expires" data-uid="OpenQA.Selenium.DevTools.V85.Network.CookieParam.Expires">
   Expires
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Cookie expiration date, session cookie if not set</p>
@@ -191,7 +192,8 @@ public string Domain { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;expires&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;expires&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? Expires { get; set; }</code></pre>
   </div>
 
@@ -216,7 +218,7 @@ public double? Expires { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CookieParam_HttpOnly" data-uid="OpenQA.Selenium.DevTools.V85.Network.CookieParam.HttpOnly">
   HttpOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>True if cookie is http-only.</p>
@@ -224,7 +226,8 @@ public double? Expires { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;httpOnly&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;httpOnly&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? HttpOnly { get; set; }</code></pre>
   </div>
 
@@ -257,7 +260,7 @@ public bool? HttpOnly { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;name&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
 public string Name { get; set; }</code></pre>
   </div>
 
@@ -282,7 +285,7 @@ public string Name { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CookieParam_Path" data-uid="OpenQA.Selenium.DevTools.V85.Network.CookieParam.Path">
   Path
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Cookie path.</p>
@@ -290,7 +293,8 @@ public string Name { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;path&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;path&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Path { get; set; }</code></pre>
   </div>
 
@@ -315,7 +319,7 @@ public string Path { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CookieParam_Priority" data-uid="OpenQA.Selenium.DevTools.V85.Network.CookieParam.Priority">
   Priority
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L105"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Cookie Priority.</p>
@@ -323,7 +327,8 @@ public string Path { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;priority&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;priority&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public CookiePriority? Priority { get; set; }</code></pre>
   </div>
 
@@ -348,7 +353,7 @@ public CookiePriority? Priority { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CookieParam_SameSite" data-uid="OpenQA.Selenium.DevTools.V85.Network.CookieParam.SameSite">
   SameSite
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Cookie SameSite type.</p>
@@ -356,7 +361,8 @@ public CookiePriority? Priority { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;sameSite&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sameSite&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public CookieSameSite? SameSite { get; set; }</code></pre>
   </div>
 
@@ -381,7 +387,7 @@ public CookieSameSite? SameSite { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CookieParam_Secure" data-uid="OpenQA.Selenium.DevTools.V85.Network.CookieParam.Secure">
   Secure
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>True if cookie is secure.</p>
@@ -389,7 +395,8 @@ public CookieSameSite? SameSite { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;secure&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;secure&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? Secure { get; set; }</code></pre>
   </div>
 
@@ -414,7 +421,7 @@ public bool? Secure { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CookieParam_Url" data-uid="OpenQA.Selenium.DevTools.V85.Network.CookieParam.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The request-URI to associate with the setting of the cookie. This value can affect the
@@ -423,7 +430,8 @@ default domain and path values of the created cookie.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;url&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Url { get; set; }</code></pre>
   </div>
 
@@ -448,7 +456,7 @@ public string Url { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CookieParam_Value" data-uid="OpenQA.Selenium.DevTools.V85.Network.CookieParam.Value">
   Value
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CookieParam.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Cookie value.</p>
@@ -456,7 +464,7 @@ public string Url { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;value&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;value&quot;)]
 public string Value { get; set; }</code></pre>
   </div>
 

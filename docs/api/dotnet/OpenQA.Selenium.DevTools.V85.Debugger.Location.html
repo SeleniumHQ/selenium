@@ -150,7 +150,7 @@ Class Location  <a class="header-action link-secondary" title="View source" href
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_Location_ColumnNumber" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.Location.ColumnNumber">
   ColumnNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/Location.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/Location.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Column number in the script (0-based).</p>
@@ -158,7 +158,8 @@ Class Location  <a class="header-action link-secondary" title="View source" href
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;columnNumber&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;columnNumber&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ColumnNumber { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public long? ColumnNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_Location_LineNumber" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.Location.LineNumber">
   LineNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/Location.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/Location.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Line number in the script (0-based).</p>
@@ -191,7 +192,7 @@ public long? ColumnNumber { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;lineNumber&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;lineNumber&quot;)]
 public long LineNumber { get; set; }</code></pre>
   </div>
 
@@ -224,7 +225,7 @@ public long LineNumber { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scriptId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scriptId&quot;)]
 public string ScriptId { get; set; }</code></pre>
   </div>
 

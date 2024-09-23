@@ -1,0 +1,632 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class NetworkModule </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class NetworkModule ">
+      
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_BiDi_Modules_Network_NetworkModule.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.BiDi.Modules.Network.NetworkModule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule">
+
+
+
+  <h1 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule" class="text-break">
+Class NetworkModule  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L8"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.BiDi.html">BiDi</a>.<a class="xref" href="OpenQA.Selenium.BiDi.Modules.html">Modules</a>.<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.html">Network</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class NetworkModule : Module</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Modules.Module.html">Module</a></div>
+      <div><span class="xref">NetworkModule</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule__ctor_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule__ctor_OpenQA_Selenium_BiDi_Communication_Broker_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.#ctor(OpenQA.Selenium.BiDi.Communication.Broker)">
+  NetworkModule(Broker)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L8"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NetworkModule(Broker broker)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>broker</code> <a class="xref" href="OpenQA.Selenium.BiDi.Communication.Broker.html">Broker</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_InterceptAuthenticationAsync_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.InterceptAuthenticationAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_InterceptAuthenticationAsync_System_Func_OpenQA_Selenium_BiDi_Modules_Network_AuthRequiredEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_Modules_Network_AddInterceptOptions_OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.InterceptAuthenticationAsync(System.Func{OpenQA.Selenium.BiDi.Modules.Network.AuthRequiredEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.Modules.Network.AddInterceptOptions,OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  InterceptAuthenticationAsync(Func&lt;AuthRequiredEventArgs, Task&gt;, AddInterceptOptions?, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Intercept&gt; InterceptAuthenticationAsync(Func&lt;AuthRequiredEventArgs, Task&gt; handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.AuthRequiredEventArgs.html">AuthRequiredEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>interceptOptions</code> <a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.AddInterceptOptions.html">AddInterceptOptions</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.Intercept.html">Intercept</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_InterceptRequestAsync_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.InterceptRequestAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_InterceptRequestAsync_System_Func_OpenQA_Selenium_BiDi_Modules_Network_BeforeRequestSentEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_Modules_Network_AddInterceptOptions_OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.InterceptRequestAsync(System.Func{OpenQA.Selenium.BiDi.Modules.Network.BeforeRequestSentEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.Modules.Network.AddInterceptOptions,OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  InterceptRequestAsync(Func&lt;BeforeRequestSentEventArgs, Task&gt;, AddInterceptOptions?, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Intercept&gt; InterceptRequestAsync(Func&lt;BeforeRequestSentEventArgs, Task&gt; handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.BeforeRequestSentEventArgs.html">BeforeRequestSentEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>interceptOptions</code> <a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.AddInterceptOptions.html">AddInterceptOptions</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.Intercept.html">Intercept</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_InterceptResponseAsync_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.InterceptResponseAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_InterceptResponseAsync_System_Func_OpenQA_Selenium_BiDi_Modules_Network_ResponseStartedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_Modules_Network_AddInterceptOptions_OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.InterceptResponseAsync(System.Func{OpenQA.Selenium.BiDi.Modules.Network.ResponseStartedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.Modules.Network.AddInterceptOptions,OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  InterceptResponseAsync(Func&lt;ResponseStartedEventArgs, Task&gt;, AddInterceptOptions?, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Intercept&gt; InterceptResponseAsync(Func&lt;ResponseStartedEventArgs, Task&gt; handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.ResponseStartedEventArgs.html">ResponseStartedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>interceptOptions</code> <a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.AddInterceptOptions.html">AddInterceptOptions</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.Intercept.html">Intercept</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnBeforeRequestSentAsync_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnBeforeRequestSentAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnBeforeRequestSentAsync_System_Action_OpenQA_Selenium_BiDi_Modules_Network_BeforeRequestSentEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnBeforeRequestSentAsync(System.Action{OpenQA.Selenium.BiDi.Modules.Network.BeforeRequestSentEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnBeforeRequestSentAsync(Action&lt;BeforeRequestSentEventArgs&gt;, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnBeforeRequestSentAsync(Action&lt;BeforeRequestSentEventArgs&gt; handler, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.BeforeRequestSentEventArgs.html">BeforeRequestSentEventArgs</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnBeforeRequestSentAsync_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnBeforeRequestSentAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnBeforeRequestSentAsync_System_Func_OpenQA_Selenium_BiDi_Modules_Network_BeforeRequestSentEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnBeforeRequestSentAsync(System.Func{OpenQA.Selenium.BiDi.Modules.Network.BeforeRequestSentEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnBeforeRequestSentAsync(Func&lt;BeforeRequestSentEventArgs, Task&gt;, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnBeforeRequestSentAsync(Func&lt;BeforeRequestSentEventArgs, Task&gt; handler, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.BeforeRequestSentEventArgs.html">BeforeRequestSentEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnFetchErrorAsync_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnFetchErrorAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnFetchErrorAsync_System_Action_OpenQA_Selenium_BiDi_Modules_Network_FetchErrorEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnFetchErrorAsync(System.Action{OpenQA.Selenium.BiDi.Modules.Network.FetchErrorEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnFetchErrorAsync(Action&lt;FetchErrorEventArgs&gt;, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L164"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnFetchErrorAsync(Action&lt;FetchErrorEventArgs&gt; handler, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.FetchErrorEventArgs.html">FetchErrorEventArgs</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnFetchErrorAsync_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnFetchErrorAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnFetchErrorAsync_System_Func_OpenQA_Selenium_BiDi_Modules_Network_FetchErrorEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnFetchErrorAsync(System.Func{OpenQA.Selenium.BiDi.Modules.Network.FetchErrorEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnFetchErrorAsync(Func&lt;FetchErrorEventArgs, Task&gt;, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L159"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnFetchErrorAsync(Func&lt;FetchErrorEventArgs, Task&gt; handler, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.FetchErrorEventArgs.html">FetchErrorEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnResponseCompletedAsync_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnResponseCompletedAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnResponseCompletedAsync_System_Action_OpenQA_Selenium_BiDi_Modules_Network_ResponseCompletedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnResponseCompletedAsync(System.Action{OpenQA.Selenium.BiDi.Modules.Network.ResponseCompletedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnResponseCompletedAsync(Action&lt;ResponseCompletedEventArgs&gt;, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnResponseCompletedAsync(Action&lt;ResponseCompletedEventArgs&gt; handler, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.ResponseCompletedEventArgs.html">ResponseCompletedEventArgs</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnResponseCompletedAsync_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnResponseCompletedAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnResponseCompletedAsync_System_Func_OpenQA_Selenium_BiDi_Modules_Network_ResponseCompletedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnResponseCompletedAsync(System.Func{OpenQA.Selenium.BiDi.Modules.Network.ResponseCompletedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnResponseCompletedAsync(Func&lt;ResponseCompletedEventArgs, Task&gt;, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L149"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnResponseCompletedAsync(Func&lt;ResponseCompletedEventArgs, Task&gt; handler, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.ResponseCompletedEventArgs.html">ResponseCompletedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnResponseStartedAsync_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnResponseStartedAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnResponseStartedAsync_System_Action_OpenQA_Selenium_BiDi_Modules_Network_ResponseStartedEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnResponseStartedAsync(System.Action{OpenQA.Selenium.BiDi.Modules.Network.ResponseStartedEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnResponseStartedAsync(Action&lt;ResponseStartedEventArgs&gt;, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnResponseStartedAsync(Action&lt;ResponseStartedEventArgs&gt; handler, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.ResponseStartedEventArgs.html">ResponseStartedEventArgs</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnResponseStartedAsync_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnResponseStartedAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Modules_Network_NetworkModule_OnResponseStartedAsync_System_Func_OpenQA_Selenium_BiDi_Modules_Network_ResponseStartedEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.Modules.Network.NetworkModule.OnResponseStartedAsync(System.Func{OpenQA.Selenium.BiDi.Modules.Network.ResponseStartedEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnResponseStartedAsync(Func&lt;ResponseStartedEventArgs, Task&gt;, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnResponseStartedAsync(Func&lt;ResponseStartedEventArgs, Task&gt; handler, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Modules.Network.ResponseStartedEventArgs.html">ResponseStartedEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Modules/Network/NetworkModule.cs/#L8" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

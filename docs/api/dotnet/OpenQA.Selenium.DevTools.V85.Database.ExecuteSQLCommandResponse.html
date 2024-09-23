@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_Database_ExecuteSQLCommandResponse" data-uid="OpenQA.Selenium.DevTools.V85.Database.ExecuteSQLCommandResponse" class="text-break">
-Class ExecuteSQLCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Database/ExecuteSQLCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
+Class ExecuteSQLCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Database/ExecuteSQLCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -164,7 +164,7 @@ Class ExecuteSQLCommandResponse  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Database_ExecuteSQLCommandResponse_ColumnNames" data-uid="OpenQA.Selenium.DevTools.V85.Database.ExecuteSQLCommandResponse.ColumnNames">
   ColumnNames
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Database/ExecuteSQLCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Database/ExecuteSQLCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the columnNames</p>
@@ -172,7 +172,8 @@ Class ExecuteSQLCommandResponse  <a class="header-action link-secondary" title="
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;columnNames&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;columnNames&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string[] ColumnNames { get; set; }</code></pre>
   </div>
 
@@ -197,7 +198,7 @@ public string[] ColumnNames { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Database_ExecuteSQLCommandResponse_SqlError" data-uid="OpenQA.Selenium.DevTools.V85.Database.ExecuteSQLCommandResponse.SqlError">
   SqlError
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Database/ExecuteSQLCommand.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Database/ExecuteSQLCommand.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the sqlError</p>
@@ -205,7 +206,8 @@ public string[] ColumnNames { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;sqlError&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sqlError&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Error SqlError { get; set; }</code></pre>
   </div>
 
@@ -230,7 +232,7 @@ public Error SqlError { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Database_ExecuteSQLCommandResponse_Values" data-uid="OpenQA.Selenium.DevTools.V85.Database.ExecuteSQLCommandResponse.Values">
   Values
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Database/ExecuteSQLCommand.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Database/ExecuteSQLCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the values</p>
@@ -238,7 +240,8 @@ public Error SqlError { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;values&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;values&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public object[] Values { get; set; }</code></pre>
   </div>
 
@@ -263,7 +266,7 @@ public object[] Values { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Database/ExecuteSQLCommand.cs/#L45" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Database/ExecuteSQLCommand.cs/#L47" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -189,7 +189,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_GenerateTestReportCommandSettings_Group" data-uid="OpenQA.Selenium.DevTools.V85.Page.GenerateTestReportCommandSettings.Group">
   Group
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/GenerateTestReportCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/GenerateTestReportCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Specifies the endpoint group to deliver the report to.</p>
@@ -197,7 +197,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;group&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;group&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Group { get; set; }</code></pre>
   </div>
 
@@ -230,7 +231,7 @@ public string Group { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;message&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;message&quot;)]
 public string Message { get; set; }</code></pre>
   </div>
 

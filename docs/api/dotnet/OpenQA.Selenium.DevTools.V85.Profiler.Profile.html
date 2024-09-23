@@ -150,7 +150,7 @@ Class Profile  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Profiler_Profile_EndTime" data-uid="OpenQA.Selenium.DevTools.V85.Profiler.Profile.EndTime">
   EndTime
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/Profile.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/Profile.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Profiling end timestamp in microseconds.</p>
@@ -158,7 +158,7 @@ Class Profile  <a class="header-action link-secondary" title="View source" href=
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;endTime&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;endTime&quot;)]
 public double EndTime { get; set; }</code></pre>
   </div>
 
@@ -191,7 +191,7 @@ public double EndTime { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodes&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodes&quot;)]
 public ProfileNode[] Nodes { get; set; }</code></pre>
   </div>
 
@@ -216,7 +216,7 @@ public ProfileNode[] Nodes { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Profiler_Profile_Samples" data-uid="OpenQA.Selenium.DevTools.V85.Profiler.Profile.Samples">
   Samples
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/Profile.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/Profile.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Ids of samples top nodes.</p>
@@ -224,7 +224,8 @@ public ProfileNode[] Nodes { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;samples&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;samples&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long[] Samples { get; set; }</code></pre>
   </div>
 
@@ -249,7 +250,7 @@ public long[] Samples { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Profiler_Profile_StartTime" data-uid="OpenQA.Selenium.DevTools.V85.Profiler.Profile.StartTime">
   StartTime
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/Profile.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/Profile.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Profiling start timestamp in microseconds.</p>
@@ -257,7 +258,7 @@ public long[] Samples { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;startTime&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;startTime&quot;)]
 public double StartTime { get; set; }</code></pre>
   </div>
 
@@ -282,7 +283,7 @@ public double StartTime { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Profiler_Profile_TimeDeltas" data-uid="OpenQA.Selenium.DevTools.V85.Profiler.Profile.TimeDeltas">
   TimeDeltas
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/Profile.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/Profile.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Time intervals between adjacent samples in microseconds. The first delta is relative to the
@@ -291,7 +292,8 @@ profile startTime.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;timeDeltas&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;timeDeltas&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long[] TimeDeltas { get; set; }</code></pre>
   </div>
 

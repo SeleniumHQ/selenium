@@ -150,7 +150,7 @@ Class RemoteObject  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_RemoteObject_ClassName" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.RemoteObject.ClassName">
   ClassName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Object class (constructor) name. Specified for <code>object</code> type values only.</p>
@@ -158,7 +158,8 @@ Class RemoteObject  <a class="header-action link-secondary" title="View source" 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;className&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;className&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ClassName { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public string ClassName { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_RemoteObject_CustomPreview" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.RemoteObject.CustomPreview">
   CustomPreview
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>customPreview</p>
@@ -191,7 +192,8 @@ public string ClassName { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;customPreview&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;customPreview&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public CustomPreview CustomPreview { get; set; }</code></pre>
   </div>
 
@@ -216,7 +218,7 @@ public CustomPreview CustomPreview { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_RemoteObject_Description" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.RemoteObject.Description">
   Description
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>String representation of the object.</p>
@@ -224,7 +226,8 @@ public CustomPreview CustomPreview { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;description&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;description&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Description { get; set; }</code></pre>
   </div>
 
@@ -249,7 +252,7 @@ public string Description { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_RemoteObject_ObjectId" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.RemoteObject.ObjectId">
   ObjectId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Unique object identifier (for non-primitive values).</p>
@@ -257,7 +260,8 @@ public string Description { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;objectId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;objectId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ObjectId { get; set; }</code></pre>
   </div>
 
@@ -282,7 +286,7 @@ public string ObjectId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_RemoteObject_Preview" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.RemoteObject.Preview">
   Preview
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Preview containing abbreviated property values. Specified for <code>object</code> type values only.</p>
@@ -290,7 +294,8 @@ public string ObjectId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;preview&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;preview&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ObjectPreview Preview { get; set; }</code></pre>
   </div>
 
@@ -315,7 +320,7 @@ public ObjectPreview Preview { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_RemoteObject_Subtype" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.RemoteObject.Subtype">
   Subtype
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Object subtype hint. Specified for <code>object</code> or <code>wasm</code> type values only.</p>
@@ -323,7 +328,8 @@ public ObjectPreview Preview { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;subtype&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;subtype&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RemoteObjectSubtypeValues? Subtype { get; set; }</code></pre>
   </div>
 
@@ -356,7 +362,7 @@ public RemoteObjectSubtypeValues? Subtype { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public RemoteObjectTypeValues Type { get; set; }</code></pre>
   </div>
 
@@ -381,7 +387,7 @@ public RemoteObjectTypeValues Type { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_RemoteObject_UnserializableValue" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.RemoteObject.UnserializableValue">
   UnserializableValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Primitive value which can not be JSON-stringified does not have <code>value</code>, but gets this
@@ -390,7 +396,8 @@ property.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;unserializableValue&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;unserializableValue&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string UnserializableValue { get; set; }</code></pre>
   </div>
 
@@ -415,7 +422,7 @@ public string UnserializableValue { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_RemoteObject_Value" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.RemoteObject.Value">
   Value
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RemoteObject.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Remote object value in case of primitive values or JSON values (if it was requested).</p>
@@ -423,7 +430,8 @@ public string UnserializableValue { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;value&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;value&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public object Value { get; set; }</code></pre>
   </div>
 

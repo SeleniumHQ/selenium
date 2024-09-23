@@ -158,7 +158,7 @@ to identify the node.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_ScrollIntoViewIfNeededCommandSettings_BackendNodeId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.ScrollIntoViewIfNeededCommandSettings.BackendNodeId">
   BackendNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/ScrollIntoViewIfNeededCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/ScrollIntoViewIfNeededCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Identifier of the backend node.</p>
@@ -166,7 +166,8 @@ to identify the node.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;backendNodeId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;backendNodeId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? BackendNodeId { get; set; }</code></pre>
   </div>
 
@@ -232,7 +233,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? NodeId { get; set; }</code></pre>
   </div>
 
@@ -257,7 +259,7 @@ public long? NodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_ScrollIntoViewIfNeededCommandSettings_ObjectId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.ScrollIntoViewIfNeededCommandSettings.ObjectId">
   ObjectId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/ScrollIntoViewIfNeededCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/ScrollIntoViewIfNeededCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>JavaScript object id of the node wrapper.</p>
@@ -265,7 +267,8 @@ public long? NodeId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;objectId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;objectId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ObjectId { get; set; }</code></pre>
   </div>
 
@@ -290,7 +293,7 @@ public string ObjectId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_ScrollIntoViewIfNeededCommandSettings_Rect" data-uid="OpenQA.Selenium.DevTools.V85.DOM.ScrollIntoViewIfNeededCommandSettings.Rect">
   Rect
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/ScrollIntoViewIfNeededCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/ScrollIntoViewIfNeededCommand.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The rect to be scrolled into view, relative to the node's border box, in CSS pixels.
@@ -299,7 +302,8 @@ When omitted, center of the node will be used, similar to Element.scrollIntoView
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;rect&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;rect&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Rect Rect { get; set; }</code></pre>
   </div>
 

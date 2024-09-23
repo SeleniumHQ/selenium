@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_Debugger_RestartFrameCommandResponse" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.RestartFrameCommandResponse" class="text-break">
-Class RestartFrameCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/RestartFrameCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
+Class RestartFrameCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/RestartFrameCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -164,7 +164,7 @@ Class RestartFrameCommandResponse  <a class="header-action link-secondary" title
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_RestartFrameCommandResponse_AsyncStackTrace" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.RestartFrameCommandResponse.AsyncStackTrace">
   AsyncStackTrace
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/RestartFrameCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/RestartFrameCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Async stack trace, if any.</p>
@@ -172,7 +172,8 @@ Class RestartFrameCommandResponse  <a class="header-action link-secondary" title
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;asyncStackTrace&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;asyncStackTrace&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StackTrace AsyncStackTrace { get; set; }</code></pre>
   </div>
 
@@ -197,7 +198,7 @@ public StackTrace AsyncStackTrace { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_RestartFrameCommandResponse_AsyncStackTraceId" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.RestartFrameCommandResponse.AsyncStackTraceId">
   AsyncStackTraceId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/RestartFrameCommand.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/RestartFrameCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Async stack trace, if any.</p>
@@ -205,7 +206,8 @@ public StackTrace AsyncStackTrace { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;asyncStackTraceId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;asyncStackTraceId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StackTraceId AsyncStackTraceId { get; set; }</code></pre>
   </div>
 
@@ -230,7 +232,7 @@ public StackTraceId AsyncStackTraceId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_RestartFrameCommandResponse_CallFrames" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.RestartFrameCommandResponse.CallFrames">
   CallFrames
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/RestartFrameCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/RestartFrameCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>New stack trace.</p>
@@ -238,7 +240,7 @@ public StackTraceId AsyncStackTraceId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;callFrames&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;callFrames&quot;)]
 public CallFrame[] CallFrames { get; set; }</code></pre>
   </div>
 
@@ -263,7 +265,7 @@ public CallFrame[] CallFrames { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/RestartFrameCommand.cs/#L36" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/RestartFrameCommand.cs/#L37" class="edit-link">Edit this page</a>
         </div>
 
 

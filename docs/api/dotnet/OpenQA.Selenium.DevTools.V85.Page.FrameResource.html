@@ -150,7 +150,7 @@ Class FrameResource  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FrameResource_Canceled" data-uid="OpenQA.Selenium.DevTools.V85.Page.FrameResource.Canceled">
   Canceled
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>True if the resource was canceled during loading.</p>
@@ -158,7 +158,8 @@ Class FrameResource  <a class="header-action link-secondary" title="View source"
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;canceled&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;canceled&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? Canceled { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public bool? Canceled { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FrameResource_ContentSize" data-uid="OpenQA.Selenium.DevTools.V85.Page.FrameResource.ContentSize">
   ContentSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Resource content size.</p>
@@ -191,7 +192,8 @@ public bool? Canceled { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;contentSize&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;contentSize&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? ContentSize { get; set; }</code></pre>
   </div>
 
@@ -216,7 +218,7 @@ public double? ContentSize { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FrameResource_Failed" data-uid="OpenQA.Selenium.DevTools.V85.Page.FrameResource.Failed">
   Failed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>True if the resource failed to load.</p>
@@ -224,7 +226,8 @@ public double? ContentSize { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;failed&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;failed&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? Failed { get; set; }</code></pre>
   </div>
 
@@ -249,7 +252,7 @@ public bool? Failed { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FrameResource_LastModified" data-uid="OpenQA.Selenium.DevTools.V85.Page.FrameResource.LastModified">
   LastModified
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>last-modified timestamp as reported by server.</p>
@@ -257,7 +260,8 @@ public bool? Failed { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;lastModified&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;lastModified&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? LastModified { get; set; }</code></pre>
   </div>
 
@@ -282,7 +286,7 @@ public double? LastModified { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FrameResource_MimeType" data-uid="OpenQA.Selenium.DevTools.V85.Page.FrameResource.MimeType">
   MimeType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Resource mimeType as determined by the browser.</p>
@@ -290,7 +294,7 @@ public double? LastModified { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;mimeType&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;mimeType&quot;)]
 public string MimeType { get; set; }</code></pre>
   </div>
 
@@ -315,7 +319,7 @@ public string MimeType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FrameResource_Type" data-uid="OpenQA.Selenium.DevTools.V85.Page.FrameResource.Type">
   Type
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FrameResource.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Type of this resource.</p>
@@ -323,7 +327,7 @@ public string MimeType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public ResourceType Type { get; set; }</code></pre>
   </div>
 
@@ -356,7 +360,7 @@ public ResourceType Type { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;url&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
 public string Url { get; set; }</code></pre>
   </div>
 

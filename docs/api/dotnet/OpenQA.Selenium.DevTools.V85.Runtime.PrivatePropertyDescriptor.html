@@ -150,7 +150,7 @@ Class PrivatePropertyDescriptor  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_PrivatePropertyDescriptor_Get" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.PrivatePropertyDescriptor.Get">
   Get
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/PrivatePropertyDescriptor.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/PrivatePropertyDescriptor.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A function which serves as a getter for the private property,
@@ -159,7 +159,8 @@ or <code>undefined</code> if there is no getter (accessor descriptors only).</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;get&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;get&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RemoteObject Get { get; set; }</code></pre>
   </div>
 
@@ -192,7 +193,7 @@ public RemoteObject Get { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;name&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
 public string Name { get; set; }</code></pre>
   </div>
 
@@ -217,7 +218,7 @@ public string Name { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_PrivatePropertyDescriptor_Set" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.PrivatePropertyDescriptor.Set">
   Set
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/PrivatePropertyDescriptor.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/PrivatePropertyDescriptor.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A function which serves as a setter for the private property,
@@ -226,7 +227,8 @@ or <code>undefined</code> if there is no setter (accessor descriptors only).</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;set&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;set&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RemoteObject Set { get; set; }</code></pre>
   </div>
 
@@ -251,7 +253,7 @@ public RemoteObject Set { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_PrivatePropertyDescriptor_Value" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.PrivatePropertyDescriptor.Value">
   Value
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/PrivatePropertyDescriptor.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/PrivatePropertyDescriptor.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The value associated with the private property.</p>
@@ -259,7 +261,8 @@ public RemoteObject Set { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;value&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;value&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RemoteObject Value { get; set; }</code></pre>
   </div>
 

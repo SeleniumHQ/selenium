@@ -154,7 +154,7 @@ Class ResponseReceivedEventArgs  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ResponseReceivedEventArgs_FrameId" data-uid="OpenQA.Selenium.DevTools.V85.Network.ResponseReceivedEventArgs.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ResponseReceivedEventArgs.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ResponseReceivedEventArgs.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Frame identifier.</p>
@@ -162,7 +162,8 @@ Class ResponseReceivedEventArgs  <a class="header-action link-secondary" title="
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;frameId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;frameId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string FrameId { get; set; }</code></pre>
   </div>
 
@@ -187,7 +188,7 @@ public string FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ResponseReceivedEventArgs_LoaderId" data-uid="OpenQA.Selenium.DevTools.V85.Network.ResponseReceivedEventArgs.LoaderId">
   LoaderId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ResponseReceivedEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ResponseReceivedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Loader identifier. Empty string if the request is fetched from worker.</p>
@@ -195,7 +196,7 @@ public string FrameId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;loaderId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;loaderId&quot;)]
 public string LoaderId { get; set; }</code></pre>
   </div>
 
@@ -228,7 +229,7 @@ public string LoaderId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;requestId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;requestId&quot;)]
 public string RequestId { get; set; }</code></pre>
   </div>
 
@@ -253,7 +254,7 @@ public string RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ResponseReceivedEventArgs_Response" data-uid="OpenQA.Selenium.DevTools.V85.Network.ResponseReceivedEventArgs.Response">
   Response
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ResponseReceivedEventArgs.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ResponseReceivedEventArgs.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Response data.</p>
@@ -261,7 +262,7 @@ public string RequestId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;response&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;response&quot;)]
 public Response Response { get; set; }</code></pre>
   </div>
 
@@ -286,7 +287,7 @@ public Response Response { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ResponseReceivedEventArgs_Timestamp" data-uid="OpenQA.Selenium.DevTools.V85.Network.ResponseReceivedEventArgs.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ResponseReceivedEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ResponseReceivedEventArgs.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Timestamp.</p>
@@ -294,7 +295,7 @@ public Response Response { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;timestamp&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;timestamp&quot;)]
 public double Timestamp { get; set; }</code></pre>
   </div>
 
@@ -319,7 +320,7 @@ public double Timestamp { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ResponseReceivedEventArgs_Type" data-uid="OpenQA.Selenium.DevTools.V85.Network.ResponseReceivedEventArgs.Type">
   Type
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ResponseReceivedEventArgs.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ResponseReceivedEventArgs.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Resource type.</p>
@@ -327,7 +328,7 @@ public double Timestamp { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public ResourceType Type { get; set; }</code></pre>
   </div>
 

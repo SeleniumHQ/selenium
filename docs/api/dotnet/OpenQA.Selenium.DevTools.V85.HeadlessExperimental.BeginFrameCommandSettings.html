@@ -201,7 +201,8 @@ the current time will be used.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;frameTimeTicks&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;frameTimeTicks&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? FrameTimeTicks { get; set; }</code></pre>
   </div>
 
@@ -226,7 +227,7 @@ public double? FrameTimeTicks { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_HeadlessExperimental_BeginFrameCommandSettings_Interval" data-uid="OpenQA.Selenium.DevTools.V85.HeadlessExperimental.BeginFrameCommandSettings.Interval">
   Interval
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeadlessExperimental/BeginFrameCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeadlessExperimental/BeginFrameCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The interval between BeginFrames that is reported to the compositor, in milliseconds.
@@ -235,7 +236,8 @@ Defaults to a 60 frames/second interval, i.e. about 16.666 milliseconds.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;interval&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;interval&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? Interval { get; set; }</code></pre>
   </div>
 
@@ -260,7 +262,7 @@ public double? Interval { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_HeadlessExperimental_BeginFrameCommandSettings_NoDisplayUpdates" data-uid="OpenQA.Selenium.DevTools.V85.HeadlessExperimental.BeginFrameCommandSettings.NoDisplayUpdates">
   NoDisplayUpdates
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeadlessExperimental/BeginFrameCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeadlessExperimental/BeginFrameCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether updates should not be committed and drawn onto the display. False by default. If
@@ -270,7 +272,8 @@ any visual updates may not be visible on the display or in screenshots.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;noDisplayUpdates&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;noDisplayUpdates&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? NoDisplayUpdates { get; set; }</code></pre>
   </div>
 
@@ -295,7 +298,7 @@ public bool? NoDisplayUpdates { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_HeadlessExperimental_BeginFrameCommandSettings_Screenshot" data-uid="OpenQA.Selenium.DevTools.V85.HeadlessExperimental.BeginFrameCommandSettings.Screenshot">
   Screenshot
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeadlessExperimental/BeginFrameCommand.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeadlessExperimental/BeginFrameCommand.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set, a screenshot of the frame will be captured and returned in the response. Otherwise,
@@ -305,7 +308,8 @@ during renderer initialization. In such a case, no screenshot data will be retur
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;screenshot&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;screenshot&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ScreenshotParams Screenshot { get; set; }</code></pre>
   </div>
 

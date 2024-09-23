@@ -155,8 +155,8 @@ Class DevToolsEventReceivedEventArgs  <a class="header-action link-secondary" ti
 
   <a id="OpenQA_Selenium_DevTools_DevToolsEventReceivedEventArgs__ctor_" data-uid="OpenQA.Selenium.DevTools.DevToolsEventReceivedEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_DevTools_DevToolsEventReceivedEventArgs__ctor_System_String_System_String_Newtonsoft_Json_Linq_JToken_" data-uid="OpenQA.Selenium.DevTools.DevToolsEventReceivedEventArgs.#ctor(System.String,System.String,Newtonsoft.Json.Linq.JToken)">
-  DevToolsEventReceivedEventArgs(string, string, JToken)
+  <h3 id="OpenQA_Selenium_DevTools_DevToolsEventReceivedEventArgs__ctor_System_String_System_String_System_Text_Json_Nodes_JsonNode_" data-uid="OpenQA.Selenium.DevTools.DevToolsEventReceivedEventArgs.#ctor(System.String,System.String,System.Text.Json.Nodes.JsonNode)">
+  DevToolsEventReceivedEventArgs(string, string, JsonNode)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsSessionEventReceivedEventArgs.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -165,7 +165,7 @@ Class DevToolsEventReceivedEventArgs  <a class="header-action link-secondary" ti
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DevToolsEventReceivedEventArgs(string domainName, string eventName, JToken eventData)</code></pre>
+    <pre><code class="lang-csharp hljs">public DevToolsEventReceivedEventArgs(string domainName, string eventName, JsonNode eventData)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -176,7 +176,7 @@ Class DevToolsEventReceivedEventArgs  <a class="header-action link-secondary" ti
     <dt><code>eventName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The name of the event to be raised.</p>
 </dd>
-    <dt><code>eventData</code> <span class="xref">JToken</span></dt>
+    <dt><code>eventData</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonnode">JsonNode</a></dt>
     <dd><p>The data for the event to be raised.</p>
 </dd>
   </dl>
@@ -240,7 +240,7 @@ Class DevToolsEventReceivedEventArgs  <a class="header-action link-secondary" ti
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public JToken EventData { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public JsonNode EventData { get; }</code></pre>
   </div>
 
 
@@ -249,7 +249,7 @@ Class DevToolsEventReceivedEventArgs  <a class="header-action link-secondary" ti
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">JToken</span></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonnode">JsonNode</a></dt>
     <dd></dd>
   </dl>
 

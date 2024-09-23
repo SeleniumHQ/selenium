@@ -163,7 +163,7 @@ channel with browser target.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Target_ExposeDevToolsProtocolCommandSettings_BindingName" data-uid="OpenQA.Selenium.DevTools.V85.Target.ExposeDevToolsProtocolCommandSettings.BindingName">
   BindingName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/ExposeDevToolsProtocolCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/ExposeDevToolsProtocolCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Binding name, 'cdp' if not specified.</p>
@@ -171,7 +171,8 @@ channel with browser target.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;bindingName&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;bindingName&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string BindingName { get; set; }</code></pre>
   </div>
 
@@ -237,7 +238,7 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;targetId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;targetId&quot;)]
 public string TargetId { get; set; }</code></pre>
   </div>
 

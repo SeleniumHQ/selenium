@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_Command" data-uid="OpenQA.Selenium.Command" class="text-break">
-Class Command  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L28"><i class="bi bi-code-slash"></i></a>
+Class Command  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -150,7 +150,7 @@ Class Command  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="OpenQA_Selenium_Command__ctor_OpenQA_Selenium_SessionId_System_String_System_Collections_Generic_Dictionary_System_String_System_Object__" data-uid="OpenQA.Selenium.Command.#ctor(OpenQA.Selenium.SessionId,System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
   Command(SessionId, string, Dictionary&lt;string, object&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Command.html">Command</a> class for a Session</p>
@@ -189,7 +189,7 @@ Class Command  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="OpenQA_Selenium_Command__ctor_System_String_System_String_" data-uid="OpenQA.Selenium.Command.#ctor(System.String,System.String)">
   Command(string, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Command.html">Command</a> class using a command name and a JSON-encoded string for the parameters.</p>
@@ -229,7 +229,7 @@ Class Command  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="OpenQA_Selenium_Command_Name" data-uid="OpenQA.Selenium.Command.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the command name</p>
@@ -237,7 +237,7 @@ Class Command  <a class="header-action link-secondary" title="View source" href=
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;name&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
 public string Name { get; }</code></pre>
   </div>
 
@@ -262,7 +262,7 @@ public string Name { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Command_Parameters" data-uid="OpenQA.Selenium.Command.Parameters">
   Parameters
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the parameters of the command</p>
@@ -270,7 +270,7 @@ public string Name { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;parameters&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;parameters&quot;)]
 public Dictionary&lt;string, object&gt; Parameters { get; }</code></pre>
   </div>
 
@@ -295,7 +295,7 @@ public Dictionary&lt;string, object&gt; Parameters { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Command_ParametersAsJsonString" data-uid="OpenQA.Selenium.Command.ParametersAsJsonString">
   ParametersAsJsonString
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L97"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the parameters of the command as a JSON-encoded string.</p>
@@ -327,7 +327,7 @@ public Dictionary&lt;string, object&gt; Parameters { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Command_SessionId" data-uid="OpenQA.Selenium.Command.SessionId">
   SessionId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the SessionID of the command</p>
@@ -335,7 +335,7 @@ public Dictionary&lt;string, object&gt; Parameters { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;sessionId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sessionId&quot;)]
 public SessionId SessionId { get; }</code></pre>
   </div>
 
@@ -364,7 +364,7 @@ public SessionId SessionId { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Command_ToString" data-uid="OpenQA.Selenium.Command.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L120"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns a string of the Command object</p>
@@ -397,7 +397,7 @@ public SessionId SessionId { get; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L28" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Command.cs/#L29" class="edit-link">Edit this page</a>
         </div>
 
 

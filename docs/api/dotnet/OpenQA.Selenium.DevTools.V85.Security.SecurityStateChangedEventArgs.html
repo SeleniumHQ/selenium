@@ -154,7 +154,7 @@ Class SecurityStateChangedEventArgs  <a class="header-action link-secondary" tit
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_SecurityStateChangedEventArgs_Explanations" data-uid="OpenQA.Selenium.DevTools.V85.Security.SecurityStateChangedEventArgs.Explanations">
   Explanations
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateChangedEventArgs.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateChangedEventArgs.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>List of explanations for the security state. If the overall security state is <code>insecure</code> or
@@ -163,7 +163,7 @@ Class SecurityStateChangedEventArgs  <a class="header-action link-secondary" tit
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;explanations&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;explanations&quot;)]
 public SecurityStateExplanation[] Explanations { get; set; }</code></pre>
   </div>
 
@@ -188,7 +188,7 @@ public SecurityStateExplanation[] Explanations { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_SecurityStateChangedEventArgs_InsecureContentStatus" data-uid="OpenQA.Selenium.DevTools.V85.Security.SecurityStateChangedEventArgs.InsecureContentStatus">
   InsecureContentStatus
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateChangedEventArgs.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateChangedEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Information about insecure content on the page.</p>
@@ -196,7 +196,7 @@ public SecurityStateExplanation[] Explanations { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;insecureContentStatus&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;insecureContentStatus&quot;)]
 public InsecureContentStatus InsecureContentStatus { get; set; }</code></pre>
   </div>
 
@@ -221,7 +221,7 @@ public InsecureContentStatus InsecureContentStatus { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_SecurityStateChangedEventArgs_SchemeIsCryptographic" data-uid="OpenQA.Selenium.DevTools.V85.Security.SecurityStateChangedEventArgs.SchemeIsCryptographic">
   SchemeIsCryptographic
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateChangedEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateChangedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>True if the page was loaded over cryptographic transport such as HTTPS.</p>
@@ -229,7 +229,7 @@ public InsecureContentStatus InsecureContentStatus { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;schemeIsCryptographic&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;schemeIsCryptographic&quot;)]
 public bool SchemeIsCryptographic { get; set; }</code></pre>
   </div>
 
@@ -262,7 +262,7 @@ public bool SchemeIsCryptographic { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;securityState&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;securityState&quot;)]
 public SecurityState SecurityState { get; set; }</code></pre>
   </div>
 
@@ -287,7 +287,7 @@ public SecurityState SecurityState { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_SecurityStateChangedEventArgs_Summary" data-uid="OpenQA.Selenium.DevTools.V85.Security.SecurityStateChangedEventArgs.Summary">
   Summary
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateChangedEventArgs.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateChangedEventArgs.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Overrides user-visible description of the state.</p>
@@ -295,7 +295,8 @@ public SecurityState SecurityState { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;summary&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;summary&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Summary { get; set; }</code></pre>
   </div>
 

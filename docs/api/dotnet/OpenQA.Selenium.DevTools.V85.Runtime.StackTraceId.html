@@ -151,7 +151,7 @@ allows to track cross-debugger calls. See <code>Runtime.StackTrace</code> and <c
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_StackTraceId_DebuggerId" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.StackTraceId.DebuggerId">
   DebuggerId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/StackTraceId.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/StackTraceId.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>debuggerId</p>
@@ -159,7 +159,8 @@ allows to track cross-debugger calls. See <code>Runtime.StackTrace</code> and <c
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;debuggerId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;debuggerId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string DebuggerId { get; set; }</code></pre>
   </div>
 
@@ -192,7 +193,7 @@ public string DebuggerId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;id&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
 public string Id { get; set; }</code></pre>
   </div>
 

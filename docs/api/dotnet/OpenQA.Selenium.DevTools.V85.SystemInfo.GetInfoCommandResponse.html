@@ -164,7 +164,7 @@ Class GetInfoCommandResponse  <a class="header-action link-secondary" title="Vie
 
   <h3 id="OpenQA_Selenium_DevTools_V85_SystemInfo_GetInfoCommandResponse_CommandLine" data-uid="OpenQA.Selenium.DevTools.V85.SystemInfo.GetInfoCommandResponse.CommandLine">
   CommandLine
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/SystemInfo/GetInfoCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/SystemInfo/GetInfoCommand.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The command line string used to launch the browser. Will be the empty string if not
@@ -173,7 +173,7 @@ supported.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;commandLine&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;commandLine&quot;)]
 public string CommandLine { get; set; }</code></pre>
   </div>
 
@@ -206,7 +206,7 @@ public string CommandLine { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;gpu&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;gpu&quot;)]
 public GPUInfo Gpu { get; set; }</code></pre>
   </div>
 
@@ -231,7 +231,7 @@ public GPUInfo Gpu { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_SystemInfo_GetInfoCommandResponse_ModelName" data-uid="OpenQA.Selenium.DevTools.V85.SystemInfo.GetInfoCommandResponse.ModelName">
   ModelName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/SystemInfo/GetInfoCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/SystemInfo/GetInfoCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A platform-dependent description of the model of the machine. On Mac OS, this is, for
@@ -240,7 +240,7 @@ example, 'MacBookPro'. Will be the empty string if not supported.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;modelName&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;modelName&quot;)]
 public string ModelName { get; set; }</code></pre>
   </div>
 
@@ -265,7 +265,7 @@ public string ModelName { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_SystemInfo_GetInfoCommandResponse_ModelVersion" data-uid="OpenQA.Selenium.DevTools.V85.SystemInfo.GetInfoCommandResponse.ModelVersion">
   ModelVersion
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/SystemInfo/GetInfoCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/SystemInfo/GetInfoCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A platform-dependent description of the version of the machine. On Mac OS, this is, for
@@ -274,7 +274,7 @@ example, '10.1'. Will be the empty string if not supported.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;modelVersion&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;modelVersion&quot;)]
 public string ModelVersion { get; set; }</code></pre>
   </div>
 

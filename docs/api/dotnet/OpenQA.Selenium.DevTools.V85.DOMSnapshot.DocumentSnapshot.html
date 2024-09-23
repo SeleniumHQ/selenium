@@ -150,7 +150,7 @@ Class DocumentSnapshot  <a class="header-action link-secondary" title="View sour
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_BaseURL" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.BaseURL">
   BaseURL
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Base URL that <code>Document</code> or <code>FrameOwner</code> node uses for URL completion.</p>
@@ -158,7 +158,7 @@ Class DocumentSnapshot  <a class="header-action link-secondary" title="View sour
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;baseURL&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;baseURL&quot;)]
 public long BaseURL { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public long BaseURL { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_ContentHeight" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.ContentHeight">
   ContentHeight
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L154"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Document content height.</p>
@@ -191,7 +191,8 @@ public long BaseURL { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;contentHeight&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;contentHeight&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? ContentHeight { get; set; }</code></pre>
   </div>
 
@@ -216,7 +217,7 @@ public double? ContentHeight { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_ContentLanguage" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.ContentLanguage">
   ContentLanguage
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Contains the document's content language.</p>
@@ -224,7 +225,7 @@ public double? ContentHeight { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;contentLanguage&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;contentLanguage&quot;)]
 public long ContentLanguage { get; set; }</code></pre>
   </div>
 
@@ -249,7 +250,7 @@ public long ContentLanguage { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_ContentWidth" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.ContentWidth">
   ContentWidth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L144"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Document content width.</p>
@@ -257,7 +258,8 @@ public long ContentLanguage { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;contentWidth&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;contentWidth&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? ContentWidth { get; set; }</code></pre>
   </div>
 
@@ -290,7 +292,7 @@ public double? ContentWidth { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;documentURL&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;documentURL&quot;)]
 public long DocumentURL { get; set; }</code></pre>
   </div>
 
@@ -315,7 +317,7 @@ public long DocumentURL { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_EncodingName" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.EncodingName">
   EncodingName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Contains the document's character set encoding.</p>
@@ -323,7 +325,7 @@ public long DocumentURL { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;encodingName&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;encodingName&quot;)]
 public long EncodingName { get; set; }</code></pre>
   </div>
 
@@ -348,7 +350,7 @@ public long EncodingName { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_FrameId" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Frame ID for frame owner elements and also for the document node.</p>
@@ -356,7 +358,7 @@ public long EncodingName { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;frameId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;frameId&quot;)]
 public long FrameId { get; set; }</code></pre>
   </div>
 
@@ -381,7 +383,7 @@ public long FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_Layout" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.Layout">
   Layout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The nodes in the layout tree.</p>
@@ -389,7 +391,7 @@ public long FrameId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;layout&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;layout&quot;)]
 public LayoutTreeSnapshot Layout { get; set; }</code></pre>
   </div>
 
@@ -414,7 +416,7 @@ public LayoutTreeSnapshot Layout { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_Nodes" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.Nodes">
   Nodes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A table with dom nodes.</p>
@@ -422,7 +424,7 @@ public LayoutTreeSnapshot Layout { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodes&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodes&quot;)]
 public NodeTreeSnapshot Nodes { get; set; }</code></pre>
   </div>
 
@@ -447,7 +449,7 @@ public NodeTreeSnapshot Nodes { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_PublicId" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.PublicId">
   PublicId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>DocumentType</code> node's publicId.</p>
@@ -455,7 +457,7 @@ public NodeTreeSnapshot Nodes { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;publicId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;publicId&quot;)]
 public long PublicId { get; set; }</code></pre>
   </div>
 
@@ -480,7 +482,7 @@ public long PublicId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_ScrollOffsetX" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.ScrollOffsetX">
   ScrollOffsetX
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L124"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Horizontal scroll offset.</p>
@@ -488,7 +490,8 @@ public long PublicId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scrollOffsetX&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scrollOffsetX&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? ScrollOffsetX { get; set; }</code></pre>
   </div>
 
@@ -513,7 +516,7 @@ public double? ScrollOffsetX { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_ScrollOffsetY" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.ScrollOffsetY">
   ScrollOffsetY
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L134"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Vertical scroll offset.</p>
@@ -521,7 +524,8 @@ public double? ScrollOffsetX { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scrollOffsetY&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scrollOffsetY&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? ScrollOffsetY { get; set; }</code></pre>
   </div>
 
@@ -546,7 +550,7 @@ public double? ScrollOffsetY { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_SystemId" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.SystemId">
   SystemId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>DocumentType</code> node's systemId.</p>
@@ -554,7 +558,7 @@ public double? ScrollOffsetY { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;systemId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;systemId&quot;)]
 public long SystemId { get; set; }</code></pre>
   </div>
 
@@ -579,7 +583,7 @@ public long SystemId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_TextBoxes" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.TextBoxes">
   TextBoxes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L114"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The post-layout inline text nodes.</p>
@@ -587,7 +591,7 @@ public long SystemId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;textBoxes&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;textBoxes&quot;)]
 public TextBoxSnapshot TextBoxes { get; set; }</code></pre>
   </div>
 
@@ -612,7 +616,7 @@ public TextBoxSnapshot TextBoxes { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_DocumentSnapshot_Title" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.DocumentSnapshot.Title">
   Title
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/DocumentSnapshot.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Document title.</p>
@@ -620,7 +624,7 @@ public TextBoxSnapshot TextBoxes { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;title&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;title&quot;)]
 public long Title { get; set; }</code></pre>
   </div>
 

@@ -189,7 +189,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMDebugger_GetEventListenersCommandSettings_Depth" data-uid="OpenQA.Selenium.DevTools.V85.DOMDebugger.GetEventListenersCommandSettings.Depth">
   Depth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/GetEventListenersCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/GetEventListenersCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The maximum depth at which Node children should be retrieved, defaults to 1. Use -1 for the
@@ -198,7 +198,8 @@ entire subtree or provide an integer larger than 0.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;depth&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;depth&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? Depth { get; set; }</code></pre>
   </div>
 
@@ -231,7 +232,7 @@ public long? Depth { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;objectId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;objectId&quot;)]
 public string ObjectId { get; set; }</code></pre>
   </div>
 
@@ -256,7 +257,7 @@ public string ObjectId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMDebugger_GetEventListenersCommandSettings_Pierce" data-uid="OpenQA.Selenium.DevTools.V85.DOMDebugger.GetEventListenersCommandSettings.Pierce">
   Pierce
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/GetEventListenersCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMDebugger/GetEventListenersCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether or not iframes and shadow roots should be traversed when returning the subtree
@@ -265,7 +266,8 @@ public string ObjectId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;pierce&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;pierce&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? Pierce { get; set; }</code></pre>
   </div>
 

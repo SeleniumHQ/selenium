@@ -151,7 +151,7 @@ DOMNode is a base node mirror type.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_Attributes" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.Attributes">
   Attributes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L107"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Attributes of the <code>Element</code> node in the form of flat array <code>[name1, value1, name2, value2]</code>.</p>
@@ -159,7 +159,8 @@ DOMNode is a base node mirror type.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;attributes&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;attributes&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string[] Attributes { get; set; }</code></pre>
   </div>
 
@@ -184,7 +185,7 @@ public string[] Attributes { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_BackendNodeId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.BackendNodeId">
   BackendNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The BackendNodeId for this node.</p>
@@ -192,7 +193,7 @@ public string[] Attributes { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;backendNodeId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;backendNodeId&quot;)]
 public long BackendNodeId { get; set; }</code></pre>
   </div>
 
@@ -217,7 +218,7 @@ public long BackendNodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_BaseURL" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.BaseURL">
   BaseURL
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L127"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Base URL that <code>Document</code> or <code>FrameOwner</code> node uses for URL completion.</p>
@@ -225,7 +226,8 @@ public long BackendNodeId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;baseURL&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;baseURL&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string BaseURL { get; set; }</code></pre>
   </div>
 
@@ -250,7 +252,7 @@ public string BaseURL { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_ChildNodeCount" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.ChildNodeCount">
   ChildNodeCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Child count for <code>Container</code> nodes.</p>
@@ -258,7 +260,8 @@ public string BaseURL { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;childNodeCount&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;childNodeCount&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ChildNodeCount { get; set; }</code></pre>
   </div>
 
@@ -283,7 +286,7 @@ public long? ChildNodeCount { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_Children" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.Children">
   Children
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L97"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Child nodes of this node when requested with children.</p>
@@ -291,7 +294,8 @@ public long? ChildNodeCount { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;children&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;children&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Node[] Children { get; set; }</code></pre>
   </div>
 
@@ -316,7 +320,7 @@ public Node[] Children { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_ContentDocument" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.ContentDocument">
   ContentDocument
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L206"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L227"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Content document for frame owner elements.</p>
@@ -324,7 +328,8 @@ public Node[] Children { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;contentDocument&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;contentDocument&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Node ContentDocument { get; set; }</code></pre>
   </div>
 
@@ -349,7 +354,7 @@ public Node ContentDocument { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_DistributedNodes" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.DistributedNodes">
   DistributedNodes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L251"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L277"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Distributed nodes for given insertion point.</p>
@@ -357,7 +362,8 @@ public Node ContentDocument { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;distributedNodes&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;distributedNodes&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public BackendNode[] DistributedNodes { get; set; }</code></pre>
   </div>
 
@@ -382,7 +388,7 @@ public BackendNode[] DistributedNodes { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_DocumentURL" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.DocumentURL">
   DocumentURL
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L117"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Document URL that <code>Document</code> or <code>FrameOwner</code> node points to.</p>
@@ -390,7 +396,8 @@ public BackendNode[] DistributedNodes { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;documentURL&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;documentURL&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string DocumentURL { get; set; }</code></pre>
   </div>
 
@@ -415,7 +422,7 @@ public string DocumentURL { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_FrameId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L197"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L217"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Frame ID for frame owner elements.</p>
@@ -423,7 +430,8 @@ public string DocumentURL { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;frameId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;frameId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string FrameId { get; set; }</code></pre>
   </div>
 
@@ -448,7 +456,7 @@ public string FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_ImportedDocument" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.ImportedDocument">
   ImportedDocument
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L242"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L267"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Import document for the HTMLImport links.</p>
@@ -456,7 +464,8 @@ public string FrameId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;importedDocument&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;importedDocument&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Node ImportedDocument { get; set; }</code></pre>
   </div>
 
@@ -481,7 +490,7 @@ public Node ImportedDocument { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_InternalSubset" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.InternalSubset">
   InternalSubset
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L157"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>DocumentType</code>'s internalSubset.</p>
@@ -489,7 +498,8 @@ public Node ImportedDocument { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;internalSubset&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;internalSubset&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string InternalSubset { get; set; }</code></pre>
   </div>
 
@@ -514,7 +524,7 @@ public string InternalSubset { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_IsSVG" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.IsSVG">
   IsSVG
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L260"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L287"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the node is SVG.</p>
@@ -522,7 +532,8 @@ public string InternalSubset { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;isSVG&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;isSVG&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IsSVG { get; set; }</code></pre>
   </div>
 
@@ -547,7 +558,7 @@ public bool? IsSVG { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_LocalName" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.LocalName">
   LocalName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>Node</code>'s localName.</p>
@@ -555,7 +566,7 @@ public bool? IsSVG { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;localName&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;localName&quot;)]
 public string LocalName { get; set; }</code></pre>
   </div>
 
@@ -580,7 +591,7 @@ public string LocalName { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_Name" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L177"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>Attr</code>'s name.</p>
@@ -588,7 +599,8 @@ public string LocalName { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;name&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Name { get; set; }</code></pre>
   </div>
 
@@ -623,7 +635,7 @@ fire DOM events for nodes known to the client.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeId&quot;)]
 public long NodeId { get; set; }</code></pre>
   </div>
 
@@ -648,7 +660,7 @@ public long NodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_NodeName" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.NodeName">
   NodeName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>Node</code>'s nodeName.</p>
@@ -656,7 +668,7 @@ public long NodeId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeName&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeName&quot;)]
 public string NodeName { get; set; }</code></pre>
   </div>
 
@@ -681,7 +693,7 @@ public string NodeName { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_NodeType" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.NodeType">
   NodeType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>Node</code>'s nodeType.</p>
@@ -689,7 +701,7 @@ public string NodeName { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeType&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeType&quot;)]
 public long NodeType { get; set; }</code></pre>
   </div>
 
@@ -714,7 +726,7 @@ public long NodeType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_NodeValue" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.NodeValue">
   NodeValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>Node</code>'s nodeValue.</p>
@@ -722,7 +734,7 @@ public long NodeType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeValue&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeValue&quot;)]
 public string NodeValue { get; set; }</code></pre>
   </div>
 
@@ -747,7 +759,7 @@ public string NodeValue { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_ParentId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.ParentId">
   ParentId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The id of the parent node if any.</p>
@@ -755,7 +767,8 @@ public string NodeValue { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;parentId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;parentId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ParentId { get; set; }</code></pre>
   </div>
 
@@ -780,7 +793,7 @@ public long? ParentId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_PseudoElements" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.PseudoElements">
   PseudoElements
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L233"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L257"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Pseudo elements associated with this node.</p>
@@ -788,7 +801,8 @@ public long? ParentId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;pseudoElements&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;pseudoElements&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Node[] PseudoElements { get; set; }</code></pre>
   </div>
 
@@ -813,7 +827,7 @@ public Node[] PseudoElements { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_PseudoType" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.PseudoType">
   PseudoType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L179"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L197"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Pseudo element type for this node.</p>
@@ -821,7 +835,8 @@ public Node[] PseudoElements { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;pseudoType&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;pseudoType&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public PseudoType? PseudoType { get; set; }</code></pre>
   </div>
 
@@ -846,7 +861,7 @@ public PseudoType? PseudoType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_PublicId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.PublicId">
   PublicId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L125"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L137"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>DocumentType</code>'s publicId.</p>
@@ -854,7 +869,8 @@ public PseudoType? PseudoType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;publicId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;publicId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string PublicId { get; set; }</code></pre>
   </div>
 
@@ -879,7 +895,7 @@ public string PublicId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_ShadowRootType" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.ShadowRootType">
   ShadowRootType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L207"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Shadow root type.</p>
@@ -887,7 +903,8 @@ public string PublicId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;shadowRootType&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;shadowRootType&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ShadowRootType? ShadowRootType { get; set; }</code></pre>
   </div>
 
@@ -912,7 +929,7 @@ public ShadowRootType? ShadowRootType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_ShadowRoots" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.ShadowRoots">
   ShadowRoots
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L215"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L237"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Shadow root list for given element host.</p>
@@ -920,7 +937,8 @@ public ShadowRootType? ShadowRootType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;shadowRoots&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;shadowRoots&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Node[] ShadowRoots { get; set; }</code></pre>
   </div>
 
@@ -945,7 +963,7 @@ public Node[] ShadowRoots { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_SystemId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.SystemId">
   SystemId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L147"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>DocumentType</code>'s systemId.</p>
@@ -953,7 +971,8 @@ public Node[] ShadowRoots { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;systemId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;systemId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string SystemId { get; set; }</code></pre>
   </div>
 
@@ -978,7 +997,7 @@ public string SystemId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_TemplateContent" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.TemplateContent">
   TemplateContent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L224"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L247"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Content document fragment for template elements.</p>
@@ -986,7 +1005,8 @@ public string SystemId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;templateContent&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;templateContent&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Node TemplateContent { get; set; }</code></pre>
   </div>
 
@@ -1011,7 +1031,7 @@ public Node TemplateContent { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_Value" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.Value">
   Value
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L187"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>Attr</code>'s value.</p>
@@ -1019,7 +1039,8 @@ public Node TemplateContent { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;value&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;value&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Value { get; set; }</code></pre>
   </div>
 
@@ -1044,7 +1065,7 @@ public string Value { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_Node_XmlVersion" data-uid="OpenQA.Selenium.DevTools.V85.DOM.Node.XmlVersion">
   XmlVersion
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/Node.cs/#L167"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>Document</code>'s XML version in case of XML documents.</p>
@@ -1052,7 +1073,8 @@ public string Value { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;xmlVersion&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;xmlVersion&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string XmlVersion { get; set; }</code></pre>
   </div>
 

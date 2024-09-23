@@ -189,7 +189,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetScriptSourceCommandSettings_DryRun" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetScriptSourceCommandSettings.DryRun">
   DryRun
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If true the change will not actually be applied. Dry run may be used to get result
@@ -198,7 +198,8 @@ description without actually modifying the code.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;dryRun&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;dryRun&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? DryRun { get; set; }</code></pre>
   </div>
 
@@ -231,7 +232,7 @@ public bool? DryRun { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scriptId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scriptId&quot;)]
 public string ScriptId { get; set; }</code></pre>
   </div>
 
@@ -256,7 +257,7 @@ public string ScriptId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetScriptSourceCommandSettings_ScriptSource" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetScriptSourceCommandSettings.ScriptSource">
   ScriptSource
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetScriptSourceCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>New content of the script.</p>
@@ -264,7 +265,7 @@ public string ScriptId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scriptSource&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scriptSource&quot;)]
 public string ScriptSource { get; set; }</code></pre>
   </div>
 

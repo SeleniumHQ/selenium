@@ -189,7 +189,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_ReplaySnapshotCommandSettings_FromStep" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.ReplaySnapshotCommandSettings.FromStep">
   FromStep
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/ReplaySnapshotCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/ReplaySnapshotCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The first step to replay from (replay from the very start if not specified).</p>
@@ -197,7 +197,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;fromStep&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;fromStep&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? FromStep { get; set; }</code></pre>
   </div>
 
@@ -222,7 +223,7 @@ public long? FromStep { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_ReplaySnapshotCommandSettings_Scale" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.ReplaySnapshotCommandSettings.Scale">
   Scale
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/ReplaySnapshotCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/ReplaySnapshotCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The scale to apply while replaying (defaults to 1).</p>
@@ -230,7 +231,8 @@ public long? FromStep { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scale&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scale&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? Scale { get; set; }</code></pre>
   </div>
 
@@ -263,7 +265,7 @@ public double? Scale { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;snapshotId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;snapshotId&quot;)]
 public string SnapshotId { get; set; }</code></pre>
   </div>
 
@@ -288,7 +290,7 @@ public string SnapshotId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_ReplaySnapshotCommandSettings_ToStep" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.ReplaySnapshotCommandSettings.ToStep">
   ToStep
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/ReplaySnapshotCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/ReplaySnapshotCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The last step to replay to (replay till the end if not specified).</p>
@@ -296,7 +298,8 @@ public string SnapshotId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;toStep&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;toStep&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ToStep { get; set; }</code></pre>
   </div>
 

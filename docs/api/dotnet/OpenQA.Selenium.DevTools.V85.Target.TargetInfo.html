@@ -150,7 +150,7 @@ Class TargetInfo  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Target_TargetInfo_Attached" data-uid="OpenQA.Selenium.DevTools.V85.Target.TargetInfo.Attached">
   Attached
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the target has an attached client.</p>
@@ -158,7 +158,7 @@ Class TargetInfo  <a class="header-action link-secondary" title="View source" hr
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;attached&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;attached&quot;)]
 public bool Attached { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public bool Attached { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Target_TargetInfo_BrowserContextId" data-uid="OpenQA.Selenium.DevTools.V85.Target.TargetInfo.BrowserContextId">
   BrowserContextId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>browserContextId</p>
@@ -191,7 +191,8 @@ public bool Attached { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;browserContextId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;browserContextId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string BrowserContextId { get; set; }</code></pre>
   </div>
 
@@ -216,7 +217,7 @@ public string BrowserContextId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Target_TargetInfo_OpenerId" data-uid="OpenQA.Selenium.DevTools.V85.Target.TargetInfo.OpenerId">
   OpenerId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Opener target Id</p>
@@ -224,7 +225,8 @@ public string BrowserContextId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;openerId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;openerId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string OpenerId { get; set; }</code></pre>
   </div>
 
@@ -257,7 +259,7 @@ public string OpenerId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;targetId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;targetId&quot;)]
 public string TargetId { get; set; }</code></pre>
   </div>
 
@@ -282,7 +284,7 @@ public string TargetId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Target_TargetInfo_Title" data-uid="OpenQA.Selenium.DevTools.V85.Target.TargetInfo.Title">
   Title
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>title</p>
@@ -290,7 +292,7 @@ public string TargetId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;title&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;title&quot;)]
 public string Title { get; set; }</code></pre>
   </div>
 
@@ -315,7 +317,7 @@ public string Title { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Target_TargetInfo_Type" data-uid="OpenQA.Selenium.DevTools.V85.Target.TargetInfo.Type">
   Type
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>type</p>
@@ -323,7 +325,7 @@ public string Title { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public string Type { get; set; }</code></pre>
   </div>
 
@@ -348,7 +350,7 @@ public string Type { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Target_TargetInfo_Url" data-uid="OpenQA.Selenium.DevTools.V85.Target.TargetInfo.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Target/TargetInfo.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>url</p>
@@ -356,7 +358,7 @@ public string Type { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;url&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
 public string Url { get; set; }</code></pre>
   </div>
 

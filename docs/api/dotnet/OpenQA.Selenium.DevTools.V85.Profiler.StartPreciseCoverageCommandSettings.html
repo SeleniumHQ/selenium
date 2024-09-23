@@ -158,7 +158,7 @@ counters.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Profiler_StartPreciseCoverageCommandSettings_AllowTriggeredUpdates" data-uid="OpenQA.Selenium.DevTools.V85.Profiler.StartPreciseCoverageCommandSettings.AllowTriggeredUpdates">
   AllowTriggeredUpdates
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/StartPreciseCoverageCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/StartPreciseCoverageCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Allow the backend to send updates on its own initiative</p>
@@ -166,7 +166,8 @@ counters.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;allowTriggeredUpdates&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;allowTriggeredUpdates&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? AllowTriggeredUpdates { get; set; }</code></pre>
   </div>
 
@@ -199,7 +200,8 @@ public bool? AllowTriggeredUpdates { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;callCount&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;callCount&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? CallCount { get; set; }</code></pre>
   </div>
 
@@ -257,7 +259,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Profiler_StartPreciseCoverageCommandSettings_Detailed" data-uid="OpenQA.Selenium.DevTools.V85.Profiler.StartPreciseCoverageCommandSettings.Detailed">
   Detailed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/StartPreciseCoverageCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/StartPreciseCoverageCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Collect block-based coverage.</p>
@@ -265,7 +267,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;detailed&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;detailed&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? Detailed { get; set; }</code></pre>
   </div>
 

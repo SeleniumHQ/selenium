@@ -150,7 +150,7 @@ Class HighlightConfig  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_BorderColor" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.BorderColor">
   BorderColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The border highlight fill color (default: transparent).</p>
@@ -158,7 +158,8 @@ Class HighlightConfig  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;borderColor&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;borderColor&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RGBA BorderColor { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public RGBA BorderColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_ColorFormat" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.ColorFormat">
   ColorFormat
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L144"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The color format used to format color styles (default: hex).</p>
@@ -191,7 +192,8 @@ public RGBA BorderColor { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;colorFormat&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;colorFormat&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ColorFormat? ColorFormat { get; set; }</code></pre>
   </div>
 
@@ -216,7 +218,7 @@ public ColorFormat? ColorFormat { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_ContentColor" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.ContentColor">
   ContentColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The content box highlight fill color (default: transparent).</p>
@@ -224,7 +226,8 @@ public ColorFormat? ColorFormat { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;contentColor&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;contentColor&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RGBA ContentColor { get; set; }</code></pre>
   </div>
 
@@ -249,7 +252,7 @@ public RGBA ContentColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_CssGridColor" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.CssGridColor">
   CssGridColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L134"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The grid layout color (default: transparent).</p>
@@ -257,7 +260,8 @@ public RGBA ContentColor { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;cssGridColor&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cssGridColor&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RGBA CssGridColor { get; set; }</code></pre>
   </div>
 
@@ -282,7 +286,7 @@ public RGBA CssGridColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_EventTargetColor" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.EventTargetColor">
   EventTargetColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The event target element highlight fill color (default: transparent).</p>
@@ -290,7 +294,8 @@ public RGBA CssGridColor { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;eventTargetColor&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;eventTargetColor&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RGBA EventTargetColor { get; set; }</code></pre>
   </div>
 
@@ -315,7 +320,7 @@ public RGBA EventTargetColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_GridHighlightConfig" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.GridHighlightConfig">
   GridHighlightConfig
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L154"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The grid layout highlight configuration (default: all transparent).</p>
@@ -323,7 +328,8 @@ public RGBA EventTargetColor { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;gridHighlightConfig&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;gridHighlightConfig&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public GridHighlightConfig GridHighlightConfig { get; set; }</code></pre>
   </div>
 
@@ -348,7 +354,7 @@ public GridHighlightConfig GridHighlightConfig { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_MarginColor" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.MarginColor">
   MarginColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The margin highlight fill color (default: transparent).</p>
@@ -356,7 +362,8 @@ public GridHighlightConfig GridHighlightConfig { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;marginColor&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;marginColor&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RGBA MarginColor { get; set; }</code></pre>
   </div>
 
@@ -381,7 +388,7 @@ public RGBA MarginColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_PaddingColor" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.PaddingColor">
   PaddingColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The padding highlight fill color (default: transparent).</p>
@@ -389,7 +396,8 @@ public RGBA MarginColor { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;paddingColor&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;paddingColor&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RGBA PaddingColor { get; set; }</code></pre>
   </div>
 
@@ -414,7 +422,7 @@ public RGBA PaddingColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_ShapeColor" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.ShapeColor">
   ShapeColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L114"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The shape outside fill color (default: transparent).</p>
@@ -422,7 +430,8 @@ public RGBA PaddingColor { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;shapeColor&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;shapeColor&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RGBA ShapeColor { get; set; }</code></pre>
   </div>
 
@@ -447,7 +456,7 @@ public RGBA ShapeColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_ShapeMarginColor" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.ShapeMarginColor">
   ShapeMarginColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L124"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The shape margin fill color (default: transparent).</p>
@@ -455,7 +464,8 @@ public RGBA ShapeColor { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;shapeMarginColor&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;shapeMarginColor&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RGBA ShapeMarginColor { get; set; }</code></pre>
   </div>
 
@@ -480,7 +490,7 @@ public RGBA ShapeMarginColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_ShowAccessibilityInfo" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.ShowAccessibilityInfo">
   ShowAccessibilityInfo
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the a11y info should be shown (default: true).</p>
@@ -488,7 +498,8 @@ public RGBA ShapeMarginColor { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;showAccessibilityInfo&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;showAccessibilityInfo&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? ShowAccessibilityInfo { get; set; }</code></pre>
   </div>
 
@@ -513,7 +524,7 @@ public bool? ShowAccessibilityInfo { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_ShowExtensionLines" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.ShowExtensionLines">
   ShowExtensionLines
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the extension lines from node to the rulers should be shown (default: false).</p>
@@ -521,7 +532,8 @@ public bool? ShowAccessibilityInfo { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;showExtensionLines&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;showExtensionLines&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? ShowExtensionLines { get; set; }</code></pre>
   </div>
 
@@ -554,7 +566,8 @@ public bool? ShowExtensionLines { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;showInfo&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;showInfo&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? ShowInfo { get; set; }</code></pre>
   </div>
 
@@ -579,7 +592,7 @@ public bool? ShowInfo { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_ShowRulers" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.ShowRulers">
   ShowRulers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the rulers should be shown (default: false).</p>
@@ -587,7 +600,8 @@ public bool? ShowInfo { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;showRulers&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;showRulers&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? ShowRulers { get; set; }</code></pre>
   </div>
 
@@ -612,7 +626,7 @@ public bool? ShowRulers { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightConfig_ShowStyles" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightConfig.ShowStyles">
   ShowStyles
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightConfig.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the node styles in the tooltip (default: false).</p>
@@ -620,7 +634,8 @@ public bool? ShowRulers { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;showStyles&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;showStyles&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? ShowStyles { get; set; }</code></pre>
   </div>
 

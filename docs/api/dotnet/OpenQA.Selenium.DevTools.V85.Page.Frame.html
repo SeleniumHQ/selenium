@@ -158,7 +158,7 @@ Class Frame  <a class="header-action link-secondary" title="View source" href="h
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;id&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
 public string Id { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public string Id { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_Frame_LoaderId" data-uid="OpenQA.Selenium.DevTools.V85.Page.Frame.LoaderId">
   LoaderId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Identifier of the loader associated with this frame.</p>
@@ -191,7 +191,7 @@ public string Id { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;loaderId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;loaderId&quot;)]
 public string LoaderId { get; set; }</code></pre>
   </div>
 
@@ -216,7 +216,7 @@ public string LoaderId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_Frame_MimeType" data-uid="OpenQA.Selenium.DevTools.V85.Page.Frame.MimeType">
   MimeType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Frame document's mimeType as determined by the browser.</p>
@@ -224,7 +224,7 @@ public string LoaderId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;mimeType&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;mimeType&quot;)]
 public string MimeType { get; set; }</code></pre>
   </div>
 
@@ -249,7 +249,7 @@ public string MimeType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_Frame_Name" data-uid="OpenQA.Selenium.DevTools.V85.Page.Frame.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Frame's name as specified in the tag.</p>
@@ -257,7 +257,8 @@ public string MimeType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;name&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Name { get; set; }</code></pre>
   </div>
 
@@ -282,7 +283,7 @@ public string Name { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_Frame_ParentId" data-uid="OpenQA.Selenium.DevTools.V85.Page.Frame.ParentId">
   ParentId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Parent frame identifier.</p>
@@ -290,7 +291,8 @@ public string Name { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;parentId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;parentId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ParentId { get; set; }</code></pre>
   </div>
 
@@ -315,7 +317,7 @@ public string ParentId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_Frame_SecurityOrigin" data-uid="OpenQA.Selenium.DevTools.V85.Page.Frame.SecurityOrigin">
   SecurityOrigin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Frame document's security origin.</p>
@@ -323,7 +325,7 @@ public string ParentId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;securityOrigin&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;securityOrigin&quot;)]
 public string SecurityOrigin { get; set; }</code></pre>
   </div>
 
@@ -348,7 +350,7 @@ public string SecurityOrigin { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_Frame_UnreachableUrl" data-uid="OpenQA.Selenium.DevTools.V85.Page.Frame.UnreachableUrl">
   UnreachableUrl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If the frame failed to load, this contains the URL that could not be loaded. Note that unlike url above, this URL may contain a fragment.</p>
@@ -356,7 +358,8 @@ public string SecurityOrigin { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;unreachableUrl&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;unreachableUrl&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string UnreachableUrl { get; set; }</code></pre>
   </div>
 
@@ -381,7 +384,7 @@ public string UnreachableUrl { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_Frame_Url" data-uid="OpenQA.Selenium.DevTools.V85.Page.Frame.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Frame document's URL without fragment.</p>
@@ -389,7 +392,7 @@ public string UnreachableUrl { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;url&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
 public string Url { get; set; }</code></pre>
   </div>
 
@@ -414,7 +417,7 @@ public string Url { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_Frame_UrlFragment" data-uid="OpenQA.Selenium.DevTools.V85.Page.Frame.UrlFragment">
   UrlFragment
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/Frame.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Frame document's URL fragment including the '#'.</p>
@@ -422,7 +425,8 @@ public string Url { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;urlFragment&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;urlFragment&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string UrlFragment { get; set; }</code></pre>
   </div>
 

@@ -189,7 +189,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeScrollGestureCommandSettings_GestureSourceType" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeScrollGestureCommandSettings.GestureSourceType">
   GestureSourceType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L108"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Which type of input events to be generated (default: 'default', which queries the platform
@@ -198,7 +198,8 @@ for the preferred input type).</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;gestureSourceType&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;gestureSourceType&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public GestureSourceType? GestureSourceType { get; set; }</code></pre>
   </div>
 
@@ -223,7 +224,7 @@ public GestureSourceType? GestureSourceType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeScrollGestureCommandSettings_InteractionMarkerName" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeScrollGestureCommandSettings.InteractionMarkerName">
   InteractionMarkerName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L138"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The name of the interaction markers to generate, if not empty (default: &quot;&quot;).</p>
@@ -231,7 +232,8 @@ public GestureSourceType? GestureSourceType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;interactionMarkerName&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;interactionMarkerName&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string InteractionMarkerName { get; set; }</code></pre>
   </div>
 
@@ -256,7 +258,7 @@ public string InteractionMarkerName { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeScrollGestureCommandSettings_PreventFling" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeScrollGestureCommandSettings.PreventFling">
   PreventFling
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Prevent fling (default: true).</p>
@@ -264,7 +266,8 @@ public string InteractionMarkerName { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;preventFling&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;preventFling&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? PreventFling { get; set; }</code></pre>
   </div>
 
@@ -289,7 +292,7 @@ public bool? PreventFling { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeScrollGestureCommandSettings_RepeatCount" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeScrollGestureCommandSettings.RepeatCount">
   RepeatCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L118"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The number of times to repeat the gesture (default: 0).</p>
@@ -297,7 +300,8 @@ public bool? PreventFling { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;repeatCount&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;repeatCount&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? RepeatCount { get; set; }</code></pre>
   </div>
 
@@ -322,7 +326,7 @@ public long? RepeatCount { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeScrollGestureCommandSettings_RepeatDelayMs" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeScrollGestureCommandSettings.RepeatDelayMs">
   RepeatDelayMs
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L128"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The number of milliseconds delay between each repeat. (default: 250).</p>
@@ -330,7 +334,8 @@ public long? RepeatCount { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;repeatDelayMs&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;repeatDelayMs&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? RepeatDelayMs { get; set; }</code></pre>
   </div>
 
@@ -355,7 +360,7 @@ public long? RepeatDelayMs { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeScrollGestureCommandSettings_Speed" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeScrollGestureCommandSettings.Speed">
   Speed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L97"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Swipe speed in pixels per second (default: 800).</p>
@@ -363,7 +368,8 @@ public long? RepeatDelayMs { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;speed&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;speed&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? Speed { get; set; }</code></pre>
   </div>
 
@@ -396,7 +402,7 @@ public long? Speed { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;x&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;x&quot;)]
 public double X { get; set; }</code></pre>
   </div>
 
@@ -421,7 +427,7 @@ public double X { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeScrollGestureCommandSettings_XDistance" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeScrollGestureCommandSettings.XDistance">
   XDistance
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The distance to scroll along the X axis (positive to scroll left).</p>
@@ -429,7 +435,8 @@ public double X { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;xDistance&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;xDistance&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? XDistance { get; set; }</code></pre>
   </div>
 
@@ -454,7 +461,7 @@ public double? XDistance { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeScrollGestureCommandSettings_XOverscroll" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeScrollGestureCommandSettings.XOverscroll">
   XOverscroll
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The number of additional pixels to scroll back along the X axis, in addition to the given
@@ -463,7 +470,8 @@ distance.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;xOverscroll&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;xOverscroll&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? XOverscroll { get; set; }</code></pre>
   </div>
 
@@ -488,7 +496,7 @@ public double? XOverscroll { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeScrollGestureCommandSettings_Y" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeScrollGestureCommandSettings.Y">
   Y
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Y coordinate of the start of the gesture in CSS pixels.</p>
@@ -496,7 +504,7 @@ public double? XOverscroll { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;y&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;y&quot;)]
 public double Y { get; set; }</code></pre>
   </div>
 
@@ -521,7 +529,7 @@ public double Y { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeScrollGestureCommandSettings_YDistance" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeScrollGestureCommandSettings.YDistance">
   YDistance
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The distance to scroll along the Y axis (positive to scroll up).</p>
@@ -529,7 +537,8 @@ public double Y { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;yDistance&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;yDistance&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? YDistance { get; set; }</code></pre>
   </div>
 
@@ -554,7 +563,7 @@ public double? YDistance { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeScrollGestureCommandSettings_YOverscroll" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeScrollGestureCommandSettings.YOverscroll">
   YOverscroll
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeScrollGestureCommand.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The number of additional pixels to scroll back along the Y axis, in addition to the given
@@ -563,7 +572,8 @@ distance.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;yOverscroll&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;yOverscroll&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? YOverscroll { get; set; }</code></pre>
   </div>
 

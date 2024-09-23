@@ -151,7 +151,7 @@ execution.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ExceptionDetails_ColumnNumber" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ExceptionDetails.ColumnNumber">
   ColumnNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Column number of the exception location (0-based).</p>
@@ -159,7 +159,7 @@ execution.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;columnNumber&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;columnNumber&quot;)]
 public long ColumnNumber { get; set; }</code></pre>
   </div>
 
@@ -184,7 +184,7 @@ public long ColumnNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ExceptionDetails_Exception" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ExceptionDetails.Exception">
   Exception
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Exception object if available.</p>
@@ -192,7 +192,8 @@ public long ColumnNumber { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;exception&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;exception&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RemoteObject Exception { get; set; }</code></pre>
   </div>
 
@@ -225,7 +226,7 @@ public RemoteObject Exception { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;exceptionId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;exceptionId&quot;)]
 public long ExceptionId { get; set; }</code></pre>
   </div>
 
@@ -250,7 +251,7 @@ public long ExceptionId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ExceptionDetails_ExecutionContextId" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ExceptionDetails.ExecutionContextId">
   ExecutionContextId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Identifier of the context where exception happened.</p>
@@ -258,7 +259,8 @@ public long ExceptionId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;executionContextId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;executionContextId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ExecutionContextId { get; set; }</code></pre>
   </div>
 
@@ -283,7 +285,7 @@ public long? ExecutionContextId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ExceptionDetails_LineNumber" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ExceptionDetails.LineNumber">
   LineNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Line number of the exception location (0-based).</p>
@@ -291,7 +293,7 @@ public long? ExecutionContextId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;lineNumber&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;lineNumber&quot;)]
 public long LineNumber { get; set; }</code></pre>
   </div>
 
@@ -316,7 +318,7 @@ public long LineNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ExceptionDetails_ScriptId" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ExceptionDetails.ScriptId">
   ScriptId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Script ID of the exception location.</p>
@@ -324,7 +326,8 @@ public long LineNumber { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scriptId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scriptId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ScriptId { get; set; }</code></pre>
   </div>
 
@@ -349,7 +352,7 @@ public string ScriptId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ExceptionDetails_StackTrace" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ExceptionDetails.StackTrace">
   StackTrace
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>JavaScript stack trace if available.</p>
@@ -357,7 +360,8 @@ public string ScriptId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;stackTrace&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;stackTrace&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StackTrace StackTrace { get; set; }</code></pre>
   </div>
 
@@ -382,7 +386,7 @@ public StackTrace StackTrace { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ExceptionDetails_Text" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ExceptionDetails.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Exception text, which should be used together with exception object when available.</p>
@@ -390,7 +394,7 @@ public StackTrace StackTrace { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;text&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;text&quot;)]
 public string Text { get; set; }</code></pre>
   </div>
 
@@ -415,7 +419,7 @@ public string Text { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ExceptionDetails_Url" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ExceptionDetails.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExceptionDetails.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>URL of the exception location, to be used when the script was not reported.</p>
@@ -423,7 +427,8 @@ public string Text { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;url&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Url { get; set; }</code></pre>
   </div>
 

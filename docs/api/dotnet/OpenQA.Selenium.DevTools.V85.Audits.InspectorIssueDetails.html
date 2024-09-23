@@ -152,7 +152,7 @@ add a new optional field to this type.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_InspectorIssueDetails_BlockedByResponseIssueDetails" data-uid="OpenQA.Selenium.DevTools.V85.Audits.InspectorIssueDetails.BlockedByResponseIssueDetails">
   BlockedByResponseIssueDetails
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/InspectorIssueDetails.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/InspectorIssueDetails.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>blockedByResponseIssueDetails</p>
@@ -160,7 +160,8 @@ add a new optional field to this type.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;blockedByResponseIssueDetails&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;blockedByResponseIssueDetails&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public BlockedByResponseIssueDetails BlockedByResponseIssueDetails { get; set; }</code></pre>
   </div>
 
@@ -185,7 +186,7 @@ public BlockedByResponseIssueDetails BlockedByResponseIssueDetails { get; set; }
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_InspectorIssueDetails_HeavyAdIssueDetails" data-uid="OpenQA.Selenium.DevTools.V85.Audits.InspectorIssueDetails.HeavyAdIssueDetails">
   HeavyAdIssueDetails
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/InspectorIssueDetails.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/InspectorIssueDetails.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>heavyAdIssueDetails</p>
@@ -193,7 +194,8 @@ public BlockedByResponseIssueDetails BlockedByResponseIssueDetails { get; set; }
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;heavyAdIssueDetails&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;heavyAdIssueDetails&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public HeavyAdIssueDetails HeavyAdIssueDetails { get; set; }</code></pre>
   </div>
 
@@ -218,7 +220,7 @@ public HeavyAdIssueDetails HeavyAdIssueDetails { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_InspectorIssueDetails_MixedContentIssueDetails" data-uid="OpenQA.Selenium.DevTools.V85.Audits.InspectorIssueDetails.MixedContentIssueDetails">
   MixedContentIssueDetails
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/InspectorIssueDetails.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/InspectorIssueDetails.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>mixedContentIssueDetails</p>
@@ -226,7 +228,8 @@ public HeavyAdIssueDetails HeavyAdIssueDetails { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;mixedContentIssueDetails&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;mixedContentIssueDetails&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public MixedContentIssueDetails MixedContentIssueDetails { get; set; }</code></pre>
   </div>
 
@@ -259,7 +262,8 @@ public MixedContentIssueDetails MixedContentIssueDetails { get; set; }</code></p
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;sameSiteCookieIssueDetails&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sameSiteCookieIssueDetails&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public SameSiteCookieIssueDetails SameSiteCookieIssueDetails { get; set; }</code></pre>
   </div>
 

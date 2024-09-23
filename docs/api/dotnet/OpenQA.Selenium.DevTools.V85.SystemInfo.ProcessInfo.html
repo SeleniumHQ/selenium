@@ -150,7 +150,7 @@ Class ProcessInfo  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V85_SystemInfo_ProcessInfo_CpuTime" data-uid="OpenQA.Selenium.DevTools.V85.SystemInfo.ProcessInfo.CpuTime">
   CpuTime
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/SystemInfo/ProcessInfo.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/SystemInfo/ProcessInfo.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Specifies cumulative CPU usage in seconds across all threads of the
@@ -159,7 +159,7 @@ process since the process start.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;cpuTime&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cpuTime&quot;)]
 public double CpuTime { get; set; }</code></pre>
   </div>
 
@@ -184,7 +184,7 @@ public double CpuTime { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_SystemInfo_ProcessInfo_Id" data-uid="OpenQA.Selenium.DevTools.V85.SystemInfo.ProcessInfo.Id">
   Id
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/SystemInfo/ProcessInfo.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/SystemInfo/ProcessInfo.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Specifies process id.</p>
@@ -192,7 +192,7 @@ public double CpuTime { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;id&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
 public long Id { get; set; }</code></pre>
   </div>
 
@@ -225,7 +225,7 @@ public long Id { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public string Type { get; set; }</code></pre>
   </div>
 

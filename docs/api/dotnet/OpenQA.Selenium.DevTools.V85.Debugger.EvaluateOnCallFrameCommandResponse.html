@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_Debugger_EvaluateOnCallFrameCommandResponse" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.EvaluateOnCallFrameCommandResponse" class="text-break">
-Class EvaluateOnCallFrameCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L111"><i class="bi bi-code-slash"></i></a>
+Class EvaluateOnCallFrameCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L120"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -164,7 +164,7 @@ Class EvaluateOnCallFrameCommandResponse  <a class="header-action link-secondary
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_EvaluateOnCallFrameCommandResponse_ExceptionDetails" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.EvaluateOnCallFrameCommandResponse.ExceptionDetails">
   ExceptionDetails
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L125"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L135"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Exception details.</p>
@@ -172,7 +172,8 @@ Class EvaluateOnCallFrameCommandResponse  <a class="header-action link-secondary
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;exceptionDetails&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;exceptionDetails&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
   </div>
 
@@ -197,7 +198,7 @@ public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_EvaluateOnCallFrameCommandResponse_Result" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.EvaluateOnCallFrameCommandResponse.Result">
   Result
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L125"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Object wrapper for the evaluation result.</p>
@@ -205,7 +206,7 @@ public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;result&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;result&quot;)]
 public RemoteObject Result { get; set; }</code></pre>
   </div>
 
@@ -230,7 +231,7 @@ public RemoteObject Result { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L111" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/EvaluateOnCallFrameCommand.cs/#L120" class="edit-link">Edit this page</a>
         </div>
 
 

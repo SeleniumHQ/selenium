@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_DOM_GetNodeForLocationCommandResponse" data-uid="OpenQA.Selenium.DevTools.V85.DOM.GetNodeForLocationCommandResponse" class="text-break">
-Class GetNodeForLocationCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetNodeForLocationCommand.cs/#L65"><i class="bi bi-code-slash"></i></a>
+Class GetNodeForLocationCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetNodeForLocationCommand.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -165,7 +165,7 @@ either returned or not.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_GetNodeForLocationCommandResponse_BackendNodeId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.GetNodeForLocationCommandResponse.BackendNodeId">
   BackendNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetNodeForLocationCommand.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetNodeForLocationCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Resulting node.</p>
@@ -173,7 +173,7 @@ either returned or not.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;backendNodeId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;backendNodeId&quot;)]
 public long BackendNodeId { get; set; }</code></pre>
   </div>
 
@@ -198,7 +198,7 @@ public long BackendNodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_GetNodeForLocationCommandResponse_FrameId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.GetNodeForLocationCommandResponse.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetNodeForLocationCommand.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetNodeForLocationCommand.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Frame this node belongs to.</p>
@@ -206,7 +206,7 @@ public long BackendNodeId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;frameId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;frameId&quot;)]
 public string FrameId { get; set; }</code></pre>
   </div>
 
@@ -231,7 +231,7 @@ public string FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_GetNodeForLocationCommandResponse_NodeId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.GetNodeForLocationCommandResponse.NodeId">
   NodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetNodeForLocationCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetNodeForLocationCommand.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Id of the node at given coordinates, only when enabled and requested document.</p>
@@ -239,7 +239,8 @@ public string FrameId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? NodeId { get; set; }</code></pre>
   </div>
 
@@ -264,7 +265,7 @@ public long? NodeId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetNodeForLocationCommand.cs/#L65" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetNodeForLocationCommand.cs/#L69" class="edit-link">Edit this page</a>
         </div>
 
 

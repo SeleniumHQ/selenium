@@ -157,7 +157,7 @@ the current virtual time policy.  Note this supersedes any previous time budget.
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetVirtualTimePolicyCommandSettings_Budget" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetVirtualTimePolicyCommandSettings.Budget">
   Budget
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetVirtualTimePolicyCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetVirtualTimePolicyCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set, after this many virtual milliseconds have elapsed virtual time will be paused and a
@@ -166,7 +166,8 @@ virtualTimeBudgetExpired event is sent.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;budget&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;budget&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? Budget { get; set; }</code></pre>
   </div>
 
@@ -224,7 +225,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetVirtualTimePolicyCommandSettings_InitialVirtualTime" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetVirtualTimePolicyCommandSettings.InitialVirtualTime">
   InitialVirtualTime
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetVirtualTimePolicyCommand.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetVirtualTimePolicyCommand.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set, base::Time::Now will be overridden to initially return this value.</p>
@@ -232,7 +233,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;initialVirtualTime&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;initialVirtualTime&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? InitialVirtualTime { get; set; }</code></pre>
   </div>
 
@@ -257,7 +259,7 @@ public double? InitialVirtualTime { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetVirtualTimePolicyCommandSettings_MaxVirtualTimeTaskStarvationCount" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetVirtualTimePolicyCommandSettings.MaxVirtualTimeTaskStarvationCount">
   MaxVirtualTimeTaskStarvationCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetVirtualTimePolicyCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetVirtualTimePolicyCommand.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set this specifies the maximum number of tasks that can be run before virtual is forced
@@ -266,7 +268,8 @@ forwards to prevent deadlock.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;maxVirtualTimeTaskStarvationCount&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;maxVirtualTimeTaskStarvationCount&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? MaxVirtualTimeTaskStarvationCount { get; set; }</code></pre>
   </div>
 
@@ -299,7 +302,7 @@ public long? MaxVirtualTimeTaskStarvationCount { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;policy&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;policy&quot;)]
 public VirtualTimePolicy Policy { get; set; }</code></pre>
   </div>
 
@@ -324,7 +327,7 @@ public VirtualTimePolicy Policy { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetVirtualTimePolicyCommandSettings_WaitForNavigation" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetVirtualTimePolicyCommandSettings.WaitForNavigation">
   WaitForNavigation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetVirtualTimePolicyCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetVirtualTimePolicyCommand.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set the virtual time policy change should be deferred until any frame starts navigating.
@@ -333,7 +336,8 @@ Note any previous deferred policy change is superseded.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;waitForNavigation&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;waitForNavigation&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? WaitForNavigation { get; set; }</code></pre>
   </div>
 

@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_Page_PrintToPDFCommandResponse" data-uid="OpenQA.Selenium.DevTools.V85.Page.PrintToPDFCommandResponse" class="text-break">
-Class PrintToPDFCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/PrintToPDFCommand.cs/#L182"><i class="bi bi-code-slash"></i></a>
+Class PrintToPDFCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/PrintToPDFCommand.cs/#L198"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -164,7 +164,7 @@ Class PrintToPDFCommandResponse  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_PrintToPDFCommandResponse_Data" data-uid="OpenQA.Selenium.DevTools.V85.Page.PrintToPDFCommandResponse.Data">
   Data
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/PrintToPDFCommand.cs/#L187"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/PrintToPDFCommand.cs/#L203"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Base64-encoded pdf data. Empty if |returnAsStream| is specified.</p>
@@ -172,7 +172,7 @@ Class PrintToPDFCommandResponse  <a class="header-action link-secondary" title="
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;data&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;data&quot;)]
 public string Data { get; set; }</code></pre>
   </div>
 
@@ -197,7 +197,7 @@ public string Data { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_PrintToPDFCommandResponse_Stream" data-uid="OpenQA.Selenium.DevTools.V85.Page.PrintToPDFCommandResponse.Stream">
   Stream
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/PrintToPDFCommand.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/PrintToPDFCommand.cs/#L213"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A handle of the stream that holds resulting PDF data.</p>
@@ -205,7 +205,8 @@ public string Data { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;stream&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;stream&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Stream { get; set; }</code></pre>
   </div>
 
@@ -230,7 +231,7 @@ public string Stream { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/PrintToPDFCommand.cs/#L182" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/PrintToPDFCommand.cs/#L198" class="edit-link">Edit this page</a>
         </div>
 
 

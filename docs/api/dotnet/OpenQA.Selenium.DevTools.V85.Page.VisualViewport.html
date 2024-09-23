@@ -150,7 +150,7 @@ Class VisualViewport  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_VisualViewport_ClientHeight" data-uid="OpenQA.Selenium.DevTools.V85.Page.VisualViewport.ClientHeight">
   ClientHeight
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Height (CSS pixels), excludes scrollbar if present.</p>
@@ -158,7 +158,7 @@ Class VisualViewport  <a class="header-action link-secondary" title="View source
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;clientHeight&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;clientHeight&quot;)]
 public double ClientHeight { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public double ClientHeight { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_VisualViewport_ClientWidth" data-uid="OpenQA.Selenium.DevTools.V85.Page.VisualViewport.ClientWidth">
   ClientWidth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Width (CSS pixels), excludes scrollbar if present.</p>
@@ -191,7 +191,7 @@ public double ClientHeight { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;clientWidth&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;clientWidth&quot;)]
 public double ClientWidth { get; set; }</code></pre>
   </div>
 
@@ -224,7 +224,7 @@ public double ClientWidth { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;offsetX&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;offsetX&quot;)]
 public double OffsetX { get; set; }</code></pre>
   </div>
 
@@ -249,7 +249,7 @@ public double OffsetX { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_VisualViewport_OffsetY" data-uid="OpenQA.Selenium.DevTools.V85.Page.VisualViewport.OffsetY">
   OffsetY
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Vertical offset relative to the layout viewport (CSS pixels).</p>
@@ -257,7 +257,7 @@ public double OffsetX { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;offsetY&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;offsetY&quot;)]
 public double OffsetY { get; set; }</code></pre>
   </div>
 
@@ -282,7 +282,7 @@ public double OffsetY { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_VisualViewport_PageX" data-uid="OpenQA.Selenium.DevTools.V85.Page.VisualViewport.PageX">
   PageX
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Horizontal offset relative to the document (CSS pixels).</p>
@@ -290,7 +290,7 @@ public double OffsetY { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;pageX&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;pageX&quot;)]
 public double PageX { get; set; }</code></pre>
   </div>
 
@@ -315,7 +315,7 @@ public double PageX { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_VisualViewport_PageY" data-uid="OpenQA.Selenium.DevTools.V85.Page.VisualViewport.PageY">
   PageY
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Vertical offset relative to the document (CSS pixels).</p>
@@ -323,7 +323,7 @@ public double PageX { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;pageY&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;pageY&quot;)]
 public double PageY { get; set; }</code></pre>
   </div>
 
@@ -348,7 +348,7 @@ public double PageY { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_VisualViewport_Scale" data-uid="OpenQA.Selenium.DevTools.V85.Page.VisualViewport.Scale">
   Scale
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Scale relative to the ideal viewport (size at width=device-width).</p>
@@ -356,7 +356,7 @@ public double PageY { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scale&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scale&quot;)]
 public double Scale { get; set; }</code></pre>
   </div>
 
@@ -381,7 +381,7 @@ public double Scale { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_VisualViewport_Zoom" data-uid="OpenQA.Selenium.DevTools.V85.Page.VisualViewport.Zoom">
   Zoom
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/VisualViewport.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Page zoom factor (CSS to device independent pixels ratio).</p>
@@ -389,7 +389,8 @@ public double Scale { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;zoom&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;zoom&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? Zoom { get; set; }</code></pre>
   </div>
 

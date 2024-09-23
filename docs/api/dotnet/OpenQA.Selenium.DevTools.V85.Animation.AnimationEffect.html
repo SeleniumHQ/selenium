@@ -150,7 +150,7 @@ Class AnimationEffect  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Animation_AnimationEffect_BackendNodeId" data-uid="OpenQA.Selenium.DevTools.V85.Animation.AnimationEffect.BackendNodeId">
   BackendNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s target node.</p>
@@ -158,7 +158,8 @@ Class AnimationEffect  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;backendNodeId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;backendNodeId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? BackendNodeId { get; set; }</code></pre>
   </div>
 
@@ -191,7 +192,7 @@ public long? BackendNodeId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;delay&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;delay&quot;)]
 public double Delay { get; set; }</code></pre>
   </div>
 
@@ -216,7 +217,7 @@ public double Delay { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Animation_AnimationEffect_Direction" data-uid="OpenQA.Selenium.DevTools.V85.Animation.AnimationEffect.Direction">
   Direction
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s playback direction.</p>
@@ -224,7 +225,7 @@ public double Delay { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;direction&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;direction&quot;)]
 public string Direction { get; set; }</code></pre>
   </div>
 
@@ -249,7 +250,7 @@ public string Direction { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Animation_AnimationEffect_Duration" data-uid="OpenQA.Selenium.DevTools.V85.Animation.AnimationEffect.Duration">
   Duration
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s iteration duration.</p>
@@ -257,7 +258,7 @@ public string Direction { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;duration&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;duration&quot;)]
 public double Duration { get; set; }</code></pre>
   </div>
 
@@ -282,7 +283,7 @@ public double Duration { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Animation_AnimationEffect_Easing" data-uid="OpenQA.Selenium.DevTools.V85.Animation.AnimationEffect.Easing">
   Easing
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s timing function.</p>
@@ -290,7 +291,7 @@ public double Duration { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;easing&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;easing&quot;)]
 public string Easing { get; set; }</code></pre>
   </div>
 
@@ -315,7 +316,7 @@ public string Easing { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Animation_AnimationEffect_EndDelay" data-uid="OpenQA.Selenium.DevTools.V85.Animation.AnimationEffect.EndDelay">
   EndDelay
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s end delay.</p>
@@ -323,7 +324,7 @@ public string Easing { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;endDelay&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;endDelay&quot;)]
 public double EndDelay { get; set; }</code></pre>
   </div>
 
@@ -348,7 +349,7 @@ public double EndDelay { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Animation_AnimationEffect_Fill" data-uid="OpenQA.Selenium.DevTools.V85.Animation.AnimationEffect.Fill">
   Fill
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s fill mode.</p>
@@ -356,7 +357,7 @@ public double EndDelay { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;fill&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;fill&quot;)]
 public string Fill { get; set; }</code></pre>
   </div>
 
@@ -381,7 +382,7 @@ public string Fill { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Animation_AnimationEffect_IterationStart" data-uid="OpenQA.Selenium.DevTools.V85.Animation.AnimationEffect.IterationStart">
   IterationStart
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s iteration start.</p>
@@ -389,7 +390,7 @@ public string Fill { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;iterationStart&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;iterationStart&quot;)]
 public double IterationStart { get; set; }</code></pre>
   </div>
 
@@ -414,7 +415,7 @@ public double IterationStart { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Animation_AnimationEffect_Iterations" data-uid="OpenQA.Selenium.DevTools.V85.Animation.AnimationEffect.Iterations">
   Iterations
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s iterations.</p>
@@ -422,7 +423,7 @@ public double IterationStart { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;iterations&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;iterations&quot;)]
 public double Iterations { get; set; }</code></pre>
   </div>
 
@@ -447,7 +448,7 @@ public double Iterations { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Animation_AnimationEffect_KeyframesRule" data-uid="OpenQA.Selenium.DevTools.V85.Animation.AnimationEffect.KeyframesRule">
   KeyframesRule
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Animation/AnimationEffect.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p><code>AnimationEffect</code>'s keyframes.</p>
@@ -455,7 +456,8 @@ public double Iterations { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;keyframesRule&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;keyframesRule&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public KeyframesRule KeyframesRule { get; set; }</code></pre>
   </div>
 

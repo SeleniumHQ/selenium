@@ -189,7 +189,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_EmulateNetworkConditionsCommandSettings_ConnectionType" data-uid="OpenQA.Selenium.DevTools.V85.Network.EmulateNetworkConditionsCommandSettings.ConnectionType">
   ConnectionType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/EmulateNetworkConditionsCommand.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/EmulateNetworkConditionsCommand.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Connection type if known.</p>
@@ -197,7 +197,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;connectionType&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;connectionType&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ConnectionType? ConnectionType { get; set; }</code></pre>
   </div>
 
@@ -222,7 +223,7 @@ public ConnectionType? ConnectionType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_EmulateNetworkConditionsCommandSettings_DownloadThroughput" data-uid="OpenQA.Selenium.DevTools.V85.Network.EmulateNetworkConditionsCommandSettings.DownloadThroughput">
   DownloadThroughput
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/EmulateNetworkConditionsCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/EmulateNetworkConditionsCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Maximal aggregated download throughput (bytes/sec). -1 disables download throttling.</p>
@@ -230,7 +231,7 @@ public ConnectionType? ConnectionType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;downloadThroughput&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;downloadThroughput&quot;)]
 public double DownloadThroughput { get; set; }</code></pre>
   </div>
 
@@ -255,7 +256,7 @@ public double DownloadThroughput { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_EmulateNetworkConditionsCommandSettings_Latency" data-uid="OpenQA.Selenium.DevTools.V85.Network.EmulateNetworkConditionsCommandSettings.Latency">
   Latency
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/EmulateNetworkConditionsCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/EmulateNetworkConditionsCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Minimum latency from request sent to response headers received (ms).</p>
@@ -263,7 +264,7 @@ public double DownloadThroughput { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;latency&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;latency&quot;)]
 public double Latency { get; set; }</code></pre>
   </div>
 
@@ -296,7 +297,7 @@ public double Latency { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;offline&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;offline&quot;)]
 public bool Offline { get; set; }</code></pre>
   </div>
 
@@ -321,7 +322,7 @@ public bool Offline { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_EmulateNetworkConditionsCommandSettings_UploadThroughput" data-uid="OpenQA.Selenium.DevTools.V85.Network.EmulateNetworkConditionsCommandSettings.UploadThroughput">
   UploadThroughput
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/EmulateNetworkConditionsCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/EmulateNetworkConditionsCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Maximal aggregated upload throughput (bytes/sec).  -1 disables upload throttling.</p>
@@ -329,7 +330,7 @@ public bool Offline { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;uploadThroughput&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;uploadThroughput&quot;)]
 public double UploadThroughput { get; set; }</code></pre>
   </div>
 

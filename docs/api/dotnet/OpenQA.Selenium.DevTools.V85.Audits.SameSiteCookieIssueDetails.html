@@ -160,7 +160,7 @@ information without the cookie.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;cookie&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cookie&quot;)]
 public AffectedCookie Cookie { get; set; }</code></pre>
   </div>
 
@@ -185,7 +185,7 @@ public AffectedCookie Cookie { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_SameSiteCookieIssueDetails_CookieExclusionReasons" data-uid="OpenQA.Selenium.DevTools.V85.Audits.SameSiteCookieIssueDetails.CookieExclusionReasons">
   CookieExclusionReasons
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>cookieExclusionReasons</p>
@@ -193,7 +193,7 @@ public AffectedCookie Cookie { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;cookieExclusionReasons&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cookieExclusionReasons&quot;)]
 public SameSiteCookieExclusionReason[] CookieExclusionReasons { get; set; }</code></pre>
   </div>
 
@@ -218,7 +218,7 @@ public SameSiteCookieExclusionReason[] CookieExclusionReasons { get; set; }</cod
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_SameSiteCookieIssueDetails_CookieUrl" data-uid="OpenQA.Selenium.DevTools.V85.Audits.SameSiteCookieIssueDetails.CookieUrl">
   CookieUrl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>cookieUrl</p>
@@ -226,7 +226,8 @@ public SameSiteCookieExclusionReason[] CookieExclusionReasons { get; set; }</cod
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;cookieUrl&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cookieUrl&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string CookieUrl { get; set; }</code></pre>
   </div>
 
@@ -251,7 +252,7 @@ public string CookieUrl { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_SameSiteCookieIssueDetails_CookieWarningReasons" data-uid="OpenQA.Selenium.DevTools.V85.Audits.SameSiteCookieIssueDetails.CookieWarningReasons">
   CookieWarningReasons
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>cookieWarningReasons</p>
@@ -259,7 +260,7 @@ public string CookieUrl { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;cookieWarningReasons&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cookieWarningReasons&quot;)]
 public SameSiteCookieWarningReason[] CookieWarningReasons { get; set; }</code></pre>
   </div>
 
@@ -284,7 +285,7 @@ public SameSiteCookieWarningReason[] CookieWarningReasons { get; set; }</code></
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_SameSiteCookieIssueDetails_Operation" data-uid="OpenQA.Selenium.DevTools.V85.Audits.SameSiteCookieIssueDetails.Operation">
   Operation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Optionally identifies the site-for-cookies and the cookie url, which
@@ -293,7 +294,7 @@ may be used by the front-end as additional context.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;operation&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;operation&quot;)]
 public SameSiteCookieOperation Operation { get; set; }</code></pre>
   </div>
 
@@ -318,7 +319,7 @@ public SameSiteCookieOperation Operation { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_SameSiteCookieIssueDetails_Request" data-uid="OpenQA.Selenium.DevTools.V85.Audits.SameSiteCookieIssueDetails.Request">
   Request
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>request</p>
@@ -326,7 +327,8 @@ public SameSiteCookieOperation Operation { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;request&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;request&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public AffectedRequest Request { get; set; }</code></pre>
   </div>
 
@@ -351,7 +353,7 @@ public AffectedRequest Request { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_SameSiteCookieIssueDetails_SiteForCookies" data-uid="OpenQA.Selenium.DevTools.V85.Audits.SameSiteCookieIssueDetails.SiteForCookies">
   SiteForCookies
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/SameSiteCookieIssueDetails.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>siteForCookies</p>
@@ -359,7 +361,8 @@ public AffectedRequest Request { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;siteForCookies&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;siteForCookies&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string SiteForCookies { get; set; }</code></pre>
   </div>
 

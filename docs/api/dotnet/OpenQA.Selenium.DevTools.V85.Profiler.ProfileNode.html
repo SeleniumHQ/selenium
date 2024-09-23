@@ -150,7 +150,7 @@ Class ProfileNode  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Profiler_ProfileNode_CallFrame" data-uid="OpenQA.Selenium.DevTools.V85.Profiler.ProfileNode.CallFrame">
   CallFrame
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/ProfileNode.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/ProfileNode.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Function location.</p>
@@ -158,7 +158,7 @@ Class ProfileNode  <a class="header-action link-secondary" title="View source" h
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;callFrame&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;callFrame&quot;)]
 public CallFrame CallFrame { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public CallFrame CallFrame { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Profiler_ProfileNode_Children" data-uid="OpenQA.Selenium.DevTools.V85.Profiler.ProfileNode.Children">
   Children
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/ProfileNode.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/ProfileNode.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Child node ids.</p>
@@ -191,7 +191,8 @@ public CallFrame CallFrame { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;children&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;children&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long[] Children { get; set; }</code></pre>
   </div>
 
@@ -216,7 +217,7 @@ public long[] Children { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Profiler_ProfileNode_DeoptReason" data-uid="OpenQA.Selenium.DevTools.V85.Profiler.ProfileNode.DeoptReason">
   DeoptReason
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/ProfileNode.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/ProfileNode.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The reason of being not optimized. The function may be deoptimized or marked as don't
@@ -225,7 +226,8 @@ optimize.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;deoptReason&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;deoptReason&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string DeoptReason { get; set; }</code></pre>
   </div>
 
@@ -250,7 +252,7 @@ public string DeoptReason { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Profiler_ProfileNode_HitCount" data-uid="OpenQA.Selenium.DevTools.V85.Profiler.ProfileNode.HitCount">
   HitCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/ProfileNode.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/ProfileNode.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Number of samples where this node was on top of the call stack.</p>
@@ -258,7 +260,8 @@ public string DeoptReason { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;hitCount&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;hitCount&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? HitCount { get; set; }</code></pre>
   </div>
 
@@ -291,7 +294,7 @@ public long? HitCount { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;id&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
 public long Id { get; set; }</code></pre>
   </div>
 
@@ -316,7 +319,7 @@ public long Id { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Profiler_ProfileNode_PositionTicks" data-uid="OpenQA.Selenium.DevTools.V85.Profiler.ProfileNode.PositionTicks">
   PositionTicks
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/ProfileNode.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Profiler/ProfileNode.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>An array of source position ticks.</p>
@@ -324,7 +327,8 @@ public long Id { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;positionTicks&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;positionTicks&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public PositionTickInfo[] PositionTicks { get; set; }</code></pre>
   </div>
 

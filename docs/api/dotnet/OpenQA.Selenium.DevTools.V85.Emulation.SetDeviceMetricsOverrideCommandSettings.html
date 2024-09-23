@@ -191,7 +191,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetDeviceMetricsOverrideCommandSettings_DeviceScaleFactor" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetDeviceMetricsOverrideCommandSettings.DeviceScaleFactor">
   DeviceScaleFactor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Overriding device scale factor value. 0 disables the override.</p>
@@ -199,7 +199,7 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;deviceScaleFactor&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;deviceScaleFactor&quot;)]
 public double DeviceScaleFactor { get; set; }</code></pre>
   </div>
 
@@ -224,7 +224,7 @@ public double DeviceScaleFactor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetDeviceMetricsOverrideCommandSettings_DontSetVisibleSize" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetDeviceMetricsOverrideCommandSettings.DontSetVisibleSize">
   DontSetVisibleSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L118"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Do not set visible view size, rely upon explicit setVisibleSize call.</p>
@@ -232,7 +232,8 @@ public double DeviceScaleFactor { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;dontSetVisibleSize&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;dontSetVisibleSize&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? DontSetVisibleSize { get; set; }</code></pre>
   </div>
 
@@ -257,7 +258,7 @@ public bool? DontSetVisibleSize { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetDeviceMetricsOverrideCommandSettings_Height" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetDeviceMetricsOverrideCommandSettings.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.</p>
@@ -265,7 +266,7 @@ public bool? DontSetVisibleSize { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;height&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;height&quot;)]
 public long Height { get; set; }</code></pre>
   </div>
 
@@ -290,7 +291,7 @@ public long Height { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetDeviceMetricsOverrideCommandSettings_Mobile" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetDeviceMetricsOverrideCommandSettings.Mobile">
   Mobile
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether to emulate mobile device. This includes viewport meta tag, overlay scrollbars, text
@@ -299,7 +300,7 @@ autosizing and more.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;mobile&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;mobile&quot;)]
 public bool Mobile { get; set; }</code></pre>
   </div>
 
@@ -324,7 +325,7 @@ public bool Mobile { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetDeviceMetricsOverrideCommandSettings_PositionX" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetDeviceMetricsOverrideCommandSettings.PositionX">
   PositionX
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Overriding view X position on screen in pixels (minimum 0, maximum 10000000).</p>
@@ -332,7 +333,8 @@ public bool Mobile { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;positionX&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;positionX&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? PositionX { get; set; }</code></pre>
   </div>
 
@@ -357,7 +359,7 @@ public long? PositionX { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetDeviceMetricsOverrideCommandSettings_PositionY" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetDeviceMetricsOverrideCommandSettings.PositionY">
   PositionY
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L108"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Overriding view Y position on screen in pixels (minimum 0, maximum 10000000).</p>
@@ -365,7 +367,8 @@ public long? PositionX { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;positionY&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;positionY&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? PositionY { get; set; }</code></pre>
   </div>
 
@@ -390,7 +393,7 @@ public long? PositionY { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetDeviceMetricsOverrideCommandSettings_Scale" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetDeviceMetricsOverrideCommandSettings.Scale">
   Scale
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Scale to apply to resulting view image.</p>
@@ -398,7 +401,8 @@ public long? PositionY { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scale&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scale&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? Scale { get; set; }</code></pre>
   </div>
 
@@ -423,7 +427,7 @@ public double? Scale { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetDeviceMetricsOverrideCommandSettings_ScreenHeight" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetDeviceMetricsOverrideCommandSettings.ScreenHeight">
   ScreenHeight
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Overriding screen height value in pixels (minimum 0, maximum 10000000).</p>
@@ -431,7 +435,8 @@ public double? Scale { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;screenHeight&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;screenHeight&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ScreenHeight { get; set; }</code></pre>
   </div>
 
@@ -456,7 +461,7 @@ public long? ScreenHeight { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetDeviceMetricsOverrideCommandSettings_ScreenOrientation" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetDeviceMetricsOverrideCommandSettings.ScreenOrientation">
   ScreenOrientation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L128"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Screen orientation override.</p>
@@ -464,7 +469,8 @@ public long? ScreenHeight { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;screenOrientation&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;screenOrientation&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ScreenOrientation ScreenOrientation { get; set; }</code></pre>
   </div>
 
@@ -489,7 +495,7 @@ public ScreenOrientation ScreenOrientation { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetDeviceMetricsOverrideCommandSettings_ScreenWidth" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetDeviceMetricsOverrideCommandSettings.ScreenWidth">
   ScreenWidth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Overriding screen width value in pixels (minimum 0, maximum 10000000).</p>
@@ -497,7 +503,8 @@ public ScreenOrientation ScreenOrientation { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;screenWidth&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;screenWidth&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ScreenWidth { get; set; }</code></pre>
   </div>
 
@@ -522,7 +529,7 @@ public long? ScreenWidth { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetDeviceMetricsOverrideCommandSettings_Viewport" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetDeviceMetricsOverrideCommandSettings.Viewport">
   Viewport
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetDeviceMetricsOverrideCommand.cs/#L139"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set, the visible area of the page will be overridden to this viewport. This viewport
@@ -531,7 +538,8 @@ change is not observed by the page, e.g. viewport-relative elements do not chang
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;viewport&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;viewport&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Viewport Viewport { get; set; }</code></pre>
   </div>
 
@@ -564,7 +572,7 @@ public Viewport Viewport { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;width&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;width&quot;)]
 public long Width { get; set; }</code></pre>
   </div>
 
