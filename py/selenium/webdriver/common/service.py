@@ -25,7 +25,8 @@ from io import IOBase
 from platform import system
 from subprocess import PIPE
 from time import sleep
-from typing import cast, Optional
+from typing import Optional
+from typing import cast
 from urllib import request
 from urllib.error import URLError
 
