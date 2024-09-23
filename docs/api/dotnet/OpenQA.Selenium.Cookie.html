@@ -99,7 +99,6 @@ Class Cookie  <a class="header-action link-secondary" title="View source" href="
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Serializable]
-[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
 public class Cookie</code></pre>
   </div>
 
@@ -152,7 +151,7 @@ public class Cookie</code></pre>
 
   <h3 id="OpenQA_Selenium_Cookie__ctor_System_String_System_String_" data-uid="OpenQA.Selenium.Cookie.#ctor(System.String,System.String)">
   Cookie(string, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a> class with a specific name and value.</p>
@@ -198,7 +197,7 @@ or if it contains a semi-colon.</p>
 
   <h3 id="OpenQA_Selenium_Cookie__ctor_System_String_System_String_System_String_" data-uid="OpenQA.Selenium.Cookie.#ctor(System.String,System.String,System.String)">
   Cookie(string, string, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a> class with a specific name,
@@ -248,7 +247,7 @@ or if it contains a semi-colon.</p>
 
   <h3 id="OpenQA_Selenium_Cookie__ctor_System_String_System_String_System_String_System_Nullable_System_DateTime__" data-uid="OpenQA.Selenium.Cookie.#ctor(System.String,System.String,System.String,System.Nullable{System.DateTime})">
   Cookie(string, string, string, DateTime?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L83"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a> class with a specific name,
@@ -301,7 +300,7 @@ or if it contains a semi-colon.</p>
 
   <h3 id="OpenQA_Selenium_Cookie__ctor_System_String_System_String_System_String_System_String_System_Nullable_System_DateTime__" data-uid="OpenQA.Selenium.Cookie.#ctor(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime})">
   Cookie(string, string, string, string, DateTime?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a> class with a specific name,
@@ -357,7 +356,7 @@ or if it contains a semi-colon.</p>
 
   <h3 id="OpenQA_Selenium_Cookie__ctor_System_String_System_String_System_String_System_String_System_Nullable_System_DateTime__System_Boolean_System_Boolean_System_String_" data-uid="OpenQA.Selenium.Cookie.#ctor(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Boolean,System.Boolean,System.String)">
   Cookie(string, string, string, string, DateTime?, bool, bool, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L121"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L120"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Internal.ReturnedCookie.html">ReturnedCookie</a> class with a specific name,
@@ -426,7 +425,7 @@ if the name contains a semi-colon, or if same site value is not valid.</p>
 
   <h3 id="OpenQA_Selenium_Cookie_Domain" data-uid="OpenQA.Selenium.Cookie.Domain">
   Domain
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L192"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L191"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the domain of the cookie.</p>
@@ -434,7 +433,8 @@ if the name contains a semi-colon, or if same site value is not valid.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;domain&quot;, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;domain&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 public string Domain { get; }</code></pre>
   </div>
 
@@ -459,7 +459,7 @@ public string Domain { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Cookie_Expiry" data-uid="OpenQA.Selenium.Cookie.Expiry">
   Expiry
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L238"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L240"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the expiration date of the cookie.</p>
@@ -467,7 +467,8 @@ public string Domain { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DateTime? Expiry { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
+public DateTime? Expiry { get; }</code></pre>
   </div>
 
 
@@ -491,7 +492,7 @@ public string Domain { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Cookie_IsHttpOnly" data-uid="OpenQA.Selenium.Cookie.IsHttpOnly">
   IsHttpOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L219"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L220"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the cookie is an HTTP-only cookie.</p>
@@ -499,7 +500,7 @@ public string Domain { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;httpOnly&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;httpOnly&quot;)]
 public virtual bool IsHttpOnly { get; }</code></pre>
   </div>
 
@@ -524,7 +525,7 @@ public virtual bool IsHttpOnly { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Cookie_Name" data-uid="OpenQA.Selenium.Cookie.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L173"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the cookie.</p>
@@ -532,7 +533,7 @@ public virtual bool IsHttpOnly { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;name&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
 public string Name { get; }</code></pre>
   </div>
 
@@ -565,7 +566,8 @@ public string Name { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;path&quot;, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;path&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 public virtual string Path { get; }</code></pre>
   </div>
 
@@ -590,7 +592,7 @@ public virtual string Path { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Cookie_SameSite" data-uid="OpenQA.Selenium.Cookie.SameSite">
   SameSite
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L229"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L230"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the SameSite setting for the cookie.</p>
@@ -598,7 +600,8 @@ public virtual string Path { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;sameSite&quot;, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sameSite&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 public virtual string SameSite { get; }</code></pre>
   </div>
 
@@ -623,7 +626,7 @@ public virtual string SameSite { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Cookie_Secure" data-uid="OpenQA.Selenium.Cookie.Secure">
   Secure
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L210"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L211"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the cookie is secure.</p>
@@ -631,7 +634,7 @@ public virtual string SameSite { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;secure&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;secure&quot;)]
 public virtual bool Secure { get; }</code></pre>
   </div>
 
@@ -656,7 +659,7 @@ public virtual bool Secure { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Cookie_Value" data-uid="OpenQA.Selenium.Cookie.Value">
   Value
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L182"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the value of the cookie.</p>
@@ -664,7 +667,7 @@ public virtual bool Secure { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;value&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;value&quot;)]
 public string Value { get; }</code></pre>
   </div>
 
@@ -693,7 +696,7 @@ public string Value { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Cookie_Equals_System_Object_" data-uid="OpenQA.Selenium.Cookie.Equals(System.Object)">
   Equals(object)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L345"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L350"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">Object</a> is equal
@@ -736,7 +739,7 @@ is equal to the current <a class="xref" href="https://learn.microsoft.com/dotnet
 
   <h3 id="OpenQA_Selenium_Cookie_FromDictionary_System_Collections_Generic_Dictionary_System_String_System_Object__" data-uid="OpenQA.Selenium.Cookie.FromDictionary(System.Collections.Generic.Dictionary{System.String,System.Object})">
   FromDictionary(Dictionary&lt;string, object&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L270"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L275"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Converts a Dictionary to a Cookie.</p>
@@ -775,7 +778,7 @@ is equal to the current <a class="xref" href="https://learn.microsoft.com/dotnet
 
   <h3 id="OpenQA_Selenium_Cookie_GetHashCode" data-uid="OpenQA.Selenium.Cookie.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L372"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L377"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Serves as a hash function for a particular type.</p>
@@ -808,7 +811,7 @@ is equal to the current <a class="xref" href="https://learn.microsoft.com/dotnet
 
   <h3 id="OpenQA_Selenium_Cookie_ToString" data-uid="OpenQA.Selenium.Cookie.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L327"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L332"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates and returns a string representation of the cookie.</p>

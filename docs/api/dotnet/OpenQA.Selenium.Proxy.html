@@ -98,8 +98,7 @@ Class Proxy  <a class="header-action link-secondary" title="View source" href="h
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonObject(MemberSerialization.OptIn)]
-public class Proxy</code></pre>
+    <pre><code class="lang-csharp hljs">public class Proxy</code></pre>
   </div>
 
 
@@ -154,7 +153,7 @@ public class Proxy</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy__ctor" data-uid="OpenQA.Selenium.Proxy.#ctor">
   Proxy()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Proxy.html">Proxy</a> class.</p>
@@ -181,7 +180,7 @@ public class Proxy</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy__ctor_System_Collections_Generic_Dictionary_System_String_System_Object__" data-uid="OpenQA.Selenium.Proxy.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object})">
   Proxy(Dictionary&lt;string, object&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Proxy.html">Proxy</a> class with the given proxy settings.</p>
@@ -218,7 +217,7 @@ public class Proxy</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_BypassProxyAddresses" data-uid="OpenQA.Selenium.Proxy.BypassProxyAddresses">
   BypassProxyAddresses
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L286"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L287"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the list of address for which to bypass the proxy as an array.</p>
@@ -226,7 +225,8 @@ public class Proxy</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;noProxy&quot;, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;noProxy&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ReadOnlyCollection&lt;string&gt; BypassProxyAddresses { get; }</code></pre>
   </div>
 
@@ -251,7 +251,7 @@ public ReadOnlyCollection&lt;string&gt; BypassProxyAddresses { get; }</code></pr
 
   <h3 id="OpenQA_Selenium_Proxy_FtpProxy" data-uid="OpenQA.Selenium.Proxy.FtpProxy">
   FtpProxy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L248"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L247"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the value of the proxy for the FTP protocol.</p>
@@ -259,7 +259,8 @@ public ReadOnlyCollection&lt;string&gt; BypassProxyAddresses { get; }</code></pr
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;ftpProxy&quot;, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;ftpProxy&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string FtpProxy { get; set; }</code></pre>
   </div>
 
@@ -292,7 +293,8 @@ public string FtpProxy { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;httpProxy&quot;, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;httpProxy&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string HttpProxy { get; set; }</code></pre>
   </div>
 
@@ -317,7 +319,7 @@ public string HttpProxy { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_IsAutoDetect" data-uid="OpenQA.Selenium.Proxy.IsAutoDetect">
   IsAutoDetect
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L224"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L223"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the proxy uses automatic detection.</p>
@@ -350,7 +352,7 @@ public bool IsAutoDetect { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_Kind" data-uid="OpenQA.Selenium.Proxy.Kind">
   Kind
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L189"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L188"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the type of proxy.</p>
@@ -383,7 +385,7 @@ public ProxyKind Kind { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_ProxyAutoConfigUrl" data-uid="OpenQA.Selenium.Proxy.ProxyAutoConfigUrl">
   ProxyAutoConfigUrl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L303"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L305"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the URL used for proxy automatic configuration.</p>
@@ -391,7 +393,8 @@ public ProxyKind Kind { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;proxyAutoconfigUrl&quot;, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;proxyAutoconfigUrl&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ProxyAutoConfigUrl { get; set; }</code></pre>
   </div>
 
@@ -416,7 +419,7 @@ public string ProxyAutoConfigUrl { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_SerializableProxyKind" data-uid="OpenQA.Selenium.Proxy.SerializableProxyKind">
   SerializableProxyKind
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L207"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L206"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the type of proxy as a string for JSON serialization.</p>
@@ -424,7 +427,7 @@ public string ProxyAutoConfigUrl { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;proxyType&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;proxyType&quot;)]
 public string SerializableProxyKind { get; }</code></pre>
   </div>
 
@@ -449,7 +452,7 @@ public string SerializableProxyKind { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_SocksPassword" data-uid="OpenQA.Selenium.Proxy.SocksPassword">
   SocksPassword
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L411"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L418"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the value of password for the SOCKS proxy.</p>
@@ -457,7 +460,8 @@ public string SerializableProxyKind { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;socksPassword&quot;, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;socksPassword&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string SocksPassword { get; set; }</code></pre>
   </div>
 
@@ -482,7 +486,7 @@ public string SocksPassword { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_SocksProxy" data-uid="OpenQA.Selenium.Proxy.SocksProxy">
   SocksProxy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L341"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L345"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the value of the proxy for the SOCKS protocol.</p>
@@ -490,7 +494,8 @@ public string SocksPassword { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;socksProxy&quot;, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;socksProxy&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string SocksProxy { get; set; }</code></pre>
   </div>
 
@@ -515,7 +520,7 @@ public string SocksProxy { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_SocksUserName" data-uid="OpenQA.Selenium.Proxy.SocksUserName">
   SocksUserName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L360"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L365"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the value of username for the SOCKS proxy.</p>
@@ -523,7 +528,8 @@ public string SocksProxy { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;socksUsername&quot;, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;socksUsername&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string SocksUserName { get; set; }</code></pre>
   </div>
 
@@ -548,7 +554,7 @@ public string SocksUserName { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_SocksVersion" data-uid="OpenQA.Selenium.Proxy.SocksVersion">
   SocksVersion
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L380"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L386"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the value of the protocol version for the SOCKS proxy.
@@ -557,7 +563,8 @@ Value can be <a href="https://learn.microsoft.com/dotnet/csharp/language-referen
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;socksVersion&quot;, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;socksVersion&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public int? SocksVersion { get; set; }</code></pre>
   </div>
 
@@ -582,7 +589,7 @@ public int? SocksVersion { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_SslProxy" data-uid="OpenQA.Selenium.Proxy.SslProxy">
   SslProxy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L322"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L325"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the value of the proxy for the SSL protocol.</p>
@@ -590,7 +597,8 @@ public int? SocksVersion { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;sslProxy&quot;, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sslProxy&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string SslProxy { get; set; }</code></pre>
   </div>
 
@@ -619,7 +627,7 @@ public string SslProxy { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_AddBypassAddress_System_String_" data-uid="OpenQA.Selenium.Proxy.AddBypassAddress(System.String)">
   AddBypassAddress(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L431"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L439"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a single address to the list of addresses against which the proxy will not be used.</p>
@@ -652,7 +660,7 @@ public string SslProxy { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_AddBypassAddresses_System_Collections_Generic_IEnumerable_System_String__" data-uid="OpenQA.Selenium.Proxy.AddBypassAddresses(System.Collections.Generic.IEnumerable{System.String})">
   AddBypassAddresses(IEnumerable&lt;string&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L454"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L462"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds addresses to the list of addresses against which the proxy will not be used.</p>
@@ -685,7 +693,7 @@ public string SslProxy { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Proxy_AddBypassAddresses_System_String___" data-uid="OpenQA.Selenium.Proxy.AddBypassAddresses(System.String[])">
   AddBypassAddresses(params string[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L445"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Proxy.cs/#L453"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds addresses to the list of addresses against which the proxy will not be used.</p>

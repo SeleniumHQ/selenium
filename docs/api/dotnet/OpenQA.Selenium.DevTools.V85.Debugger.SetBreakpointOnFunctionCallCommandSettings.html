@@ -191,7 +191,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetBreakpointOnFunctionCallCommandSettings_Condition" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetBreakpointOnFunctionCallCommandSettings.Condition">
   Condition
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointOnFunctionCallCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Expression to use as a breakpoint condition. When specified, debugger will
@@ -200,7 +200,8 @@ stop on the breakpoint if this expression evaluates to true.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;condition&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;condition&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Condition { get; set; }</code></pre>
   </div>
 
@@ -233,7 +234,7 @@ public string Condition { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;objectId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;objectId&quot;)]
 public string ObjectId { get; set; }</code></pre>
   </div>
 

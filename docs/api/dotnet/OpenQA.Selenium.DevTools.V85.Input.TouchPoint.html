@@ -150,7 +150,7 @@ Class TouchPoint  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_TouchPoint_Force" data-uid="OpenQA.Selenium.DevTools.V85.Input.TouchPoint.Force">
   Force
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Force (default: 1.0).</p>
@@ -158,7 +158,8 @@ Class TouchPoint  <a class="header-action link-secondary" title="View source" hr
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;force&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;force&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? Force { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public double? Force { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_TouchPoint_Id" data-uid="OpenQA.Selenium.DevTools.V85.Input.TouchPoint.Id">
   Id
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Identifier used to track touch sources between events, must be unique within an event.</p>
@@ -191,7 +192,8 @@ public double? Force { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;id&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? Id { get; set; }</code></pre>
   </div>
 
@@ -216,7 +218,7 @@ public double? Id { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_TouchPoint_RadiusX" data-uid="OpenQA.Selenium.DevTools.V85.Input.TouchPoint.RadiusX">
   RadiusX
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>X radius of the touch area (default: 1.0).</p>
@@ -224,7 +226,8 @@ public double? Id { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;radiusX&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;radiusX&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? RadiusX { get; set; }</code></pre>
   </div>
 
@@ -249,7 +252,7 @@ public double? RadiusX { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_TouchPoint_RadiusY" data-uid="OpenQA.Selenium.DevTools.V85.Input.TouchPoint.RadiusY">
   RadiusY
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Y radius of the touch area (default: 1.0).</p>
@@ -257,7 +260,8 @@ public double? RadiusX { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;radiusY&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;radiusY&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? RadiusY { get; set; }</code></pre>
   </div>
 
@@ -282,7 +286,7 @@ public double? RadiusY { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_TouchPoint_RotationAngle" data-uid="OpenQA.Selenium.DevTools.V85.Input.TouchPoint.RotationAngle">
   RotationAngle
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Rotation angle (default: 0.0).</p>
@@ -290,7 +294,8 @@ public double? RadiusY { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;rotationAngle&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;rotationAngle&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? RotationAngle { get; set; }</code></pre>
   </div>
 
@@ -323,7 +328,7 @@ public double? RotationAngle { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;x&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;x&quot;)]
 public double X { get; set; }</code></pre>
   </div>
 
@@ -348,7 +353,7 @@ public double X { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_TouchPoint_Y" data-uid="OpenQA.Selenium.DevTools.V85.Input.TouchPoint.Y">
   Y
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/TouchPoint.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Y coordinate of the event relative to the main frame's viewport in CSS pixels. 0 refers to
@@ -357,7 +362,7 @@ the top of the viewport and Y increases as it proceeds towards the bottom of the
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;y&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;y&quot;)]
 public double Y { get; set; }</code></pre>
   </div>
 

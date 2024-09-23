@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_Debugger_ExecuteWasmEvaluatorCommandResponse" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.ExecuteWasmEvaluatorCommandResponse" class="text-break">
-Class ExecuteWasmEvaluatorCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/ExecuteWasmEvaluatorCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
+Class ExecuteWasmEvaluatorCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/ExecuteWasmEvaluatorCommand.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -164,7 +164,7 @@ Class ExecuteWasmEvaluatorCommandResponse  <a class="header-action link-secondar
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_ExecuteWasmEvaluatorCommandResponse_ExceptionDetails" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.ExecuteWasmEvaluatorCommandResponse.ExceptionDetails">
   ExceptionDetails
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/ExecuteWasmEvaluatorCommand.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/ExecuteWasmEvaluatorCommand.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Exception details.</p>
@@ -172,7 +172,8 @@ Class ExecuteWasmEvaluatorCommandResponse  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;exceptionDetails&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;exceptionDetails&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
   </div>
 
@@ -197,7 +198,7 @@ public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_ExecuteWasmEvaluatorCommandResponse_Result" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.ExecuteWasmEvaluatorCommandResponse.Result">
   Result
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/ExecuteWasmEvaluatorCommand.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/ExecuteWasmEvaluatorCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Object wrapper for the evaluation result.</p>
@@ -205,7 +206,7 @@ public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;result&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;result&quot;)]
 public RemoteObject Result { get; set; }</code></pre>
   </div>
 
@@ -230,7 +231,7 @@ public RemoteObject Result { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/ExecuteWasmEvaluatorCommand.cs/#L54" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/ExecuteWasmEvaluatorCommand.cs/#L57" class="edit-link">Edit this page</a>
         </div>
 
 

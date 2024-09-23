@@ -157,7 +157,7 @@ objectId must be specified.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightNodeCommandSettings_BackendNodeId" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightNodeCommandSettings.BackendNodeId">
   BackendNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightNodeCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightNodeCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Identifier of the backend node to highlight.</p>
@@ -165,7 +165,8 @@ objectId must be specified.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;backendNodeId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;backendNodeId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? BackendNodeId { get; set; }</code></pre>
   </div>
 
@@ -231,7 +232,7 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;highlightConfig&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;highlightConfig&quot;)]
 public HighlightConfig HighlightConfig { get; set; }</code></pre>
   </div>
 
@@ -256,7 +257,7 @@ public HighlightConfig HighlightConfig { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightNodeCommandSettings_NodeId" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightNodeCommandSettings.NodeId">
   NodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightNodeCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightNodeCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Identifier of the node to highlight.</p>
@@ -264,7 +265,8 @@ public HighlightConfig HighlightConfig { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? NodeId { get; set; }</code></pre>
   </div>
 
@@ -289,7 +291,7 @@ public long? NodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightNodeCommandSettings_ObjectId" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightNodeCommandSettings.ObjectId">
   ObjectId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightNodeCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightNodeCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>JavaScript object id of the node to be highlighted.</p>
@@ -297,7 +299,8 @@ public long? NodeId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;objectId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;objectId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ObjectId { get; set; }</code></pre>
   </div>
 
@@ -322,7 +325,7 @@ public string ObjectId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightNodeCommandSettings_Selector" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightNodeCommandSettings.Selector">
   Selector
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightNodeCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightNodeCommand.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Selectors to highlight relevant nodes.</p>
@@ -330,7 +333,8 @@ public string ObjectId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;selector&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;selector&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Selector { get; set; }</code></pre>
   </div>
 

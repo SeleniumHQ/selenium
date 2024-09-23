@@ -200,7 +200,7 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;computedStyles&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;computedStyles&quot;)]
 public string[] ComputedStyles { get; set; }</code></pre>
   </div>
 
@@ -225,7 +225,7 @@ public string[] ComputedStyles { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_CaptureSnapshotCommandSettings_IncludeDOMRects" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.CaptureSnapshotCommandSettings.IncludeDOMRects">
   IncludeDOMRects
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/CaptureSnapshotCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/CaptureSnapshotCommand.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether to include DOM rectangles (offsetRects, clientRects, scrollRects) into the snapshot</p>
@@ -233,7 +233,8 @@ public string[] ComputedStyles { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;includeDOMRects&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;includeDOMRects&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IncludeDOMRects { get; set; }</code></pre>
   </div>
 
@@ -258,7 +259,7 @@ public bool? IncludeDOMRects { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOMSnapshot_CaptureSnapshotCommandSettings_IncludePaintOrder" data-uid="OpenQA.Selenium.DevTools.V85.DOMSnapshot.CaptureSnapshotCommandSettings.IncludePaintOrder">
   IncludePaintOrder
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/CaptureSnapshotCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOMSnapshot/CaptureSnapshotCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether to include layout object paint orders into the snapshot.</p>
@@ -266,7 +267,8 @@ public bool? IncludeDOMRects { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;includePaintOrder&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;includePaintOrder&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IncludePaintOrder { get; set; }</code></pre>
   </div>
 

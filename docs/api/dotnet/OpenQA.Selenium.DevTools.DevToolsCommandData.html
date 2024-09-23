@@ -151,9 +151,9 @@ Class DevToolsCommandData  <a class="header-action link-secondary" title="View s
 
   <a id="OpenQA_Selenium_DevTools_DevToolsCommandData__ctor_" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_DevTools_DevToolsCommandData__ctor_System_Int64_System_String_Newtonsoft_Json_Linq_JToken_" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.#ctor(System.Int64,System.String,Newtonsoft.Json.Linq.JToken)">
-  DevToolsCommandData(long, string, JToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_DevTools_DevToolsCommandData__ctor_System_Int64_System_String_System_String_System_Text_Json_Nodes_JsonNode_" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.#ctor(System.Int64,System.String,System.String,System.Text.Json.Nodes.JsonNode)">
+  DevToolsCommandData(long, string, string, JsonNode)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the DevToolsCommandData class.</p>
@@ -161,7 +161,7 @@ Class DevToolsCommandData  <a class="header-action link-secondary" title="View s
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DevToolsCommandData(long commandId, string commandName, JToken commandParameters)</code></pre>
+    <pre><code class="lang-csharp hljs">public DevToolsCommandData(long commandId, string sessionId, string commandName, JsonNode commandParameters)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -169,10 +169,13 @@ Class DevToolsCommandData  <a class="header-action link-secondary" title="View s
     <dt><code>commandId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd><p>The ID of the commmand execution.</p>
 </dd>
+    <dt><code>sessionId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The session ID of the current command execution.</p>
+</dd>
     <dt><code>commandName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The method name of the DevTools command.</p>
 </dd>
-    <dt><code>commandParameters</code> <span class="xref">JToken</span></dt>
+    <dt><code>commandParameters</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonnode">JsonNode</a></dt>
     <dd><p>The parameters of the DevTools command.</p>
 </dd>
   </dl>
@@ -190,9 +193,9 @@ Class DevToolsCommandData  <a class="header-action link-secondary" title="View s
 
   <a id="OpenQA_Selenium_DevTools_DevToolsCommandData__ctor_" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_DevTools_DevToolsCommandData__ctor_System_Int64_System_String_System_String_Newtonsoft_Json_Linq_JToken_" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.#ctor(System.Int64,System.String,System.String,Newtonsoft.Json.Linq.JToken)">
-  DevToolsCommandData(long, string, string, JToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_DevTools_DevToolsCommandData__ctor_System_Int64_System_String_System_Text_Json_Nodes_JsonNode_" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.#ctor(System.Int64,System.String,System.Text.Json.Nodes.JsonNode)">
+  DevToolsCommandData(long, string, JsonNode)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the DevToolsCommandData class.</p>
@@ -200,7 +203,7 @@ Class DevToolsCommandData  <a class="header-action link-secondary" title="View s
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DevToolsCommandData(long commandId, string sessionId, string commandName, JToken commandParameters)</code></pre>
+    <pre><code class="lang-csharp hljs">public DevToolsCommandData(long commandId, string commandName, JsonNode commandParameters)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -208,13 +211,10 @@ Class DevToolsCommandData  <a class="header-action link-secondary" title="View s
     <dt><code>commandId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd><p>The ID of the commmand execution.</p>
 </dd>
-    <dt><code>sessionId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The session ID of the current command execution.</p>
-</dd>
     <dt><code>commandName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The method name of the DevTools command.</p>
 </dd>
-    <dt><code>commandParameters</code> <span class="xref">JToken</span></dt>
+    <dt><code>commandParameters</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonnode">JsonNode</a></dt>
     <dd><p>The parameters of the DevTools command.</p>
 </dd>
   </dl>
@@ -238,7 +238,7 @@ Class DevToolsCommandData  <a class="header-action link-secondary" title="View s
 
   <h3 id="OpenQA_Selenium_DevTools_DevToolsCommandData_CommandId" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.CommandId">
   CommandId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the numeric ID of the command execution.</p>
@@ -246,7 +246,7 @@ Class DevToolsCommandData  <a class="header-action link-secondary" title="View s
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;id&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
 public long CommandId { get; }</code></pre>
   </div>
 
@@ -271,7 +271,7 @@ public long CommandId { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_DevToolsCommandData_CommandName" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.CommandName">
   CommandName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the method name of the command.</p>
@@ -279,7 +279,7 @@ public long CommandId { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;method&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;method&quot;)]
 public string CommandName { get; }</code></pre>
   </div>
 
@@ -304,7 +304,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_DevToolsCommandData_CommandParameters" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.CommandParameters">
   CommandParameters
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the parameters for the command.</p>
@@ -312,8 +312,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;params&quot;)]
-public JToken CommandParameters { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;params&quot;)]
+public JsonNode CommandParameters { get; }</code></pre>
   </div>
 
 
@@ -322,7 +322,7 @@ public JToken CommandParameters { get; }</code></pre>
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">JToken</span></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonnode">JsonNode</a></dt>
     <dd></dd>
   </dl>
 
@@ -337,7 +337,7 @@ public JToken CommandParameters { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_DevToolsCommandData_IsError" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.IsError">
   IsError
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L97"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the command resulted in an error response.</p>
@@ -370,7 +370,7 @@ public bool IsError { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_DevToolsCommandData_Result" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.Result">
   Result
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L91"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Get or sets the result of the command execution.</p>
@@ -379,7 +379,7 @@ public bool IsError { get; set; }</code></pre>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonIgnore]
-public JToken Result { get; set; }</code></pre>
+public JsonNode Result { get; set; }</code></pre>
   </div>
 
 
@@ -388,7 +388,7 @@ public JToken Result { get; set; }</code></pre>
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">JToken</span></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonnode">JsonNode</a></dt>
     <dd></dd>
   </dl>
 
@@ -411,7 +411,8 @@ public JToken Result { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;sessionId&quot;, NullValueHandling = NullValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sessionId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 public string SessionId { get; }</code></pre>
   </div>
 
@@ -436,7 +437,7 @@ public string SessionId { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_DevToolsCommandData_SyncEvent" data-uid="OpenQA.Selenium.DevTools.DevToolsCommandData.SyncEvent">
   SyncEvent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsCommandData.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a ManualResetEventSlim on which execution of the command can be synchronized.</p>

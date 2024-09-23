@@ -156,7 +156,7 @@ Class GrantPermissionsCommandSettings  <a class="header-action link-secondary" t
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Browser_GrantPermissionsCommandSettings_BrowserContextId" data-uid="OpenQA.Selenium.DevTools.V85.Browser.GrantPermissionsCommandSettings.BrowserContextId">
   BrowserContextId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/GrantPermissionsCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/GrantPermissionsCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>BrowserContext to override permissions. When omitted, default browser context is used.</p>
@@ -164,7 +164,8 @@ Class GrantPermissionsCommandSettings  <a class="header-action link-secondary" t
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;browserContextId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;browserContextId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string BrowserContextId { get; set; }</code></pre>
   </div>
 
@@ -222,7 +223,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Browser_GrantPermissionsCommandSettings_Origin" data-uid="OpenQA.Selenium.DevTools.V85.Browser.GrantPermissionsCommandSettings.Origin">
   Origin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/GrantPermissionsCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Browser/GrantPermissionsCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Origin the permission applies to, all origins if not specified.</p>
@@ -230,7 +231,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;origin&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;origin&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Origin { get; set; }</code></pre>
   </div>
 
@@ -263,7 +265,7 @@ public string Origin { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;permissions&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;permissions&quot;)]
 public PermissionType[] Permissions { get; set; }</code></pre>
   </div>
 

@@ -150,7 +150,7 @@ Class DomMutationData  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_DomMutationData_AttributeName" data-uid="OpenQA.Selenium.DomMutationData.AttributeName">
   AttributeName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DomMutationData.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DomMutationData.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the attribute that is changing.</p>
@@ -158,7 +158,8 @@ Class DomMutationData  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(PropertyName = &quot;name&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
+[JsonInclude]
 public string AttributeName { get; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public string AttributeName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DomMutationData_AttributeOriginalValue" data-uid="OpenQA.Selenium.DomMutationData.AttributeOriginalValue">
   AttributeOriginalValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DomMutationData.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DomMutationData.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the value from which the attribute has been changed.</p>
@@ -191,7 +192,8 @@ public string AttributeName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(PropertyName = &quot;oldValue&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;oldValue&quot;)]
+[JsonInclude]
 public string AttributeOriginalValue { get; }</code></pre>
   </div>
 
@@ -216,7 +218,7 @@ public string AttributeOriginalValue { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DomMutationData_AttributeValue" data-uid="OpenQA.Selenium.DomMutationData.AttributeValue">
   AttributeValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DomMutationData.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DomMutationData.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the value to which the attribute is being changed.</p>
@@ -224,7 +226,8 @@ public string AttributeOriginalValue { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(PropertyName = &quot;value&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;value&quot;)]
+[JsonInclude]
 public string AttributeValue { get; }</code></pre>
   </div>
 
@@ -249,7 +252,7 @@ public string AttributeValue { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DomMutationData_Element" data-uid="OpenQA.Selenium.DomMutationData.Element">
   Element
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DomMutationData.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DomMutationData.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Stores the element associated with the target ID</p>
@@ -289,7 +292,8 @@ public string AttributeValue { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(PropertyName = &quot;target&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;target&quot;)]
+[JsonInclude]
 public string TargetId { get; }</code></pre>
   </div>
 
@@ -318,7 +322,7 @@ public string TargetId { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DomMutationData_ToString" data-uid="OpenQA.Selenium.DomMutationData.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DomMutationData.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DomMutationData.cs/#L86"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns a string that represents the current object.</p>

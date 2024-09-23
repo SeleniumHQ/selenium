@@ -159,7 +159,7 @@ of these fields is present and in the request stage otherwise.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Fetch_RequestPausedEventArgs_FrameId" data-uid="OpenQA.Selenium.DevTools.V85.Fetch.RequestPausedEventArgs.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The id of the frame that initiated the request.</p>
@@ -167,7 +167,7 @@ of these fields is present and in the request stage otherwise.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;frameId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;frameId&quot;)]
 public string FrameId { get; set; }</code></pre>
   </div>
 
@@ -192,7 +192,7 @@ public string FrameId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Fetch_RequestPausedEventArgs_NetworkId" data-uid="OpenQA.Selenium.DevTools.V85.Fetch.RequestPausedEventArgs.NetworkId">
   NetworkId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L91"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If the intercepted request had a corresponding Network.requestWillBeSent event fired for it,
@@ -201,7 +201,8 @@ then this networkId will be the same as the requestId present in the requestWill
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;networkId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;networkId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string NetworkId { get; set; }</code></pre>
   </div>
 
@@ -226,7 +227,7 @@ public string NetworkId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Fetch_RequestPausedEventArgs_Request" data-uid="OpenQA.Selenium.DevTools.V85.Fetch.RequestPausedEventArgs.Request">
   Request
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The details of the request.</p>
@@ -234,7 +235,7 @@ public string NetworkId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;request&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;request&quot;)]
 public Request Request { get; set; }</code></pre>
   </div>
 
@@ -267,7 +268,7 @@ public Request Request { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;requestId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;requestId&quot;)]
 public string RequestId { get; set; }</code></pre>
   </div>
 
@@ -292,7 +293,7 @@ public string RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Fetch_RequestPausedEventArgs_ResourceType" data-uid="OpenQA.Selenium.DevTools.V85.Fetch.RequestPausedEventArgs.ResourceType">
   ResourceType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the requested resource will be used.</p>
@@ -300,7 +301,7 @@ public string RequestId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;resourceType&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;resourceType&quot;)]
 public ResourceType ResourceType { get; set; }</code></pre>
   </div>
 
@@ -325,7 +326,7 @@ public ResourceType ResourceType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Fetch_RequestPausedEventArgs_ResponseErrorReason" data-uid="OpenQA.Selenium.DevTools.V85.Fetch.RequestPausedEventArgs.ResponseErrorReason">
   ResponseErrorReason
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Response error if intercepted at response stage.</p>
@@ -333,7 +334,8 @@ public ResourceType ResourceType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseErrorReason&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseErrorReason&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ErrorReason? ResponseErrorReason { get; set; }</code></pre>
   </div>
 
@@ -358,7 +360,7 @@ public ErrorReason? ResponseErrorReason { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Fetch_RequestPausedEventArgs_ResponseHeaders" data-uid="OpenQA.Selenium.DevTools.V85.Fetch.RequestPausedEventArgs.ResponseHeaders">
   ResponseHeaders
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Response headers if intercepted at the response stage.</p>
@@ -366,7 +368,8 @@ public ErrorReason? ResponseErrorReason { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseHeaders&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseHeaders&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public HeaderEntry[] ResponseHeaders { get; set; }</code></pre>
   </div>
 
@@ -391,7 +394,7 @@ public HeaderEntry[] ResponseHeaders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Fetch_RequestPausedEventArgs_ResponseStatusCode" data-uid="OpenQA.Selenium.DevTools.V85.Fetch.RequestPausedEventArgs.ResponseStatusCode">
   ResponseStatusCode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Fetch/RequestPausedEventArgs.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Response code if intercepted at response stage.</p>
@@ -399,7 +402,8 @@ public HeaderEntry[] ResponseHeaders { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseStatusCode&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseStatusCode&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ResponseStatusCode { get; set; }</code></pre>
   </div>
 

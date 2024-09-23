@@ -189,7 +189,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchTouchEventCommandSettings_Modifiers" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchTouchEventCommandSettings.Modifiers">
   Modifiers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchTouchEventCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchTouchEventCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8
@@ -198,7 +198,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;modifiers&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;modifiers&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? Modifiers { get; set; }</code></pre>
   </div>
 
@@ -223,7 +224,7 @@ public long? Modifiers { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchTouchEventCommandSettings_Timestamp" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchTouchEventCommandSettings.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchTouchEventCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchTouchEventCommand.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Time at which the event occurred.</p>
@@ -231,7 +232,8 @@ public long? Modifiers { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;timestamp&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;timestamp&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? Timestamp { get; set; }</code></pre>
   </div>
 
@@ -256,7 +258,7 @@ public double? Timestamp { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchTouchEventCommandSettings_TouchPoints" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchTouchEventCommandSettings.TouchPoints">
   TouchPoints
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchTouchEventCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchTouchEventCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Active touch points on the touch device. One event per any changed point (compared to
@@ -266,7 +268,7 @@ one by one.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;touchPoints&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;touchPoints&quot;)]
 public TouchPoint[] TouchPoints { get; set; }</code></pre>
   </div>
 
@@ -300,7 +302,7 @@ TouchStart and TouchMove must contains at least one.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public string Type { get; set; }</code></pre>
   </div>
 

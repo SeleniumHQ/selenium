@@ -156,7 +156,7 @@ Class StartCommandSettings  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Tracing_StartCommandSettings_BufferUsageReportingInterval" data-uid="OpenQA.Selenium.DevTools.V85.Tracing.StartCommandSettings.BufferUsageReportingInterval">
   BufferUsageReportingInterval
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set, the agent will issue bufferUsage events at this interval, specified in milliseconds</p>
@@ -164,7 +164,8 @@ Class StartCommandSettings  <a class="header-action link-secondary" title="View 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;bufferUsageReportingInterval&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;bufferUsageReportingInterval&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? BufferUsageReportingInterval { get; set; }</code></pre>
   </div>
 
@@ -197,7 +198,8 @@ public double? BufferUsageReportingInterval { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;categories&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;categories&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Categories { get; set; }</code></pre>
   </div>
 
@@ -255,7 +257,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Tracing_StartCommandSettings_Options" data-uid="OpenQA.Selenium.DevTools.V85.Tracing.StartCommandSettings.Options">
   Options
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Tracing options</p>
@@ -263,7 +265,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;options&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;options&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Options { get; set; }</code></pre>
   </div>
 
@@ -288,7 +291,7 @@ public string Options { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Tracing_StartCommandSettings_StreamCompression" data-uid="OpenQA.Selenium.DevTools.V85.Tracing.StartCommandSettings.StreamCompression">
   StreamCompression
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Compression format to use. This only applies when using <code>ReturnAsStream</code>
@@ -297,7 +300,8 @@ transfer mode (defaults to <code>none</code>)</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;streamCompression&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;streamCompression&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StreamCompression? StreamCompression { get; set; }</code></pre>
   </div>
 
@@ -322,7 +326,7 @@ public StreamCompression? StreamCompression { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Tracing_StartCommandSettings_StreamFormat" data-uid="OpenQA.Selenium.DevTools.V85.Tracing.StartCommandSettings.StreamFormat">
   StreamFormat
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Trace data format to use. This only applies when using <code>ReturnAsStream</code>
@@ -331,7 +335,8 @@ transfer mode (defaults to <code>json</code>).</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;streamFormat&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;streamFormat&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StreamFormat? StreamFormat { get; set; }</code></pre>
   </div>
 
@@ -356,7 +361,7 @@ public StreamFormat? StreamFormat { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Tracing_StartCommandSettings_TraceConfig" data-uid="OpenQA.Selenium.DevTools.V85.Tracing.StartCommandSettings.TraceConfig">
   TraceConfig
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the traceConfig</p>
@@ -364,7 +369,8 @@ public StreamFormat? StreamFormat { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;traceConfig&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;traceConfig&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public TraceConfig TraceConfig { get; set; }</code></pre>
   </div>
 
@@ -389,7 +395,7 @@ public TraceConfig TraceConfig { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Tracing_StartCommandSettings_TransferMode" data-uid="OpenQA.Selenium.DevTools.V85.Tracing.StartCommandSettings.TransferMode">
   TransferMode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Tracing/StartCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether to report trace events as series of dataCollected events or to save trace to a
@@ -398,7 +404,8 @@ stream (defaults to <code>ReportEvents</code>).</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;transferMode&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;transferMode&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string TransferMode { get; set; }</code></pre>
   </div>
 

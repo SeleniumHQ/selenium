@@ -156,7 +156,7 @@ Class DispatchMouseEventCommandSettings  <a class="header-action link-secondary"
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchMouseEventCommandSettings_Button" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchMouseEventCommandSettings.Button">
   Button
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Mouse button (default: &quot;none&quot;).</p>
@@ -164,7 +164,8 @@ Class DispatchMouseEventCommandSettings  <a class="header-action link-secondary"
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;button&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;button&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public MouseButton? Button { get; set; }</code></pre>
   </div>
 
@@ -189,7 +190,7 @@ public MouseButton? Button { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchMouseEventCommandSettings_Buttons" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchMouseEventCommandSettings.Buttons">
   Buttons
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A number indicating which buttons are pressed on the mouse when a mouse event is triggered.
@@ -198,7 +199,8 @@ Left=1, Right=2, Middle=4, Back=8, Forward=16, None=0.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;buttons&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;buttons&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? Buttons { get; set; }</code></pre>
   </div>
 
@@ -223,7 +225,7 @@ public long? Buttons { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchMouseEventCommandSettings_ClickCount" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchMouseEventCommandSettings.ClickCount">
   ClickCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Number of times the mouse button was clicked (default: 0).</p>
@@ -231,7 +233,8 @@ public long? Buttons { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;clickCount&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;clickCount&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ClickCount { get; set; }</code></pre>
   </div>
 
@@ -289,7 +292,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchMouseEventCommandSettings_DeltaX" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchMouseEventCommandSettings.DeltaX">
   DeltaX
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L108"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>X delta in CSS pixels for mouse wheel event (default: 0).</p>
@@ -297,7 +300,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;deltaX&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;deltaX&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? DeltaX { get; set; }</code></pre>
   </div>
 
@@ -322,7 +326,7 @@ public double? DeltaX { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchMouseEventCommandSettings_DeltaY" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchMouseEventCommandSettings.DeltaY">
   DeltaY
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L118"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Y delta in CSS pixels for mouse wheel event (default: 0).</p>
@@ -330,7 +334,8 @@ public double? DeltaX { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;deltaY&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;deltaY&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? DeltaY { get; set; }</code></pre>
   </div>
 
@@ -355,7 +360,7 @@ public double? DeltaY { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchMouseEventCommandSettings_Modifiers" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchMouseEventCommandSettings.Modifiers">
   Modifiers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8
@@ -364,7 +369,8 @@ public double? DeltaY { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;modifiers&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;modifiers&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? Modifiers { get; set; }</code></pre>
   </div>
 
@@ -389,7 +395,7 @@ public long? Modifiers { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchMouseEventCommandSettings_PointerType" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchMouseEventCommandSettings.PointerType">
   PointerType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L128"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Pointer type (default: &quot;mouse&quot;).</p>
@@ -397,7 +403,8 @@ public long? Modifiers { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;pointerType&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;pointerType&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string PointerType { get; set; }</code></pre>
   </div>
 
@@ -422,7 +429,7 @@ public string PointerType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchMouseEventCommandSettings_Timestamp" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchMouseEventCommandSettings.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Time at which the event occurred.</p>
@@ -430,7 +437,8 @@ public string PointerType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;timestamp&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;timestamp&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? Timestamp { get; set; }</code></pre>
   </div>
 
@@ -463,7 +471,7 @@ public double? Timestamp { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public string Type { get; set; }</code></pre>
   </div>
 
@@ -488,7 +496,7 @@ public string Type { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchMouseEventCommandSettings_X" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchMouseEventCommandSettings.X">
   X
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>X coordinate of the event relative to the main frame's viewport in CSS pixels.</p>
@@ -496,7 +504,7 @@ public string Type { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;x&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;x&quot;)]
 public double X { get; set; }</code></pre>
   </div>
 
@@ -521,7 +529,7 @@ public double X { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_DispatchMouseEventCommandSettings_Y" data-uid="OpenQA.Selenium.DevTools.V85.Input.DispatchMouseEventCommandSettings.Y">
   Y
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/DispatchMouseEventCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Y coordinate of the event relative to the main frame's viewport in CSS pixels. 0 refers to
@@ -530,7 +538,7 @@ the top of the viewport and Y increases as it proceeds towards the bottom of the
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;y&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;y&quot;)]
 public double Y { get; set; }</code></pre>
   </div>
 

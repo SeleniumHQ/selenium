@@ -150,7 +150,7 @@ Class MixedContentIssueDetails  <a class="header-action link-secondary" title="V
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_MixedContentIssueDetails_Frame" data-uid="OpenQA.Selenium.DevTools.V85.Audits.MixedContentIssueDetails.Frame">
   Frame
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/MixedContentIssueDetails.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/MixedContentIssueDetails.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Optional because not every mixed content issue is necessarily linked to a frame.</p>
@@ -158,7 +158,8 @@ Class MixedContentIssueDetails  <a class="header-action link-secondary" title="V
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;frame&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;frame&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public AffectedFrame Frame { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public AffectedFrame Frame { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_MixedContentIssueDetails_InsecureURL" data-uid="OpenQA.Selenium.DevTools.V85.Audits.MixedContentIssueDetails.InsecureURL">
   InsecureURL
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/MixedContentIssueDetails.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/MixedContentIssueDetails.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The unsafe http url causing the mixed content issue.</p>
@@ -191,7 +192,7 @@ public AffectedFrame Frame { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;insecureURL&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;insecureURL&quot;)]
 public string InsecureURL { get; set; }</code></pre>
   </div>
 
@@ -216,7 +217,7 @@ public string InsecureURL { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_MixedContentIssueDetails_MainResourceURL" data-uid="OpenQA.Selenium.DevTools.V85.Audits.MixedContentIssueDetails.MainResourceURL">
   MainResourceURL
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/MixedContentIssueDetails.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/MixedContentIssueDetails.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The url responsible for the call to an unsafe url.</p>
@@ -224,7 +225,7 @@ public string InsecureURL { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;mainResourceURL&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;mainResourceURL&quot;)]
 public string MainResourceURL { get; set; }</code></pre>
   </div>
 
@@ -249,7 +250,7 @@ public string MainResourceURL { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_MixedContentIssueDetails_Request" data-uid="OpenQA.Selenium.DevTools.V85.Audits.MixedContentIssueDetails.Request">
   Request
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/MixedContentIssueDetails.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/MixedContentIssueDetails.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The mixed content request.
@@ -258,7 +259,8 @@ Does not always exist (e.g. for unsafe form submission urls).</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;request&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;request&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public AffectedRequest Request { get; set; }</code></pre>
   </div>
 
@@ -283,7 +285,7 @@ public AffectedRequest Request { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_MixedContentIssueDetails_ResolutionStatus" data-uid="OpenQA.Selenium.DevTools.V85.Audits.MixedContentIssueDetails.ResolutionStatus">
   ResolutionStatus
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/MixedContentIssueDetails.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/MixedContentIssueDetails.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The way the mixed content issue is being resolved.</p>
@@ -291,7 +293,7 @@ public AffectedRequest Request { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;resolutionStatus&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;resolutionStatus&quot;)]
 public MixedContentResolutionStatus ResolutionStatus { get; set; }</code></pre>
   </div>
 
@@ -327,7 +329,8 @@ by network::mojom::RequestDestination</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;resourceType&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;resourceType&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public MixedContentResourceType? ResourceType { get; set; }</code></pre>
   </div>
 

@@ -189,7 +189,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_AwaitPromiseCommandSettings_GeneratePreview" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.AwaitPromiseCommandSettings.GeneratePreview">
   GeneratePreview
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/AwaitPromiseCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/AwaitPromiseCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether preview should be generated for the result.</p>
@@ -197,7 +197,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;generatePreview&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;generatePreview&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? GeneratePreview { get; set; }</code></pre>
   </div>
 
@@ -230,7 +231,7 @@ public bool? GeneratePreview { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;promiseObjectId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;promiseObjectId&quot;)]
 public string PromiseObjectId { get; set; }</code></pre>
   </div>
 
@@ -255,7 +256,7 @@ public string PromiseObjectId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_AwaitPromiseCommandSettings_ReturnByValue" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.AwaitPromiseCommandSettings.ReturnByValue">
   ReturnByValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/AwaitPromiseCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/AwaitPromiseCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the result is expected to be a JSON object that should be sent by value.</p>
@@ -263,7 +264,8 @@ public string PromiseObjectId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;returnByValue&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;returnByValue&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? ReturnByValue { get; set; }</code></pre>
   </div>
 

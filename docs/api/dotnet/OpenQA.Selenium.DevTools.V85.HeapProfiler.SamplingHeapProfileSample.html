@@ -150,7 +150,7 @@ Class SamplingHeapProfileSample  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_DevTools_V85_HeapProfiler_SamplingHeapProfileSample_NodeId" data-uid="OpenQA.Selenium.DevTools.V85.HeapProfiler.SamplingHeapProfileSample.NodeId">
   NodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/SamplingHeapProfileSample.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/SamplingHeapProfileSample.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Id of the corresponding profile tree node.</p>
@@ -158,7 +158,7 @@ Class SamplingHeapProfileSample  <a class="header-action link-secondary" title="
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeId&quot;)]
 public long NodeId { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public long NodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_HeapProfiler_SamplingHeapProfileSample_Ordinal" data-uid="OpenQA.Selenium.DevTools.V85.HeapProfiler.SamplingHeapProfileSample.Ordinal">
   Ordinal
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/SamplingHeapProfileSample.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/SamplingHeapProfileSample.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Time-ordered sample ordinal number. It is unique across all profiles retrieved
@@ -192,7 +192,7 @@ between startSampling and stopSampling.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;ordinal&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;ordinal&quot;)]
 public double Ordinal { get; set; }</code></pre>
   </div>
 
@@ -225,7 +225,7 @@ public double Ordinal { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;size&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;size&quot;)]
 public double Size { get; set; }</code></pre>
   </div>
 

@@ -378,7 +378,7 @@ WebDriver implementation</p>
 
   <h3 id="OpenQA_Selenium_Remote_HttpCommandExecutor_Dispose" data-uid="OpenQA.Selenium.Remote.HttpCommandExecutor.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Remote/HttpCommandExecutor.cs/#L344"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Remote/HttpCommandExecutor.cs/#L351"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Releases all resources used by the <a class="xref" href="OpenQA.Selenium.Remote.HttpCommandExecutor.html">HttpCommandExecutor</a>.</p>
@@ -405,7 +405,7 @@ WebDriver implementation</p>
 
   <h3 id="OpenQA_Selenium_Remote_HttpCommandExecutor_Dispose_System_Boolean_" data-uid="OpenQA.Selenium.Remote.HttpCommandExecutor.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Remote/HttpCommandExecutor.cs/#L355"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Remote/HttpCommandExecutor.cs/#L362"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Releases the unmanaged resources used by the <a class="xref" href="OpenQA.Selenium.Remote.HttpCommandExecutor.html">HttpCommandExecutor</a> and
@@ -443,7 +443,7 @@ optionally releases the managed resources.</p>
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Remote/HttpCommandExecutor.cs/#L160"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Executes a command</p>
+  <div class="markdown level1 summary"><p>Executes a command.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -454,14 +454,53 @@ optionally releases the managed resources.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>commandToExecute</code> <a class="xref" href="OpenQA.Selenium.Command.html">Command</a></dt>
-    <dd><p>The command you wish to execute</p>
+    <dd><p>The command you wish to execute.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="OpenQA.Selenium.Response.html">Response</a></dt>
-    <dd><p>A response from the browser</p>
+    <dd><p>A response from the browser.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Remote_HttpCommandExecutor_ExecuteAsync_" data-uid="OpenQA.Selenium.Remote.HttpCommandExecutor.ExecuteAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_Remote_HttpCommandExecutor_ExecuteAsync_OpenQA_Selenium_Command_" data-uid="OpenQA.Selenium.Remote.HttpCommandExecutor.ExecuteAsync(OpenQA.Selenium.Command)">
+  ExecuteAsync(Command)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Remote/HttpCommandExecutor.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes a command as an asynchronous task.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;Response&gt; ExecuteAsync(Command commandToExecute)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>commandToExecute</code> <a class="xref" href="OpenQA.Selenium.Command.html">Command</a></dt>
+    <dd><p>The command you wish to execute.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.Response.html">Response</a>&gt;</dt>
+    <dd><p>A task object representing the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -479,7 +518,7 @@ optionally releases the managed resources.</p>
 
   <h3 id="OpenQA_Selenium_Remote_HttpCommandExecutor_OnSendingRemoteHttpRequest_OpenQA_Selenium_Remote_SendingRemoteHttpRequestEventArgs_" data-uid="OpenQA.Selenium.Remote.HttpCommandExecutor.OnSendingRemoteHttpRequest(OpenQA.Selenium.Remote.SendingRemoteHttpRequestEventArgs)">
   OnSendingRemoteHttpRequest(SendingRemoteHttpRequestEventArgs)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Remote/HttpCommandExecutor.cs/#L214"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Remote/HttpCommandExecutor.cs/#L224"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Remote.HttpCommandExecutor.html#OpenQA_Selenium_Remote_HttpCommandExecutor_SendingRemoteHttpRequest">SendingRemoteHttpRequest</a> event.</p>

@@ -150,7 +150,7 @@ Class CSSMedia  <a class="header-action link-secondary" title="View source" href
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_CSSMedia_MediaList" data-uid="OpenQA.Selenium.DevTools.V85.CSS.CSSMedia.MediaList">
   MediaList
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSMedia.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSMedia.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Array of media queries.</p>
@@ -158,7 +158,8 @@ Class CSSMedia  <a class="header-action link-secondary" title="View source" href
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;mediaList&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;mediaList&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public MediaQuery[] MediaList { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public MediaQuery[] MediaList { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_CSSMedia_Range" data-uid="OpenQA.Selenium.DevTools.V85.CSS.CSSMedia.Range">
   Range
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSMedia.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSMedia.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The associated rule (@media or @import) header range in the enclosing stylesheet (if
@@ -192,7 +193,8 @@ available).</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;range&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;range&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public SourceRange Range { get; set; }</code></pre>
   </div>
 
@@ -217,7 +219,7 @@ public SourceRange Range { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_CSSMedia_Source" data-uid="OpenQA.Selenium.DevTools.V85.CSS.CSSMedia.Source">
   Source
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSMedia.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSMedia.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Source of the media query: &quot;mediaRule&quot; if specified by a @media rule, &quot;importRule&quot; if
@@ -228,7 +230,7 @@ stylesheet's STYLE tag.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;source&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;source&quot;)]
 public CSSMediaSourceValues Source { get; set; }</code></pre>
   </div>
 
@@ -253,7 +255,7 @@ public CSSMediaSourceValues Source { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_CSSMedia_SourceURL" data-uid="OpenQA.Selenium.DevTools.V85.CSS.CSSMedia.SourceURL">
   SourceURL
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSMedia.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSMedia.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>URL of the document containing the media query description.</p>
@@ -261,7 +263,8 @@ public CSSMediaSourceValues Source { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;sourceURL&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sourceURL&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string SourceURL { get; set; }</code></pre>
   </div>
 
@@ -286,7 +289,7 @@ public string SourceURL { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_CSSMedia_StyleSheetId" data-uid="OpenQA.Selenium.DevTools.V85.CSS.CSSMedia.StyleSheetId">
   StyleSheetId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSMedia.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSMedia.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Identifier of the stylesheet containing this object (if exists).</p>
@@ -294,7 +297,8 @@ public string SourceURL { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;styleSheetId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;styleSheetId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string StyleSheetId { get; set; }</code></pre>
   </div>
 
@@ -327,7 +331,7 @@ public string StyleSheetId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;text&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;text&quot;)]
 public string Text { get; set; }</code></pre>
   </div>
 

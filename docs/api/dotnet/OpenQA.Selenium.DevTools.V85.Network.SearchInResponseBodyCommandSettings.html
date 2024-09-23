@@ -156,7 +156,7 @@ Class SearchInResponseBodyCommandSettings  <a class="header-action link-secondar
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_SearchInResponseBodyCommandSettings_CaseSensitive" data-uid="OpenQA.Selenium.DevTools.V85.Network.SearchInResponseBodyCommandSettings.CaseSensitive">
   CaseSensitive
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/SearchInResponseBodyCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/SearchInResponseBodyCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If true, search is case sensitive.</p>
@@ -164,7 +164,8 @@ Class SearchInResponseBodyCommandSettings  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;caseSensitive&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;caseSensitive&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? CaseSensitive { get; set; }</code></pre>
   </div>
 
@@ -222,7 +223,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_SearchInResponseBodyCommandSettings_IsRegex" data-uid="OpenQA.Selenium.DevTools.V85.Network.SearchInResponseBodyCommandSettings.IsRegex">
   IsRegex
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/SearchInResponseBodyCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/SearchInResponseBodyCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If true, treats string parameter as regex.</p>
@@ -230,7 +231,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;isRegex&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;isRegex&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IsRegex { get; set; }</code></pre>
   </div>
 
@@ -255,7 +257,7 @@ public bool? IsRegex { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_SearchInResponseBodyCommandSettings_Query" data-uid="OpenQA.Selenium.DevTools.V85.Network.SearchInResponseBodyCommandSettings.Query">
   Query
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/SearchInResponseBodyCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/SearchInResponseBodyCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>String to search for.</p>
@@ -263,7 +265,7 @@ public bool? IsRegex { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;query&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;query&quot;)]
 public string Query { get; set; }</code></pre>
   </div>
 
@@ -296,7 +298,7 @@ public string Query { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;requestId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;requestId&quot;)]
 public string RequestId { get; set; }</code></pre>
   </div>
 

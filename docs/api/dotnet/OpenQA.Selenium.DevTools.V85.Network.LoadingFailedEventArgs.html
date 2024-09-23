@@ -154,7 +154,7 @@ Class LoadingFailedEventArgs  <a class="header-action link-secondary" title="Vie
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_LoadingFailedEventArgs_BlockedReason" data-uid="OpenQA.Selenium.DevTools.V85.Network.LoadingFailedEventArgs.BlockedReason">
   BlockedReason
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFailedEventArgs.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFailedEventArgs.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The reason why loading was blocked, if any.</p>
@@ -162,7 +162,8 @@ Class LoadingFailedEventArgs  <a class="header-action link-secondary" title="Vie
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;blockedReason&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;blockedReason&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public BlockedReason? BlockedReason { get; set; }</code></pre>
   </div>
 
@@ -187,7 +188,7 @@ public BlockedReason? BlockedReason { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_LoadingFailedEventArgs_Canceled" data-uid="OpenQA.Selenium.DevTools.V85.Network.LoadingFailedEventArgs.Canceled">
   Canceled
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFailedEventArgs.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFailedEventArgs.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>True if loading was canceled.</p>
@@ -195,7 +196,8 @@ public BlockedReason? BlockedReason { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;canceled&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;canceled&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? Canceled { get; set; }</code></pre>
   </div>
 
@@ -220,7 +222,7 @@ public bool? Canceled { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_LoadingFailedEventArgs_ErrorText" data-uid="OpenQA.Selenium.DevTools.V85.Network.LoadingFailedEventArgs.ErrorText">
   ErrorText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFailedEventArgs.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFailedEventArgs.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>User friendly error message.</p>
@@ -228,7 +230,7 @@ public bool? Canceled { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;errorText&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;errorText&quot;)]
 public string ErrorText { get; set; }</code></pre>
   </div>
 
@@ -261,7 +263,7 @@ public string ErrorText { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;requestId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;requestId&quot;)]
 public string RequestId { get; set; }</code></pre>
   </div>
 
@@ -286,7 +288,7 @@ public string RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_LoadingFailedEventArgs_Timestamp" data-uid="OpenQA.Selenium.DevTools.V85.Network.LoadingFailedEventArgs.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFailedEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFailedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Timestamp.</p>
@@ -294,7 +296,7 @@ public string RequestId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;timestamp&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;timestamp&quot;)]
 public double Timestamp { get; set; }</code></pre>
   </div>
 
@@ -319,7 +321,7 @@ public double Timestamp { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_LoadingFailedEventArgs_Type" data-uid="OpenQA.Selenium.DevTools.V85.Network.LoadingFailedEventArgs.Type">
   Type
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFailedEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFailedEventArgs.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Resource type.</p>
@@ -327,7 +329,7 @@ public double Timestamp { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public ResourceType Type { get; set; }</code></pre>
   </div>
 

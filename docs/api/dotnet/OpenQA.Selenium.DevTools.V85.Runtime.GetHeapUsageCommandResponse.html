@@ -165,7 +165,7 @@ It is the total usage of the corresponding isolate not scoped to a particular Ru
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_GetHeapUsageCommandResponse_TotalSize" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.GetHeapUsageCommandResponse.TotalSize">
   TotalSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/GetHeapUsageCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/GetHeapUsageCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Allocated heap size in bytes.</p>
@@ -173,7 +173,7 @@ It is the total usage of the corresponding isolate not scoped to a particular Ru
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;totalSize&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;totalSize&quot;)]
 public double TotalSize { get; set; }</code></pre>
   </div>
 
@@ -206,7 +206,7 @@ public double TotalSize { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;usedSize&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;usedSize&quot;)]
 public double UsedSize { get; set; }</code></pre>
   </div>
 

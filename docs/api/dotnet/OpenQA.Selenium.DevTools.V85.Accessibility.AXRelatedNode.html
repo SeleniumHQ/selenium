@@ -158,7 +158,7 @@ Class AXRelatedNode  <a class="header-action link-secondary" title="View source"
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;backendDOMNodeId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;backendDOMNodeId&quot;)]
 public long BackendDOMNodeId { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public long BackendDOMNodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Accessibility_AXRelatedNode_Idref" data-uid="OpenQA.Selenium.DevTools.V85.Accessibility.AXRelatedNode.Idref">
   Idref
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Accessibility/AXRelatedNode.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Accessibility/AXRelatedNode.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The IDRef value provided, if any.</p>
@@ -191,7 +191,8 @@ public long BackendDOMNodeId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;idref&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;idref&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Idref { get; set; }</code></pre>
   </div>
 
@@ -216,7 +217,7 @@ public string Idref { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Accessibility_AXRelatedNode_Text" data-uid="OpenQA.Selenium.DevTools.V85.Accessibility.AXRelatedNode.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Accessibility/AXRelatedNode.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Accessibility/AXRelatedNode.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The text alternative of this node in the current context.</p>
@@ -224,7 +225,8 @@ public string Idref { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;text&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;text&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Text { get; set; }</code></pre>
   </div>
 

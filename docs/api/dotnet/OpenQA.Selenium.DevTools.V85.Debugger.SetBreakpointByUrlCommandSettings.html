@@ -159,7 +159,7 @@ command is issued, all existing parsed scripts will have breakpoints resolved an
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetBreakpointByUrlCommandSettings_ColumnNumber" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetBreakpointByUrlCommandSettings.ColumnNumber">
   ColumnNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointByUrlCommand.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointByUrlCommand.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Offset in the line to set breakpoint at.</p>
@@ -167,7 +167,8 @@ command is issued, all existing parsed scripts will have breakpoints resolved an
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;columnNumber&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;columnNumber&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ColumnNumber { get; set; }</code></pre>
   </div>
 
@@ -225,7 +226,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetBreakpointByUrlCommandSettings_Condition" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetBreakpointByUrlCommandSettings.Condition">
   Condition
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointByUrlCommand.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointByUrlCommand.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Expression to use as a breakpoint condition. When specified, debugger will only stop on the
@@ -234,7 +235,8 @@ breakpoint if this expression evaluates to true.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;condition&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;condition&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Condition { get; set; }</code></pre>
   </div>
 
@@ -267,7 +269,7 @@ public string Condition { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;lineNumber&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;lineNumber&quot;)]
 public long LineNumber { get; set; }</code></pre>
   </div>
 
@@ -292,7 +294,7 @@ public long LineNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetBreakpointByUrlCommandSettings_ScriptHash" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetBreakpointByUrlCommandSettings.ScriptHash">
   ScriptHash
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointByUrlCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointByUrlCommand.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Script hash of the resources to set breakpoint on.</p>
@@ -300,7 +302,8 @@ public long LineNumber { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scriptHash&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scriptHash&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ScriptHash { get; set; }</code></pre>
   </div>
 
@@ -325,7 +328,7 @@ public string ScriptHash { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetBreakpointByUrlCommandSettings_Url" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetBreakpointByUrlCommandSettings.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointByUrlCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointByUrlCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>URL of the resources to set breakpoint on.</p>
@@ -333,7 +336,8 @@ public string ScriptHash { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;url&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Url { get; set; }</code></pre>
   </div>
 
@@ -358,7 +362,7 @@ public string Url { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetBreakpointByUrlCommandSettings_UrlRegex" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetBreakpointByUrlCommandSettings.UrlRegex">
   UrlRegex
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointByUrlCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetBreakpointByUrlCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Regex pattern for the URLs of the resources to set breakpoints on. Either <code>url</code> or
@@ -367,7 +371,8 @@ public string Url { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;urlRegex&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;urlRegex&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string UrlRegex { get; set; }</code></pre>
   </div>
 

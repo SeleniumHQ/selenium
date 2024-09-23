@@ -150,7 +150,7 @@ Class ExecutionContextDescription  <a class="header-action link-secondary" title
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ExecutionContextDescription_AuxData" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ExecutionContextDescription.AuxData">
   AuxData
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExecutionContextDescription.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExecutionContextDescription.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Embedder-specific auxiliary data.</p>
@@ -158,7 +158,8 @@ Class ExecutionContextDescription  <a class="header-action link-secondary" title
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;auxData&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;auxData&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public object AuxData { get; set; }</code></pre>
   </div>
 
@@ -192,7 +193,7 @@ script evaluation should be performed.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;id&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
 public long Id { get; set; }</code></pre>
   </div>
 
@@ -217,7 +218,7 @@ public long Id { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ExecutionContextDescription_Name" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ExecutionContextDescription.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExecutionContextDescription.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExecutionContextDescription.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Human readable name describing given context.</p>
@@ -225,7 +226,7 @@ public long Id { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;name&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
 public string Name { get; set; }</code></pre>
   </div>
 
@@ -250,7 +251,7 @@ public string Name { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ExecutionContextDescription_Origin" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ExecutionContextDescription.Origin">
   Origin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExecutionContextDescription.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ExecutionContextDescription.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Execution context origin.</p>
@@ -258,7 +259,7 @@ public string Name { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;origin&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;origin&quot;)]
 public string Origin { get; set; }</code></pre>
   </div>
 

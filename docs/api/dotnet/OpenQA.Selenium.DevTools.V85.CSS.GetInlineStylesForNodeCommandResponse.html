@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_CSS_GetInlineStylesForNodeCommandResponse" data-uid="OpenQA.Selenium.DevTools.V85.CSS.GetInlineStylesForNodeCommandResponse" class="text-break">
-Class GetInlineStylesForNodeCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/GetInlineStylesForNodeCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
+Class GetInlineStylesForNodeCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/GetInlineStylesForNodeCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -165,7 +165,7 @@ attributes) for a DOM node identified by <code>nodeId</code>.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_GetInlineStylesForNodeCommandResponse_AttributesStyle" data-uid="OpenQA.Selenium.DevTools.V85.CSS.GetInlineStylesForNodeCommandResponse.AttributesStyle">
   AttributesStyle
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/GetInlineStylesForNodeCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/GetInlineStylesForNodeCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Attribute-defined element style (e.g. resulting from &quot;width=20 height=100%&quot;).</p>
@@ -173,7 +173,8 @@ attributes) for a DOM node identified by <code>nodeId</code>.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;attributesStyle&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;attributesStyle&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public CSSStyle AttributesStyle { get; set; }</code></pre>
   </div>
 
@@ -198,7 +199,7 @@ public CSSStyle AttributesStyle { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_GetInlineStylesForNodeCommandResponse_InlineStyle" data-uid="OpenQA.Selenium.DevTools.V85.CSS.GetInlineStylesForNodeCommandResponse.InlineStyle">
   InlineStyle
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/GetInlineStylesForNodeCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/GetInlineStylesForNodeCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Inline style for the specified DOM node.</p>
@@ -206,7 +207,8 @@ public CSSStyle AttributesStyle { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;inlineStyle&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;inlineStyle&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public CSSStyle InlineStyle { get; set; }</code></pre>
   </div>
 
@@ -231,7 +233,7 @@ public CSSStyle InlineStyle { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/GetInlineStylesForNodeCommand.cs/#L38" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/GetInlineStylesForNodeCommand.cs/#L39" class="edit-link">Edit this page</a>
         </div>
 
 

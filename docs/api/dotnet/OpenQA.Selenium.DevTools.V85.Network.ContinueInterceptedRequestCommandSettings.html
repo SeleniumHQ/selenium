@@ -160,7 +160,7 @@ Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failReques
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ContinueInterceptedRequestCommandSettings_AuthChallengeResponse" data-uid="OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandSettings.AuthChallengeResponse">
   AuthChallengeResponse
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L105"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Response to a requestIntercepted with an authChallenge. Must not be set otherwise.</p>
@@ -168,7 +168,8 @@ Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failReques
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;authChallengeResponse&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;authChallengeResponse&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public AuthChallengeResponse AuthChallengeResponse { get; set; }</code></pre>
   </div>
 
@@ -226,7 +227,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ContinueInterceptedRequestCommandSettings_ErrorReason" data-uid="OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandSettings.ErrorReason">
   ErrorReason
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set this causes the request to fail with the given reason. Passing <code>Aborted</code> for requests
@@ -236,7 +237,8 @@ to an authChallenge.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;errorReason&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;errorReason&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ErrorReason? ErrorReason { get; set; }</code></pre>
   </div>
 
@@ -261,7 +263,7 @@ public ErrorReason? ErrorReason { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ContinueInterceptedRequestCommandSettings_Headers" data-uid="OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandSettings.Headers">
   Headers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set this allows the request headers to be changed. Must not be set in response to an
@@ -270,7 +272,8 @@ authChallenge.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;headers&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;headers&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Headers Headers { get; set; }</code></pre>
   </div>
 
@@ -303,7 +306,7 @@ public Headers Headers { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;interceptionId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;interceptionId&quot;)]
 public string InterceptionId { get; set; }</code></pre>
   </div>
 
@@ -328,7 +331,7 @@ public string InterceptionId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ContinueInterceptedRequestCommandSettings_Method" data-uid="OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandSettings.Method">
   Method
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set this allows the request method to be overridden. Must not be set in response to an
@@ -337,7 +340,8 @@ authChallenge.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;method&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;method&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Method { get; set; }</code></pre>
   </div>
 
@@ -362,7 +366,7 @@ public string Method { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ContinueInterceptedRequestCommandSettings_PostData" data-uid="OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandSettings.PostData">
   PostData
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set this allows postData to be set. Must not be set in response to an authChallenge.</p>
@@ -370,7 +374,8 @@ public string Method { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;postData&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;postData&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string PostData { get; set; }</code></pre>
   </div>
 
@@ -395,7 +400,7 @@ public string PostData { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ContinueInterceptedRequestCommandSettings_RawResponse" data-uid="OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandSettings.RawResponse">
   RawResponse
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set the requests completes using with the provided base64 encoded raw response, including
@@ -404,7 +409,8 @@ HTTP status line and headers etc... Must not be set in response to an authChalle
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;rawResponse&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;rawResponse&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string RawResponse { get; set; }</code></pre>
   </div>
 
@@ -429,7 +435,7 @@ public string RawResponse { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_ContinueInterceptedRequestCommandSettings_Url" data-uid="OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandSettings.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/ContinueInterceptedRequestCommand.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If set the request url will be modified in a way that's not observable by page. Must not be
@@ -438,7 +444,8 @@ set in response to an authChallenge.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;url&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Url { get; set; }</code></pre>
   </div>
 

@@ -150,7 +150,7 @@ Class InstallabilityError  <a class="header-action link-secondary" title="View s
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_InstallabilityError_ErrorArguments" data-uid="OpenQA.Selenium.DevTools.V85.Page.InstallabilityError.ErrorArguments">
   ErrorArguments
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/InstallabilityError.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/InstallabilityError.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The list of error arguments (e.g. {name:'minimum-icon-size-in-pixels', value:'64'}).</p>
@@ -158,7 +158,7 @@ Class InstallabilityError  <a class="header-action link-secondary" title="View s
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;errorArguments&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;errorArguments&quot;)]
 public InstallabilityErrorArgument[] ErrorArguments { get; set; }</code></pre>
   </div>
 
@@ -191,7 +191,7 @@ public InstallabilityErrorArgument[] ErrorArguments { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;errorId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;errorId&quot;)]
 public string ErrorId { get; set; }</code></pre>
   </div>
 

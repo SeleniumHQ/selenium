@@ -156,7 +156,7 @@ Deprecated, use Fetch.requestPaused instead.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_RequestInterceptedEventArgs_AuthChallenge" data-uid="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.AuthChallenge">
   AuthChallenge
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L91"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Details of the Authorization Challenge encountered. If this is set then
@@ -165,7 +165,8 @@ continueInterceptedRequest must contain an authChallengeResponse.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;authChallenge&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;authChallenge&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public AuthChallenge AuthChallenge { get; set; }</code></pre>
   </div>
 
@@ -190,7 +191,7 @@ public AuthChallenge AuthChallenge { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_RequestInterceptedEventArgs_FrameId" data-uid="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.FrameId">
   FrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The id of the frame that initiated the request.</p>
@@ -198,7 +199,7 @@ public AuthChallenge AuthChallenge { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;frameId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;frameId&quot;)]
 public string FrameId { get; set; }</code></pre>
   </div>
 
@@ -233,7 +234,7 @@ Likewise if HTTP authentication is needed then the same fetch id will be used.</
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;interceptionId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;interceptionId&quot;)]
 public string InterceptionId { get; set; }</code></pre>
   </div>
 
@@ -258,7 +259,7 @@ public string InterceptionId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_RequestInterceptedEventArgs_IsDownload" data-uid="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.IsDownload">
   IsDownload
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Set if the request is a navigation that will result in a download.
@@ -267,7 +268,8 @@ Only present after response is received from the server (i.e. HeadersReceived st
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;isDownload&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;isDownload&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? IsDownload { get; set; }</code></pre>
   </div>
 
@@ -292,7 +294,7 @@ public bool? IsDownload { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_RequestInterceptedEventArgs_IsNavigationRequest" data-uid="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.IsNavigationRequest">
   IsNavigationRequest
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether this is a navigation request, which can abort the navigation completely.</p>
@@ -300,7 +302,7 @@ public bool? IsDownload { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;isNavigationRequest&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;isNavigationRequest&quot;)]
 public bool IsNavigationRequest { get; set; }</code></pre>
   </div>
 
@@ -325,7 +327,7 @@ public bool IsNavigationRequest { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_RequestInterceptedEventArgs_RedirectUrl" data-uid="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.RedirectUrl">
   RedirectUrl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Redirect location, only sent if a redirect was intercepted.</p>
@@ -333,7 +335,8 @@ public bool IsNavigationRequest { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;redirectUrl&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;redirectUrl&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string RedirectUrl { get; set; }</code></pre>
   </div>
 
@@ -358,7 +361,7 @@ public string RedirectUrl { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_RequestInterceptedEventArgs_Request" data-uid="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.Request">
   Request
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the request</p>
@@ -366,7 +369,7 @@ public string RedirectUrl { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;request&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;request&quot;)]
 public Request Request { get; set; }</code></pre>
   </div>
 
@@ -391,7 +394,7 @@ public Request Request { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_RequestInterceptedEventArgs_RequestId" data-uid="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.RequestId">
   RequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L135"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If the intercepted request had a corresponding requestWillBeSent event fired for it, then
@@ -400,7 +403,8 @@ this requestId will be the same as the requestId present in the requestWillBeSen
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;requestId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;requestId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string RequestId { get; set; }</code></pre>
   </div>
 
@@ -425,7 +429,7 @@ public string RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_RequestInterceptedEventArgs_ResourceType" data-uid="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.ResourceType">
   ResourceType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the requested resource will be used.</p>
@@ -433,7 +437,7 @@ public string RequestId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;resourceType&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;resourceType&quot;)]
 public ResourceType ResourceType { get; set; }</code></pre>
   </div>
 
@@ -458,7 +462,7 @@ public ResourceType ResourceType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_RequestInterceptedEventArgs_ResponseErrorReason" data-uid="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.ResponseErrorReason">
   ResponseErrorReason
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L102"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Response error if intercepted at response stage or if redirect occurred while intercepting
@@ -467,7 +471,8 @@ request.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseErrorReason&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseErrorReason&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ErrorReason? ResponseErrorReason { get; set; }</code></pre>
   </div>
 
@@ -492,7 +497,7 @@ public ErrorReason? ResponseErrorReason { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_RequestInterceptedEventArgs_ResponseHeaders" data-uid="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.ResponseHeaders">
   ResponseHeaders
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L124"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Response headers if intercepted at the response stage or if redirect occurred while
@@ -501,7 +506,8 @@ intercepting request or auth retry occurred.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseHeaders&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseHeaders&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Headers ResponseHeaders { get; set; }</code></pre>
   </div>
 
@@ -526,7 +532,7 @@ public Headers ResponseHeaders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_RequestInterceptedEventArgs_ResponseStatusCode" data-uid="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.ResponseStatusCode">
   ResponseStatusCode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/RequestInterceptedEventArgs.cs/#L113"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Response code if intercepted at response stage or if redirect occurred while intercepting
@@ -535,7 +541,8 @@ request or auth retry occurred.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseStatusCode&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseStatusCode&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ResponseStatusCode { get; set; }</code></pre>
   </div>
 

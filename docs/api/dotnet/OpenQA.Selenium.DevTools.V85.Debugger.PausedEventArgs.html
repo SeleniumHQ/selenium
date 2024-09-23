@@ -154,7 +154,7 @@ Class PausedEventArgs  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_PausedEventArgs_AsyncCallStackTraceId" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.PausedEventArgs.AsyncCallStackTraceId">
   AsyncCallStackTraceId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Never present, will be removed.</p>
@@ -162,7 +162,8 @@ Class PausedEventArgs  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;asyncCallStackTraceId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;asyncCallStackTraceId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StackTraceId AsyncCallStackTraceId { get; set; }</code></pre>
   </div>
 
@@ -187,7 +188,7 @@ public StackTraceId AsyncCallStackTraceId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_PausedEventArgs_AsyncStackTrace" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.PausedEventArgs.AsyncStackTrace">
   AsyncStackTrace
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Async stack trace, if any.</p>
@@ -195,7 +196,8 @@ public StackTraceId AsyncCallStackTraceId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;asyncStackTrace&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;asyncStackTrace&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StackTrace AsyncStackTrace { get; set; }</code></pre>
   </div>
 
@@ -220,7 +222,7 @@ public StackTrace AsyncStackTrace { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_PausedEventArgs_AsyncStackTraceId" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.PausedEventArgs.AsyncStackTraceId">
   AsyncStackTraceId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Async stack trace, if any.</p>
@@ -228,7 +230,8 @@ public StackTrace AsyncStackTrace { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;asyncStackTraceId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;asyncStackTraceId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StackTraceId AsyncStackTraceId { get; set; }</code></pre>
   </div>
 
@@ -261,7 +264,7 @@ public StackTraceId AsyncStackTraceId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;callFrames&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;callFrames&quot;)]
 public CallFrame[] CallFrames { get; set; }</code></pre>
   </div>
 
@@ -286,7 +289,7 @@ public CallFrame[] CallFrames { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_PausedEventArgs_Data" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.PausedEventArgs.Data">
   Data
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Object containing break-specific auxiliary properties.</p>
@@ -294,7 +297,8 @@ public CallFrame[] CallFrames { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;data&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;data&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public object Data { get; set; }</code></pre>
   </div>
 
@@ -319,7 +323,7 @@ public object Data { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_PausedEventArgs_HitBreakpoints" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.PausedEventArgs.HitBreakpoints">
   HitBreakpoints
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Hit breakpoints IDs</p>
@@ -327,7 +331,8 @@ public object Data { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;hitBreakpoints&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;hitBreakpoints&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string[] HitBreakpoints { get; set; }</code></pre>
   </div>
 
@@ -352,7 +357,7 @@ public string[] HitBreakpoints { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_PausedEventArgs_Reason" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.PausedEventArgs.Reason">
   Reason
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/PausedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Pause reason.</p>
@@ -360,7 +365,7 @@ public string[] HitBreakpoints { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;reason&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;reason&quot;)]
 public string Reason { get; set; }</code></pre>
   </div>
 

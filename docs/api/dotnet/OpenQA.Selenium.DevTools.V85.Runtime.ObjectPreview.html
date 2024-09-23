@@ -150,7 +150,7 @@ Class ObjectPreview  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ObjectPreview_Description" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ObjectPreview.Description">
   Description
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ObjectPreview.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ObjectPreview.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>String representation of the object.</p>
@@ -158,7 +158,8 @@ Class ObjectPreview  <a class="header-action link-secondary" title="View source"
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;description&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;description&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Description { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public string Description { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ObjectPreview_Entries" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ObjectPreview.Entries">
   Entries
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ObjectPreview.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ObjectPreview.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>List of the entries. Specified for <code>map</code> and <code>set</code> subtype values only.</p>
@@ -191,7 +192,8 @@ public string Description { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;entries&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;entries&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public EntryPreview[] Entries { get; set; }</code></pre>
   </div>
 
@@ -216,7 +218,7 @@ public EntryPreview[] Entries { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ObjectPreview_Overflow" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ObjectPreview.Overflow">
   Overflow
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ObjectPreview.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ObjectPreview.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>True iff some of the properties or entries of the original object did not fit.</p>
@@ -224,7 +226,7 @@ public EntryPreview[] Entries { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;overflow&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;overflow&quot;)]
 public bool Overflow { get; set; }</code></pre>
   </div>
 
@@ -249,7 +251,7 @@ public bool Overflow { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ObjectPreview_Properties" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ObjectPreview.Properties">
   Properties
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ObjectPreview.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ObjectPreview.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>List of the properties.</p>
@@ -257,7 +259,7 @@ public bool Overflow { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;properties&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;properties&quot;)]
 public PropertyPreview[] Properties { get; set; }</code></pre>
   </div>
 
@@ -282,7 +284,7 @@ public PropertyPreview[] Properties { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_ObjectPreview_Subtype" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.ObjectPreview.Subtype">
   Subtype
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ObjectPreview.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/ObjectPreview.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Object subtype hint. Specified for <code>object</code> type values only.</p>
@@ -290,7 +292,8 @@ public PropertyPreview[] Properties { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;subtype&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;subtype&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ObjectPreviewSubtypeValues? Subtype { get; set; }</code></pre>
   </div>
 
@@ -323,7 +326,7 @@ public ObjectPreviewSubtypeValues? Subtype { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public ObjectPreviewTypeValues Type { get; set; }</code></pre>
   </div>
 

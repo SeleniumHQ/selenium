@@ -157,7 +157,7 @@ mutated manually.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetVariableValueCommandSettings_CallFrameId" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetVariableValueCommandSettings.CallFrameId">
   CallFrameId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetVariableValueCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetVariableValueCommand.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Id of callframe that holds variable.</p>
@@ -165,7 +165,7 @@ mutated manually.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;callFrameId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;callFrameId&quot;)]
 public string CallFrameId { get; set; }</code></pre>
   </div>
 
@@ -223,7 +223,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetVariableValueCommandSettings_NewValue" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetVariableValueCommandSettings.NewValue">
   NewValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetVariableValueCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetVariableValueCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>New variable value.</p>
@@ -231,7 +231,7 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;newValue&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;newValue&quot;)]
 public CallArgument NewValue { get; set; }</code></pre>
   </div>
 
@@ -265,7 +265,7 @@ scope types are allowed. Other scopes could be manipulated manually.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scopeNumber&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scopeNumber&quot;)]
 public long ScopeNumber { get; set; }</code></pre>
   </div>
 
@@ -290,7 +290,7 @@ public long ScopeNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_SetVariableValueCommandSettings_VariableName" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.SetVariableValueCommandSettings.VariableName">
   VariableName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetVariableValueCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/SetVariableValueCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Variable name.</p>
@@ -298,7 +298,7 @@ public long ScopeNumber { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;variableName&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;variableName&quot;)]
 public string VariableName { get; set; }</code></pre>
   </div>
 

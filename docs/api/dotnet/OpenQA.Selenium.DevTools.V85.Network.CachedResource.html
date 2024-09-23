@@ -150,7 +150,7 @@ Class CachedResource  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CachedResource_BodySize" data-uid="OpenQA.Selenium.DevTools.V85.Network.CachedResource.BodySize">
   BodySize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CachedResource.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CachedResource.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Cached response body size.</p>
@@ -158,7 +158,7 @@ Class CachedResource  <a class="header-action link-secondary" title="View source
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;bodySize&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;bodySize&quot;)]
 public double BodySize { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public double BodySize { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CachedResource_Response" data-uid="OpenQA.Selenium.DevTools.V85.Network.CachedResource.Response">
   Response
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CachedResource.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CachedResource.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Cached response data.</p>
@@ -191,7 +191,8 @@ public double BodySize { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;response&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;response&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Response Response { get; set; }</code></pre>
   </div>
 
@@ -216,7 +217,7 @@ public Response Response { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_CachedResource_Type" data-uid="OpenQA.Selenium.DevTools.V85.Network.CachedResource.Type">
   Type
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CachedResource.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/CachedResource.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Type of this resource.</p>
@@ -224,7 +225,7 @@ public Response Response { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;type&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
 public ResourceType Type { get; set; }</code></pre>
   </div>
 
@@ -257,7 +258,7 @@ public ResourceType Type { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;url&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
 public string Url { get; set; }</code></pre>
   </div>
 

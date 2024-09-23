@@ -150,7 +150,7 @@ Class SecurityStateExplanation  <a class="header-action link-secondary" title="V
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_SecurityStateExplanation_Certificate" data-uid="OpenQA.Selenium.DevTools.V85.Security.SecurityStateExplanation.Certificate">
   Certificate
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Page certificate.</p>
@@ -158,7 +158,7 @@ Class SecurityStateExplanation  <a class="header-action link-secondary" title="V
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;certificate&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;certificate&quot;)]
 public string[] Certificate { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public string[] Certificate { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_SecurityStateExplanation_Description" data-uid="OpenQA.Selenium.DevTools.V85.Security.SecurityStateExplanation.Description">
   Description
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Full text explanation of the factor.</p>
@@ -191,7 +191,7 @@ public string[] Certificate { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;description&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;description&quot;)]
 public string Description { get; set; }</code></pre>
   </div>
 
@@ -216,7 +216,7 @@ public string Description { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_SecurityStateExplanation_MixedContentType" data-uid="OpenQA.Selenium.DevTools.V85.Security.SecurityStateExplanation.MixedContentType">
   MixedContentType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The type of mixed content described by the explanation.</p>
@@ -224,7 +224,7 @@ public string Description { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;mixedContentType&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;mixedContentType&quot;)]
 public MixedContentType MixedContentType { get; set; }</code></pre>
   </div>
 
@@ -249,7 +249,7 @@ public MixedContentType MixedContentType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_SecurityStateExplanation_Recommendations" data-uid="OpenQA.Selenium.DevTools.V85.Security.SecurityStateExplanation.Recommendations">
   Recommendations
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Recommendations to fix any issues.</p>
@@ -257,7 +257,8 @@ public MixedContentType MixedContentType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;recommendations&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;recommendations&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string[] Recommendations { get; set; }</code></pre>
   </div>
 
@@ -290,7 +291,7 @@ public string[] Recommendations { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;securityState&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;securityState&quot;)]
 public SecurityState SecurityState { get; set; }</code></pre>
   </div>
 
@@ -315,7 +316,7 @@ public SecurityState SecurityState { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_SecurityStateExplanation_Summary" data-uid="OpenQA.Selenium.DevTools.V85.Security.SecurityStateExplanation.Summary">
   Summary
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Short phrase describing the type of factor.</p>
@@ -323,7 +324,7 @@ public SecurityState SecurityState { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;summary&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;summary&quot;)]
 public string Summary { get; set; }</code></pre>
   </div>
 
@@ -348,7 +349,7 @@ public string Summary { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_SecurityStateExplanation_Title" data-uid="OpenQA.Selenium.DevTools.V85.Security.SecurityStateExplanation.Title">
   Title
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/SecurityStateExplanation.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Title describing the type of factor.</p>
@@ -356,7 +357,7 @@ public string Summary { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;title&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;title&quot;)]
 public string Title { get; set; }</code></pre>
   </div>
 

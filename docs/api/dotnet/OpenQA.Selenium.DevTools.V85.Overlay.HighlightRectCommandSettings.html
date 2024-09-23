@@ -156,7 +156,7 @@ Class HighlightRectCommandSettings  <a class="header-action link-secondary" titl
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightRectCommandSettings_Color" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightRectCommandSettings.Color">
   Color
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightRectCommand.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightRectCommand.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The highlight fill color (default: transparent).</p>
@@ -164,7 +164,8 @@ Class HighlightRectCommandSettings  <a class="header-action link-secondary" titl
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;color&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;color&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RGBA Color { get; set; }</code></pre>
   </div>
 
@@ -222,7 +223,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightRectCommandSettings_Height" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightRectCommandSettings.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightRectCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightRectCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Rectangle height</p>
@@ -230,7 +231,7 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;height&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;height&quot;)]
 public long Height { get; set; }</code></pre>
   </div>
 
@@ -255,7 +256,7 @@ public long Height { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightRectCommandSettings_OutlineColor" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightRectCommandSettings.OutlineColor">
   OutlineColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightRectCommand.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightRectCommand.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The highlight outline color (default: transparent).</p>
@@ -263,7 +264,8 @@ public long Height { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;outlineColor&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;outlineColor&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RGBA OutlineColor { get; set; }</code></pre>
   </div>
 
@@ -288,7 +290,7 @@ public RGBA OutlineColor { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightRectCommandSettings_Width" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightRectCommandSettings.Width">
   Width
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightRectCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightRectCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Rectangle width</p>
@@ -296,7 +298,7 @@ public RGBA OutlineColor { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;width&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;width&quot;)]
 public long Width { get; set; }</code></pre>
   </div>
 
@@ -329,7 +331,7 @@ public long Width { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;x&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;x&quot;)]
 public long X { get; set; }</code></pre>
   </div>
 
@@ -354,7 +356,7 @@ public long X { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Overlay_HighlightRectCommandSettings_Y" data-uid="OpenQA.Selenium.DevTools.V85.Overlay.HighlightRectCommandSettings.Y">
   Y
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightRectCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Overlay/HighlightRectCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Y coordinate</p>
@@ -362,7 +364,7 @@ public long X { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;y&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;y&quot;)]
 public long Y { get; set; }</code></pre>
   </div>
 

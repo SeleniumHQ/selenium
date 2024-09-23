@@ -154,7 +154,7 @@ Class LoadingFinishedEventArgs  <a class="header-action link-secondary" title="V
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_LoadingFinishedEventArgs_EncodedDataLength" data-uid="OpenQA.Selenium.DevTools.V85.Network.LoadingFinishedEventArgs.EncodedDataLength">
   EncodedDataLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFinishedEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFinishedEventArgs.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Total number of bytes received for this request.</p>
@@ -162,7 +162,7 @@ Class LoadingFinishedEventArgs  <a class="header-action link-secondary" title="V
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;encodedDataLength&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;encodedDataLength&quot;)]
 public double EncodedDataLength { get; set; }</code></pre>
   </div>
 
@@ -195,7 +195,7 @@ public double EncodedDataLength { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;requestId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;requestId&quot;)]
 public string RequestId { get; set; }</code></pre>
   </div>
 
@@ -220,7 +220,7 @@ public string RequestId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_LoadingFinishedEventArgs_ShouldReportCorbBlocking" data-uid="OpenQA.Selenium.DevTools.V85.Network.LoadingFinishedEventArgs.ShouldReportCorbBlocking">
   ShouldReportCorbBlocking
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFinishedEventArgs.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFinishedEventArgs.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Set when 1) response was blocked by Cross-Origin Read Blocking and also
@@ -229,7 +229,8 @@ public string RequestId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;shouldReportCorbBlocking&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;shouldReportCorbBlocking&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? ShouldReportCorbBlocking { get; set; }</code></pre>
   </div>
 
@@ -254,7 +255,7 @@ public bool? ShouldReportCorbBlocking { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_LoadingFinishedEventArgs_Timestamp" data-uid="OpenQA.Selenium.DevTools.V85.Network.LoadingFinishedEventArgs.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFinishedEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/LoadingFinishedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Timestamp.</p>
@@ -262,7 +263,7 @@ public bool? ShouldReportCorbBlocking { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;timestamp&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;timestamp&quot;)]
 public double Timestamp { get; set; }</code></pre>
   </div>
 

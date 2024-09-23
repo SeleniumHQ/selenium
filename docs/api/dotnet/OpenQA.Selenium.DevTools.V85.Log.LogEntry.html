@@ -150,7 +150,7 @@ Class LogEntry  <a class="header-action link-secondary" title="View source" href
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Log_LogEntry_Args" data-uid="OpenQA.Selenium.DevTools.V85.Log.LogEntry.Args">
   Args
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Call arguments.</p>
@@ -158,7 +158,8 @@ Class LogEntry  <a class="header-action link-secondary" title="View source" href
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;args&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;args&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public RemoteObject[] Args { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public RemoteObject[] Args { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Log_LogEntry_Level" data-uid="OpenQA.Selenium.DevTools.V85.Log.LogEntry.Level">
   Level
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Log entry severity.</p>
@@ -191,7 +192,7 @@ public RemoteObject[] Args { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;level&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;level&quot;)]
 public LogEntryLevelValues Level { get; set; }</code></pre>
   </div>
 
@@ -216,7 +217,7 @@ public LogEntryLevelValues Level { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Log_LogEntry_LineNumber" data-uid="OpenQA.Selenium.DevTools.V85.Log.LogEntry.LineNumber">
   LineNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Line number in the resource.</p>
@@ -224,7 +225,8 @@ public LogEntryLevelValues Level { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;lineNumber&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;lineNumber&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? LineNumber { get; set; }</code></pre>
   </div>
 
@@ -249,7 +251,7 @@ public long? LineNumber { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Log_LogEntry_NetworkRequestId" data-uid="OpenQA.Selenium.DevTools.V85.Log.LogEntry.NetworkRequestId">
   NetworkRequestId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Identifier of the network request associated with this entry.</p>
@@ -257,7 +259,8 @@ public long? LineNumber { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;networkRequestId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;networkRequestId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string NetworkRequestId { get; set; }</code></pre>
   </div>
 
@@ -290,7 +293,7 @@ public string NetworkRequestId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;source&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;source&quot;)]
 public LogEntrySourceValues Source { get; set; }</code></pre>
   </div>
 
@@ -315,7 +318,7 @@ public LogEntrySourceValues Source { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Log_LogEntry_StackTrace" data-uid="OpenQA.Selenium.DevTools.V85.Log.LogEntry.StackTrace">
   StackTrace
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>JavaScript stack trace.</p>
@@ -323,7 +326,8 @@ public LogEntrySourceValues Source { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;stackTrace&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;stackTrace&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StackTrace StackTrace { get; set; }</code></pre>
   </div>
 
@@ -348,7 +352,7 @@ public StackTrace StackTrace { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Log_LogEntry_Text" data-uid="OpenQA.Selenium.DevTools.V85.Log.LogEntry.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Logged text.</p>
@@ -356,7 +360,7 @@ public StackTrace StackTrace { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;text&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;text&quot;)]
 public string Text { get; set; }</code></pre>
   </div>
 
@@ -381,7 +385,7 @@ public string Text { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Log_LogEntry_Timestamp" data-uid="OpenQA.Selenium.DevTools.V85.Log.LogEntry.Timestamp">
   Timestamp
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Timestamp when this entry was added.</p>
@@ -389,7 +393,7 @@ public string Text { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;timestamp&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;timestamp&quot;)]
 public double Timestamp { get; set; }</code></pre>
   </div>
 
@@ -414,7 +418,7 @@ public double Timestamp { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Log_LogEntry_Url" data-uid="OpenQA.Selenium.DevTools.V85.Log.LogEntry.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>URL of the resource if known.</p>
@@ -422,7 +426,8 @@ public double Timestamp { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;url&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Url { get; set; }</code></pre>
   </div>
 
@@ -447,7 +452,7 @@ public string Url { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Log_LogEntry_WorkerId" data-uid="OpenQA.Selenium.DevTools.V85.Log.LogEntry.WorkerId">
   WorkerId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Log/LogEntry.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Identifier of the worker associated with this entry.</p>
@@ -455,7 +460,8 @@ public string Url { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;workerId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;workerId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string WorkerId { get; set; }</code></pre>
   </div>
 

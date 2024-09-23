@@ -150,7 +150,7 @@ Class FontFamilies  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FontFamilies_Cursive" data-uid="OpenQA.Selenium.DevTools.V85.Page.FontFamilies.Cursive">
   Cursive
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The cursive font-family.</p>
@@ -158,7 +158,8 @@ Class FontFamilies  <a class="header-action link-secondary" title="View source" 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;cursive&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cursive&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Cursive { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public string Cursive { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FontFamilies_Fantasy" data-uid="OpenQA.Selenium.DevTools.V85.Page.FontFamilies.Fantasy">
   Fantasy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The fantasy font-family.</p>
@@ -191,7 +192,8 @@ public string Cursive { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;fantasy&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;fantasy&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Fantasy { get; set; }</code></pre>
   </div>
 
@@ -216,7 +218,7 @@ public string Fantasy { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FontFamilies_Fixed" data-uid="OpenQA.Selenium.DevTools.V85.Page.FontFamilies.Fixed">
   Fixed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The fixed font-family.</p>
@@ -224,7 +226,8 @@ public string Fantasy { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;fixed&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;fixed&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Fixed { get; set; }</code></pre>
   </div>
 
@@ -249,7 +252,7 @@ public string Fixed { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FontFamilies_Pictograph" data-uid="OpenQA.Selenium.DevTools.V85.Page.FontFamilies.Pictograph">
   Pictograph
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The pictograph font-family.</p>
@@ -257,7 +260,8 @@ public string Fixed { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;pictograph&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;pictograph&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Pictograph { get; set; }</code></pre>
   </div>
 
@@ -282,7 +286,7 @@ public string Pictograph { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FontFamilies_SansSerif" data-uid="OpenQA.Selenium.DevTools.V85.Page.FontFamilies.SansSerif">
   SansSerif
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sansSerif font-family.</p>
@@ -290,7 +294,8 @@ public string Pictograph { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;sansSerif&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sansSerif&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string SansSerif { get; set; }</code></pre>
   </div>
 
@@ -315,7 +320,7 @@ public string SansSerif { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Page_FontFamilies_Serif" data-uid="OpenQA.Selenium.DevTools.V85.Page.FontFamilies.Serif">
   Serif
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Page/FontFamilies.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The serif font-family.</p>
@@ -323,7 +328,8 @@ public string SansSerif { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;serif&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;serif&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Serif { get; set; }</code></pre>
   </div>
 
@@ -356,7 +362,8 @@ public string Serif { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;standard&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;standard&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Standard { get; set; }</code></pre>
   </div>
 

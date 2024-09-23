@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_Runtime_RunScriptCommandResponse" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.RunScriptCommandResponse" class="text-break">
-Class RunScriptCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RunScriptCommand.cs/#L102"><i class="bi bi-code-slash"></i></a>
+Class RunScriptCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RunScriptCommand.cs/#L110"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -164,7 +164,7 @@ Class RunScriptCommandResponse  <a class="header-action link-secondary" title="V
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_RunScriptCommandResponse_ExceptionDetails" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.RunScriptCommandResponse.ExceptionDetails">
   ExceptionDetails
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RunScriptCommand.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RunScriptCommand.cs/#L125"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Exception details.</p>
@@ -172,7 +172,8 @@ Class RunScriptCommandResponse  <a class="header-action link-secondary" title="V
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;exceptionDetails&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;exceptionDetails&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
   </div>
 
@@ -197,7 +198,7 @@ public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_RunScriptCommandResponse_Result" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.RunScriptCommandResponse.Result">
   Result
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RunScriptCommand.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RunScriptCommand.cs/#L115"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Run result.</p>
@@ -205,7 +206,7 @@ public ExceptionDetails ExceptionDetails { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;result&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;result&quot;)]
 public RemoteObject Result { get; set; }</code></pre>
   </div>
 
@@ -230,7 +231,7 @@ public RemoteObject Result { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RunScriptCommand.cs/#L102" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/RunScriptCommand.cs/#L110" class="edit-link">Edit this page</a>
         </div>
 
 

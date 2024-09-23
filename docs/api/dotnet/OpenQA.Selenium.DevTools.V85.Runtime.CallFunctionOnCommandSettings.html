@@ -157,7 +157,7 @@ inherited from the target object.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_CallFunctionOnCommandSettings_Arguments" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.CallFunctionOnCommandSettings.Arguments">
   Arguments
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Call arguments. All call arguments must belong to the same JavaScript world as the target
@@ -166,7 +166,8 @@ object.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;arguments&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;arguments&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public CallArgument[] Arguments { get; set; }</code></pre>
   </div>
 
@@ -191,7 +192,7 @@ public CallArgument[] Arguments { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_CallFunctionOnCommandSettings_AwaitPromise" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.CallFunctionOnCommandSettings.AwaitPromise">
   AwaitPromise
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether execution should <code>await</code> for resulting value and return once awaited promise is
@@ -200,7 +201,8 @@ resolved.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;awaitPromise&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;awaitPromise&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? AwaitPromise { get; set; }</code></pre>
   </div>
 
@@ -258,7 +260,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_CallFunctionOnCommandSettings_ExecutionContextId" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.CallFunctionOnCommandSettings.ExecutionContextId">
   ExecutionContextId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L111"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Specifies execution context which global object will be used to call function on. Either
@@ -267,7 +269,8 @@ executionContextId or objectId should be specified.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;executionContextId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;executionContextId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? ExecutionContextId { get; set; }</code></pre>
   </div>
 
@@ -300,7 +303,7 @@ public long? ExecutionContextId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;functionDeclaration&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;functionDeclaration&quot;)]
 public string FunctionDeclaration { get; set; }</code></pre>
   </div>
 
@@ -325,7 +328,7 @@ public string FunctionDeclaration { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_CallFunctionOnCommandSettings_GeneratePreview" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.CallFunctionOnCommandSettings.GeneratePreview">
   GeneratePreview
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether preview should be generated for the result.</p>
@@ -333,7 +336,8 @@ public string FunctionDeclaration { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;generatePreview&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;generatePreview&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? GeneratePreview { get; set; }</code></pre>
   </div>
 
@@ -358,7 +362,7 @@ public bool? GeneratePreview { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_CallFunctionOnCommandSettings_ObjectGroup" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.CallFunctionOnCommandSettings.ObjectGroup">
   ObjectGroup
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L122"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Symbolic group name that can be used to release multiple objects. If objectGroup is not
@@ -367,7 +371,8 @@ specified and objectId is, objectGroup will be inherited from object.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;objectGroup&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;objectGroup&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ObjectGroup { get; set; }</code></pre>
   </div>
 
@@ -392,7 +397,7 @@ public string ObjectGroup { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_CallFunctionOnCommandSettings_ObjectId" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.CallFunctionOnCommandSettings.ObjectId">
   ObjectId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Identifier of the object to call function on. Either objectId or executionContextId should
@@ -401,7 +406,8 @@ be specified.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;objectId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;objectId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ObjectId { get; set; }</code></pre>
   </div>
 
@@ -426,7 +432,7 @@ public string ObjectId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_CallFunctionOnCommandSettings_ReturnByValue" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.CallFunctionOnCommandSettings.ReturnByValue">
   ReturnByValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the result is expected to be a JSON object which should be sent by value.</p>
@@ -434,7 +440,8 @@ public string ObjectId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;returnByValue&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;returnByValue&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? ReturnByValue { get; set; }</code></pre>
   </div>
 
@@ -459,7 +466,7 @@ public bool? ReturnByValue { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_CallFunctionOnCommandSettings_Silent" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.CallFunctionOnCommandSettings.Silent">
   Silent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>In silent mode exceptions thrown during evaluation are not reported and do not pause
@@ -468,7 +475,8 @@ execution. Overrides <code>setPauseOnException</code> state.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;silent&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;silent&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? Silent { get; set; }</code></pre>
   </div>
 
@@ -493,7 +501,7 @@ public bool? Silent { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Runtime_CallFunctionOnCommandSettings_UserGesture" data-uid="OpenQA.Selenium.DevTools.V85.Runtime.CallFunctionOnCommandSettings.UserGesture">
   UserGesture
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Runtime/CallFunctionOnCommand.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether execution should be treated as initiated by user in the UI.</p>
@@ -501,7 +509,8 @@ public bool? Silent { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;userGesture&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;userGesture&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? UserGesture { get; set; }</code></pre>
   </div>
 

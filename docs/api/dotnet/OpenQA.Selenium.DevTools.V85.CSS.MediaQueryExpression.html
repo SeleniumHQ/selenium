@@ -150,7 +150,7 @@ Class MediaQueryExpression  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_MediaQueryExpression_ComputedLength" data-uid="OpenQA.Selenium.DevTools.V85.CSS.MediaQueryExpression.ComputedLength">
   ComputedLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/MediaQueryExpression.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/MediaQueryExpression.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Computed length of media query expression (if applicable).</p>
@@ -158,7 +158,8 @@ Class MediaQueryExpression  <a class="header-action link-secondary" title="View 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;computedLength&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;computedLength&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? ComputedLength { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public double? ComputedLength { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_MediaQueryExpression_Feature" data-uid="OpenQA.Selenium.DevTools.V85.CSS.MediaQueryExpression.Feature">
   Feature
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/MediaQueryExpression.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/MediaQueryExpression.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Media query expression feature.</p>
@@ -191,7 +192,7 @@ public double? ComputedLength { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;feature&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;feature&quot;)]
 public string Feature { get; set; }</code></pre>
   </div>
 
@@ -216,7 +217,7 @@ public string Feature { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_MediaQueryExpression_Unit" data-uid="OpenQA.Selenium.DevTools.V85.CSS.MediaQueryExpression.Unit">
   Unit
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/MediaQueryExpression.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/MediaQueryExpression.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Media query expression units.</p>
@@ -224,7 +225,7 @@ public string Feature { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;unit&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;unit&quot;)]
 public string Unit { get; set; }</code></pre>
   </div>
 
@@ -257,7 +258,7 @@ public string Unit { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;value&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;value&quot;)]
 public double Value { get; set; }</code></pre>
   </div>
 
@@ -282,7 +283,7 @@ public double Value { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_MediaQueryExpression_ValueRange" data-uid="OpenQA.Selenium.DevTools.V85.CSS.MediaQueryExpression.ValueRange">
   ValueRange
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/MediaQueryExpression.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/MediaQueryExpression.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The associated range of the value text in the enclosing stylesheet (if available).</p>
@@ -290,7 +291,8 @@ public double Value { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;valueRange&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;valueRange&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public SourceRange ValueRange { get; set; }</code></pre>
   </div>
 

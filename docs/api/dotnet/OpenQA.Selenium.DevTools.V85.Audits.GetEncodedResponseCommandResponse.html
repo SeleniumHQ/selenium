@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_Audits_GetEncodedResponseCommandResponse" data-uid="OpenQA.Selenium.DevTools.V85.Audits.GetEncodedResponseCommandResponse" class="text-break">
-Class GetEncodedResponseCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/GetEncodedResponseCommand.cs/#L65"><i class="bi bi-code-slash"></i></a>
+Class GetEncodedResponseCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/GetEncodedResponseCommand.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -165,7 +165,7 @@ applies to images.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_GetEncodedResponseCommandResponse_Body" data-uid="OpenQA.Selenium.DevTools.V85.Audits.GetEncodedResponseCommandResponse.Body">
   Body
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/GetEncodedResponseCommand.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/GetEncodedResponseCommand.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The encoded body as a base64 string. Omitted if sizeOnly is true.</p>
@@ -173,7 +173,8 @@ applies to images.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;body&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;body&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Body { get; set; }</code></pre>
   </div>
 
@@ -198,7 +199,7 @@ public string Body { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_GetEncodedResponseCommandResponse_EncodedSize" data-uid="OpenQA.Selenium.DevTools.V85.Audits.GetEncodedResponseCommandResponse.EncodedSize">
   EncodedSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/GetEncodedResponseCommand.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/GetEncodedResponseCommand.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Size after re-encoding.</p>
@@ -206,7 +207,7 @@ public string Body { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;encodedSize&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;encodedSize&quot;)]
 public long EncodedSize { get; set; }</code></pre>
   </div>
 
@@ -231,7 +232,7 @@ public long EncodedSize { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Audits_GetEncodedResponseCommandResponse_OriginalSize" data-uid="OpenQA.Selenium.DevTools.V85.Audits.GetEncodedResponseCommandResponse.OriginalSize">
   OriginalSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/GetEncodedResponseCommand.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/GetEncodedResponseCommand.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Size before re-encoding.</p>
@@ -239,7 +240,7 @@ public long EncodedSize { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;originalSize&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;originalSize&quot;)]
 public long OriginalSize { get; set; }</code></pre>
   </div>
 
@@ -264,7 +265,7 @@ public long OriginalSize { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/GetEncodedResponseCommand.cs/#L65" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Audits/GetEncodedResponseCommand.cs/#L69" class="edit-link">Edit this page</a>
         </div>
 
 

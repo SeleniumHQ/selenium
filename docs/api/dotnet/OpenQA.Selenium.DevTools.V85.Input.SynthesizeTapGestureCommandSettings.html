@@ -189,7 +189,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeTapGestureCommandSettings_Duration" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeTapGestureCommandSettings.Duration">
   Duration
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeTapGestureCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeTapGestureCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Duration between touchdown and touchup events in ms (default: 50).</p>
@@ -197,7 +197,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;duration&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;duration&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? Duration { get; set; }</code></pre>
   </div>
 
@@ -222,7 +223,7 @@ public long? Duration { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeTapGestureCommandSettings_GestureSourceType" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeTapGestureCommandSettings.GestureSourceType">
   GestureSourceType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeTapGestureCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeTapGestureCommand.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Which type of input events to be generated (default: 'default', which queries the platform
@@ -231,7 +232,8 @@ for the preferred input type).</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;gestureSourceType&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;gestureSourceType&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public GestureSourceType? GestureSourceType { get; set; }</code></pre>
   </div>
 
@@ -256,7 +258,7 @@ public GestureSourceType? GestureSourceType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeTapGestureCommandSettings_TapCount" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeTapGestureCommandSettings.TapCount">
   TapCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeTapGestureCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeTapGestureCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Number of times to perform the tap (e.g. 2 for double tap, default: 1).</p>
@@ -264,7 +266,8 @@ public GestureSourceType? GestureSourceType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;tapCount&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;tapCount&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? TapCount { get; set; }</code></pre>
   </div>
 
@@ -297,7 +300,7 @@ public long? TapCount { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;x&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;x&quot;)]
 public double X { get; set; }</code></pre>
   </div>
 
@@ -322,7 +325,7 @@ public double X { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizeTapGestureCommandSettings_Y" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizeTapGestureCommandSettings.Y">
   Y
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeTapGestureCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizeTapGestureCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Y coordinate of the start of the gesture in CSS pixels.</p>
@@ -330,7 +333,7 @@ public double X { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;y&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;y&quot;)]
 public double Y { get; set; }</code></pre>
   </div>
 

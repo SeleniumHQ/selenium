@@ -86,7 +86,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_Security_MixedContentType" data-uid="OpenQA.Selenium.DevTools.V85.Security.MixedContentType" class="text-break">
-Enum MixedContentType  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/MixedContentType.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Enum MixedContentType  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/MixedContentType.cs/#L11"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -100,7 +100,7 @@ Enum MixedContentType  <a class="header-action link-secondary" title="View sourc
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(StringEnumConverter))]
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(JsonEnumMemberConverter&lt;MixedContentType&gt;))]
 public enum MixedContentType</code></pre>
   </div>
 
@@ -134,7 +134,7 @@ OptionallyBlockable = 1</code></dt>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/MixedContentType.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/MixedContentType.cs/#L11" class="edit-link">Edit this page</a>
         </div>
 
 

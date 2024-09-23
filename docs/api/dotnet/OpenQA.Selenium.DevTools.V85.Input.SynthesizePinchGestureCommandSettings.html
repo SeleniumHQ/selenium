@@ -189,7 +189,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizePinchGestureCommandSettings_GestureSourceType" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizePinchGestureCommandSettings.GestureSourceType">
   GestureSourceType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizePinchGestureCommand.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizePinchGestureCommand.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Which type of input events to be generated (default: 'default', which queries the platform
@@ -198,7 +198,8 @@ for the preferred input type).</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;gestureSourceType&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;gestureSourceType&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public GestureSourceType? GestureSourceType { get; set; }</code></pre>
   </div>
 
@@ -223,7 +224,7 @@ public GestureSourceType? GestureSourceType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizePinchGestureCommandSettings_RelativeSpeed" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizePinchGestureCommandSettings.RelativeSpeed">
   RelativeSpeed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizePinchGestureCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizePinchGestureCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Relative pointer speed in pixels per second (default: 800).</p>
@@ -231,7 +232,8 @@ public GestureSourceType? GestureSourceType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;relativeSpeed&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;relativeSpeed&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? RelativeSpeed { get; set; }</code></pre>
   </div>
 
@@ -256,7 +258,7 @@ public long? RelativeSpeed { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizePinchGestureCommandSettings_ScaleFactor" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizePinchGestureCommandSettings.ScaleFactor">
   ScaleFactor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizePinchGestureCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizePinchGestureCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Relative scale factor after zooming (&gt;1.0 zooms in, &lt;1.0 zooms out).</p>
@@ -264,7 +266,7 @@ public long? RelativeSpeed { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scaleFactor&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scaleFactor&quot;)]
 public double ScaleFactor { get; set; }</code></pre>
   </div>
 
@@ -297,7 +299,7 @@ public double ScaleFactor { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;x&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;x&quot;)]
 public double X { get; set; }</code></pre>
   </div>
 
@@ -322,7 +324,7 @@ public double X { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Input_SynthesizePinchGestureCommandSettings_Y" data-uid="OpenQA.Selenium.DevTools.V85.Input.SynthesizePinchGestureCommandSettings.Y">
   Y
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizePinchGestureCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Input/SynthesizePinchGestureCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Y coordinate of the start of the gesture in CSS pixels.</p>
@@ -330,7 +332,7 @@ public double X { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;y&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;y&quot;)]
 public double Y { get; set; }</code></pre>
   </div>
 

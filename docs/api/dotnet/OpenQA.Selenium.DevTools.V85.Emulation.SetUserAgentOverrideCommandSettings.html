@@ -156,7 +156,7 @@ Class SetUserAgentOverrideCommandSettings  <a class="header-action link-secondar
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetUserAgentOverrideCommandSettings_AcceptLanguage" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetUserAgentOverrideCommandSettings.AcceptLanguage">
   AcceptLanguage
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetUserAgentOverrideCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetUserAgentOverrideCommand.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Browser langugage to emulate.</p>
@@ -164,7 +164,8 @@ Class SetUserAgentOverrideCommandSettings  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;acceptLanguage&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;acceptLanguage&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string AcceptLanguage { get; set; }</code></pre>
   </div>
 
@@ -222,7 +223,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetUserAgentOverrideCommandSettings_Platform" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetUserAgentOverrideCommandSettings.Platform">
   Platform
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetUserAgentOverrideCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetUserAgentOverrideCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The platform navigator.platform should return.</p>
@@ -230,7 +231,8 @@ public string CommandName { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;platform&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;platform&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Platform { get; set; }</code></pre>
   </div>
 
@@ -263,7 +265,7 @@ public string Platform { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;userAgent&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;userAgent&quot;)]
 public string UserAgent { get; set; }</code></pre>
   </div>
 
@@ -288,7 +290,7 @@ public string UserAgent { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Emulation_SetUserAgentOverrideCommandSettings_UserAgentMetadata" data-uid="OpenQA.Selenium.DevTools.V85.Emulation.SetUserAgentOverrideCommandSettings.UserAgentMetadata">
   UserAgentMetadata
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetUserAgentOverrideCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Emulation/SetUserAgentOverrideCommand.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData</p>
@@ -296,7 +298,8 @@ public string UserAgent { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;userAgentMetadata&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;userAgentMetadata&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public UserAgentMetadata UserAgentMetadata { get; set; }</code></pre>
   </div>
 

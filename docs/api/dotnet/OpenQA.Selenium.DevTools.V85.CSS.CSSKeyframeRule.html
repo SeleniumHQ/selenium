@@ -150,7 +150,7 @@ Class CSSKeyframeRule  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_CSSKeyframeRule_KeyText" data-uid="OpenQA.Selenium.DevTools.V85.CSS.CSSKeyframeRule.KeyText">
   KeyText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSKeyframeRule.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSKeyframeRule.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Associated key text.</p>
@@ -158,7 +158,7 @@ Class CSSKeyframeRule  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;keyText&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;keyText&quot;)]
 public Value KeyText { get; set; }</code></pre>
   </div>
 
@@ -183,7 +183,7 @@ public Value KeyText { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_CSSKeyframeRule_Origin" data-uid="OpenQA.Selenium.DevTools.V85.CSS.CSSKeyframeRule.Origin">
   Origin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSKeyframeRule.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSKeyframeRule.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Parent stylesheet's origin.</p>
@@ -191,7 +191,7 @@ public Value KeyText { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;origin&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;origin&quot;)]
 public StyleSheetOrigin Origin { get; set; }</code></pre>
   </div>
 
@@ -216,7 +216,7 @@ public StyleSheetOrigin Origin { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_CSS_CSSKeyframeRule_Style" data-uid="OpenQA.Selenium.DevTools.V85.CSS.CSSKeyframeRule.Style">
   Style
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSKeyframeRule.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/CSS/CSSKeyframeRule.cs/#L45"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Associated style declaration.</p>
@@ -224,7 +224,7 @@ public StyleSheetOrigin Origin { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;style&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;style&quot;)]
 public CSSStyle Style { get; set; }</code></pre>
   </div>
 
@@ -258,7 +258,8 @@ stylesheet rules) this rule came from.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;styleSheetId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;styleSheetId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string StyleSheetId { get; set; }</code></pre>
   </div>
 

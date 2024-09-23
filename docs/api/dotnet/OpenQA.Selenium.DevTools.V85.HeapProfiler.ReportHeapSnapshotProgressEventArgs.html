@@ -162,7 +162,7 @@ Class ReportHeapSnapshotProgressEventArgs  <a class="header-action link-secondar
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;done&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;done&quot;)]
 public long Done { get; set; }</code></pre>
   </div>
 
@@ -187,7 +187,7 @@ public long Done { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_HeapProfiler_ReportHeapSnapshotProgressEventArgs_Finished" data-uid="OpenQA.Selenium.DevTools.V85.HeapProfiler.ReportHeapSnapshotProgressEventArgs.Finished">
   Finished
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/ReportHeapSnapshotProgressEventArgs.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/ReportHeapSnapshotProgressEventArgs.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the finished</p>
@@ -195,7 +195,8 @@ public long Done { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;finished&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;finished&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? Finished { get; set; }</code></pre>
   </div>
 
@@ -220,7 +221,7 @@ public bool? Finished { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_HeapProfiler_ReportHeapSnapshotProgressEventArgs_Total" data-uid="OpenQA.Selenium.DevTools.V85.HeapProfiler.ReportHeapSnapshotProgressEventArgs.Total">
   Total
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/ReportHeapSnapshotProgressEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/HeapProfiler/ReportHeapSnapshotProgressEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the total</p>
@@ -228,7 +229,7 @@ public bool? Finished { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;total&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;total&quot;)]
 public long Total { get; set; }</code></pre>
   </div>
 

@@ -190,7 +190,7 @@ public string CommandName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_GetPossibleBreakpointsCommandSettings_End" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.GetPossibleBreakpointsCommandSettings.End">
   End
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/GetPossibleBreakpointsCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/GetPossibleBreakpointsCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>End of range to search possible breakpoint locations in (excluding). When not specified, end
@@ -199,7 +199,8 @@ of scripts is used as end of range.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;end&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;end&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Location End { get; set; }</code></pre>
   </div>
 
@@ -224,7 +225,7 @@ public Location End { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Debugger_GetPossibleBreakpointsCommandSettings_RestrictToFunction" data-uid="OpenQA.Selenium.DevTools.V85.Debugger.GetPossibleBreakpointsCommandSettings.RestrictToFunction">
   RestrictToFunction
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/GetPossibleBreakpointsCommand.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Debugger/GetPossibleBreakpointsCommand.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Only consider locations which are in the same (non-nested) function as start.</p>
@@ -232,7 +233,8 @@ public Location End { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;restrictToFunction&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;restrictToFunction&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? RestrictToFunction { get; set; }</code></pre>
   </div>
 
@@ -265,7 +267,7 @@ public bool? RestrictToFunction { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;start&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;start&quot;)]
 public Location Start { get; set; }</code></pre>
   </div>
 

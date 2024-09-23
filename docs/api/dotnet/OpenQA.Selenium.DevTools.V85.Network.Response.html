@@ -150,7 +150,7 @@ Class Response  <a class="header-action link-secondary" title="View source" href
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_CacheStorageCacheName" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.CacheStorageCacheName">
   CacheStorageCacheName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L185"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L204"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Cache Storage Cache Name.</p>
@@ -158,7 +158,8 @@ Class Response  <a class="header-action link-secondary" title="View source" href
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;cacheStorageCacheName&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cacheStorageCacheName&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string CacheStorageCacheName { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public string CacheStorageCacheName { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_ConnectionId" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.ConnectionId">
   ConnectionId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Physical connection id that was actually used for this request.</p>
@@ -191,7 +192,7 @@ public string CacheStorageCacheName { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;connectionId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;connectionId&quot;)]
 public double ConnectionId { get; set; }</code></pre>
   </div>
 
@@ -216,7 +217,7 @@ public double ConnectionId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_ConnectionReused" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.ConnectionReused">
   ConnectionReused
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Specifies whether physical connection was actually reused for this request.</p>
@@ -224,7 +225,7 @@ public double ConnectionId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;connectionReused&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;connectionReused&quot;)]
 public bool ConnectionReused { get; set; }</code></pre>
   </div>
 
@@ -249,7 +250,7 @@ public bool ConnectionReused { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_EncodedDataLength" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.EncodedDataLength">
   EncodedDataLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L149"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L164"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Total number of bytes received for this request so far.</p>
@@ -257,7 +258,7 @@ public bool ConnectionReused { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;encodedDataLength&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;encodedDataLength&quot;)]
 public double EncodedDataLength { get; set; }</code></pre>
   </div>
 
@@ -282,7 +283,7 @@ public double EncodedDataLength { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_FromDiskCache" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.FromDiskCache">
   FromDiskCache
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L134"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Specifies that the request was served from the disk cache.</p>
@@ -290,7 +291,8 @@ public double EncodedDataLength { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;fromDiskCache&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;fromDiskCache&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? FromDiskCache { get; set; }</code></pre>
   </div>
 
@@ -315,7 +317,7 @@ public bool? FromDiskCache { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_FromPrefetchCache" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.FromPrefetchCache">
   FromPrefetchCache
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L154"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Specifies that the request was served from the prefetch cache.</p>
@@ -323,7 +325,8 @@ public bool? FromDiskCache { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;fromPrefetchCache&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;fromPrefetchCache&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? FromPrefetchCache { get; set; }</code></pre>
   </div>
 
@@ -348,7 +351,7 @@ public bool? FromPrefetchCache { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_FromServiceWorker" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.FromServiceWorker">
   FromServiceWorker
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L144"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Specifies that the request was served from the ServiceWorker.</p>
@@ -356,7 +359,8 @@ public bool? FromPrefetchCache { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;fromServiceWorker&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;fromServiceWorker&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? FromServiceWorker { get; set; }</code></pre>
   </div>
 
@@ -381,7 +385,7 @@ public bool? FromServiceWorker { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_Headers" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.Headers">
   Headers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>HTTP response headers.</p>
@@ -389,7 +393,7 @@ public bool? FromServiceWorker { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;headers&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;headers&quot;)]
 public Headers Headers { get; set; }</code></pre>
   </div>
 
@@ -414,7 +418,7 @@ public Headers Headers { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_HeadersText" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.HeadersText">
   HeadersText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>HTTP response headers text.</p>
@@ -422,7 +426,8 @@ public Headers Headers { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;headersText&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;headersText&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string HeadersText { get; set; }</code></pre>
   </div>
 
@@ -447,7 +452,7 @@ public string HeadersText { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_MimeType" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.MimeType">
   MimeType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Resource mimeType as determined by the browser.</p>
@@ -455,7 +460,7 @@ public string HeadersText { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;mimeType&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;mimeType&quot;)]
 public string MimeType { get; set; }</code></pre>
   </div>
 
@@ -480,7 +485,7 @@ public string MimeType { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_Protocol" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.Protocol">
   Protocol
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L194"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L214"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Protocol used to fetch this request.</p>
@@ -488,7 +493,8 @@ public string MimeType { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;protocol&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;protocol&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string Protocol { get; set; }</code></pre>
   </div>
 
@@ -513,7 +519,7 @@ public string Protocol { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_RemoteIPAddress" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.RemoteIPAddress">
   RemoteIPAddress
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L114"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Remote IP address.</p>
@@ -521,7 +527,8 @@ public string Protocol { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;remoteIPAddress&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;remoteIPAddress&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string RemoteIPAddress { get; set; }</code></pre>
   </div>
 
@@ -546,7 +553,7 @@ public string RemoteIPAddress { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_RemotePort" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.RemotePort">
   RemotePort
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L124"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Remote port.</p>
@@ -554,7 +561,8 @@ public string RemoteIPAddress { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;remotePort&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;remotePort&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? RemotePort { get; set; }</code></pre>
   </div>
 
@@ -579,7 +587,7 @@ public long? RemotePort { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_RequestHeaders" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.RequestHeaders">
   RequestHeaders
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Refined HTTP request headers that were actually transmitted over the network.</p>
@@ -587,7 +595,8 @@ public long? RemotePort { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;requestHeaders&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;requestHeaders&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public Headers RequestHeaders { get; set; }</code></pre>
   </div>
 
@@ -612,7 +621,7 @@ public Headers RequestHeaders { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_RequestHeadersText" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.RequestHeadersText">
   RequestHeadersText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>HTTP request headers text.</p>
@@ -620,7 +629,8 @@ public Headers RequestHeaders { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;requestHeadersText&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;requestHeadersText&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string RequestHeadersText { get; set; }</code></pre>
   </div>
 
@@ -645,7 +655,7 @@ public string RequestHeadersText { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_ResponseTime" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.ResponseTime">
   ResponseTime
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L176"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L194"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The time at which the returned response was generated.</p>
@@ -653,7 +663,8 @@ public string RequestHeadersText { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;responseTime&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;responseTime&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? ResponseTime { get; set; }</code></pre>
   </div>
 
@@ -678,7 +689,7 @@ public double? ResponseTime { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_SecurityDetails" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.SecurityDetails">
   SecurityDetails
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L234"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Security details for the request.</p>
@@ -686,7 +697,8 @@ public double? ResponseTime { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;securityDetails&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;securityDetails&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public SecurityDetails SecurityDetails { get; set; }</code></pre>
   </div>
 
@@ -711,7 +723,7 @@ public SecurityDetails SecurityDetails { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_SecurityState" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.SecurityState">
   SecurityState
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L203"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L224"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Security state of the request resource.</p>
@@ -719,7 +731,7 @@ public SecurityDetails SecurityDetails { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;securityState&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;securityState&quot;)]
 public SecurityState SecurityState { get; set; }</code></pre>
   </div>
 
@@ -744,7 +756,7 @@ public SecurityState SecurityState { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_ServiceWorkerResponseSource" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.ServiceWorkerResponseSource">
   ServiceWorkerResponseSource
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L167"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L184"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Response source of response from ServiceWorker.</p>
@@ -752,7 +764,8 @@ public SecurityState SecurityState { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;serviceWorkerResponseSource&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;serviceWorkerResponseSource&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ServiceWorkerResponseSource? ServiceWorkerResponseSource { get; set; }</code></pre>
   </div>
 
@@ -777,7 +790,7 @@ public ServiceWorkerResponseSource? ServiceWorkerResponseSource { get; set; }</c
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_Status" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.Status">
   Status
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>HTTP response status code.</p>
@@ -785,7 +798,7 @@ public ServiceWorkerResponseSource? ServiceWorkerResponseSource { get; set; }</c
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;status&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;status&quot;)]
 public long Status { get; set; }</code></pre>
   </div>
 
@@ -810,7 +823,7 @@ public long Status { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_StatusText" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.StatusText">
   StatusText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>HTTP response status text.</p>
@@ -818,7 +831,7 @@ public long Status { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;statusText&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;statusText&quot;)]
 public string StatusText { get; set; }</code></pre>
   </div>
 
@@ -843,7 +856,7 @@ public string StatusText { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Network_Response_Timing" data-uid="OpenQA.Selenium.DevTools.V85.Network.Response.Timing">
   Timing
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L158"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/Response.cs/#L174"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Timing information for the given request.</p>
@@ -851,7 +864,8 @@ public string StatusText { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;timing&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;timing&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ResourceTiming Timing { get; set; }</code></pre>
   </div>
 
@@ -884,7 +898,7 @@ public ResourceTiming Timing { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;url&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
 public string Url { get; set; }</code></pre>
   </div>
 

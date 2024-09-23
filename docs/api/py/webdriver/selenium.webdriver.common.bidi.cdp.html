@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.common.bidi.cdp &#8212; Selenium 4.24.0 documentation</title>
+    <title>selenium.webdriver.common.bidi.cdp &#8212; Selenium 4.25.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c1b4a597"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b061efce"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
@@ -25,7 +25,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.24.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.25.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.bidi.cdp</a></li> 
       </ul>
     </div>  
@@ -160,13 +160,6 @@ certain use cases such as running inside Jupyter notebook.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">BrowserError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#BrowserError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.BrowserError" title="Permalink to this definition">¶</a></dt>
 <dd><p>This exception is raised when the browser’s response to a command
 indicates that an error occurred.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.BrowserError.add_note">
-<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.BrowserError.add_note" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exception.add_note(note) –
-add a note to the exception</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.BrowserError.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.BrowserError.args" title="Permalink to this definition">¶</a></dt>
@@ -191,13 +184,6 @@ set self.__traceback__ to tb and return self.</p>
 <dd class="field-odd"><p><strong>reason</strong> (<em>wsproto.frame_protocol.CloseReason</em>) – </p>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.add_note">
-<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.add_note" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exception.add_note(note) –
-add a note to the exception</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.args" title="Permalink to this definition">¶</a></dt>
@@ -217,13 +203,6 @@ set self.__traceback__ to tb and return self.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">InternalError</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#InternalError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.InternalError" title="Permalink to this definition">¶</a></dt>
 <dd><p>This exception is only raised when there is faulty logic in TrioCDP or
 the integration with PyCDP.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.InternalError.add_note">
-<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.InternalError.add_note" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exception.add_note(note) –
-add a note to the exception</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.InternalError.args">
 <span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.InternalError.args" title="Permalink to this definition">¶</a></dt>
@@ -240,7 +219,7 @@ set self.__traceback__ to tb and return self.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.cdp.CmEventProxy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">CmEventProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CmEventProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CmEventProxy" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.cdp.</span></span><span class="sig-name descname"><span class="pre">CmEventProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/cdp.html#CmEventProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.cdp.CmEventProxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>A proxy object returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">CdpBase.wait_for()`()</span></code>.</p>
 <p>After the context manager executes, this proxy object will have a
 value set that contains the returned event.</p>
@@ -479,19 +458,16 @@ running inside of a notebook.</p>
 <li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.set_global_connection"><code class="docutils literal notranslate"><span class="pre">set_global_connection()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.set_global_session"><code class="docutils literal notranslate"><span class="pre">set_global_session()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.BrowserError"><code class="docutils literal notranslate"><span class="pre">BrowserError</span></code></a><ul>
-<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.BrowserError.add_note"><code class="docutils literal notranslate"><span class="pre">BrowserError.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.BrowserError.args"><code class="docutils literal notranslate"><span class="pre">BrowserError.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.BrowserError.with_traceback"><code class="docutils literal notranslate"><span class="pre">BrowserError.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed"><code class="docutils literal notranslate"><span class="pre">CdpConnectionClosed</span></code></a><ul>
-<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.add_note"><code class="docutils literal notranslate"><span class="pre">CdpConnectionClosed.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.args"><code class="docutils literal notranslate"><span class="pre">CdpConnectionClosed.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.CdpConnectionClosed.with_traceback"><code class="docutils literal notranslate"><span class="pre">CdpConnectionClosed.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.InternalError"><code class="docutils literal notranslate"><span class="pre">InternalError</span></code></a><ul>
-<li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.InternalError.add_note"><code class="docutils literal notranslate"><span class="pre">InternalError.add_note()</span></code></a></li>
 <li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.InternalError.args"><code class="docutils literal notranslate"><span class="pre">InternalError.args</span></code></a></li>
 <li><a class="reference internal" href="#selenium.webdriver.common.bidi.cdp.InternalError.with_traceback"><code class="docutils literal notranslate"><span class="pre">InternalError.with_traceback()</span></code></a></li>
 </ul>
@@ -560,7 +536,7 @@ running inside of a notebook.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.24.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.25.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.bidi.cdp</a></li> 
       </ul>
     </div>

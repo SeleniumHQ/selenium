@@ -85,7 +85,7 @@
 
 
   <h1 id="OpenQA_Selenium_DevTools_V85_DOM_GetFrameOwnerCommandResponse" data-uid="OpenQA.Selenium.DevTools.V85.DOM.GetFrameOwnerCommandResponse" class="text-break">
-Class GetFrameOwnerCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetFrameOwnerCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
+Class GetFrameOwnerCommandResponse  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetFrameOwnerCommand.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -164,7 +164,7 @@ Class GetFrameOwnerCommandResponse  <a class="header-action link-secondary" titl
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_GetFrameOwnerCommandResponse_BackendNodeId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.GetFrameOwnerCommandResponse.BackendNodeId">
   BackendNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetFrameOwnerCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetFrameOwnerCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Resulting node.</p>
@@ -172,7 +172,7 @@ Class GetFrameOwnerCommandResponse  <a class="header-action link-secondary" titl
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;backendNodeId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;backendNodeId&quot;)]
 public long BackendNodeId { get; set; }</code></pre>
   </div>
 
@@ -197,7 +197,7 @@ public long BackendNodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_DOM_GetFrameOwnerCommandResponse_NodeId" data-uid="OpenQA.Selenium.DevTools.V85.DOM.GetFrameOwnerCommandResponse.NodeId">
   NodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetFrameOwnerCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetFrameOwnerCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Id of the node at given coordinates, only when enabled and requested document.</p>
@@ -205,7 +205,8 @@ public long BackendNodeId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;nodeId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;nodeId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? NodeId { get; set; }</code></pre>
   </div>
 
@@ -230,7 +231,7 @@ public long? NodeId { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetFrameOwnerCommand.cs/#L36" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/DOM/GetFrameOwnerCommand.cs/#L37" class="edit-link">Edit this page</a>
         </div>
 
 

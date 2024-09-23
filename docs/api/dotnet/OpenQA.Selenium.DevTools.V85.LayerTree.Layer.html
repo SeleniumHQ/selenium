@@ -150,7 +150,7 @@ Class Layer  <a class="header-action link-secondary" title="View source" href="h
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_AnchorX" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.AnchorX">
   AnchorX
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Transform anchor point X, absent if no transform specified</p>
@@ -158,7 +158,8 @@ Class Layer  <a class="header-action link-secondary" title="View source" href="h
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;anchorX&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;anchorX&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? AnchorX { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public double? AnchorX { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_AnchorY" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.AnchorY">
   AnchorY
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Transform anchor point Y, absent if no transform specified</p>
@@ -191,7 +192,8 @@ public double? AnchorX { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;anchorY&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;anchorY&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? AnchorY { get; set; }</code></pre>
   </div>
 
@@ -216,7 +218,7 @@ public double? AnchorY { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_AnchorZ" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.AnchorZ">
   AnchorZ
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L114"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Transform anchor point Z, absent if no transform specified</p>
@@ -224,7 +226,8 @@ public double? AnchorY { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;anchorZ&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;anchorZ&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double? AnchorZ { get; set; }</code></pre>
   </div>
 
@@ -249,7 +252,7 @@ public double? AnchorZ { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_BackendNodeId" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.BackendNodeId">
   BackendNodeId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The backend id for the node associated with this layer.</p>
@@ -257,7 +260,8 @@ public double? AnchorZ { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;backendNodeId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;backendNodeId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public long? BackendNodeId { get; set; }</code></pre>
   </div>
 
@@ -282,7 +286,7 @@ public long? BackendNodeId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_DrawsContent" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.DrawsContent">
   DrawsContent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L135"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Indicates whether this layer hosts any content, rather than being used for
@@ -291,7 +295,7 @@ transform/scrolling purposes only.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;drawsContent&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;drawsContent&quot;)]
 public bool DrawsContent { get; set; }</code></pre>
   </div>
 
@@ -316,7 +320,7 @@ public bool DrawsContent { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_Height" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Layer height.</p>
@@ -324,7 +328,7 @@ public bool DrawsContent { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;height&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;height&quot;)]
 public double Height { get; set; }</code></pre>
   </div>
 
@@ -349,7 +353,7 @@ public double Height { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_Invisible" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.Invisible">
   Invisible
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L145"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Set if layer is not visible.</p>
@@ -357,7 +361,8 @@ public double Height { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;invisible&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;invisible&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public bool? Invisible { get; set; }</code></pre>
   </div>
 
@@ -390,7 +395,7 @@ public bool? Invisible { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;layerId&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;layerId&quot;)]
 public string LayerId { get; set; }</code></pre>
   </div>
 
@@ -415,7 +420,7 @@ public string LayerId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_OffsetX" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.OffsetX">
   OffsetX
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Offset from parent layer, X coordinate.</p>
@@ -423,7 +428,7 @@ public string LayerId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;offsetX&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;offsetX&quot;)]
 public double OffsetX { get; set; }</code></pre>
   </div>
 
@@ -448,7 +453,7 @@ public double OffsetX { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_OffsetY" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.OffsetY">
   OffsetY
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Offset from parent layer, Y coordinate.</p>
@@ -456,7 +461,7 @@ public double OffsetX { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;offsetY&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;offsetY&quot;)]
 public double OffsetY { get; set; }</code></pre>
   </div>
 
@@ -481,7 +486,7 @@ public double OffsetY { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_PaintCount" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.PaintCount">
   PaintCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L124"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Indicates how many time this layer has painted.</p>
@@ -489,7 +494,7 @@ public double OffsetY { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;paintCount&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;paintCount&quot;)]
 public long PaintCount { get; set; }</code></pre>
   </div>
 
@@ -514,7 +519,7 @@ public long PaintCount { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_ParentLayerId" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.ParentLayerId">
   ParentLayerId
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The id of parent (not present for root).</p>
@@ -522,7 +527,8 @@ public long PaintCount { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;parentLayerId&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;parentLayerId&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public string ParentLayerId { get; set; }</code></pre>
   </div>
 
@@ -547,7 +553,7 @@ public string ParentLayerId { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_ScrollRects" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.ScrollRects">
   ScrollRects
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L155"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Rectangles scrolling on main thread only.</p>
@@ -555,7 +561,8 @@ public string ParentLayerId { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;scrollRects&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scrollRects&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public ScrollRect[] ScrollRects { get; set; }</code></pre>
   </div>
 
@@ -580,7 +587,7 @@ public ScrollRect[] ScrollRects { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_StickyPositionConstraint" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.StickyPositionConstraint">
   StickyPositionConstraint
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L165"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sticky position constraint information</p>
@@ -588,7 +595,8 @@ public ScrollRect[] ScrollRects { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;stickyPositionConstraint&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;stickyPositionConstraint&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public StickyPositionConstraint StickyPositionConstraint { get; set; }</code></pre>
   </div>
 
@@ -613,7 +621,7 @@ public StickyPositionConstraint StickyPositionConstraint { get; set; }</code></p
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_Transform" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.Transform">
   Transform
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Transformation matrix for layer, default is identity matrix</p>
@@ -621,7 +629,8 @@ public StickyPositionConstraint StickyPositionConstraint { get; set; }</code></p
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;transform&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;transform&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public double[] Transform { get; set; }</code></pre>
   </div>
 
@@ -646,7 +655,7 @@ public double[] Transform { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_LayerTree_Layer_Width" data-uid="OpenQA.Selenium.DevTools.V85.LayerTree.Layer.Width">
   Width
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/LayerTree/Layer.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Layer width.</p>
@@ -654,7 +663,7 @@ public double[] Transform { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;width&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;width&quot;)]
 public double Width { get; set; }</code></pre>
   </div>
 

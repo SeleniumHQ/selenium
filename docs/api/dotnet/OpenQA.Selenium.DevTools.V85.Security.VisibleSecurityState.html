@@ -150,7 +150,7 @@ Class VisibleSecurityState  <a class="header-action link-secondary" title="View 
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_VisibleSecurityState_CertificateSecurityState" data-uid="OpenQA.Selenium.DevTools.V85.Security.VisibleSecurityState.CertificateSecurityState">
   CertificateSecurityState
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/VisibleSecurityState.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/VisibleSecurityState.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Security state details about the page certificate.</p>
@@ -158,7 +158,8 @@ Class VisibleSecurityState  <a class="header-action link-secondary" title="View 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;certificateSecurityState&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;certificateSecurityState&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public CertificateSecurityState CertificateSecurityState { get; set; }</code></pre>
   </div>
 
@@ -183,7 +184,7 @@ public CertificateSecurityState CertificateSecurityState { get; set; }</code></p
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_VisibleSecurityState_SafetyTipInfo" data-uid="OpenQA.Selenium.DevTools.V85.Security.VisibleSecurityState.SafetyTipInfo">
   SafetyTipInfo
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/VisibleSecurityState.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/VisibleSecurityState.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The type of Safety Tip triggered on the page. Note that this field will be set even if the Safety Tip UI was not actually shown.</p>
@@ -191,7 +192,8 @@ public CertificateSecurityState CertificateSecurityState { get; set; }</code></p
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;safetyTipInfo&quot;, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;safetyTipInfo&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 public SafetyTipInfo SafetyTipInfo { get; set; }</code></pre>
   </div>
 
@@ -224,7 +226,7 @@ public SafetyTipInfo SafetyTipInfo { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;securityState&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;securityState&quot;)]
 public SecurityState SecurityState { get; set; }</code></pre>
   </div>
 
@@ -249,7 +251,7 @@ public SecurityState SecurityState { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_DevTools_V85_Security_VisibleSecurityState_SecurityStateIssueIds" data-uid="OpenQA.Selenium.DevTools.V85.Security.VisibleSecurityState.SecurityStateIssueIds">
   SecurityStateIssueIds
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/VisibleSecurityState.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Security/VisibleSecurityState.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Array of security state issues ids.</p>
@@ -257,7 +259,7 @@ public SecurityState SecurityState { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;securityStateIssueIds&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;securityStateIssueIds&quot;)]
 public string[] SecurityStateIssueIds { get; set; }</code></pre>
   </div>
 

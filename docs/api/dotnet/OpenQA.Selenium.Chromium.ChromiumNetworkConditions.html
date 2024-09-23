@@ -98,8 +98,7 @@ Class ChromiumNetworkConditions  <a class="header-action link-secondary" title="
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonObject(MemberSerialization.OptIn)]
-public class ChromiumNetworkConditions</code></pre>
+    <pre><code class="lang-csharp hljs">public class ChromiumNetworkConditions</code></pre>
   </div>
 
 
@@ -162,7 +161,7 @@ public class ChromiumNetworkConditions</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;download_throughput&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;download_throughput&quot;)]
 public long DownloadThroughput { get; set; }</code></pre>
   </div>
 
@@ -187,7 +186,7 @@ public long DownloadThroughput { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumNetworkConditions_IsOffline" data-uid="OpenQA.Selenium.Chromium.ChromiumNetworkConditions.IsOffline">
   IsOffline
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumNetworkConditions.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumNetworkConditions.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the network is offline. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
@@ -195,7 +194,7 @@ public long DownloadThroughput { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;offline&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;offline&quot;)]
 public bool IsOffline { get; set; }</code></pre>
   </div>
 
@@ -220,7 +219,7 @@ public bool IsOffline { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumNetworkConditions_Latency" data-uid="OpenQA.Selenium.Chromium.ChromiumNetworkConditions.Latency">
   Latency
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumNetworkConditions.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumNetworkConditions.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the simulated latency of the connection. Typically given in milliseconds.</p>
@@ -228,7 +227,8 @@ public bool IsOffline { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan Latency { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
+public TimeSpan Latency { get; set; }</code></pre>
   </div>
 
 
@@ -260,7 +260,7 @@ public bool IsOffline { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;upload_throughput&quot;)]
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;upload_throughput&quot;)]
 public long UploadThroughput { get; set; }</code></pre>
   </div>
 
@@ -289,7 +289,7 @@ public long UploadThroughput { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumNetworkConditions_FromDictionary_System_Collections_Generic_Dictionary_System_String_System_Object__" data-uid="OpenQA.Selenium.Chromium.ChromiumNetworkConditions.FromDictionary(System.Collections.Generic.Dictionary{System.String,System.Object})">
   FromDictionary(Dictionary&lt;string, object&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumNetworkConditions.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumNetworkConditions.cs/#L107"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a ChromiumNetworkConditions object from a dictionary of key-value pairs.</p>
@@ -328,7 +328,7 @@ public long UploadThroughput { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumNetworkConditions_SetBidirectionalThroughput_System_Int64_" data-uid="OpenQA.Selenium.Chromium.ChromiumNetworkConditions.SetBidirectionalThroughput(System.Int64)">
   SetBidirectionalThroughput(long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumNetworkConditions.cs/#L135"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumNetworkConditions.cs/#L137"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets the upload and download throughput properties to the same value.</p>

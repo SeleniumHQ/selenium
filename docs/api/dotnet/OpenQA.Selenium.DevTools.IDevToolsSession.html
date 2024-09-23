@@ -166,17 +166,17 @@ commands and recieve events.</p>
 
   <a id="OpenQA_Selenium_DevTools_IDevToolsSession_SendCommand_" data-uid="OpenQA.Selenium.DevTools.IDevToolsSession.SendCommand*"></a>
 
-  <h3 id="OpenQA_Selenium_DevTools_IDevToolsSession_SendCommand_System_String_Newtonsoft_Json_Linq_JToken_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.IDevToolsSession.SendCommand(System.String,Newtonsoft.Json.Linq.JToken,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
-  SendCommand(string, JToken, CancellationToken, int?, bool)
+  <h3 id="OpenQA_Selenium_DevTools_IDevToolsSession_SendCommand_System_String_System_Text_Json_Nodes_JsonNode_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.IDevToolsSession.SendCommand(System.String,System.Text.Json.Nodes.JsonNode,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  SendCommand(string, JsonNode, CancellationToken, int?, bool)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/IDevToolsSession.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Returns a JToken based on a command created with the specified command name and params.</p>
+  <div class="markdown level1 summary"><p>Returns a JsonNode based on a command created with the specified command name and params.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;JToken&gt; SendCommand(string commandName, JToken @params, CancellationToken cancellationToken, int? millisecondsTimeout, bool throwExceptionIfResponseNotReceived)</code></pre>
+    <pre><code class="lang-csharp hljs">Task&lt;JsonNode&gt; SendCommand(string commandName, JsonNode @params, CancellationToken cancellationToken, int? millisecondsTimeout, bool throwExceptionIfResponseNotReceived)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -184,8 +184,8 @@ commands and recieve events.</p>
     <dt><code>commandName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The name of the command to send.</p>
 </dd>
-    <dt><code>params</code> <span class="xref">JToken</span></dt>
-    <dd><p>The parameters of the command as a JToken object</p>
+    <dt><code>params</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonnode">JsonNode</a></dt>
+    <dd><p>The parameters of the command as a JsonNode object</p>
 </dd>
     <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd><p>A CancellationToken object to allow for cancellation of the command.</p>
@@ -200,7 +200,7 @@ commands and recieve events.</p>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<span class="xref">JToken</span>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.nodes.jsonnode">JsonNode</a>&gt;</dt>
     <dd><p>The command response object implementing the <a class="xref" href="OpenQA.Selenium.DevTools.ICommandResponse-1.html">ICommandResponse&lt;T&gt;</a> interface.</p>
 </dd>
   </dl>
