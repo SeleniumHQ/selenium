@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.common.options &#8212; Selenium 4.24.0 documentation</title>
+    <title>selenium.webdriver.common.options &#8212; Selenium 4.25.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=89b800e6" />
     
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c1b4a597"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b061efce"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
@@ -25,7 +25,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.24.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.25.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.options</a></li> 
       </ul>
     </div>  
@@ -46,14 +46,14 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.options.BaseOptions" title="selenium.webdriver.common.options.BaseOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseOptions</span></code></a>()</p></td>
 <td><p>Base class for individual browser options.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy" title="selenium.webdriver.common.options.PageLoadStrategy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PageLoadStrategy</span></code></a>(value[, names, module, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy" title="selenium.webdriver.common.options.PageLoadStrategy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PageLoadStrategy</span></code></a>(value)</p></td>
 <td><p>Enum of possible page load strategies.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.options.</span></span><span class="sig-name descname"><span class="pre">PageLoadStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#PageLoadStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.options.</span></span><span class="sig-name descname"><span class="pre">PageLoadStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#PageLoadStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enum of possible page load strategies.</p>
 <dl class="simple">
 <dt>Selenium support following strategies:</dt><dd><ul class="simple">
@@ -78,430 +78,6 @@
 <dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.none">
 <span class="sig-name descname"><span class="pre">none</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></em><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.none" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.capitalize">
-<span class="sig-name descname"><span class="pre">capitalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.capitalize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a capitalized version of the string.</p>
-<p>More specifically, make the first character have upper case and the rest lower
-case.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.casefold">
-<span class="sig-name descname"><span class="pre">casefold</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.casefold" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a version of the string suitable for caseless comparisons.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.center">
-<span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillchar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.center" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a centered string of length width.</p>
-<p>Padding is done using the specified fill character (default is a space).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.count">
-<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the number of non-overlapping occurrences of substring sub in
-string S[start:end].  Optional arguments start and end are
-interpreted as in slice notation.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.encode">
-<span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'strict'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.encode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Encode the string using the codec registered for encoding.</p>
-<dl class="simple">
-<dt>encoding</dt><dd><p>The encoding in which to encode the string.</p>
-</dd>
-<dt>errors</dt><dd><p>The error handling scheme to use for encoding errors.
-The default is ‘strict’ meaning that encoding errors raise a
-UnicodeEncodeError.  Other possible values are ‘ignore’, ‘replace’ and
-‘xmlcharrefreplace’ as well as any other name registered with
-codecs.register_error that can handle UnicodeEncodeErrors.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.endswith">
-<span class="sig-name descname"><span class="pre">endswith</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suffix</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.endswith" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if S ends with the specified suffix, False otherwise.
-With optional start, test S beginning at that position.
-With optional end, stop comparing S at that position.
-suffix can also be a tuple of strings to try.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.expandtabs">
-<span class="sig-name descname"><span class="pre">expandtabs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tabsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.expandtabs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy where all tab characters are expanded using spaces.</p>
-<p>If tabsize is not given, a tab size of 8 characters is assumed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.find">
-<span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.find" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the lowest index in S where substring sub is found,
-such that sub is contained within S[start:end].  Optional
-arguments start and end are interpreted as in slice notation.</p>
-<p>Return -1 on failure.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.format">
-<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.format" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a formatted version of S, using substitutions from args and kwargs.
-The substitutions are identified by braces (‘{’ and ‘}’).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.format_map">
-<span class="sig-name descname"><span class="pre">format_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.format_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a formatted version of S, using substitutions from mapping.
-The substitutions are identified by braces (‘{’ and ‘}’).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.index">
-<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the lowest index in S where substring sub is found,
-such that sub is contained within S[start:end].  Optional
-arguments start and end are interpreted as in slice notation.</p>
-<p>Raises ValueError when the substring is not found.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.isalnum">
-<span class="sig-name descname"><span class="pre">isalnum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.isalnum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the string is an alpha-numeric string, False otherwise.</p>
-<p>A string is alpha-numeric if all characters in the string are alpha-numeric and
-there is at least one character in the string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.isalpha">
-<span class="sig-name descname"><span class="pre">isalpha</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.isalpha" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the string is an alphabetic string, False otherwise.</p>
-<p>A string is alphabetic if all characters in the string are alphabetic and there
-is at least one character in the string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.isascii">
-<span class="sig-name descname"><span class="pre">isascii</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.isascii" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if all characters in the string are ASCII, False otherwise.</p>
-<p>ASCII characters have code points in the range U+0000-U+007F.
-Empty string is ASCII too.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.isdecimal">
-<span class="sig-name descname"><span class="pre">isdecimal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.isdecimal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the string is a decimal string, False otherwise.</p>
-<p>A string is a decimal string if all characters in the string are decimal and
-there is at least one character in the string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.isdigit">
-<span class="sig-name descname"><span class="pre">isdigit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.isdigit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the string is a digit string, False otherwise.</p>
-<p>A string is a digit string if all characters in the string are digits and there
-is at least one character in the string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.isidentifier">
-<span class="sig-name descname"><span class="pre">isidentifier</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.isidentifier" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the string is a valid Python identifier, False otherwise.</p>
-<p>Call keyword.iskeyword(s) to test whether string s is a reserved identifier,
-such as “def” or “class”.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.islower">
-<span class="sig-name descname"><span class="pre">islower</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.islower" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the string is a lowercase string, False otherwise.</p>
-<p>A string is lowercase if all cased characters in the string are lowercase and
-there is at least one cased character in the string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.isnumeric">
-<span class="sig-name descname"><span class="pre">isnumeric</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.isnumeric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the string is a numeric string, False otherwise.</p>
-<p>A string is numeric if all characters in the string are numeric and there is at
-least one character in the string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.isprintable">
-<span class="sig-name descname"><span class="pre">isprintable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.isprintable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the string is printable, False otherwise.</p>
-<p>A string is printable if all of its characters are considered printable in
-repr() or if it is empty.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.isspace">
-<span class="sig-name descname"><span class="pre">isspace</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.isspace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the string is a whitespace string, False otherwise.</p>
-<p>A string is whitespace if all characters in the string are whitespace and there
-is at least one character in the string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.istitle">
-<span class="sig-name descname"><span class="pre">istitle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.istitle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the string is a title-cased string, False otherwise.</p>
-<p>In a title-cased string, upper- and title-case characters may only
-follow uncased characters and lowercase characters only cased ones.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.isupper">
-<span class="sig-name descname"><span class="pre">isupper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.isupper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if the string is an uppercase string, False otherwise.</p>
-<p>A string is uppercase if all cased characters in the string are uppercase and
-there is at least one cased character in the string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.join">
-<span class="sig-name descname"><span class="pre">join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.join" title="Permalink to this definition">¶</a></dt>
-<dd><p>Concatenate any number of strings.</p>
-<p>The string whose method is called is inserted in between each given string.
-The result is returned as a new string.</p>
-<p>Example: ‘.’.join([‘ab’, ‘pq’, ‘rs’]) -&gt; ‘ab.pq.rs’</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.ljust">
-<span class="sig-name descname"><span class="pre">ljust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillchar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.ljust" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a left-justified string of length width.</p>
-<p>Padding is done using the specified fill character (default is a space).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.lower">
-<span class="sig-name descname"><span class="pre">lower</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.lower" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the string converted to lowercase.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.lstrip">
-<span class="sig-name descname"><span class="pre">lstrip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.lstrip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the string with leading whitespace removed.</p>
-<p>If chars is given and not None, remove characters in chars instead.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.maketrans">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maketrans</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.maketrans" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a translation table usable for str.translate().</p>
-<p>If there is only one argument, it must be a dictionary mapping Unicode
-ordinals (integers) or characters to Unicode ordinals, strings or None.
-Character keys will be then converted to ordinals.
-If there are two arguments, they must be strings of equal length, and
-in the resulting dictionary, each character in x will be mapped to the
-character at the same position in y. If there is a third argument, it
-must be a string, whose characters will be mapped to None in the result.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.partition">
-<span class="sig-name descname"><span class="pre">partition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.partition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Partition the string into three parts using the given separator.</p>
-<p>This will search for the separator in the string.  If the separator is found,
-returns a 3-tuple containing the part before the separator, the separator
-itself, and the part after it.</p>
-<p>If the separator is not found, returns a 3-tuple containing the original string
-and two empty strings.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.removeprefix">
-<span class="sig-name descname"><span class="pre">removeprefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.removeprefix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a str with the given prefix string removed if present.</p>
-<p>If the string starts with the prefix string, return string[len(prefix):].
-Otherwise, return a copy of the original string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.removesuffix">
-<span class="sig-name descname"><span class="pre">removesuffix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suffix</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.removesuffix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a str with the given suffix string removed if present.</p>
-<p>If the string ends with the suffix string and that suffix is not empty,
-return string[:-len(suffix)]. Otherwise, return a copy of the original
-string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.replace">
-<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.replace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy with all occurrences of substring old replaced by new.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>count</dt><dd><p>Maximum number of occurrences to replace.
--1 (the default value) means replace all occurrences.</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>If the optional argument count is given, only the first count occurrences are
-replaced.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.rfind">
-<span class="sig-name descname"><span class="pre">rfind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.rfind" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the highest index in S where substring sub is found,
-such that sub is contained within S[start:end].  Optional
-arguments start and end are interpreted as in slice notation.</p>
-<p>Return -1 on failure.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.rindex">
-<span class="sig-name descname"><span class="pre">rindex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.rindex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the highest index in S where substring sub is found,
-such that sub is contained within S[start:end].  Optional
-arguments start and end are interpreted as in slice notation.</p>
-<p>Raises ValueError when the substring is not found.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.rjust">
-<span class="sig-name descname"><span class="pre">rjust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillchar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.rjust" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a right-justified string of length width.</p>
-<p>Padding is done using the specified fill character (default is a space).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.rpartition">
-<span class="sig-name descname"><span class="pre">rpartition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.rpartition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Partition the string into three parts using the given separator.</p>
-<p>This will search for the separator in the string, starting at the end. If
-the separator is found, returns a 3-tuple containing the part before the
-separator, the separator itself, and the part after it.</p>
-<p>If the separator is not found, returns a 3-tuple containing two empty strings
-and the original string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.rsplit">
-<span class="sig-name descname"><span class="pre">rsplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxsplit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.rsplit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
-<blockquote>
-<div><dl>
-<dt>sep</dt><dd><p>The separator used to split the string.</p>
-<p>When set to None (the default value), will split on any whitespace
-character (including n r t f and spaces) and will discard
-empty strings from the result.</p>
-</dd>
-<dt>maxsplit</dt><dd><p>Maximum number of splits (starting from the left).
--1 (the default value) means no limit.</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>Splitting starts at the end of the string and works to the front.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.rstrip">
-<span class="sig-name descname"><span class="pre">rstrip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.rstrip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the string with trailing whitespace removed.</p>
-<p>If chars is given and not None, remove characters in chars instead.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.split">
-<span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxsplit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.split" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
-<blockquote>
-<div><dl>
-<dt>sep</dt><dd><p>The separator used to split the string.</p>
-<p>When set to None (the default value), will split on any whitespace
-character (including n r t f and spaces) and will discard
-empty strings from the result.</p>
-</dd>
-<dt>maxsplit</dt><dd><p>Maximum number of splits (starting from the left).
--1 (the default value) means no limit.</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>Note, str.split() is mainly useful for data that has been intentionally
-delimited.  With natural text that includes punctuation, consider using
-the regular expression module.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.splitlines">
-<span class="sig-name descname"><span class="pre">splitlines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keepends</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.splitlines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list of the lines in the string, breaking at line boundaries.</p>
-<p>Line breaks are not included in the resulting list unless keepends is given and
-true.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.startswith">
-<span class="sig-name descname"><span class="pre">startswith</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.startswith" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if S starts with the specified prefix, False otherwise.
-With optional start, test S beginning at that position.
-With optional end, stop comparing S at that position.
-prefix can also be a tuple of strings to try.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.strip">
-<span class="sig-name descname"><span class="pre">strip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.strip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the string with leading and trailing whitespace removed.</p>
-<p>If chars is given and not None, remove characters in chars instead.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.swapcase">
-<span class="sig-name descname"><span class="pre">swapcase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.swapcase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert uppercase characters to lowercase and lowercase characters to uppercase.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.title">
-<span class="sig-name descname"><span class="pre">title</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a version of the string where each word is titlecased.</p>
-<p>More specifically, words start with uppercased characters and all remaining
-cased characters have lower case.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.translate">
-<span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.translate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replace each character in the string using the given translation table.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>table</dt><dd><p>Translation table, which must be a mapping of Unicode ordinals to
-Unicode ordinals, strings, or None.</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>The table must implement lookup/indexing via __getitem__, for instance a
-dictionary or list.  If this operation raises LookupError, the character is
-left untouched.  Characters mapped to None are deleted.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.upper">
-<span class="sig-name descname"><span class="pre">upper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.upper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of the string converted to uppercase.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.zfill">
-<span class="sig-name descname"><span class="pre">zfill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.zfill" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pad a numeric string with zeros on the left, to fill a field of the given width.</p>
-<p>The string is never truncated.</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -1799,53 +1375,6 @@ being picked up and used.</p>
 <li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.normal"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.normal</span></code></a></li>
 <li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.eager"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.eager</span></code></a></li>
 <li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.none"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.none</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.capitalize"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.capitalize()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.casefold"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.casefold()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.center"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.center()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.count"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.count()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.encode"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.encode()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.endswith"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.endswith()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.expandtabs"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.expandtabs()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.find"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.find()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.format"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.format()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.format_map"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.format_map()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.index"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.index()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.isalnum"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.isalnum()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.isalpha"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.isalpha()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.isascii"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.isascii()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.isdecimal"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.isdecimal()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.isdigit"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.isdigit()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.isidentifier"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.isidentifier()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.islower"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.islower()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.isnumeric"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.isnumeric()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.isprintable"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.isprintable()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.isspace"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.isspace()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.istitle"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.istitle()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.isupper"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.isupper()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.join"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.join()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.ljust"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.ljust()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.lower"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.lower()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.lstrip"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.lstrip()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.maketrans"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.maketrans()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.partition"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.partition()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.removeprefix"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.removeprefix()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.removesuffix"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.removesuffix()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.replace"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.replace()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.rfind"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.rfind()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.rindex"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.rindex()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.rjust"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.rjust()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.rpartition"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.rpartition()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.rsplit"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.rsplit()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.rstrip"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.rstrip()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.split"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.split()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.splitlines"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.splitlines()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.startswith"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.startswith()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.strip"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.strip()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.swapcase"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.swapcase()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.title"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.title()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.translate"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.translate()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.upper"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.upper()</span></code></a></li>
-<li><a class="reference internal" href="#selenium.webdriver.common.options.PageLoadStrategy.zfill"><code class="docutils literal notranslate"><span class="pre">PageLoadStrategy.zfill()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#selenium.webdriver.common.options.BaseOptions"><code class="docutils literal notranslate"><span class="pre">BaseOptions</span></code></a><ul>
@@ -1928,7 +1457,7 @@ being picked up and used.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.24.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.25.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">selenium.webdriver.common.options</a></li> 
       </ul>
     </div>
