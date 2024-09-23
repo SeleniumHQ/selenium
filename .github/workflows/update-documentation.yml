@@ -200,7 +200,6 @@ jobs:
           git config --local user.name "Selenium CI Bot"
           git checkout -b api-docs-${{ inputs.tag }}
       - name: Download all patches
-        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'java'
         uses: actions/download-artifact@v4
         with:
           path: patches/
