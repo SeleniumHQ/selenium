@@ -211,6 +211,7 @@ jobs:
           for patch in patches/*.patch; do
             git am < "$patch"
           done
+          rm -rf patches/
       - name: Push Branch
         run: git push origin api-docs-${{ inputs.tag }}
       - name: Documentation Pull Request
