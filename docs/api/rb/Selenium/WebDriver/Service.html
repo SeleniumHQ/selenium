@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Service
   
-    &mdash; Documentation by YARD 0.9.36
+    &mdash; Documentation by YARD 0.9.37
   
 </title>
 
@@ -429,6 +429,50 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#env_path-instance_method" title="#env_path (instance method)">#<strong>env_path</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#find_driver_path-instance_method" title="#find_driver_path (instance method)">#<strong>find_driver_path</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(path: nil, port: nil, log: nil, args: nil)  &#x21d2; Service </a>
     
 
@@ -563,7 +607,8 @@
 84
 85
 86
-87</pre>
+87
+88</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 69</span>
@@ -571,6 +616,7 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>path:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>log:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>args:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_port'>port</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>DEFAULT_PORT</span>
   <span class='id identifier rubyid_args'>args</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_path'>path</span> <span class='op'>||=</span> <span class='id identifier rubyid_env_path'>env_path</span>
 
   <span class='ivar'>@executable_path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span>
   <span class='ivar'>@host</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_localhost'><span class='object_link'><a href="Platform.html#localhost-class_method" title="Selenium::WebDriver::Platform.localhost (method)">localhost</a></span></span>
@@ -1036,7 +1082,69 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="launch-instance_method">
+  <h3 class="signature first" id="env_path-instance_method">
+  
+    #<strong>env_path</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+104
+105
+106</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 104</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_env_path'>env_path</span>
+  <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>DRIVER_PATH_ENV_KEY</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="find_driver_path-instance_method">
+  
+    #<strong>find_driver_path</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+99
+100
+101
+102</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 99</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_find_driver_path'>find_driver_path</span>
+  <span class='id identifier rubyid_default_options'>default_options</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_const_get'>const_get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='op'>&amp;.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>::</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='op'>&amp;.</span><span class='op'>[]</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>::Options</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+  <span class='const'><span class='object_link'><a href="DriverFinder.html" title="Selenium::WebDriver::DriverFinder (class)">DriverFinder</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DriverFinder.html#initialize-instance_method" title="Selenium::WebDriver::DriverFinder#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_default_options'>default_options</span><span class='comma'>,</span> <span class='kw'>self</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'><span class='object_link'><a href="DriverFinder.html#driver_path-instance_method" title="Selenium::WebDriver::DriverFinder#driver_path (method)">driver_path</a></span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="launch-instance_method">
   
     #<strong>launch</strong>  &#x21d2; <tt>Object</tt> 
   
@@ -1050,22 +1158,16 @@
       <pre class="lines">
 
 
-89
 90
 91
 92
-93
-94
-95</pre>
+93</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_launch'>launch</span>
-  <span class='ivar'>@executable_path</span> <span class='op'>||=</span> <span class='kw'>begin</span>
-    <span class='id identifier rubyid_default_options'>default_options</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_const_get'>const_get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='op'>&amp;.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>::</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='op'>&amp;.</span><span class='op'>[]</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>::Options</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
-    <span class='const'><span class='object_link'><a href="DriverFinder.html" title="Selenium::WebDriver::DriverFinder (class)">DriverFinder</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DriverFinder.html#initialize-instance_method" title="Selenium::WebDriver::DriverFinder#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_default_options'>default_options</span><span class='comma'>,</span> <span class='kw'>self</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'><span class='object_link'><a href="DriverFinder.html#driver_path-instance_method" title="Selenium::WebDriver::DriverFinder#driver_path (method)">driver_path</a></span></span>
-  <span class='kw'>end</span>
+  <span class='ivar'>@executable_path</span> <span class='op'>||=</span> <span class='id identifier rubyid_env_path'>env_path</span> <span class='op'>||</span> <span class='id identifier rubyid_find_driver_path'>find_driver_path</span>
   <span class='const'><span class='object_link'><a href="ServiceManager.html" title="Selenium::WebDriver::ServiceManager (class)">ServiceManager</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="ServiceManager.html#initialize-instance_method" title="Selenium::WebDriver::ServiceManager#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:start</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1088,12 +1190,12 @@
       <pre class="lines">
 
 
-97
-98
-99</pre>
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 97</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 95</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shutdown_supported'>shutdown_supported</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>SHUTDOWN_SUPPORTED</span>
@@ -1108,9 +1210,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 28 15:37:50 2024 by
+  Generated on Mon Sep 23 20:03:28 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.36 (ruby-3.0.6).
+  0.9.37 (ruby-3.0.6).
 </div>
 
     </div>

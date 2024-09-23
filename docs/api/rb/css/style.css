@@ -82,6 +82,11 @@ body {
   #search { display: none; }
 }
 
+@media (max-width: 320px) {
+  body { height: 100%; overflow: hidden; overflow-wrap: break-word; }
+  #main { height: 100%; overflow: auto; }
+}
+
 #main img { max-width: 100%; }
 h1 { font-size: 25px; margin: 1em 0 0.5em; padding-top: 4px; border-top: 1px dotted #d5d5d5; }
 h1.noborder { border-top: 0px; margin-top: 0; padding-top: 4px; }
@@ -106,6 +111,7 @@ h2 small a {
   position: relative;
   padding: 2px 7px;
 }
+a { font-weight: 550; }
 .clear { clear: both; }
 .inline { display: inline; }
 .inline p:first-child { display: inline; }

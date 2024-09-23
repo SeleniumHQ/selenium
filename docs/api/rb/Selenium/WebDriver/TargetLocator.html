@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::TargetLocator
   
-    &mdash; Documentation by YARD 0.9.36
+    &mdash; Documentation by YARD 0.9.37
   
 </title>
 
@@ -405,12 +405,12 @@
       <pre class="lines">
 
 
+116
 117
-118
-119</pre>
+118</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 117</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 116</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_active_element'>active_element</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_active_element'>switch_to_active_element</span>
@@ -446,12 +446,12 @@
       <pre class="lines">
 
 
+132
 133
-134
-135</pre>
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 133</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 132</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alert'>alert</span>
   <span class='const'><span class='object_link'><a href="Alert.html" title="Selenium::WebDriver::Alert (class)">Alert</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Alert.html#initialize-instance_method" title="Selenium::WebDriver::Alert#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -487,12 +487,12 @@
       <pre class="lines">
 
 
+124
 125
-126
-127</pre>
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_content'>default_content</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_default_content'>switch_to_default_content</span>
@@ -766,8 +766,7 @@
 105
 106
 107
-108
-109</pre>
+108</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 84</span>
@@ -787,12 +786,11 @@
     <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_window'>switch_to_window</span> <span class='id identifier rubyid_id'>id</span>
 
     <span class='kw'>begin</span>
-      <span class='id identifier rubyid_returned'>returned</span> <span class='op'>=</span> <span class='kw'>yield</span>
+      <span class='kw'>yield</span>
     <span class='kw'>ensure</span>
       <span class='id identifier rubyid_current_handles'>current_handles</span> <span class='op'>=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handles'>window_handles</span>
       <span class='id identifier rubyid_original'>original</span> <span class='op'>=</span> <span class='id identifier rubyid_current_handles'>current_handles</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span> <span class='kw'>unless</span> <span class='id identifier rubyid_current_handles'>current_handles</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_original'>original</span>
       <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_window'>switch_to_window</span> <span class='id identifier rubyid_original'>original</span>
-      <span class='id identifier rubyid_returned'>returned</span>
     <span class='kw'>end</span>
   <span class='kw'>else</span>
     <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_window'>switch_to_window</span> <span class='id identifier rubyid_id'>id</span>
@@ -808,9 +806,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Aug 28 15:37:51 2024 by
+  Generated on Mon Sep 23 20:03:29 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.36 (ruby-3.0.6).
+  0.9.37 (ruby-3.0.6).
 </div>
 
     </div>
