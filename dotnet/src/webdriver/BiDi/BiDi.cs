@@ -60,7 +60,7 @@ public class BiDi : IAsyncDisposable
         return bidi;
     }
 
-    public Task<Modules.BrowsingContext.BrowsingContext> CreateContextAsync(Modules.BrowsingContext.BrowsingContextType type, Modules.BrowsingContext.CreateOptions? options = null)
+    public Task<Modules.BrowsingContext.BrowsingContext> CreateContextAsync(Modules.BrowsingContext.ContextType type, Modules.BrowsingContext.CreateOptions? options = null)
     {
         return BrowsingContextModule.CreateAsync(type, options);
     }

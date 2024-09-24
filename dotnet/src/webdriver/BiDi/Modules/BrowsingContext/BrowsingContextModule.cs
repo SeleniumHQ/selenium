@@ -7,7 +7,7 @@ namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 
 public class BrowsingContextModule(Broker broker) : Module(broker)
 {
-    public async Task<BrowsingContext> CreateAsync(BrowsingContextType type, CreateOptions? options = null)
+    public async Task<BrowsingContext> CreateAsync(ContextType type, CreateOptions? options = null)
     {
         var @params = new CreateCommandParameters(type);
 

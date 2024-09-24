@@ -72,6 +72,8 @@ jobs:
         with:
           ruby-version: '3.1'
           working-directory: 'rb'
+      - name: Setup curl for Ubuntu
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: "Prep git"
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"

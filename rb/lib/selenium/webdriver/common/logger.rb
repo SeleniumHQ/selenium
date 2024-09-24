@@ -167,7 +167,7 @@ module Selenium
 
         id << :deprecations if @allowed.include?(:deprecations)
 
-        message = +"[DEPRECATION] #{old} is deprecated"
+        message = "[DEPRECATION] #{old} is deprecated"
         message << if new
                      ". Use #{new} instead."
                    else
