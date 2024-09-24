@@ -9,7 +9,7 @@ public class BrowsingContextStorageModule(BrowsingContext context, StorageModule
     {
         options ??= new();
 
-        options.Partition = new BrowsingContextPartitionDescriptor(context);
+        options.Partition = new PartitionDescriptor.Context(context);
 
         return storageModule.GetCookiesAsync(options);
     }
@@ -18,7 +18,7 @@ public class BrowsingContextStorageModule(BrowsingContext context, StorageModule
     {
         options ??= new();
 
-        options.Partition = new BrowsingContextPartitionDescriptor(context);
+        options.Partition = new PartitionDescriptor.Context(context);
 
         var res = await storageModule.DeleteCookiesAsync(options).ConfigureAwait(false);
 
@@ -29,7 +29,7 @@ public class BrowsingContextStorageModule(BrowsingContext context, StorageModule
     {
         options ??= new();
 
-        options.Partition = new BrowsingContextPartitionDescriptor(context);
+        options.Partition = new PartitionDescriptor.Context(context);
 
         var res = await storageModule.SetCookieAsync(cookie, options).ConfigureAwait(false);
 

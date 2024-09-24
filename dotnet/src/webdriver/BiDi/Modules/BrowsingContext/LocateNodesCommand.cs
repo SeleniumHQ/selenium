@@ -23,4 +23,4 @@ public record LocateNodesOptions : CommandOptions
     public IEnumerable<Script.SharedReference>? StartNodes { get; set; }
 }
 
-public record LocateNodesResult(IReadOnlyList<Script.NodeRemoteValue> Nodes);
+public record LocateNodesResult(IReadOnlyList<Script.RemoteValue.Node> Nodes);

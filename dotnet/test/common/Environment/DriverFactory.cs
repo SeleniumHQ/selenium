@@ -67,12 +67,11 @@ namespace OpenQA.Selenium.Environment
             {
                 browser = Browser.Chrome;
                 options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);
-                // Disabling this since we do not have any BiDi tests currently.
-                //options.UseWebSocketUrl = true;
+                options.UseWebSocketUrl = true;
 
                 // If BiDi is enabled above then the undhandler prompt behaviour needs to set accordingly.
                 // Reasoning : https://github.com/SeleniumHQ/selenium/pull/14429#issuecomment-2311614822
-                //options.UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore;
+                options.UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore;
 
                 var chromeOptions = (ChromeOptions)options;
                 chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");

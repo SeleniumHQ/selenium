@@ -20,12 +20,12 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
 
         var result = await Broker.ExecuteCommandAsync<EvaluateResult>(new EvaluateCommand(@params), options).ConfigureAwait(false);
 
-        if (result is EvaluateResultException exp)
+        if (result is EvaluateResult.Exception exp)
         {
             throw new ScriptEvaluateException(exp);
         }
 
-        return ((EvaluateResultSuccess)result).Result;
+        return ((EvaluateResult.Success)result).Result;
     }
 
     public async Task<RemoteValue> CallFunctionAsync(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
@@ -43,12 +43,12 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
 
         var result = await Broker.ExecuteCommandAsync<EvaluateResult>(new CallFunctionCommand(@params), options).ConfigureAwait(false);
 
-        if (result is EvaluateResultException exp)
+        if (result is EvaluateResult.Exception exp)
         {
             throw new ScriptEvaluateException(exp);
         }
 
-        return ((EvaluateResultSuccess)result).Result;
+        return ((EvaluateResult.Success)result).Result;
     }
 
     public async Task<IReadOnlyList<RealmInfo>> GetRealmsAsync(GetRealmsOptions? options = null)

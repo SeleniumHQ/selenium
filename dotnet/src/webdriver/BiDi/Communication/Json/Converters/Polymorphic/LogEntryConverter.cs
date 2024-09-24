@@ -14,8 +14,8 @@ internal class LogEntryConverter : JsonConverter<BaseLogEntry>
 
         return jsonDocument.RootElement.GetProperty("type").ToString() switch
         {
-            "console" => jsonDocument.Deserialize<ConsoleLogEntry>(options),
-            "javascript" => jsonDocument.Deserialize<JavascriptLogEntry>(options),
+            "console" => jsonDocument.Deserialize<BaseLogEntry.Console>(options),
+            "javascript" => jsonDocument.Deserialize<BaseLogEntry.Javascript>(options),
             _ => null,
         };
     }

@@ -27,7 +27,7 @@ public class BrowsingContextScriptModule(BrowsingContext context, ScriptModule s
 
     public Task<RemoteValue> EvaluateAsync(string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)
     {
-        var contextTarget = new ContextTarget(context);
+        var contextTarget = new Target.Context(context);
 
         if (targetOptions is not null)
         {
@@ -46,7 +46,7 @@ public class BrowsingContextScriptModule(BrowsingContext context, ScriptModule s
 
     public Task<RemoteValue> CallFunctionAsync(string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null)
     {
-        var contextTarget = new ContextTarget(context);
+        var contextTarget = new Target.Context(context);
 
         if (targetOptions is not null)
         {

@@ -42,7 +42,7 @@ public class BrowsingContextModule(Broker broker) : Module(broker)
         await Broker.ExecuteCommandAsync(new ActivateCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task<IReadOnlyList<Script.NodeRemoteValue>> LocateNodesAsync(BrowsingContext context, Locator locator, LocateNodesOptions? options = null)
+    public async Task<IReadOnlyList<Script.RemoteValue.Node>> LocateNodesAsync(BrowsingContext context, Locator locator, LocateNodesOptions? options = null)
     {
         var @params = new LocateNodesCommandParameters(context, locator);
 

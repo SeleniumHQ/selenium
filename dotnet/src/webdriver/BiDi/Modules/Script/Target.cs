@@ -2,15 +2,23 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
-[JsonDerivedType(typeof(RealmTarget))]
-[JsonDerivedType(typeof(ContextTarget))]
-public abstract record Target;
-
-public record RealmTarget(Realm Realm) : Target;
-
-public record ContextTarget(BrowsingContext.BrowsingContext Context) : Target
+[JsonDerivedType(typeof(Realm))]
+[JsonDerivedType(typeof(Context))]
+public abstract record Target
 {
-    public string? Sandbox { get; set; }
+    public record Realm(Script.Realm Target) : Target
+    {
+        [JsonPropertyName("realm")]
+        public Script.Realm Target { get; } = Target;
+    }
+
+    public record Context(BrowsingContext.BrowsingContext Target) : Target
+    {
+        [JsonPropertyName("context")]
+        public BrowsingContext.BrowsingContext Target { get; } = Target;
+
+        public string? Sandbox { get; set; }
+    }
 }
 
 public class ContextTargetOptions

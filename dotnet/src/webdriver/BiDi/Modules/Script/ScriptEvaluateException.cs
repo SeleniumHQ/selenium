@@ -2,9 +2,9 @@ using System;
 
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
-public class ScriptEvaluateException(EvaluateResultException evaluateResultException) : Exception
+public class ScriptEvaluateException(EvaluateResult.Exception evaluateResultException) : Exception
 {
-    private readonly EvaluateResultException _evaluateResultException = evaluateResultException;
+    private readonly EvaluateResult.Exception _evaluateResultException = evaluateResultException;
 
     public string Text => _evaluateResultException.ExceptionDetails.Text;
 

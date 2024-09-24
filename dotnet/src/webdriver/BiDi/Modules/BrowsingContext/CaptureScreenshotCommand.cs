@@ -35,13 +35,18 @@ public record struct ImageFormat(string Type)
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(BoxClipRectangle), "box")]
-[JsonDerivedType(typeof(ElementClipRectangle), "element")]
-public abstract record ClipRectangle;
+[JsonDerivedType(typeof(Box), "box")]
+[JsonDerivedType(typeof(Element), "element")]
+public abstract record ClipRectangle
+{
+    public record Box(double X, double Y, double Width, double Height) : ClipRectangle;
 
-public record BoxClipRectangle(double X, double Y, double Width, double Height) : ClipRectangle;
-
-public record ElementClipRectangle(Script.SharedReference Element) : ClipRectangle;
+    public record Element(Script.SharedReference SharedReference) : ClipRectangle
+    {
+        [JsonPropertyName("element")]
+        public Script.SharedReference SharedReference { get; } = SharedReference;
+    }
+}
 
 public record CaptureScreenshotResult(string Data)
 {

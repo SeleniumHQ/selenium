@@ -14,14 +14,14 @@ internal class RealmInfoConverter : JsonConverter<RealmInfo>
 
         return jsonDocument.RootElement.GetProperty("type").ToString() switch
         {
-            "window" => jsonDocument.Deserialize<WindowRealmInfo>(options),
-            "dedicated-worker" => jsonDocument.Deserialize<DedicatedWorkerRealmInfo>(options),
-            "shared-worker" => jsonDocument.Deserialize<SharedWorkerRealmInfo>(options),
-            "service-worker" => jsonDocument.Deserialize<ServiceWorkerRealmInfo>(options),
-            "worker" => jsonDocument.Deserialize<WorkerRealmInfo>(options),
-            "paint-worklet" => jsonDocument.Deserialize<PaintWorkletRealmInfo>(options),
-            "audio-worklet" => jsonDocument.Deserialize<AudioWorkletRealmInfo>(options),
-            "worklet" => jsonDocument.Deserialize<WorkletRealmInfo>(options),
+            "window" => jsonDocument.Deserialize<BaseRealmInfo.Window>(options),
+            "dedicated-worker" => jsonDocument.Deserialize<BaseRealmInfo.DedicatedWorker>(options),
+            "shared-worker" => jsonDocument.Deserialize<BaseRealmInfo.SharedWorker>(options),
+            "service-worker" => jsonDocument.Deserialize<BaseRealmInfo.ServiceWorker>(options),
+            "worker" => jsonDocument.Deserialize<BaseRealmInfo.Worker>(options),
+            "paint-worklet" => jsonDocument.Deserialize<BaseRealmInfo.PaintWorklet>(options),
+            "audio-worklet" => jsonDocument.Deserialize<BaseRealmInfo.AudioWorklet>(options),
+            "worklet" => jsonDocument.Deserialize<BaseRealmInfo.Worklet>(options),
             _ => null,
         };
     }
