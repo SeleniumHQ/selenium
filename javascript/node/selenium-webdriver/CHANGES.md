@@ -1,3 +1,7 @@
+## 4.25.0
+
+- Add CDP for Chrome 129 and remove 126
+
 ## 4.24.1
 
 - Close CDP websocket connection on driver.quit (#14501)
