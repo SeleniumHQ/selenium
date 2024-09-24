@@ -194,47 +194,26 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: 'gh-pages'
+          fetch-depth: 0
+          fetch-tags: true
       - name: Create and checkout new branch
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           git checkout -b api-docs-${{ inputs.tag }}
-      - name: Download Java patch
-        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'java'
+      - name: Download all patches
         uses: actions/download-artifact@v4
         with:
-          name: java-docs-patch
-          path: patches/
-      - name: Download Ruby patch
-        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'ruby'
-        uses: actions/download-artifact@v4
-        with:
-          name: ruby-docs-patch
-          path: patches/
-      - name: Download Python patch
-        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'python'
-        uses: actions/download-artifact@v4
-        with:
-          name: python-docs-patch
-          path: patches/
-      - name: Download .NET patch
-        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'dotnet'
-        uses: actions/download-artifact@v4
-        with:
-          name: dotnet-docs-patch
-          path: patches/
-      - name: Download Node patch
-        if: needs.determine-language.outputs.language == 'all' || needs.determine-language.outputs.language == 'node'
-        uses: actions/download-artifact@v4
-        with:
-          name: node-docs-patch
           path: patches/
           merge-multiple: true
+      - name: Show downloaded patches
+        run: ls -lah patches/
       - name: Apply patches
         run: |
           for patch in patches/*.patch; do
             git am < "$patch"
           done
+          rm -rf patches/
       - name: Push Branch
         run: git push origin api-docs-${{ inputs.tag }}
       - name: Documentation Pull Request
