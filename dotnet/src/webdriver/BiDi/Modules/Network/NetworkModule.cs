@@ -113,17 +113,17 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
 
     internal async Task ContinueWithAuthAsync(Request request, AuthCredentials credentials, ContinueWithAuthOptions? options = null)
     {
-        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthCredentials(request, credentials)), options).ConfigureAwait(false);
+        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthParameters.Credentials(request, credentials)), options).ConfigureAwait(false);
     }
 
     internal async Task ContinueWithAuthAsync(Request request, ContinueWithDefaultAuthOptions? options = null)
     {
-        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithDefaultAuth(request)), options).ConfigureAwait(false);
+        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthParameters.Default(request)), options).ConfigureAwait(false);
     }
 
     internal async Task ContinueWithAuthAsync(Request request, ContinueWithCancelledAuthOptions? options = null)
     {
-        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithCancelledAuth(request)), options).ConfigureAwait(false);
+        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthParameters.Cancel(request)), options).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)
