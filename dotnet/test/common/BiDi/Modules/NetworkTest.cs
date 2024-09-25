@@ -20,8 +20,8 @@ class NetworkTest : BiDiFixture
         await using var intercept = await bidi.Network.InterceptRequestAsync(e => Task.CompletedTask, new()
         {
             UrlPatterns = [
-                new UrlPattern.String("http://localhost:4444/*"),
-                "http://localhost:4444/*"
+                new UrlPattern.String("http://localhost:4444"),
+                "http://localhost:4444/"
                 ]
         });
 

@@ -170,8 +170,7 @@ class BrowsingContextTest : BiDiFixture
 
         var info = await context.ReloadAsync(new()
         {
-            Wait = ReadinessState.Complete,
-            IgnoreCache = true
+            Wait = ReadinessState.Complete
         });
 
         Assert.That(info, Is.Not.Null);
@@ -181,7 +180,7 @@ class BrowsingContextTest : BiDiFixture
     [Test]
     public async Task CanHandleUserPrompt()
     {
-        await context.NavigateAsync(alertsPage);
+        await context.NavigateAsync(alertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
         WaitFor(() => driver.SwitchTo().Alert(), "No alert");
@@ -192,7 +191,7 @@ class BrowsingContextTest : BiDiFixture
     [Test]
     public async Task CanAcceptUserPrompt()
     {
-        await context.NavigateAsync(alertsPage);
+        await context.NavigateAsync(alertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
         WaitFor(() => driver.SwitchTo().Alert(), "No alert");
@@ -206,7 +205,7 @@ class BrowsingContextTest : BiDiFixture
     [Test]
     public async Task CanDismissUserPrompt()
     {
-        await context.NavigateAsync(alertsPage);
+        await context.NavigateAsync(alertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
         WaitFor(() => driver.SwitchTo().Alert(), "No alert");
@@ -220,7 +219,7 @@ class BrowsingContextTest : BiDiFixture
     [Test]
     public async Task CanPassUserTextToPrompt()
     {
-        await context.NavigateAsync(alertsPage);
+        await context.NavigateAsync(alertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
         WaitFor(() => driver.SwitchTo().Alert(), "No alert");
