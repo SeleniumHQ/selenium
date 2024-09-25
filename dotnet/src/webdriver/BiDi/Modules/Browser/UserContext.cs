@@ -24,4 +24,16 @@ public class UserContext : IAsyncDisposable
     {
         await RemoveAsync().ConfigureAwait(false);
     }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is UserContext userContextObj) return userContextObj.Id == Id;
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
 }
