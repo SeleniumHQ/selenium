@@ -34,7 +34,7 @@ public class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule
         return intercept;
     }
 
-    public async Task<Intercept> InterceptAuthenticationAsync(Func<AuthRequiredEventArgs, Task> handler, BrowsingContextAddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
+    public async Task<Intercept> InterceptAuthAsync(Func<AuthRequiredEventArgs, Task> handler, BrowsingContextAddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
     {
         AddInterceptOptions addInterceptOptions = new(interceptOptions)
         {
