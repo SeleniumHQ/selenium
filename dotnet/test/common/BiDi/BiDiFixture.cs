@@ -12,10 +12,19 @@ class BiDiFixture : DriverTestFixture
 
     protected UrlBuilder UrlBuilder { get; } = EnvironmentManager.Instance.UrlBuilder;
 
-    [OneTimeSetUp]
+    [SetUp]
     public async Task BiDiSetUp()
     {
         context = await driver.AsBiDiContextAsync();
         bidi = context.BiDi;
+    }
+
+    [TearDown]
+    public async Task BiDiTearDown()
+    {
+        if (bidi is not null)
+        {
+            await bidi.DisposeAsync();
+        }
     }
 }

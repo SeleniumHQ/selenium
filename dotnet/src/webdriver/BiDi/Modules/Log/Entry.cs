@@ -7,14 +7,16 @@ namespace OpenQA.Selenium.BiDi.Modules.Log;
 //[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 //[JsonDerivedType(typeof(Console), "console")]
 //[JsonDerivedType(typeof(Javascript), "javascript")]
-public abstract record BaseLogEntry(BiDi BiDi, Level Level, Script.Source Source, string Text, DateTimeOffset Timestamp)
+public abstract record Entry(BiDi BiDi, Level Level, Script.Source Source, string Text, DateTimeOffset Timestamp)
     : EventArgs(BiDi)
 {
+    public Script.StackTrace? StackTrace { get; set; }
+
     public record Console(BiDi BiDi, Level Level, Script.Source Source, string Text, DateTimeOffset Timestamp, string Method, IReadOnlyList<Script.RemoteValue> Args)
-    : BaseLogEntry(BiDi, Level, Source, Text, Timestamp);
+    : Entry(BiDi, Level, Source, Text, Timestamp);
 
     public record Javascript(BiDi BiDi, Level Level, Script.Source Source, string Text, DateTimeOffset Timestamp)
-        : BaseLogEntry(BiDi, Level, Source, Text, Timestamp);
+        : Entry(BiDi, Level, Source, Text, Timestamp);
 }
 
 public enum Level
