@@ -88,7 +88,12 @@ public class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule
         return networkModule.OnFetchErrorAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
     }
 
-    internal Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
+    {
+        return networkModule.OnAuthRequiredAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+    }
+
+    public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null)
     {
         return networkModule.OnAuthRequiredAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
     }
