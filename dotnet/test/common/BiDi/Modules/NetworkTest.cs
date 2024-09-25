@@ -15,6 +15,35 @@ class NetworkTest : BiDiFixture
     }
 
     [Test]
+    public async Task CanAddInterceptStringUrlPattern()
+    {
+        await using var intercept = await bidi.Network.InterceptRequestAsync(e => Task.CompletedTask, new()
+        {
+            UrlPatterns = [
+                new UrlPattern.String("http://localhost:4444/*"),
+                "http://localhost:4444/*"
+                ]
+        });
+
+        Assert.That(intercept, Is.Not.Null);
+    }
+
+    [Test]
+    public async Task CanAddInterceptUrlPattern()
+    {
+        await using var intercept = await bidi.Network.InterceptRequestAsync(e => Task.CompletedTask, interceptOptions: new()
+        {
+            UrlPatterns = [new UrlPattern.Pattern()
+            {
+                Hostname = "localhost",
+                Protocol = "http"
+            }]
+        });
+
+        Assert.That(intercept, Is.Not.Null);
+    }
+
+    [Test]
     public async Task CanContinueRequest()
     {
         int times = 0;
