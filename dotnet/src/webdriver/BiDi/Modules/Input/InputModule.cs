@@ -21,6 +21,6 @@ public sealed class InputModule(Broker broker) : Module(broker)
     {
         var @params = new ReleaseActionsCommandParameters(context);
 
-        await Broker.ExecuteCommandAsync(new ReleaseActionsCommand(@params), options);
+        await Broker.ExecuteCommandAsync(new ReleaseActionsCommand(@params), options).ConfigureAwait(false);
     }
 }
