@@ -1,5 +1,6 @@
 using OpenQA.Selenium.BiDi.Communication;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -21,7 +22,26 @@ public record GetCookiesOptions : CommandOptions
     public PartitionDescriptor? Partition { get; set; }
 }
 
-public record GetCookiesResult(IReadOnlyList<Network.Cookie> Cookies, PartitionKey PartitionKey);
+public record GetCookiesResult : IReadOnlyList<Network.Cookie>
+{
+    private readonly IReadOnlyList<Network.Cookie> _cookies;
+
+    internal GetCookiesResult(IReadOnlyList<Network.Cookie> cookies, PartitionKey partitionKey)
+    {
+        _cookies = cookies;
+        PartitionKey = partitionKey;
+    }
+
+    public PartitionKey PartitionKey { get; init; }
+
+    public Network.Cookie this[int index] => _cookies[index];
+
+    public int Count => _cookies.Count;
+
+    public IEnumerator<Network.Cookie> GetEnumerator() => _cookies.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => (_cookies as IEnumerable).GetEnumerator();
+}
 
 public class CookieFilter
 {

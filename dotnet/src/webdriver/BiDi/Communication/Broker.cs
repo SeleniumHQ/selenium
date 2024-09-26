@@ -68,6 +68,9 @@ public class Broker : IAsyncDisposable
                 new Json.Converters.Polymorphic.RealmInfoConverter(),
                 new Json.Converters.Polymorphic.LogEntryConverter(),
                 //
+
+                // Enumerable
+                new Json.Converters.Enumerable.GetCookiesResultConverter(),
             }
         };
     }

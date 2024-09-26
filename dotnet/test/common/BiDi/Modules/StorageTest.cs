@@ -22,7 +22,7 @@ class StorageTest : BiDiFixture
         });
 
         Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies.Cookies, Is.Empty);
+        Assert.That(cookies, Is.Empty);
     }
 
     [Test]
@@ -42,7 +42,7 @@ class StorageTest : BiDiFixture
         });
 
         Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies.Cookies, Is.Empty);
+        Assert.That(cookies, Is.Empty);
         Assert.That(cookies.PartitionKey.UserContext, Is.EqualTo(userContexts[0].UserContext));
     }
 
@@ -75,9 +75,9 @@ class StorageTest : BiDiFixture
         var cookies = await context.Storage.GetCookiesAsync();
 
         Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies.Cookies.Count, Is.EqualTo(1));
+        Assert.That(cookies.Count, Is.EqualTo(1));
 
-        var cookie = cookies.Cookies[0];
+        var cookie = cookies[0];
 
         Assert.That(cookie.Name, Is.EqualTo("fish"));
         Assert.That((cookie.Value as BytesValue.String).Value, Is.EqualTo("cod"));
@@ -100,9 +100,9 @@ class StorageTest : BiDiFixture
         var cookies = await bidi.Storage.GetCookiesAsync();
 
         Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies.Cookies.Count, Is.EqualTo(2));
-        Assert.That(cookies.Cookies[0].Name, Is.EqualTo("key1"));
-        Assert.That(cookies.Cookies[1].Name, Is.EqualTo("key2"));
+        Assert.That(cookies.Count, Is.EqualTo(2));
+        Assert.That(cookies[0].Name, Is.EqualTo("key1"));
+        Assert.That(cookies[1].Name, Is.EqualTo("key2"));
     }
 
     [Test]
@@ -120,7 +120,7 @@ class StorageTest : BiDiFixture
         var cookies = await bidi.Storage.GetCookiesAsync();
 
         Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies.Cookies.Count, Is.EqualTo(0));
+        Assert.That(cookies.Count, Is.EqualTo(0));
     }
 
     [Test]
@@ -138,8 +138,8 @@ class StorageTest : BiDiFixture
         var cookies = await bidi.Storage.GetCookiesAsync();
 
         Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies.Cookies.Count, Is.EqualTo(1));
-        Assert.That(cookies.Cookies[0].Name, Is.EqualTo("key2"));
+        Assert.That(cookies.Count, Is.EqualTo(1));
+        Assert.That(cookies[0].Name, Is.EqualTo("key2"));
     }
 
     [Test]
