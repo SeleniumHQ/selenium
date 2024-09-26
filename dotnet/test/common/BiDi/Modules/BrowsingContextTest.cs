@@ -180,10 +180,9 @@ class BrowsingContextTest : BiDiFixture
     [Test]
     public async Task CanHandleUserPrompt()
     {
-        await context.NavigateAsync(alertsPage, new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
-        WaitFor(() => driver.SwitchTo().Alert(), "No alert");
 
         await context.HandleUserPromptAsync();
     }
@@ -191,10 +190,9 @@ class BrowsingContextTest : BiDiFixture
     [Test]
     public async Task CanAcceptUserPrompt()
     {
-        await context.NavigateAsync(alertsPage, new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
-        WaitFor(() => driver.SwitchTo().Alert(), "No alert");
 
         await context.HandleUserPromptAsync(new()
         {
@@ -205,10 +203,9 @@ class BrowsingContextTest : BiDiFixture
     [Test]
     public async Task CanDismissUserPrompt()
     {
-        await context.NavigateAsync(alertsPage, new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
-        WaitFor(() => driver.SwitchTo().Alert(), "No alert");
 
         await context.HandleUserPromptAsync(new()
         {
@@ -219,10 +216,9 @@ class BrowsingContextTest : BiDiFixture
     [Test]
     public async Task CanPassUserTextToPrompt()
     {
-        await context.NavigateAsync(alertsPage, new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
-        WaitFor(() => driver.SwitchTo().Alert(), "No alert");
 
         await context.HandleUserPromptAsync(new()
         {

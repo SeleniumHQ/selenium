@@ -137,7 +137,7 @@ class NetworkTest : BiDiFixture
         await intercept.DisposeAsync();
     }
 
-    [Test, NeedsFreshDriver(IsCreatedAfterTest = true)]
+    [Test]
     public async Task CanContinueWithAuthCredentials()
     {
         await using var intercept = await bidi.Network.InterceptAuthAsync(async e =>

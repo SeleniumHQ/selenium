@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
 
-class BiDiFixture : DriverTestFixture
+[Parallelizable(ParallelScope.All)]
+[FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
+class BiDiFixture
 {
+    protected IWebDriver driver;
     protected BiDi bidi;
     protected BrowsingContext context;
 
@@ -15,6 +18,13 @@ class BiDiFixture : DriverTestFixture
     [SetUp]
     public async Task BiDiSetUp()
     {
+        var options = new BiDiEnabledDriverOptions()
+        {
+            UseWebSocketUrl = true,
+        };
+
+        driver = EnvironmentManager.Instance.CreateDriverInstance(options);
+
         context = await driver.AsBiDiContextAsync();
         bidi = context.BiDi;
     }
@@ -25,6 +35,20 @@ class BiDiFixture : DriverTestFixture
         if (bidi is not null)
         {
             await bidi.DisposeAsync();
+        }
+
+        driver?.Dispose();
+    }
+
+    public class BiDiEnabledDriverOptions : DriverOptions
+    {
+        public override void AddAdditionalOption(string capabilityName, object capabilityValue)
+        {
+        }
+
+        public override ICapabilities ToCapabilities()
+        {
+            return null;
         }
     }
 }

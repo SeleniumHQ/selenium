@@ -1,12 +1,11 @@
 using NUnit.Framework;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Modules;
 
 class BrowserTest : BiDiFixture
 {
-    [Test, NeedsFreshDriver(IsCreatedAfterTest = true)]
+    [Test]
     public async Task CanCreateUserContext()
     {
         var userContext = await bidi.Browser.CreateUserContextAsync();
@@ -14,7 +13,7 @@ class BrowserTest : BiDiFixture
         Assert.That(userContext, Is.Not.Null);
     }
 
-    [Test, NeedsFreshDriver(IsCreatedAfterTest = true)]
+    [Test]
     public async Task CanGetUserContexts()
     {
         var userContext1 = await bidi.Browser.CreateUserContextAsync();
@@ -28,7 +27,7 @@ class BrowserTest : BiDiFixture
         Assert.That(userContexts, Does.Contain(userContext2));
     }
 
-    [Test, NeedsFreshDriver(IsCreatedAfterTest = true)]
+    [Test]
     public async Task CanRemoveUserContext()
     {
         var userContext1 = await bidi.Browser.CreateUserContextAsync();
