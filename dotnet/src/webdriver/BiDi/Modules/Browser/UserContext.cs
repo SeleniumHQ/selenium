@@ -13,7 +13,7 @@ public class UserContext : IAsyncDisposable
         Id = id;
     }
 
-    public string Id { get; }
+    internal string Id { get; }
 
     public Task RemoveAsync()
     {
