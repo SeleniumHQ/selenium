@@ -28,9 +28,12 @@ public record EvaluateOptions : CommandOptions
 //[JsonDerivedType(typeof(Exception), "exception")]
 public abstract record EvaluateResult
 {
-    public record Success(RemoteValue Result) : EvaluateResult;
+    public record Success(RemoteValue Result, Realm Realm) : EvaluateResult
+    {
+        public static implicit operator RemoteValue(Success success) => success.Result;
+    }
 
-    public record Exception(ExceptionDetails ExceptionDetails) : EvaluateResult;
+    public record Exception(ExceptionDetails ExceptionDetails, Realm Realm) : EvaluateResult;
 }
 
 public record ExceptionDetails(long ColumnNumber, long LineNumber, StackTrace StackTrace, string Text);

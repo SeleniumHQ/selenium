@@ -7,7 +7,7 @@ namespace OpenQA.Selenium.BiDi.Modules.Script;
 
 public sealed class ScriptModule(Broker broker) : Module(broker)
 {
-    public async Task<RemoteValue> EvaluateAsync(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
+    public async Task<EvaluateResult.Success> EvaluateAsync(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
     {
         var @params = new EvaluateCommandParameters(expression, target, awaitPromise);
 
@@ -25,10 +25,10 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
             throw new ScriptEvaluateException(exp);
         }
 
-        return ((EvaluateResult.Success)result).Result;
+        return (EvaluateResult.Success)result;
     }
 
-    public async Task<RemoteValue> CallFunctionAsync(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
+    public async Task<EvaluateResult.Success> CallFunctionAsync(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
     {
         var @params = new CallFunctionCommandParameters(functionDeclaration, awaitPromise, target);
 
@@ -48,7 +48,14 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
             throw new ScriptEvaluateException(exp);
         }
 
-        return ((EvaluateResult.Success)result).Result;
+        return (EvaluateResult.Success)result;
+    }
+
+    public async Task<TResult?> CallFunctionAsync<TResult>(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
+    {
+        var result = await CallFunctionAsync(functionDeclaration, awaitPromise, target, options).ConfigureAwait(false);
+
+        return result.Result.ConvertTo<TResult>();
     }
 
     public async Task<IReadOnlyList<RealmInfo>> GetRealmsAsync(GetRealmsOptions? options = null)

@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi.Modules;
+namespace OpenQA.Selenium.BiDi.Browser;
 
 class BrowserTest : BiDiFixture
 {

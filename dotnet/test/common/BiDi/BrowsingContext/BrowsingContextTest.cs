@@ -3,7 +3,7 @@ using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi.Modules;
+namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 class BrowsingContextTest : BiDiFixture
 {
@@ -270,7 +270,7 @@ class BrowsingContextTest : BiDiFixture
 
         var screenshot = await context.CaptureScreenshotAsync(new()
         {
-            Clip = new ClipRectangle.Element(new Script.SharedReference(elements[0].SharedId))
+            Clip = new ClipRectangle.Element(new Modules.Script.SharedReference(elements[0].SharedId))
         });
 
         Assert.That(screenshot, Is.Not.Null);

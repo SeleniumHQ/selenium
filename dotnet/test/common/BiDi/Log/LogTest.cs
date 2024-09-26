@@ -3,7 +3,7 @@ using OpenQA.Selenium.BiDi.Modules.Log;
 using System;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi.Modules;
+namespace OpenQA.Selenium.BiDi.Log;
 
 class LogTest : BiDiFixture
 {
@@ -33,7 +33,7 @@ class LogTest : BiDiFixture
 
         Assert.That(consoleLogEntry.Args, Is.Not.Null);
         Assert.That(consoleLogEntry.Args, Has.Count.EqualTo(1));
-        Assert.That(consoleLogEntry.Args[0], Is.AssignableFrom<Script.RemoteValue.String>());
+        Assert.That(consoleLogEntry.Args[0], Is.AssignableFrom<Modules.Script.RemoteValue.String>());
     }
 
     [Test]

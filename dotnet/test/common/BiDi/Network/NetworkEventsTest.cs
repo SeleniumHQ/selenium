@@ -1,9 +1,10 @@
 using NUnit.Framework;
+using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 using OpenQA.Selenium.BiDi.Modules.Network;
 using System;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi.Modules;
+namespace OpenQA.Selenium.BiDi.Network;
 
 class NetworkEventsTest : BiDiFixture
 {
@@ -14,7 +15,7 @@ class NetworkEventsTest : BiDiFixture
 
         await using var subscription = await context.Network.OnBeforeRequestSentAsync(tcs.SetResult);
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         var req = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -32,7 +33,7 @@ class NetworkEventsTest : BiDiFixture
 
         await using var subscription = await context.Network.OnResponseStartedAsync(tcs.SetResult);
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         var res = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -51,7 +52,7 @@ class NetworkEventsTest : BiDiFixture
 
         await using var subscription = await context.Network.OnResponseCompletedAsync(tcs.SetResult);
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         var res = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -69,7 +70,7 @@ class NetworkEventsTest : BiDiFixture
     {
         TaskCompletionSource<BeforeRequestSentEventArgs> tcs = new();
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         driver.Manage().Cookies.AddCookie(new("foo", "bar"));
 
@@ -114,7 +115,7 @@ class NetworkEventsTest : BiDiFixture
 
         try
         {
-            await context.NavigateAsync("https://not_a_valid_url.test", new() { Wait = BrowsingContext.ReadinessState.Complete });
+            await context.NavigateAsync("https://not_a_valid_url.test", new() { Wait = ReadinessState.Complete });
         }
         catch (Exception) { }
 

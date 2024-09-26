@@ -3,7 +3,7 @@ using OpenQA.Selenium.BiDi.Modules.Network;
 using System;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi.Modules;
+namespace OpenQA.Selenium.BiDi.Storage;
 
 class StorageTest : BiDiFixture
 {

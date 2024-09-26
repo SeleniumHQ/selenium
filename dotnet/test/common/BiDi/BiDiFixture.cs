@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 using OpenQA.Selenium.Environment;
 using System.Threading.Tasks;
 
@@ -11,7 +10,7 @@ class BiDiFixture
 {
     protected IWebDriver driver;
     protected BiDi bidi;
-    protected BrowsingContext context;
+    protected Modules.BrowsingContext.BrowsingContext context;
 
     protected UrlBuilder UrlBuilder { get; } = EnvironmentManager.Instance.UrlBuilder;
 

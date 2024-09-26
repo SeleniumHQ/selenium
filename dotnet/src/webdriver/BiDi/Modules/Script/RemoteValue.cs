@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Modules.Script;
@@ -7,10 +8,12 @@ namespace OpenQA.Selenium.BiDi.Modules.Script;
 // https://github.com/dotnet/runtime/issues/72604
 //[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 //[JsonDerivedType(typeof(Number), "number")]
+//[JsonDerivedType(typeof(Boolean), "boolean")]
 //[JsonDerivedType(typeof(String), "string")]
 //[JsonDerivedType(typeof(Null), "null")]
 //[JsonDerivedType(typeof(Undefined), "undefined")]
 //[JsonDerivedType(typeof(Symbol), "symbol")]
+//[JsonDerivedType(typeof(Array), "array")]
 //[JsonDerivedType(typeof(Object), "object")]
 //[JsonDerivedType(typeof(Function), "function")]
 //[JsonDerivedType(typeof(RegExp), "regexp")]
@@ -48,6 +51,10 @@ public abstract record RemoteValue
     {
         var type = typeof(TResult);
 
+        if (type == typeof(bool))
+        {
+            return (TResult)(Convert.ToBoolean(((Boolean)this).Value) as object);
+        }
         if (type == typeof(int))
         {
             return (TResult)(Convert.ToInt32(((Number)this).Value) as object);
@@ -66,6 +73,8 @@ public abstract record RemoteValue
     }
 
     public record Number(long Value) : PrimitiveProtocolRemoteValue;
+
+    public record Boolean(bool Value) : PrimitiveProtocolRemoteValue;
 
     public record String(string Value) : PrimitiveProtocolRemoteValue;
 

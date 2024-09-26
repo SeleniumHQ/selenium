@@ -1,8 +1,9 @@
 using NUnit.Framework;
+using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 using OpenQA.Selenium.BiDi.Modules.Network;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi.Modules;
+namespace OpenQA.Selenium.BiDi.Network;
 
 class NetworkTest : BiDiFixture
 {
@@ -54,7 +55,7 @@ class NetworkTest : BiDiFixture
             await e.Request.Request.ContinueAsync();
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(intercept, Is.Not.Null);
         Assert.That(times, Is.GreaterThan(0));
@@ -72,7 +73,7 @@ class NetworkTest : BiDiFixture
             await e.Request.Request.ContinueResponseAsync();
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(intercept, Is.Not.Null);
         Assert.That(times, Is.GreaterThan(0));
@@ -90,7 +91,7 @@ class NetworkTest : BiDiFixture
             await e.Request.Request.ProvideResponseAsync();
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(intercept, Is.Not.Null);
         Assert.That(times, Is.GreaterThan(0));
@@ -116,7 +117,7 @@ class NetworkTest : BiDiFixture
                 """ });
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(intercept, Is.Not.Null);
         Assert.That(times, Is.GreaterThan(0));
@@ -146,7 +147,7 @@ class NetworkTest : BiDiFixture
             await e.Request.Request.ContinueWithAuthAsync(new AuthCredentials.Basic("test", "test"));
         });
 
-        await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(driver.FindElement(By.CssSelector("h1")).Text, Is.EqualTo("authorized"));
     }
@@ -159,7 +160,7 @@ class NetworkTest : BiDiFixture
             await e.Request.Request.ContinueWithAuthAsync(new ContinueWithDefaultAuthOptions());
         });
 
-        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_INVALID_AUTH_CREDENTIALS"));
     }
@@ -172,7 +173,7 @@ class NetworkTest : BiDiFixture
             await e.Request.Request.ContinueWithAuthAsync(new ContinueWithCancelledAuthOptions());
         });
 
-        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_HTTP_RESPONSE_CODE_FAILURE"));
     }
@@ -185,7 +186,7 @@ class NetworkTest : BiDiFixture
             await e.Request.Request.FailAsync();
         });
 
-        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = BrowsingContext.ReadinessState.Complete });
+        var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_FAILED"));
     }

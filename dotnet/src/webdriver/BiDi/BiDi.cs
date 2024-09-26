@@ -41,7 +41,7 @@ public class BiDi : IAsyncDisposable
     public Modules.Browser.BrowserModule Browser => _browserModule.Value;
     public Modules.Network.NetworkModule Network => _networkModule.Value;
     internal Modules.Input.InputModule InputModule => _inputModule.Value;
-    internal Modules.Script.ScriptModule ScriptModule => _scriptModule.Value;
+    public Modules.Script.ScriptModule Script => _scriptModule.Value;
     public Modules.Log.LogModule Log => _logModule.Value;
     public Modules.Storage.StorageModule Storage => _storageModule.Value;
 

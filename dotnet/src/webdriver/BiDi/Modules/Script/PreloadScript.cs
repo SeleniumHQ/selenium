@@ -17,7 +17,7 @@ public class PreloadScript : IAsyncDisposable
 
     public Task RemoveAsync()
     {
-        return _bidi.ScriptModule.RemovePreloadScriptAsync(this);
+        return _bidi.Script.RemovePreloadScriptAsync(this);
     }
 
     public async ValueTask DisposeAsync()

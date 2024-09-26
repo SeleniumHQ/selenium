@@ -24,6 +24,8 @@ public abstract record LocalValue
     {
         switch (value)
         {
+            case LocalValue:
+                return (LocalValue)value;
             case null:
                 return new Null();
             case int:
