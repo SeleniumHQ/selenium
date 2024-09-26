@@ -49,9 +49,9 @@ class NetworkTest : BiDiFixture
         int times = 0;
         await using var intercept = await bidi.Network.InterceptRequestAsync(async e =>
         {
-            await e.Request.Request.ContinueAsync();
-
             times++;
+
+            await e.Request.Request.ContinueAsync();
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
@@ -67,9 +67,9 @@ class NetworkTest : BiDiFixture
 
         await using var intercept = await bidi.Network.InterceptResponseAsync(async e =>
         {
-            await e.Request.Request.ContinueResponseAsync();
-
             times++;
+
+            await e.Request.Request.ContinueResponseAsync();
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
@@ -85,9 +85,9 @@ class NetworkTest : BiDiFixture
 
         await using var intercept = await bidi.Network.InterceptRequestAsync(async e =>
         {
-            await e.Request.Request.ProvideResponseAsync();
-
             times++;
+
+            await e.Request.Request.ProvideResponseAsync();
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
@@ -103,6 +103,8 @@ class NetworkTest : BiDiFixture
 
         await using var intercept = await bidi.Network.InterceptRequestAsync(async e =>
         {
+            times++;
+
             await e.Request.Request.ProvideResponseAsync(new() { Body = """
                 <html>
                     <head>
@@ -112,8 +114,6 @@ class NetworkTest : BiDiFixture
                     </body>
                 </html>
                 """ });
-
-            times++;
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = BrowsingContext.ReadinessState.Complete });
