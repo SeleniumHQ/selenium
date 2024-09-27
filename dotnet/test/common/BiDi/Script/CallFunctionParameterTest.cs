@@ -1,4 +1,3 @@
-using Castle.DynamicProxy.Generators.Emitters;
 using NUnit.Framework;
 using OpenQA.Selenium.BiDi.Modules.Script;
 using System.Threading.Tasks;
@@ -10,7 +9,7 @@ class CallFunctionParameterTest : BiDiFixture
     [Test]
     public async Task CanCallFunctionWithDeclaration()
     {
-        var res = await context.Script.CallFunctionAsync("()=>{return 1+2;}", false);
+        var res = await context.Script.CallFunctionAsync("() => { return 1 + 2; }", false);
 
         Assert.That(res, Is.Not.Null);
         Assert.That(res.Realm, Is.Not.Null);
@@ -20,7 +19,7 @@ class CallFunctionParameterTest : BiDiFixture
     [Test]
     public async Task CanCallFunctionWithDeclarationImplicitCast()
     {
-        var res = await context.Script.CallFunctionAsync<int>("()=>{return 1+2;}", false);
+        var res = await context.Script.CallFunctionAsync<int>("() => { return 1 + 2; }", false);
 
         Assert.That(res, Is.EqualTo(3));
     }
@@ -162,7 +161,7 @@ class CallFunctionParameterTest : BiDiFixture
     {
         var action = () => context.Script.CallFunctionAsync("))) !!@@## some invalid JS script (((", false);
 
-        Assert.That(action, Throws.InstanceOf<ScriptEvaluateException>());
+        Assert.That(action, Throws.InstanceOf<ScriptEvaluateException>().And.Message.Contain("SyntaxError:"));
     }
 
     [Test]

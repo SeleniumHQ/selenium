@@ -28,6 +28,13 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
         return (EvaluateResult.Success)result;
     }
 
+    public async Task<TResult?> EvaluateAsync<TResult>(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
+    {
+        var result = await EvaluateAsync(expression, awaitPromise, target, options).ConfigureAwait(false);
+
+        return result.Result.ConvertTo<TResult>();
+    }
+
     public async Task<EvaluateResult.Success> CallFunctionAsync(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
     {
         var @params = new CallFunctionCommandParameters(functionDeclaration, awaitPromise, target);
