@@ -21,7 +21,7 @@ module Selenium
   module WebDriver
     class BiDi
       class Network
-        NetworkEvent = {
+        NetworkEvents = {
           BEFORE_REQUEST_SENT: 'network.beforeRequestSent',
           RESPONSE_STARTED: 'network.responseStarted',
           RESPONSE_COMPLETED: 'network.responseCompleted',
@@ -29,32 +29,38 @@ module Selenium
           FETCH_ERROR: 'network.fetchError'
         }.freeze
 
+        InterceptPhases = {
+          BEFORE_REQUEST: 'beforeRequestSent',
+          RESPONSE_STARTED: 'responseStarted',
+          AUTH_REQUIRED: 'authRequired'
+        }.freeze
+
         def initialize(bidi)
           @bidi = bidi
         end
 
         def before_request_sent(&block)
-          subscribe(NetworkEvent::BEFORE_REQUEST_SENT, &block)
+          subscribe(NetworkEvents::BEFORE_REQUEST_SENT, &block)
         end
 
         def response_started(&block)
-          subscribe(NetworkEvent::RESPONSE_STARTED, &block)
+          subscribe(NetworkEvents::RESPONSE_STARTED, &block)
         end
 
         def response_completed(&block)
-          subscribe(NetworkEvent::RESPONSE_COMPLETED, &block)
+          subscribe(NetworkEvents::RESPONSE_COMPLETED, &block)
         end
 
         def auth_required(&block)
-          subscribe(NetworkEvent::AUTH_REQUIRED, &block)
+          subscribe(NetworkEvents::AUTH_REQUIRED, &block)
         end
 
         def fetch_error(&block)
-          subscribe(NetworkEvent::FETCH_ERROR, &block)
+          subscribe(NetworkEvents::FETCH_ERROR, &block)
         end
 
-        def add_intercept(params)
-          @bidi.send_cmd('network.addIntercept', **params)
+        def add_intercept(phases: [], contexts: nil, url_patterns: nil)
+          @bidi.send_cmd('network.addIntercept', phases: phases, contexts: contexts, urlPatterns: url_patterns)
         end
 
         def remove_intercept(id)

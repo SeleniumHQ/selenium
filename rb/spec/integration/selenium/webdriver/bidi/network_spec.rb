@@ -18,7 +18,6 @@
 # under the License.
 
 require_relative '../spec_helper'
-require_relative '../../../../../lib/selenium/webdriver/bidi/intercept_parameters'
 
 module Selenium
   module WebDriver
@@ -28,8 +27,8 @@ module Selenium
         it 'adds auth handler' do
           reset_driver!(web_socket_url: true) do |driver|
             network = described_class.new(driver.bidi)
-            intercept = network.add_intercept(phases: ['beforeRequestSent'])
-            expect(intercept).to be_nil
+            intercept = network.add_intercept(phases: [described_class::InterceptPhases[:BEFORE_REQUEST]])
+            expect(intercept['intercept']).to be_a(String)
           end
         end
       end
