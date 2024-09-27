@@ -25,7 +25,7 @@ module Selenium
       autoload :LogHandler, 'selenium/webdriver/bidi/log_handler'
       autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context'
       autoload :Struct, 'selenium/webdriver/bidi/struct'
-      autoload :AuthHandler, 'selenium/webdriver/bidi/auth_handler'
+      autoload :Network, 'selenium/webdriver/bidi/network'
 
       def initialize(url:)
         @ws = WebSocketConnection.new(url: url)

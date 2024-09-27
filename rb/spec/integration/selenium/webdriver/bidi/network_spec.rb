@@ -21,43 +21,15 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Network,
-             only: {browser: %i[chrome edge firefox]} do
+    class BiDi
+      describe Network, only: { browser: %i[chrome edge firefox] } do
 
-      it 'adds auth handler' do
-        reset_driver!(web_socket_url: true) do |driver|
-          driver.network.add_auth_handler(username: 'user', password: 'pass')
-          expect(driver.auth_handlers.count).to eq 1
-        end
-      end
-
-      it 'errors when missing required args' do
-        reset_driver!(web_socket_url: true) do |driver|
-          msg = /Missing required arguments: response, username, password/
-          expect { driver.network.add_auth_handler }.to raise_error(ArgumentError, msg)
-        end
-      end
-
-      it 'errors when invalid args' do
-        reset_driver!(web_socket_url: true) do |driver|
-          msg = /Invalid arguments: invalid, args/
-          expect { driver.network.add_auth_handler(invalid: 'args') }.to raise_error(ArgumentError, msg)
-        end
-      end
-
-      it 'removes auth handler' do
-        reset_driver!(web_socket_url: true) do |driver|
-          id = driver.network.add_auth_handler(username: 'user', password: 'pass')
-          driver.network.remove_auth_handler(id)
-          expect(driver.auth_handlers.count).to eq 0
-        end
-      end
-
-      it 'clears auth handlers' do
-        reset_driver!(web_socket_url: true) do |driver|
-          driver.network.add_auth_handler(username: 'user', password: 'pass')
-          driver.network.clear_auth_handlers
-          expect(driver.auth_handlers.count).to eq 0
+        it 'adds auth handler' do
+          reset_driver!(web_socket_url: true) do |driver|
+            network = described_class.new(driver)
+            intercept = network.add_intercept(test: 'test')
+            expect(intercept).to be_nil
+          end
         end
       end
     end

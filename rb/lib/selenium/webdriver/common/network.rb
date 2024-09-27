@@ -21,19 +21,19 @@ module Selenium
   module WebDriver
     class Network
       def initialize(bridge)
-        @auth_handler = BiDi::AuthHandler.new(bridge.bidi)
+        @network = BiDi::Network.new(bridge.bidi)
       end
 
       def add_auth_handler(username, password)
-        @auth_handler.add_auth_handler(username: username, password: password)
+        @network.add_auth_handler(username, password)
       end
 
       def remove_auth_handler(id)
-        @auth_handler.remove_auth_handler(id)
+        @network.remove_auth_handler(id)
       end
 
       def clear_auth_handlers
-        @auth_handler.clear_auth_handlers
+        @network.clear_auth_handlers
       end
     end # Network
   end # WebDriver
