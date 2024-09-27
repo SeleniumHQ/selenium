@@ -51,7 +51,7 @@ public class Broker : IAsyncDisposable
                 new NavigationConverter(),
                 new InterceptConverter(_bidi),
                 new RequestConverter(_bidi),
-                new ChannelConverter(_bidi),
+                new ChannelConverter(),
                 new HandleConverter(_bidi),
                 new InternalIdConverter(_bidi),
                 new PreloadScriptConverter(_bidi),

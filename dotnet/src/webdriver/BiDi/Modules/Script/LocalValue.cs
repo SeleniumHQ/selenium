@@ -8,6 +8,7 @@ namespace OpenQA.Selenium.BiDi.Modules.Script;
 [JsonDerivedType(typeof(String), "string")]
 [JsonDerivedType(typeof(Null), "null")]
 [JsonDerivedType(typeof(Undefined), "undefined")]
+[JsonDerivedType(typeof(Channel), "channel")]
 [JsonDerivedType(typeof(Array), "array")]
 [JsonDerivedType(typeof(Date), "date")]
 [JsonDerivedType(typeof(Map), "map")]
@@ -65,6 +66,16 @@ public abstract record LocalValue
     public record Null : PrimitiveProtocolLocalValue;
 
     public record Undefined : PrimitiveProtocolLocalValue;
+
+    public record Channel(Channel.ChannelProperties Value) : LocalValue
+    {
+        public record ChannelProperties(Script.Channel Channel)
+        {
+            public SerializationOptions? SerializationOptions { get; set; }
+
+            public ResultOwnership? Ownership { get; set; }
+        }
+    }
 
     public record Array(IEnumerable<LocalValue> Value) : LocalValue;
 

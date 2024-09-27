@@ -1,4 +1,5 @@
 using OpenQA.Selenium.BiDi.Communication;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -101,5 +102,35 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
         var @params = new RemovePreloadScriptCommandParameters(script);
 
         await Broker.ExecuteCommandAsync(new RemovePreloadScriptCommand(@params), options).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null)
+    {
+        return await Broker.SubscribeAsync("script.message", handler, options).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription> OnMessageAsync(Action<MessageEventArgs> handler, SubscriptionOptions? options = null)
+    {
+        return await Broker.SubscribeAsync("script.message", handler, options).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription> OnRealmCreatedAsync(Func<RealmInfo, Task> handler, SubscriptionOptions? options = null)
+    {
+        return await Broker.SubscribeAsync("script.realmCreated", handler, options).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription> OnRealmCreatedAsync(Action<RealmInfo> handler, SubscriptionOptions? options = null)
+    {
+        return await Broker.SubscribeAsync("script.realmCreated", handler, options).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription> OnRealmDestroyedAsync(Func<RealmDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null)
+    {
+        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null)
+    {
+        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options).ConfigureAwait(false);
     }
 }

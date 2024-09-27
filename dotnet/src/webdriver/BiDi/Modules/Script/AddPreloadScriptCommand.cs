@@ -7,7 +7,7 @@ internal class AddPreloadScriptCommand(AddPreloadScriptCommandParameters @params
 
 internal record AddPreloadScriptCommandParameters(string FunctionDeclaration) : CommandParameters
 {
-    public IEnumerable<ChannelValue>? Arguments { get; set; }
+    public IEnumerable<LocalValue.Channel>? Arguments { get; set; }
 
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
 
@@ -24,7 +24,7 @@ public record AddPreloadScriptOptions : CommandOptions
         Sandbox = options?.Sandbox;
     }
 
-    public IEnumerable<ChannelValue>? Arguments { get; set; }
+    public IEnumerable<LocalValue.Channel>? Arguments { get; set; }
 
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
 
@@ -33,7 +33,7 @@ public record AddPreloadScriptOptions : CommandOptions
 
 public record BrowsingContextAddPreloadScriptOptions
 {
-    public IEnumerable<ChannelValue>? Arguments { get; set; }
+    public IEnumerable<LocalValue.Channel>? Arguments { get; set; }
 
     public string? Sandbox { get; set; }
 }
