@@ -27,6 +27,19 @@ internal class RealmTypeConverter : JsonConverter<RealmType>
 
     public override void Write(Utf8JsonWriter writer, RealmType value, JsonSerializerOptions options)
     {
-        throw new NotImplementedException();
+        var str = value switch
+        {
+            RealmType.Window => "window",
+            RealmType.DedicatedWorker => "dedicated-worker",
+            RealmType.SharedWorker => "shared-worker",
+            RealmType.ServiceWorker => "service-worker",
+            RealmType.Worker => "worker",
+            RealmType.PaintWorker => "paint-worker",
+            RealmType.AudioWorker => "audio-worker",
+            RealmType.Worklet => "worklet",
+            _ => throw new JsonException($"Unrecognized '{value}' value of {typeof(RealmType)}."),
+        };
+
+        writer.WriteStringValue(str);
     }
 }

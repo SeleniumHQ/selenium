@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Modules.Script;
 using System.Collections.Generic;
-using System;
 
 namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 
@@ -38,9 +37,9 @@ public class BrowsingContextScriptModule(BrowsingContext context, ScriptModule s
         return scriptModule.EvaluateAsync(expression, awaitPromise, contextTarget, options);
     }
 
-    public async Task<TResult?> EvaluateAsync<TResult>(string expression, bool awaitPromise, EvaluateOptions? options = null)
+    public async Task<TResult?> EvaluateAsync<TResult>(string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)
     {
-        var result = await EvaluateAsync(expression, awaitPromise, options).ConfigureAwait(false);
+        var result = await EvaluateAsync(expression, awaitPromise, options, targetOptions).ConfigureAwait(false);
 
         return result.Result.ConvertTo<TResult>();
     }

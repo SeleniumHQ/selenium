@@ -69,6 +69,9 @@ public abstract record LocalValue
 
     public record Channel(Channel.ChannelProperties Value) : LocalValue
     {
+        [JsonInclude]
+        internal string type = "channel";
+
         public record ChannelProperties(Script.Channel Channel)
         {
             public SerializationOptions? SerializationOptions { get; set; }
