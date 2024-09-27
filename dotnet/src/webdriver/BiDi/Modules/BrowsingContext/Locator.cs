@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using static OpenQA.Selenium.BiDi.Modules.BrowsingContext.AccessibilityLocator;
 
 namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;

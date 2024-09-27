@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
