@@ -418,7 +418,11 @@ namespace OpenQA.Selenium.Remote
                 var responseTask = base.SendAsync(request, cancellationToken);
 
                 StringBuilder requestLogMessageBuilder = new();
-                requestLogMessageBuilder.AppendFormat(">> {0} RequestUri: {1}, Content: {2}, Headers: {3}", request.Method, request.RequestUri, request.Content, request.Headers?.Count());
+                requestLogMessageBuilder.AppendFormat(">> {0} RequestUri: {1}, Content: {2}, Headers: {3}", 
+                    request.Method, 
+                    request.RequestUri?.ToString() ?? "null", 
+                    request.Content?.ToString() ?? "null", 
+                    request.Headers?.Count());
 
                 if (request.Content != null)
                 {
