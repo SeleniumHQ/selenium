@@ -71,7 +71,7 @@
   </ItemGroup>
 
   <Target Name="GenerateSeleniumManagerBinaries" BeforeTargets="PrepareForBuild">
-    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos" />
+    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos" WorkingDirectory="../../.." />
 
     <PropertyGroup>
       <BaseSeleniumManagerPath>..\..\..\bazel-bin\dotnet\src\webdriver\manager</BaseSeleniumManagerPath>
@@ -79,7 +79,7 @@
   </Target>
 
   <Target Name="GenerateAtoms" BeforeTargets="PrepareForBuild">
-    <Exec Command="bazel build //javascript/webdriver/atoms:get-attribute.js //javascript/atoms/fragments:is-displayed.js //javascript/atoms/fragments:find-elements.js" />
+    <Exec Command="bazel build //javascript/webdriver/atoms:get-attribute.js //javascript/atoms/fragments:is-displayed.js //javascript/atoms/fragments:find-elements.js" WorkingDirectory="../../.." />
 
     <ItemGroup>
       <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
@@ -106,7 +106,7 @@
   </Target>
 
   <Target Name="GenerateCdp" BeforeTargets="CoreCompile">
-    <Exec Command="bazel build //dotnet/src/webdriver/cdp:generate-v85 //dotnet/src/webdriver/cdp:generate-v127 //dotnet/src/webdriver/cdp:generate-v128 //dotnet/src/webdriver/cdp:generate-v129" />
+    <Exec Command="bazel build //dotnet/src/webdriver/cdp:generate-v85 //dotnet/src/webdriver/cdp:generate-v127 //dotnet/src/webdriver/cdp:generate-v128 //dotnet/src/webdriver/cdp:generate-v129" WorkingDirectory="../../.." />
 
     <ItemGroup>
       <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />

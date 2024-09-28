@@ -23,6 +23,7 @@ jobs:
       github.event.inputs.version != '' && 
       github.repository_owner == 'seleniumhq')
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -53,12 +54,6 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Build and Stage Packages
         run: ./go all:package[--config=release]
-      #      - name: Update Nightly Tag to Remove pre-release
-      #        run: |
-      #          git fetch --tags
-      #          git tag -d nightly || echo "Nightly tag not found"
-      #          git tag nightly
-      #          git push origin refs/tags/nightly --force
       - name: Generate Draft Release
         uses: ncipollo/release-action@v1
         with:
@@ -66,24 +61,11 @@ jobs:
           bodyFile: "scripts/github-actions/release_header.md"
           draft: true
           generateReleaseNotes: true
-          name: Selenium ${{ env.VERSION }}
+          name: "Selenium ${{ env.VERSION }}"
           prerelease: false
           skipIfReleaseExists: true
-          tag: selenium-${{ env.VERSION }}
-          commit: trunk
-  #      - name: Generate Draft Release
-  #        uses: softprops/action-gh-release@v2
-  #        with:
-  #          name: Selenium ${{ env.VERSION }}
-  #          body: |
-  #            ## Detailed Changelogs by Component
-  #            <img src="https://www.selenium.dev/images/programming/java.svg" width="20" height="20"> **[Java](https://github.com/SeleniumHQ/selenium/blob/trunk/java/CHANGELOG)** &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;<img src="https://www.selenium.dev/images/programming/python.svg" width="20" height="20"> **[Python](https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES)** &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;<img src="https://www.selenium.dev/images/programming/csharp.svg" width="20" height="20"> **[DotNet](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG)** &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;<img src="https://www.selenium.dev/images/programming/ruby.svg" width="20" height="20"> **[Ruby](https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES)** &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;<img src="https://www.selenium.dev/images/programming/javascript.svg" width="20" height="20"> **[JavaScript](https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/CHANGES.md)** &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;<img src="https://www.selenium.dev/images/browsers/internet-explorer.svg" width="20" height="20"> **[IEDriver](https://github.com/SeleniumHQ/selenium/blob/trunk/cpp/iedriverserver/CHANGELOG)**
-  #            <br>
-  #          tag_name: selenium-${{ env.VERSION }}
-  #          draft: true
-  #          generate_release_notes: true
-  #          prerelease: false
-  #          files: build/dist/*.*
+          tag: "selenium-${{ env.VERSION }}"
+          commit: "${{ github.sha }}"
 
   update-documentation:
     needs: github-release
