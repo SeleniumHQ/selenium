@@ -21,6 +21,7 @@ using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -417,7 +418,7 @@ namespace OpenQA.Selenium.Remote
                 var responseTask = base.SendAsync(request, cancellationToken);
 
                 StringBuilder requestLogMessageBuilder = new();
-                requestLogMessageBuilder.AppendFormat(">> {0}", request);
+                requestLogMessageBuilder.AppendFormat(">> {0} RequestUri: {1}, Content: {2}, Headers: {3}", request.Method, request.RequestUri, request.Content, request.Headers?.Count());
 
                 if (request.Content != null)
                 {
@@ -430,7 +431,7 @@ namespace OpenQA.Selenium.Remote
                 var response = await responseTask.ConfigureAwait(false);
 
                 StringBuilder responseLogMessageBuilder = new();
-                responseLogMessageBuilder.AppendFormat("<< {0}", response);
+                responseLogMessageBuilder.AppendFormat("<< StatusCodde: {0}, ReasonPhrase: {1}, Content: {2}, Headers: {3}", (int)response.StatusCode, response.ReasonPhrase, response.Content, response.Headers?.Count());
 
                 if (!response.IsSuccessStatusCode && response.Content != null)
                 {
