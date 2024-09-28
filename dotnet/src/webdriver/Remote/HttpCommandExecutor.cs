@@ -431,7 +431,7 @@ namespace OpenQA.Selenium.Remote
                 var response = await responseTask.ConfigureAwait(false);
 
                 StringBuilder responseLogMessageBuilder = new();
-                responseLogMessageBuilder.AppendFormat("<< StatusCodde: {0}, ReasonPhrase: {1}, Content: {2}, Headers: {3}", (int)response.StatusCode, response.ReasonPhrase, response.Content, response.Headers?.Count());
+                responseLogMessageBuilder.AppendFormat("<< StatusCode: {0}, ReasonPhrase: {1}, Content: {2}, Headers: {3}", (int)response.StatusCode, response.ReasonPhrase, response.Content, response.Headers?.Count());
 
                 if (!response.IsSuccessStatusCode && response.Content != null)
                 {
