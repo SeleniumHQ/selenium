@@ -1,19 +1,26 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Modules.Input;
 
-[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(Keys), "key")]
-[JsonDerivedType(typeof(Pointers), "pointer")]
+//[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
+//[JsonDerivedType(typeof(Keys), "key")]
+//[JsonDerivedType(typeof(Pointers), "pointer")]
 public abstract record SourceActions
 {
-    public record Keys : SourceActions
+    public record Keys : SourceActions, IEnumerable<Keys.Key>
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
-        public List<Key> Actions { get; set; } = [];
+        public IList<Key> Actions { get; set; } = [];
+
+        public void Add(Key key) => Actions.Add(key);
+
+        public IEnumerator<Key> GetEnumerator() => Actions.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => Actions.GetEnumerator();
 
         [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
         [JsonDerivedType(typeof(Pause), "pause")]
@@ -32,11 +39,27 @@ public abstract record SourceActions
         }
     }
 
-    public record Pointers : SourceActions
+    public record Pointers : SourceActions, IEnumerable<Pointers.Pointer>
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
-        public List<Pointer> Actions { get; set; } = [];
+        public Parameters? Options { get; set; }
+
+        public IList<Pointer> Actions { get; set; } = [];
+
+        public void Add(Pointer pointer) => Actions.Add(pointer);
+
+        public IEnumerator<Pointer> GetEnumerator() => Actions.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => Actions.GetEnumerator();
+
+        public Pointers Click()
+        {
+            Add(new Pointer.Down(1));
+            Add(new Pointer.Up(1));
+
+            return this;
+        }
 
         [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
         [JsonDerivedType(typeof(Pause), "pause")]
@@ -49,9 +72,21 @@ public abstract record SourceActions
                 public long? Duration { get; set; }
             }
 
-            public record Down(string Value) : Pointer;
+            public record Down(int Button) : Pointer;
 
-            public record Up(string Value) : Pointer;
+            public record Up(int Button) : Pointer;
+        }
+
+        public record Parameters
+        {
+            public Type? PointerType { get; set; }
+        }
+
+        public enum Type
+        {
+            Mouse,
+            Pen,
+            Touch
         }
     }
 }
