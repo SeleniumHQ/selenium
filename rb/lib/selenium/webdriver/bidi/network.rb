@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative 'session'
+
 module Selenium
   module WebDriver
     class BiDi
@@ -37,6 +39,7 @@ module Selenium
 
         def initialize(bidi)
           @bidi = bidi
+          @session = Session.new(bidi)
         end
 
         def before_request_sent(&block)
@@ -51,8 +54,8 @@ module Selenium
           subscribe(NetworkEvents::RESPONSE_COMPLETED, &block)
         end
 
-        def auth_required(&block)
-          subscribe(NetworkEvents::AUTH_REQUIRED, &block)
+        def auth_required(params)
+          @session.subscribe(NetworkEvents[:AUTH_REQUIRED])
         end
 
         def fetch_error(&block)
@@ -63,20 +66,16 @@ module Selenium
           @bidi.send_cmd('network.addIntercept', phases: phases, contexts: contexts, urlPatterns: url_patterns)
         end
 
-        def remove_intercept(id)
-          @bidi.send_cmd('network.removeIntercept', id: id)
+        def remove_intercept(intercept)
+          @bidi.send_cmd('network.removeIntercept', intercept: intercept)
         end
 
         def clear_auth_handlers
           @bidi.send_cmd('network.clearAuthHandlers')
         end
 
-        def subscribe(type, &block)
-          @bidi.send_cmd('network.subscribe', events: Array(events))
-        end
-
-        def continue_with_auth(request_id, username:, password:)
-          @bidi.send_cmd('network.continueWithAuth', request_id: request_id, username: username, password: password)
+        def continue_with_auth(request, username, password)
+          @bidi.send_cmd('network.continueWithAuth', request: username)
         end
 
         def fail_request(request_id)

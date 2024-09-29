@@ -24,11 +24,28 @@ module Selenium
     class BiDi
       describe Network, only: { browser: %i[chrome edge firefox] } do
 
-        it 'adds auth handler' do
+        it 'adds an intercept' do
           reset_driver!(web_socket_url: true) do |driver|
             network = described_class.new(driver.bidi)
             intercept = network.add_intercept(phases: [described_class::InterceptPhases[:BEFORE_REQUEST]])
             expect(intercept['intercept']).to be_a(String)
+          end
+        end
+
+        it 'removes an intercept' do
+          reset_driver!(web_socket_url: true) do |driver|
+            network = described_class.new(driver.bidi)
+            intercept = network.add_intercept(phases: [described_class::InterceptPhases[:BEFORE_REQUEST]])
+            network.remove_intercept(intercept['intercept'])
+            expect(intercept['intercept']).to be_nil
+          end
+        end
+
+        it 'continues with auth' do
+          reset_driver!(web_socket_url: true) do |driver|
+            network = described_class.new(driver.bidi)
+            network.auth_required('user')
+            network.continue_with_auth('test', 'user', 'password')
           end
         end
       end
