@@ -301,7 +301,7 @@ namespace OpenQA.Selenium.DevTools
                         LogTrace("Recieved Error Response {0}: {1} {2}", modified.CommandId, message, errorData);
                         throw new CommandResponseException(exceptionMessage)
                         {
-                            Code = modified.Result["code"].GetValue<long>()
+                            Code = modified.Result["code"]?.GetValue<long>() ?? -1
                         };
                     }
 
