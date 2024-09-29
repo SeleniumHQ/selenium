@@ -55,8 +55,8 @@ public abstract record SourceActions
 
         public Pointers Click()
         {
-            Add(new Pointer.Down(1));
-            Add(new Pointer.Up(1));
+            Add(new Pointer.Down(0));
+            Add(new Pointer.Up(0));
 
             return this;
         }
@@ -65,6 +65,7 @@ public abstract record SourceActions
         [JsonDerivedType(typeof(Pause), "pause")]
         [JsonDerivedType(typeof(Down), "pointerDown")]
         [JsonDerivedType(typeof(Up), "pointerUp")]
+        [JsonDerivedType(typeof(Move), "pointerMove")]
         public abstract record Pointer
         {
             public record Pause : Pointer
@@ -75,6 +76,11 @@ public abstract record SourceActions
             public record Down(int Button) : Pointer;
 
             public record Up(int Button) : Pointer;
+
+            public record Move(int X, int Y) : Pointer
+            {
+                public int? Duration { get; set; }
+            }
         }
 
         public record Parameters
