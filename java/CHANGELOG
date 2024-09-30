@@ -1,3 +1,10 @@
+v4.25.0
+======
+* Add CDP for Chrome 129 and remove 126
+* replace `fedcm` links with new ones (#14478)
+* toml: warn about upcoming change enforcing string to have quotes (#14491)
+* Escape cookie values when required for tests (#14486)
+
 v4.24.0
 ======
 * Add "se" prefixed capabilities to session response (#14323)
