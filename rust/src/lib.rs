@@ -487,19 +487,6 @@ pub trait SeleniumManager {
                             discovered_major_browser_version,
                             major_browser_version,
                         ));
-                        if self
-                            .request_fixed_browser_version_from_online(
-                                major_browser_version.as_str(),
-                            )
-                            .is_err()
-                        {
-                            self.set_fallback_driver_from_cache(false);
-                            return Err(anyhow!(format!(
-                                "Invalid {} version provided: {}",
-                                self.get_browser_name(),
-                                major_browser_version
-                            )));
-                        }
                         download_browser = true;
                     } else {
                         self.set_browser_version(discovered_version);
@@ -763,7 +750,10 @@ pub trait SeleniumManager {
         // Download browser if necessary
         match self.download_browser_if_necessary(&original_browser_version) {
             Ok(_) => {}
-            Err(err) => self.check_error_with_driver_in_path(&use_driver_in_path, err)?,
+            Err(err) => {
+                self.set_fallback_driver_from_cache(false);
+                self.check_error_with_driver_in_path(&use_driver_in_path, err)?
+            }
         }
 
         // With the discovered browser version, discover the proper driver version using online endpoints
