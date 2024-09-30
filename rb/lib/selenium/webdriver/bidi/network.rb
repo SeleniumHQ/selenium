@@ -43,18 +43,26 @@ module Selenium
         end
 
         def before_request_sent(&block)
-          subscribe(NetworkEvents::BEFORE_REQUEST_SENT, &block)
+          @session.subscribe(NetworkEvents::BEFORE_REQUEST_SENT, &block)
         end
 
         def response_started(&block)
-          subscribe(NetworkEvents::RESPONSE_STARTED, &block)
+          @session.subscribe(NetworkEvents::RESPONSE_STARTED, &block)
         end
 
         def response_completed(&block)
-          subscribe(NetworkEvents::RESPONSE_COMPLETED, &block)
+          @session.subscribe(NetworkEvents::RESPONSE_COMPLETED, &block)
         end
 
-        def auth_required(params)
+        def on_auth_required(&consumer)
+          if @browsing_context_ids.empty?
+            @bidi.add_listener("network.authRequired", &consumer)
+          else
+            @bidi.add_listener(@browsing_context_ids, "network.authRequired", &consumer)
+          end
+        end
+
+        def auth_required
           @session.subscribe(NetworkEvents[:AUTH_REQUIRED])
         end
 
@@ -74,8 +82,17 @@ module Selenium
           @bidi.send_cmd('network.clearAuthHandlers')
         end
 
-        def continue_with_auth(request, username, password)
-          @bidi.send_cmd('network.continueWithAuth', request: username)
+        def continue_with_auth(request_id, username, password)
+          @bidi.send_cmd(
+            'network.continueWithAuth',
+            'request' => request_id,
+            'action' => 'provideCredentials',
+            'credentials' => {
+              'type' => 'password',
+              'username' => username,
+              'password' => password
+            }
+          )
         end
 
         def fail_request(request_id)

@@ -44,8 +44,9 @@ module Selenium
         it 'continues with auth' do
           reset_driver!(web_socket_url: true) do |driver|
             network = described_class.new(driver.bidi)
-            network.auth_required('user')
-            network.continue_with_auth('test', 'user', 'password')
+            auth = network.auth_required
+            pp auth
+            network.continue_with_auth('1234', 'user', 'password')
           end
         end
       end
