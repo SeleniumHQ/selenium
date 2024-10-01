@@ -32,8 +32,8 @@ class DefaultMouseTest : BiDiFixture
 
         await context.Input.PerformActionsAsync([new SourceActions.Pointers
         {
-            new SourceActions.Pointers.Pointer.Down(1),
-            new SourceActions.Pointers.Pointer.Up(1),
+            new SourceActions.Pointers.Pointer.Down(0),
+            new SourceActions.Pointers.Pointer.Up(0),
         }.Click().Click()]);
     }
 }
