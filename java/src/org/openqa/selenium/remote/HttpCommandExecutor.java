@@ -44,11 +44,11 @@ import org.openqa.selenium.remote.http.HttpResponse;
 public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private final URL remoteServer;
-  private final HttpClient client;
+  public final HttpClient client;
   private final HttpClient.Factory httpClientFactory;
   private final Map<String, CommandInfo> additionalCommands;
-  private CommandCodec<HttpRequest> commandCodec;
-  private ResponseCodec<HttpResponse> responseCodec;
+  protected CommandCodec<HttpRequest> commandCodec;
+  protected ResponseCodec<HttpResponse> responseCodec;
 
   private LocalLogs logs = LocalLogs.getNullLogger();
 
