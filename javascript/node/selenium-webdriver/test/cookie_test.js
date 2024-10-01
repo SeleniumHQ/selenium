@@ -22,7 +22,7 @@ const { URL } = require('node:url')
 
 const { ignore, suite } = require('../lib/test')
 const fileserver = require('../lib/test/fileserver')
-const { Browser } = require('..')
+const { Browser } = require('selenium-webdriver')
 
 suite(function (env) {
   let driver

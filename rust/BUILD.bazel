@@ -1,5 +1,5 @@
 load("@crates//:defs.bzl", "all_crate_deps")
-load("//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rust_test_suite", "rustfmt_config")
+load("//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rustfmt_config")
 
 rustfmt_config(
     name = "enable-rustfmt",
@@ -77,7 +77,7 @@ rust_binary(
     name = "selenium-manager",
     srcs = ["src/main.rs"],
     edition = "2021",
-    version = "0.4.23-nightly",
+    version = "0.4.24",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",
@@ -92,7 +92,23 @@ rust_library(
         exclude = ["main.rs"],
     ),
     edition = "2021",
+    visibility = ["//rust:__subpackages__"],
     deps = all_crate_deps(normal = True),
+)
+
+filegroup(
+    name = "selenium_manager_srcs",
+    srcs = [
+        "Cargo.lock",
+        "Cargo.toml",
+        ":selenium_manager_rs_srcs",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "selenium_manager_rs_srcs",
+    srcs = glob(["src/**/*.rs"]),
 )
 
 rust_test(
@@ -101,23 +117,4 @@ rust_test(
     crate = ":selenium_manager",
     edition = "2021",
     tags = ["no-sandbox"],
-)
-
-rust_test_suite(
-    name = "integration",
-    size = "small",
-    srcs = glob(["tests/**/*_tests.rs"]),
-    data = [
-        "tests/common.rs",
-        ":selenium-manager",
-    ],
-    edition = "2021",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [":selenium_manager"] + all_crate_deps(
-        normal = True,
-        normal_dev = True,
-    ),
 )

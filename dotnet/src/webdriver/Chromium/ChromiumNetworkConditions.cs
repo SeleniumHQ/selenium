@@ -16,16 +16,15 @@
 // limitations under the License.
 // </copyright>
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.Chromium
 {
     /// <summary>
     /// Provides manipulation of getting and setting network conditions from Chromium.
     /// </summary>
-    [JsonObject(MemberSerialization.OptIn)]
     public class ChromiumNetworkConditions
     {
         private bool offline;
@@ -36,7 +35,7 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Gets or sets a value indicating whether the network is offline. Defaults to <see langword="false"/>.
         /// </summary>
-        [JsonProperty("offline")]
+        [JsonPropertyName("offline")]
         public bool IsOffline
         {
             get { return this.offline; }
@@ -46,6 +45,7 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Gets or sets the simulated latency of the connection. Typically given in milliseconds.
         /// </summary>
+        [JsonIgnore]
         public TimeSpan Latency
         {
             get { return this.latency; }
@@ -55,7 +55,7 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Gets or sets the throughput of the network connection in bytes/second for downloading.
         /// </summary>
-        [JsonProperty("download_throughput")]
+        [JsonPropertyName("download_throughput")]
         public long DownloadThroughput
         {
             get { return this.downloadThroughput; }
@@ -73,7 +73,7 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Gets or sets the throughput of the network connection in bytes/second for uploading.
         /// </summary>
-        [JsonProperty("upload_throughput")]
+        [JsonPropertyName("upload_throughput")]
         public long UploadThroughput
         {
             get { return this.uploadThroughput; }
@@ -88,7 +88,9 @@ namespace OpenQA.Selenium.Chromium
             }
         }
 
-        [JsonProperty("latency", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("latency")]
+        [JsonInclude]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         internal long? SerializableLatency
         {
             get

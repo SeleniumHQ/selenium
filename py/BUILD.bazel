@@ -62,13 +62,13 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.23.0.dev202406201609"
+SE_VERSION = "4.26.0.dev202409202351"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v125",
-    "v126",
-    "v124",
+    "v128",
+    "v129",
+    "v127",
 ]
 
 TEST_DEPS = [
@@ -196,11 +196,11 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
-        requirement("typing_extensions"),
+        requirement("urllib3"),
         requirement("trio"),
         requirement("trio_websocket"),
-        requirement("urllib3"),
         requirement("certifi"),
+        requirement("typing_extensions"),
         requirement("websocket-client"),
     ],
 )
@@ -230,10 +230,17 @@ pkg_files(
         "CHANGES",
         "MANIFEST.in",
         "README.rst",
+        "pyproject.toml",
         "setup.py",
         ":license",
         ":selenium-pkg",
         ":selenium-pkginfo",
+        "//rust:selenium_manager_srcs",
+    ],
+    excludes = [
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
     ],
     strip_prefix = strip_prefix.from_pkg(),
 )
@@ -274,6 +281,8 @@ py_wheel(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
     description_file = "README.rst",
     distribution = "selenium",
@@ -286,13 +295,16 @@ py_wheel(
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
-        "typing_extensions>=4.9.0",
-        "websocket-client>=1.8.0",
+        "typing_extensions~=4.9",
+        "websocket-client~=1.8",
     ],
     strip_path_prefixes = [
         "py/",
     ],
     summary = "Official Python bindings for Selenium WebDriver",
+    tags = [
+        "release-artifact",
+    ],
     version = SE_VERSION,
     visibility = ["//visibility:public"],
     deps = [
@@ -323,7 +335,7 @@ py_library(
         "test/selenium/webdriver/support/conftest.py",
     ],
     data = [
-        "pytest.ini",
+        "pyproject.toml",
         "setup.cfg",
         "test/selenium/webdriver/common/test_file.txt",
         "test/selenium/webdriver/common/test_file2.txt",

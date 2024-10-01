@@ -44,6 +44,7 @@ const BrowsingContext = require('./bidi/browsingContext')
 const BrowsingContextInspector = require('./bidi/browsingContextInspector')
 const ScriptManager = require('./bidi/scriptManager')
 const NetworkInspector = require('./bidi/networkInspector')
+const version = require('./package.json').version
 
 const Browser = capabilities.Browser
 const Capabilities = capabilities.Capabilities
@@ -794,3 +795,4 @@ exports.BrowsingContext = BrowsingContext
 exports.BrowsingContextInspector = BrowsingContextInspector
 exports.ScriptManager = ScriptManager
 exports.NetworkInspector = NetworkInspector
+exports.version = version

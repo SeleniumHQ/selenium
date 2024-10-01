@@ -49,3 +49,10 @@ copy_file(
     out = "mutation-listener.js",
     visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
 )
+
+copy_file(
+    name = "bidi-mutation-listener",
+    src = "//javascript/bidi-support:bidi-mutation-listener.js",
+    out = "bidi-mutation-listener.js",
+    visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
+)

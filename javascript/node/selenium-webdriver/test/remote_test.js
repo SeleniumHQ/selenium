@@ -19,10 +19,10 @@
 
 const assert = require('node:assert')
 const path = require('node:path')
-const io = require('../io')
-const cmd = require('../lib/command')
-const remote = require('../remote')
-const { CancellationError } = require('../http/util')
+const io = require('selenium-webdriver/io')
+const cmd = require('selenium-webdriver/lib/command')
+const remote = require('selenium-webdriver/remote')
+const { CancellationError } = require('selenium-webdriver/http/util')
 
 describe('DriverService', function () {
   describe('start()', function () {

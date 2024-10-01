@@ -21,6 +21,7 @@ using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -153,10 +154,10 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Executes a command
+        /// Executes a command.
         /// </summary>
-        /// <param name="commandToExecute">The command you wish to execute</param>
-        /// <returns>A response from the browser</returns>
+        /// <param name="commandToExecute">The command you wish to execute.</param>
+        /// <returns>A response from the browser.</returns>
         public virtual Response Execute(Command commandToExecute)
         {
             return Task.Run(() => this.ExecuteAsync(commandToExecute)).GetAwaiter().GetResult();
@@ -165,8 +166,8 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Executes a command as an asynchronous task.
         /// </summary>
-        /// <param name="commandToExecute">The command you wish to execute</param>
-        /// <returns>A task object representing the asynchronous operation</returns>
+        /// <param name="commandToExecute">The command you wish to execute.</param>
+        /// <returns>A task object representing the asynchronous operation.</returns>
         public virtual async Task<Response> ExecuteAsync(Command commandToExecute)
         {
             if (commandToExecute == null)
@@ -417,7 +418,11 @@ namespace OpenQA.Selenium.Remote
                 var responseTask = base.SendAsync(request, cancellationToken);
 
                 StringBuilder requestLogMessageBuilder = new();
-                requestLogMessageBuilder.AppendFormat(">> {0}", request);
+                requestLogMessageBuilder.AppendFormat(">> {0} RequestUri: {1}, Content: {2}, Headers: {3}", 
+                    request.Method, 
+                    request.RequestUri?.ToString() ?? "null", 
+                    request.Content?.ToString() ?? "null", 
+                    request.Headers?.Count());
 
                 if (request.Content != null)
                 {
@@ -430,7 +435,7 @@ namespace OpenQA.Selenium.Remote
                 var response = await responseTask.ConfigureAwait(false);
 
                 StringBuilder responseLogMessageBuilder = new();
-                responseLogMessageBuilder.AppendFormat("<< {0}", response);
+                responseLogMessageBuilder.AppendFormat("<< StatusCode: {0}, ReasonPhrase: {1}, Content: {2}, Headers: {3}", (int)response.StatusCode, response.ReasonPhrase, response.Content, response.Headers?.Count());
 
                 if (!response.IsSuccessStatusCode && response.Content != null)
                 {

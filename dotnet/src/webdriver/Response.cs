@@ -16,11 +16,11 @@
 // limitations under the License.
 // </copyright>
 
-using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.Json;
 
 namespace OpenQA.Selenium
 {
@@ -29,6 +29,11 @@ namespace OpenQA.Selenium
     /// </summary>
     public class Response
     {
+        private readonly static JsonSerializerOptions s_jsonSerializerOptions = new()
+        {
+            Converters = { new ResponseValueJsonConverter() }
+        };
+
         private object responseValue;
         private string responseSessionId;
         private WebDriverResult responseStatus;
@@ -140,7 +145,7 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
         public static Response FromJson(string value)
         {
-            Dictionary<string, object> deserializedResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
+            Dictionary<string, object> deserializedResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(value, s_jsonSerializerOptions);
             Response response = new Response(deserializedResponse);
             return response;
         }
@@ -152,7 +157,7 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
         public static Response FromErrorJson(string value)
         {
-            Dictionary<string, object> deserializedResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
+            var deserializedResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(value, s_jsonSerializerOptions);
 
             var response = new Response();
 
@@ -178,6 +183,8 @@ namespace OpenQA.Selenium
                 throw new WebDriverException($"The 'value > error' property is not a string{Environment.NewLine}{value}");
             }
 
+            response.Value = deserializedResponse["value"];
+
             response.Status = WebDriverError.ResultFromError(errorObject.ToString());
 
             return response;
@@ -189,7 +196,7 @@ namespace OpenQA.Selenium
         /// <returns>A JSON-encoded string representing this <see cref="Response"/> object.</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonSerializer.Serialize(this);
         }
 
         /// <summary>

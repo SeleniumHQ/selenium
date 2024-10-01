@@ -157,6 +157,8 @@ class Index extends EventEmitter {
       params.params.contexts = contextsArray
     }
 
+    this.events.push(...eventsArray)
+
     await this.send(params)
   }
 
@@ -167,11 +169,14 @@ class Index extends EventEmitter {
    * @returns {Promise<void>}
    */
   async unsubscribe(events, browsingContexts) {
-    if (typeof events === 'string') {
-      this.events = this.events.filter((event) => event !== events)
-    } else if (Array.isArray(events)) {
-      this.events = this.events.filter((event) => !events.includes(event))
-    }
+    const eventsToRemove = typeof events === 'string' ? [events] : events
+
+    // Check if the eventsToRemove are in the subscribed events array
+    // Filter out events that are not in this.events before filtering
+    const existingEvents = eventsToRemove.filter((event) => this.events.includes(event))
+
+    // Remove the events from the subscribed events array
+    this.events = this.events.filter((event) => !existingEvents.includes(event))
 
     if (typeof browsingContexts === 'string') {
       this.browsingContexts.pop()
@@ -179,10 +184,13 @@ class Index extends EventEmitter {
       this.browsingContexts = this.browsingContexts.filter((id) => !browsingContexts.includes(id))
     }
 
+    if (existingEvents.length === 0) {
+      return
+    }
     const params = {
       method: 'session.unsubscribe',
       params: {
-        events: this.events,
+        events: existingEvents,
       },
     }
 

@@ -215,6 +215,7 @@ def get_options(driver_class, config):
             options = getattr(webdriver, f"{driver_class}Options")()
 
         options.web_socket_url = True
+        options.unhandled_prompt_behavior = "ignore"
 
     return options
 
@@ -320,7 +321,7 @@ def server(request):
 
 @pytest.fixture(autouse=True, scope="session")
 def webserver(request):
-    host = get_lan_ip() if request.config.getoption("use_lan_ip") else "0.0.0.0"
+    host = get_lan_ip() if request.config.getoption("use_lan_ip") else None
 
     webserver = SimpleWebServer(host=host)
     webserver.start()

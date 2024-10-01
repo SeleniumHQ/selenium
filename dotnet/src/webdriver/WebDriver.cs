@@ -62,8 +62,15 @@ namespace OpenQA.Selenium
             }
             catch (Exception)
             {
-                // Failed to start driver session, disposing of driver
-                this.Quit();
+                try
+                {
+                    // Failed to start driver session, disposing of driver
+                    this.Quit();
+                }
+                catch
+                {
+                    // Ignore the clean-up exception. We'll propagate the original failure.
+                }
                 throw;
             }
 
@@ -572,14 +579,20 @@ namespace OpenQA.Selenium
             return this.ExecuteAsync(driverCommandToExecute, parameters);
         }
 
-        internal Response Execute(string driverCommandToExecute,
+        /// <summary>
+        /// Executes a command with this driver.
+        /// </summary>
+        /// <param name="driverCommandToExecute">A <see cref="DriverCommand"/> value representing the command to execute.</param>
+        /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
+        /// <returns>A <see cref="Response"/> containing information about the success or failure of the command and any data returned by the command.</returns>
+        protected virtual Response Execute(string driverCommandToExecute,
             Dictionary<string, object> parameters)
         {
             return Task.Run(() => this.ExecuteAsync(driverCommandToExecute, parameters)).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Executes a command with this driver .
+        /// Executes a command with this driver.
         /// </summary>
         /// <param name="driverCommandToExecute">A <see cref="DriverCommand"/> value representing the command to execute.</param>
         /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
@@ -697,7 +710,10 @@ namespace OpenQA.Selenium
         {
             try
             {
-                this.Execute(DriverCommand.Quit, null);
+                if (this.sessionId is not null)
+                {
+                    this.Execute(DriverCommand.Quit, null);
+                }
             }
             catch (NotImplementedException)
             {

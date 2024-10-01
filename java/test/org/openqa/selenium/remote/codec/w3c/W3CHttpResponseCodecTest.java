@@ -52,7 +52,7 @@ class W3CHttpResponseCodecTest {
 
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
-    assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.SUCCESS);
+    assertThat(decoded.getStatus()).isEqualTo(ErrorCodes.SUCCESS);
     assertThat(decoded.getState()).isEqualTo("success");
     assertThat(decoded.getValue()).isEqualTo("cheese");
   }

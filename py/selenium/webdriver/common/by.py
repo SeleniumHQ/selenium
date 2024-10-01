@@ -16,6 +16,8 @@
 # under the License.
 """The By implementation."""
 
+from typing import Literal
+
 
 class By:
     """Set of supported locator strategies."""
@@ -28,3 +30,6 @@ class By:
     TAG_NAME = "tag name"
     CLASS_NAME = "class name"
     CSS_SELECTOR = "css selector"
+
+
+ByType = Literal["id", "xpath", "link text", "partial link text", "name", "tag name", "class name", "css selector"]

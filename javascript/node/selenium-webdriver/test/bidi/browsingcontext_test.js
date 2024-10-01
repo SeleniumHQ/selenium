@@ -18,14 +18,14 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Browser, By } = require('../../')
+const { Browser, By } = require('selenium-webdriver')
 const { Pages, suite, ignore } = require('../../lib/test')
-const BrowsingContext = require('../../bidi/browsingContext')
-const until = require('../../lib/until')
-const { Origin, CaptureScreenshotParameters } = require('../../bidi/captureScreenshotParameters')
-const { BoxClipRectangle, ElementClipRectangle } = require('../../bidi/clipRectangle')
-const { CreateContextParameters } = require('../../bidi/createContextParameters')
-const BrowserBiDi = require('../../bidi/browser')
+const BrowsingContext = require('selenium-webdriver/bidi/browsingContext')
+const until = require('selenium-webdriver/lib/until')
+const { Origin, CaptureScreenshotParameters } = require('selenium-webdriver/bidi/captureScreenshotParameters')
+const { BoxClipRectangle, ElementClipRectangle } = require('selenium-webdriver/bidi/clipRectangle')
+const { CreateContextParameters } = require('selenium-webdriver/bidi/createContextParameters')
+const BrowserBiDi = require('selenium-webdriver/bidi/browser')
 
 suite(
   function (env) {

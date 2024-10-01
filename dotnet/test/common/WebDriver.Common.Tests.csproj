@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <AssemblyName>WebDriver.Common.Tests</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
   </PropertyGroup>
@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <Target Name="BuildTestWebServer" AfterTargets="AfterBuild">
-    <Exec Command="bazel build //java/test/org/openqa/selenium/environment:appserver_deploy.jar" />
+    <Exec Command="bazel build //java/test/org/openqa/selenium/environment:appserver_deploy.jar" WorkingDirectory="../../.." />
   </Target>
 
   <!-- It is automatically imported when Selenium.WebDriver consumed via nuget package -->

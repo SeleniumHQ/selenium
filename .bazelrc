@@ -39,6 +39,8 @@ build --nobuild_runfile_links
 
 # More JS magic
 build --experimental_allow_unresolved_symlinks
+# Avoid a warning about directory tracking being unsound
+startup --host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1
 
 # Required for faster TS builds
 build --@aspect_rules_ts//ts:skipLibCheck=always
@@ -100,8 +102,14 @@ test --test_timeout=1800
 test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results
 test:ruby_debug --test_output=streamed --test_env=RUBY_DEBUG_FORK_MODE=parent --run_under="@bundle//bin:rdbg --nonstop --open --command"
 
-build:release --config=remote
+
 build:release --stamp
+build:release --compilation_mode=opt
+
+# As regular `release` but all the build work happens on the RBE
+build:remote_release --config=release
+build:remote_release --config=remote
+build:remote_release --remote_download_toplevel
 
 # RBE
 import %workspace%/.bazelrc.remote

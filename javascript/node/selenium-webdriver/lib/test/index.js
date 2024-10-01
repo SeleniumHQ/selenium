@@ -19,8 +19,8 @@
 
 //const build = require('./build')
 const fileserver = require('./fileserver')
-const logging = require('../../lib/logging')
-const testing = require('../../testing')
+const logging = require('selenium-webdriver/lib/logging')
+const testing = require('selenium-webdriver/testing')
 
 //const NO_BUILD = /^1|true$/i.test(process.env['SELENIUM_NO_BUILD'])
 

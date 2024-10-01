@@ -18,9 +18,9 @@
 'use strict'
 
 const assert = require('node:assert')
-const edge = require('../../edge')
+const edge = require('selenium-webdriver/edge')
 const test = require('../../lib/test')
-const { getBinaryPaths } = require('../../common/driverFinder')
+const { getBinaryPaths } = require('selenium-webdriver/common/driverFinder')
 
 test.suite(
   function (_env) {

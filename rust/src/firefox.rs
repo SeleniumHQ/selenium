@@ -55,6 +55,7 @@ const FIREFOX_CANARY_LABEL: &str = "FIREFOX_NIGHTLY";
 const FIREFOX_ESR_LABEL: &str = "FIREFOX_ESR";
 const FIREFOX_VERSIONS_ENDPOINT: &str = "firefox_versions.json";
 const FIREFOX_HISTORY_ENDPOINT: &str = "firefox_history_stability_releases.json";
+const FIREFOX_HISTORY_MAJOR_ENDPOINT: &str = "firefox_history_major_releases.json";
 const FIREFOX_HISTORY_DEV_ENDPOINT: &str = "firefox_history_development_releases.json";
 const FIREFOX_NIGHTLY_URL: &str =
     "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os={}&lang={}";
@@ -222,9 +223,11 @@ impl SeleniumManager for FirefoxManager {
             _ => {
                 self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
 
+                let driver_version_url =
+                    self.get_driver_mirror_versions_url_or_default(DRIVER_VERSIONS_URL);
                 let driver_version = match parse_json_from_url::<GeckodriverReleases>(
                     self.get_http_client(),
-                    DRIVER_VERSIONS_URL,
+                    &driver_version_url,
                 ) {
                     Ok(driver_releases) => {
                         let major_browser_version_int =
@@ -475,12 +478,15 @@ impl SeleniumManager for FirefoxManager {
             }
 
             let mut firefox_versions =
-                self.request_versions_from_online(FIREFOX_HISTORY_ENDPOINT)?;
+                self.request_versions_from_online(FIREFOX_HISTORY_MAJOR_ENDPOINT)?;
             if firefox_versions.is_empty() {
-                firefox_versions =
-                    self.request_versions_from_online(FIREFOX_HISTORY_DEV_ENDPOINT)?;
+                firefox_versions = self.request_versions_from_online(FIREFOX_HISTORY_ENDPOINT)?;
                 if firefox_versions.is_empty() {
-                    return self.unavailable_discovery();
+                    firefox_versions =
+                        self.request_versions_from_online(FIREFOX_HISTORY_DEV_ENDPOINT)?;
+                    if firefox_versions.is_empty() {
+                        return self.unavailable_discovery();
+                    }
                 }
             }
 

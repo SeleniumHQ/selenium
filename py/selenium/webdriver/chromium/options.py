@@ -18,7 +18,9 @@
 import base64
 import os
 from typing import BinaryIO
+from typing import Dict
 from typing import List
+from typing import Optional
 from typing import Union
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -30,11 +32,11 @@ class ChromiumOptions(ArgOptions):
 
     def __init__(self) -> None:
         super().__init__()
-        self._binary_location = ""
-        self._extension_files = []
-        self._extensions = []
-        self._experimental_options = {}
-        self._debugger_address = None
+        self._binary_location: str = ""
+        self._extension_files: List[str] = []
+        self._extensions: List[str] = []
+        self._experimental_options: Dict[str, Union[str, int, dict, List[str]]] = {}
+        self._debugger_address: Optional[str] = None
 
     @property
     def binary_location(self) -> str:
@@ -53,7 +55,7 @@ class ChromiumOptions(ArgOptions):
         self._binary_location = value
 
     @property
-    def debugger_address(self) -> str:
+    def debugger_address(self) -> Optional[str]:
         """:Returns: The address of the remote devtools instance."""
         return self._debugger_address
 

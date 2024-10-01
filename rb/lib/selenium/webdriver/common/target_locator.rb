@@ -96,12 +96,11 @@ module Selenium
           @bridge.switch_to_window id
 
           begin
-            returned = yield
+            yield
           ensure
             current_handles = @bridge.window_handles
             original = current_handles.first unless current_handles.include? original
             @bridge.switch_to_window original
-            returned
           end
         else
           @bridge.switch_to_window id

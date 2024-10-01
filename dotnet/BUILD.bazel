@@ -11,6 +11,9 @@ pkg_zip(
         "//dotnet/src/support:support-strongnamed-pack",
         "//dotnet/src/webdriver:webdriver-strongnamed-pack",
     ],
+    tags = [
+        "release-artifact",
+    ],
 )
 
 pkg_zip(
@@ -18,5 +21,8 @@ pkg_zip(
     srcs = [
         "//dotnet/src/support:support-pack",
         "//dotnet/src/webdriver:webdriver-pack",
+    ],
+    tags = [
+        "release-artifact",
     ],
 )

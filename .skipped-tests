@@ -19,6 +19,15 @@
 -//javascript/atoms:test-chrome
 -//javascript/atoms:test-edge
 -//javascript/atoms:test-firefox-beta
+-//javascript/chrome-driver/...
+-//javascript/node/selenium-webdriver:test-bidi-network-test.js-chrome
+-//javascript/node/selenium-webdriver:test-builder-test.js-chrome
+-//javascript/node/selenium-webdriver:test-builder-test.js-firefox
+-//javascript/node/selenium-webdriver:test-chrome-devtools-test.js-chrome
+-//javascript/node/selenium-webdriver:test-chrome-options-test.js-chrome
+-//javascript/node/selenium-webdriver:test-chrome-service-test.js-chrome
+-//javascript/node/selenium-webdriver:test-firefox-options-test.js-firefox
+-//javascript/node/selenium-webdriver:test-lib-capabilities-test.js-chrome
 -//py:test-chrome-test/selenium/webdriver/chrome/chrome_launcher_tests.py
 -//py:test-chrome-test/selenium/webdriver/chrome/chrome_service_tests.py
 -//py:test-chrome-test/selenium/webdriver/chrome/proxy_tests.py
@@ -46,3 +55,4 @@
 -//rb/spec/integration/selenium/webdriver:element-chrome
 -//rb/spec/integration/selenium/webdriver:element-chrome-bidi
 -//rb/spec/integration/selenium/webdriver:element-chrome-remote
+-//rust/tests/...

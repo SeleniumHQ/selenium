@@ -19,8 +19,8 @@
 
 const assert = require('node:assert')
 const { suite } = require('../../lib/test')
-const { Browser } = require('../..')
-const BrowserBiDi = require('../../bidi/browser')
+const { Browser } = require('selenium-webdriver')
+const BrowserBiDi = require('selenium-webdriver/bidi/browser')
 
 suite(
   function (env) {

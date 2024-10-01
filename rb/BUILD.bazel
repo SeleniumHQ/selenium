@@ -70,6 +70,9 @@ rb_gem_build(
         ":notice",
     ],
     gemspec = "selenium-webdriver.gemspec",
+    tags = [
+        "release-artifact",
+    ],
     deps = [
         "//rb/lib:selenium-webdriver",
         "//rb/lib/selenium:server",
@@ -105,6 +108,9 @@ rb_gem_build(
         ":notice",
     ],
     gemspec = "selenium-devtools.gemspec",
+    tags = [
+        "release-artifact",
+    ],
     deps = ["//rb/lib/selenium:devtools"],
 )
 

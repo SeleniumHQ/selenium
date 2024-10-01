@@ -27,14 +27,58 @@ const { RemoteValue } = require('./protocolValue')
 const { Source } = require('./scriptTypes')
 const { WebDriverError } = require('../lib/error')
 
+const ScriptEvent = {
+  MESSAGE: 'script.message',
+  REALM_CREATED: 'script.realmCreated',
+  REALM_DESTROYED: 'script.realmDestroyed',
+}
+
 /**
  * Represents class to run events and commands of Script module.
  * Described in https://w3c.github.io/webdriver-bidi/#module-script.
  * @class
  */
 class ScriptManager {
+  #callbackId = 0
+  #listener
+
   constructor(driver) {
     this._driver = driver
+    this.#listener = new Map()
+    this.#listener.set(ScriptEvent.MESSAGE, new Map())
+    this.#listener.set(ScriptEvent.REALM_CREATED, new Map())
+    this.#listener.set(ScriptEvent.REALM_DESTROYED, new Map())
+  }
+
+  addCallback(eventType, callback) {
+    const id = ++this.#callbackId
+
+    const eventCallbackMap = this.#listener.get(eventType)
+    eventCallbackMap.set(id, callback)
+    return id
+  }
+
+  removeCallback(id) {
+    let hasId = false
+    for (const [, callbacks] of this.#listener) {
+      if (callbacks.has(id)) {
+        callbacks.delete(id)
+        hasId = true
+      }
+    }
+
+    if (!hasId) {
+      throw Error(`Callback with id ${id} not found`)
+    }
+  }
+
+  invokeCallbacks(eventType, data) {
+    const callbacks = this.#listener.get(eventType)
+    if (callbacks) {
+      for (const [, callback] of callbacks) {
+        callback(data)
+      }
+    }
   }
 
   async init(browsingContextIds) {
@@ -251,6 +295,14 @@ class ScriptManager {
       params.contexts = new Array(this._browsingContextIds)
     }
 
+    if (argumentValueList != null) {
+      let argumentParams = []
+      argumentValueList.forEach((argumentValue) => {
+        argumentParams.push(argumentValue.asMap())
+      })
+      params['arguments'] = argumentParams
+    }
+
     const command = {
       method: 'script.addPreloadScript',
       params,
@@ -433,7 +485,7 @@ class ScriptManager {
    * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
    */
   async onMessage(callback) {
-    await this.subscribeAndHandleEvent('script.message', callback)
+    return await this.subscribeAndHandleEvent(ScriptEvent.MESSAGE, callback)
   }
 
   /**
@@ -443,7 +495,7 @@ class ScriptManager {
    * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
    */
   async onRealmCreated(callback) {
-    await this.subscribeAndHandleEvent('script.realmCreated', callback)
+    return await this.subscribeAndHandleEvent(ScriptEvent.REALM_CREATED, callback)
   }
 
   /**
@@ -453,19 +505,18 @@ class ScriptManager {
    * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
    */
   async onRealmDestroyed(callback) {
-    await this.subscribeAndHandleEvent('script.realmDestroyed', callback)
+    return await this.subscribeAndHandleEvent(ScriptEvent.REALM_DESTROYED, callback)
   }
 
   async subscribeAndHandleEvent(eventType, callback) {
-    if (this.browsingContextIds != null) {
-      await this.bidi.subscribe(eventType, this.browsingContextIds)
+    if (this._browsingContextIds != null) {
+      await this.bidi.subscribe(eventType, this._browsingContextIds)
     } else {
       await this.bidi.subscribe(eventType)
     }
-    await this._on(callback)
-  }
 
-  async _on(callback) {
+    let id = this.addCallback(eventType, callback)
+
     this.ws = await this.bidi.socket
     this.ws.on('message', (event) => {
       const { params } = JSON.parse(Buffer.from(event.toString()))
@@ -482,9 +533,28 @@ class ScriptManager {
             response = params.realm
           }
         }
-        callback(response)
+        this.invokeCallbacks(eventType, response)
       }
     })
+
+    return id
+  }
+
+  async close() {
+    if (
+      this._browsingContextIds !== null &&
+      this._browsingContextIds !== undefined &&
+      this._browsingContextIds.length > 0
+    ) {
+      await this.bidi.unsubscribe(
+        'script.message',
+        'script.realmCreated',
+        'script.realmDestroyed',
+        this._browsingContextIds,
+      )
+    } else {
+      await this.bidi.unsubscribe('script.message', 'script.realmCreated', 'script.realmDestroyed')
+    }
   }
 }
 
