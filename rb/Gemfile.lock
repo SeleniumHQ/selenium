@@ -3,7 +3,7 @@ PATH
   specs:
     selenium-devtools (0.129.0)
       selenium-webdriver (~> 4.2)
-    selenium-webdriver (4.25.0)
+    selenium-webdriver (4.26.0.nightly)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
