@@ -21,6 +21,7 @@ import pytest
 import urllib3
 
 from selenium import __version__
+from selenium.webdriver.remote.remote_connection import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 
@@ -52,6 +53,15 @@ def test_get_proxy_url_http(mock_proxy_settings):
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
     proxy_url = remote_connection._client_config.get_proxy_url()
     assert proxy_url == proxy
+
+
+def test_get_auth_header_if_client_config_pass():
+    custom_config = ClientConfig(
+        remote_server_addr="http://remote", keep_alive=True, username="user", password="pass", auth_type="Basic"
+    )
+    remote_connection = RemoteConnection(custom_config.remote_server_addr, client_config=custom_config)
+    headers = remote_connection._client_config.get_auth_header()
+    assert headers.get("Authorization") == "Basic dXNlcjpwYXNz"
 
 
 def test_get_proxy_url_https(mock_proxy_settings):

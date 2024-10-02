@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import base64
 import os
 from urllib import parse
 
@@ -26,11 +27,19 @@ class ClientConfig:
         self,
         remote_server_addr: str,
         keep_alive: bool = True,
-        proxy=None,
+        proxy: Proxy = Proxy(raw={"proxyType": ProxyType.SYSTEM}),
+        username: str = None,
+        password: str = None,
+        auth_type: str = "Basic",
+        token: str = None,
     ) -> None:
         self.remote_server_addr = remote_server_addr
         self.keep_alive = keep_alive
         self.proxy = proxy
+        self.username = username
+        self.password = password
+        self.auth_type = auth_type
+        self.token = token
 
     @property
     def remote_server_addr(self) -> str:
@@ -57,8 +66,6 @@ class ClientConfig:
     @property
     def proxy(self) -> Proxy:
         """:Returns: The proxy used for communicating to the driver/server."""
-
-        self._proxy = self._proxy or Proxy(raw={"proxyType": ProxyType.SYSTEM})
         return self._proxy
 
     @proxy.setter
@@ -71,34 +78,70 @@ class ClientConfig:
         """
         self._proxy = proxy
 
-    def get_proxy_url(self):
-        if self.proxy.proxy_type == ProxyType.DIRECT:
+    @property
+    def username(self) -> str:
+        return self._username
+
+    @username.setter
+    def username(self, value: str) -> None:
+        self._username = value
+
+    @property
+    def password(self) -> str:
+        return self._password
+
+    @password.setter
+    def password(self, value: str) -> None:
+        self._password = value
+
+    @property
+    def auth_type(self) -> str:
+        return self._auth_type
+
+    @auth_type.setter
+    def auth_type(self, value: str) -> None:
+        self._auth_type = value
+
+    @property
+    def token(self) -> str:
+        return self._token
+
+    @token.setter
+    def token(self, value: str) -> None:
+        self._token = value
+
+    def get_proxy_url(self) -> str:
+        proxy_type = self.proxy.proxy_type
+        remote_add = parse.urlparse(self.remote_server_addr)
+        if proxy_type == ProxyType.DIRECT:
             return None
-        elif self.proxy.proxy_type == ProxyType.SYSTEM:
+        if proxy_type == ProxyType.SYSTEM:
             _no_proxy = os.environ.get("no_proxy", os.environ.get("NO_PROXY"))
             if _no_proxy:
-                for npu in _no_proxy.split(","):
-                    npu = npu.strip()
-                    if npu == "*":
+                for entry in map(str.strip, _no_proxy.split(",")):
+                    if entry == "*":
                         return None
-                    n_url = parse.urlparse(npu)
-                    remote_add = parse.urlparse(self.remote_server_addr)
-                    if n_url.netloc:
-                        if remote_add.netloc == n_url.netloc:
-                            return None
-                    else:
-                        if n_url.path in remote_add.netloc:
-                            return None
-            if self.remote_server_addr.startswith("https://"):
-                return os.environ.get("https_proxy", os.environ.get("HTTPS_PROXY"))
-            if self.remote_server_addr.startswith("http://"):
-                return os.environ.get("http_proxy", os.environ.get("HTTP_PROXY"))
-        elif self.proxy.proxy_type == ProxyType.MANUAL:
-            if self.remote_server_addr.startswith("https://"):
-                return self.proxy.sslProxy
-            elif self.remote_server_addr.startswith("http://"):
-                return self.proxy.http_proxy
-            else:
-                return None
-        else:
-            return None
+                    n_url = parse.urlparse(entry)
+                    if n_url.netloc and remote_add.netloc == n_url.netloc:
+                        return None
+                    if n_url.path in remote_add.netloc:
+                        return None
+            return os.environ.get(
+                "https_proxy" if self.remote_server_addr.startswith("https://") else "http_proxy",
+                os.environ.get("HTTPS_PROXY" if self.remote_server_addr.startswith("https://") else "HTTP_PROXY"),
+            )
+        if proxy_type == ProxyType.MANUAL:
+            return self.proxy.sslProxy if self.remote_server_addr.startswith("https://") else self.proxy.http_proxy
+        return None
+
+    def get_auth_header(self):
+        auth_type = self.auth_type.lower()
+        if auth_type == "basic" and self.username and self.password:
+            credentials = f"{self.username}:{self.password}"
+            encoded_credentials = base64.b64encode(credentials.encode()).decode()
+            return {"Authorization": f"Basic {encoded_credentials}"}
+        elif auth_type == "bearer" and self.token:
+            return {"Authorization": f"Bearer {self.token}"}
+        elif auth_type == "oauth" and self.token:
+            return {"Authorization": f"OAuth {self.token}"}
+        return None

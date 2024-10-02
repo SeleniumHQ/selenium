@@ -323,6 +323,11 @@ class RemoteConnection:
         """
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self._client_config.keep_alive)
+        auth_header = self._client_config.get_auth_header()
+
+        if auth_header:
+            headers.update(auth_header)
+
         if body and method not in ("POST", "PUT"):
             body = None
 
