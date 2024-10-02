@@ -152,7 +152,7 @@ class FirefoxProfile:
         if self._desired_preferences:
             self.update_preferences()
         fp = BytesIO()
-        with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED) as zipped:
+        with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED, strict_timestamps=False) as zipped:
             path_root = len(self.path) + 1  # account for trailing slash
             for base, _, files in os.walk(self.path):
                 for fyle in files:
@@ -276,17 +276,11 @@ class FirefoxProfile:
 
         try:
             if zipfile.is_zipfile(addon_path):
-                # Bug 944361 - We cannot use 'with' together with zipFile because
-                # it will cause an exception thrown in Python 2.6.
-                # TODO: use with statement when Python 2.x is no longer supported
-                try:
-                    compressed_file = zipfile.ZipFile(addon_path, "r")
+                with zipfile.ZipFile(addon_path, "r") as compressed_file:
                     if "manifest.json" in compressed_file.namelist():
                         return parse_manifest_json(compressed_file.read("manifest.json"))
 
                     manifest = compressed_file.read("install.rdf")
-                finally:
-                    compressed_file.close()
             elif os.path.isdir(addon_path):
                 manifest_json_filename = os.path.join(addon_path, "manifest.json")
                 if os.path.exists(manifest_json_filename):

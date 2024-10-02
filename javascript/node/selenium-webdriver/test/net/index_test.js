@@ -18,7 +18,7 @@
 'use strict'
 
 const assert = require('node:assert')
-const net = require('../../net')
+const net = require('selenium-webdriver/net')
 
 describe('net.splitHostAndPort', function () {
   it('hostname with no port', function () {

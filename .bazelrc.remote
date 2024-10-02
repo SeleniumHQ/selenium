@@ -7,9 +7,6 @@ build:remote --remote_cache=grpcs://gypsum.cluster.engflow.com
 # The number of cores available
 build:remote -j 50
 
-# Build Without The Bytes
-build:remote --remote_download_minimal
-
 build:remote --define=EXECUTOR=remote
 build:remote --experimental_inmemory_dotd_files
 build:remote --experimental_inmemory_jdeps_files
@@ -64,6 +61,7 @@ test:remote --test_timeout=600
 build:remote-ci --config=remote
 build:remote-ci --curses=no --color=yes --show_timestamps --show_progress_rate_limit=5
 build:remote-ci --bes_upload_mode=wait_for_upload_complete
+build:remote-ci --remote_download_minimal
 
 # Configuration changes suggested by EngFlow
 build:remote --grpc_keepalive_time=30s

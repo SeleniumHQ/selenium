@@ -15,14 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::assert_driver;
-use assert_cmd::Command;
+use crate::common::{assert_driver, get_selenium_manager};
 
 mod common;
 
 #[test]
 fn webview2_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args(["--browser", "webview2", "--output", "json"])
         .assert()
         .success()

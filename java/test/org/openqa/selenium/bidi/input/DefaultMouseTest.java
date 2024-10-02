@@ -28,7 +28,6 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -109,8 +108,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testDraggingElementWithMouseMovesItToAnotherList() {
     performDragAndDropWithMouse();
     WebElement dragInto = driver.findElement(By.id("sortable1"));
@@ -120,8 +117,6 @@ class DefaultMouseTest extends JupiterTestBase {
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testDraggingElementWithMouseFiresEvents() {
     performDragAndDropWithMouse();
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
@@ -139,8 +134,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void testDoubleClickThenGet() {
     // Fails in ff3 if WebLoadingListener removes browser listener
     driver.get(pages.javascriptPage);
@@ -153,8 +146,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
 
@@ -189,8 +180,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 
@@ -202,8 +191,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void testContextClick() {
     driver.get(pages.javascriptPage);
 
@@ -220,8 +207,6 @@ class DefaultMouseTest extends JupiterTestBase {
   @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(value = CHROME, gitHubActions = true)
   @Ignore(value = EDGE, gitHubActions = true)
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void testMoveToLocation() {
     driver.get(pages.mouseInteractionPage);
 
@@ -237,8 +222,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void testMoveAndClick() {
     driver.get(pages.javascriptPage);
 
@@ -254,8 +237,6 @@ class DefaultMouseTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void testShouldClickElementInIFrame() {
@@ -294,8 +275,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testShouldAllowUsersToHoverOverElements() {
     driver.get(pages.javascriptPage);
 
@@ -312,8 +291,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testHoverPersists() throws Exception {
     driver.get(pages.javascriptPage);
     // Move to a different element to make sure the mouse is not over the
@@ -337,8 +314,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testMovingMouseByRelativeOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -355,8 +330,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testMovingMouseToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -374,8 +347,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testMovingMouseToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -391,8 +362,6 @@ class DefaultMouseTest extends JupiterTestBase {
 
   @NeedsFreshDriver({IE, CHROME, FIREFOX, EDGE})
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testMoveRelativeToBody() {
     try {
       driver.get(pages.mouseTrackerPage);
@@ -411,8 +380,6 @@ class DefaultMouseTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testMoveMouseByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
@@ -455,8 +422,6 @@ class DefaultMouseTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 

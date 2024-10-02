@@ -1,3 +1,46 @@
+Selenium 4.25.0
+* Add CDP for Chrome 129 and remove 126
+* fix type errors for `service.py`, `cdp.py`, `webelement.py` and `remote_connection.py` (#14448)
+* fix type errors for `input_device` and `file_detector` (#14459)
+* fix type errors for `pointer_input.py`, `wheel_input.py` and `firefox/options.py` (#14476)
+* firefox_profile.py: use `with` statement in zipfile as Python 2.x support is dropped (#14489)
+
+Selenium 4.24.0
+* Allow overriding `GLOBAL_DEFAULT_TIMEOUT` (#14354)
+* fix mypy errors for `timeouts.py` and `print_page_options.py` (#14362)
+* fix mypy errors for `input_device.py`, `ie/options.py` and `selenium_manager.py` (#14377)
+* fix type errors for `log.py`, `chromium/options.py`, `websocket_connection.py` and `chrome/options.py` (#14392)
+* Add CDP for Chrome 128 and remove 125
+
+Selenium 4.23.1
+
+* Fix 14278 and match ordering of dependencies (#14297)
+
+Selenium 4.23.0
+
+* Disable strict time stamps in Firefox profile (#14168)
+* Update the py api doc build (#14173)
+* Add websocket-client v.1.8.0 to setup.py (#14187)
+* Remove precompiled binaries from sdist (#14233)
+* Fix RelativeBy#near to take 2 parameters (#13082)
+* Add CDP for Chrome 127 and remove 124
+
+Selenium 4.22.0
+
+* Fix EOFError when calling the Remote WebDriver download_file method (#14031)
+* Add low-level sync API to use DevTools (#13977)
+* Add preference to enable CDP in Firefox by default (#14091)
+* Allow using enable_bidi property on options class
+* Implement script module for BiDi
+* Remove desired capabilities argument for Webkitgtk (#14128)
+* Make webkitgtk.webdriver same as wpewebkit.webdriver
+* Add CDP for Chrome 126 and remove 123
+
+Selenium 4.21.0
+
+* Add CDP for Chrome 125 and remove 122
+* Moving ignore_local_proxy_environment_variables to BaseOptions (#13926)
+
 Selenium 4.20.0
 
 * Add CDP for Chrome 124 and remove 121

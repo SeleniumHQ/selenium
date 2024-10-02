@@ -217,8 +217,8 @@ under the License.
 
 [LTS]: https://github.com/nodejs/LTS
 [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
-[api]: http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/
-[chrome]: http://chromedriver.storage.googleapis.com/index.html
+[api]: https://www.selenium.dev/selenium/docs/api/javascript/
+[chrome]: https://googlechromelabs.github.io/chrome-for-testing/#stable
 [gh]: https://github.com/SeleniumHQ/selenium/
 [issues]: https://github.com/SeleniumHQ/selenium/issues
 [edge]: http://go.microsoft.com/fwlink/?LinkId=619687

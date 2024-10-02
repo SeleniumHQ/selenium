@@ -17,6 +17,8 @@
 
 /**
  * @fileoverview Defines a WebDriver client for Safari.
+ *
+ * @module selenium-webdriver/safari
  */
 
 'use strict'

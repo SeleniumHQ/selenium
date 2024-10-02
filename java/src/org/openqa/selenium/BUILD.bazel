@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "javadoc")
+load("//java:defs.bzl", "artifact", "java_dist_zip", "java_export", "java_import", "javadoc")
 load("//java:version.bzl", "SE_VERSION")
 load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
@@ -30,10 +30,13 @@ java_export(
         "org.seleniumhq.selenium.json",
     ],
     pom_template = ":template-pom",
+    tags = [
+        "release-artifact",
+    ],
     visibility = ["//visibility:public"],
     deps = [
-        # Nothing from third party
         ":manifest",
+        artifact("org.jspecify:jspecify"),
     ],
 )
 
@@ -41,6 +44,9 @@ java_export(
     name = "client-combined",
     maven_coordinates = "org.seleniumhq.selenium:selenium-java:" + SE_VERSION,
     pom_template = ":template-pom",
+    tags = [
+        "release-artifact",
+    ],
     visibility = [
         "//visibility:public",
     ],

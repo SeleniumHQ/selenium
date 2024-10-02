@@ -505,7 +505,9 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
     readLock.lock();
     try {
       return model.getSnapshot().stream()
-          .filter(node -> !DOWN.equals(node.getAvailability()))
+          .filter(
+              node ->
+                  !DOWN.equals(node.getAvailability()) && !DRAINING.equals(node.getAvailability()))
           .collect(toImmutableSet());
     } finally {
       readLock.unlock();
@@ -808,6 +810,9 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
                 .count();
 
         if (unmatchableCount == request.getDesiredCapabilities().size()) {
+          LOG.info(
+              "No nodes support the capabilities in the request: "
+                  + request.getDesiredCapabilities());
           SessionNotCreatedException exception =
               new SessionNotCreatedException("No nodes support the capabilities in the request");
           sessionQueue.complete(request.getRequestId(), Either.left(exception));
@@ -853,7 +858,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         // not stall
         if (!isSessionValid && response.isRight()) {
           LOG.log(
-              Debug.getDebugLogLevel(),
+              Level.INFO,
               "Session for request {0} has been created but it has timed out, stopping it to avoid"
                   + " stalled browser",
               reqId.toString());
@@ -875,11 +880,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
           model.getSnapshot().stream()
               .filter(node -> node.getExternalUri().equals(uri))
               .findFirst();
-      if (nodeStatus.isPresent()) {
-        return nodes.get(nodeStatus.get().getNodeId());
-      } else {
-        return null;
-      }
+      return nodeStatus.map(status -> nodes.get(status.getNodeId())).orElse(null);
     } finally {
       readLock.unlock();
     }

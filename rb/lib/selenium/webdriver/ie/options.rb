@@ -42,7 +42,8 @@ module Selenium
           use_legacy_file_upload_dialog_handling: 'ie.useLegacyFileUploadDialogHandling',
           attach_to_edge_chrome: 'ie.edgechromium',
           edge_executable_path: 'ie.edgepath',
-          ignore_process_match: 'ie.ignoreprocessmatch'
+          ignore_process_match: 'ie.ignoreprocessmatch',
+          silent: 'silent'
         }.freeze
         BROWSER = 'internet explorer'
 
@@ -81,7 +82,7 @@ module Selenium
 
         def initialize(**opts)
           @args = (opts.delete(:args) || []).to_set
-          super(**opts)
+          super
 
           @options[:native_events] = true if @options[:native_events].nil?
         end

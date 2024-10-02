@@ -257,6 +257,7 @@ def test_move_window_position(driver, pages):
     assert loc["y"] == new_y
 
 
+@pytest.mark.xfail_edge(reason="Window does not resize")
 def test_change_window_size(driver, pages):
     pages.load("blank.html")
     size = driver.get_window_size()

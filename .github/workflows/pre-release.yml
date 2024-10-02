@@ -36,7 +36,7 @@ jobs:
           git checkout -b release-${{ github.event.inputs.version }}
       - name: Update Rust Version
         run: |
-          ./go rust:version
+          ./go rust:version[${{ github.event.inputs.version }}]
           ./go rust:version:commit
       - name: Push changes
         uses: ad-m/github-push-action@master
@@ -68,10 +68,12 @@ jobs:
           fetch-tags: true
           ref: release-${{ github.event.inputs.version }}
       - name: Install Ruby
-        uses: ruby/setup-ruby@5f19ec79cedfadb78ab837f95b87734d0003c899
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
           working-directory: 'rb'
+      - name: Setup curl for Ubuntu
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: "Prep git"
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
@@ -80,10 +82,10 @@ jobs:
         run: git reset HEAD~1
       - name: Update everything including early release CDP
         if: ${{ github.event.inputs.chrome_channel == 'early-stable' }}
-        run: ./go all:prepare['Beta']
+        run: ./go all:prepare[${{ github.event.inputs.version }},Beta]
       - name: Update everything including released CDP
         if: ${{ github.event.inputs.chrome_channel == 'stable' }}
-        run: ./go "all:prepare[Stable]"
+        run: ./go "all:prepare[${{ github.event.inputs.version }},Stable]"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
@@ -91,6 +93,7 @@ jobs:
           author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
           delete-branch: true
           branch: release-preparation-${{ github.event.inputs.version }}
+          base: trunk
           title: "[build] Prepare for release of Selenium ${{ github.event.inputs.version }}"
           body: |
             **Warning: Manually update the changelogs before merging**

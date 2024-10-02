@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Driver do
+    describe Driver, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       before { quit_driver }
 
       it 'supports listener' do

@@ -19,7 +19,7 @@
 
 require_relative 'spec_helper'
 
-describe 'Navigation' do
+describe 'Navigation', exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
   it 'navigates back and forward' do
     form_title   = 'We Leave From Here'
     result_title = 'We Arrive Here'

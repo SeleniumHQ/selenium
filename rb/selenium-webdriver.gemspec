@@ -47,10 +47,11 @@ Gem::Specification.new do |s|
   s.bindir = 'bin'
   s.require_paths = ['lib']
 
-  s.add_runtime_dependency 'base64', ['~> 0.2']
-  s.add_runtime_dependency 'rexml', ['~> 3.2', '>= 3.2.5']
-  s.add_runtime_dependency 'rubyzip', ['>= 1.2.2', '< 3.0']
-  s.add_runtime_dependency 'websocket', ['~> 1.0']
+  s.add_dependency 'base64', ['~> 0.2']
+  s.add_dependency 'logger', ['~> 1.4']
+  s.add_dependency 'rexml', ['~> 3.2', '>= 3.2.5']
+  s.add_dependency 'rubyzip', ['>= 1.2.2', '< 3.0']
+  s.add_dependency 'websocket', ['~> 1.0']
 
   s.add_development_dependency 'git', ['~> 1.19']
   s.add_development_dependency 'rack', ['~> 2.0']
@@ -58,6 +59,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', ['~> 3.0']
   s.add_development_dependency 'rubocop', ['~> 1.60', '>=1.60.2']
   s.add_development_dependency 'rubocop-performance', ['~> 1.15']
+  s.add_development_dependency 'rubocop-rake', ['~> 0.6.0']
   s.add_development_dependency 'rubocop-rspec', ['~> 2.16']
   s.add_development_dependency 'webmock', ['~> 3.5']
   s.add_development_dependency 'webrick', ['~> 1.7']

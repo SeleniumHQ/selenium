@@ -126,10 +126,8 @@ public class CompletionCommand implements CliCommand {
         .sorted(Comparator.comparing(CliCommand::getName))
         .forEach(
             cmd -> {
-              out.println(
-                  String.format(
-                      "        '%s:%s'",
-                      cmd.getName(), cmd.getDescription().replace("'", "'\\''")));
+              out.printf(
+                  "        '%s:%s'%n", cmd.getName(), cmd.getDescription().replace("'", "'\\''"));
             });
 
     out.println("      )");
@@ -143,8 +141,8 @@ public class CompletionCommand implements CliCommand {
         .forEach(
             cmd -> {
               String shellName = cmd.getName().replace('-', '_');
-              out.println(String.format("        (%s)", cmd.getName()));
-              out.println(String.format("          _selenium_%s", shellName));
+              out.printf("        (%s)%n", cmd.getName());
+              out.printf("          _selenium_%s%n", shellName);
               out.println("          ;;");
             });
 
@@ -155,7 +153,7 @@ public class CompletionCommand implements CliCommand {
 
     allCommands.forEach(
         (cmd, options) -> {
-          out.println(String.format("_selenium_%s() {", cmd.getName().replace('-', '_')));
+          out.printf("_selenium_%s() {%n", cmd.getName().replace('-', '_'));
           out.println("  args=(");
 
           options.stream()
@@ -170,17 +168,16 @@ public class CompletionCommand implements CliCommand {
                     }
 
                     if (opt.flags().size() == 1) {
-                      out.println(
-                          String.format(
-                              "    '%s[%s]%s'",
-                              opt.flags().iterator().next(), quotedDesc, getZshType(opt)));
+                      out.printf(
+                          "    '%s[%s]%s'%n",
+                          opt.flags().iterator().next(), quotedDesc, getZshType(opt));
                     } else {
                       out.print("    '");
                       out.print(opt.flags.stream().collect(joining(" ", "(", ")")));
                       out.print("'");
                       out.print(opt.flags.stream().collect(joining(",", "{", "}")));
                       out.print("'");
-                      out.print(String.format("[%s]", quotedDesc));
+                      out.printf("[%s]", quotedDesc);
                       out.print(getZshType(opt));
                       out.print("'\n");
                     }

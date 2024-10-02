@@ -96,10 +96,7 @@ pub fn run_shell_command(shell: &str, flag: &str, command: Command) -> Result<St
         }
     }
     let output = process.output()?;
-    Ok(
-        strip_trailing_newline(String::from_utf8_lossy(&output.stdout).to_string().as_str())
-            .to_string(),
-    )
+    Ok(strip_trailing_newline(&String::from_utf8_lossy(&output.stdout)).to_string())
 }
 
 pub fn strip_trailing_newline(input: &str) -> &str {

@@ -1,3 +1,44 @@
+v4.25.0
+======
+* Add CDP for Chrome 129 and remove 126
+* BiDi implementation (#14318)
+* Add BiDi OriginalOpener in browsing context info
+* [bidi] Forward subscription options in browser context for log module
+* [bidi] Enable implicit ways to specify page ranges for printing
+* Workaround using pre-processor directive (#14499)
+* [bidi] Simplify browsing context type enumeration
+* [bidi] Expose BiDi associated reference in browsing context
+* [bidi] Rename entry point AsBidirectional to AsBiDirectional
+
+v4.24.0
+======
+* Migration from `Newtonsoft.Json` to `System.Text.Json` package (#14292)
+* Add CDP for Chrome 128 and remove 125
+
+v4.23.0
+======
+* Log http requests/responses via internal DiagnosticsHttpHandler (#13978)
+* Kick off sending of request and log it in parallel
+* Return back protected synchronous Execute method in WebDriver
+* Fixed calling quit after not successful new session (#14242)
+* Add CDP for Chrome 12 and remove 124
+
+
+v4.22.0
+======
+
+* Have url property setter call navigation method instead of the other way around (#13960)
+* Add asynchronous methods to Navigation class (#14051)
+* Add preference to enable CDP in Firefox by default (#14091)
+* Add CDP for Chrome 126 and remove 123
+
+v4.21.0
+======
+
+* Add CDP for Chrome 125 and remove 122
+* Overwrite internal log file if it already exists (#13900)
+* Align binary location property for FirefoxOptions with other options (#13901)
+
 v4.20.0
 ======
 

@@ -54,7 +54,7 @@ public class BazelBuild {
       return;
     }
 
-    if (target == null || "".equals(target)) {
+    if (target == null || target.isEmpty()) {
       throw new IllegalStateException("No targets specified");
     }
     LOG.info("\nBuilding " + target + " ...");

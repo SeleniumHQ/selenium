@@ -376,7 +376,7 @@ class JsonTest {
     // In selenium 2, the sessionId is an object. In selenium 3, it's a straight string.
     String raw =
         "{\"sessionId\": \""
-            + expectedId.toString()
+            + expectedId
             + "\", "
             + "\"name\": \"some command\","
             + "\"parameters\": {}}";

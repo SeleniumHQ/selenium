@@ -316,25 +316,25 @@ public class RedisBackedSessionMap extends SessionMap {
   private String uriKey(SessionId id) {
     Require.nonNull("Session ID", id);
 
-    return "session:" + id.toString() + ":uri";
+    return "session:" + id + ":uri";
   }
 
   private String capabilitiesKey(SessionId id) {
     Require.nonNull("Session ID", id);
 
-    return "session:" + id.toString() + ":capabilities";
+    return "session:" + id + ":capabilities";
   }
 
   private String startKey(SessionId id) {
     Require.nonNull("Session ID", id);
 
-    return "session:" + id.toString() + ":start";
+    return "session:" + id + ":start";
   }
 
   private String stereotypeKey(SessionId id) {
     Require.nonNull("Session ID", id);
 
-    return "session:" + id.toString() + ":stereotype";
+    return "session:" + id + ":stereotype";
   }
 
   private void setCommonSpanAttributes(Span span) {

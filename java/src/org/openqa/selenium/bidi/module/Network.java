@@ -169,11 +169,11 @@ public class Network implements AutoCloseable {
     }
   }
 
-  public void onAuthRequired(Consumer<ResponseDetails> consumer) {
+  public long onAuthRequired(Consumer<ResponseDetails> consumer) {
     if (browsingContextIds.isEmpty()) {
-      this.bidi.addListener(authRequired, consumer);
+      return this.bidi.addListener(authRequired, consumer);
     } else {
-      this.bidi.addListener(browsingContextIds, authRequired, consumer);
+      return this.bidi.addListener(browsingContextIds, authRequired, consumer);
     }
   }
 

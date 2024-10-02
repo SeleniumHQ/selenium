@@ -137,8 +137,7 @@ class FirefoxProfileTest {
   void shouldInstallWebExtensionFromZip() {
     profile.addExtension(InProject.locate(EXT_PATH).toFile());
     File profileDir = profile.layoutOnDisk();
-    File extensionFile =
-        new File(profileDir, "extensions/webextensions-selenium-example@example.com.xpi");
+    File extensionFile = new File(profileDir, "extensions/webextensions-selenium-example@0.1.xpi");
     assertThat(extensionFile).exists().isFile();
   }
 
@@ -148,8 +147,7 @@ class FirefoxProfileTest {
     File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
     profile.addExtension(unzippedExtension);
     File profileDir = profile.layoutOnDisk();
-    File extensionDir =
-        new File(profileDir, "extensions/webextensions-selenium-example@example.com");
+    File extensionDir = new File(profileDir, "extensions/webextensions-selenium-example@0.1");
     assertThat(extensionDir).exists();
   }
 
@@ -157,8 +155,7 @@ class FirefoxProfileTest {
   void shouldInstallExtensionUsingClasspath() {
     profile.addExtension(FirefoxProfileTest.class, EXT_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
-    File extensionDir =
-        new File(profileDir, "extensions/webextensions-selenium-example@example.com.xpi");
+    File extensionDir = new File(profileDir, "extensions/webextensions-selenium-example@0.1.xpi");
     assertThat(extensionDir).exists();
   }
 

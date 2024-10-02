@@ -19,15 +19,15 @@
 
 const { StubError, assertIsInstance, assertIsStubError, throwStubError } = require('./testutil')
 
-const error = require('../../lib/error')
-const logging = require('../../lib/logging')
-const promise = require('../../lib/promise')
-const until = require('../../lib/until')
-const { Alert, AlertPromise, WebDriver, WebElement, WebElementPromise } = require('../../lib/webdriver')
-const { By } = require('../../lib/by')
-const { Capabilities } = require('../../lib/capabilities')
-const { Name } = require('../../lib/command')
-const { Session } = require('../../lib/session')
+const error = require('selenium-webdriver/lib/error')
+const logging = require('selenium-webdriver/lib/logging')
+const promise = require('selenium-webdriver/lib/promise')
+const until = require('selenium-webdriver/lib/until')
+const { Alert, AlertPromise, WebDriver, WebElement, WebElementPromise } = require('selenium-webdriver/lib/webdriver')
+const { By } = require('selenium-webdriver/lib/by')
+const { Capabilities } = require('selenium-webdriver/lib/capabilities')
+const { Name } = require('selenium-webdriver/lib/command')
+const { Session } = require('selenium-webdriver/lib/session')
 const assert = require('node:assert')
 
 const CName = Name

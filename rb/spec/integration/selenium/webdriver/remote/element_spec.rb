@@ -21,14 +21,12 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Element do
+    describe Element, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       before do
         driver.file_detector = ->(filename) { File.join(__dir__, filename) }
       end
 
-      after do
-        driver.file_detector = nil
-      end
+      after { driver.file_detector = nil }
 
       context 'when uploading one file' do
         it 'uses the provided file detector', exclusive: {driver: :remote},

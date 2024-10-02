@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Manager do
+    describe Manager, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       describe 'cookie management' do
         before { driver.navigate.to url_for('xhtmlTest.html') }
 

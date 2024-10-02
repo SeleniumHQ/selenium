@@ -21,13 +21,13 @@ const assert = require('node:assert')
 const fs = require('node:fs')
 const path = require('node:path')
 
-const chrome = require('../../chrome')
-const by = require('../../lib/by')
-const error = require('../../lib/error')
+const chrome = require('selenium-webdriver/chrome')
+const by = require('selenium-webdriver/lib/by')
+const error = require('selenium-webdriver/lib/error')
 const fileServer = require('../../lib/test/fileserver')
-const io = require('../../io')
+const io = require('selenium-webdriver/io')
 const test = require('../../lib/test')
-const until = require('../../lib/until')
+const until = require('selenium-webdriver/lib/until')
 
 test.suite(
   function (env) {

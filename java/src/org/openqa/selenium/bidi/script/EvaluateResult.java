@@ -22,7 +22,7 @@ public interface EvaluateResult {
 
   String getRealmId();
 
-  public enum Type {
+  enum Type {
     SUCCESS("success"),
     EXCEPTION("exception");
 

@@ -19,7 +19,7 @@
 
 const test = require('../lib/test')
 const { Pages } = require('../lib/test')
-const { Browser } = require('../')
+const { Browser } = require('selenium-webdriver')
 const assert = require('node:assert')
 
 let startIndex = 0

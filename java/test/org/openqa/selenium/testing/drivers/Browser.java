@@ -18,6 +18,7 @@
 package org.openqa.selenium.testing.drivers;
 
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,14 +53,21 @@ public enum Browser {
       }
 
       options.addArguments(
-          "disable-infobars", "disable-breakpad", "disable-dev-shm-usage", "no-sandbox");
+          "disable-infobars",
+          "disable-breakpad",
+          "disable-dev-shm-usage",
+          "no-sandbox",
+          "disable-search-engine-choice-screen");
 
       Map<String, Object> prefs = new HashMap<>();
       prefs.put("exit_type", "None");
       prefs.put("exited_cleanly", true);
       options.setExperimentalOption("prefs", prefs);
 
-      options.setCapability("webSocketUrl", true);
+      options.enableBiDi();
+
+      // Reason: https://github.com/SeleniumHQ/selenium/pull/14429#issuecomment-2311614822
+      options.setCapability(UNHANDLED_PROMPT_BEHAVIOUR, "ignore");
 
       return options;
     }
@@ -90,7 +98,8 @@ public enum Browser {
       prefs.put("exited_cleanly", true);
       options.setExperimentalOption("prefs", prefs);
 
-      options.setCapability("webSocketUrl", true);
+      options.enableBiDi();
+      options.setCapability(UNHANDLED_PROMPT_BEHAVIOUR, "ignore");
 
       return options;
     }
@@ -129,7 +138,7 @@ public enum Browser {
         options.addArguments("-headless");
       }
 
-      options.setCapability("webSocketUrl", true);
+      options.enableBiDi();
 
       return options;
     }

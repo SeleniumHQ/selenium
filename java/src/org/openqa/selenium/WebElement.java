@@ -18,6 +18,8 @@
 package org.openqa.selenium;
 
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents an HTML element. Generally, all interesting operations to do with interacting with a
@@ -28,6 +30,7 @@ import java.util.List;
  * fails, then an {@link org.openqa.selenium.StaleElementReferenceException} is thrown, and all
  * future calls to this instance will fail.
  */
+@NullMarked
 public interface WebElement extends SearchContext, TakesScreenshot {
   /**
    * Click this element. If this causes a new page to load, you should discard all references to
@@ -98,7 +101,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * @param name The name of the property.
    * @return The property's current value or null if the value is not set.
    */
-  default String getDomProperty(String name) {
+  default @Nullable String getDomProperty(String name) {
     throw new UnsupportedOperationException("getDomProperty");
   }
 
@@ -122,7 +125,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * @param name The name of the attribute.
    * @return The attribute's value or null if the value is not set.
    */
-  default String getDomAttribute(String name) {
+  default @Nullable String getDomAttribute(String name) {
     throw new UnsupportedOperationException("getDomAttribute");
   }
 
@@ -163,7 +166,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * @param name The name of the attribute.
    * @return The attribute/property's current value or null if the value is not set.
    */
-  String getAttribute(String name);
+  @Nullable String getAttribute(String name);
 
   /**
    * Gets result of computing the WAI-ARIA role of element.
@@ -173,7 +176,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    *
    * @return the WAI-ARIA role of the element.
    */
-  default String getAriaRole() {
+  default @Nullable String getAriaRole() {
     throw new UnsupportedOperationException("getAriaRole");
   }
 
@@ -186,7 +189,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    *
    * @return the accessible name of the element.
    */
-  default String getAccessibleName() {
+  default @Nullable String getAccessibleName() {
     throw new UnsupportedOperationException("getAccessibleName");
   }
 

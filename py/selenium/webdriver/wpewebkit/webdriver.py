@@ -40,9 +40,8 @@ class WebDriver(RemoteWebDriver):
          - options : an instance of ``WPEWebKitOptions``
          - service : Service object for handling the browser driver if you need to pass extra details
         """
-        if not options:
-            options = Options()
 
+        options = options if options else Options()
         self.service = service if service else Service()
         self.service.path = DriverFinder(self.service, options).get_driver_path()
         self.service.start()

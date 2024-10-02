@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Edge
-      describe Service, exclusive: {browser: :edge} do
+      describe Service, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :edge}] do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 

@@ -1,0 +1,26 @@
+module Selenium
+  module WebDriver
+    module FedCM
+      class Dialog
+        DIALOG_TYPE_ACCOUNT_LIST: String
+        DIALOG_TYPE_AUTO_REAUTH: String
+
+        @bridge: Remote::Bridge
+
+        def accounts: -> Array[Account]
+
+        def cancel: -> Remote::Response?
+
+        def click: -> untyped
+
+        def select_account: (Integer index) -> Remote::Response?
+
+        def subtitle: -> (String | Remote::Response)?
+
+        def title: -> (String | Remote::Response)
+
+        def type: -> (String | Remote::Response)
+      end
+    end
+  end
+end

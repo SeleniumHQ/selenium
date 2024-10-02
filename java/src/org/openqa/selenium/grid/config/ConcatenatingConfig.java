@@ -37,7 +37,7 @@ public class ConcatenatingConfig implements Config {
   private final Map<String, String> values;
 
   public ConcatenatingConfig(String prefix, char separator, Map<?, ?> values) {
-    this.prefix = prefix == null || "".equals(prefix) ? "" : (prefix + separator);
+    this.prefix = prefix == null || prefix.isEmpty() ? "" : (prefix + separator);
     this.separator = separator;
 
     this.values =

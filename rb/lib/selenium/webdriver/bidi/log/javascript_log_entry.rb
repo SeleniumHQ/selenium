@@ -24,7 +24,7 @@ module Selenium
         attr_accessor :type
 
         def initialize(level:, text:, timestamp:, type:, stack_trace:)
-          super(level: level, text: text, timestamp: timestamp, type: type, stack_trace: stack_trace)
+          super
           @type = 'javascript'
         end
       end # JavascriptLogEntry

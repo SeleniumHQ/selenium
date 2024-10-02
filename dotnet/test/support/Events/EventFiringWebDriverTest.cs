@@ -58,12 +58,15 @@ Navigated back
 Navigating forward
 Navigated forward
 ";
+            string normalizedExpectedLog = expectedLog.Replace("\r\n", "\n").Replace("\r", "\n");
             mockDriver.VerifySet(x => x.Url = "http://www.get.com", Times.Once);
             mockDriver.Verify(x => x.Navigate(), Times.Exactly(3));
-            mockNavigation.Verify(x => x.GoToUrl("http://www.navigate-to.com"), Times.Once);
-            mockNavigation.Verify(x => x.Back(), Times.Once);
-            mockNavigation.Verify(x => x.Forward(), Times.Once);
-            Assert.AreEqual(expectedLog, log.ToString());
+            mockNavigation.Verify(x => x.GoToUrlAsync("http://www.navigate-to.com"), Times.Once);
+            mockNavigation.Verify(x => x.BackAsync(), Times.Once);
+            mockNavigation.Verify(x => x.ForwardAsync(), Times.Once);
+
+            string normalizedActualLog = log.ToString().Replace("\r\n", "\n").Replace("\r", "\n");
+            Assert.AreEqual(normalizedExpectedLog, normalizedActualLog);
         }
 
         [Test]

@@ -1,17 +1,22 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "webextensions-selenium-example",
-  "description": "Inject a div with id webextensions-selenium-example to verify that WebExtensions work in Firefox/Selenium" ,
+  "description": "Inject a div with id webextensions-selenium-example to verify that WebExtensions work in Firefox/Selenium",
   "version": "0.1",
   "content_scripts": [
     {
-      "matches": ["https://*/*","http://*/*"],
-      "js": ["inject.js"]
+      "matches": [
+        "https://*/*",
+        "http://*/*"
+      ],
+      "js": [
+        "inject.js"
+      ]
     }
   ],
-  "applications": {
-   "gecko": {
-     "id": "webextensions-selenium-example@example.com"
-   }
- }
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "webextensions-selenium-example-v3@example.com"
+    }
+  }
 }

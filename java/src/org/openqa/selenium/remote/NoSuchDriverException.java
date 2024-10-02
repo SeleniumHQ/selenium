@@ -17,14 +17,10 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.service.DriverFinder;
 
-/**
- * Thrown by {@link org.openqa.selenium.remote.service.DriverFinder#getResult(DriverService,
- * Capabilities)}.
- */
+/** Thrown by {@link DriverFinder#getDriverPath()} (DriverService, Capabilities)}. */
 public class NoSuchDriverException extends WebDriverException {
 
   private static final String SUPPORT_URL = BASE_SUPPORT_URL + "/driver_location/";

@@ -1,5 +1,6 @@
 require:
   - rubocop-performance
+  - rubocop-rake
   - rubocop-rspec
 
 AllCops:
@@ -21,6 +22,7 @@ Layout/SpaceInsideHashLiteralBraces:
 Metrics/AbcSize:
   Max: 30
   Exclude:
+    - 'lib/selenium/webdriver/common/driver_finder.rb'
     - 'lib/selenium/webdriver/common/options.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/remote/http/curb.rb'
@@ -31,6 +33,7 @@ Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
     - 'selenium-*.gemspec'
+    - '../Rakefile*'
 
 Metrics/ClassLength:
   CountComments: false
@@ -55,6 +58,7 @@ Metrics/MethodLength:
     - 'lib/selenium/server.rb'
     - 'lib/selenium/webdriver/common/options.rb'
     - 'lib/selenium/webdriver/common/driver.rb'
+    - 'lib/selenium/webdriver/common/driver_finder.rb'
     - 'lib/selenium/webdriver/remote/http/default.rb'
 
 Metrics/ModuleLength:
@@ -74,6 +78,8 @@ Metrics/PerceivedComplexity:
 Naming/FileName:
   Exclude:
     - 'lib/selenium-webdriver.rb'
+    - 'Rakefile'
+    - '../Rakefile'
 
 Naming/MethodParameterName:
   AllowedNames:

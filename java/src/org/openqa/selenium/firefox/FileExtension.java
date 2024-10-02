@@ -209,7 +209,7 @@ public class FileExtension implements Extension {
         id = idNode.getTextContent();
       }
 
-      if (id == null || "".equals(id.trim())) {
+      if (id == null || id.trim().isEmpty()) {
         throw new FileNotFoundException("Cannot install extension with ID: " + id);
       }
       return id;

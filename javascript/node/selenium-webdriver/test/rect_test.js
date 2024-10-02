@@ -18,7 +18,7 @@
 'use strict'
 
 const assert = require('node:assert')
-const { By } = require('..')
+const { By } = require('selenium-webdriver')
 const test = require('../lib/test')
 
 test.suite(function (env) {

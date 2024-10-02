@@ -116,7 +116,7 @@ jobs:
           node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
         if: inputs.caching
-        uses: bazel-contrib/setup-bazel@0.8.1
+        uses: bazel-contrib/setup-bazel@0.8.5
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
@@ -130,7 +130,7 @@ jobs:
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: bazel-contrib/setup-bazel@0.8.1
+        uses: bazel-contrib/setup-bazel@0.8.5
         with:
           bazelrc: common --color=yes
       - name: Setup Fluxbox and Xvfb
@@ -143,25 +143,12 @@ jobs:
       - name: Set resolution
         if: inputs.os == 'windows' && inputs.browser != ''
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
-      - name: Setup Chrome
-        if: inputs.browser == 'chrome'
-        uses: browser-actions/setup-chrome@latest
-        with:
-          chrome-version: ${{ inputs.browser-version || 'stable' }}
-      - name: Setup Firefox
-        if: inputs.browser == 'firefox'
-        uses: abhi1693/setup-browser@v0.3.5
-        with:
-          browser: firefox
-          version: ${{ inputs.browser-version || 'latest' }}
-      - name: Setup Edge
-        if: inputs.browser == 'edge'
-        uses: browser-actions/setup-edge@latest
-        with:
-          edge-version: ${{ inputs.browser-version || 'stable' }}
       - name: Setup Safari
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable
+      - name: Setup curl for Ubuntu
+        if: inputs.os == 'ubuntu'
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Run Bazel
         run: ${{ inputs.run }}
       - name: Start SSH session

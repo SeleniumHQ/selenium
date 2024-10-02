@@ -18,19 +18,14 @@
 package org.openqa.selenium.bidi;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 class BiDiSessionTest extends JupiterTestBase {
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void shouldBeAbleToCreateABiDiSession() {
     BiDi biDi = ((HasBiDi) driver).getBiDi();
 

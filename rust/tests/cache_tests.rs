@@ -15,22 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::get_driver_path;
-use assert_cmd::Command;
+use crate::common::{get_driver_path, get_selenium_manager};
+
+use rstest::rstest;
 use std::fs;
 use std::path::Path;
 
 mod common;
 
-#[test]
-fn cache_path_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    let tmp_cache_folder_name = "../tmp";
+#[rstest]
+#[case("../tmp")]
+#[case("../áèîö")]
+#[case("../テスト")]
+fn cache_path_test(#[case] tmp_cache_folder_name: String) {
+    let mut cmd = get_selenium_manager();
     cmd.args([
         "--browser",
         "chrome",
         "--cache-path",
-        tmp_cache_folder_name,
+        &tmp_cache_folder_name,
         "--output",
         "json",
     ])
@@ -42,7 +45,7 @@ fn cache_path_test() {
     println!("*** Custom cache path: {}", driver_path);
     assert!(!driver_path.contains(r"cache\selenium"));
 
-    let tmp_cache_path = Path::new(tmp_cache_folder_name);
+    let tmp_cache_path = Path::new(&tmp_cache_folder_name);
     fs::remove_dir_all(tmp_cache_path).unwrap();
     assert!(!tmp_cache_path.exists());
 }

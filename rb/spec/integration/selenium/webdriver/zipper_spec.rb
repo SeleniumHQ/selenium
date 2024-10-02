@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Zipper do
+    describe Zipper, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       let(:base_file_name) { 'file.txt' }
       let(:file_content)   { 'content' }
       let(:zip_file)       { File.join(Dir.tmpdir, 'test.zip') }
@@ -34,9 +34,7 @@ module Selenium
         filename
       end
 
-      after do
-        FileUtils.rm_rf zip_file
-      end
+      after { FileUtils.rm_rf zip_file }
 
       describe '#zip' do
         it 'a file' do

@@ -77,7 +77,8 @@ struct Cli {
     #[clap(long, value_parser)]
     browser_mirror_url: Option<String>,
 
-    /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like)
+    /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), SHELL (Unix-like),
+    /// or MIXED (INFO, WARN, DEBUG, etc. to stderr and minimal JSON to stdout)
     #[clap(long, value_parser, default_value = "LOGGER")]
     output: String,
 
@@ -146,6 +147,14 @@ struct Cli {
     /// Avoid sends usage statistics to plausible.io
     #[clap(long)]
     avoid_stats: bool,
+
+    /// Not using drivers found in the PATH
+    #[clap(long)]
+    skip_driver_in_path: bool,
+
+    /// Not using browsers found in the PATH
+    #[clap(long)]
+    skip_browser_in_path: bool,
 }
 
 fn main() {
@@ -177,8 +186,8 @@ fn main() {
             log.error(&err);
             flush_and_exit(DATAERR, &log, Some(err));
         })
-    } else if grid.is_some() {
-        GridManager::new(grid.as_ref().unwrap().to_string()).unwrap_or_else(|err| {
+    } else if let Some(grid_value) = &grid {
+        GridManager::new(grid_value.to_string()).unwrap_or_else(|err| {
             log.error(&err);
             flush_and_exit(DATAERR, &log, Some(err));
         })
@@ -217,6 +226,8 @@ fn main() {
     let selenium_version = sm_version.strip_prefix(SM_BETA_LABEL).unwrap_or(sm_version);
     selenium_manager.set_selenium_version(selenium_version.to_string());
     selenium_manager.set_avoid_stats(cli.avoid_stats);
+    selenium_manager.set_skip_driver_in_path(cli.skip_driver_in_path);
+    selenium_manager.set_skip_browser_in_path(cli.skip_browser_in_path);
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(selenium_manager.get_logger(), &cache_path);
@@ -242,29 +253,36 @@ fn main() {
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
-            if let Some(best_driver_from_cache) =
-                selenium_manager.find_best_driver_from_cache().unwrap()
-            {
-                log.debug_or_warn(
-                    format!(
-                        "There was an error managing {} ({}); using driver found in the cache",
-                        selenium_manager.get_driver_name(),
-                        err
-                    ),
-                    selenium_manager.is_offline(),
-                );
-                log_driver_and_browser_path(
-                    log,
-                    &best_driver_from_cache,
-                    &selenium_manager.get_browser_path_or_latest_from_cache(),
-                    selenium_manager.get_receiver(),
-                );
-                flush_and_exit(OK, log, Some(err));
-            } else if selenium_manager.is_offline() {
+            if selenium_manager.is_fallback_driver_from_cache() {
+                if let Some(best_driver_from_cache) =
+                    selenium_manager.find_best_driver_from_cache().unwrap()
+                {
+                    log.debug_or_warn(
+                        format!(
+                            "There was an error managing {} ({}); using driver found in the cache",
+                            selenium_manager.get_driver_name(),
+                            err
+                        ),
+                        selenium_manager.is_offline(),
+                    );
+                    log_driver_and_browser_path(
+                        log,
+                        &best_driver_from_cache,
+                        &selenium_manager.get_browser_path_or_latest_from_cache(),
+                        selenium_manager.get_receiver(),
+                    );
+                    flush_and_exit(OK, log, Some(err));
+                }
+            }
+            if selenium_manager.is_offline() {
                 log.warn(&err);
                 flush_and_exit(OK, log, Some(err));
             } else {
-                log.error(&err);
+                let error_msg = log
+                    .is_debug_enabled()
+                    .then(|| format!("{:?}", err))
+                    .unwrap_or_else(|| err.to_string());
+                log.error(error_msg);
                 flush_and_exit(DATAERR, log, Some(err));
             }
         });
@@ -282,7 +300,7 @@ fn log_driver_and_browser_path(
     if driver_path.exists() {
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
     } else {
-        log.error(format!("Driver unavailable: {}", DRIVER_PATH));
+        log.error(format!("Driver unavailable: {}", driver_path.display()));
         flush_and_exit(UNAVAILABLE, log, None);
     }
     if !browser_path.is_empty() {

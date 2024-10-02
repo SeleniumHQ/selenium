@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Window do
+    describe Window, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       after(:all) { reset_driver! }
 
       let(:window) { driver.manage.window }

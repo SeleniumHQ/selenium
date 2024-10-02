@@ -17,6 +17,8 @@
 
 'use strict'
 
+const { Source } = require('./scriptTypes')
+
 /**
  * Represents a base log entry.
  * Desribed in https://w3c.github.io/webdriver-bidi/#types-log-logentry.
@@ -25,12 +27,14 @@ class BaseLogEntry {
   /**
    * Creates a new instance of BaseLogEntry.
    * @param {string} level - The log level.
+   * @param {string} text - The log source.
    * @param {string} text - The log text.
    * @param {number} timeStamp - The log timestamp.
    * @param {string} stackTrace - The log stack trace.
    */
-  constructor(level, text, timeStamp, stackTrace) {
+  constructor(level, source, text, timeStamp, stackTrace) {
     this._level = level
+    this._source = new Source(source)
     this._text = text
     this._timeStamp = timeStamp
     this._stackTrace = stackTrace
@@ -67,6 +71,10 @@ class BaseLogEntry {
   get stackTrace() {
     return this._stackTrace
   }
+
+  get source() {
+    return this._source
+  }
 }
 
 /**
@@ -83,8 +91,8 @@ class GenericLogEntry extends BaseLogEntry {
    * @param {string} type - The log type.
    * @param {string} stackTrace - The log stack trace.
    */
-  constructor(level, text, timeStamp, type, stackTrace) {
-    super(level, text, timeStamp, stackTrace)
+  constructor(level, source, text, timeStamp, type, stackTrace) {
+    super(level, source, text, timeStamp, stackTrace)
     this._type = type
   }
 
@@ -103,10 +111,9 @@ class GenericLogEntry extends BaseLogEntry {
  * @extends GenericLogEntry
  */
 class ConsoleLogEntry extends GenericLogEntry {
-  constructor(level, text, timeStamp, type, method, realm, args, stackTrace) {
-    super(level, text, timeStamp, type, stackTrace)
+  constructor(level, source, text, timeStamp, type, method, args, stackTrace) {
+    super(level, source, text, timeStamp, type, stackTrace)
     this._method = method
-    this._realm = realm
     this._args = args
   }
 
@@ -117,15 +124,6 @@ class ConsoleLogEntry extends GenericLogEntry {
   get method() {
     return this._method
   }
-
-  /**
-   * Gets the realm associated with the log entry.
-   * @returns {string} The realm associated with the log entry.
-   */
-  get realm() {
-    return this._realm
-  }
-
   /**
    * Gets the arguments associated with the log entry.
    * @returns {Array} The arguments associated with the log entry.
@@ -141,8 +139,8 @@ class ConsoleLogEntry extends GenericLogEntry {
  * @extends GenericLogEntry
  */
 class JavascriptLogEntry extends GenericLogEntry {
-  constructor(level, text, timeStamp, type, stackTrace) {
-    super(level, text, timeStamp, type, stackTrace)
+  constructor(level, source, text, timeStamp, type, stackTrace) {
+    super(level, source, text, timeStamp, type, stackTrace)
   }
 }
 

@@ -18,7 +18,7 @@
 'use strict'
 
 const assert = require('node:assert')
-const by = require('../../lib/by')
+const by = require('selenium-webdriver/lib/by')
 
 describe('by', function () {
   describe('By', function () {

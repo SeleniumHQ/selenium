@@ -1,0 +1,38 @@
+{
+  "source": {
+    "include": ["."],
+    "includePattern": ".js$",
+    "excludePattern": "(node_modules/|example)"
+  },
+  "plugins": ["plugins/markdown"],
+  "opts": {
+    "encoding": "utf8",
+    "readme": "./README.md",
+    "destination": "../../../build/docs/api/javascript/",
+    "recurse": true,
+    "verbose": true,
+    "template": "./node_modules/clean-jsdoc-theme",
+    "theme_opts": {
+      "default_theme": "dark",
+      "displayModuleHeader": true,
+      "homepageTitle": "Selenium WebDriver JavaScript API",
+      "title": "Selenium WebDriver JavaScript API",
+      "menu": [
+        {
+          "title": "GitHub",
+          "id": "github",
+          "link": "https://github.com/SeleniumHQ/selenium"
+        },
+        {
+          "title": "npm",
+          "id": "npm",
+          "link": "https://www.npmjs.com/package/selenium-webdriver"
+        }
+      ]
+    }
+  },
+  "markdown": {
+    "hardwrap": false,
+    "idInHeadings": true
+  }
+}

@@ -40,7 +40,7 @@ class RemoteFirefoxDriverTest extends JupiterTestBase {
   public void shouldAllowRemoteWebDriverBuilderToUseHasExtensions() {
     Path extension = InProject.locate("common/extensions/webextensions-selenium-example.xpi");
     String id = ((HasExtensions) driver).installExtension(extension);
-    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+    assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     try {
       ((HasExtensions) driver).uninstallExtension(id);

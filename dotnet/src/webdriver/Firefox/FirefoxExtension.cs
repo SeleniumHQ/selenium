@@ -16,12 +16,12 @@
 // limitations under the License.
 // </copyright>
 
-using Newtonsoft.Json.Linq;
 using OpenQA.Selenium.Internal;
 using System;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Text.Json.Nodes;
 using System.Xml;
 
 
@@ -176,7 +176,7 @@ namespace OpenQA.Selenium.Firefox
         {
             string id = null;
             string manifestJsonPath = Path.Combine(root, JsonManifestFileName);
-            var manifestObject = JObject.Parse(File.ReadAllText(manifestJsonPath));
+            var manifestObject = JsonNode.Parse(File.ReadAllText(manifestJsonPath));
             if (manifestObject["applications"] != null)
             {
                 var applicationObject = manifestObject["applications"];

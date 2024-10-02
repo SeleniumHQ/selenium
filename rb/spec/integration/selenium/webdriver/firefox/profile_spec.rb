@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Profile, exclusive: {browser: :firefox} do
+      describe Profile, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}] do
         let(:profile) { described_class.new }
 
         before do
@@ -36,7 +36,8 @@ module Selenium
           end
         end
 
-        it 'is able to use the same profile more than once' do
+        it 'is able to use the same profile more than once',
+           exclude: {driver: :remote, rbe: true, reason: 'Cannot start 2+ drivers at once.'} do
           reset_driver!(profile: profile) do |driver1|
             expect { wait(5).until { driver1.find_element(id: 'oneline') } }.not_to raise_error
             reset_driver!(profile: profile) do |driver2|

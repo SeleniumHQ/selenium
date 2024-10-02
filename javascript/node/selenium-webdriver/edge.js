@@ -73,6 +73,8 @@
  * {@link ./builder.Builder selenium-webdriver.Builder}.
  *
  * [WebDriver (Chromium)]: https://docs.microsoft.com/en-us/microsoft-edge/webdriver-chromium
+ *
+ * @module selenium-webdriver/edge
  */
 
 'use strict'

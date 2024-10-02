@@ -4,7 +4,7 @@
     <id>$packageid$</id>
     <version>$version$</version>
     <authors>Selenium Committers</authors>
-    <copyright>Copyright © 2023 Software Freedom Conservancy</copyright>
+    <copyright>Copyright © 2024 Software Freedom Conservancy</copyright>
     <owners>selenium</owners>
     <title>WebDriver Support</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

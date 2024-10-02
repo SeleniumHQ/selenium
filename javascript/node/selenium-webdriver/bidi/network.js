@@ -21,11 +21,22 @@ const { ContinueResponseParameters } = require('./continueResponseParameters')
 const { ContinueRequestParameters } = require('./continueRequestParameters')
 const { ProvideResponseParameters } = require('./provideResponseParameters')
 
+const NetworkEvent = {
+  BEFORE_REQUEST_SENT: 'network.beforeRequestSent',
+  RESPONSE_STARTED: 'network.responseStarted',
+  RESPONSE_COMPLETED: 'network.responseCompleted',
+  AUTH_REQUIRED: 'network.authRequired',
+  FETCH_ERROR: 'network.fetchError',
+}
+
 /**
  * Represents all commands and events of Network module.
  * Described in https://w3c.github.io/webdriver-bidi/#module-network.
  */
 class Network {
+  #callbackId = 0
+  #listener
+
   /**
    * Represents a Network object.
    * @constructor
@@ -35,6 +46,43 @@ class Network {
   constructor(driver, browsingContextIds) {
     this._driver = driver
     this._browsingContextIds = browsingContextIds
+    this.#listener = new Map()
+    this.#listener.set(NetworkEvent.AUTH_REQUIRED, new Map())
+    this.#listener.set(NetworkEvent.BEFORE_REQUEST_SENT, new Map())
+    this.#listener.set(NetworkEvent.FETCH_ERROR, new Map())
+    this.#listener.set(NetworkEvent.RESPONSE_STARTED, new Map())
+    this.#listener.set(NetworkEvent.RESPONSE_COMPLETED, new Map())
+  }
+
+  addCallback(eventType, callback) {
+    const id = ++this.#callbackId
+
+    const eventCallbackMap = this.#listener.get(eventType)
+    eventCallbackMap.set(id, callback)
+    return id
+  }
+
+  removeCallback(id) {
+    let hasId = false
+    for (const [, callbacks] of this.#listener) {
+      if (callbacks.has(id)) {
+        callbacks.delete(id)
+        hasId = true
+      }
+    }
+
+    if (!hasId) {
+      throw Error(`Callback with id ${id} not found`)
+    }
+  }
+
+  invokeCallbacks(eventType, data) {
+    const callbacks = this.#listener.get(eventType)
+    if (callbacks) {
+      for (const [, callback] of callbacks) {
+        callback(data)
+      }
+    }
   }
 
   async init() {
@@ -75,10 +123,10 @@ class Network {
    * Subscribes to the 'network.authRequired' event and handles it with the provided callback.
    *
    * @param {Function} callback - The callback function to handle the event.
-   * @returns {Promise<void>} - A promise that resolves when the subscription is successful.
+   * @returns {Promise<number>} - A promise that resolves when the subscription is successful.
    */
   async authRequired(callback) {
-    await this.subscribeAndHandleEvent('network.authRequired', callback)
+    return await this.subscribeAndHandleEvent('network.authRequired', callback)
   }
 
   /**
@@ -97,10 +145,8 @@ class Network {
     } else {
       await this.bidi.subscribe(eventType)
     }
-    await this._on(callback)
-  }
+    let id = this.addCallback(eventType, callback)
 
-  async _on(callback) {
     this.ws = await this.bidi.socket
     this.ws.on('message', (event) => {
       const { params } = JSON.parse(Buffer.from(event.toString()))
@@ -134,9 +180,10 @@ class Network {
             params.errorText,
           )
         }
-        callback(response)
+        this.invokeCallbacks(eventType, response)
       }
     })
+    return id
   }
 
   /**
@@ -313,12 +360,26 @@ class Network {
    * @returns {Promise<void>} A promise that resolves when the network connection is closed.
    */
   async close() {
-    await this.bidi.unsubscribe(
-      'network.beforeRequestSent',
-      'network.responseStarted',
-      'network.responseCompleted',
-      'network.authRequired',
-    )
+    if (
+      this._browsingContextIds !== null &&
+      this._browsingContextIds !== undefined &&
+      this._browsingContextIds.length > 0
+    ) {
+      await this.bidi.unsubscribe(
+        'network.beforeRequestSent',
+        'network.responseStarted',
+        'network.responseCompleted',
+        'network.authRequired',
+        this._browsingContextIds,
+      )
+    } else {
+      await this.bidi.unsubscribe(
+        'network.beforeRequestSent',
+        'network.responseStarted',
+        'network.responseCompleted',
+        'network.authRequired',
+      )
+    }
   }
 }
 

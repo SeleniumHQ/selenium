@@ -43,6 +43,8 @@ const { isObject } = require('./util')
 const BIDI = require('../bidi')
 const { PinnedScript } = require('./pinnedScript')
 const JSZip = require('jszip')
+const Script = require('./script')
+const Network = require('./network')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -654,6 +656,8 @@ function filterNonW3CCaps(capabilities) {
  * @implements {IWebDriver}
  */
 class WebDriver {
+  #script = undefined
+  #network = undefined
   /**
    * @param {!(./session.Session|IThenable<!./session.Session>)} session Either
    *     a known session or a promise that will be resolved to a session.
@@ -779,6 +783,14 @@ class WebDriver {
 
       if (this.onQuit_) {
         return this.onQuit_.call(void 0)
+      }
+
+      // Close the websocket connection on quit
+      // If the websocket connection is not closed,
+      // and we are running CDP sessions against the Selenium Grid,
+      // the node process never exits since the websocket connection is open until the Grid is shutdown.
+      if (this._wsConnection !== undefined) {
+        this._wsConnection.close()
       }
     })
   }
@@ -1102,6 +1114,26 @@ class WebDriver {
   /** @override */
   switchTo() {
     return new TargetLocator(this)
+  }
+
+  script() {
+    // The Script calls the LogInspector which maintains state of the callbacks.
+    // Returning a new instance of the same driver will not work while removing callbacks.
+    if (this.#script === undefined) {
+      this.#script = new Script(this)
+    }
+
+    return this.#script
+  }
+
+  network() {
+    // The Network maintains state of the callbacks.
+    // Returning a new instance of the same driver will not work while removing callbacks.
+    if (this.#network === undefined) {
+      this.#network = new Network(this)
+    }
+
+    return this.#network
   }
 
   validatePrintPageParams(keys, object) {

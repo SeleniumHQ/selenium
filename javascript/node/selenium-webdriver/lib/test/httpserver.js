@@ -21,9 +21,9 @@ const assert = require('node:assert')
 const http = require('node:http')
 const url = require('node:url')
 
-const net = require('../../net')
-const portprober = require('../../net/portprober')
-const promise = require('../..').promise
+const net = require('selenium-webdriver/net')
+const portprober = require('selenium-webdriver/net/portprober')
+const promise = require('selenium-webdriver').promise
 
 /**
  * Encapsulates a simple HTTP server for testing. The {@code onrequest}

@@ -1,0 +1,74 @@
+name: Release Staging
+
+on:
+  pull_request:
+    types: [ closed ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Selenium version to release'
+        required: true
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+
+jobs:
+  github-release:
+    if: >
+      (github.event.pull_request.merged == true &&
+      github.repository_owner == 'seleniumhq' &&
+      startsWith(github.event.pull_request.head.ref, 'release-preparation-')) ||
+      (github.event_name == 'workflow_dispatch' && 
+      github.event.inputs.version != '' && 
+      github.repository_owner == 'seleniumhq')
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Extract version from branch name
+        if: github.event.pull_request.merged == true
+        run: |
+          VERSION=$(echo $BRANCH_NAME | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Extract version from workflow input
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION=${{ inputs.version }}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Prep git
+        run: |
+          git config --local user.email "selenium-ci@users.noreply.github.com"
+          git config --local user.name "Selenium CI Bot"
+      #      - name: Tag Release
+      #        run: |
+      #          git tag selenium-${{ env.VERSION }} || echo "Tag already exists"
+      #          git push origin selenium-${{ env.VERSION }} || echo "Tag already exists remotely"
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Setup curl for Ubuntu
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+      - name: Build and Stage Packages
+        run: ./go all:package[--config=release]
+      - name: Generate Draft Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/dist/*.*"
+          bodyFile: "scripts/github-actions/release_header.md"
+          draft: true
+          generateReleaseNotes: true
+          name: "Selenium ${{ env.VERSION }}"
+          prerelease: false
+          skipIfReleaseExists: true
+          tag: "selenium-${{ env.VERSION }}"
+          commit: "${{ github.sha }}"
+
+  update-documentation:
+    needs: github-release
+    uses: ./.github/workflows/update-documentation.yml
+    with:
+      tag: selenium-${{ needs.github-release.outputs.version }}

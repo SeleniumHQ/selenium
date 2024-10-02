@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { BrowsingContextInfo, NavigationInfo } = require('./browsingContextTypes')
+const { BrowsingContextInfo, NavigationInfo, UserPromptOpened, UserPromptClosed } = require('./browsingContextTypes')
 
 /**
  * Represents a browsing context related events.
@@ -128,13 +128,38 @@ class BrowsingContextInspector {
         if ('navigation' in params) {
           response = new NavigationInfo(params.context, params.navigation, params.timestamp, params.url)
         } else if ('accepted' in params) {
-          /* Needs to be updated when browsers implement other events */
+          response = new UserPromptClosed(params.context, params.accepted, params.userText)
+        } else if ('type' in params) {
+          response = new UserPromptOpened(params.context, params.type, params.message)
         } else {
           response = new BrowsingContextInfo(params.context, params.url, params.children, params.parent)
         }
         callback(response)
       }
     })
+  }
+
+  async close() {
+    if (
+      this._browsingContextIds !== null &&
+      this._browsingContextIds !== undefined &&
+      this._browsingContextIds.length > 0
+    ) {
+      await this.bidi.unsubscribe(
+        'browsingContext.contextCreated',
+        'browsingContext.contextDestroyed',
+        'browsingContext.fragmentNavigated',
+        'browsingContext.userPromptClosed',
+        this._browsingContextIds,
+      )
+    } else {
+      await this.bidi.unsubscribe(
+        'browsingContext.contextCreated',
+        'browsingContext.contextDestroyed',
+        'browsingContext.fragmentNavigated',
+        'browsingContext.userPromptClosed',
+      )
+    }
   }
 }
 

@@ -15,8 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_browser, assert_driver, exec_driver};
-use assert_cmd::Command;
+use crate::common::{assert_browser, assert_driver, exec_driver, get_selenium_manager};
+
 use rstest::rstest;
 use std::env::consts::OS;
 
@@ -28,7 +28,7 @@ mod common;
 #[case("firefox", "geckodriver")]
 #[case("iexplorer", "IEDriverServer")]
 fn exec_driver_test(#[case] browser_name: String, #[case] driver_name: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let mut cmd = get_selenium_manager();
     cmd.args(["--browser", &browser_name, "--output", "json"])
         .assert()
         .success()

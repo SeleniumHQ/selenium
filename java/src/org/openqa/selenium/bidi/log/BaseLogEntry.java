@@ -17,11 +17,14 @@
 
 package org.openqa.selenium.bidi.log;
 
+import org.openqa.selenium.bidi.script.Source;
+
 // @see <a
 // href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
 public class BaseLogEntry {
 
   private final LogLevel level;
+  private Source source;
   private final String text;
   private final long timestamp;
   private final StackTrace stackTrace;
@@ -42,8 +45,14 @@ public class BaseLogEntry {
     return stackTrace;
   }
 
-  public BaseLogEntry(LogLevel level, String text, long timestamp, StackTrace stackTrace) {
+  public Source getSource() {
+    return source;
+  }
+
+  public BaseLogEntry(
+      LogLevel level, Source source, String text, long timestamp, StackTrace stackTrace) {
     this.level = level;
+    this.source = source;
     this.text = text;
     this.timestamp = timestamp;
     this.stackTrace = stackTrace;

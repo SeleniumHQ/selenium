@@ -18,29 +18,33 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Browser } = require('../../')
+const { Browser } = require('selenium-webdriver')
 const { Pages, suite, ignore } = require('../../lib/test')
-const Network = require('../../bidi/network')
-const until = require('../../lib/until')
+const Network = require('selenium-webdriver/bidi/network')
+const until = require('selenium-webdriver/lib/until')
 
 suite(
   function (env) {
     let driver
+    let network
 
     beforeEach(async function () {
       driver = await env.builder().build()
+      network = await Network(driver)
     })
 
     afterEach(async function () {
+      await network.close()
       await driver.quit()
     })
 
     describe('Network network', function () {
       it('can listen to event before request is sent', async function () {
         let beforeRequestEvent = null
-        const network = await Network(driver)
         await network.beforeRequestSent(function (event) {
-          beforeRequestEvent = event
+          if (event.request.url.includes('empty')) {
+            beforeRequestEvent = event
+          }
         })
 
         await driver.get(Pages.emptyPage)
@@ -51,7 +55,6 @@ suite(
       })
 
       it('can request cookies', async function () {
-        const network = await Network(driver)
         let beforeRequestEvent = null
         await network.beforeRequestSent(function (event) {
           beforeRequestEvent = event
@@ -82,7 +85,6 @@ suite(
 
       ignore(env.browsers(Browser.CHROME, Browser.EDGE)).it('can redirect http equiv', async function () {
         let beforeRequestEvent = []
-        const network = await Network(driver)
         await network.beforeRequestSent(function (event) {
           beforeRequestEvent.push(event)
         })
@@ -98,7 +100,6 @@ suite(
 
       it('can subscribe to response started', async function () {
         let onResponseStarted = []
-        const network = await Network(driver)
         await network.responseStarted(function (event) {
           onResponseStarted.push(event)
         })
@@ -116,7 +117,6 @@ suite(
 
       it('test response started mime type', async function () {
         let onResponseStarted = []
-        const network = await Network(driver)
         await network.responseStarted(function (event) {
           onResponseStarted.push(event)
         })
@@ -137,7 +137,6 @@ suite(
 
       it('can subscribe to response completed', async function () {
         let onResponseCompleted = []
-        const network = await Network(driver)
         await network.responseCompleted(function (event) {
           onResponseCompleted.push(event)
         })
@@ -156,7 +155,6 @@ suite(
 
       ignore(env.browsers(Browser.CHROME, Browser.EDGE)).it('can listen to auth required event', async function () {
         let authRequiredEvent = null
-        const network = await Network(driver)
         await network.authRequired(function (event) {
           authRequiredEvent = event
         })
@@ -175,7 +173,6 @@ suite(
 
       it('can listen to fetch error event', async function () {
         let fetchErrorEvent = null
-        const network = await Network(driver)
         await network.fetchError(function (event) {
           fetchErrorEvent = event
         })
@@ -197,7 +194,6 @@ suite(
 
       it('test response completed mime type', async function () {
         let onResponseCompleted = []
-        const network = await Network(driver)
         await network.responseCompleted(function (event) {
           onResponseCompleted.push(event)
         })

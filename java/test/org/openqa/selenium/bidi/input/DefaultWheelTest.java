@@ -23,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,8 +56,6 @@ class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
@@ -77,8 +73,6 @@ class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
@@ -99,8 +93,6 @@ class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
@@ -120,8 +112,6 @@ class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void throwErrorWhenElementOriginIsOutOfViewport() {
@@ -142,8 +132,6 @@ class DefaultWheelTest extends JupiterTestBase {
 
   @NeedsFreshDriver
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void shouldScrollFromViewportByGivenAmount() {
     driver.get(
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
@@ -163,8 +151,6 @@ class DefaultWheelTest extends JupiterTestBase {
 
   @NeedsFreshDriver
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void shouldScrollFromViewportByGivenAmountFromOrigin() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(10, 10);
@@ -185,8 +171,6 @@ class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   void throwErrorWhenOriginOffsetIsOutOfViewport() {
     assertThrows(
         BiDiException.class,

@@ -64,6 +64,9 @@ module Selenium
 
           @options[:args] ||= []
           @options[:prefs] ||= {}
+          # Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
+          # https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
+          @options[:prefs]['remote.active-protocols'] = 3
           @options[:env] ||= {}
           @options[:log] ||= {level: log_level} if log_level
 

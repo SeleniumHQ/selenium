@@ -40,6 +40,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -49,6 +50,7 @@ import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.DriverCommand;
@@ -146,7 +148,16 @@ public class RelaySessionFactory implements SessionFactory {
           new SessionNotCreatedException(
               "New session request capabilities do not " + "match the stereotype."));
     }
-    capabilities = capabilities.merge(stereotype);
+
+    // remove browserName capability if 'appium:app' is present as it breaks appium tests when app
+    // is provided
+    // they are mutually exclusive
+    MutableCapabilities filteredStereotype = new MutableCapabilities(stereotype);
+    if (capabilities.getCapability("appium:app") != null) {
+      filteredStereotype.setCapability(CapabilityType.BROWSER_NAME, (String) null);
+    }
+
+    capabilities = capabilities.merge(filteredStereotype);
     LOG.info("Starting session for " + capabilities);
 
     try (Span span = tracer.getCurrentContext().createSpan("relay_session_factory.apply")) {
@@ -204,6 +215,7 @@ public class RelaySessionFactory implements SessionFactory {
                 "Error while creating session with the service %s. %s", serviceUrl, e.getMessage());
         attributeMap.put(EXCEPTION_MESSAGE.getKey(), errorMessage);
         span.addEvent(EXCEPTION_EVENT.getKey(), attributeMap);
+        client.close();
         return Either.left(new SessionNotCreatedException(errorMessage));
       }
     } catch (Exception e) {

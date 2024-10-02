@@ -1,12 +1,22 @@
 Manifest-Version: 1.0
 
 Name: inject.js
-Digest-Algorithms: MD5 SHA1
-MD5-Digest: smWyx4xRjcjf16hcPSMqDQ==
+Digest-Algorithms: SHA1 SHA256
 SHA1-Digest: b2nrco3zOUBDJuyARPlsNEU8O9A=
+SHA256-Digest: lU8GPe0dnC/AH4PaP0/akwta9vNay0n7fsgkBOieLsg=
 
 Name: manifest.json
-Digest-Algorithms: MD5 SHA1
-MD5-Digest: Lg0KzlWjz7XiEJL7d7ZaPA==
-SHA1-Digest: /3TAazkDdAqLGI4xVOib3AN20/0=
+Digest-Algorithms: SHA1 SHA256
+SHA1-Digest: EjY6pS7xUwQxN7ijQqys3bdEHHc=
+SHA256-Digest: eLH2wKnhmjOvDJk/13OJMeh+X4sdlSpbOIfyhp44Zaw=
+
+Name: META-INF/cose.manifest
+Digest-Algorithms: SHA1 SHA256
+SHA1-Digest: BltD3hfKib5zAF8/AQ2KUfFQE8E=
+SHA256-Digest: Jk/XoCcZp3zF0IZZ4clToX4K7o75eLH3+GbPfVrEC2w=
+
+Name: META-INF/cose.sig
+Digest-Algorithms: SHA1 SHA256
+SHA1-Digest: ekekKataezcCjFQ6h2NqnkU9XIY=
+SHA256-Digest: OFybAfaBj2GL8JcBp64tchoyn/9zoBWGyTqTiIoAbdQ=
 

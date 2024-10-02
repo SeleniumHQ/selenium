@@ -1,21 +1,20 @@
 module Selenium
   module WebDriver
     module Safari
-      self.@use_technology_preview: untyped
+      @use_technology_preview: bool?
+      @path: String?
 
-      self.@path: untyped
-
-      attr_accessor self.use_technology_preview: untyped
+      attr_accessor self.use_technology_preview: bool
 
       def self.technology_preview: () -> String
 
-      def self.technology_preview!: () -> untyped
+      def self.technology_preview!: () -> bool
 
-      def self.technology_preview?: () -> untyped
+      def self.technology_preview?: () -> bool
 
-      def self.path=: (untyped path) -> untyped
+      def self.path=: (String) -> String
 
-      def self.path: () -> untyped
+      def self.path: () -> String
     end
   end
 end

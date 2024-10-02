@@ -66,6 +66,8 @@
  *     // configure browser options ...
  *
  *     let driver = chrome.Driver.createSession(options, service);
+ *
+ *     @module selenium-webdriver/chromium
  */
 
 'use strict'

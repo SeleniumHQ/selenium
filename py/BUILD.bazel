@@ -30,6 +30,28 @@ py_binary(
     ],
 )
 
+py_binary(
+    name = "selenium-release-nightly",
+    srcs = [
+        "release-selenium.py",
+    ],
+    args = [
+        "upload",
+        "--repository",
+        "testpypi",
+        "$(location :selenium-wheel)",
+        "$(location :selenium-sdist)",
+    ],
+    data = [
+        ":selenium-sdist",
+        ":selenium-wheel",
+    ],
+    main = "release-selenium.py",
+    deps = [
+        requirement("twine"),
+    ],
+)
+
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
@@ -40,13 +62,13 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.21.0.dev202404242345"
+SE_VERSION = "4.26.0.dev202409202351"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v122",
-    "v123",
-    "v124",
+    "v128",
+    "v129",
+    "v127",
 ]
 
 TEST_DEPS = [
@@ -174,11 +196,12 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
-        requirement("typing_extensions"),
+        requirement("urllib3"),
         requirement("trio"),
         requirement("trio_websocket"),
-        requirement("urllib3"),
         requirement("certifi"),
+        requirement("typing_extensions"),
+        requirement("websocket-client"),
     ],
 )
 
@@ -191,6 +214,7 @@ py_package(
         "py.selenium.webdriver.chrome",
         "py.selenium.webdriver.chromium",
         "py.selenium.webdriver.common",
+        "py.selenium.webdriver.common.bidi",
         "py.selenium.webdriver.common.devtools",
         "py.selenium.webdriver.edge",
         "py.selenium.webdriver.firefox",
@@ -206,10 +230,17 @@ pkg_files(
         "CHANGES",
         "MANIFEST.in",
         "README.rst",
+        "pyproject.toml",
         "setup.py",
         ":license",
         ":selenium-pkg",
         ":selenium-pkginfo",
+        "//rust:selenium_manager_srcs",
+    ],
+    excludes = [
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
     ],
     strip_prefix = strip_prefix.from_pkg(),
 )
@@ -250,6 +281,8 @@ py_wheel(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
     description_file = "README.rst",
     distribution = "selenium",
@@ -262,10 +295,15 @@ py_wheel(
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
-        "typing_extensions>=4.9.0",
+        "typing_extensions~=4.9",
+        "websocket-client~=1.8",
     ],
     strip_path_prefixes = [
         "py/",
+    ],
+    summary = "Official Python bindings for Selenium WebDriver",
+    tags = [
+        "release-artifact",
     ],
     version = SE_VERSION,
     visibility = ["//visibility:public"],
@@ -297,7 +335,7 @@ py_library(
         "test/selenium/webdriver/support/conftest.py",
     ],
     data = [
-        "pytest.ini",
+        "pyproject.toml",
         "setup.cfg",
         "test/selenium/webdriver/common/test_file.txt",
         "test/selenium/webdriver/common/test_file2.txt",
@@ -355,9 +393,38 @@ py_library(
     deps = [],
 )
 
+BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
+
 [
     py_test_suite(
         name = "common-%s" % browser,
+        size = "large",
+        srcs = glob(
+            [
+                "test/selenium/webdriver/common/**/*.py",
+                "test/selenium/webdriver/support/**/*.py",
+            ],
+            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"],
+        ),
+        args = [
+            "--instafail",
+            "--bidi=false",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"],
+        env_inherit = ["DISPLAY"],
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        deps = [
+            ":init-tree",
+            ":selenium",
+            ":webserver",
+        ] + TEST_DEPS,
+    )
+    for browser in BROWSERS.keys()
+]
+
+[
+    py_test_suite(
+        name = "common-%s-bidi" % browser,
         size = "large",
         srcs = glob(
             [
@@ -368,12 +435,11 @@ py_library(
         ),
         args = [
             "--instafail",
+            "--bidi=true",
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        tags = [
-            "no-sandbox",
-        ] + BROWSERS[browser]["tags"],
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         deps = [
             ":init-tree",
             ":selenium",
@@ -479,10 +545,13 @@ py_test_suite(
 py_test_suite(
     name = "test-remote",
     size = "large",
-    srcs = glob([
-        "test/selenium/webdriver/common/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
-    ]),
+    srcs = glob(
+        [
+            "test/selenium/webdriver/common/**/*.py",
+            "test/selenium/webdriver/support/**/*.py",
+        ],
+        exclude = BIDI_TESTS,
+    ),
     args = [
         "--instafail",
         "--driver=remote",

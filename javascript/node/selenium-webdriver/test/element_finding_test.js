@@ -18,11 +18,10 @@
 'use strict'
 
 const assert = require('node:assert')
-const promise = require('../lib/promise')
-const { Browser, By, error, withTagName, until } = require('..')
+const promise = require('selenium-webdriver/lib/promise')
+const { Browser, By, RelativeBy, error, withTagName, until } = require('selenium-webdriver')
 const { Pages, ignore, suite, whereIs } = require('../lib/test')
-const { locateWith } = require('../lib/by')
-const { RelativeBy } = require('../')
+const { locateWith } = require('selenium-webdriver/lib/by')
 
 suite(function (env) {
   const browsers = (...args) => env.browsers(...args)

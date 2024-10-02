@@ -23,10 +23,12 @@ import static org.openqa.selenium.Platform.WINDOWS;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -141,7 +143,7 @@ public class SeleniumManager {
         process.shutdown();
       }
       code = process.exitValue();
-      output = process.getOutput();
+      output = process.getOutput(StandardCharsets.UTF_8);
     } catch (Exception e) {
       throw new WebDriverException("Failed to run command: " + arguments, e);
     }
@@ -231,16 +233,18 @@ public class SeleniumManager {
    * @return the locations of the assets from Selenium Manager execution
    */
   public Result getBinaryPaths(List<String> arguments) {
-    arguments.add("--language-binding");
-    arguments.add("java");
-    arguments.add("--output");
-    arguments.add("json");
+    List<String> args = new ArrayList<>(arguments.size() + 5);
+    args.addAll(arguments);
+    args.add("--language-binding");
+    args.add("java");
+    args.add("--output");
+    args.add("json");
 
     if (getLogLevel().intValue() <= Level.FINE.intValue()) {
-      arguments.add("--debug");
+      args.add("--debug");
     }
 
-    return runCommand(getBinary(), arguments);
+    return runCommand(getBinary(), args);
   }
 
   private Level getLogLevel() {

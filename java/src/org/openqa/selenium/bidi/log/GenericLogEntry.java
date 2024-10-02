@@ -21,6 +21,7 @@ import static java.util.Collections.unmodifiableMap;
 
 import java.util.Map;
 import java.util.TreeMap;
+import org.openqa.selenium.bidi.script.Source;
 import org.openqa.selenium.json.JsonInput;
 
 // @see <a
@@ -30,8 +31,13 @@ public class GenericLogEntry extends BaseLogEntry {
   private final String type;
 
   public GenericLogEntry(
-      LogLevel level, String text, long timestamp, String type, StackTrace stackTrace) {
-    super(level, text, timestamp, stackTrace);
+      LogLevel level,
+      Source source,
+      String text,
+      long timestamp,
+      String type,
+      StackTrace stackTrace) {
+    super(level, source, text, timestamp, stackTrace);
     this.type = type;
   }
 
@@ -41,6 +47,7 @@ public class GenericLogEntry extends BaseLogEntry {
 
   public static GenericLogEntry fromJson(JsonInput input) {
     LogLevel level = null;
+    Source source = null;
     String text = null;
     long timestamp = 0;
     String type = null;
@@ -51,6 +58,10 @@ public class GenericLogEntry extends BaseLogEntry {
       switch (input.nextName()) {
         case "level":
           level = input.read(LogLevel.class);
+          break;
+
+        case "source":
+          source = input.read(Source.class);
           break;
 
         case "text":
@@ -77,7 +88,7 @@ public class GenericLogEntry extends BaseLogEntry {
 
     input.endObject();
 
-    return new GenericLogEntry(level, text, timestamp, type, stackTrace);
+    return new GenericLogEntry(level, source, text, timestamp, type, stackTrace);
   }
 
   private Map<String, Object> toJson() {

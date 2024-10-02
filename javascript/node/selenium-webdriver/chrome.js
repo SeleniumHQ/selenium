@@ -118,6 +118,8 @@
  * [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
  * [android]: https://chromedriver.chromium.org/getting-started/getting-started---android
  * [webview]: https://developer.chrome.com/multidevice/webview/overview
+ *
+ * @module selenium-webdriver/chrome
  */
 
 'use strict'

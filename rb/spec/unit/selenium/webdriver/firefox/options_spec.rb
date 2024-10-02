@@ -154,7 +154,7 @@ module Selenium
             options.add_preference('intl.accepted_languages', 'en-US')
 
             prefs    = options.as_json['moz:firefoxOptions']['prefs']
-            expected = {'intl.accepted_languages' => 'en-US'}
+            expected = {'intl.accepted_languages' => 'en-US', 'remote.active-protocols' => 3}
             expect(prefs).to eq(expected)
           end
         end
@@ -185,7 +185,7 @@ module Selenium
           it 'returns empty options by default' do
             expect(options.as_json).to eq('browserName' => 'firefox',
                                           'acceptInsecureCerts' => true,
-                                          'moz:firefoxOptions' => {},
+                                          'moz:firefoxOptions' => {'prefs' => {'remote.active-protocols' => 3}},
                                           'moz:debuggerAddress' => true)
           end
 
@@ -195,7 +195,7 @@ module Selenium
                                           'browserName' => 'firefox',
                                           'foo:bar' => {'foo' => 'bar'},
                                           'moz:debuggerAddress' => true,
-                                          'moz:firefoxOptions' => {})
+                                          'moz:firefoxOptions' => {'prefs' => {'remote.active-protocols' => 3}})
           end
 
           it 'converts to a json hash' do
@@ -240,7 +240,7 @@ module Selenium
                                        'moz:debuggerAddress' => true,
                                        key => {'args' => %w[foo bar],
                                                'binary' => '/foo/bar',
-                                               'prefs' => {'foo' => 'bar'},
+                                               'prefs' => {'foo' => 'bar', 'remote.active-protocols' => 3},
                                                'env' => {'FOO' => 'bar'},
                                                'profile' => 'encoded_profile',
                                                'log' => {'level' => 'debug'},

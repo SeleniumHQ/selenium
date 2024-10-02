@@ -21,49 +21,23 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe BiDi, only: {browser: %i[chrome edge firefox]} do
-      before { reset_driver!(web_socket_url: true) }
+    describe BiDi, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
+                   only: {browser: %i[chrome edge firefox]} do
+      after { |example| reset_driver!(example: example) }
 
-      after do
-        quit_driver
-      rescue Selenium::WebDriver::Error::InvalidSessionIdError
-        # do nothing
+      it 'errors when bidi not enabled' do
+        reset_driver!(web_socket_url: false) do |driver|
+          expect { driver.bidi }.to raise_error(WebDriver::Error::WebDriverError)
+        end
       end
 
-      it 'gets session status', except: {browser: %i[chrome edge],
-                                         reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4676'} do
+      it 'gets session status' do
         status = driver.bidi.session.status
         expect(status).to respond_to(:ready)
         expect(status.message).not_to be_empty
       end
 
-      it 'can navigate and listen to errors' do
-        log_entry = nil
-        log_inspector = BiDi::LogInspector.new(driver)
-        log_inspector.on_javascript_exception { |log| log_entry = log }
-
-        browsing_context = BiDi::BrowsingContext.new(driver: driver, browsing_context_id: driver.window_handle)
-        info = browsing_context.navigate(url: url_for('/bidi/logEntryAdded.html'))
-
-        expect(browsing_context.id).not_to be_nil
-        expect(info.navigation_id).not_to be_nil
-        expect(info.url).to include('/bidi/logEntryAdded.html')
-
-        js_exception = wait.until { driver.find_element(id: 'jsException') }
-        js_exception.click
-
-        wait.until { !log_entry.nil? }
-
-        expect(log_entry).to have_attributes(
-          text: 'Error: Not working',
-          type: 'javascript',
-          level: BiDi::LogInspector::LOG_LEVEL[:ERROR]
-        )
-      end
-
-      it 'does not close BiDi session if at least one window is opened',
-         except: {browser: %i[chrome edge],
-                  reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4676'} do
+      it 'does not close BiDi session if at least one window is opened' do
         status = driver.bidi.session.status
         expect(status.ready).to be false
         expect(status.message).to be_a String
@@ -79,9 +53,7 @@ module Selenium
         expect(status_after_closing.message).to be_a String
       end
 
-      it 'closes BiDi session if last window is closed',
-         except: {browser: %i[chrome edge],
-                  reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4676'} do
+      it 'closes BiDi session if last window is closed' do
         status = driver.bidi.session.status
         expect(status.ready).to be false
         expect(status.message).to be_a String

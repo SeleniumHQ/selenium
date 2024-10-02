@@ -15,8 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_browser, assert_driver};
-use assert_cmd::Command;
+use crate::common::{assert_browser, assert_driver, get_selenium_manager};
+
 use rstest::rstest;
 use std::env::consts::OS;
 
@@ -27,21 +27,21 @@ mod common;
 #[case("firefox")]
 #[case("edge")]
 fn browser_latest_download_test(#[case] browser: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--browser",
-        &browser,
-        "--force-browser-download",
-        "--output",
-        "json",
-        "--debug",
-    ])
-    .assert()
-    .success()
-    .code(0);
+    if !browser.eq("edge") || !OS.eq("windows") {
+        let mut cmd = get_selenium_manager();
+        cmd.args([
+            "--browser",
+            &browser,
+            "--force-browser-download",
+            "--output",
+            "json",
+            "--debug",
+        ])
+        .assert()
+        .success()
+        .code(0);
 
-    assert_driver(&mut cmd);
-    if !OS.eq("windows") {
+        assert_driver(&mut cmd);
         assert_browser(&mut cmd);
     }
 }
@@ -53,26 +53,25 @@ fn browser_latest_download_test(#[case] browser: String) {
 #[case("firefox", "beta")]
 #[case("firefox", "esr")]
 #[case("edge", "beta")]
-fn browser_version_download_test(#[case] browser: String, #[case] mut browser_version: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    if !OS.eq("windows") {
-        browser_version = "stable".to_string();
-    }
-    cmd.args([
-        "--browser",
-        &browser,
-        "--browser-version",
-        &browser_version,
-        "--output",
-        "json",
-        "--debug",
-    ])
-    .assert()
-    .success()
-    .code(0);
+fn browser_version_download_test(#[case] browser: String, #[case] browser_version: String) {
+    if OS.eq("windows") && browser.eq("edge") {
+        println!("Skipping Edge download test on Windows since the installation requires admin privileges");
+    } else {
+        let mut cmd = get_selenium_manager();
+        cmd.args([
+            "--browser",
+            &browser,
+            "--browser-version",
+            &browser_version,
+            "--output",
+            "json",
+            "--debug",
+        ])
+        .assert()
+        .success()
+        .code(0);
 
-    assert_driver(&mut cmd);
-    if !OS.eq("windows") {
+        assert_driver(&mut cmd);
         assert_browser(&mut cmd);
     }
 }

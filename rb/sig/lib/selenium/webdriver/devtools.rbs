@@ -10,7 +10,7 @@ module Selenium
 
       def initialize: (url: untyped) -> void
 
-      def close: () -> untyped
+      def close: () -> nil
 
       def callbacks: () -> untyped
 
@@ -24,7 +24,7 @@ module Selenium
 
       def start_session: () -> untyped
 
-      def error_message: (untyped error) -> untyped
+      def error_message: (Hash[untyped, untyped] error) -> String
     end
   end
 end

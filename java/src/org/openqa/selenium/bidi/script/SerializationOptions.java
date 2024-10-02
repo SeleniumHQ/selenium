@@ -26,7 +26,7 @@ public class SerializationOptions {
   public enum IncludeShadowTree {
     NONE,
     OPEN,
-    ALL;
+    ALL
   }
 
   private Optional<Long> maxDomDepth = Optional.empty();

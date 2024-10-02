@@ -30,8 +30,8 @@ use std::sync::mpsc::{Receiver, Sender};
 
 pub const SAFARI_NAME: &str = "safari";
 pub const SAFARIDRIVER_NAME: &str = "safaridriver";
-const SAFARI_PATH: &str = r#"/Applications/Safari.app"#;
-const SAFARI_FULL_PATH: &str = r#"/Applications/Safari.app/Contents/MacOS/Safari"#;
+const SAFARI_PATH: &str = "/Applications/Safari.app";
+const SAFARI_FULL_PATH: &str = "/Applications/Safari.app/Contents/MacOS/Safari";
 
 pub struct SafariManager {
     pub browser_name: &'static str,

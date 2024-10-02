@@ -28,7 +28,7 @@ module Selenium
 
       class PointerCancel < Interaction
         def initialize(source)
-          super(source)
+          super
           @type = :pointerCancel
         end
 

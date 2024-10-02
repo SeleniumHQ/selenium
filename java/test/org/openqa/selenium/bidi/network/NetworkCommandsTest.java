@@ -53,8 +53,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canAddIntercept() {
@@ -66,8 +64,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canContinueRequest() throws InterruptedException {
@@ -101,8 +97,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canContinueResponse() throws InterruptedException {
@@ -131,8 +125,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canProvideResponse() throws InterruptedException {
@@ -160,8 +152,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   }
 
   @Disabled
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(CHROME)
@@ -197,8 +187,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canRemoveIntercept() {
@@ -212,8 +200,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canContinueWithAuthCredentials() {
@@ -232,8 +218,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canContinueWithoutAuthCredentials() {
@@ -252,8 +236,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canCancelAuth() {
@@ -271,8 +253,6 @@ class NetworkCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void canFailRequest() {

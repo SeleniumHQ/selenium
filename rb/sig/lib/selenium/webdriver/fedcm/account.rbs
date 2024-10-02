@@ -1,0 +1,52 @@
+module Selenium
+  module WebDriver
+    module FedCM
+      # Represents an account displayed in a FedCm account list.
+      # See: https://w3c-fedid.github.io/FedCM/#dictdef-identityprovideraccount
+      #      https://w3c-fedid.github.io/FedCM/#webdriver-accountlist
+      class Account
+        @account_id: String
+
+        @email: String
+
+        @name: String
+
+        @given_name: String
+
+        @picture_url: String
+
+        @idp_config_url: String
+
+        @login_state: String
+
+        @terms_of_service_url: String
+
+        @privacy_policy_url: String
+
+        LOGIN_STATE_SIGNIN: String
+
+        LOGIN_STATE_SIGNUP: String
+
+        attr_reader account_id: String
+
+        attr_reader email: String
+
+        attr_reader name: String
+
+        attr_reader given_name: String
+
+        attr_reader picture_url: String
+
+        attr_reader idp_config_url: String
+
+        attr_reader login_state: String
+
+        attr_reader terms_of_service_url: String
+
+        attr_reader privacy_policy_url: String
+
+        def initialize: (**untyped args) -> void
+      end
+    end
+  end
+end

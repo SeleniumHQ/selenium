@@ -16,11 +16,14 @@
 # under the License.
 from typing import Dict
 from typing import List
+from typing import NoReturn
 from typing import Optional
 from typing import Union
+from typing import overload
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import ByType
 from selenium.webdriver.remote.webelement import WebElement
 
 
@@ -37,10 +40,10 @@ def with_tag_name(tag_name: str) -> "RelativeBy":
     """
     if not tag_name:
         raise WebDriverException("tag_name can not be null")
-    return RelativeBy({"css selector": tag_name})
+    return RelativeBy({By.CSS_SELECTOR: tag_name})
 
 
-def locate_with(by: By, using: str) -> "RelativeBy":
+def locate_with(by: ByType, using: str) -> "RelativeBy":
     """Start searching for relative objects your search criteria with By.
 
     :Args:
@@ -70,7 +73,9 @@ class RelativeBy:
         assert "mid" in ids
     """
 
-    def __init__(self, root: Optional[Dict[Union[By, str], str]] = None, filters: Optional[List] = None):
+    LocatorType = Dict[ByType, str]
+
+    def __init__(self, root: Optional[Dict[ByType, str]] = None, filters: Optional[List] = None):
         """Creates a new RelativeBy object. It is preferred if you use the
         `locate_with` method as this signature could change.
 
@@ -82,7 +87,13 @@ class RelativeBy:
         self.root = root
         self.filters = filters or []
 
-    def above(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
+    @overload
+    def above(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
+
+    @overload
+    def above(self, element_or_locator: None = None) -> "NoReturn": ...
+
+    def above(self, element_or_locator: Union[WebElement, LocatorType, None] = None) -> "RelativeBy":
         """Add a filter to look for elements above.
 
         :Args:
@@ -94,7 +105,13 @@ class RelativeBy:
         self.filters.append({"kind": "above", "args": [element_or_locator]})
         return self
 
-    def below(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
+    @overload
+    def below(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
+
+    @overload
+    def below(self, element_or_locator: None = None) -> "NoReturn": ...
+
+    def below(self, element_or_locator: Union[WebElement, Dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements below.
 
         :Args:
@@ -106,7 +123,13 @@ class RelativeBy:
         self.filters.append({"kind": "below", "args": [element_or_locator]})
         return self
 
-    def to_left_of(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
+    @overload
+    def to_left_of(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
+
+    @overload
+    def to_left_of(self, element_or_locator: None = None) -> "NoReturn": ...
+
+    def to_left_of(self, element_or_locator: Union[WebElement, Dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements to the left of.
 
         :Args:
@@ -118,7 +141,13 @@ class RelativeBy:
         self.filters.append({"kind": "left", "args": [element_or_locator]})
         return self
 
-    def to_right_of(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
+    @overload
+    def to_right_of(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
+
+    @overload
+    def to_right_of(self, element_or_locator: None = None) -> "NoReturn": ...
+
+    def to_right_of(self, element_or_locator: Union[WebElement, Dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements right of.
 
         :Args:
@@ -130,16 +159,25 @@ class RelativeBy:
         self.filters.append({"kind": "right", "args": [element_or_locator]})
         return self
 
-    def near(self, element_or_locator_distance: Union[WebElement, Dict, int] = None) -> "RelativeBy":
+    @overload
+    def near(self, element_or_locator: Union[WebElement, LocatorType], distance: int = 50) -> "RelativeBy": ...
+
+    @overload
+    def near(self, element_or_locator: None = None, distance: int = 50) -> "NoReturn": ...
+
+    def near(self, element_or_locator: Union[WebElement, LocatorType, None] = None, distance: int = 50) -> "RelativeBy":
         """Add a filter to look for elements near.
 
         :Args:
-            - element_or_locator_distance: Element to look near by the element or within a distance
+            - element_or_locator: Element to look near by the element or within a distance
+            - distance: distance in pixel
         """
-        if not element_or_locator_distance:
-            raise WebDriverException("Element or locator or distance must be given when calling near method")
+        if not element_or_locator:
+            raise WebDriverException("Element or locator must be given when calling near method")
+        if distance <= 0:
+            raise WebDriverException("Distance must be positive")
 
-        self.filters.append({"kind": "near", "args": [element_or_locator_distance]})
+        self.filters.append({"kind": "near", "args": [element_or_locator, distance]})
         return self
 
     def to_dict(self) -> Dict:

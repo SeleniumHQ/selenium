@@ -178,8 +178,18 @@ def test_dragging_element_with_mouse_fires_events(driver, pages):
 @pytest.mark.xfail_remote
 def test_pen_pointer_properties(driver, pages):
     pages.load("pointerActionsPage.html")
-    pointerArea = driver.find_element(By.CSS_SELECTOR, "#pointerArea")
+
     pointer_input = PointerInput(interaction.POINTER_PEN, "pen")
+
+    # Make sure the pointer starts in a known location
+    reset_actions = ActionBuilder(driver, mouse=pointer_input)
+    reset_actions.pointer_action.move_to_location(x=0, y=0)
+    reset_actions.perform()
+    # Clear the events state
+    driver.execute_script("allEvents.events = [];")
+
+    pointerArea = driver.find_element(By.CSS_SELECTOR, "#pointerArea")
+
     actions = ActionBuilder(driver, mouse=pointer_input)
     center = _get_inview_center(pointerArea.rect, _get_viewport_rect(driver))
     actions.pointer_action.move_to(pointerArea).pointer_down(pressure=0.36, tilt_x=-72, tilt_y=9, twist=86).move_to(

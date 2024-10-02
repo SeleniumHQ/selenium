@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Service, exclusive: {browser: :firefox} do
+      describe Service, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}] do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 

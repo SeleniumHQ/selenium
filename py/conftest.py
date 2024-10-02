@@ -79,6 +79,13 @@ def pytest_addoption(parser):
         dest="use_lan_ip",
         help="Whether to start test server with lan ip instead of localhost",
     )
+    parser.addoption(
+        "--bidi",
+        action="store",
+        dest="bidi",
+        metavar="BIDI",
+        help="Whether to enable BiDi support",
+    )
 
 
 def pytest_ignore_collect(path, config):
@@ -158,6 +165,20 @@ def driver(request):
         driver_instance = getattr(webdriver, driver_class)(**kwargs)
     yield driver_instance
 
+    # Close the browser after BiDi tests. Those make event subscriptions
+    # and doesn't seems to be stable enough, causing the flakiness of the
+    # subsequent tests.
+    # Remove this when BiDi implementation and API is stable.
+    if bool(request.config.option.bidi):
+
+        def fin():
+            global driver_instance
+            if driver_instance is not None:
+                driver_instance.quit()
+            driver_instance = None
+
+        request.addfinalizer(fin)
+
     if request.node.get_closest_marker("no_driver_after_test"):
         driver_instance = None
 
@@ -166,6 +187,7 @@ def get_options(driver_class, config):
     browser_path = config.option.binary
     browser_args = config.option.args
     headless = bool(config.option.headless)
+    bidi = bool(config.option.bidi)
     options = None
 
     if browser_path or browser_args:
@@ -187,6 +209,14 @@ def get_options(driver_class, config):
             options.add_argument("--headless=new")
         if driver_class == "Firefox":
             options.add_argument("-headless")
+
+    if bidi:
+        if not options:
+            options = getattr(webdriver, f"{driver_class}Options")()
+
+        options.web_socket_url = True
+        options.unhandled_prompt_behavior = "ignore"
+
     return options
 
 
@@ -291,7 +321,7 @@ def server(request):
 
 @pytest.fixture(autouse=True, scope="session")
 def webserver(request):
-    host = get_lan_ip() if request.config.getoption("use_lan_ip") else "0.0.0.0"
+    host = get_lan_ip() if request.config.getoption("use_lan_ip") else None
 
     webserver = SimpleWebServer(host=host)
     webserver.start()

@@ -20,7 +20,6 @@ java_library(
         "//java/src/org/openqa/selenium/bidi",
         "//java/src/org/openqa/selenium/bidi/script",
         "//java/src/org/openqa/selenium/json",
-        "//java/src/org/openqa/selenium/remote:api",
         "//java/src/org/openqa/selenium/remote/http",
         artifact("com.google.auto.service:auto-service-annotations"),
     ],

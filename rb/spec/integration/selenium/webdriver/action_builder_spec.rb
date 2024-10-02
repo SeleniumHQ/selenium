@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe ActionBuilder do
+    describe ActionBuilder, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       after { driver.action.clear_all_actions }
 
       describe '#send_keys' do
@@ -202,9 +202,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('Clicked')
         end
 
-        it 'moves to element with offset', except: {browser: :firefox,
-                                                    platform: %i[windows macosx],
-                                                    reason: 'Some issues with resolution?'} do
+        it 'moves to element with offset' do
           driver.navigate.to url_for('javascriptPage.html')
           origin = driver.find_element(id: 'keyUpArea')
           destination = driver.find_element(id: 'clickField')

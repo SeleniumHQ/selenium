@@ -21,7 +21,8 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe ShadowRoot, only: {browser: %i[chrome firefox edge safari]} do
+    describe ShadowRoot, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'},
+                                     {browser: %i[chrome firefox edge safari]}] do
       before { driver.navigate.to url_for('webComponents.html') }
 
       let(:custom_element) { driver.find_element(css: 'custom-checkbox-element') }
@@ -35,6 +36,15 @@ module Selenium
         driver.navigate.to url_for('simpleTest.html')
         div = driver.find_element(css: 'div')
         expect { div.shadow_root }.to raise_error(Error::NoSuchShadowRootError)
+      end
+
+      it 'raises error if the shadow root is detached', exclude: {browser: :safari, reason: 'NoMethodError'} do
+        driver.navigate.to url_for('simpleTest.html')
+        div = driver.find_element(css: 'div')
+        driver.execute_script('arguments[0].attachShadow({ mode: "open" });', div)
+        root = div.shadow_root
+        driver.execute_script('arguments[0].remove();', div)
+        expect { root.find_element(css: '#x') }.to raise_error(Error::DetachedShadowRootError)
       end
 
       it 'gets shadow root from script',

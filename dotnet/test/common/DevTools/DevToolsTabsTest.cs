@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V124;
+    using CurrentCdpVersion = V129;
 
     [TestFixture]
     public class DevToolsTabsTest : DevToolsTestFixture
@@ -22,7 +22,8 @@ namespace OpenQA.Selenium.DevTools
             driver.SwitchTo().Window(oldWindowHandle);
             driver.Close();
             Assert.That(
-                async () => {
+                async () =>
+                {
                     await domains.Console.Enable();
                 },
                 Throws.Nothing

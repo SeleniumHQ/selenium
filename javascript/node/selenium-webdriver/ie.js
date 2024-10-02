@@ -23,6 +23,8 @@
  * [PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29). You must also apply
  * the system configuration outlined on the Selenium project
  * [wiki](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver)
+ *
+ * @module selenium-webdriver/ie
  */
 
 'use strict'

@@ -623,7 +623,7 @@ class RemoteWebDriverUnitTest {
   void canHandleSetScriptTimeoutCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
-    fixture.driver.manage().timeouts().setScriptTimeout(Duration.ofSeconds(10));
+    fixture.driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(10));
 
     fixture.verifyCommands(
         new CommandPayload(DriverCommand.SET_TIMEOUT, ImmutableMap.of("script", 10000L)));

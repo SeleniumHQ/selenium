@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 from enum import Enum
+from typing import Any
+from typing import Dict
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
@@ -362,8 +364,8 @@ class Options(ArgOptions):
 
     def __init__(self) -> None:
         super().__init__()
-        self._options = {}
-        self._additional = {}
+        self._options: Dict[str, Any] = {}
+        self._additional: Dict[str, Any] = {}
 
     @property
     def options(self) -> dict:
@@ -375,7 +377,7 @@ class Options(ArgOptions):
         """:Returns: The additional options."""
         return self._additional
 
-    def add_additional_option(self, name: str, value):
+    def add_additional_option(self, name: str, value) -> None:
         """Adds an additional option not yet added as a safe option for IE.
 
         :Args:

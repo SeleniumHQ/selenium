@@ -1,7 +1,6 @@
 load(
     "//dotnet:defs.bzl",
     "csharp_library",
-    "framework",
     "generated_assembly_info",
     "nuget_pack",
 )
@@ -39,15 +38,11 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
-    targeting_packs = [
-        framework("nuget", "NETStandard.Library"),
-    ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-        "//dotnet/src/webdriver",
-        framework("nuget", "NETStandard.Library"),
+        "//dotnet/src/webdriver:webdriver-netstandard2.0",
     ],
 )
 
@@ -82,15 +77,11 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
-    targeting_packs = [
-        framework("nuget", "NETStandard.Library"),
-    ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-        "//dotnet/src/webdriver:webdriver-strongnamed",
-        framework("nuget", "NETStandard.Library"),
+        "//dotnet/src/webdriver:webdriver-netstandard2.0-strongnamed",
     ],
 )
 

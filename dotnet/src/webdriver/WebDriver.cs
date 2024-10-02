@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium
 {
@@ -61,8 +62,15 @@ namespace OpenQA.Selenium
             }
             catch (Exception)
             {
-                // Failed to start driver session, disposing of driver
-                this.Quit();
+                try
+                {
+                    // Failed to start driver session, disposing of driver
+                    this.Quit();
+                }
+                catch
+                {
+                    // Ignore the clean-up exception. We'll propagate the original failure.
+                }
                 throw;
             }
 
@@ -109,17 +117,7 @@ namespace OpenQA.Selenium
                 return commandResponse.Value.ToString();
             }
 
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value), "Argument 'url' cannot be null.");
-                }
-
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("url", value);
-                this.Execute(DriverCommand.Get, parameters);
-            }
+            set => new Navigator(this).GoToUrl(value);
         }
 
         /// <summary>
@@ -566,16 +564,40 @@ namespace OpenQA.Selenium
         /// <returns>WebDriver Response</returns>
         internal Response InternalExecute(string driverCommandToExecute, Dictionary<string, object> parameters)
         {
-            return this.Execute(driverCommandToExecute, parameters);
+            return Task.Run(() => this.InternalExecuteAsync(driverCommandToExecute, parameters)).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Executes a command with this driver .
+        /// Executes commands with the driver asynchronously
+        /// </summary>
+        /// <param name="driverCommandToExecute">Command that needs executing</param>
+        /// <param name="parameters">Parameters needed for the command</param>
+        /// <returns>A task object representing the asynchronous operation</returns>
+        internal Task<Response> InternalExecuteAsync(string driverCommandToExecute,
+            Dictionary<string, object> parameters)
+        {
+            return this.ExecuteAsync(driverCommandToExecute, parameters);
+        }
+
+        /// <summary>
+        /// Executes a command with this driver.
         /// </summary>
         /// <param name="driverCommandToExecute">A <see cref="DriverCommand"/> value representing the command to execute.</param>
         /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
         /// <returns>A <see cref="Response"/> containing information about the success or failure of the command and any data returned by the command.</returns>
-        protected virtual Response Execute(string driverCommandToExecute, Dictionary<string, object> parameters)
+        protected virtual Response Execute(string driverCommandToExecute,
+            Dictionary<string, object> parameters)
+        {
+            return Task.Run(() => this.ExecuteAsync(driverCommandToExecute, parameters)).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Executes a command with this driver.
+        /// </summary>
+        /// <param name="driverCommandToExecute">A <see cref="DriverCommand"/> value representing the command to execute.</param>
+        /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
+        /// <returns>A <see cref="Response"/> containing information about the success or failure of the command and any data returned by the command.</returns>
+        protected virtual async Task<Response> ExecuteAsync(string driverCommandToExecute, Dictionary<string, object> parameters)
         {
             Command commandToExecute = new Command(this.sessionId, driverCommandToExecute, parameters);
 
@@ -583,7 +605,7 @@ namespace OpenQA.Selenium
 
             try
             {
-                commandResponse = this.executor.Execute(commandToExecute);
+                commandResponse = await this.executor.ExecuteAsync(commandToExecute).ConfigureAwait(false);
             }
             catch (System.Net.Http.HttpRequestException e)
             {
@@ -688,7 +710,10 @@ namespace OpenQA.Selenium
         {
             try
             {
-                this.Execute(DriverCommand.Quit, null);
+                if (this.sessionId is not null)
+                {
+                    this.Execute(DriverCommand.Quit, null);
+                }
             }
             catch (NotImplementedException)
             {

@@ -1,3 +1,56 @@
+4.25.0 (2024-09-19)
+=========================
+* Add CDP for Chrome 129 and remove 126
+* Fix add_cause method not being able to process an array of hashes (#14433)
+* replace `fedcm` links with new ones (#14478)
+* Allow driver path to be set using ENV variables (#14287)
+
+4.24.0 (2024-08-23)
+=========================
+* Deprecate WebStorage JS methods (#14276)
+* BUGFIX: Add stamp to nightly build (#14320)
+* Add timeout and tests for curb, also added the gem curb that was not part of selenium (#14285)
+* Add CDP for Chrome 128 and remove 125
+
+4.23.0 (2024-07-18)
+=========================
+* Add FedCM support to the ruby selenium client (#13796)
+* Add URLs constant to update error messages (#14174)
+* Update selenium manager types (#14189)
+* Add backtrace locations and cause to errors (#14170)
+* Add CDP for Chrome 127 and remove 124
+
+4.22.0 (2024-06-20)
+=========================
+
+* Force UTF-8 encoding on logger (see #6937)
+* Don't crash when ChildProcess is already killed (see #14032)
+* Manage bidi instance on the bridge not the driver (#14071)
+* Implement High Level Logging API with BiDi (#14073)
+* Fix bug with message deletion in Guard class
+* Change output for Guard class
+* Implement toggle for BiDi and Classic implementations (#14092)
+* Add preference to enable CDP in Firefox by default (#14091)
+* Add support for the w3c silent option for the ruby library (#14152)
+* Add CDP for Chrome 126 and remove 123
+
+4.21.1 (2024-05-16)
+=========================
+
+* Fixed missing Chrome binary error in Rails system tests.
+
+4.21.0 (2024-05-16)
+=========================
+
+* Add CDP for Chrome 125 and remove 122
+* Initial extensibility points for Appium
+  * Support registering extra headers in HTTP client
+  * Support overriding User-Agent in HTTP client
+  * Support registering extra bridge commands
+  * Support overriding default locator conversion
+  * Support registering custom finders for SearchContext
+  * Support using custom element classes
+
 4.20.1 (2024-04-25)
 =========================
 

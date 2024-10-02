@@ -29,21 +29,21 @@ module Selenium
 
         def status
           status = @bidi.send_cmd('session.status')
-          Status.new(status['ready'], status['message'])
+          Status.new(**status)
         end
 
         def subscribe(events, browsing_contexts = nil)
-          events_list = Array(events)
-          browsing_contexts_list = browsing_contexts.nil? ? nil : Array(browsing_contexts)
+          opts = {events: Array(events)}
+          opts[:browsing_contexts] = Array(browsing_contexts) if browsing_contexts
 
-          @bidi.send_cmd('session.subscribe', events: events_list, contexts: browsing_contexts_list)
+          @bidi.send_cmd('session.subscribe', **opts)
         end
 
         def unsubscribe(events, browsing_contexts = nil)
-          events_list = Array(events)
-          browsing_contexts_list = browsing_contexts.nil? ? nil : Array(browsing_contexts)
+          opts = {events: Array(events)}
+          opts[:browsing_contexts] = Array(browsing_contexts) if browsing_contexts
 
-          @bidi.send_cmd('session.unsubscribe', events: events_list, contexts: browsing_contexts_list)
+          @bidi.send_cmd('session.unsubscribe', **opts)
         end
       end # Session
     end # BiDi

@@ -169,6 +169,11 @@ bot.dom.core.isElement = function (node, opt_tagName) {
   if (opt_tagName && (typeof opt_tagName !== 'string')) {
     opt_tagName = opt_tagName.toString();
   }
+  // because node.tagName.toUpperCase() fails when tagName is "tagName"
+  if (node instanceof HTMLFormElement) {
+    return !!node && node.nodeType == goog.dom.NodeType.ELEMENT &&
+    (!opt_tagName || "FORM" == opt_tagName);
+  }
   return !!node && node.nodeType == goog.dom.NodeType.ELEMENT &&
     (!opt_tagName || node.tagName.toUpperCase() == opt_tagName);
 };

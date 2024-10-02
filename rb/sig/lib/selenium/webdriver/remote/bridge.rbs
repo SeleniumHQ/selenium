@@ -5,6 +5,7 @@ module Selenium
         include _CommandList
         include _Features
 
+        @bidi: WebDriver::BiDi
         @http: untyped
 
         @file_detector: untyped
@@ -31,6 +32,10 @@ module Selenium
 
         def initialize: (url: String | URI, ?http_client: untyped?) -> void
 
+        def cancel_fedcm_dialog: -> nil
+
+        def click_fedcm_dialog_button: -> nil
+
         def create_session: (untyped capabilities) -> untyped
 
         extend WebDriver::Chrome::Features
@@ -41,9 +46,23 @@ module Selenium
 
         extend WebDriver::Safari::Features
 
+        def fedcm_account_list: -> [FedCM::Account]
+
+        def fedcm_dialog_type: -> String
+
+        def fedcm_subtitle: -> String?
+
+        def fedcm_title: -> String
+
+        def reset_fedcm_cooldown: -> nil
+
+        def select_fedcm_account: -> nil
+
         def session_id: () -> untyped
 
         def browser: () -> untyped
+
+        def fedcm_delay: -> bool
 
         def status: () -> untyped
 

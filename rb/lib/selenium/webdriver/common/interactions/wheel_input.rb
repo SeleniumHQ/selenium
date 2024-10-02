@@ -28,7 +28,7 @@ module Selenium
 
       class WheelInput < InputDevice
         def initialize(name = nil)
-          super(name)
+          super
           @type = Interactions::WHEEL
         end
 

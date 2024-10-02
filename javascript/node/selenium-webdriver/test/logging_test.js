@@ -19,7 +19,7 @@
 
 const assert = require('node:assert')
 const test = require('../lib/test')
-const { Browser, logging } = require('..')
+const { Browser, logging } = require('selenium-webdriver')
 
 test.suite(function (env) {
   // Logging API is not supported in IE.

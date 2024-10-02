@@ -19,7 +19,7 @@
 
 describe('error', function () {
   let assert = require('node:assert')
-  let error = require('../../lib/error')
+  let error = require('selenium-webdriver/lib/error')
 
   describe('encodeError', function () {
     describe('defaults to an unknown error', function () {

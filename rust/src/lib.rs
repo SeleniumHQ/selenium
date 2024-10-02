@@ -37,12 +37,11 @@ use crate::metadata::{
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
 use crate::shell::{
-    run_shell_command, run_shell_command_by_os, run_shell_command_with_log, split_lines, Command,
+    run_shell_command, run_shell_command_by_os, run_shell_command_with_log, Command,
 };
 use crate::stats::{send_stats_to_plausible, Props};
 use anyhow::anyhow;
 use anyhow::Error;
-use is_executable::IsExecutable;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -50,6 +49,7 @@ use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
 use std::{env, fs, thread};
 use walkdir::DirEntry;
+use which::which;
 
 pub mod chrome;
 pub mod config;
@@ -74,8 +74,8 @@ pub const DEV: &str = "dev";
 pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
 pub const ESR: &str = "esr";
-pub const WMIC_COMMAND: &str = r#"wmic datafile where name='{}' get Version /value"#;
-pub const WMIC_COMMAND_OS: &str = r#"wmic os get osarchitecture"#;
+pub const WMIC_COMMAND: &str = "wmic datafile where name='{}' get Version /value";
+pub const WMIC_COMMAND_OS: &str = "wmic os get osarchitecture";
 pub const REG_VERSION_ARG: &str = "version";
 pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const REG_PV_ARG: &str = "pv";
@@ -88,7 +88,7 @@ pub const MSIEXEC_INSTALL_COMMAND: &str = "start /wait msiexec /i {} /qn ALLOWDO
 pub const WINDOWS_CHECK_ADMIN_COMMAND: &str = "net session";
 pub const DASH_VERSION: &str = "{}{}{} -v";
 pub const DASH_DASH_VERSION: &str = "{}{}{} --version";
-pub const DOUBLE_QUOTE: &str = "\"";
+pub const DOUBLE_QUOTE: &str = r#"""#;
 pub const SINGLE_QUOTE: &str = "'";
 pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
 pub const ENV_PROGRAM_FILES_X86: &str = "PROGRAMFILES(X86)";
@@ -98,11 +98,9 @@ pub const ARCH_X86: &str = "x86";
 pub const ARCH_AMD64: &str = "amd64";
 pub const ARCH_ARM64: &str = "arm64";
 pub const ENV_PROCESSOR_ARCHITECTURE: &str = "PROCESSOR_ARCHITECTURE";
-pub const WHERE_COMMAND: &str = "where {}";
-pub const WHICH_COMMAND: &str = "which {}";
 pub const TTL_SEC: u64 = 3600;
 pub const UNAME_COMMAND: &str = "uname -{}";
-pub const ESCAPE_COMMAND: &str = "printf %q \"{}\"";
+pub const ESCAPE_COMMAND: &str = r#"printf %q "{}""#;
 pub const SNAPSHOT: &str = "SNAPSHOT";
 pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
@@ -388,7 +386,16 @@ pub trait SeleniumManager {
             // Check browser in PATH
             let browser_in_path = self.find_browser_in_path();
             if let Some(path) = &browser_in_path {
-                self.set_browser_path(path_to_string(path));
+                if self.is_skip_browser_in_path() {
+                    self.get_logger().debug(format!(
+                        "Skipping {} in path: {}",
+                        self.get_browser_name(),
+                        path.display()
+                    ));
+                    return None;
+                } else {
+                    self.set_browser_path(path_to_string(path));
+                }
             }
             browser_in_path
         }
@@ -486,7 +493,7 @@ pub trait SeleniumManager {
                     }
                     if self.is_webview2() && PathBuf::from(self.get_browser_path()).is_dir() {
                         let browser_path = format!(
-                            r#"{}\{}\msedge{}"#,
+                            r"{}\{}\msedge{}",
                             self.get_browser_path(),
                             &self.get_browser_version(),
                             get_binary_extension(self.get_os())
@@ -594,32 +601,10 @@ pub trait SeleniumManager {
     }
 
     fn execute_which_in_shell(&self, arg: &str) -> Option<String> {
-        let which_or_where = if WINDOWS.is(self.get_os()) {
-            WHERE_COMMAND
-        } else {
-            WHICH_COMMAND
-        };
-        let which_command = Command::new_single(format_one_arg(which_or_where, arg));
-        let path = match run_shell_command_by_os(self.get_os(), which_command) {
-            Ok(path) => {
-                let path_vector = split_lines(path.as_str());
-                if path_vector.len() == 1 {
-                    self.get_first_in_vector(path_vector)
-                } else {
-                    let exec_paths: Vec<&str> = path_vector
-                        .into_iter()
-                        .filter(|p| Path::new(p).is_executable())
-                        .collect();
-                    if exec_paths.is_empty() {
-                        None
-                    } else {
-                        self.get_first_in_vector(exec_paths)
-                    }
-                }
-            }
+        match which(arg) {
+            Ok(path) => Some(path_to_string(&path)),
             Err(_) => None,
-        };
-        path
+        }
     }
 
     fn get_first_in_vector(&self, vector: Vec<&str>) -> Option<String> {
@@ -639,7 +624,7 @@ pub trait SeleniumManager {
         if WINDOWS.is(os) {
             let command = Command::new_single(WINDOWS_CHECK_ADMIN_COMMAND.to_string());
             let output = run_shell_command_by_os(os, command).unwrap_or_default();
-            !output.is_empty() && !output.contains("error")
+            !output.is_empty() && !output.contains("error") && !output.contains("not recognized")
         } else {
             false
         }
@@ -780,32 +765,41 @@ pub trait SeleniumManager {
 
         // Use driver in PATH when the user has not specified any browser version
         if use_driver_in_path {
-            let version = driver_in_path_version.unwrap();
             let path = driver_in_path.unwrap();
-            let major_version = self.get_major_version(&version)?;
 
-            // Display warning if the discovered driver version is not the same as the driver in PATH
-            if !self.get_driver_version().is_empty()
-                && (self.is_firefox() && !version.eq(self.get_driver_version()))
-                || (!self.is_firefox() && !major_version.eq(&self.get_major_browser_version()))
-            {
-                self.get_logger().warn(format!(
-                    "The {} version ({}) detected in PATH at {} might not be compatible with \
+            if self.is_skip_driver_in_path() {
+                self.get_logger().debug(format!(
+                    "Skipping {} in path: {}",
+                    self.get_driver_name(),
+                    path
+                ));
+            } else {
+                let version = driver_in_path_version.unwrap();
+                let major_version = self.get_major_version(&version)?;
+
+                // Display warning if the discovered driver version is not the same as the driver in PATH
+                if !self.get_driver_version().is_empty()
+                    && (self.is_firefox() && !version.eq(self.get_driver_version()))
+                    || (!self.is_firefox() && !major_version.eq(&self.get_major_browser_version()))
+                {
+                    self.get_logger().warn(format!(
+                        "The {} version ({}) detected in PATH at {} might not be compatible with \
                     the detected {} version ({}); currently, {} {} is recommended for {} {}.*, \
                     so it is advised to delete the driver in PATH and retry",
-                    self.get_driver_name(),
-                    &version,
-                    path,
-                    self.get_browser_name(),
-                    self.get_browser_version(),
-                    self.get_driver_name(),
-                    self.get_driver_version(),
-                    self.get_browser_name(),
-                    self.get_major_browser_version()
-                ));
+                        self.get_driver_name(),
+                        &version,
+                        path,
+                        self.get_browser_name(),
+                        self.get_browser_version(),
+                        self.get_driver_name(),
+                        self.get_driver_version(),
+                        self.get_browser_name(),
+                        self.get_major_browser_version()
+                    ));
+                }
+                self.set_driver_version(version.to_string());
+                return Ok(PathBuf::from(path));
             }
-            self.set_driver_version(version.to_string());
-            return Ok(PathBuf::from(path));
         }
 
         // If driver was not in the PATH, try to find it in the cache
@@ -1085,16 +1079,20 @@ pub trait SeleniumManager {
         cmd_version_arg: &str,
     ) -> Result<Option<String>, Error> {
         let mut browser_path = self.get_browser_path().to_string();
-        let mut escaped_browser_path = self.get_escaped_path(browser_path.to_string());
         if browser_path.is_empty() {
             if let Some(path) = self.detect_browser_path() {
                 browser_path = path_to_string(&path);
-                escaped_browser_path = self.get_escaped_path(browser_path.to_string());
             }
+        } else if !Path::new(&browser_path).exists() {
+            self.set_fallback_driver_from_cache(false);
+            return Err(anyhow!(format_one_arg(
+                "Browser path does not exist: {}",
+                &browser_path,
+            )));
         }
+        let escaped_browser_path = self.get_escaped_path(browser_path.to_string());
 
         let mut commands = Vec::new();
-
         if WINDOWS.is(self.get_os()) {
             if !escaped_browser_path.is_empty() {
                 let wmic_command =
@@ -1296,6 +1294,26 @@ pub trait SeleniumManager {
         }
     }
 
+    fn get_driver_mirror_versions_url_or_default<'a>(&'a self, default_url: &'a str) -> String {
+        let driver_mirror_url = self.get_driver_mirror_url();
+        if !driver_mirror_url.is_empty() {
+            let driver_versions_path = default_url.rfind('/').map(|i| &default_url[i + 1..]);
+            if let Some(path) = driver_versions_path {
+                let driver_mirror_versions_url = if driver_mirror_url.ends_with('/') {
+                    format!("{}{}", driver_mirror_url, path)
+                } else {
+                    format!("{}/{}", driver_mirror_url, path)
+                };
+                self.get_logger().debug(format!(
+                    "Using mirror URL to discover driver versions: {}",
+                    driver_mirror_versions_url
+                ));
+                return driver_mirror_versions_url;
+            }
+        }
+        default_url.to_string()
+    }
+
     fn get_driver_mirror_url_or_default<'a>(&'a self, default_url: &'a str) -> String {
         self.get_url_or_default(self.get_driver_mirror_url(), default_url)
     }
@@ -1439,6 +1457,26 @@ pub trait SeleniumManager {
         }
     }
 
+    fn is_skip_driver_in_path(&self) -> bool {
+        self.get_config().skip_driver_in_path
+    }
+
+    fn set_skip_driver_in_path(&mut self, skip_driver_in_path: bool) {
+        if skip_driver_in_path {
+            self.get_config_mut().skip_driver_in_path = true;
+        }
+    }
+
+    fn is_skip_browser_in_path(&self) -> bool {
+        self.get_config().skip_browser_in_path
+    }
+
+    fn set_skip_browser_in_path(&mut self, skip_browser_in_path: bool) {
+        if skip_browser_in_path {
+            self.get_config_mut().skip_browser_in_path = true;
+        }
+    }
+
     fn get_cache_path(&self) -> Result<Option<PathBuf>, Error> {
         let path = Path::new(&self.get_config().cache_path);
         match create_path_if_not_exists(path) {
@@ -1491,6 +1529,14 @@ pub trait SeleniumManager {
         if avoid_stats {
             self.get_config_mut().avoid_stats = true;
         }
+    }
+
+    fn is_fallback_driver_from_cache(&self) -> bool {
+        self.get_config().fallback_driver_from_cache
+    }
+
+    fn set_fallback_driver_from_cache(&mut self, fallback_driver_from_cache: bool) {
+        self.get_config_mut().fallback_driver_from_cache = fallback_driver_from_cache;
     }
 }
 

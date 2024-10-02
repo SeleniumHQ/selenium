@@ -249,19 +249,19 @@ impl SeleniumManager for ChromeManager {
             ),
             (
                 BrowserPath::new(MACOS, STABLE),
-                r#"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"#,
+                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
             ),
             (
                 BrowserPath::new(MACOS, BETA),
-                r#"/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta"#,
+                "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta",
             ),
             (
                 BrowserPath::new(MACOS, DEV),
-                r#"/Applications/Google Chrome Dev.app/Contents/MacOS/Google Chrome Dev"#,
+                "/Applications/Google Chrome Dev.app/Contents/MacOS/Google Chrome Dev",
             ),
             (
                 BrowserPath::new(MACOS, NIGHTLY),
-                r#"/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary"#,
+                "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
             ),
             (BrowserPath::new(LINUX, STABLE), "/usr/bin/google-chrome"),
             (BrowserPath::new(LINUX, BETA), "/usr/bin/google-chrome-beta"),

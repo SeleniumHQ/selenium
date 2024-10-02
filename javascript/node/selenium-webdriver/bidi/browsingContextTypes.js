@@ -80,4 +80,20 @@ class NavigationInfo {
   }
 }
 
-module.exports = { BrowsingContextInfo, NavigationInfo }
+class UserPromptOpened {
+  constructor(browsingContextId, type, message) {
+    this.browsingContextId = browsingContextId
+    this.type = type
+    this.message = message
+  }
+}
+
+class UserPromptClosed {
+  constructor(browsingContextId, accepted, userText = undefined) {
+    this.browsingContextId = browsingContextId
+    this.accepted = accepted
+    this.userText = userText
+  }
+}
+
+module.exports = { BrowsingContextInfo, NavigationInfo, UserPromptOpened, UserPromptClosed }

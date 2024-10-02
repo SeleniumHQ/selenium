@@ -20,8 +20,8 @@
 const assert = require('node:assert')
 const fileServer = require('../lib/test/fileserver')
 const { ignore, Pages, suite } = require('../lib/test')
-const { Key, Origin } = require('../lib/input')
-const { Browser, By, until } = require('..')
+const { Key, Origin } = require('selenium-webdriver/lib/input')
+const { Browser, By, until } = require('selenium-webdriver')
 
 suite(function (env) {
   describe('WebDriver.actions()', function () {

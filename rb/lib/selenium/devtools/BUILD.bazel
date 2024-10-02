@@ -5,9 +5,9 @@ package(default_visibility = ["//rb:__subpackages__"])
 
 CDP_VERSIONS = [
     "v85",
-    "v122",
-    "v123",
-    "v124",
+    "v128",
+    "v129",
+    "v127",
 ]
 
 rb_library(

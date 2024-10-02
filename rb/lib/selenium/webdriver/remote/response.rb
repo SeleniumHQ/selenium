@@ -28,7 +28,7 @@ module Selenium
         attr_reader :code, :payload
 
         def initialize(code, payload = nil)
-          @code    = code
+          @code = code
           @payload = payload || {}
 
           assert_ok
@@ -37,11 +37,8 @@ module Selenium
         def error
           error, message, backtrace = process_error
           klass = Error.for_error(error) || return
-
           ex = klass.new(message)
-          ex.set_backtrace(caller)
-          add_backtrace ex, backtrace
-
+          add_cause(ex, error, backtrace)
           ex
         end
 
@@ -59,17 +56,13 @@ module Selenium
           raise Error::ServerError, self
         end
 
-        def add_backtrace(ex, server_trace)
-          return unless server_trace
-
-          backtrace = case server_trace
-                      when Array
-                        backtrace_from_remote(server_trace)
-                      when String
-                        server_trace.split("\n")
-                      end
-
-          ex.set_backtrace(backtrace + ex.backtrace)
+        def add_cause(ex, error, backtrace)
+          cause = Error::WebDriverError.new
+          backtrace = backtrace_from_remote(backtrace) if backtrace.is_a?(Array)
+          cause.set_backtrace(backtrace)
+          raise ex, cause: cause
+        rescue Error.for_error(error)
+          ex
         end
 
         def backtrace_from_remote(server_trace)
@@ -78,14 +71,14 @@ module Selenium
 
             file = frame['fileName']
             line = frame['lineNumber']
-            meth = frame['methodName']
+            method = frame['methodName']
 
             class_name = frame['className']
             file = "#{class_name}(#{file})" if class_name
 
-            meth = 'unknown' if meth.nil? || meth.empty?
+            method = 'unknown' if method.nil? || method.empty?
 
-            "[remote server] #{file}:#{line}:in `#{meth}'"
+            "[remote server] #{file}:#{line}:in `#{method}'"
           end
         end
 

@@ -4,7 +4,7 @@
     <id>$packageid$</id>
     <version>$version$</version>
     <authors>Selenium Committers</authors>
-    <copyright>Copyright © 2023 Software Freedom Conservancy</copyright>
+    <copyright>Copyright © 2024 Software Freedom Conservancy</copyright>
     <owners>selenium</owners>
     <title>Selenium WebDriver</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -24,7 +24,10 @@
     </releaseNotes>
     <dependencies>
       <group targetFramework="netstandard2.0">
-        <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="8.0.4" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net8.0">
+        
       </group>
     </dependencies>
     <frameworkAssemblies>
@@ -35,6 +38,10 @@
     <file src="lib/netstandard2.0/WebDriver.dll" target="lib/netstandard2.0/WebDriver.dll" />
     <file src="lib/netstandard2.0/WebDriver.pdb" target="lib/netstandard2.0/WebDriver.pdb" />
     <file src="lib/netstandard2.0/WebDriver.xml" target="lib/netstandard2.0/WebDriver.xml" />
+
+    <file src="lib/net8.0/WebDriver.dll" target="lib/net8.0/WebDriver.dll" />
+    <file src="lib/net8.0/WebDriver.pdb" target="lib/net8.0/WebDriver.pdb" />
+    <file src="lib/net8.0/WebDriver.xml" target="lib/net8.0/WebDriver.xml" />
 
     <file src="build/Selenium.WebDriver.targets" target="build/Selenium.WebDriver.targets"/>
     <file src="buildTransitive/Selenium.WebDriver.targets" target="buildTransitive/Selenium.WebDriver.targets"/>

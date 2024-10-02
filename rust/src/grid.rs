@@ -142,7 +142,7 @@ impl SeleniumManager for GridManager {
                     .collect();
 
                 if !filtered_releases.is_empty() {
-                    let assets = &filtered_releases.get(0).unwrap().assets;
+                    let assets = &filtered_releases.first().unwrap().assets;
                     let driver_releases: Vec<&Assets> = assets
                         .iter()
                         .filter(|url| {

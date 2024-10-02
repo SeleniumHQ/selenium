@@ -77,6 +77,7 @@ def event_class(method):
     ''' A decorator that registers a class as an event class. '''
     def decorate(cls):
         _event_parsers[method] = cls
+        cls.event_class = method
         return cls
     return decorate
 
