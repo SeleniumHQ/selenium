@@ -1,3 +1,17 @@
+Selenium 4.25.0
+* Add CDP for Chrome 129 and remove 126
+* fix type errors for `service.py`, `cdp.py`, `webelement.py` and `remote_connection.py` (#14448)
+* fix type errors for `input_device` and `file_detector` (#14459)
+* fix type errors for `pointer_input.py`, `wheel_input.py` and `firefox/options.py` (#14476)
+* firefox_profile.py: use `with` statement in zipfile as Python 2.x support is dropped (#14489)
+
+Selenium 4.24.0
+* Allow overriding `GLOBAL_DEFAULT_TIMEOUT` (#14354)
+* fix mypy errors for `timeouts.py` and `print_page_options.py` (#14362)
+* fix mypy errors for `input_device.py`, `ie/options.py` and `selenium_manager.py` (#14377)
+* fix type errors for `log.py`, `chromium/options.py`, `websocket_connection.py` and `chrome/options.py` (#14392)
+* Add CDP for Chrome 128 and remove 125
+
 Selenium 4.23.1
 
 * Fix 14278 and match ordering of dependencies (#14297)

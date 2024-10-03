@@ -1,3 +1,16 @@
+0.4.25
+======
+
+* Reuse driver mirror URL (when available) to discover Firefox versions (#13941) (#14493)
+* Selenium Manager errors when browser-path is wrong (#13352) (#14381)
+
+0.4.24
+======
+
+* Use Firefox history major releases endpoint for version discovery
+* Use the Debug format specifier to display error messages (#14388)
+* Include arguments for skipping drivers and browsers in path (#14444)
+
 0.4.23
 ======
 

@@ -14,6 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from typing import Any
+from typing import Dict
+from typing import Optional
 from typing import Union
 
 from typing_extensions import deprecated
@@ -44,7 +47,7 @@ class Options(ArgOptions):
         # Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
         # https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
         self._preferences["remote.active-protocols"] = 3
-        self._profile = None
+        self._profile: Optional[FirefoxProfile] = None
         self.log = Log()
 
     @property
@@ -60,7 +63,7 @@ class Options(ArgOptions):
         ``FirefoxBinary`` instance."""
         if isinstance(new_binary, FirefoxBinary):
             new_binary = new_binary._start_cmd
-        self.binary_location = new_binary
+        self.binary_location = str(new_binary)
 
     @property
     def binary_location(self) -> str:
@@ -84,7 +87,7 @@ class Options(ArgOptions):
         self._preferences[name] = value
 
     @property
-    def profile(self) -> FirefoxProfile:
+    def profile(self) -> Optional[FirefoxProfile]:
         """:Returns: The Firefox profile to use."""
         return self._profile
 
@@ -96,7 +99,9 @@ class Options(ArgOptions):
             new_profile = FirefoxProfile(new_profile)
         self._profile = new_profile
 
-    def enable_mobile(self, android_package: str = "org.mozilla.firefox", android_activity=None, device_serial=None):
+    def enable_mobile(
+        self, android_package: Optional[str] = "org.mozilla.firefox", android_activity=None, device_serial=None
+    ):
         super().enable_mobile(android_package, android_activity, device_serial)
 
     def to_capabilities(self) -> dict:
@@ -106,7 +111,7 @@ class Options(ArgOptions):
         # it will defer to geckodriver to find the system Firefox
         # and generate a fresh profile.
         caps = self._caps
-        opts = {}
+        opts: Dict[str, Any] = {}
 
         if self._binary_location:
             opts["binary"] = self._binary_location

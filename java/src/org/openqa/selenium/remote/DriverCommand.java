@@ -149,7 +149,7 @@ public interface DriverCommand {
   String REMOVE_ALL_CREDENTIALS = "removeAllCredentials";
   String SET_USER_VERIFIED = "setUserVerified";
   // Federated Credential Management API
-  // https://fedidcg.github.io/FedCM/#automation
+  // https://w3c-fedid.github.io/FedCM/#automation
   String CANCEL_DIALOG = "cancelDialog";
   String SELECT_ACCOUNT = "selectAccount";
   String CLICK_DIALOG = "clickDialog";

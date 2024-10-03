@@ -42,7 +42,9 @@ suite(
       it('can listen to event before request is sent', async function () {
         let beforeRequestEvent = null
         await network.beforeRequestSent(function (event) {
-          beforeRequestEvent = event
+          if (event.request.url.includes('empty')) {
+            beforeRequestEvent = event
+          }
         })
 
         await driver.get(Pages.emptyPage)

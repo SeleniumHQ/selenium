@@ -88,7 +88,7 @@ namespace OpenQA.Selenium
             string browserPath = binaryPaths[BrowserPathKey];
             if (File.Exists(driverPath))
             {
-                paths.Add(DriverPathKey, driverPath);                
+                paths.Add(DriverPathKey, driverPath);
             }
             else
             {

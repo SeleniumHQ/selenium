@@ -237,6 +237,8 @@ class CdpBase:
         an async with block. The block will not exit until the indicated
         event is received.
         """
+        sender: trio.MemorySendChannel
+        receiver: trio.MemoryReceiveChannel
         sender, receiver = trio.open_memory_channel(buffer_size)
         self.channels[event_type].add(sender)
         proxy = CmEventProxy()

@@ -24,6 +24,7 @@ module Selenium
         DEFAULT_PORT = 4444
         EXECUTABLE = 'geckodriver'
         SHUTDOWN_SUPPORTED = false
+        DRIVER_PATH_ENV_KEY = 'SE_GECKODRIVER'
       end # Service
     end # Firefox
   end # WebDriver

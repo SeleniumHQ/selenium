@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V127;
+    using CurrentCdpVersion = V129;
 
     [TestFixture]
-    [IgnoreBrowser(Selenium.Browser.Edge, "While CDP 127 is released for Edge")]
     public class DevToolsTabsTest : DevToolsTestFixture
     {
 
@@ -23,7 +22,8 @@ namespace OpenQA.Selenium.DevTools
             driver.SwitchTo().Window(oldWindowHandle);
             driver.Close();
             Assert.That(
-                async () => {
+                async () =>
+                {
                     await domains.Console.Enable();
                 },
                 Throws.Nothing
