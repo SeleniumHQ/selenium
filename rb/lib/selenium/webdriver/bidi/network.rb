@@ -18,6 +18,7 @@
 # under the License.
 
 require_relative 'session'
+require_relative 'browsing_context'
 
 module Selenium
   module WebDriver
@@ -54,12 +55,9 @@ module Selenium
           @session.subscribe(NetworkEvents::RESPONSE_COMPLETED, &block)
         end
 
-        def on_auth_required(&consumer)
-          if @browsing_context_ids.empty?
-            @bidi.add_listener("network.authRequired", &consumer)
-          else
-            @bidi.add_listener(@browsing_context_ids, "network.authRequired", &consumer)
-          end
+        def on_auth_required(driver, &consumer)
+          browsing_context = BrowsingContext.new(driver: driver, type: :tab)
+          @session.subscribe("network.authRequired", browsing_contexts: browsing_context.id, &consumer)
         end
 
         def auth_required
@@ -95,6 +93,10 @@ module Selenium
           )
         end
 
+        def send_request(method:, url:, headers: nil, body: nil, context: nil)
+          @bidi.send_cmd('network.RequestData', method: method, url: url, headers: headers, body: body, context: context)
+        end
+
         def fail_request(request_id)
           @bidi.send_cmd('network.failRequest', request_id: request_id)
         end
@@ -103,8 +105,8 @@ module Selenium
           @bidi.send_cmd('network.cancelAuth', request_id: request_id)
         end
 
-        def continue_request(request_id)
-          @bidi.send_cmd('network.continueRequest', request_id: request_id)
+        def continue_request(params)
+          @bidi.send_cmd('network.continueRequest', **params)
         end
 
         def continue_response(params)
@@ -114,7 +116,11 @@ module Selenium
         def provide_response(params)
           @bidi.send_cmd('network.provideResponse', params: params)
         end
-      end # Network
-    end # BiDi
+      end
+
+      # Network
+    end
+
+    # BiDi
   end # WebDriver
 end # Selenium
