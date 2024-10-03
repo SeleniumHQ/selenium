@@ -19,6 +19,6 @@
 
 module Selenium
   module WebDriver
-    VERSION = '4.24.0.nightly'
+    VERSION = '4.26.0.nightly'
   end # WebDriver
 end # Selenium

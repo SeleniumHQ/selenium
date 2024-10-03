@@ -308,12 +308,13 @@ public class DriverServiceSessionFactory implements SessionFactory {
     Map<String, Object> requestedCapsMap = requestedCaps.asMap();
     Map<String, Object> returnedCapsMap = returnedCaps.asMap();
 
-    requestedCapsMap.forEach(
-        (k, v) -> {
-          if (k.startsWith("se:") && !returnedCapsMap.containsKey(k)) {
-            returnPrefixedCaps.setCapability(k, v);
-          }
-        });
+    for (Map.Entry<String, Object> entry : requestedCapsMap.entrySet()) {
+      String key = entry.getKey();
+      Object value = entry.getValue();
+      if (key.startsWith("se:") && !returnedCapsMap.containsKey(key)) {
+        returnPrefixedCaps = returnPrefixedCaps.setCapability(key, value);
+      }
+    }
 
     return returnPrefixedCaps;
   }

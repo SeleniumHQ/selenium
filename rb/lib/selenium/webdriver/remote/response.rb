@@ -58,10 +58,28 @@ module Selenium
 
         def add_cause(ex, error, backtrace)
           cause = Error::WebDriverError.new
+          backtrace = backtrace_from_remote(backtrace) if backtrace.is_a?(Array)
           cause.set_backtrace(backtrace)
           raise ex, cause: cause
         rescue Error.for_error(error)
           ex
+        end
+
+        def backtrace_from_remote(server_trace)
+          server_trace.filter_map do |frame|
+            next unless frame.is_a?(Hash)
+
+            file = frame['fileName']
+            line = frame['lineNumber']
+            method = frame['methodName']
+
+            class_name = frame['className']
+            file = "#{class_name}(#{file})" if class_name
+
+            method = 'unknown' if method.nil? || method.empty?
+
+            "[remote server] #{file}:#{line}:in `#{method}'"
+          end
         end
 
         def process_error

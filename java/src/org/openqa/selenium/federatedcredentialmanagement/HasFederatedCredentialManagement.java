@@ -26,8 +26,8 @@ public interface HasFederatedCredentialManagement {
    * Disables the promise rejection delay.
    *
    * <p>FedCM by default delays promise resolution in failure cases for privacy reasons
-   * (https://fedidcg.github.io/FedCM/#ref-for-setdelayenabled); this function allows turning it off
-   * to let tests run faster where this is not relevant.
+   * (https://w3c-fedid.github.io/FedCM/#ref-for-setdelayenabled); this function allows turning it
+   * off to let tests run faster where this is not relevant.
    */
   void setDelayEnabled(boolean enabled);
 

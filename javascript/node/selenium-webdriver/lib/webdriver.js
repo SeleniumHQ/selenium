@@ -784,6 +784,14 @@ class WebDriver {
       if (this.onQuit_) {
         return this.onQuit_.call(void 0)
       }
+
+      // Close the websocket connection on quit
+      // If the websocket connection is not closed,
+      // and we are running CDP sessions against the Selenium Grid,
+      // the node process never exits since the websocket connection is open until the Grid is shutdown.
+      if (this._wsConnection !== undefined) {
+        this._wsConnection.close()
+      }
     })
   }
 
