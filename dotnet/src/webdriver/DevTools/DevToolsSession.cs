@@ -604,7 +604,10 @@ namespace OpenQA.Selenium.DevTools
                     }
                     catch (Exception ex)
                     {
-                        logger.Warn($"CDP VNT ^^ Unhandled error occured in event handler of '{method}' method. {ex}");
+                        if (logger.IsEnabled(LogEventLevel.Warn))
+                        {
+                            logger.Warn($"CDP VNT ^^ Unhandled error occured in event handler of '{method}' method. {ex}");
+                        }
                     }
 
                 });
