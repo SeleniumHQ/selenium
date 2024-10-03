@@ -108,7 +108,6 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
       response.setValue(content);
     }
 
-
     if (response.getStatus() != null && response.getState() == null) {
       response.setState(errorCodes.toState(response.getStatus()));
     } else if (response.getStatus() == null && response.getState() != null) {
