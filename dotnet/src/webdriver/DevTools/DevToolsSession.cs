@@ -277,7 +277,7 @@ namespace OpenQA.Selenium.DevTools
             {
                 if (logger.IsEnabled(LogEventLevel.Trace))
                 {
-                    logger.Trace($"CDP SND >> {message.CommandId} {message.CommandName}: {commandParameters}");
+                    logger.Trace($"CDP SND >> {message.CommandId} {message.CommandName}: {commandParameters.ToJsonString()}");
                 }
 
                 LogTrace("Sending {0} {1}: {2}", message.CommandId, message.CommandName, commandParameters.ToString());
