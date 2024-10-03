@@ -35,7 +35,6 @@
 const fs = require('node:fs')
 const path = require('node:path')
 const { isatty } = require('node:tty')
-const { runfiles } = require('@bazel/runfiles')
 const chrome = require('../chrome')
 const edge = require('../edge')
 const firefox = require('../firefox')
@@ -45,6 +44,14 @@ const safari = require('../safari')
 const { Browser } = require('../lib/capabilities')
 const { Builder } = require('../index')
 const { getBinaryPaths } = require('../common/driverFinder')
+
+let runfiles
+try {
+  // Attempt to require @bazel/runfiles
+  runfiles = require('@bazel/runfiles').runfiles
+} catch {
+  // Fall through
+}
 
 /**
  * Describes a browser targeted by a {@linkplain suite test suite}.
@@ -339,6 +346,7 @@ class Environment {
       // Enable BiDi for supporting browsers.
       if (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE) {
         builder.setCapability('webSocketUrl', true)
+        builder.setCapability('unhandledPromptBehavior', 'ignore')
       }
 
       if (typeof urlOrServer === 'string') {
@@ -542,6 +550,10 @@ function getTestHook(name) {
 function locate(fileLike) {
   if (fs.existsSync(fileLike)) {
     return fileLike
+  }
+
+  if (!runfiles) {
+    throw new Error('Unable to find ' + fileLike)
   }
 
   try {

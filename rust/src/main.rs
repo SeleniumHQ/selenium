@@ -147,6 +147,14 @@ struct Cli {
     /// Avoid sends usage statistics to plausible.io
     #[clap(long)]
     avoid_stats: bool,
+
+    /// Not using drivers found in the PATH
+    #[clap(long)]
+    skip_driver_in_path: bool,
+
+    /// Not using browsers found in the PATH
+    #[clap(long)]
+    skip_browser_in_path: bool,
 }
 
 fn main() {
@@ -218,6 +226,8 @@ fn main() {
     let selenium_version = sm_version.strip_prefix(SM_BETA_LABEL).unwrap_or(sm_version);
     selenium_manager.set_selenium_version(selenium_version.to_string());
     selenium_manager.set_avoid_stats(cli.avoid_stats);
+    selenium_manager.set_skip_driver_in_path(cli.skip_driver_in_path);
+    selenium_manager.set_skip_browser_in_path(cli.skip_browser_in_path);
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(selenium_manager.get_logger(), &cache_path);
@@ -243,29 +253,36 @@ fn main() {
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
-            if let Some(best_driver_from_cache) =
-                selenium_manager.find_best_driver_from_cache().unwrap()
-            {
-                log.debug_or_warn(
-                    format!(
-                        "There was an error managing {} ({}); using driver found in the cache",
-                        selenium_manager.get_driver_name(),
-                        err
-                    ),
-                    selenium_manager.is_offline(),
-                );
-                log_driver_and_browser_path(
-                    log,
-                    &best_driver_from_cache,
-                    &selenium_manager.get_browser_path_or_latest_from_cache(),
-                    selenium_manager.get_receiver(),
-                );
-                flush_and_exit(OK, log, Some(err));
-            } else if selenium_manager.is_offline() {
+            if selenium_manager.is_fallback_driver_from_cache() {
+                if let Some(best_driver_from_cache) =
+                    selenium_manager.find_best_driver_from_cache().unwrap()
+                {
+                    log.debug_or_warn(
+                        format!(
+                            "There was an error managing {} ({}); using driver found in the cache",
+                            selenium_manager.get_driver_name(),
+                            err
+                        ),
+                        selenium_manager.is_offline(),
+                    );
+                    log_driver_and_browser_path(
+                        log,
+                        &best_driver_from_cache,
+                        &selenium_manager.get_browser_path_or_latest_from_cache(),
+                        selenium_manager.get_receiver(),
+                    );
+                    flush_and_exit(OK, log, Some(err));
+                }
+            }
+            if selenium_manager.is_offline() {
                 log.warn(&err);
                 flush_and_exit(OK, log, Some(err));
             } else {
-                log.error(&err);
+                let error_msg = log
+                    .is_debug_enabled()
+                    .then(|| format!("{:?}", err))
+                    .unwrap_or_else(|| err.to_string());
+                log.error(error_msg);
                 flush_and_exit(DATAERR, log, Some(err));
             }
         });

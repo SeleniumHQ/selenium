@@ -54,9 +54,15 @@ public class Actions {
   private PointerInput activePointer;
   private KeyInput activeKeyboard;
   private WheelInput activeWheel;
+  private Duration actionDuration;
 
   public Actions(WebDriver driver) {
+    this(driver, Duration.ofMillis(250));
+  }
+
+  public Actions(WebDriver driver, Duration duration) {
     this.driver = Require.nonNull("Driver", driver);
+    this.actionDuration = duration;
   }
 
   /**
@@ -215,7 +221,7 @@ public class Actions {
    */
   public Actions scrollToElement(WebElement element) {
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(element);
-    return tick(getActiveWheel().createScroll(0, 0, 0, 0, Duration.ofMillis(250), scrollOrigin));
+    return tick(getActiveWheel().createScroll(0, 0, 0, 0, this.actionDuration, scrollOrigin));
   }
 
   /**
@@ -229,7 +235,7 @@ public class Actions {
   public Actions scrollByAmount(int deltaX, int deltaY) {
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport();
     return tick(
-        getActiveWheel().createScroll(0, 0, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
+        getActiveWheel().createScroll(0, 0, deltaX, deltaY, this.actionDuration, scrollOrigin));
   }
 
   /**
@@ -249,7 +255,7 @@ public class Actions {
     int x = scrollOrigin.getxOffset();
     int y = scrollOrigin.getyOffset();
     return tick(
-        getActiveWheel().createScroll(x, y, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
+        getActiveWheel().createScroll(x, y, deltaX, deltaY, this.actionDuration, scrollOrigin));
   }
 
   /**
@@ -546,6 +552,10 @@ public class Actions {
       setActiveWheel("default wheel");
     }
     return this.activeWheel;
+  }
+
+  public Duration getActionDuration() {
+    return this.actionDuration;
   }
 
   /**

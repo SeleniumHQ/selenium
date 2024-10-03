@@ -24,5 +24,5 @@ nuget System.Diagnostics.Tools 4.3.0
 nuget System.Drawing.Common 7.0.0
 nuget System.Runtime 4.3.1
 nuget System.Runtime.InteropServices 4.3.0
-nuget System.Text.Json 6.0.9
+nuget System.Text.Json 8.0.4
 nuget Runfiles 0.12.0

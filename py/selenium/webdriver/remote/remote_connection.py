@@ -136,7 +136,11 @@ class RemoteConnection:
     """
 
     browser_name = None
-    _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+    _timeout = (
+        float(os.getenv("GLOBAL_DEFAULT_TIMEOUT", str(socket.getdefaulttimeout())))
+        if os.getenv("GLOBAL_DEFAULT_TIMEOUT") is not None
+        else socket.getdefaulttimeout()
+    )
     _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
 
     @classmethod

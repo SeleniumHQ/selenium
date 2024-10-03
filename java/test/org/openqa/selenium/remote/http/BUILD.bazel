@@ -5,7 +5,10 @@ load("//java:version.bzl", "TOOLS_JAVA_VERSION")
 java_test_suite(
     name = "small-tests",
     size = "small",
-    srcs = glob(["*.java"]),
+    srcs = glob([
+        "*.java",
+        "jdk/*.java",
+    ]),
     javacopts = [
         "--release",
         TOOLS_JAVA_VERSION,
@@ -15,6 +18,7 @@ java_test_suite(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote/http",
         "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/remote/internal:test-lib",
         "//java/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),

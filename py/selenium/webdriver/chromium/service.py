@@ -14,9 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 from typing import List
 from typing import Mapping
 from typing import Optional
+from io import IOBase
+
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
@@ -45,8 +48,10 @@ class ChromiumService(service.Service):
         self._service_args = service_args or []
 
         if isinstance(log_output, str):
-            self._service_args.append(f"--log-path={log_output}")
-            self.log_output = None
+            self.service_args.append(f"--log-path={log_output}")
+            self.log_output: Optional[IOBase] = None
+        elif isinstance(log_output, IOBase):
+            self.log_output = log_output
         else:
             self.log_output = log_output
 

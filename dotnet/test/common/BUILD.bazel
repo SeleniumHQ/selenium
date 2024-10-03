@@ -45,12 +45,12 @@ csharp_library(
     data = [
         "//common/manager:selenium-manager-macos",
     ],
-    target_frameworks = ["net7.0"],
+    target_frameworks = ["net8.0"],
     visibility = [
         "//dotnet/test:__subpackages__",
     ],
     deps = [
-        "//dotnet/src/webdriver",
+        "//dotnet/src/webdriver:webdriver-net8.0",
         "@rules_dotnet//tools/runfiles",
         framework("nuget", "Newtonsoft.Json"),
         framework("nuget", "NUnit"),
@@ -65,7 +65,7 @@ csharp_library(
 
 dotnet_nunit_test_suite(
     name = "AllTests",
-    size = "large",
+    size = "small",
     srcs = glob([
         "**/*Test.cs",
         "**/*Tests.cs",
@@ -85,10 +85,10 @@ dotnet_nunit_test_suite(
     data = [
         ":test-data",
     ],
-    target_frameworks = ["net7.0"],
+    target_frameworks = ["net8.0"],
     deps = [
         ":fixtures",
-        "//dotnet/src/webdriver",
+        "//dotnet/src/webdriver:webdriver-net8.0",
         framework("nuget", "BenderProxy"),
         framework("nuget", "Newtonsoft.Json"),
         framework("nuget", "NUnit"),

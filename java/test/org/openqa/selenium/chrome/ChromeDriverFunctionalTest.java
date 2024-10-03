@@ -27,6 +27,7 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.assertj.core.api.Assumptions;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,7 @@ import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.chromium.HasPermissions;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.testing.Ignore;
@@ -47,9 +49,6 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 
 class ChromeDriverFunctionalTest extends JupiterTestBase {
-
-  private final String CLIPBOARD_READ = "clipboard-read";
-  private final String CLIPBOARD_WRITE = "clipboard-write";
 
   @Test
   @NoDriverBeforeTest
@@ -107,7 +106,9 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
     HasPermissions permissions = (HasPermissions) driver;
 
     driver.get(pages.clicksPage);
+    String CLIPBOARD_READ = "clipboard-read";
     assumeThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
+    String CLIPBOARD_WRITE = "clipboard-write";
     assumeThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
 
     permissions.setPermission(CLIPBOARD_READ, "denied");
@@ -198,6 +199,23 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
     Map<String, Object> parameters = Map.of("url", pages.simpleTestPage);
     cdp.executeCdpCommand("Page.navigate", parameters);
 
+    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  void shouldLaunchSuccessfullyWithArabicDate() {
+    Locale arabicLocale = new Locale("ar", "EG");
+    Locale.setDefault(arabicLocale);
+    Locale.setDefault(Locale.US);
+
+    int port = PortProber.findFreePort();
+    ChromeDriverService.Builder builder = new ChromeDriverService.Builder();
+    builder.usingPort(port);
+    ChromeDriverService service = builder.build();
+
+    driver = new ChromeDriver(service, (ChromeOptions) CHROME.getCapabilities());
+    driver.get(pages.simpleTestPage);
     assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
   }
 }

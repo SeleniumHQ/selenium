@@ -1,3 +1,35 @@
+## 4.25.0
+
+- Add CDP for Chrome 129 and remove 126
+
+## 4.24.1
+
+- Close CDP websocket connection on driver.quit (#14501)
+
+## 4.24.0
+
+- [js] expose selenium version for node.js (#14325)
+- [bidi] Add authentication handlers
+- [bidi] Add high-level script command (#14293)
+- Handle optional dependency for @bazel/runfiles
+- remove console msg and safe exit if runfiles never found
+- fix rbe build(use global node process)
+- Fix error handling for missing runfiles
+- [ci] Use a tag to figure out what we might want to release (#14378)
+- Add CDP for Chrome 128 and remove 125
+
+## 4.23.0
+
+- Expose pnpm as a tool we can use
+- [bidi] Fix the event unsubscribe method. Update modules to have close methods. (#14192)
+- Run Node browser tests on the RBE (#14194)
+- [bidi] Add methods to add/remove handlers in Script module (#14230)
+- [bidi] Add source type to log entry (#14244)
+- [bidi] Add dom mutation handlers (#14238)
+- [bidi] Add high-level script pinning APIs (#14250)
+- [bidi] Deprecate argument value wrapper class (#14251)
+- Add CDP for Chrome 127 and remove 124
+
 ## 4.22.0
 
 - [bidi] Add types for user prompt related events (#14097)

@@ -62,7 +62,7 @@ public class BiDi implements Closeable {
     return connection.addListener(event, handler);
   }
 
-  public <X> void addListener(String browsingContextId, Event<X> event, Consumer<X> handler) {
+  public <X> long addListener(String browsingContextId, Event<X> event, Consumer<X> handler) {
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Browsing context id", browsingContextId);
     Require.nonNull("Handler to call", handler);
@@ -76,7 +76,7 @@ public class BiDi implements Closeable {
                 "events",
                 Collections.singletonList(event.getMethod()))));
 
-    connection.addListener(event, handler);
+    return connection.addListener(event, handler);
   }
 
   public <X> long addListener(Set<String> browsingContextIds, Event<X> event, Consumer<X> handler) {

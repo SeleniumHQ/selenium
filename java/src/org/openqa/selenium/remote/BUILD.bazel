@@ -13,6 +13,9 @@ java_export(
         "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
+    tags = [
+        "release-artifact",
+    ],
     uses = [
         "org.openqa.selenium.devtools.CdpInfo",
         "org.openqa.selenium.remote.AugmenterProvider",
@@ -44,6 +47,7 @@ java_library(
     name = "api",
     srcs = glob(["**/*.java"]),
     resources = [
+        ":bidi-mutation-listener",
         ":get-attribute",
         ":is-displayed",
     ],
@@ -57,6 +61,10 @@ java_library(
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/bidi",
+        "//java/src/org/openqa/selenium/bidi/log",
+        "//java/src/org/openqa/selenium/bidi/module",
+        "//java/src/org/openqa/selenium/bidi/network",
+        "//java/src/org/openqa/selenium/bidi/script",
         "//java/src/org/openqa/selenium/concurrent",
         "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/json",
@@ -81,4 +89,10 @@ copy_file(
     name = "is-displayed",
     src = "//javascript/atoms/fragments:is-displayed.js",
     out = "isDisplayed.js",
+)
+
+copy_file(
+    name = "bidi-mutation-listener",
+    src = "//javascript/bidi-support:bidi-mutation-listener.js",
+    out = "bidi-mutation-listener.js",
 )

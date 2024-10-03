@@ -1,3 +1,25 @@
+4.25.0 (2024-09-19)
+=========================
+* Add CDP for Chrome 129 and remove 126
+* Fix add_cause method not being able to process an array of hashes (#14433)
+* replace `fedcm` links with new ones (#14478)
+* Allow driver path to be set using ENV variables (#14287)
+
+4.24.0 (2024-08-23)
+=========================
+* Deprecate WebStorage JS methods (#14276)
+* BUGFIX: Add stamp to nightly build (#14320)
+* Add timeout and tests for curb, also added the gem curb that was not part of selenium (#14285)
+* Add CDP for Chrome 128 and remove 125
+
+4.23.0 (2024-07-18)
+=========================
+* Add FedCM support to the ruby selenium client (#13796)
+* Add URLs constant to update error messages (#14174)
+* Update selenium manager types (#14189)
+* Add backtrace locations and cause to errors (#14170)
+* Add CDP for Chrome 127 and remove 124
+
 4.22.0 (2024-06-20)
 =========================
 

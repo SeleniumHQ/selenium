@@ -28,7 +28,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "4.23.0.dev202406201609",
+    'version': "4.26.0.dev202409202351",
     'license': 'Apache 2.0',
     'description': 'Official Python bindings for Selenium WebDriver.',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
@@ -81,8 +81,8 @@ setup_args = {
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",
-        "typing_extensions~= 4.9.0",
-        "websocket-client==1.8.0",
+        "typing_extensions~=4.9",
+        "websocket-client~=1.8",
     ],
     'rust_extensions': [
         RustExtension(

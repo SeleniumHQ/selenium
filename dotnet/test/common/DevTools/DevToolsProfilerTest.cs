@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V126;
+    using CurrentCdpVersion = V129;
 
     [TestFixture]
-    [IgnoreBrowser(Selenium.Browser.Edge, "While CDP 126 is released for Edge")]
     public class DevToolsProfilerTest : DevToolsTestFixture
     {
         [Test]
