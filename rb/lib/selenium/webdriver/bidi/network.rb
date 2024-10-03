@@ -24,7 +24,7 @@ module Selenium
   module WebDriver
     class BiDi
       class Network
-        NetworkEvents = {
+        EVENTS = {
           BEFORE_REQUEST_SENT: 'network.beforeRequestSent',
           RESPONSE_STARTED: 'network.responseStarted',
           RESPONSE_COMPLETED: 'network.responseCompleted',
@@ -32,7 +32,7 @@ module Selenium
           FETCH_ERROR: 'network.fetchError'
         }.freeze
 
-        InterceptPhases = {
+        PHASES = {
           BEFORE_REQUEST: 'beforeRequestSent',
           RESPONSE_STARTED: 'responseStarted',
           AUTH_REQUIRED: 'authRequired'
@@ -43,16 +43,21 @@ module Selenium
           @session = Session.new(bidi)
         end
 
+        def on(event, &block)
+          event = EVENTS[event] if event.is_a?(Symbol)
+          @bidi.add_callback("network.#{event}", &block)
+        end
+
         def before_request_sent(&block)
-          @session.subscribe(NetworkEvents::BEFORE_REQUEST_SENT, &block)
+          @session.subscribe(Events::BEFORE_REQUEST_SENT, &block)
         end
 
         def response_started(&block)
-          @session.subscribe(NetworkEvents::RESPONSE_STARTED, &block)
+          @session.subscribe(Events::RESPONSE_STARTED, &block)
         end
 
         def response_completed(&block)
-          @session.subscribe(NetworkEvents::RESPONSE_COMPLETED, &block)
+          @session.subscribe(Events::RESPONSE_COMPLETED, &block)
         end
 
         def on_auth_required(driver, &consumer)
@@ -61,11 +66,11 @@ module Selenium
         end
 
         def auth_required
-          @session.subscribe(NetworkEvents[:AUTH_REQUIRED])
+          @session.subscribe(EVENTS[:AUTH_REQUIRED])
         end
 
         def fetch_error(&block)
-          subscribe(NetworkEvents::FETCH_ERROR, &block)
+          subscribe(EVENTS::FETCH_ERROR, &block)
         end
 
         def add_intercept(phases: [], contexts: nil, url_patterns: nil)
@@ -116,11 +121,7 @@ module Selenium
         def provide_response(params)
           @bidi.send_cmd('network.provideResponse', params: params)
         end
-      end
-
-      # Network
-    end
-
-    # BiDi
+      end # Network
+    end # BiDi
   end # WebDriver
 end # Selenium
