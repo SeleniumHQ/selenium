@@ -608,8 +608,9 @@ namespace OpenQA.Selenium.DevTools
                         {
                             logger.Warn($"CDP VNT ^^ Unhandled error occured in event handler of '{method}' method. {ex}");
                         }
-                    }
 
+                        throw;
+                    }
                 });
 
                 return;
