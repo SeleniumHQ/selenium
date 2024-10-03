@@ -236,7 +236,7 @@ namespace OpenQA.Selenium
                 }
                 catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
                 {
-                    // do nothing: the exception is expected, meaning driver service is not initialized
+                    // Do nothing. The exception is expected, meaning driver service is not initialized.
                 }
 
                 return isInitialized;
