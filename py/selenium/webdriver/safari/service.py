@@ -37,15 +37,18 @@ class Service(service.Service):
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         reuse_service=False,
+        driver_path_env_key: str = None,
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
+        driver_path_env_key = driver_path_env_key or "SE_SAFARIDRIVER"
 
         self.reuse_service = reuse_service
         super().__init__(
             executable_path=executable_path,
             port=port,
             env=env,
+            driver_path_env_key=driver_path_env_key,
             **kwargs,
         )
 
