@@ -73,6 +73,7 @@ public class Broker : IAsyncDisposable
                 // Enumerable
                 new Json.Converters.Enumerable.GetCookiesResultConverter(),
                 new Json.Converters.Enumerable.InputSourceActionsConverter(),
+                new Json.Converters.Enumerable.GetUserContextsResultConverter(),
             }
         };
     }

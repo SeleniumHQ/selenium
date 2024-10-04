@@ -16,11 +16,9 @@ public sealed class BrowserModule(Broker broker) : Module(broker)
         return await Broker.ExecuteCommandAsync<UserContextInfo>(new CreateUserContextCommand(), options).ConfigureAwait(false);
     }
 
-    public async Task<IReadOnlyList<UserContextInfo>> GetUserContextsAsync(GetUserContextsOptions? options = null)
+    public async Task<GetUserContextsResult> GetUserContextsAsync(GetUserContextsOptions? options = null)
     {
-        var result = await Broker.ExecuteCommandAsync<GetUserContextsResult>(new GetUserContextsCommand(), options).ConfigureAwait(false);
-
-        return result.UserContexts;
+        return await Broker.ExecuteCommandAsync<GetUserContextsResult>(new GetUserContextsCommand(), options).ConfigureAwait(false);
     }
 
     public async Task RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null)
