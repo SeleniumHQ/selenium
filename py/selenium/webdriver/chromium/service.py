@@ -14,8 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
+
+from typing import List
+from typing import Mapping
+from typing import Optional
 from io import IOBase
+
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
@@ -36,16 +40,16 @@ class ChromiumService(service.Service):
         self,
         executable_path: str = None,
         port: int = 0,
-        service_args: typing.Optional[typing.List[str]] = None,
+        service_args: Optional[List[str]] = None,
         log_output: SubprocessStdAlias = None,
-        env: typing.Optional[typing.Mapping[str, str]] = None,
+        env: Optional[Mapping[str, str]] = None,
         **kwargs,
     ) -> None:
-        self.service_args = service_args or []
+        self._service_args = service_args or []
 
         if isinstance(log_output, str):
             self.service_args.append(f"--log-path={log_output}")
-            self.log_output: typing.Optional[IOBase] = None
+            self.log_output: Optional[IOBase] = None
         elif isinstance(log_output, IOBase):
             self.log_output = log_output
         else:
@@ -59,5 +63,15 @@ class ChromiumService(service.Service):
             **kwargs,
         )
 
-    def command_line_args(self) -> typing.List[str]:
-        return [f"--port={self.port}"] + self.service_args
+    @property
+    def service_args(self) -> List[str]:
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value: List[str]):
+        if not isinstance(value, List):
+            raise TypeError("service args must be a List of strings")
+        self._service_args = value
+
+    def command_line_args(self) -> List[str]:
+        return [f"--port={self.port}"] + self._service_args

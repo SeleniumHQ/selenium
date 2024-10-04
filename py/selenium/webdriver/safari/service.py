@@ -15,7 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import typing
+from typing import List
+from typing import Mapping
+from typing import Optional
 
 from selenium.webdriver.common import service
 
@@ -34,12 +36,12 @@ class Service(service.Service):
         self,
         executable_path: str = None,
         port: int = 0,
-        service_args: typing.Optional[typing.List[str]] = None,
-        env: typing.Optional[typing.Mapping[str, str]] = None,
+        service_args: Optional[List[str]] = None,
+        env: Optional[Mapping[str, str]] = None,
         reuse_service=False,
         **kwargs,
     ) -> None:
-        self.service_args = service_args or []
+        self._service_args = service_args or []
 
         self.reuse_service = reuse_service
         super().__init__(
@@ -49,8 +51,8 @@ class Service(service.Service):
             **kwargs,
         )
 
-    def command_line_args(self) -> typing.List[str]:
-        return ["-p", f"{self.port}"] + self.service_args
+    def command_line_args(self) -> List[str]:
+        return ["-p", f"{self.port}"] + self._service_args
 
     @property
     def service_url(self) -> str:
@@ -66,3 +68,13 @@ class Service(service.Service):
         if not isinstance(reuse, bool):
             raise TypeError("reuse must be a boolean")
         self._reuse_service = reuse
+
+    @property
+    def service_args(self) -> List[str]:
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value: List[str]):
+        if not isinstance(value, List):
+            raise TypeError("service args must be a List of strings")
+        self._service_args = value
