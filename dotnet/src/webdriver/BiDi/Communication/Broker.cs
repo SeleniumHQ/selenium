@@ -75,6 +75,7 @@ public class Broker : IAsyncDisposable
                 new Json.Converters.Enumerable.LocateNodesResultConverter(),
                 new Json.Converters.Enumerable.InputSourceActionsConverter(),
                 new Json.Converters.Enumerable.GetUserContextsResultConverter(),
+                new Json.Converters.Enumerable.GetRealmsResultConverter(),
             }
         };
     }

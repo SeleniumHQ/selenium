@@ -66,7 +66,7 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
         return result.Result.ConvertTo<TResult>();
     }
 
-    public async Task<IReadOnlyList<RealmInfo>> GetRealmsAsync(GetRealmsOptions? options = null)
+    public async Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null)
     {
         var @params = new GetRealmsCommandParameters();
 
@@ -76,9 +76,7 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
             @params.Type = options.Type;
         }
 
-        var result = await Broker.ExecuteCommandAsync<GetRealmsResult>(new GetRealmsCommand(@params), options).ConfigureAwait(false);
-
-        return result.Realms;
+        return await Broker.ExecuteCommandAsync<GetRealmsResult>(new GetRealmsCommand(@params), options).ConfigureAwait(false);
     }
 
     public async Task<PreloadScript> AddPreloadScriptAsync(string functionDeclaration, AddPreloadScriptOptions? options = null)
