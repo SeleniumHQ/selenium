@@ -1,6 +1,5 @@
 using OpenQA.Selenium.BiDi.Modules.Input;
 using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -15,45 +14,38 @@ internal class InputSourceActionsConverter : JsonConverter<SourceActions>
 
     public override void Write(Utf8JsonWriter writer, SourceActions value, JsonSerializerOptions options)
     {
-        if (value is SourceActions.Keys keyActions)
+        writer.WriteStartObject();
+
+        writer.WriteString("id", value.Id);
+
+        switch (value)
         {
-            writer.WriteStartObject();
+            case SourceActions.Keys keys:
+                writer.WriteString("type", "key");
+                writer.WritePropertyName("actions");
+                JsonSerializer.Serialize(writer, keys.Actions, options);
 
-            writer.WriteString("type", "key");
-            writer.WriteString("id", keyActions.Id);
-            writer.WritePropertyName("actions");
-            JsonSerializer.Serialize(writer, keyActions.Actions, options);
+                break;
+            case SourceActions.Pointers pointers:
+                writer.WriteString("type", "pointer");
+                if (pointers.Options is not null)
+                {
+                    writer.WritePropertyName("parameters");
+                    JsonSerializer.Serialize(writer, pointers.Options, options);
+                }
 
-            writer.WriteEndObject();
+                writer.WritePropertyName("actions");
+                JsonSerializer.Serialize(writer, pointers.Actions, options);
+
+                break;
+            case SourceActions.Wheels wheels:
+                writer.WriteString("type", "wheel");
+                writer.WritePropertyName("actions");
+                JsonSerializer.Serialize(writer, wheels.Actions, options);
+
+                break;
         }
-        else if (value is SourceActions.Pointers pointerActions)
-        {
-            writer.WriteStartObject();
 
-            writer.WriteString("type", "pointer");
-            writer.WriteString("id", pointerActions.Id);
-
-            if (pointerActions.Options is not null)
-            {
-                writer.WritePropertyName("parameters");
-                JsonSerializer.Serialize(writer, pointerActions.Options, options);
-            }
-
-            writer.WritePropertyName("actions");
-            JsonSerializer.Serialize(writer, pointerActions.Actions, options);
-
-            writer.WriteEndObject();
-        }
-        else if (value is SourceActions.Wheels wheelActions)
-        {
-            writer.WriteStartObject();
-
-            writer.WriteString("type", "wheel");
-            writer.WriteString("id", wheelActions.Id);
-            writer.WritePropertyName("actions");
-            JsonSerializer.Serialize(writer, wheelActions.Actions, options);
-
-            writer.WriteEndObject();
-        }
+        writer.WriteEndObject();
     }
 }

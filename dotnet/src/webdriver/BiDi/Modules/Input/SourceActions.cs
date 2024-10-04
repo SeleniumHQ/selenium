@@ -5,16 +5,12 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Modules.Input;
 
-//[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-//[JsonDerivedType(typeof(Keys), "key")]
-//[JsonDerivedType(typeof(Pointers), "pointer")]
-//[JsonDerivedType(typeof(Wheels), "wheel")]
 public abstract record SourceActions
 {
+    public string Id { get; } = Guid.NewGuid().ToString();
+
     public record Keys : SourceActions, IEnumerable<Key>
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-
         public IList<Key> Actions { get; set; } = [];
 
         public void Add(Key key) => Actions.Add(key);
@@ -26,8 +22,6 @@ public abstract record SourceActions
 
     public record Pointers : SourceActions, IEnumerable<Pointer>
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-
         public Parameters? Options { get; set; }
 
         public IList<Pointer> Actions { get; set; } = [];
@@ -37,12 +31,22 @@ public abstract record SourceActions
         public IEnumerator<Pointer> GetEnumerator() => Actions.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => Actions.GetEnumerator();
+
+        public record Parameters
+        {
+            public Type? PointerType { get; set; }
+        }
+
+        public enum Type
+        {
+            Mouse,
+            Pen,
+            Touch
+        }
     }
 
     public record Wheels : SourceActions, IEnumerable<Wheel>
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-
         public IList<Wheel> Actions { get; set; } = [];
 
         public void Add(Wheel wheel) => Actions.Add(wheel);
@@ -107,35 +111,23 @@ public abstract record SourceActions
             public double? AltitudeAngle { get; set; }
             public double? AzimuthAngle { get; set; }
         }
-    }
 
-    public record Parameters
-    {
-        public PointerType? PointerType { get; set; }
-    }
+        public interface IPointerCommonProperties
+        {
+            public int? Width { get; set; }
 
-    public enum PointerType
-    {
-        Mouse,
-        Pen,
-        Touch
-    }
+            public int? Height { get; set; }
 
-    public interface IPointerCommonProperties
-    {
-        public int? Width { get; set; }
+            public double? Pressure { get; set; }
 
-        public int? Height { get; set; }
+            public double? TangentialPressure { get; set; }
 
-        public double? Pressure { get; set; }
+            public int? Twist { get; set; }
 
-        public double? TangentialPressure { get; set; }
+            public double? AltitudeAngle { get; set; }
 
-        public int? Twist { get; set; }
-
-        public double? AltitudeAngle { get; set; }
-
-        public double? AzimuthAngle { get; set; }
+            public double? AzimuthAngle { get; set; }
+        }
     }
 
     [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
