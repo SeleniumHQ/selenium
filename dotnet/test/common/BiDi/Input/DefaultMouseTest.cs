@@ -34,6 +34,6 @@ class DefaultMouseTest : BiDiFixture
         {
             new SourceActions.Pointers.Pointer.Down(0),
             new SourceActions.Pointers.Pointer.Up(0),
-        }.Click().Click()]);
+        }]);
     }
 }

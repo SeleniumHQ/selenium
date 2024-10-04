@@ -53,14 +53,6 @@ public abstract record SourceActions
 
         IEnumerator IEnumerable.GetEnumerator() => Actions.GetEnumerator();
 
-        public Pointers Click()
-        {
-            Add(new Pointer.Down(0));
-            Add(new Pointer.Up(0));
-
-            return this;
-        }
-
         [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
         [JsonDerivedType(typeof(Pause), "pause")]
         [JsonDerivedType(typeof(Down), "pointerDown")]
