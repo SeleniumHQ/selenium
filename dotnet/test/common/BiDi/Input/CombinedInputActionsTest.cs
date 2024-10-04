@@ -17,7 +17,7 @@ class CombinedInputActionsTest : BiDiFixture
         await context.Input.PerformActionsAsync([new SourceActions.Pointers {
             new SourceActions.Pointers.Pointer.Move(300, 300),
             new SourceActions.Pointers.Pointer.Down(0),
-            new SourceActions.Pointers.Pointer.Move(400, 400) { Duration = 2000 },
+            new SourceActions.Pointers.Pointer.Move(400, 400) { Duration = 2000, Width = 1, Twist = 1 },
             new SourceActions.Pointers.Pointer.Up(0),
         }]);
 

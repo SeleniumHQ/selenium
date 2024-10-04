@@ -44,5 +44,16 @@ internal class InputSourceActionsConverter : JsonConverter<SourceActions>
 
             writer.WriteEndObject();
         }
+        else if (value is SourceActions.Wheels wheelActions)
+        {
+            writer.WriteStartObject();
+
+            writer.WriteString("type", "wheel");
+            writer.WriteString("id", wheelActions.Id);
+            writer.WritePropertyName("actions");
+            JsonSerializer.Serialize(writer, wheelActions.Actions, options);
+
+            writer.WriteEndObject();
+        }
     }
 }
