@@ -17,7 +17,6 @@
 // </copyright>
 
 using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.IO;
 using System.Net;
@@ -33,8 +32,6 @@ namespace OpenQA.Selenium.Safari
     public sealed class SafariDriverService : DriverService
     {
         private const string DefaultSafariDriverServiceExecutableName = "safaridriver";
-
-        private readonly static ILogger logger = Log.GetLogger<SafariDriverService>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriverService"/> class.
@@ -130,10 +127,7 @@ namespace OpenQA.Selenium.Safari
                         // check.
                         catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
                         {
-                            if (logger.IsEnabled(LogEventLevel.Trace))
-                            {
-                                logger.Trace(ex.ToString());
-                            }
+                            // Do nothing. The exception is expected, meaning driver service is not initialized.
                         }
                     }
                 }
