@@ -53,7 +53,7 @@ public class BrowsingContext
         return BiDi.BrowsingContext.ActivateAsync(this, options);
     }
 
-    public Task<IReadOnlyList<Script.RemoteValue.Node>> LocateNodesAsync(Locator locator, LocateNodesOptions? options = null)
+    public Task<LocateNodesResult> LocateNodesAsync(Locator locator, LocateNodesOptions? options = null)
     {
         return BiDi.BrowsingContext.LocateNodesAsync(this, locator, options);
     }

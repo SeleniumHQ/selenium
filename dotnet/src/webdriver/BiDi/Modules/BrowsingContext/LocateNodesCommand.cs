@@ -1,4 +1,5 @@
 using OpenQA.Selenium.BiDi.Communication;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
@@ -23,4 +24,20 @@ public record LocateNodesOptions : CommandOptions
     public IEnumerable<Script.SharedReference>? StartNodes { get; set; }
 }
 
-public record LocateNodesResult(IReadOnlyList<Script.RemoteValue.Node> Nodes);
+public record LocateNodesResult : IReadOnlyList<Script.RemoteValue.Node>
+{
+    private readonly IReadOnlyList<Script.RemoteValue.Node> _nodes;
+
+    internal LocateNodesResult(IReadOnlyList<Script.RemoteValue.Node> nodes)
+    {
+        _nodes = nodes;
+    }
+
+    public Script.RemoteValue.Node this[int index] => _nodes[index];
+
+    public int Count => _nodes.Count;
+
+    public IEnumerator<Script.RemoteValue.Node> GetEnumerator() => _nodes.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => (_nodes as IEnumerable).GetEnumerator();
+}
