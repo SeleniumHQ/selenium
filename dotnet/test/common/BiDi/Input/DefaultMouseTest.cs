@@ -2,8 +2,6 @@ using NUnit.Framework;
 using OpenQA.Selenium.BiDi.Modules.Input;
 using System.Threading.Tasks;
 
-using Key = OpenQA.Selenium.BiDi.Modules.Input.SourceActions.Keys.Key;
-
 namespace OpenQA.Selenium.BiDi.Input;
 
 class DefaultMouseTest : BiDiFixture
@@ -18,22 +16,22 @@ class DefaultMouseTest : BiDiFixture
             {
                 Actions =
                 {
-                    new Key.Down("A")
+                    new SourceActions.Key.Down("A")
                 }
             }
             ]);
 
         await context.Input.PerformActionsAsync([new SourceActions.Keys
         {
-            new Key.Down("A"),
-            new Key.Down("B"),
-            new Key.Pause()
+            new SourceActions.Key.Down("A"),
+            new SourceActions.Key.Down("B"),
+            new SourceActions.Key.Pause()
         }]);
 
         await context.Input.PerformActionsAsync([new SourceActions.Pointers
         {
-            new SourceActions.Pointers.Pointer.Down(0),
-            new SourceActions.Pointers.Pointer.Up(0),
+            new SourceActions.Pointer.Down(0),
+            new SourceActions.Pointer.Up(0),
         }]);
     }
 }
