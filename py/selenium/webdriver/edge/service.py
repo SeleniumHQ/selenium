@@ -26,8 +26,6 @@ class Service(service.ChromiumService):
 
     :param executable_path: install path of the msedgedriver executable, defaults to `msedgedriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param verbose: (Deprecated) Whether to make the webdriver more verbose (passes the --verbose option to the binary).
-        Defaults to False.
     :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
