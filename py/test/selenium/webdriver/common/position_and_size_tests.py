@@ -109,12 +109,6 @@ def test_should_correctly_identify_that_an_element_has_width_and_height(driver, 
 
 
 def _check_location(location, **kwargs):
-    try:
-        # python 2.x
-        expected = kwargs.viewitems()
-        actual = location.viewitems()
-    except AttributeError:
-        # python 3.x
-        expected = kwargs.items()
-        actual = location.items()
+    expected = kwargs.items()
+    actual = location.items()
     assert expected <= actual
