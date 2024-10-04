@@ -8,10 +8,11 @@ public class BrowsingContextInputModule(BrowsingContext context, InputModule inp
 {
     public Task PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
     {
-        options ??= new();
+        return inputModule.PerformActionsAsync(context, actions, options);
+    }
 
-        options.Actions = actions;
-
-        return inputModule.PerformActionsAsync(context, options);
+    public Task ReleaseActionsAsync(ReleaseActionsOptions? options = null)
+    {
+        return inputModule.ReleaseActionsAsync(context, options);
     }
 }
