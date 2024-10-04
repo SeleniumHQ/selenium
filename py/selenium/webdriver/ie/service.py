@@ -32,6 +32,7 @@ class Service(service.Service):
         service_args: typing.Optional[typing.List[str]] = None,
         log_level: typing.Optional[str] = None,
         log_output: SubprocessStdAlias = None,
+        driver_path_env_key: str = None,
         **kwargs,
     ) -> None:
         """Creates a new instance of the Service.
@@ -46,6 +47,8 @@ class Service(service.Service):
            Default is "stdout".
         """
         self.service_args = service_args or []
+        driver_path_env_key = driver_path_env_key or "SE_IEDRIVER"
+
         if host:
             self.service_args.append(f"--host={host}")
         if log_level:
@@ -55,6 +58,7 @@ class Service(service.Service):
             executable_path=executable_path,
             port=port,
             log_output=log_output,
+            driver_path_env_key=driver_path_env_key,
             **kwargs,
         )
 

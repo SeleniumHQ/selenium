@@ -386,9 +386,10 @@ namespace OpenQA.Selenium.DevTools
                 if (string.Compare(e.Request.Method, "post", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     requestIds[0] = e.RequestId;
+                    requestSync.Set();
                 }
-                requestSync.Set();
             };
+
             domains.Network.RequestWillBeSent += requestWillBeSentHandler;
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("postForm.html");
