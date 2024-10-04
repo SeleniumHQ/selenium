@@ -1,10 +1,10 @@
 module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.4.0")
-bazel_dep(name = "aspect_bazel_lib", version = "2.7.9")
-bazel_dep(name = "aspect_rules_esbuild", version = "0.20.1")
-bazel_dep(name = "aspect_rules_js", version = "1.42.3")
-bazel_dep(name = "aspect_rules_ts", version = "2.4.2")
+bazel_dep(name = "aspect_bazel_lib", version = "2.8.1")
+bazel_dep(name = "aspect_rules_esbuild", version = "0.21.0")
+bazel_dep(name = "aspect_rules_js", version = "2.0.1")
+bazel_dep(name = "aspect_rules_ts", version = "3.1.0")
 bazel_dep(name = "bazel_features", version = "1.13.0")
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
 bazel_dep(name = "buildifier_prebuilt", version = "6.4.0")
@@ -18,7 +18,7 @@ bazel_dep(name = "protobuf", version = "21.7", dev_dependency = True, repo_name 
 bazel_dep(name = "rules_cc", version = "0.0.9", dev_dependency = True)
 
 bazel_dep(name = "rules_dotnet", version = "0.15.1")
-bazel_dep(name = "rules_java", version = "7.6.3")
+bazel_dep(name = "rules_java", version = "7.11.1")
 bazel_dep(name = "rules_jvm_external", version = "6.3")
 bazel_dep(name = "rules_nodejs", version = "6.2.0")
 bazel_dep(name = "rules_oci", version = "1.7.6")
@@ -169,7 +169,7 @@ maven.install(
     name = "maven",
     artifacts = [
         "com.beust:jcommander:1.82",
-        "com.github.javaparser:javaparser-core:3.26.1",
+        "com.github.javaparser:javaparser-core:3.26.2",
         "com.github.spotbugs:spotbugs:4.8.6",
         "com.github.stephenc.jcip:jcip-annotations:1.0-1",
         "com.google.code.gson:gson:2.11.0",
@@ -183,29 +183,29 @@ maven.install(
         "dev.failsafe:failsafe:3.3.2",
         "io.grpc:grpc-context:1.66.0",
         "io.lettuce:lettuce-core:6.4.0.RELEASE",
-        "io.netty:netty-buffer:4.1.112.Final",
-        "io.netty:netty-codec-http:4.1.112.Final",
-        "io.netty:netty-codec-http2:4.1.112.Final",
-        "io.netty:netty-common:4.1.112.Final",
-        "io.netty:netty-handler:4.1.112.Final",
-        "io.netty:netty-handler-proxy:4.1.112.Final",
-        "io.netty:netty-transport:4.1.112.Final",
-        "io.opentelemetry:opentelemetry-api:1.41.0",
-        "io.opentelemetry:opentelemetry-context:1.41.0",
-        "io.opentelemetry:opentelemetry-exporter-logging:1.41.0",
-        "io.opentelemetry:opentelemetry-sdk:1.41.0",
-        "io.opentelemetry:opentelemetry-sdk-common:1.41.0",
-        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.41.0",
-        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.41.0",
-        "io.opentelemetry:opentelemetry-sdk-testing:1.41.0",
-        "io.opentelemetry:opentelemetry-sdk-trace:1.41.0",
+        "io.netty:netty-buffer:4.1.113.Final",
+        "io.netty:netty-codec-http:4.1.113.Final",
+        "io.netty:netty-codec-http2:4.1.113.Final",
+        "io.netty:netty-common:4.1.113.Final",
+        "io.netty:netty-handler:4.1.113.Final",
+        "io.netty:netty-handler-proxy:4.1.113.Final",
+        "io.netty:netty-transport:4.1.113.Final",
+        "io.opentelemetry:opentelemetry-api:1.42.1",
+        "io.opentelemetry:opentelemetry-context:1.42.1",
+        "io.opentelemetry:opentelemetry-exporter-logging:1.42.1",
+        "io.opentelemetry:opentelemetry-sdk:1.42.1",
+        "io.opentelemetry:opentelemetry-sdk-common:1.42.1",
+        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.42.1",
+        "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.42.1",
+        "io.opentelemetry:opentelemetry-sdk-testing:1.42.1",
+        "io.opentelemetry:opentelemetry-sdk-trace:1.42.1",
         "io.opentelemetry.semconv:opentelemetry-semconv:1.25.0-alpha",
         "io.ous:jtoml:2.0.0",
         "it.ozimov:embedded-redis:0.7.3",
-        "net.bytebuddy:byte-buddy:1.15.0",
+        "net.bytebuddy:byte-buddy:1.15.1",
         "org.htmlunit:htmlunit-core-js:4.4.0",
         "org.apache.commons:commons-exec:1.4.0",
-        "org.apache.logging.log4j:log4j-core:2.23.1",
+        "org.apache.logging.log4j:log4j-core:2.24.0",
         "org.assertj:assertj-core:3.26.3",
         "org.bouncycastle:bcpkix-jdk18on:1.78.1",
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
@@ -218,8 +218,8 @@ maven.install(
         "org.junit.platform:junit-platform-reporting:1.11.0",
         "org.junit.platform:junit-platform-commons:1.11.0",
         "org.junit.platform:junit-platform-engine:1.11.0",
-        "org.mockito:mockito-core:5.12.0",
-        "org.redisson:redisson:3.35.0",
+        "org.mockito:mockito-core:5.13.0",
+        "org.redisson:redisson:3.36.0",
         "org.slf4j:slf4j-api:2.0.16",
         "org.slf4j:slf4j-jdk14:2.0.16",
         "org.zeromq:jeromq:0.6.0",

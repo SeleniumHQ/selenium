@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V128;
+    using CurrentCdpVersion = V129;
 
     [TestFixture]
     public class DevToolsNetworkTest : DevToolsTestFixture
@@ -386,9 +386,10 @@ namespace OpenQA.Selenium.DevTools
                 if (string.Compare(e.Request.Method, "post", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     requestIds[0] = e.RequestId;
+                    requestSync.Set();
                 }
-                requestSync.Set();
             };
+
             domains.Network.RequestWillBeSent += requestWillBeSentHandler;
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("postForm.html");
