@@ -40,9 +40,11 @@ class Service(service.ChromiumService):
         log_output: SubprocessStdAlias = None,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
+        driver_path_env_key: str = None,
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
+        driver_path_env_key = driver_path_env_key or "SE_EDGEDRIVER"
 
         super().__init__(
             executable_path=executable_path,
@@ -50,5 +52,6 @@ class Service(service.ChromiumService):
             service_args=service_args,
             log_output=log_output,
             env=env,
+            driver_path_env_key=driver_path_env_key,
             **kwargs,
         )

@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Globalization;
@@ -55,6 +56,8 @@ namespace OpenQA.Selenium.DevTools
 
         private DevToolsDomains domains;
         private readonly DevToolsOptions options;
+
+        private readonly static ILogger logger = Internal.Logging.Log.GetLogger<DevToolsSession>();
 
         /// <summary>
         /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
@@ -272,6 +275,11 @@ namespace OpenQA.Selenium.DevTools
 
             if (this.connection != null && this.connection.IsActive)
             {
+                if (logger.IsEnabled(LogEventLevel.Trace))
+                {
+                    logger.Trace($"CDP SND >> {message.CommandId} {message.CommandName}: {commandParameters.ToJsonString()}");
+                }
+
                 LogTrace("Sending {0} {1}: {2}", message.CommandId, message.CommandName, commandParameters.ToString());
 
                 string contents = JsonSerializer.Serialize(message);
@@ -540,6 +548,11 @@ namespace OpenQA.Selenium.DevTools
 
         private void ProcessMessage(string message)
         {
+            if (logger.IsEnabled(LogEventLevel.Trace))
+            {
+                logger.Trace($"CDP RCV << {message}");
+            }
+
             var messageObject = JsonObject.Parse(message).AsObject();
 
             if (messageObject.TryGetPropertyValue("id", out var idProperty))
@@ -583,7 +596,22 @@ namespace OpenQA.Selenium.DevTools
                 // DevTools commands that may be sent in the body of the attached
                 // event handler. If thread pool starvation seems to become a problem,
                 // we can switch to a channel-based queue.
-                Task.Run(() => OnDevToolsEventReceived(new DevToolsEventReceivedEventArgs(methodParts[0], methodParts[1], eventData)));
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        OnDevToolsEventReceived(new DevToolsEventReceivedEventArgs(methodParts[0], methodParts[1], eventData));
+                    }
+                    catch (Exception ex)
+                    {
+                        if (logger.IsEnabled(LogEventLevel.Warn))
+                        {
+                            logger.Warn($"CDP VNT ^^ Unhandled error occured in event handler of '{method}' method. {ex}");
+                        }
+
+                        throw;
+                    }
+                });
 
                 return;
             }
