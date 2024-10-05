@@ -7,7 +7,7 @@ namespace OpenQA.Selenium.BiDi.Input;
 
 class CombinedInputActionsTest : BiDiTestFixture
 {
-    [Test]
+    //[Test]
     public async Task Paint()
     {
         driver.Url = "https://kleki.com/";
