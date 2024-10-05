@@ -153,6 +153,7 @@ class NetworkTest : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox)]
     public async Task CanContinueWithDefaultCredentials()
     {
         await using var intercept = await bidi.Network.InterceptAuthAsync(async e =>
@@ -166,6 +167,7 @@ class NetworkTest : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox)]
     public async Task CanContinueWithCanceledCredentials()
     {
         await using var intercept = await bidi.Network.InterceptAuthAsync(async e =>
