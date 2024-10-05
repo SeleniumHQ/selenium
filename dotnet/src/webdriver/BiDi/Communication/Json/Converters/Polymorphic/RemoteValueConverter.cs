@@ -16,7 +16,7 @@ internal class RemoteValueConverter : JsonConverter<RemoteValue>
 
         if (jsonDocument.RootElement.ValueKind == JsonValueKind.String)
         {
-            return new RemoteValue.String(jsonDocument.RootElement.GetString());
+            return new RemoteValue.String(jsonDocument.RootElement.GetString()!);
         }
 
         return jsonDocument.RootElement.GetProperty("type").ToString() switch
