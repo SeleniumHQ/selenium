@@ -78,7 +78,7 @@ class ScriptCommandsTest : BiDiTestFixture
 
         await context.Log.OnEntryAddedAsync(tcs.SetResult);
 
-        await context.ReloadAsync();
+        await context.ReloadAsync(new() { Wait = Modules.BrowsingContext.ReadinessState.Interactive });
 
         var entry = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -123,7 +123,7 @@ class ScriptCommandsTest : BiDiTestFixture
 
         Assert.That(preloadScript, Is.Not.Null);
 
-        await context.ReloadAsync();
+        await context.ReloadAsync(new() { Wait = Modules.BrowsingContext.ReadinessState.Interactive });
 
         var bar = await context.Script.EvaluateAsync<int>("window.bar", true, targetOptions: new() { Sandbox = "sandbox" });
 
@@ -135,7 +135,7 @@ class ScriptCommandsTest : BiDiTestFixture
     {
         var preloadScript = await context.Script.AddPreloadScriptAsync("() => { window.bar = 2; }");
 
-        await context.ReloadAsync();
+        await context.ReloadAsync(new() { Wait = Modules.BrowsingContext.ReadinessState.Interactive });
 
         var bar = await context.Script.EvaluateAsync<int>("window.bar", true);
 
