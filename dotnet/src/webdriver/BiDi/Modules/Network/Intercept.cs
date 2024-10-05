@@ -11,33 +11,33 @@ public class Intercept : IAsyncDisposable
 {
     private readonly BiDi _bidi;
 
-    protected readonly IList<Subscription> _onBeforeRequestSentSubscriptions = [];
-    protected readonly IList<Subscription> _onResponseStartedSubscriptions = [];
-    protected readonly IList<Subscription> _onAuthRequiredSubscriptions = [];
-
     internal Intercept(BiDi bidi, string id)
     {
         _bidi = bidi;
         Id = id;
     }
 
-    public string Id { get; }
+    internal string Id { get; }
+
+    protected IList<Subscription> OnBeforeRequestSentSubscriptions { get; } = [];
+    protected IList<Subscription> OnResponseStartedSubscriptions { get; } = [];
+    protected IList<Subscription> OnAuthRequiredSubscriptions { get; } = [];
 
     public async Task RemoveAsync()
     {
         await _bidi.Network.RemoveInterceptAsync(this).ConfigureAwait(false);
 
-        foreach (var subscription in _onBeforeRequestSentSubscriptions)
+        foreach (var subscription in OnBeforeRequestSentSubscriptions)
         {
             await subscription.UnsubscribeAsync().ConfigureAwait(false);
         }
 
-        foreach (var subscription in _onResponseStartedSubscriptions)
+        foreach (var subscription in OnResponseStartedSubscriptions)
         {
             await subscription.UnsubscribeAsync().ConfigureAwait(false);
         }
 
-        foreach (var subscription in _onAuthRequiredSubscriptions)
+        foreach (var subscription in OnAuthRequiredSubscriptions)
         {
             await subscription.UnsubscribeAsync().ConfigureAwait(false);
         }
@@ -47,21 +47,21 @@ public class Intercept : IAsyncDisposable
     {
         var subscription = await _bidi.Network.OnBeforeRequestSentAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
 
-        _onBeforeRequestSentSubscriptions.Add(subscription);
+        OnBeforeRequestSentSubscriptions.Add(subscription);
     }
 
     public async Task OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
         var subscription = await _bidi.Network.OnResponseStartedAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
 
-        _onResponseStartedSubscriptions.Add(subscription);
+        OnResponseStartedSubscriptions.Add(subscription);
     }
 
     public async Task OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
         var subscription = await _bidi.Network.OnAuthRequiredAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
 
-        _onAuthRequiredSubscriptions.Add(subscription);
+        OnAuthRequiredSubscriptions.Add(subscription);
     }
 
     private async Task Filter(BeforeRequestSentEventArgs args, Func<BeforeRequestSentEventArgs, Task> handler)
