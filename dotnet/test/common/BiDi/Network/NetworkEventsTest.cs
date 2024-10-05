@@ -127,6 +127,6 @@ class NetworkEventsTest : BiDiTestFixture
         Assert.That(res.Request.Url, Does.Contain("https://not_a_valid_url.test"));
         Assert.That(res.Request.Headers.Count, Is.GreaterThanOrEqualTo(1));
         Assert.That(res.Navigation, Is.Not.Null);
-        Assert.That(res.ErrorText, Does.Contain("net::ERR_NAME_NOT_RESOLVED"));
+        Assert.That(res.ErrorText, Does.Contain("net::ERR_NAME_NOT_RESOLVED").Or.Contain("NS_ERROR_UNKNOWN_HOST"));
     }
 }
