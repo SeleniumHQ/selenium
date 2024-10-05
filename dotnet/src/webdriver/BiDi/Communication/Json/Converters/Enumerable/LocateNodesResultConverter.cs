@@ -16,7 +16,7 @@ internal class LocateNodesResultConverter : JsonConverter<LocateNodesResult>
         var doc = JsonDocument.ParseValue(ref reader);
         var nodes = doc.RootElement.GetProperty("nodes").Deserialize<IReadOnlyList<RemoteValue.Node>>(options);
 
-        return new LocateNodesResult(nodes);
+        return new LocateNodesResult(nodes!);
     }
 
     public override void Write(Utf8JsonWriter writer, LocateNodesResult value, JsonSerializerOptions options)

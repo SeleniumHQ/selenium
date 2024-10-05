@@ -16,7 +16,7 @@ internal class GetCookiesResultConverter : JsonConverter<GetCookiesResult>
         var cookies = doc.RootElement.GetProperty("cookies").Deserialize<IReadOnlyList<Modules.Network.Cookie>>(options);
         var partitionKey = doc.RootElement.GetProperty("partitionKey").Deserialize<PartitionKey>(options);
 
-        return new GetCookiesResult(cookies, partitionKey);
+        return new GetCookiesResult(cookies!, partitionKey!);
     }
 
     public override void Write(Utf8JsonWriter writer, GetCookiesResult value, JsonSerializerOptions options)

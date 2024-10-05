@@ -15,7 +15,7 @@ internal class GetUserContextsResultConverter : JsonConverter<GetUserContextsRes
         var doc = JsonDocument.ParseValue(ref reader);
         var userContexts = doc.RootElement.GetProperty("userContexts").Deserialize<IReadOnlyList<UserContextInfo>>(options);
 
-        return new GetUserContextsResult(userContexts);
+        return new GetUserContextsResult(userContexts!);
     }
 
     public override void Write(Utf8JsonWriter writer, GetUserContextsResult value, JsonSerializerOptions options)
