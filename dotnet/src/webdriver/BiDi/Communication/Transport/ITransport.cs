@@ -5,7 +5,7 @@ using System;
 
 namespace OpenQA.Selenium.BiDi.Communication.Transport;
 
-public interface ITransport : IDisposable
+interface ITransport : IDisposable
 {
     Task ConnectAsync(CancellationToken cancellationToken);
 

@@ -34,7 +34,7 @@ public class Broker : IAsyncDisposable
 
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-    public Broker(BiDi bidi, ITransport transport)
+    internal Broker(BiDi bidi, ITransport transport)
     {
         _bidi = bidi;
         _transport = transport;

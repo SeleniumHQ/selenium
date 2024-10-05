@@ -9,7 +9,7 @@ using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi.Communication.Transport;
 
-public class WebSocketTransport(Uri _uri) : ITransport, IDisposable
+class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 {
     private readonly static ILogger _logger = Log.GetLogger<WebSocketTransport>();
 
