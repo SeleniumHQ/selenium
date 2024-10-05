@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
 public record NodeProperties(long NodeType, long ChildNodeCount)

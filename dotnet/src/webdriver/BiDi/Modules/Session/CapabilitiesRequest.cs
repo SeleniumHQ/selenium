@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Session;
 
 public class CapabilitiesRequest

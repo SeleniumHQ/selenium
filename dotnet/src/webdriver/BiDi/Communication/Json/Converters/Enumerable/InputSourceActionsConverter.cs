@@ -3,6 +3,8 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
 
 internal class InputSourceActionsConverter : JsonConverter<SourceActions>

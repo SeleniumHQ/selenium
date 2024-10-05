@@ -2,6 +2,8 @@ using OpenQA.Selenium.BiDi.Communication;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Input;
 
 public sealed class InputModule(Broker broker) : Module(broker)

@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Browser;
 
 public class UserContext : IAsyncDisposable

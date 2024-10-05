@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Modules.Script;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 
 public class BrowsingContextScriptModule(BrowsingContext context, ScriptModule scriptModule)

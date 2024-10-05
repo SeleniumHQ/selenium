@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using System;
 using OpenQA.Selenium.BiDi.Modules.Network;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 
 public class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule networkModule)

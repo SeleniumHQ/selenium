@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Modules.Storage;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 
 public class BrowsingContextStorageModule(BrowsingContext context, StorageModule storageModule)

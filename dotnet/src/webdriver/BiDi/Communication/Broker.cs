@@ -10,6 +10,8 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Communication;
 
 public class Broker : IAsyncDisposable

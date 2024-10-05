@@ -1,5 +1,7 @@
 using OpenQA.Selenium.BiDi.Communication;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
 internal class EvaluateCommand(EvaluateCommandParameters @params) : Command<EvaluateCommandParameters>(@params);

@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
 using OpenQA.Selenium.BiDi.Communication.Transport;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi;
 
 public class BiDi : IAsyncDisposable

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Log;
 
 // https://github.com/dotnet/runtime/issues/72604

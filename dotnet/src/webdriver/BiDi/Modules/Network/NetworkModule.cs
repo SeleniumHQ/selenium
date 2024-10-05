@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Network;
 
 public sealed class NetworkModule(Broker broker) : Module(broker)

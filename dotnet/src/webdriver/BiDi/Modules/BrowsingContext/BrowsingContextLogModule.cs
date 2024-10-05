@@ -2,6 +2,8 @@ using OpenQA.Selenium.BiDi.Modules.Log;
 using System.Threading.Tasks;
 using System;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 
 public class BrowsingContextLogModule(BrowsingContext context, LogModule logModule)

@@ -2,6 +2,8 @@ using OpenQA.Selenium.BiDi.Communication;
 using System.Collections;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
 internal class GetRealmsCommand(GetRealmsCommandParameters @params) : Command<GetRealmsCommandParameters>(@params);
