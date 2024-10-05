@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-class EvaluateParametersTest : BiDiFixture
+class EvaluateParametersTest : BiDiTestFixture
 {
     [Test]
     public async Task CanEvaluateScript()

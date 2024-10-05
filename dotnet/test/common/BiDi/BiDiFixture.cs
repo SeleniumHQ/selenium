@@ -6,7 +6,7 @@ namespace OpenQA.Selenium.BiDi;
 
 [Parallelizable(ParallelScope.All)]
 [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
-class BiDiFixture
+class BiDiTestFixture
 {
     protected IWebDriver driver;
     protected BiDi bidi;

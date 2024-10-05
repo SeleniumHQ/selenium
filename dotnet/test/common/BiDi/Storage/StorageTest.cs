@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-class StorageTest : BiDiFixture
+class StorageTest : BiDiTestFixture
 {
     [Test]
     public async Task CanGetCookieByName()

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-class NetworkEventsTest : BiDiFixture
+class NetworkEventsTest : BiDiTestFixture
 {
     [Test]
     public async Task CanListenToBeforeRequestSentEvent()

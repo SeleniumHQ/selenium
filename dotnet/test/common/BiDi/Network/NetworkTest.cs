@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-class NetworkTest : BiDiFixture
+class NetworkTest : BiDiTestFixture
 {
     [Test]
     public async Task CanAddIntercept()

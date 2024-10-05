@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-class DefaultMouseTest : BiDiFixture
+class DefaultMouseTest : BiDiTestFixture
 {
     [Test]
     public async Task PerformDragAndDropWithMouse()

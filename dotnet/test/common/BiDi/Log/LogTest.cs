@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
-class LogTest : BiDiFixture
+class LogTest : BiDiTestFixture
 {
     [Test]
     public async Task CanListenToConsoleLog()

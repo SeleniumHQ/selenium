@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-class CallFunctionParameterTest : BiDiFixture
+class CallFunctionParameterTest : BiDiTestFixture
 {
     [Test]
     public async Task CanCallFunctionWithDeclaration()

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-class BrowserTest : BiDiFixture
+class BrowserTest : BiDiTestFixture
 {
     [Test]
     public async Task CanCreateUserContext()
