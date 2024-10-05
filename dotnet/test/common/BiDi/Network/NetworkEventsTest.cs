@@ -102,7 +102,7 @@ class NetworkEventsTest : BiDiTestFixture
         Assert.That(res.Request, Is.Not.Null);
         Assert.That(res.Request.Method, Is.EqualTo("GET"));
         Assert.That(res.Request.Url, Does.Contain("basicAuth"));
-        Assert.That(res.Response.Headers, Is.GreaterThanOrEqualTo(1));
+        Assert.That(res.Response.Headers, Is.Not.Null.And.Count.GreaterThanOrEqualTo(1));
         Assert.That(res.Response.Status, Is.EqualTo(401));
     }
 
