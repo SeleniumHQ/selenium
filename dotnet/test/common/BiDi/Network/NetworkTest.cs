@@ -188,6 +188,6 @@ class NetworkTest : BiDiTestFixture
 
         var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
 
-        Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_FAILED"));
+        Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_FAILED").Or.Contain("NS_ERROR_ABORT"));
     }
 }
