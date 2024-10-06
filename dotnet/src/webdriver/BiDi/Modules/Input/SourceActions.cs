@@ -18,7 +18,6 @@ public abstract record SourceActions<T> : ISourceActions, IEnumerable<ISourceAct
 {
     public string Id { get; } = Guid.NewGuid().ToString();
 
-    [JsonPropertyName("actions")]
     public IList<ISourceAction> Actions { get; } = [];
 
     public IEnumerator<ISourceAction> GetEnumerator() => Actions.GetEnumerator();
