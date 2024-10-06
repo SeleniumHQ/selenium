@@ -16,22 +16,22 @@ class DefaultMouseTest : BiDiTestFixture
             {
                 Actions =
                 {
-                    new SourceActions.Key.Down("A")
+                    new Key.Down("A")
                 }
             }
             ]);
 
         await context.Input.PerformActionsAsync([new SourceActions.Keys
         {
-            new SourceActions.Key.Down("A"),
-            new SourceActions.Key.Down("B"),
-            new SourceActions.Key.Pause()
+            new Key.Down("A"),
+            new Key.Down("B"),
+            new Key.Pause()
         }]);
 
         await context.Input.PerformActionsAsync([new SourceActions.Pointers
         {
-            new SourceActions.Pointer.Down(0),
-            new SourceActions.Pointer.Up(0),
+            new Pointer.Down(0),
+            new Pointer.Up(0),
         }]);
     }
 }

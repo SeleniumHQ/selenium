@@ -46,6 +46,12 @@ internal class InputSourceActionsConverter : JsonConverter<SourceActions>
                 JsonSerializer.Serialize(writer, wheels.Actions, options);
 
                 break;
+            case SourceActions.None none:
+                writer.WriteString("type", "none");
+                writer.WritePropertyName("actions");
+                JsonSerializer.Serialize(writer, none.Actions, options);
+
+                break;
         }
 
         writer.WriteEndObject();
