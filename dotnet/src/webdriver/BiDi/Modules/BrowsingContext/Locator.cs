@@ -11,6 +11,8 @@ namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 [JsonDerivedType(typeof(XPath), "xpath")]
 public abstract record Locator
 {
+    public static InnerText InnerTextFFF(string value) => new InnerText(value);
+
     public record Accessibility(Accessibility.AccessibilityValue Value) : Locator
     {
         public record AccessibilityValue
@@ -26,7 +28,7 @@ public abstract record Locator
     {
         public bool? IgnoreCase { get; set; }
 
-        public MatchType? MatchType { get; set; }
+        public new MatchType? MatchType { get; set; }
 
         public long? MaxDepth { get; set; }
     }

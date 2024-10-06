@@ -26,6 +26,6 @@ public abstract record UrlPattern
 
     public record String(string Pattern) : UrlPattern
     {
-        public string Pattern { get; } = Pattern;
+        public new string Pattern { get; } = Pattern;
     }
 }
