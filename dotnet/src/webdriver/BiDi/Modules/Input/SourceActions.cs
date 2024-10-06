@@ -7,62 +7,45 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Modules.Input;
 
-public abstract record SourceActions
+public interface ISourceActions
+{
+    string Id { get; }
+
+    IList<ISourceAction> Actions { get; }
+}
+
+public abstract record SourceActions<T> : ISourceActions, IEnumerable<ISourceAction>
 {
     public string Id { get; } = Guid.NewGuid().ToString();
 
-    public record Keys : SourceActions, IEnumerable<Key>
-    {
-        public IList<Key> Actions { get; set; } = [];
+    [JsonPropertyName("actions")]
+    public IList<ISourceAction> Actions { get; } = [];
 
-        public void Add(Key key) => Actions.Add(key);
+    public IEnumerator<ISourceAction> GetEnumerator() => Actions.GetEnumerator();
 
-        public IEnumerator<Key> GetEnumerator() => Actions.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => Actions.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => Actions.GetEnumerator();
-    }
-
-    public record Pointers : SourceActions, IEnumerable<Pointer>
-    {
-        public PointerParameters? Options { get; set; }
-
-        public IList<Pointer> Actions { get; set; } = [];
-
-        public void Add(Pointer pointer) => Actions.Add(pointer);
-
-        public IEnumerator<Pointer> GetEnumerator() => Actions.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => Actions.GetEnumerator();
-    }
-
-    public record Wheels : SourceActions, IEnumerable<Wheel>
-    {
-        public IList<Wheel> Actions { get; set; } = [];
-
-        public void Add(Wheel wheel) => Actions.Add(wheel);
-
-        public IEnumerator<Wheel> GetEnumerator() => Actions.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => Actions.GetEnumerator();
-    }
-
-    public record None : SourceActions, IEnumerable<Input.None>
-    {
-        public IList<Input.None> Actions { get; set; } = [];
-
-        public void Add(Input.None none) => Actions.Add(none);
-
-        public IEnumerator<Input.None> GetEnumerator() => Actions.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => Actions.GetEnumerator();
-    }
+    public void Add(ISourceAction action) => Actions.Add(action);
 }
+
+public record KeyActions : SourceActions<Key>, ISourceActions;
+
+public record PointerActions : SourceActions<Pointer>, ISourceActions
+{
+    public PointerParameters? Options { get; set; }
+}
+
+public record WheelActions : SourceActions<Wheel>;
+
+public record NoneActions : SourceActions<None>;
+
+public interface ISourceAction;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(Pause), "pause")]
 [JsonDerivedType(typeof(Down), "keyDown")]
 [JsonDerivedType(typeof(Up), "keyUp")]
-public abstract record Key
+public abstract record Key : ISourceAction
 {
     public record Pause : Key
     {
@@ -79,7 +62,7 @@ public abstract record Key
 [JsonDerivedType(typeof(Down), "pointerDown")]
 [JsonDerivedType(typeof(Up), "pointerUp")]
 [JsonDerivedType(typeof(Move), "pointerMove")]
-public abstract record Pointer
+public abstract record Pointer : ISourceAction
 {
     public record Pause : Pointer
     {
@@ -118,7 +101,7 @@ public abstract record Pointer
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(Pause), "pause")]
 [JsonDerivedType(typeof(Scroll), "scroll")]
-public abstract record Wheel
+public abstract record Wheel : ISourceAction
 {
     public record Pause : Wheel
     {
@@ -135,7 +118,7 @@ public abstract record Wheel
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(Pause), "pause")]
-public abstract record None
+public abstract record None : ISourceAction
 {
     public record Pause : None
     {

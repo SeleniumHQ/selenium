@@ -8,7 +8,7 @@ namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 
 public class BrowsingContextInputModule(BrowsingContext context, InputModule inputModule)
 {
-    public Task PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
+    public Task PerformActionsAsync(IEnumerable<ISourceActions> actions, PerformActionsOptions? options = null)
     {
         return inputModule.PerformActionsAsync(context, actions, options);
     }

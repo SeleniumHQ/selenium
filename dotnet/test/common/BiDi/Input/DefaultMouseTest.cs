@@ -12,23 +12,24 @@ class DefaultMouseTest : BiDiTestFixture
         driver.Url = UrlBuilder.WhereIs("draggableLists.html");
 
         await context.Input.PerformActionsAsync([
-            new SourceActions.Keys
+            new KeyActions
             {
                 Actions =
                 {
-                    new Key.Down("A")
+                    new Key.Down("A"),
+                    new Key.Up("B")
                 }
             }
             ]);
 
-        await context.Input.PerformActionsAsync([new SourceActions.Keys
+        await context.Input.PerformActionsAsync([new KeyActions
         {
             new Key.Down("A"),
             new Key.Down("B"),
             new Key.Pause()
         }]);
 
-        await context.Input.PerformActionsAsync([new SourceActions.Pointers
+        await context.Input.PerformActionsAsync([new PointerActions
         {
             new Pointer.Down(0),
             new Pointer.Up(0),

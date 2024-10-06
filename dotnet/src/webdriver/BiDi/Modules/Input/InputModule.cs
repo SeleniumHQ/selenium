@@ -8,7 +8,7 @@ namespace OpenQA.Selenium.BiDi.Modules.Input;
 
 public sealed class InputModule(Broker broker) : Module(broker)
 {
-    public async Task PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
+    public async Task PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<ISourceActions> actions, PerformActionsOptions? options = null)
     {
         var @params = new PerformActionsCommandParameters(context, actions);
 
