@@ -9,14 +9,14 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
 
-internal class InputSourceActionsConverter : JsonConverter<ISourceActions>
+internal class InputSourceActionsConverter : JsonConverter<SourceActions>
 {
-    public override ISourceActions Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override SourceActions Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         throw new NotImplementedException();
     }
 
-    public override void Write(Utf8JsonWriter writer, ISourceActions value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, SourceActions value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
 

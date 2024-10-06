@@ -7,18 +7,14 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Modules.Input;
 
-public interface ISourceActions
-{
-    string Id { get; }
-
-    IList<ISourceAction> Actions { get; }
-}
-
-public abstract record SourceActions<T> : ISourceActions, IEnumerable<ISourceAction>
+public abstract record SourceActions
 {
     public string Id { get; } = Guid.NewGuid().ToString();
+}
 
-    public IList<ISourceAction> Actions { get; } = [];
+public record SourceActions<T> : SourceActions, IEnumerable<ISourceAction> where T : ISourceAction
+{
+    public IList<ISourceAction> Actions { get; set; } = [];
 
     public IEnumerator<ISourceAction> GetEnumerator() => Actions.GetEnumerator();
 
@@ -27,9 +23,21 @@ public abstract record SourceActions<T> : ISourceActions, IEnumerable<ISourceAct
     public void Add(ISourceAction action) => Actions.Add(action);
 }
 
-public record KeyActions : SourceActions<Key>, ISourceActions;
+public record KeyActions : SourceActions<Key>
+{
+    public KeyActions Type(string text)
+    {
+        foreach (var character in text)
+        {
+            Add(new Key.Down(character));
+            Add(new Key.Up(character));
+        }
 
-public record PointerActions : SourceActions<Pointer>, ISourceActions
+        return this;
+    }
+}
+
+public record PointerActions : SourceActions<Pointer>
 {
     public PointerParameters? Options { get; set; }
 }
@@ -44,16 +52,16 @@ public interface ISourceAction;
 [JsonDerivedType(typeof(Pause), "pause")]
 [JsonDerivedType(typeof(Down), "keyDown")]
 [JsonDerivedType(typeof(Up), "keyUp")]
-public abstract record Key : ISourceAction
+public abstract partial record Key : ISourceAction
 {
     public record Pause : Key
     {
         public long? Duration { get; set; }
     }
 
-    public record Down(string Value) : Key;
+    public record Down(char Value) : Key;
 
-    public record Up(string Value) : Key;
+    public record Up(char Value) : Key;
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
