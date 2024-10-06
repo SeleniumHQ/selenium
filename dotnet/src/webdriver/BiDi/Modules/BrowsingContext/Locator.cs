@@ -26,16 +26,16 @@ public abstract record Locator
     {
         public bool? IgnoreCase { get; set; }
 
-        public new MatchType? MatchType { get; set; }
+        public MatchType? MatchType { get; set; }
 
         public long? MaxDepth { get; set; }
     }
 
     public record XPath(string Value) : Locator;
+}
 
-    public enum MatchType
-    {
-        Full,
-        Partial
-    }
+public enum MatchType
+{
+    Full,
+    Partial
 }

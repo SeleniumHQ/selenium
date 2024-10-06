@@ -24,7 +24,7 @@ public abstract record SourceActions
 
     public record Pointers : SourceActions, IEnumerable<Pointer>
     {
-        public Parameters? Options { get; set; }
+        public PointerParameters? Options { get; set; }
 
         public IList<Pointer> Actions { get; set; } = [];
 
@@ -33,18 +33,6 @@ public abstract record SourceActions
         public IEnumerator<Pointer> GetEnumerator() => Actions.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => Actions.GetEnumerator();
-
-        public record Parameters
-        {
-            public Type? PointerType { get; set; }
-        }
-
-        public enum Type
-        {
-            Mouse,
-            Pen,
-            Touch
-        }
     }
 
     public record Wheels : SourceActions, IEnumerable<Wheel>
@@ -113,23 +101,6 @@ public abstract record SourceActions
             public double? AltitudeAngle { get; set; }
             public double? AzimuthAngle { get; set; }
         }
-
-        public interface IPointerCommonProperties
-        {
-            public int? Width { get; set; }
-
-            public int? Height { get; set; }
-
-            public double? Pressure { get; set; }
-
-            public double? TangentialPressure { get; set; }
-
-            public int? Twist { get; set; }
-
-            public double? AltitudeAngle { get; set; }
-
-            public double? AzimuthAngle { get; set; }
-        }
     }
 
     [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
@@ -149,4 +120,33 @@ public abstract record SourceActions
             public Origin? Origin { get; set; }
         }
     }
+}
+
+public record PointerParameters
+{
+    public PointerType? PointerType { get; set; }
+}
+
+public enum PointerType
+{
+    Mouse,
+    Pen,
+    Touch
+}
+
+public interface IPointerCommonProperties
+{
+    public int? Width { get; set; }
+
+    public int? Height { get; set; }
+
+    public double? Pressure { get; set; }
+
+    public double? TangentialPressure { get; set; }
+
+    public int? Twist { get; set; }
+
+    public double? AltitudeAngle { get; set; }
+
+    public double? AzimuthAngle { get; set; }
 }
