@@ -101,7 +101,7 @@ namespace OpenQA.Selenium
                 string parametersString = string.Empty;
                 if (this.commandParameters != null && this.commandParameters.Count > 0)
                 {
-                    parametersString = JsonSerializer.Serialize(this.commandParameters);
+                    parametersString = JsonSerializer.Serialize(new SerializableCommand() { Data = this.commandParameters }, CommandSerializerContext.Default.SerializableCommand);
                 }
 
                 if (string.IsNullOrEmpty(parametersString))
@@ -132,5 +132,20 @@ namespace OpenQA.Selenium
             Dictionary<string, object> parameters = JsonSerializer.Deserialize<Dictionary<string, object>>(value, s_jsonSerializerOptions);
             return parameters;
         }
+    }
+
+    internal class SerializableCommand
+    {
+        [JsonExtensionData]
+        public Dictionary<string, object> Data { get; set; }
+    }
+
+    [JsonSerializable(typeof(SerializableCommand))]
+
+    [JsonSerializable(typeof(IList<object>))]
+    [JsonSerializable(typeof(System.Collections.ObjectModel.ReadOnlyCollection<string>))]
+    internal partial class CommandSerializerContext : JsonSerializerContext
+    {
+
     }
 }

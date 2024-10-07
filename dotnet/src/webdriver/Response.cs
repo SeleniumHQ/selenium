@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium
 {
@@ -31,7 +32,8 @@ namespace OpenQA.Selenium
     {
         private readonly static JsonSerializerOptions s_jsonSerializerOptions = new()
         {
-            Converters = { new ResponseValueJsonConverter() }
+            TypeInfoResolver = ResponseSerializerContext.Default,
+            Converters = { new ResponseValueJsonConverter() } // we still need it to make `Object` as `Dictionary`
         };
 
         private object responseValue;
@@ -207,5 +209,17 @@ namespace OpenQA.Selenium
         {
             return string.Format(CultureInfo.InvariantCulture, "({0} {1}: {2})", this.SessionId, this.Status, this.Value);
         }
+    }
+
+    internal class DeserializableResponse
+    {
+        [JsonExtensionData]
+        public Dictionary<string, object> Data { get; set; }
+    }
+
+    [JsonSerializable(typeof(DeserializableResponse))]
+    internal partial class ResponseSerializerContext : JsonSerializerContext
+    {
+
     }
 }
