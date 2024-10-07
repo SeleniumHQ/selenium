@@ -108,13 +108,6 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
       response.setValue(content);
     }
 
-    if (response.getValue() instanceof String) {
-      // We normalise to \n because Java will translate this to \r\n
-      // if this is suitable on our platform, and if we have \r\n, java will
-      // turn this into \r\r\n, which would be Bad!
-      response.setValue(((String) response.getValue()).replace("\r\n", "\n"));
-    }
-
     if (response.getStatus() != null && response.getState() == null) {
       response.setState(errorCodes.toState(response.getStatus()));
     } else if (response.getStatus() == null && response.getState() != null) {
