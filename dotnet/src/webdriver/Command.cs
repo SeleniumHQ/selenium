@@ -142,7 +142,7 @@ namespace OpenQA.Selenium
     [JsonSerializable(typeof(bool))]
     [JsonSerializable(typeof(long))]
     [JsonSerializable(typeof(int))]
-    [JsonSerializable(typeof(uint)]
+    [JsonSerializable(typeof(float)]
     [JsonSerializable(typeof(double))]
     [JsonSerializable(typeof(char[]))]
     internal partial class CommandSerializerContext : JsonSerializerContext
