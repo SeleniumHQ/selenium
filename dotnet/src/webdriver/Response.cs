@@ -218,6 +218,7 @@ namespace OpenQA.Selenium
     }
 
     [JsonSerializable(typeof(DeserializableResponse))]
+    [JsonSerializable(typeof(long))]
     internal partial class ResponseSerializerContext : JsonSerializerContext
     {
 
