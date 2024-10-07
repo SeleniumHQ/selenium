@@ -30,7 +30,7 @@ class Network {
 
   // This should be done in the constructor.
   // But since it needs to call async methods we cannot do that in the constructor.
-  // We can have a separate async method that initialises the Script instance.
+  // We can have a separate async method that initialises the Network instance.
   // However, that pattern does not allow chaining the methods as we would like the user to use it.
   // Since it involves awaiting to get the instance and then another await to call the method.
   // Using this allows the user to do this "await driver.network.addAuthenticationHandler(callback)"

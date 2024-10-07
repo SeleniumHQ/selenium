@@ -64,7 +64,6 @@ class LogEntryAdded:
 
     @classmethod
     def from_json(cls, json):
-        print(json)
         if json["type"] == "console":
             return ConsoleLogEntry.from_json(json)
         elif json["type"] == "javascript":
