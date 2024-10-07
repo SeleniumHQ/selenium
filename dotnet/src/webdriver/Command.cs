@@ -144,6 +144,7 @@ namespace OpenQA.Selenium
 
     [JsonSerializable(typeof(IList<object>))]
     [JsonSerializable(typeof(System.Collections.ObjectModel.ReadOnlyCollection<string>))]
+    [JsonSerializable(typeof(bool))]
     [JsonSerializable(typeof(long))]
     [JsonSerializable(typeof(int))]
     internal partial class CommandSerializerContext : JsonSerializerContext
