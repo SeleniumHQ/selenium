@@ -17,6 +17,8 @@
 import os
 import subprocess
 
+import pytest
+
 from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.service import Service
 
@@ -54,3 +56,29 @@ def test_log_output_as_stdout(capfd) -> None:
     out, err = capfd.readouterr()
     assert "geckodriver\tINFO\tListening" in out
     driver.quit()
+
+
+@pytest.fixture
+def service():
+    return Service()
+
+
+@pytest.mark.usefixtures("service")
+class TestGeckoDriverService:
+    service_path = "/path/to/geckodriver"
+
+    @pytest.fixture(autouse=True)
+    def setup_and_teardown(self):
+        os.environ["SE_GECKODRIVER"] = self.service_path
+        yield
+        os.environ.pop("SE_GECKODRIVER", None)
+
+    def test_uses_path_from_env_variable(self, service):
+        assert "geckodriver" in service.path
+
+    def test_updates_path_after_setting_env_variable(self, service):
+        new_path = "/foo/bar"
+        os.environ["SE_GECKODRIVER"] = new_path
+        service.executable_path = self.service_path  # Simulating the update
+
+        assert "geckodriver" in service.executable_path

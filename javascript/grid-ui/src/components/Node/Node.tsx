@@ -24,29 +24,28 @@ import OsLogo from '../common/OsLogo'
 
 function Node (props) {
   const { node } = props
-  const nodeStatusDown = node.status === 'DOWN'
+  const getCardStyle = (status: string) => ({
+    height: '100%',
+    flexGrow: 1,
+    opacity: status === 'DOWN' ? 0.25 : 1,
+    bgcolor: (status === 'DOWN' || status === 'DRAINING') ? 'grey.A100' : ''
+  })
 
   return (
-    <Card
-      sx={{
-        height: '100%',
-        flexGrow: 1,
-        bgcolor: nodeStatusDown ? 'grey.A100' : ''
-      }}
-    >
+    <Card sx={getCardStyle(node.status)}>
       <CardContent sx={{ pl: 2, pr: 1 }}>
         <Grid
           container
-          justifyContent='space-between'
+          justifyContent="space-between"
           spacing={1}
         >
           <Grid item xs={10}>
             <Typography
-              color='textPrimary'
+              color="textPrimary"
               gutterBottom
-              variant='h6'
+              variant="h6"
             >
-              <Box fontWeight='fontWeightBold' mr={1} display='inline'>
+              <Box fontWeight="fontWeightBold" mr={1} display="inline">
                 URI:
               </Box>
               {node.uri}
@@ -54,19 +53,19 @@ function Node (props) {
           </Grid>
           <Grid item xs={2}>
             <Typography
-              color='textPrimary'
+              color="textPrimary"
               gutterBottom
-              variant='h6'
+              variant="h6"
             >
-              <OsLogo osName={node.osInfo.name} />
-              <NodeDetailsDialog node={node} />
+              <OsLogo osName={node.osInfo.name}/>
+              <NodeDetailsDialog node={node}/>
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <Stereotypes stereotypes={node.slotStereotypes} />
+            <Stereotypes stereotypes={node.slotStereotypes}/>
           </Grid>
           <Grid item xs={12}>
-            <NodeLoad node={node} />
+            <NodeLoad node={node}/>
           </Grid>
         </Grid>
       </CardContent>

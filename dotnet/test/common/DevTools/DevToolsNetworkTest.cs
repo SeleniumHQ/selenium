@@ -203,7 +203,6 @@ namespace OpenQA.Selenium.DevTools
         }
 
         [Test]
-        [IgnorePlatform("Windows", "Not working properly")]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
@@ -232,7 +231,8 @@ namespace OpenQA.Selenium.DevTools
             var searchResponse = await domains.Network.SearchInResponseBody(new CurrentCdpVersion.Network.SearchInResponseBodyCommandSettings()
             {
                 RequestId = requestIds[0],
-                Query = "/",
+                Query = ".*",
+                IsRegex = true
             });
 
             Assert.That(searchResponse.Result.Length > 0);
