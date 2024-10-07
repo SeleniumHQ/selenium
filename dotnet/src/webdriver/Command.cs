@@ -16,7 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -28,11 +27,6 @@ namespace OpenQA.Selenium
     /// </summary>
     public class Command
     {
-        private readonly static JsonSerializerOptions s_jsonSerializerOptions = new()
-        {
-            Converters = { new ResponseValueJsonConverter() }
-        };
-
         private SessionId commandSessionId;
         private string commandName;
         private Dictionary<string, object> commandParameters = new Dictionary<string, object>();
@@ -129,7 +123,7 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="Dictionary{K, V}"/> with a string keys, and an object value. </returns>
         private static Dictionary<string, object> ConvertParametersFromJson(string value)
         {
-            Dictionary<string, object> parameters = JsonSerializer.Deserialize<Dictionary<string, object>>(value, s_jsonSerializerOptions);
+            Dictionary<string, object> parameters = JsonSerializer.Deserialize(value, CommandSerializerContext.Default.SerializableCommand).Data;
             return parameters;
         }
     }
