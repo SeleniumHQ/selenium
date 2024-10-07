@@ -41,6 +41,7 @@ module Selenium
         def initialize(bidi)
           @bidi = bidi
           @session = Session.new(bidi)
+          @intercepts = {}
         end
 
         def on(event, &block)

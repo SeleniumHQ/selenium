@@ -28,7 +28,7 @@ module Selenium
         it 'adds an intercept' do
           reset_driver!(web_socket_url: true) do |driver|
             network = described_class.new(driver.bidi)
-            intercept = network.add_intercept(phases: [described_class::InterceptPhases[:BEFORE_REQUEST]])
+            intercept = network.add_intercept(phases: [described_class::PHASES[:BEFORE_REQUEST]])
             expect(intercept['intercept']).to be_a(String)
           end
         end
@@ -36,7 +36,7 @@ module Selenium
         it 'removes an intercept' do
           reset_driver!(web_socket_url: true) do |driver|
             network = described_class.new(driver.bidi)
-            intercept = network.add_intercept(phases: [described_class::InterceptPhases[:BEFORE_REQUEST]])
+            intercept = network.add_intercept(phases: [described_class::PHASES[:BEFORE_REQUEST]])
             network.remove_intercept(intercept['intercept'])
             expect(intercept['intercept']).to be_nil
           end
@@ -47,10 +47,10 @@ module Selenium
             network = described_class.new(driver.bidi)
             network.on(:auth_required) do |event|
               request_id = event['request']['requestId']
-              puts "Captured Request ID: #{request_id}"
-
               network.continue_with_auth(request_id, 'user', 'password')
             end
+
+            driver.navigate.to 'http://httpbin.org/basic-auth/user/password'
           end
         end
       end
