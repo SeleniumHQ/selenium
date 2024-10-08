@@ -78,6 +78,7 @@ py/docs/source/**/*
 py/build/
 py/LICENSE
 py/pytestdebug.log
+py/python.iml
 selenium.egg-info/
 third_party/java/jetty/jetty-repacked.jar
 *.user
@@ -140,3 +141,4 @@ javascript/node/selenium-webdriver/.vscode/settings.json
 
 dotnet-bin
 .metadata/
+.npmrc

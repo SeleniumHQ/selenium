@@ -42,6 +42,7 @@ pub const CACHE_PATH_KEY: &str = "cache-path";
 
 pub struct ManagerConfig {
     pub cache_path: String,
+    pub fallback_driver_from_cache: bool,
     pub browser_version: String,
     pub driver_version: String,
     pub browser_path: String,
@@ -99,6 +100,7 @@ impl ManagerConfig {
 
         ManagerConfig {
             cache_path,
+            fallback_driver_from_cache: true,
             browser_version: StringKey(vec!["browser-version", &browser_version_label], "")
                 .get_value(),
             driver_version: StringKey(vec!["driver-version", &driver_version_label], "")

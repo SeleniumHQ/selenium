@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Modules.Storage;
 
 namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
