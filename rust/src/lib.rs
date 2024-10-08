@@ -750,7 +750,10 @@ pub trait SeleniumManager {
         // Download browser if necessary
         match self.download_browser_if_necessary(&original_browser_version) {
             Ok(_) => {}
-            Err(err) => self.check_error_with_driver_in_path(&use_driver_in_path, err)?,
+            Err(err) => {
+                self.set_fallback_driver_from_cache(false);
+                self.check_error_with_driver_in_path(&use_driver_in_path, err)?
+            }
         }
 
         // With the discovered browser version, discover the proper driver version using online endpoints
@@ -1083,6 +1086,12 @@ pub trait SeleniumManager {
             if let Some(path) = self.detect_browser_path() {
                 browser_path = path_to_string(&path);
             }
+        } else if !Path::new(&browser_path).exists() {
+            self.set_fallback_driver_from_cache(false);
+            return Err(anyhow!(format_one_arg(
+                "Browser path does not exist: {}",
+                &browser_path,
+            )));
         }
         let escaped_browser_path = self.get_escaped_path(browser_path.to_string());
 
@@ -1286,6 +1295,26 @@ pub trait SeleniumManager {
         if !mirror_url.is_empty() {
             self.get_config_mut().browser_mirror_url = mirror_url;
         }
+    }
+
+    fn get_driver_mirror_versions_url_or_default<'a>(&'a self, default_url: &'a str) -> String {
+        let driver_mirror_url = self.get_driver_mirror_url();
+        if !driver_mirror_url.is_empty() {
+            let driver_versions_path = default_url.rfind('/').map(|i| &default_url[i + 1..]);
+            if let Some(path) = driver_versions_path {
+                let driver_mirror_versions_url = if driver_mirror_url.ends_with('/') {
+                    format!("{}{}", driver_mirror_url, path)
+                } else {
+                    format!("{}/{}", driver_mirror_url, path)
+                };
+                self.get_logger().debug(format!(
+                    "Using mirror URL to discover driver versions: {}",
+                    driver_mirror_versions_url
+                ));
+                return driver_mirror_versions_url;
+            }
+        }
+        default_url.to_string()
     }
 
     fn get_driver_mirror_url_or_default<'a>(&'a self, default_url: &'a str) -> String {
@@ -1503,6 +1532,14 @@ pub trait SeleniumManager {
         if avoid_stats {
             self.get_config_mut().avoid_stats = true;
         }
+    }
+
+    fn is_fallback_driver_from_cache(&self) -> bool {
+        self.get_config().fallback_driver_from_cache
+    }
+
+    fn set_fallback_driver_from_cache(&mut self, fallback_driver_from_cache: bool) {
+        self.get_config_mut().fallback_driver_from_cache = fallback_driver_from_cache;
     }
 }
 
