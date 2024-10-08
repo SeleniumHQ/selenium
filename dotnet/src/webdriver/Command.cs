@@ -102,7 +102,7 @@ namespace OpenQA.Selenium
                 string parametersString = string.Empty;
                 if (this.commandParameters != null && this.commandParameters.Count > 0)
                 {
-                    parametersString = JsonSerializer.Serialize(new SerializableCommand() { Data = this.commandParameters }, s_jsonSerializerOptions);
+                    parametersString = JsonSerializer.Serialize(this.commandParameters, s_jsonSerializerOptions);
                 }
 
                 if (string.IsNullOrEmpty(parametersString))
@@ -130,19 +130,12 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="Dictionary{K, V}"/> with a string keys, and an object value. </returns>
         private static Dictionary<string, object> ConvertParametersFromJson(string value)
         {
-            Dictionary<string, object> parameters = JsonSerializer.Deserialize<SerializableCommand>(value, s_jsonSerializerOptions).Data;
+            Dictionary<string, object> parameters = JsonSerializer.Deserialize<Dictionary<string, object>>(value, s_jsonSerializerOptions);
             return parameters;
         }
     }
 
-    internal class SerializableCommand
-    {
-        [JsonExtensionData]
-        public Dictionary<string, object> Data { get; set; }
-    }
-
-    [JsonSerializable(typeof(SerializableCommand))]
-    [JsonSerializable(typeof(Cookie))]
+    [JsonSerializable(typeof(Dictionary<string, object>))]
     [JsonSerializable(typeof(char[]))]
     [JsonSerializable(typeof(bool))]
     [JsonSerializable(typeof(string))]
@@ -151,6 +144,7 @@ namespace OpenQA.Selenium
     [JsonSerializable(typeof(long))]
     [JsonSerializable(typeof(float))]
     [JsonSerializable(typeof(double))]
+    [JsonSerializable(typeof(Cookie))]
     internal partial class CommandSerializerContext : JsonSerializerContext
     {
 
