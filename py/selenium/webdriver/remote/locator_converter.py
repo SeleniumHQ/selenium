@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 class LocatorConverter:
     def convert(self, by, value):
         # Default conversion logic
