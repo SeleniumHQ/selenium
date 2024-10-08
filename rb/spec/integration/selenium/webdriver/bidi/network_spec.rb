@@ -30,6 +30,7 @@ module Selenium
             network = described_class.new(driver.bidi)
             intercept = network.add_intercept(phases: [described_class::PHASES[:BEFORE_REQUEST]])
             expect(intercept['intercept']).to be_a(String)
+            expect(network.intercepts).to include(intercept['intercept'])
           end
         end
 

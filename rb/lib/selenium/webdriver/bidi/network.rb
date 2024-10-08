@@ -38,6 +38,8 @@ module Selenium
           AUTH_REQUIRED: 'authRequired'
         }.freeze
 
+        attr_reader :intercepts
+
         def initialize(bidi)
           @bidi = bidi
           @session = Session.new(bidi)
@@ -75,7 +77,9 @@ module Selenium
         end
 
         def add_intercept(phases: [], contexts: nil, url_patterns: nil)
-          @bidi.send_cmd('network.addIntercept', phases: phases, contexts: contexts, urlPatterns: url_patterns)
+          intercept = @bidi.send_cmd('network.addIntercept', phases: phases, contexts: contexts, urlPatterns: url_patterns)
+          @intercepts[intercept['intercept']] = intercept
+          intercept
         end
 
         def remove_intercept(intercept)

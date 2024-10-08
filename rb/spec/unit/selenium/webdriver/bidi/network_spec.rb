@@ -29,10 +29,10 @@ module Selenium
 
         it 'adds an intercept with mocked request' do
           allow(network).to receive(:add_intercept)
-            .with(phases: [Network::InterceptPhases[:BEFORE_REQUEST]])
+            .with(phases: [Network::PHASES[:BEFORE_REQUEST]])
             .and_return('intercept' => 'mocked_intercept_id')
 
-          intercept = network.add_intercept(phases: [Network::InterceptPhases[:BEFORE_REQUEST]])
+          intercept = network.add_intercept(phases: [Network::PHASES[:BEFORE_REQUEST]])
           expect(intercept['intercept']).to eq('mocked_intercept_id')
         end
 
