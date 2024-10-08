@@ -280,6 +280,13 @@ class RemoteConnection:
             self._conn = self._get_connection_manager()
         self._commands = remote_commands
 
+    extra_commands = {}
+
+    @classmethod
+    def add_command(cls, name, method, url):
+        """Register a new command."""
+        cls.extra_commands[name] = (method, url)
+
     def execute(self, command, params):
         """Send a command to the remote server.
 
@@ -291,7 +298,7 @@ class RemoteConnection:
          - params - A dictionary of named parameters to send with the command as
            its JSON payload.
         """
-        command_info = self._commands[command]
+        command_info = self._commands.get(command) or self.extra_commands.get(command)
         assert command_info is not None, f"Unrecognised command {command}"
         path_string = command_info[1]
         path = string.Template(path_string).substitute(params)

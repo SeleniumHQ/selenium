@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from unittest.mock import patch
 from urllib import parse
 
 import pytest
@@ -22,6 +23,28 @@ import urllib3
 
 from selenium import __version__
 from selenium.webdriver.remote.remote_connection import RemoteConnection
+
+
+@pytest.fixture
+def remote_connection():
+    return RemoteConnection("http://localhost:4444")
+
+
+def test_add_command():
+    RemoteConnection.add_command("CUSTOM_COMMAND", "PUT", "/session/$sessionId/custom")
+    assert RemoteConnection.extra_commands["CUSTOM_COMMAND"] == ("PUT", "/session/$sessionId/custom")
+
+
+@patch("selenium.webdriver.remote.remote_connection.RemoteConnection._request")
+def test_execute_custom_command(mock_request, remote_connection):
+    RemoteConnection.add_command("CUSTOM_COMMAND", "PUT", "/session/$sessionId/custom")
+    mock_request.return_value = {"status": 0, "value": "OK"}
+
+    params = {"sessionId": "12345"}
+    response = remote_connection.execute("CUSTOM_COMMAND", params)
+
+    mock_request.assert_called_once_with("PUT", "http://localhost:4444/session/12345/custom", body="{}")
+    assert response == {"status": 0, "value": "OK"}
 
 
 def test_get_remote_connection_headers_defaults():
