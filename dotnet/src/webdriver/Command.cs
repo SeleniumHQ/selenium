@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -30,6 +31,12 @@ namespace OpenQA.Selenium
         private SessionId commandSessionId;
         private string commandName;
         private Dictionary<string, object> commandParameters = new Dictionary<string, object>();
+
+        private readonly static JsonSerializerOptions s_jsonSerializerOptions = new()
+        {
+            TypeInfoResolver = CommandSerializerContext.Default,
+            Converters = { new ResponseValueJsonConverter() }
+        };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Command"/> class using a command name and a JSON-encoded string for the parameters.
@@ -95,7 +102,7 @@ namespace OpenQA.Selenium
                 string parametersString = string.Empty;
                 if (this.commandParameters != null && this.commandParameters.Count > 0)
                 {
-                    parametersString = JsonSerializer.Serialize(new SerializableCommand() { Data = this.commandParameters }, CommandSerializerContext.Default.SerializableCommand);
+                    parametersString = JsonSerializer.Serialize(new SerializableCommand() { Data = this.commandParameters }, s_jsonSerializerOptions);
                 }
 
                 if (string.IsNullOrEmpty(parametersString))
@@ -123,7 +130,7 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="Dictionary{K, V}"/> with a string keys, and an object value. </returns>
         private static Dictionary<string, object> ConvertParametersFromJson(string value)
         {
-            Dictionary<string, object> parameters = JsonSerializer.Deserialize(value, CommandSerializerContext.Default.SerializableCommand).Data;
+            Dictionary<string, object> parameters = JsonSerializer.Deserialize<SerializableCommand>(value, s_jsonSerializerOptions).Data;
             return parameters;
         }
     }
@@ -135,17 +142,6 @@ namespace OpenQA.Selenium
     }
 
     [JsonSerializable(typeof(SerializableCommand))]
-    [JsonSerializable(typeof(Cookie))]
-
-    [JsonSerializable(typeof(IList<object>))]
-    [JsonSerializable(typeof(System.Collections.ObjectModel.ReadOnlyCollection<string>))]
-    [JsonSerializable(typeof(bool))]
-    [JsonSerializable(typeof(uint))]
-    [JsonSerializable(typeof(int))]
-    [JsonSerializable(typeof(long))]
-    [JsonSerializable(typeof(float))]
-    [JsonSerializable(typeof(double))]
-    [JsonSerializable(typeof(char[]))]
     internal partial class CommandSerializerContext : JsonSerializerContext
     {
 
