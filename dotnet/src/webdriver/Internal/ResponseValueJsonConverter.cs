@@ -40,18 +40,6 @@ namespace OpenQA.Selenium.Internal
                 case null:
                     writer.WriteNullValue();
                     break;
-                case string str:
-                    writer.WriteStringValue(str);
-                    break;
-                case bool b:
-                    writer.WriteBooleanValue(b);
-                    break;
-                case long l:
-                    writer.WriteNumberValue(l);
-                    break;
-                case double d:
-                    writer.WriteNumberValue(d);
-                    break;
                 case IEnumerable<object> list:
                     writer.WriteStartArray();
                     foreach (var item in list)
@@ -70,12 +58,8 @@ namespace OpenQA.Selenium.Internal
                     writer.WriteEndObject();
                     break;
                 case object obj:
-                    writer.WriteStartObject();
-                    Write(writer, obj, options);
-                    writer.WriteEndObject();
+                    JsonSerializer.Serialize(writer, obj, options.GetTypeInfo(obj.GetType()));
                     break;
-                default:
-                    throw new JsonException($"Unrecognized '{value.GetType()}' when serializing a command.");
             }
         }
 

@@ -142,6 +142,15 @@ namespace OpenQA.Selenium
     }
 
     [JsonSerializable(typeof(SerializableCommand))]
+    [JsonSerializable(typeof(Cookie))]
+    [JsonSerializable(typeof(char[]))]
+    [JsonSerializable(typeof(bool))]
+    [JsonSerializable(typeof(string))]
+    [JsonSerializable(typeof(uint))]
+    [JsonSerializable(typeof(int))]
+    [JsonSerializable(typeof(long))]
+    [JsonSerializable(typeof(float))]
+    [JsonSerializable(typeof(double))]
     internal partial class CommandSerializerContext : JsonSerializerContext
     {
 
