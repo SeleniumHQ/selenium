@@ -35,7 +35,7 @@ bazel run @rules_rust//:rustfmt
 section "Python"
 echo "    python - isort, black, flake8, docformatter" >&2
 pip install tox
-TOXENV=linting
+export TOXENV=linting
 tox -c py/tox.ini
 
 section "Copyright"
