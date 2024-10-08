@@ -211,13 +211,7 @@ namespace OpenQA.Selenium
         }
     }
 
-    internal class DeserializableResponse
-    {
-        [JsonExtensionData]
-        public Dictionary<string, object> Data { get; set; }
-    }
-
-    [JsonSerializable(typeof(DeserializableResponse))]
+    [JsonSerializable(typeof(Dictionary<string, object>))]
     internal partial class ResponseSerializerContext : JsonSerializerContext
     {
 
