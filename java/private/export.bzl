@@ -7,6 +7,7 @@ load("@rules_jvm_external//private/rules:maven_bom_fragment.bzl", "maven_bom_fra
 load("@rules_jvm_external//private/rules:maven_project_jar.bzl", "maven_project_jar")
 load("@rules_jvm_external//private/rules:maven_publish.bzl", "maven_publish")
 load("//java/private:module.bzl", "java_module")
+load(":java_library.bzl", "java_library")
 
 def java_export(
         name,
@@ -24,7 +25,7 @@ def java_export(
     lib_name = "%s-lib" % name
 
     # Construct the java_library we'll export from here.
-    native.java_library(
+    java_library(
         name = lib_name,
         tags = tags,
         exports = exports,

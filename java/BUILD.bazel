@@ -1,3 +1,4 @@
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@contrib_rules_jvm//java:defs.bzl", "spotbugs_config")
 load(":defs.bzl", "artifact")
 
@@ -18,6 +19,16 @@ java_plugin(
     visibility = ["//visibility:private"],
     deps = [
         artifact("com.google.auto.service:auto-service"),
+    ],
+)
+
+java_plugin(
+    name = "nullaway",
+    visibility = [
+        "//java:__subpackages__",
+    ],
+    deps = [
+        artifact("com.uber.nullaway:nullaway"),
     ],
 )
 
@@ -42,4 +53,28 @@ spotbugs_config(
     visibility = [
         "//visibility:public",
     ],
+)
+
+string_flag(
+    name = "nullaway_level",
+    build_setting_default = "NONE",
+    values = [
+        "NONE",
+        "WARN",
+        "ERROR",
+    ],
+)
+
+config_setting(
+    name = "use_nullaway_level_warn",
+    flag_values = {
+        ":nullaway_level": "WARN",
+    },
+)
+
+config_setting(
+    name = "use_nullaway_level_error",
+    flag_values = {
+        ":nullaway_level": "ERROR",
+    },
 )
