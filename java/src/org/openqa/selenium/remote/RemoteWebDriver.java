@@ -562,8 +562,8 @@ public class RemoteWebDriver
         } else {
           toThrow =
               new SessionNotCreatedException(
-                  "Possible causes are invalid address of the remote server or browser start-up"
-                      + " failure.",
+                  "Possible causes are invalid address of the remote server, insufficient"
+                      + " capabilities provided or browser start-up failure.",
                   e);
         }
       } else if (e instanceof WebDriverException) {
