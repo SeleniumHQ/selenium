@@ -143,6 +143,10 @@ class RemoteConnection:
     )
     _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
 
+    # Class variables for headers
+    extra_headers = None
+    user_agent = f"selenium/{__version__} (python {platform.system().lower()})"
+
     @classmethod
     def get_timeout(cls):
         """:Returns:
@@ -212,6 +216,9 @@ class RemoteConnection:
 
         if keep_alive:
             headers.update({"Connection": "keep-alive"})
+
+        if cls.extra_headers:
+            headers.update(cls.extra_headers)
 
         return headers
 

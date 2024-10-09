@@ -262,3 +262,20 @@ def mock_no_proxy_settings(monkeypatch):
     monkeypatch.setenv("http_proxy", http_proxy)
     monkeypatch.setenv("no_proxy", "65.253.214.253,localhost,127.0.0.1,*zyz.xx,::1")
     monkeypatch.setenv("NO_PROXY", "65.253.214.253,localhost,127.0.0.1,*zyz.xx,::1,127.0.0.0/8")
+
+
+@patch("selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers")
+def test_override_user_agent_in_headers(mock_get_remote_connection_headers, remote_connection):
+    RemoteConnection.user_agent = "rspec/1.0 (python 3.8)"
+
+    mock_get_remote_connection_headers.return_value = {
+        "Accept": "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+        "User-Agent": "rspec/1.0 (python 3.8)",
+    }
+
+    headers = RemoteConnection.get_remote_connection_headers(parse.urlparse("http://remote"))
+
+    assert headers.get("User-Agent") == "rspec/1.0 (python 3.8)"
+    assert headers.get("Accept") == "application/json"
+    assert headers.get("Content-Type") == "application/json;charset=UTF-8"
