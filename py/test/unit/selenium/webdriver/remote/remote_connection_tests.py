@@ -279,3 +279,15 @@ def test_override_user_agent_in_headers(mock_get_remote_connection_headers, remo
     assert headers.get("User-Agent") == "rspec/1.0 (python 3.8)"
     assert headers.get("Accept") == "application/json"
     assert headers.get("Content-Type") == "application/json;charset=UTF-8"
+
+
+@patch("selenium.webdriver.remote.remote_connection.RemoteConnection._request")
+def test_register_extra_headers(mock_request, remote_connection):
+    RemoteConnection.extra_headers = {"Foo": "bar"}
+
+    mock_request.return_value = {"status": 0, "value": "OK"}
+    remote_connection.execute("newSession", {})
+
+    mock_request.assert_called_once_with("POST", "http://localhost:4444/session", body="{}")
+    headers = RemoteConnection.get_remote_connection_headers(parse.urlparse("http://localhost:4444"), False)
+    assert headers["Foo"] == "bar"
