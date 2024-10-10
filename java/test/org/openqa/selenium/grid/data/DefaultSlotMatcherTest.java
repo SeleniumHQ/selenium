@@ -161,6 +161,35 @@ class DefaultSlotMatcherTest {
   }
 
   @Test
+  void prefixedSlotMatcherDoesNotMatch() {
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            CapabilityType.BROWSER_NAME,
+            "chrome",
+            CapabilityType.BROWSER_VERSION,
+            "80",
+            CapabilityType.PLATFORM_NAME,
+            Platform.WINDOWS,
+            "se:slotMatcher_version",
+            "cust4",
+            "se:slotMatcherAppName",
+            "myApp");
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            CapabilityType.BROWSER_NAME,
+            "chrome",
+            CapabilityType.BROWSER_VERSION,
+            "80",
+            CapabilityType.PLATFORM_NAME,
+            Platform.WINDOWS,
+            "se:slotMatcher_version",
+            "dev4",
+            "se:slotMatcherAppName",
+            "myApp");
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
   void matchesWhenPrefixedPlatformVersionIsNotRequested() {
     Capabilities stereotype =
         new ImmutableCapabilities(

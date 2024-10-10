@@ -50,6 +50,7 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
   */
   private static final List<String> EXTENSION_CAPABILITIES_PREFIXES =
       Arrays.asList("goog:", "moz:", "ms:", "se:");
+  private static final String SLOT_MATCHER_PREFIX = "se:slotMatcher";
 
   @Override
   public boolean matches(Capabilities stereotype, Capabilities capabilities) {
@@ -71,6 +72,10 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
     }
 
     if (!extensionCapabilitiesMatch(stereotype, capabilities)) {
+      return false;
+    }
+
+    if (!extensionCapabilitiesMatch(stereotype, capabilities, SLOT_MATCHER_PREFIX, false)) {
       return false;
     }
 
@@ -150,10 +155,21 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
      EXTENSION_CAPABILITIES_PREFIXES items. Also, we match them only when the capabilities
      of the new session request contains that specific extension capability.
     */
+    return extensionCapabilitiesMatch(stereotype, capabilities, ":", true);
+  }
+
+  private Boolean extensionCapabilitiesMatch(
+      Capabilities stereotype,
+      Capabilities capabilities,
+      String nameContains,
+      boolean excludeExtensionPrefixes) {
     return stereotype.getCapabilityNames().stream()
-        .filter(name -> name.contains(":"))
+        .filter(name -> name.contains(nameContains))
         .filter(name -> capabilities.asMap().containsKey(name))
-        .filter(name -> EXTENSION_CAPABILITIES_PREFIXES.stream().noneMatch(name::contains))
+        .filter(
+            name ->
+                !excludeExtensionPrefixes
+                    || EXTENSION_CAPABILITIES_PREFIXES.stream().noneMatch(name::contains))
         .map(
             name -> {
               if (capabilities.getCapability(name) instanceof String) {
