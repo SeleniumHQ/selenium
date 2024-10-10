@@ -1,6 +1,5 @@
 using OpenQA.Selenium.BiDi.Modules.Input;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -27,7 +26,7 @@ internal class InputSourceActionsConverter : JsonConverter<SourceActions>
             case KeyActions keys:
                 writer.WriteString("type", "key");
                 writer.WritePropertyName("actions");
-                JsonSerializer.Serialize(writer, keys.Actions.Select(a => a as Key), options);
+                JsonSerializer.Serialize(writer, keys.Actions.Select(a => a as IKeySourceAction), options);
 
                 break;
             case PointerActions pointers:
@@ -39,19 +38,19 @@ internal class InputSourceActionsConverter : JsonConverter<SourceActions>
                 }
 
                 writer.WritePropertyName("actions");
-                JsonSerializer.Serialize(writer, pointers.Actions.Select(a => a as Pointer), options);
+                JsonSerializer.Serialize(writer, pointers.Actions.Select(a => a as IPointerSourceAction), options);
 
                 break;
             case WheelActions wheels:
                 writer.WriteString("type", "wheel");
                 writer.WritePropertyName("actions");
-                JsonSerializer.Serialize(writer, wheels.Actions.Select(a => a as Wheel), options);
+                JsonSerializer.Serialize(writer, wheels.Actions.Select(a => a as IWheelSourceAction), options);
 
                 break;
             case NoneActions none:
                 writer.WriteString("type", "none");
                 writer.WritePropertyName("actions");
-                JsonSerializer.Serialize(writer, none.Actions.Select(a => a as None), options);
+                JsonSerializer.Serialize(writer, none.Actions.Select(a => a as INoneSourceAction), options);
 
                 break;
         }

@@ -2,5 +2,7 @@ namespace OpenQA.Selenium.BiDi.Modules.Input;
 
 partial record Key
 {
-    public static char Shift { get; } = '\xE008';
+    public const char Shift = '\uE008';
+
+    public const char Pause = '\uE00B';
 }

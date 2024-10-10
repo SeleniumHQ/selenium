@@ -6,9 +6,11 @@ namespace OpenQA.Selenium.BiDi.Modules.Input;
 
 public interface ISequentialSourceActions : IEnumerable<SourceActions>
 {
-    public SequentialSourceActions Type(string text);
+    public ISequentialSourceActions Pause(int duration);
 
-    public SequentialSourceActions KeyDown(char key);
+    public ISequentialSourceActions Type(string text);
+
+    public ISequentialSourceActions KeyDown(char key);
 }
 
 public record SequentialSourceActions : ISequentialSourceActions
@@ -16,15 +18,23 @@ public record SequentialSourceActions : ISequentialSourceActions
     private readonly KeyActions _keyActions = [];
     private readonly PointerActions _pointerActions = [];
     private readonly WheelActions _wheelActions = [];
+    private readonly WheelActions _noneActions = [];
 
-    public SequentialSourceActions Type(string text)
+    public ISequentialSourceActions Pause(int duration)
+    {
+        _noneActions.Add(new Pause { Duration = duration });
+
+        return Normalized();
+    }
+
+    public ISequentialSourceActions Type(string text)
     {
         _keyActions.Type(text);
 
         return Normalized();
     }
 
-    public SequentialSourceActions KeyDown(char key)
+    public ISequentialSourceActions KeyDown(char key)
     {
         _keyActions.Add(new Key.Down(key));
 
@@ -33,21 +43,26 @@ public record SequentialSourceActions : ISequentialSourceActions
 
     private SequentialSourceActions Normalized()
     {
-        var max = new[] { _keyActions.Count(), _pointerActions.Count(), _wheelActions.Count() }.Max();
+        var max = new[] { _keyActions.Count(), _pointerActions.Count(), _wheelActions.Count(), _noneActions.Count() }.Max();
 
         for (int i = _keyActions.Count(); i < max; i++)
         {
-            _keyActions.Add(new Key.Pause());
+            _keyActions.Add(new Pause());
         }
 
         for (int i = _pointerActions.Count(); i < max; i++)
         {
-            _pointerActions.Add(new Pointer.Pause());
+            _pointerActions.Add(new Pause());
         }
 
         for (int i = _wheelActions.Count(); i < max; i++)
         {
-            _wheelActions.Add(new Pointer.Pause());
+            _wheelActions.Add(new Pause());
+        }
+
+        for (int i = _noneActions.Count(); i < max; i++)
+        {
+            _noneActions.Add(new Pause());
         }
 
         return this;
@@ -59,7 +74,8 @@ public record SequentialSourceActions : ISequentialSourceActions
         {
             _keyActions,
             _pointerActions,
-            _wheelActions
+            _wheelActions,
+            _noneActions
         };
         return sourceActions.GetEnumerator();
     }

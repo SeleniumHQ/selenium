@@ -23,7 +23,8 @@ class CombinedInputActionsTest : BiDiTestFixture
 
         await context.Input.PerformActionsAsync([new KeyActions {
             new Key.Down('U'),
-            new Key.Up('U')
+            new Key.Up('U'),
+            new Pause { Duration = 3000 }
         }]);
 
         await context.Input.PerformActionsAsync([new PointerActions {

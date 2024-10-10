@@ -27,7 +27,7 @@ class DefaultMouseTest : BiDiTestFixture
         {
             new Key.Down('A'),
             new Key.Down('B'),
-            new Key.Pause()
+            new Pause()
         }]);
 
         await context.Input.PerformActionsAsync([new PointerActions
@@ -42,7 +42,7 @@ class DefaultMouseTest : BiDiTestFixture
     {
         await context.NavigateAsync("https://nuget.org", new() { Wait = ReadinessState.Complete });
         
-        await context.Input.PerformActionsAsync(new SequentialSourceActions().Type("Hello").KeyDown(Key.Shift).Type("World"));
+        await context.Input.PerformActionsAsync(new SequentialSourceActions().Type("Hello").Pause(2000).KeyDown(Key.Shift).Type("World"));
 
         await Task.Delay(3000);
     }
