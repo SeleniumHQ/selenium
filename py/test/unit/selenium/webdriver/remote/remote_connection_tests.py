@@ -291,3 +291,13 @@ def test_register_extra_headers(mock_request, remote_connection):
     mock_request.assert_called_once_with("POST", "http://localhost:4444/session", body="{}")
     headers = RemoteConnection.get_remote_connection_headers(parse.urlparse("http://localhost:4444"), False)
     assert headers["Foo"] == "bar"
+
+
+def test_get_connection_manager_ignores_certificates(monkeypatch):
+    monkeypatch.setattr(RemoteConnection, "get_timeout", lambda _: 10)
+    remote_connection = RemoteConnection("http://remote", ignore_certificates=True)
+    conn = remote_connection._get_connection_manager()
+
+    assert conn.connection_pool_kw["timeout"] == 10
+    assert conn.connection_pool_kw["cert_reqs"] == "CERT_NONE"
+    assert isinstance(conn, urllib3.PoolManager)

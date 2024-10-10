@@ -243,7 +243,11 @@ class RemoteConnection:
 
     def _get_connection_manager(self):
         pool_manager_init_args = {"timeout": self.get_timeout()}
-        if self._ca_certs:
+
+        if self._ignore_certificates:
+            pool_manager_init_args["cert_reqs"] = "CERT_NONE"
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        elif self._ca_certs:
             pool_manager_init_args["cert_reqs"] = "CERT_REQUIRED"
             pool_manager_init_args["ca_certs"] = self._ca_certs
 
@@ -259,9 +263,16 @@ class RemoteConnection:
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
-    def __init__(self, remote_server_addr: str, keep_alive: bool = False, ignore_proxy: bool = False):
+    def __init__(
+        self,
+        remote_server_addr: str,
+        keep_alive: bool = False,
+        ignore_proxy: bool = False,
+        ignore_certificates: bool = False,
+    ):
         self.keep_alive = keep_alive
         self._url = remote_server_addr
+        self._ignore_certificates = ignore_certificates
 
         # Env var NO_PROXY will override this part of the code
         _no_proxy = os.environ.get("no_proxy", os.environ.get("NO_PROXY"))
