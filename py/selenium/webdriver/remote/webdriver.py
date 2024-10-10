@@ -173,6 +173,7 @@ class WebDriver(BaseWebDriver):
         file_detector: Optional[FileDetector] = None,
         options: Optional[Union[BaseOptions, List[BaseOptions]]] = None,
         locator_converter: Optional[LocatorConverter] = None,
+        web_element_cls: Optional[type] = None,
     ) -> None:
         """Create a new driver that will issue commands using the wire
         protocol.
@@ -185,9 +186,8 @@ class WebDriver(BaseWebDriver):
          - file_detector - Pass custom file detector object during instantiation. If None,
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
+         - web_element_cls - Custom class to use for web elements. Defaults to WebElement.
         """
-
-        self.locator_converter = locator_converter or LocatorConverter()
 
         if isinstance(options, list):
             capabilities = create_matches(options)
@@ -211,6 +211,8 @@ class WebDriver(BaseWebDriver):
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
         self.file_detector = file_detector or LocalFileDetector()
+        self.locator_converter = locator_converter or LocatorConverter()
+        self._web_element_cls = web_element_cls or self._web_element_cls
         self._authenticator_id = None
         self.start_client()
         self.start_session(capabilities)
