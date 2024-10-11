@@ -1,15 +1,15 @@
 module Selenium
   module WebDriver
     class Network
+      AUTH_CALLBACKS: Hash[String, String]
+
       @network: BiDi::Network
 
-      def initialize: (untyped bridge) -> void
+      def initialize: (Remote::Bridge bridge) -> void
 
-      def add_auth_handler: (untyped username, untyped password) -> untyped
+      def add_auth_handler: (String username, String password) -> String
 
-      def remove_auth_handler: (untyped id) -> untyped
-
-      def clear_auth_handlers: () -> untyped
+      def remove_auth_handler: (String id) -> nil
     end
   end
 end

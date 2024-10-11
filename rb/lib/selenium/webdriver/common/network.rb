@@ -20,16 +20,26 @@
 module Selenium
   module WebDriver
     class Network
+      AUTH_CALLBACKS = {}
       def initialize(bridge)
         @network = BiDi::Network.new(bridge.bidi)
       end
 
       def add_auth_handler(username, password)
-        @network.add_auth_handler(username, password)
+        intercept = @network.add_intercept(phases: [BiDi::Network::PHASES[:auth_required]])
+        auth_id = @network.on(:auth_required) do |event|
+          request_id = event['requestId']
+          @network.continue_with_auth(request_id, username, password)
+        end
+        AUTH_CALLBACKS[auth_id] = intercept
+
+        auth_id
       end
 
       def remove_auth_handler(id)
-        @network.remove_auth_handler(id)
+        intercept = AUTH_CALLBACKS[id]
+        @network.remove_intercept(intercept['intercept'])
+        AUTH_CALLBACKS.delete(id)
       end
     end # Network
   end # WebDriver
