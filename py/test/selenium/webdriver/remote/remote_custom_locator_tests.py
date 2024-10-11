@@ -31,14 +31,12 @@ class CustomLocatorConverter(LocatorConverter):
 
 @pytest.fixture
 def driver() -> WebDriver:
-    # Setup for driver
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(options=options)
     driver.locator_converter = CustomLocatorConverter()
-
     driver.get("data:text/html,<div custom-attr='example'>Test</div>")
+
     yield driver
-    # Teardown after test
     driver.quit()
 
 
@@ -49,6 +47,8 @@ def test_find_element_with_custom_locator(driver: WebDriver) -> None:
 
 
 def test_find_elements_with_custom_locator(driver: WebDriver) -> None:
+    driver.get("data:text/html,<div custom-attr='example'>Test1</div><div custom-attr='example'>Test2</div>")
     elements = driver.find_elements("custom", "example")
-    assert len(elements) == 1
-    assert elements[0].text == "Test"
+    assert len(elements) == 2
+    assert elements[0].text == "Test1"
+    assert elements[1].text == "Test2"
