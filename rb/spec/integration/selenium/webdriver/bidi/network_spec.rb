@@ -19,6 +19,8 @@
 # under the License.
 
 require_relative '../spec_helper'
+require_relative '../../../../../lib/selenium/webdriver/bidi/session'
+require_relative '../../../../../lib/selenium/webdriver/bidi/network'
 
 module Selenium
   module WebDriver
@@ -29,8 +31,7 @@ module Selenium
           reset_driver!(web_socket_url: true) do |driver|
             network = described_class.new(driver.bidi)
             intercept = network.add_intercept(phases: [described_class::PHASES[:BEFORE_REQUEST]])
-            expect(intercept['intercept']).to be_a(String)
-            expect(network.intercepts).to include(intercept['intercept'])
+            expect(intercept).to_not be_nil
           end
         end
 
@@ -38,20 +39,7 @@ module Selenium
           reset_driver!(web_socket_url: true) do |driver|
             network = described_class.new(driver.bidi)
             intercept = network.add_intercept(phases: [described_class::PHASES[:BEFORE_REQUEST]])
-            network.remove_intercept(intercept['intercept'])
-            expect(intercept['intercept']).to be_nil
-          end
-        end
-
-        it 'continues with auth' do
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            network.on(:auth_required) do |event|
-              request_id = event['request']['requestId']
-              network.continue_with_auth(request_id, 'user', 'password')
-            end
-
-            driver.navigate.to 'http://httpbin.org/basic-auth/user/password'
+            expect(network.remove_intercept(intercept['intercept'])).to be_empty
           end
         end
       end

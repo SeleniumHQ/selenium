@@ -17,9 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative 'session'
-require_relative 'browsing_context'
-
 module Selenium
   module WebDriver
     class BiDi
@@ -38,56 +35,20 @@ module Selenium
           AUTH_REQUIRED: 'authRequired'
         }.freeze
 
-        attr_reader :intercepts
-
         def initialize(bidi)
           @bidi = bidi
-          @session = Session.new(bidi)
-          @intercepts = {}
-        end
-
-        def on(event, &block)
-          event = EVENTS[event] if event.is_a?(Symbol)
-          @bidi.add_callback("network.#{event}", &block)
-        end
-
-        def before_request_sent(&block)
-          @session.subscribe(Events::BEFORE_REQUEST_SENT, &block)
-        end
-
-        def response_started(&block)
-          @session.subscribe(Events::RESPONSE_STARTED, &block)
-        end
-
-        def response_completed(&block)
-          @session.subscribe(Events::RESPONSE_COMPLETED, &block)
-        end
-
-        def on_auth_required(driver, &consumer)
-          browsing_context = BrowsingContext.new(driver: driver, type: :tab)
-          @session.subscribe("network.authRequired", browsing_contexts: browsing_context.id, &consumer)
         end
 
         def auth_required
           @session.subscribe(EVENTS[:AUTH_REQUIRED])
         end
 
-        def fetch_error(&block)
-          subscribe(EVENTS::FETCH_ERROR, &block)
-        end
-
         def add_intercept(phases: [], contexts: nil, url_patterns: nil)
-          intercept = @bidi.send_cmd('network.addIntercept', phases: phases, contexts: contexts, urlPatterns: url_patterns)
-          @intercepts[intercept['intercept']] = intercept
-          intercept
+          @bidi.send_cmd('network.addIntercept', phases: phases, contexts: contexts, urlPatterns: url_patterns)
         end
 
         def remove_intercept(intercept)
           @bidi.send_cmd('network.removeIntercept', intercept: intercept)
-        end
-
-        def clear_auth_handlers
-          @bidi.send_cmd('network.clearAuthHandlers')
         end
 
         def continue_with_auth(request_id, username, password)
@@ -101,30 +62,6 @@ module Selenium
               'password' => password
             }
           )
-        end
-
-        def send_request(method:, url:, headers: nil, body: nil, context: nil)
-          @bidi.send_cmd('network.RequestData', method: method, url: url, headers: headers, body: body, context: context)
-        end
-
-        def fail_request(request_id)
-          @bidi.send_cmd('network.failRequest', request_id: request_id)
-        end
-
-        def cancel_auth(request_id)
-          @bidi.send_cmd('network.cancelAuth', request_id: request_id)
-        end
-
-        def continue_request(params)
-          @bidi.send_cmd('network.continueRequest', **params)
-        end
-
-        def continue_response(params)
-          @bidi.send_cmd('network.continueResponse', params: params)
-        end
-
-        def provide_response(params)
-          @bidi.send_cmd('network.provideResponse', params: params)
         end
       end # Network
     end # BiDi
