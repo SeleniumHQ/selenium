@@ -23,7 +23,7 @@ require_relative '../../../../lib/selenium/webdriver/common/network'
 
 module Selenium
   module WebDriver
-    describe Network, only: { browser: %i[chrome edge firefox] } do
+    describe Network, only: {browser: %i[chrome edge firefox]} do
       let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
       let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
 
@@ -40,6 +40,16 @@ module Selenium
           network = described_class.new(driver)
           id = network.add_auth_handler(username, password)
           network.remove_auth_handler(id)
+          expect(described_class::AUTH_CALLBACKS.count).to be 0
+        end
+      end
+
+      it 'clears all auth handlers' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_auth_handler(username, password)
+          network.add_auth_handler(username, password)
+          network.clear_auth_handlers
           expect(described_class::AUTH_CALLBACKS.count).to be 0
         end
       end

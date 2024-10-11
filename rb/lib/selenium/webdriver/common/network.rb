@@ -41,6 +41,10 @@ module Selenium
         @network.remove_intercept(intercept['intercept'])
         AUTH_CALLBACKS.delete(id)
       end
+
+      def clear_auth_handlers
+        AUTH_CALLBACKS.each_key { |id| remove_auth_handler(id) }
+      end
     end # Network
   end # WebDriver
 end # Selenium

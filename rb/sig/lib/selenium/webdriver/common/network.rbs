@@ -9,6 +9,8 @@ module Selenium
 
       def add_auth_handler: (String username, String password) -> String
 
+      def clear_auth_handlers: -> Hash[nil, nil]
+
       def remove_auth_handler: (String id) -> nil
     end
   end
