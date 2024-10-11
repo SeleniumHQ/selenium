@@ -30,7 +30,7 @@ module Selenium
         it 'adds an intercept' do
           reset_driver!(web_socket_url: true) do |driver|
             network = described_class.new(driver.bidi)
-            intercept = network.add_intercept(phases: [described_class::PHASES[:BEFORE_REQUEST]])
+            intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
             expect(intercept).to_not be_nil
           end
         end
@@ -38,8 +38,24 @@ module Selenium
         it 'removes an intercept' do
           reset_driver!(web_socket_url: true) do |driver|
             network = described_class.new(driver.bidi)
-            intercept = network.add_intercept(phases: [described_class::PHASES[:BEFORE_REQUEST]])
+            intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
             expect(network.remove_intercept(intercept['intercept'])).to be_empty
+          end
+        end
+
+        it 'continues with auth' do
+          username = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first
+          password = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last
+          reset_driver!(web_socket_url: true) do |driver|
+            network = described_class.new(driver.bidi)
+            network.add_intercept(phases: [described_class::PHASES[:auth_required]])
+            network.on(:auth_required) do |event|
+              request_id = event['requestId']
+              network.continue_with_auth(request_id, username, password)
+            end
+
+            driver.navigate.to url_for('basicAuth')
+            expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
           end
         end
       end

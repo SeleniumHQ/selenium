@@ -1,0 +1,15 @@
+module Selenium
+  module WebDriver
+    class Network
+      @network: BiDi::Network
+
+      def initialize: (untyped bridge) -> void
+
+      def add_auth_handler: (untyped username, untyped password) -> untyped
+
+      def remove_auth_handler: (untyped id) -> untyped
+
+      def clear_auth_handlers: () -> untyped
+    end
+  end
+end

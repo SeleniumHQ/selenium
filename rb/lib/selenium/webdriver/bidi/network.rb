@@ -22,25 +22,21 @@ module Selenium
     class BiDi
       class Network
         EVENTS = {
-          BEFORE_REQUEST_SENT: 'network.beforeRequestSent',
-          RESPONSE_STARTED: 'network.responseStarted',
-          RESPONSE_COMPLETED: 'network.responseCompleted',
-          AUTH_REQUIRED: 'network.authRequired',
+          before_request: 'network.beforeRequestSent',
+          response_started: 'network.responseStarted',
+          response_completed: 'network.responseCompleted',
+          auth_required: 'network.authRequired',
           FETCH_ERROR: 'network.fetchError'
         }.freeze
 
         PHASES = {
-          BEFORE_REQUEST: 'beforeRequestSent',
-          RESPONSE_STARTED: 'responseStarted',
-          AUTH_REQUIRED: 'authRequired'
+          before_request: 'beforeRequestSent',
+          response_started: 'responseStarted',
+          auth_required: 'authRequired'
         }.freeze
 
         def initialize(bidi)
           @bidi = bidi
-        end
-
-        def auth_required
-          @session.subscribe(EVENTS[:AUTH_REQUIRED])
         end
 
         def add_intercept(phases: [], contexts: nil, url_patterns: nil)
@@ -62,6 +58,11 @@ module Selenium
               'password' => password
             }
           )
+        end
+
+        def on(event, &block)
+          event = EVENTS[event] if event.is_a?(Symbol)
+          @bidi.add_callback(event, &block)
         end
       end # Network
     end # BiDi

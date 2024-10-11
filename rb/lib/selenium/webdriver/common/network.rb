@@ -31,10 +31,6 @@ module Selenium
       def remove_auth_handler(id)
         @network.remove_auth_handler(id)
       end
-
-      def clear_auth_handlers
-        @network.clear_auth_handlers
-      end
     end # Network
   end # WebDriver
 end # Selenium
