@@ -45,6 +45,7 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
@@ -88,7 +89,7 @@ public class GraphqlHandler implements HttpHandler {
         new SchemaGenerator()
             .makeExecutableSchema(buildTypeDefinitionRegistry(), buildRuntimeWiring());
 
-    Cache<String, PreparsedDocumentEntry> cache =
+    Cache<String, CompletableFuture<PreparsedDocumentEntry>> cache =
         CacheBuilder.newBuilder().maximumSize(1024).build();
 
     graphQl =
@@ -97,7 +98,10 @@ public class GraphqlHandler implements HttpHandler {
                 (executionInput, computeFunction) -> {
                   try {
                     return cache.get(
-                        executionInput.getQuery(), () -> computeFunction.apply(executionInput));
+                        executionInput.getQuery(),
+                        () ->
+                            CompletableFuture.supplyAsync(
+                                () -> computeFunction.apply(executionInput)));
                   } catch (ExecutionException e) {
                     if (e.getCause() instanceof RuntimeException) {
                       throw (RuntimeException) e.getCause();

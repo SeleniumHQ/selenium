@@ -21,6 +21,5 @@ java_library(
         "//java/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
         artifact("com.graphql-java:graphql-java"),
-        artifact("com.graphql-java:java-dataloader"),
     ],
 )
