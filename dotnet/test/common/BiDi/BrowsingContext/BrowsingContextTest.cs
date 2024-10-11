@@ -266,11 +266,12 @@ class BrowsingContextTest : BiDiTestFixture
     {
         await context.NavigateAsync(UrlBuilder.WhereIs("formPage.html"), new() { Wait = ReadinessState.Complete });
 
-        var elements = await context.LocateNodesAsync(new Locator.Css("#checky"));
+        var nodes = await context.LocateNodesAsync(new Locator.Css("#checky"));
 
         var screenshot = await context.CaptureScreenshotAsync(new()
         {
-            Clip = new ClipRectangle.Element(new Modules.Script.SharedReference(elements[0].SharedId))
+            // TODO: Seems Node implements ISharedReference
+            Clip = new ClipRectangle.Element(new Modules.Script.SharedReference(nodes[0].SharedId))
         });
 
         Assert.That(screenshot, Is.Not.Null);
