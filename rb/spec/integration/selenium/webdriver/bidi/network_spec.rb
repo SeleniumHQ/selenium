@@ -31,7 +31,7 @@ module Selenium
           reset_driver!(web_socket_url: true) do |driver|
             network = described_class.new(driver.bidi)
             intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
-            expect(intercept).to_not be_nil
+            expect(intercept).not_to be_nil
           end
         end
 
