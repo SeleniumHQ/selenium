@@ -25,7 +25,8 @@ require_relative '../../../../../lib/selenium/webdriver/bidi/network'
 module Selenium
   module WebDriver
     class BiDi
-      describe Network, only: { browser: %i[chrome edge firefox] } do
+      describe Network, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
+                        only: {browser: %i[chrome edge firefox]} do
 
         it 'adds an intercept' do
           reset_driver!(web_socket_url: true) do |driver|
