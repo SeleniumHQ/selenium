@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -31,8 +31,4 @@ import org.openqa.selenium.WebDriver;
  *
  * @param <T> The return type
  */
-// NB: this originally extended Guava's Function interface since Java didn't have one. To avoid code
-// such as "com.google.common.base.Function condition = ExpectedConditions.elementFound(By);"
-// breaking at compile time, we continue to extend Guava's Function interface.
-public interface ExpectedCondition<T>
-    extends Function<WebDriver, T>, java.util.function.Function<WebDriver, T> {}
+public interface ExpectedCondition<T> extends Function<WebDriver, T> {}
