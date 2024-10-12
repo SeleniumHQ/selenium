@@ -18,6 +18,8 @@
 package org.openqa.selenium;
 
 import java.util.Arrays;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Representations of pressable keys that aren't text. These are stored in the Unicode PUA (Private
@@ -26,6 +28,7 @@ import java.util.Arrays;
  * @see <a
  *     href="http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnK=Search">http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnK=Search</a>
  */
+@NullMarked
 public enum Keys implements CharSequence {
   NULL('\uE000'),
   CANCEL('\uE001'), // ^break
@@ -180,7 +183,7 @@ public enum Keys implements CharSequence {
    * @param key unicode character code
    * @return special key linked to the character code, or null if character is not a special key
    */
-  public static Keys getKeyFromUnicode(char key) {
+  public static @Nullable Keys getKeyFromUnicode(char key) {
     for (Keys unicodeKey : values()) {
       if (unicodeKey.charAt(0) == key) {
         return unicodeKey;

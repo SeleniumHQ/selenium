@@ -18,8 +18,11 @@
 package org.openqa.selenium;
 
 import java.util.Objects;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /** A copy of java.awt.Point, to remove dependency on awt. */
+@NullMarked
 public class Point {
   public int x;
   public int y;
@@ -42,7 +45,7 @@ public class Point {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (!(o instanceof Point)) {
       return false;
     }
