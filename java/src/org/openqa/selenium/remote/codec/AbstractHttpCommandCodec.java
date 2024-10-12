@@ -197,14 +197,15 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(SET_USER_VERIFIED, post(webauthnId + "/uv"));
 
     // Federated Credential Management API
-    defineCommand(CANCEL_DIALOG, post("/fedcm/canceldialog"));
-    defineCommand(SELECT_ACCOUNT, post("/fedcm/selectaccount"));
-    defineCommand(CLICK_DIALOG, post("/fedcm/clickdialogbutton"));
-    defineCommand(GET_ACCOUNTS, get("/fedcm/accountlist"));
-    defineCommand(GET_FEDCM_TITLE, get("/fedcm/gettitle"));
-    defineCommand(GET_FEDCM_DIALOG_TYPE, get("/fedcm/getdialogtype"));
-    defineCommand(SET_DELAY_ENABLED, post("/fedcm/setdelayenabled"));
-    defineCommand(RESET_COOLDOWN, post("/fedcm/resetcooldown"));
+    String fedcm = sessionId + "/fedcm";
+    defineCommand(CANCEL_DIALOG, post(fedcm + "/canceldialog"));
+    defineCommand(SELECT_ACCOUNT, post(fedcm + "/selectaccount"));
+    defineCommand(CLICK_DIALOG, post(fedcm + "/clickdialogbutton"));
+    defineCommand(GET_ACCOUNTS, get(fedcm + "/accountlist"));
+    defineCommand(GET_FEDCM_TITLE, get(fedcm + "/gettitle"));
+    defineCommand(GET_FEDCM_DIALOG_TYPE, get(fedcm + "/getdialogtype"));
+    defineCommand(SET_DELAY_ENABLED, post(fedcm + "/setdelayenabled"));
+    defineCommand(RESET_COOLDOWN, post(fedcm + "/resetcooldown"));
 
     defineCommand(GET_DOWNLOADABLE_FILES, get(sessionId + "/se/files"));
     defineCommand(DOWNLOAD_FILE, post(sessionId + "/se/files"));

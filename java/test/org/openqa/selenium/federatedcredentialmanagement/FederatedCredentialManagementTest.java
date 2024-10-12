@@ -36,7 +36,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 class FederatedCredentialManagementTest extends JupiterTestBase {
 
@@ -81,9 +80,6 @@ class FederatedCredentialManagementTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(
-      value = CHROME,
-      reason = "https://github.com/SeleniumHQ/selenium/pull/12096#issuecomment-2017760822")
   void testDismissDialog() {
     fedcmDriver.setDelayEnabled(false);
     assertNull(fedcmDriver.getFederatedCredentialManagementDialog());
@@ -116,9 +112,6 @@ class FederatedCredentialManagementTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(
-      value = CHROME,
-      reason = "https://github.com/SeleniumHQ/selenium/pull/12096#issuecomment-2017760822")
   void testSelectAccount() {
     fedcmDriver.setDelayEnabled(false);
     assertNull(fedcmDriver.getFederatedCredentialManagementDialog());
