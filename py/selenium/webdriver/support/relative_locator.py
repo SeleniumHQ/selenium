@@ -32,11 +32,12 @@ def with_tag_name(tag_name: str) -> "RelativeBy":
 
     Note: This method may be removed in future versions, please use
     `locate_with` instead.
+
     :Args:
         - tag_name: the DOM tag of element to start searching.
     :Returns:
-        - RelativeBy - use this object to create filters within a
-            `find_elements` call.
+        - RelativeBy: use this object to create filters within a
+              `find_elements` call.
     """
     if not tag_name:
         raise WebDriverException("tag_name can not be null")
@@ -50,8 +51,8 @@ def locate_with(by: ByType, using: str) -> "RelativeBy":
         - by: The value from `By` passed in.
         - using: search term to find the element with.
     :Returns:
-        - RelativeBy - use this object to create filters within a
-            `find_elements` call.
+        - RelativeBy: use this object to create filters within a
+              `find_elements` call.
     """
     assert by is not None, "Please pass in a by argument"
     assert using is not None, "Please pass in a using argument"
@@ -65,9 +66,9 @@ class RelativeBy:
 
     Example:
         lowest = driver.find_element(By.ID, "below")
-
+        
         elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "p").above(lowest))
-
+        
         ids = [el.get_attribute('id') for el in elements]
         assert "above" in ids
         assert "mid" in ids
