@@ -21,6 +21,7 @@ import java.io.UncheckedIOException;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -59,6 +60,7 @@ public class SessionSlot
   private final AtomicBoolean reserved = new AtomicBoolean(false);
   private final boolean supportingCdp;
   private final boolean supportingBiDi;
+  private final AtomicLong connectionCounter;
   private ActiveSession currentSession;
 
   public SessionSlot(EventBus bus, Capabilities stereotype, SessionFactory factory) {
@@ -68,6 +70,7 @@ public class SessionSlot
     this.factory = Require.nonNull("Session factory", factory);
     this.supportingCdp = isSlotSupportingCdp(this.stereotype);
     this.supportingBiDi = isSlotSupportingBiDi(this.stereotype);
+    this.connectionCounter = new AtomicLong();
   }
 
   public UUID getId() {
@@ -112,6 +115,7 @@ public class SessionSlot
       LOG.log(Level.WARNING, "Unable to cleanly close session", e);
     }
     currentSession = null;
+    connectionCounter.set(0);
     release();
     bus.fire(new SessionClosedEvent(id));
     LOG.info(String.format("Stopping session %s", id));
@@ -148,6 +152,7 @@ public class SessionSlot
       if (possibleSession.isRight()) {
         ActiveSession session = possibleSession.right();
         currentSession = session;
+        connectionCounter.set(0);
         return Either.right(session);
       } else {
         return Either.left(possibleSession.left());
@@ -184,5 +189,9 @@ public class SessionSlot
 
   public boolean isRelayServiceUp() {
     return hasRelayFactory() && ((RelaySessionFactory) factory).isServiceUp();
+  }
+
+  public AtomicLong getConnectionCounter() {
+    return connectionCounter;
   }
 }

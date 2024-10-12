@@ -73,6 +73,7 @@ public class NodeOptions {
   public static final int DEFAULT_HEARTBEAT_PERIOD = 60;
   public static final int DEFAULT_SESSION_TIMEOUT = 300;
   public static final int DEFAULT_DRAIN_AFTER_SESSION_COUNT = 0;
+  public static final int DEFAULT_CONNECTION_LIMIT = 10;
   public static final boolean DEFAULT_ENABLE_CDP = true;
   public static final boolean DEFAULT_ENABLE_BIDI = true;
   static final String NODE_SECTION = "node";
@@ -260,6 +261,15 @@ public class NodeOptions {
       return maxSessions;
     }
     return Math.min(maxSessions, DEFAULT_MAX_SESSIONS);
+  }
+
+  public int getConnectionLimitPerSession() {
+    int connectionLimit =
+        config
+            .getInt(NODE_SECTION, "connection-limit-per-session")
+            .orElse(DEFAULT_CONNECTION_LIMIT);
+    Require.positive("Session connection limit", connectionLimit);
+    return connectionLimit;
   }
 
   public Duration getSessionTimeout() {
