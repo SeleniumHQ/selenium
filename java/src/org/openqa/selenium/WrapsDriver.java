@@ -17,10 +17,13 @@
 
 package org.openqa.selenium;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * This interface indicates that the implementing class knows about the driver that contains it and
  * can export it.
  */
+@NullMarked
 @FunctionalInterface
 public interface WrapsDriver {
   /**

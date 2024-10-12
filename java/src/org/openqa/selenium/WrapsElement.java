@@ -17,7 +17,10 @@
 
 package org.openqa.selenium;
 
+import org.jspecify.annotations.NullMarked;
+
 /** Indicates that there is an underlying element that can be used */
+@NullMarked
 @FunctionalInterface
 public interface WrapsElement {
   WebElement getWrappedElement();
