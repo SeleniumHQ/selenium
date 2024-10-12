@@ -206,9 +206,11 @@ class RemotableByTest {
 
   private Response createError(Exception e) {
     Response res = new Response();
-    res.setStatus(errorCodes.toStatusCode(e));
-    res.setState(errorCodes.toState(res.getStatus()));
-    res.setValue(ErrorCodec.createDefault().encode(e));
+    var encoded = ErrorCodec.createDefault().encode(e);
+    @SuppressWarnings("unchecked")
+    Map<String, Object> map = (Map<String, Object>) encoded.get("value");
+    res.setState(map.get("error").toString());
+    res.setValue(e);
     return res;
   }
 

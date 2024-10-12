@@ -79,7 +79,7 @@ class W3CHttpResponseCodecTest {
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
     assertThat(decoded.getStatus()).isEqualTo(ErrorCodes.UNHANDLED_ERROR);
-    assertThat(decoded.getValue()).isEqualTo(responseString);
+    assertThat(decoded.getValue()).isInstanceOf(WebDriverException.class);
   }
 
   @Test
@@ -105,7 +105,7 @@ class W3CHttpResponseCodecTest {
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
     assertThat(decoded.getStatus()).isEqualTo(ErrorCodes.UNHANDLED_ERROR);
-    assertThat(decoded.getValue()).isEqualTo(responseString);
+    assertThat(decoded.getValue()).isInstanceOf(WebDriverException.class);
   }
 
   @Test
