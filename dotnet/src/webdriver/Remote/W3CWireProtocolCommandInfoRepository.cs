@@ -133,6 +133,8 @@ namespace OpenQA.Selenium.Remote
             // local-end implementation of WebDriver.
             this.TryAddCommand(DriverCommand.IsElementDisplayed, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/displayed"));
             this.TryAddCommand(DriverCommand.ElementEquals, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/equals/{other}"));
+            this.TryAddCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"));
+            this.TryAddCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"));
             this.TryAddCommand(DriverCommand.UploadFile, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/file"));
             this.TryAddCommand(DriverCommand.GetDownloadableFiles, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/files"));
             this.TryAddCommand(DriverCommand.DownloadFile, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/files"));

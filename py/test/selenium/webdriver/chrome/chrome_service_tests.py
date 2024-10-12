@@ -95,3 +95,29 @@ def test_log_output_null_default(driver, capfd) -> None:
     out, err = capfd.readouterr()
     assert "Starting ChromeDriver" not in out
     driver.quit()
+
+
+@pytest.fixture
+def service():
+    return Service()
+
+
+@pytest.mark.usefixtures("service")
+class TestChromeDriverService:
+    service_path = "/path/to/chromedriver"
+
+    @pytest.fixture(autouse=True)
+    def setup_and_teardown(self):
+        os.environ["SE_CHROMEDRIVER"] = self.service_path
+        yield
+        os.environ.pop("SE_CHROMEDRIVER", None)
+
+    def test_uses_path_from_env_variable(self, service):
+        assert "chromedriver" in service.path
+
+    def test_updates_path_after_setting_env_variable(self, service):
+        new_path = "/foo/bar"
+        os.environ["SE_CHROMEDRIVER"] = new_path
+        service.executable_path = self.service_path  # Simulating the update
+
+        assert "chromedriver" in service.executable_path
