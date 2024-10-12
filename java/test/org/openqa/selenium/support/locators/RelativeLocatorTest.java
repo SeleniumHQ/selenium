@@ -36,6 +36,20 @@ import org.openqa.selenium.testing.JupiterTestBase;
 class RelativeLocatorTest extends JupiterTestBase {
 
   @Test
+  void shouldBeAbleToFindElementWithToRightOfAndBelowWithBorderCollapseInTable() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    By contactNameForTargetCompany =
+        RelativeLocator.with(By.tagName("td"))
+            .toRightOf(By.xpath("//td[text()='Alfreds Futterkiste']"))
+            .below(By.xpath("//th[text()='Contact']"));
+
+    String actualName = driver.findElement(contactNameForTargetCompany).getText();
+
+    assertThat(actualName).isEqualTo("Maria Anders");
+  }
+
+  @Test
   void shouldBeAbleToFindElementsAboveAnotherWithTagName() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
