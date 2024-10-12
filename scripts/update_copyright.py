@@ -28,7 +28,7 @@ under the License."""
 
     def update(self, files):
         for file in files:
-            with open(file, 'r') as f:
+            with open(file) as f:
                 lines = f.readlines()
 
             index = -1

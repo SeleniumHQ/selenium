@@ -117,8 +117,8 @@ def chrome(selected_version):
     content = """
     http_archive(
         name = "linux_chrome",
-        url = "%s",
-        sha256 = "%s",
+        url = "{}",
+        sha256 = "{}",
         build_file_content = \"\"\"
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -137,7 +137,7 @@ js_library(
 \"\"\",
     )
 
-""" % (
+""".format(
         linux,
         sha,
     )
@@ -147,8 +147,8 @@ js_library(
 
     content += """    http_archive(
         name = "mac_chrome",
-        url = "%s",
-        sha256 = "%s",
+        url = "{}",
+        sha256 = "{}",
         strip_prefix = "chrome-mac-x64",
         patch_cmds = [
             "mv 'Google Chrome for Testing.app' Chrome.app",
@@ -167,7 +167,7 @@ js_library(
 \"\"\",
     )
 
-""" % (
+""".format(
         mac,
         sha,
     )
@@ -206,11 +206,11 @@ def edge():
         content += """
     pkg_archive(
         name = "mac_edge",
-        url = "%s",
-        sha256 = "%s",
-        move = {
-            "MicrosoftEdge-%s.pkg/Payload/Microsoft Edge.app": "Edge.app",
-        },
+        url = "{}",
+        sha256 = "{}",
+        move = {{
+            "MicrosoftEdge-{}.pkg/Payload/Microsoft Edge.app": "Edge.app",
+        }},
         build_file_content = \"\"\"
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -223,7 +223,7 @@ js_library(
 )
 \"\"\",
     )
-""" % (
+""".format(
             mac,
             mac_hash.lower(),
             mac_version,
@@ -233,8 +233,8 @@ js_library(
         content += """
     deb_archive(
         name = "linux_edge",
-        url = "%s",
-        sha256 = "%s",
+        url = "{}",
+        sha256 = "{}",
         build_file_content = \"\"\"
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -252,7 +252,7 @@ js_library(
 )
 \"\"\",
     )
-""" % (
+""".format(
             linux,
             linux_hash.lower()
         )
@@ -397,11 +397,11 @@ def firefox_version_data():
 
 
 def firefox_linux(version):
-    return "https://ftp.mozilla.org/pub/firefox/releases/%s/linux-x86_64/en-US/firefox-%s.tar.bz2" % (version, version)
+    return "https://ftp.mozilla.org/pub/firefox/releases/{}/linux-x86_64/en-US/firefox-{}.tar.bz2".format(version, version)
 
 
 def firefox_mac(version):
-    return "https://ftp.mozilla.org/pub/firefox/releases/%s/mac/en-US/Firefox%%20%s.dmg" % (version, version)
+    return "https://ftp.mozilla.org/pub/firefox/releases/{}/mac/en-US/Firefox%20{}.dmg".format(version, version)
 
 
 def print_firefox(version, workspace_name, sha_linux, sha_mac):

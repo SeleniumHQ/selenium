@@ -38,7 +38,7 @@ def test_download_file(driver, pages):
         driver.download_file(file_name, target_directory)
 
         target_file = os.path.join(target_directory, file_name)
-        with open(target_file, "r") as file:
+        with open(target_file) as file:
             assert "Hello, World!" in file.read()
 
 
