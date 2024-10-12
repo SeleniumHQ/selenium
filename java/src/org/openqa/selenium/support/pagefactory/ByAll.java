@@ -20,6 +20,7 @@ package org.openqa.selenium.support.pagefactory;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
@@ -36,6 +37,7 @@ import org.openqa.selenium.WebElement;
  * will find all elements that match <var>by1</var> and then all elements that match <var>by2</var>.
  * This means that the list of elements returned may not be in document order.
  */
+@NullMarked
 public class ByAll extends By implements Serializable {
 
   private static final long serialVersionUID = 4573668832699497306L;
