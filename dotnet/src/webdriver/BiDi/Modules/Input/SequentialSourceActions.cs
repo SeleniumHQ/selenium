@@ -6,11 +6,15 @@ namespace OpenQA.Selenium.BiDi.Modules.Input;
 
 public interface ISequentialSourceActions : IEnumerable<SourceActions>
 {
-    public ISequentialSourceActions Pause(int duration);
+    ISequentialSourceActions Pause(int duration);
 
-    public ISequentialSourceActions Type(string text);
+    ISequentialSourceActions Type(string text);
+    ISequentialSourceActions KeyDown(char key);
+    ISequentialSourceActions KeyUp(char key);
 
-    public ISequentialSourceActions KeyDown(char key);
+    ISequentialSourceActions PointerDown(int button, PointerDownOptions? options = null);
+    ISequentialSourceActions PointerUp(int button);
+    ISequentialSourceActions PointerMove(int x, int y, PointerMoveOptions? options = null);
 }
 
 public record SequentialSourceActions : ISequentialSourceActions
@@ -37,6 +41,54 @@ public record SequentialSourceActions : ISequentialSourceActions
     public ISequentialSourceActions KeyDown(char key)
     {
         _keyActions.Add(new Key.Down(key));
+
+        return Normalized();
+    }
+
+    public ISequentialSourceActions KeyUp(char key)
+    {
+        _keyActions.Add(new Key.Up(key));
+
+        return Normalized();
+    }
+
+    public ISequentialSourceActions PointerDown(int button, PointerDownOptions? options = null)
+    {
+        _pointerActions.Add(new Pointer.Down(button)
+        {
+            Width = options?.Width,
+            Height = options?.Height,
+            Pressure = options?.Pressure,
+            TangentialPressure = options?.TangentialPressure,
+            Twist = options?.Twist,
+            AltitudeAngle = options?.AltitudeAngle,
+            AzimuthAngle = options?.AzimuthAngle
+        });
+
+        return Normalized();
+    }
+
+    public ISequentialSourceActions PointerUp(int button)
+    {
+        _pointerActions.Add(new Pointer.Up(button));
+
+        return Normalized();
+    }
+
+    public ISequentialSourceActions PointerMove(int x, int y, PointerMoveOptions? options = null)
+    {
+        _pointerActions.Add(new Pointer.Move(x, y)
+        {
+            Duration = options?.Duration,
+            Origin = options?.Origin,
+            Width = options?.Width,
+            Height = options?.Height,
+            Pressure = options?.Pressure,
+            TangentialPressure = options?.TangentialPressure,
+            Twist = options?.Twist,
+            AltitudeAngle = options?.AltitudeAngle,
+            AzimuthAngle = options?.AzimuthAngle
+        });
 
         return Normalized();
     }
@@ -81,4 +133,29 @@ public record SequentialSourceActions : ISequentialSourceActions
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+}
+
+public record PointerDownOptions : IPointerCommonProperties
+{
+    public int? Width { get; set; }
+    public int? Height { get; set; }
+    public double? Pressure { get; set; }
+    public double? TangentialPressure { get; set; }
+    public int? Twist { get; set; }
+    public double? AltitudeAngle { get; set; }
+    public double? AzimuthAngle { get; set; }
+}
+
+public record PointerMoveOptions : IPointerCommonProperties
+{
+    public int? Duration { get; set; }
+    public Origin? Origin { get; set; }
+
+    public int? Width { get; set; }
+    public int? Height { get; set; }
+    public double? Pressure { get; set; }
+    public double? TangentialPressure { get; set; }
+    public int? Twist { get; set; }
+    public double? AltitudeAngle { get; set; }
+    public double? AzimuthAngle { get; set; }
 }
