@@ -106,6 +106,7 @@ namespace OpenQA.Selenium
         public PageSize PageDimensions
         {
             get { return pageSize; }
+            set { pageSize = value; }
         }
 
         /// <summary>
@@ -114,6 +115,7 @@ namespace OpenQA.Selenium
         public Margins PageMargins
         {
             get { return margins; }
+            set { margins = value; }
         }
 
         /// <summary>
