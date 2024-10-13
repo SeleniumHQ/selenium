@@ -40,23 +40,55 @@ class Network:
         self.conn = conn
         self.callbacks = {}
 
+    def continue_response(self, request_id, status_code, headers=None, body=None):
+        params = {
+            'requestId': request_id,
+            'status': status_code
+        }
+        if headers is not None:
+            params['headers'] = headers
+        if body is not None:
+            params['body'] = body
+        self.conn.execute('network.continueResponse', params)
+
+    def continue_request(self, request_id, url=None, method=None, headers=None, postData=None):
+        params = {
+            'requestId': request_id
+        }
+        if url is not None:
+            params['url'] = url
+        if method is not None:
+            params['method'] = method
+        if headers is not None:
+            params['headers'] = headers
+        if postData is not None:
+            params['postData'] = postData
+        self.conn.execute('network.continueRequest', params)
+
     def add_intercept(self, phases=None, contexts=None, url_patterns=None):
         if phases is None:
             phases = []
-        self.conn.execute('network.addIntercept', phases=phases, contexts=contexts, urlPatterns=url_patterns)
+        params = {
+            'phases': phases,
+            'contexts': contexts,
+            'urlPatterns': url_patterns
+        }
+        self.conn.execute('network.addIntercept', params)
 
     def remove_intercept(self, intercept):
-        self.conn.execute('network.removeIntercept', intercept=intercept)
+        self.conn.execute('network.removeIntercept', {'intercept': intercept})
 
     def continue_with_auth(self, request_id, username, password):
         self.conn.execute(
             'network.continueWithAuth',
-            request=request_id,
-            action='provideCredentials',
-            credentials={
-                'type': 'password',
-                'username': username,
-                'password': password
+            {
+                'request': request_id,
+                'action': 'provideCredentials',
+                'credentials': {
+                    'type': 'password',
+                    'username': username,
+                    'password': password
+                }
             }
         )
 

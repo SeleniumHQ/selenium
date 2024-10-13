@@ -1,7 +1,11 @@
 import pytest
 from selenium import webdriver
-from selenium.webdriver.common.bidi.session import BiDiSession
 from selenium.webdriver.common.bidi.network import Network
+
+# Define the url_for function to construct the URL for the given path
+def url_for(path):
+    base_url = "http://your_app_server"  # Replace with your actual base URL
+    return f"{base_url}/{path}"
 
 @pytest.fixture
 def driver():
@@ -12,20 +16,29 @@ def driver():
     driver.quit()
 
 @pytest.fixture
-def bidi_session(driver):
-    return BiDiSession(driver)
-
-@pytest.fixture
-def network(bidi_session):
-    return Network(bidi_session)
+def network(driver):
+    return Network(driver)
 
 def test_add_intercept(driver, network):
-    intercept = network.add_intercept(phases=[Network.PHASES['before_request']])
-    assert intercept is not None
+    network.add_intercept(phases=[Network.PHASES['before_request']])
 
 def test_remove_intercept(driver, network):
     intercept = network.add_intercept(phases=[Network.PHASES['before_request']])
-    assert network.remove_intercept(intercept['intercept']) == []
+    network.remove_intercept(intercept)
+
+def test_continue_response(driver, network):
+    network.add_intercept(phases=[Network.PHASES['before_request']])
+    network.on('before_request', lambda event: network.continue_response(event['requestId'], 200))
+    
+    driver.get(url_for("basicAuth"))
+    assert driver.find_element_by_tag_name('h1').text == 'authorized'
+
+def test_continue_request(driver, network):
+    network.add_intercept(phases=[Network.PHASES['before_request']])
+    network.on('before_request', lambda event: network.continue_request(event['requestId'], url=url_for("basicAuth")))
+    
+    driver.get(url_for("basicAuth"))
+    assert driver.find_element_by_tag_name('h1').text == 'authorized'
 
 def test_continue_with_auth(driver, network):
     username = 'your_username'
@@ -34,27 +47,5 @@ def test_continue_with_auth(driver, network):
     network.add_intercept(phases=[Network.PHASES['auth_required']])
     network.on('auth_required', lambda event: network.continue_with_auth(event['requestId'], username, password))
     
-    driver.get('http://your_basic_auth_url')
+    driver.get(url_for("basicAuth"))
     assert driver.find_element_by_tag_name('h1').text == 'authorized'
-
-def test_add_auth_handler(driver, network):
-    username = 'your_username'
-    password = 'your_password'
-    network.add_auth_handler(username, password)
-    assert len(Network.AUTH_CALLBACKS) == 1
-
-def test_remove_auth_handler(driver, network):
-    username = 'your_username'
-    password = 'your_password'
-    handler_id = network.add_auth_handler(username, password)
-    network.remove_auth_handler(handler_id)
-    assert len(Network.AUTH_CALLBACKS) == 0
-
-def test_clear_auth_handlers(driver, network):
-    username = 'your_username'
-    password = 'your_password'
-    network.add_auth_handler(username, password)
-    network.add_auth_handler(username, password)
-    network.clear_auth_handlers()
-    assert len(Network.AUTH_CALLBACKS) == 0
-

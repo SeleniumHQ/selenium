@@ -666,3 +666,14 @@ py_test_suite(
         ":webserver",
     ] + TEST_DEPS,
 )
+
+py_test(
+    name = "bidi_network_tests",
+    srcs = ["test/selenium/webdriver/common/bidi_network_tests.py"],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        # Add other actual dependencies here
+    ] + TEST_DEPS,
+)
