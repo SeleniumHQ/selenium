@@ -23,6 +23,7 @@ import java.io.Closeable;
 import java.net.URL;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.openqa.selenium.internal.Require;
@@ -31,6 +32,10 @@ import org.openqa.selenium.internal.Require;
 public interface HttpClient extends Closeable, HttpHandler {
 
   WebSocket openSocket(HttpRequest request, WebSocket.Listener listener);
+
+  default CompletableFuture<HttpResponse> executeAsync(HttpRequest req) {
+    return CompletableFuture.supplyAsync(() -> execute(req));
+  }
 
   default void close() {}
 
