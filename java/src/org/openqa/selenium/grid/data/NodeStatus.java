@@ -214,6 +214,7 @@ public class NodeStatus {
     return Objects.equals(this.nodeId, that.nodeId)
         && Objects.equals(this.externalUri, that.externalUri)
         && this.maxSessionCount == that.maxSessionCount
+        && this.sessionTimeout == that.sessionTimeout
         && Objects.equals(this.slots, that.slots)
         && Objects.equals(this.availability, that.availability)
         && Objects.equals(this.version, that.version);
@@ -224,7 +225,7 @@ public class NodeStatus {
     return Objects.hash(nodeId, externalUri, maxSessionCount, slots, version);
   }
 
-  private Map<String, Object> toJson() {
+  public Map<String, Object> toJson() {
     Map<String, Object> toReturn = new TreeMap<>();
     toReturn.put("nodeId", nodeId);
     toReturn.put("externalUri", externalUri);

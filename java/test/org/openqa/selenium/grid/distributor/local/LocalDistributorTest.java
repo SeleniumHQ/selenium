@@ -102,6 +102,7 @@ class LocalDistributorTest {
         LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
             .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
             .maximumConcurrentSessions(2)
+            .sessionTimeout(Duration.ofSeconds(30))
             .build();
 
     wait =
@@ -143,6 +144,7 @@ class LocalDistributorTest {
     NodeStatus distributorNode = nodes.iterator().next();
     assertThat(distributorNode.getNodeId()).isEqualByComparingTo(localNode.getId());
     assertThat(distributorNode.getExternalUri()).isEqualTo(uri);
+    assertThat(distributorNode.getSessionTimeout()).isEqualTo(Duration.ofSeconds(30));
   }
 
   @Test
