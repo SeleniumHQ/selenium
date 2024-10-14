@@ -119,7 +119,7 @@ public class PortProber {
       socket.setReuseAddress(true);
       socket.bind(new InetSocketAddress(bindHost, port));
       return true;
-    } catch (Exception e) {
+    } catch (IOException | RuntimeException e) {
       return false;
     }
   }
