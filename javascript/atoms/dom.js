@@ -1249,6 +1249,9 @@ bot.dom.getOpacityNonIE_ = function(elem) {
   return elemOpacity;
 };
 
+bot.dom.hasShadowDOM_  = function(node) {
+  return node.shadowRoot && node.shadowRoot.constructor.name === 'ShadowRoot';
+};
 
 /**
  * Returns the display parent element of the given node, or null. This method
@@ -1270,7 +1273,7 @@ bot.dom.getParentNodeInComposedDom = function(node) {
   var /**@type {Node}*/ parent = node.parentNode;
 
   // Shadow DOM v1
-  if (parent && parent.shadowRoot && node.assignedSlot !== undefined) {
+  if (parent && bot.dom.hasShadowDOM_(parent) && node.assignedSlot !== undefined) {
     // Can be null on purpose, meaning it has no parent as
     // it hasn't yet been slotted
     return node.assignedSlot ? node.assignedSlot.parentNode : null;
