@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Encodes and Decodes strings as Base64Url encoding.
     /// </summary>
-    public static class Base64UrlEncoder
+    internal static class Base64UrlEncoder
     {
         private const char base64PadCharacter = '=';
         private const string doubleBase64PadCharacter = "==";
