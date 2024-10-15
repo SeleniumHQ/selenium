@@ -201,12 +201,22 @@ namespace OpenQA.Selenium
                 toReturn["shrinkToFit"] = this.shrinkToFit;
             }
 
+            if (this.pageSize == null) 
+            { 
+                this.pageSize = new PageSize(); 
+            }
+            
             if (this.pageSize.Height != DefaultPageHeight || this.pageSize.Width != DefaultPageWidth)
             {
                 Dictionary<string, object> pageSizeDictionary = new Dictionary<string, object>();
                 pageSizeDictionary["width"] = this.pageSize.Width;
                 pageSizeDictionary["height"] = this.pageSize.Height;
                 toReturn["page"] = pageSizeDictionary;
+            }
+
+            if (this.margins == null) 
+            { 
+                this.margins = new Margins(); 
             }
 
             if (this.margins.Top != DefaultMarginSize || this.margins.Bottom != DefaultMarginSize || this.margins.Left != DefaultMarginSize || this.margins.Right != DefaultMarginSize)
