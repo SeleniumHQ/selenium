@@ -20,9 +20,10 @@ const { InterceptPhase } = require('../bidi/interceptPhase')
 const { AddInterceptParameters } = require('../bidi/addInterceptParameters')
 
 class Network {
+  #callbackId = 0
   #driver
   #network
-  #callBackInterceptIdMap = new Map()
+  #authHandlers = new Map()
 
   constructor(driver) {
     this.#driver = driver
@@ -39,39 +40,51 @@ class Network {
       return
     }
     this.#network = await network(this.#driver)
+
+    await this.#network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED))
+
+    await this.#network.authRequired(async (event) => {
+      const requestId = event.request.request
+      const uri = event.request.url
+      const credentials = this.getAuthCredentials(uri)
+      if (credentials !== null) {
+        await this.#network.continueWithAuth(requestId, credentials.username, credentials.password)
+        return
+      }
+
+      await this.#network.continueWithAuthNoCredentials(requestId)
+    })
   }
 
-  async addAuthenticationHandler(username, password) {
+  getAuthCredentials(uri) {
+    for (let [, value] of this.#authHandlers) {
+      if (uri.match(value.uri)) {
+        return value
+      }
+    }
+    return null
+  }
+  async addAuthenticationHandler(username, password, uri = '//') {
     await this.#init()
 
-    const interceptId = await this.#network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED))
+    const id = this.#callbackId++
 
-    const id = await this.#network.authRequired(async (event) => {
-      await this.#network.continueWithAuth(event.request.request, username, password)
-    })
-
-    this.#callBackInterceptIdMap.set(id, interceptId)
+    this.#authHandlers.set(id, { username, password, uri })
     return id
   }
 
   async removeAuthenticationHandler(id) {
     await this.#init()
 
-    const interceptId = this.#callBackInterceptIdMap.get(id)
-
-    await this.#network.removeIntercept(interceptId)
-    await this.#network.removeCallback(id)
-
-    this.#callBackInterceptIdMap.delete(id)
+    if (this.#authHandlers.has(id)) {
+      this.#authHandlers.delete(id)
+    } else {
+      throw Error(`Callback with id ${id} not found`)
+    }
   }
 
   async clearAuthenticationHandlers() {
-    for (const [key, value] of this.#callBackInterceptIdMap.entries()) {
-      await this.#network.removeIntercept(value)
-      await this.#network.removeCallback(key)
-    }
-
-    this.#callBackInterceptIdMap.clear()
+    this.#authHandlers.clear()
   }
 }
 
