@@ -317,8 +317,11 @@ public class ExternalProcess {
    */
   public void shutdown(Duration timeout) {
     try {
-      if (process.supportsNormalTermination()) {
-        process.destroy();
+      // use the handle to prevent closing the stdin, stdout, stderr streams
+      ProcessHandle handle = process.toHandle();
+
+      if (handle.supportsNormalTermination()) {
+        handle.destroy();
 
         try {
           if (process.waitFor(timeout.toMillis(), MILLISECONDS)) {
@@ -330,7 +333,7 @@ public class ExternalProcess {
         }
       }
 
-      process.destroyForcibly();
+      handle.destroyForcibly();
       try {
         process.waitFor(timeout.toMillis(), MILLISECONDS);
       } catch (InterruptedException ex) {

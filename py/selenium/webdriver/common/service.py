@@ -25,6 +25,8 @@ from io import IOBase
 from platform import system
 from subprocess import PIPE
 from time import sleep
+from typing import Optional
+from typing import cast
 from urllib import request
 from urllib.error import URLError
 
@@ -52,23 +54,25 @@ class Service(ABC):
         port: int = 0,
         log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
+        driver_path_env_key: str = None,
         **kwargs,
     ) -> None:
         if isinstance(log_output, str):
-            self.log_output = open(log_output, "a+", encoding="utf-8")
+            self.log_output = cast(IOBase, open(log_output, "a+", encoding="utf-8"))
         elif log_output == subprocess.STDOUT:
-            self.log_output = None
+            self.log_output = cast(typing.Optional[typing.Union[int, IOBase]], None)
         elif log_output is None or log_output == subprocess.DEVNULL:
-            self.log_output = subprocess.DEVNULL
+            self.log_output = cast(typing.Optional[typing.Union[int, IOBase]], subprocess.DEVNULL)
         else:
             self.log_output = log_output
 
-        self._path = executable_path
         self.port = port or utils.free_port()
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.popen_kw = kwargs.pop("popen_kw", {})
         self.creation_flags = self.popen_kw.pop("creation_flags", 0)
         self.env = env or os.environ
+        self.DRIVER_PATH_ENV_KEY = driver_path_env_key
+        self._path = self.env_path() or executable_path
 
     @property
     def service_url(self) -> str:
@@ -82,7 +86,7 @@ class Service(ABC):
 
     @property
     def path(self) -> str:
-        return self._path
+        return self._path or ""
 
     @path.setter
     def path(self, value: str) -> None:
@@ -95,6 +99,8 @@ class Service(ABC):
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
         """
+        if self._path is None:
+            raise WebDriverException("Service path cannot be None.")
         self._start_process(self._path)
 
         count = 0
@@ -201,16 +207,16 @@ class Service(ABC):
         try:
             start_info = None
             if system() == "Windows":
-                start_info = subprocess.STARTUPINFO()
-                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
-                start_info.wShowWindow = subprocess.SW_HIDE
+                start_info = subprocess.STARTUPINFO()  # type: ignore[attr-defined]
+                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW  # type: ignore[attr-defined]
+                start_info.wShowWindow = subprocess.SW_HIDE  # type: ignore[attr-defined]
 
             self.process = subprocess.Popen(
                 cmd,
                 env=self.env,
                 close_fds=close_file_descriptors,
-                stdout=self.log_output,
-                stderr=self.log_output,
+                stdout=cast(typing.Optional[typing.Union[int, typing.IO[typing.Any]]], self.log_output),
+                stderr=cast(typing.Optional[typing.Union[int, typing.IO[typing.Any]]], self.log_output),
                 stdin=PIPE,
                 creationflags=self.creation_flags,
                 startupinfo=start_info,
@@ -227,7 +233,12 @@ class Service(ABC):
             raise
         except OSError as err:
             if err.errno == errno.EACCES:
+                if self._path is None:
+                    raise WebDriverException("Service path cannot be None.")
                 raise WebDriverException(
                     f"'{os.path.basename(self._path)}' executable may have wrong permissions."
                 ) from err
             raise
+
+    def env_path(self) -> Optional[str]:
+        return os.getenv(self.DRIVER_PATH_ENV_KEY, None)

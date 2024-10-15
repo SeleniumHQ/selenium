@@ -28,7 +28,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 /**
  * Implements FedCM's ID assertion endpoint.
  *
- * <p>https://fedidcg.github.io/FedCM/#idp-api-id-assertion-endpoint
+ * <p>https://w3c-fedid.github.io/FedCM/#idp-api-id-assertion-endpoint
  */
 class FedCmIdAssertion implements HttpHandler {
 

@@ -1,7 +1,7 @@
 # Used to create a development image for working on Selenium
 
 # You can find the new timestamped tags here: https://hub.docker.com/r/gitpod/workspace-full/tags
-FROM gitpod/workspace-full:2024-02-19-11-51-41
+FROM gitpod/workspace-full
 
 USER root
 
@@ -21,7 +21,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -qqy && \
     apt-get -qy install python-is-python3 \
-                        dotnet-sdk-6.0 \
+                        dotnet-sdk-8.0 \
                         supervisor \
                         x11vnc \
                         fluxbox \
@@ -50,7 +50,7 @@ RUN wget -nv -O /tmp/noVNC.zip "https://github.com/novnc/noVNC/archive/refs/tags
 
 # Bazel
 
-RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.19.0/bazelisk-linux-amd64 -o /usr/bin/bazelisk && \
+RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.21.0/bazelisk-linux-amd64 -o /usr/bin/bazelisk && \
     chmod 755 /usr/bin/bazelisk && \
     ln -sf /usr/bin/bazelisk /usr/bin/bazel
 

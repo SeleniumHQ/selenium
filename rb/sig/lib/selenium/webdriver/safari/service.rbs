@@ -4,6 +4,7 @@ module Selenium
       class Service < WebDriver::Service
         DEFAULT_PORT: Integer
 
+        DRIVER_PATH_ENV_KEY: String
         EXECUTABLE: String
 
         SHUTDOWN_SUPPORTED: bool

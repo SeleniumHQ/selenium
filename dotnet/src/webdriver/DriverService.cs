@@ -16,7 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal.Logging;
 using OpenQA.Selenium.Remote;
 using System;
 using System.Diagnostics;
@@ -42,7 +41,6 @@ namespace OpenQA.Selenium
         private bool isDisposed;
         private Process driverServiceProcess;
         private TimeSpan initializationTimeout = TimeSpan.FromSeconds(20);
-        private readonly static ILogger logger = Log.GetLogger<DriverService>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverService"/> class.
@@ -238,10 +236,7 @@ namespace OpenQA.Selenium
                 }
                 catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
                 {
-                    if (logger.IsEnabled(LogEventLevel.Trace))
-                    {
-                        logger.Trace(ex.ToString());
-                    }
+                    // Do nothing. The exception is expected, meaning driver service is not initialized.
                 }
 
                 return isInitialized;
