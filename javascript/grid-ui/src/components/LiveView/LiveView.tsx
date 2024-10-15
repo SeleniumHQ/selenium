@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useImperativeHandle, forwardRef } from 'react'
 import RFB from '@novnc/novnc/core/rfb'
 import PasswordDialog from './PasswordDialog'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
@@ -28,7 +28,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert (
   return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />
 })
 
-function LiveView (props) {
+const LiveView = forwardRef((props, ref) => {
   let canvas: any = null
 
   const [open, setOpen] = useState(false)
@@ -48,6 +48,10 @@ function LiveView (props) {
     rfb.disconnect()
     setRfb(null)
   }
+
+  useImperativeHandle(ref, () => ({
+    disconnect
+  }))
 
   const connect = () => {
     disconnect()
@@ -109,6 +113,7 @@ function LiveView (props) {
   }
 
   const handlePasswordDialogClose = () => {
+    disconnect()
     props.onClose()
   }
 
@@ -132,6 +137,7 @@ function LiveView (props) {
       return
     }
     setOpenErrorAlert(false)
+    disconnect()
     props.onClose()
   }
 
@@ -176,6 +182,6 @@ function LiveView (props) {
       </Snackbar>
     </div>
   )
-}
+})
 
 export default LiveView
