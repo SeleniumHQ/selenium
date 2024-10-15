@@ -200,13 +200,8 @@ namespace OpenQA.Selenium
             {
                 toReturn["shrinkToFit"] = this.shrinkToFit;
             }
-
-            if (this.pageSize == null) 
-            { 
-                this.pageSize = new PageSize(); 
-            }
             
-            if (this.pageSize.Height != DefaultPageHeight || this.pageSize.Width != DefaultPageWidth)
+            if (this.pageSize != null && (this.pageSize.Height != DefaultPageHeight || this.pageSize.Width != DefaultPageWidth))
             {
                 Dictionary<string, object> pageSizeDictionary = new Dictionary<string, object>();
                 pageSizeDictionary["width"] = this.pageSize.Width;
@@ -214,12 +209,7 @@ namespace OpenQA.Selenium
                 toReturn["page"] = pageSizeDictionary;
             }
 
-            if (this.margins == null) 
-            { 
-                this.margins = new Margins(); 
-            }
-
-            if (this.margins.Top != DefaultMarginSize || this.margins.Bottom != DefaultMarginSize || this.margins.Left != DefaultMarginSize || this.margins.Right != DefaultMarginSize)
+            if (this.margins != null && (this.margins.Top != DefaultMarginSize || this.margins.Bottom != DefaultMarginSize || this.margins.Left != DefaultMarginSize || this.margins.Right != DefaultMarginSize))
             {
                 Dictionary<string, object> marginsDictionary = new Dictionary<string, object>();
                 marginsDictionary["top"] = this.margins.Top;
