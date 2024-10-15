@@ -48,8 +48,8 @@ class ChangeUserAgentTest extends DevToolsTestBase {
             .collect(
                 Collectors.toMap(cells -> cells.get(0).getText(), cells -> cells.get(1).getText()));
     assertThat(headers)
-        .containsEntry("User-Agent", "Camembert 1.0")
-        .containsEntry("Accept-Language", "da, en-gb;q=0.9, *;q=0.8");
+        .containsEntry("user-agent", "Camembert 1.0")
+        .containsEntry("accept-language", "da, en-gb;q=0.9, *;q=0.8");
 
     Object platform =
         ((JavascriptExecutor) driver).executeScript("return window.navigator.platform");
