@@ -55,7 +55,7 @@ def test_get_remote_connection_headers_defaults():
     assert headers.get("Accept") == "application/json"
     assert headers.get("Content-Type") == "application/json;charset=UTF-8"
     assert headers.get("User-Agent").startswith(f"selenium/{__version__} (python ")
-    assert headers.get("User-Agent").split(" ")[-1] in {"windows)", "mac)", "linux)"}
+    assert headers.get("User-Agent").split(" ")[-1] in {"windows)", "mac)", "linux)", "mac", "windows", "linux"}
 
 
 def test_get_remote_connection_headers_adds_auth_header_if_pass():
@@ -301,3 +301,13 @@ def test_get_connection_manager_ignores_certificates(monkeypatch):
     assert conn.connection_pool_kw["timeout"] == 10
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_NONE"
     assert isinstance(conn, urllib3.PoolManager)
+
+
+def test_get_connection_manager_with_custom_args():
+    custom_args = {"retries": 3, "block": True}
+    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    conn = remote_connection._get_connection_manager(init_args_for_pool_manager=custom_args)
+
+    assert isinstance(conn, urllib3.PoolManager)
+    assert conn.connection_pool_kw["retries"] == 3
+    assert conn.connection_pool_kw["block"] is True

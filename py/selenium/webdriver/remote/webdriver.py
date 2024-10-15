@@ -186,6 +186,7 @@ class WebDriver(BaseWebDriver):
          - file_detector - Pass custom file detector object during instantiation. If None,
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
+         - locator_converter - Custom locator converter to use. Defaults to None.
          - web_element_cls - Custom class to use for web elements. Defaults to WebElement.
         """
 

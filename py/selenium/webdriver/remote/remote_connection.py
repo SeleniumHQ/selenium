@@ -143,9 +143,13 @@ class RemoteConnection:
     )
     _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
 
+    system = platform.system().lower()
+    if system == "darwin":
+        system = "mac"
+
     # Class variables for headers
     extra_headers = None
-    user_agent = f"selenium/{__version__} (python {platform.system().lower()})"
+    user_agent = f"selenium/{__version__} (python {system}"
 
     @classmethod
     def get_timeout(cls):
@@ -200,14 +204,10 @@ class RemoteConnection:
          - keep_alive (Boolean) - Is this a keep-alive connection (default: False)
         """
 
-        system = platform.system().lower()
-        if system == "darwin":
-            system = "mac"
-
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json;charset=UTF-8",
-            "User-Agent": f"selenium/{__version__} (python {system})",
+            "User-Agent": cls.user_agent,
         }
 
         if parsed_url.username:
@@ -241,8 +241,9 @@ class RemoteConnection:
         proxy_without_auth = protocol + no_protocol[len(auth) + 1 :]
         return proxy_without_auth, auth
 
-    def _get_connection_manager(self):
+    def _get_connection_manager(self, **pool_manager_kwargs):
         pool_manager_init_args = {"timeout": self.get_timeout()}
+        pool_manager_init_args.update(pool_manager_kwargs.get("init_args_for_pool_manager", {}))
 
         if self._ignore_certificates:
             pool_manager_init_args["cert_reqs"] = "CERT_NONE"
