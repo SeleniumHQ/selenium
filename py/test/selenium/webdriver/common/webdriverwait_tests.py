@@ -282,6 +282,23 @@ def test_expected_condition_element_to_be_clickable(driver, pages):
     WebDriverWait(driver, 4.5).until(EC.invisibility_of_element_located((By.ID, "clickToHide")))
     assert element.is_displayed() is False
 
+def test_expected_condition_elements_not_overlapping(driver, pages):
+    pages.load("javascriptPage.html")
+    element1 = driver.find_element(By.ID, 'keyUp')
+    element2 = driver.find_element(By.ID, 'keyDown')
+    WebDriverWait(driver, 1).until(EC.elements_not_overlapping(element1,element2))
+    clickToShow = driver.find_element(By.ID, 'clickToShow')
+    clickToShow.click()
+    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "clickToHide")))
+    element1 = driver.find_element(By.ID, 'clickToHide')
+    element2 = driver.find_element(By.ID, 'clickToShowParent')
+    with pytest.raises(TimeoutException):
+        WebDriverWait(driver, 1).until(EC.elements_not_overlapping(element1,element2))
+    element1.click()
+    WebDriverWait(driver, 5).until(EC.elements_not_overlapping(element1,element2))
+    assert element1.is_displayed() is False
+
+
 
 def test_expected_condition_staleness_of(driver, pages):
     pages.load("dynamicallyModifiedPage.html")
