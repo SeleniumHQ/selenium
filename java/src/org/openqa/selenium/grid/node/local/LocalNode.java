@@ -316,7 +316,7 @@ public class LocalNode extends Node {
       }
       // Attempt to stop the session
       slot.stop();
-      this.sessionToDownloadsDir.invalidate(id);
+      this.stop(id);
       // Decrement pending sessions if Node is draining
       if (this.isDraining()) {
         int done = pendingSessions.decrementAndGet();
@@ -765,6 +765,9 @@ public class LocalNode extends Node {
   public void stop(SessionId id) throws NoSuchSessionException {
     Require.nonNull("Session ID", id);
 
+    if (sessionToDownloadsDir.getIfPresent(id) != null) {
+      sessionToDownloadsDir.invalidate(id);
+    }
     SessionSlot slot = currentSessions.getIfPresent(id);
     if (slot == null) {
       throw new NoSuchSessionException("Cannot find session with id: " + id);
