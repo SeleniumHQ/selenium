@@ -52,6 +52,9 @@ import LiveView from '../LiveView/LiveView'
 import SessionData, { createSessionData } from '../../models/session-data'
 
 function descendingComparator<T> (a: T, b: T, orderBy: keyof T): number {
+  if (orderBy === 'sessionDurationMillis') {
+    return Number(b[orderBy]) - Number(a[orderBy])
+  }
   if (b[orderBy] < a[orderBy]) {
     return -1
   }
@@ -94,7 +97,7 @@ const headCells: HeadCell[] = [
   { id: 'id', numeric: false, label: 'Session' },
   { id: 'capabilities', numeric: false, label: 'Capabilities' },
   { id: 'startTime', numeric: false, label: 'Start time' },
-  { id: 'sessionDurationMillis', numeric: false, label: 'Duration' },
+  { id: 'sessionDurationMillis', numeric: true, label: 'Duration' },
   { id: 'nodeUri', numeric: false, label: 'Node URI' }
 ]
 
@@ -170,7 +173,7 @@ function RunningSessions (props) {
   const [rowOpen, setRowOpen] = useState('')
   const [rowLiveViewOpen, setRowLiveViewOpen] = useState('')
   const [order, setOrder] = useState<Order>('asc')
-  const [orderBy, setOrderBy] = useState<keyof SessionData>('startTime')
+  const [orderBy, setOrderBy] = useState<keyof SessionData>('sessionDurationMillis')
   const [selected, setSelected] = useState<string[]>([])
   const [page, setPage] = useState(0)
   const [dense, setDense] = useState(false)
