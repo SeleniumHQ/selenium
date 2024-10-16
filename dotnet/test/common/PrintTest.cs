@@ -23,41 +23,39 @@ namespace OpenQA.Selenium
         {
             var pdf = printer.Print(new PrintOptions());
 
-            Assert.That(pdf.AsBase64EncodedString, Does.Contain(MagicString), "Printed PDF does not contain the expected magic string.");
+            Assert.That(pdf.AsBase64EncodedString, Does.Contain(MagicString));
         }
 
-        //[Test]
-        //[Ignore("Skipped for Chrome because it needs to run headless, a workaround is needed.")]
-        //public void CanPrintTwoPages()
-        //{
-        //    PrintOptions printOptions = new PrintOptions
-        //    {
-        //        PageRanges = "1-2"
-        //    };
+        [Test]
+        public void CanPrintTwoPages()
+        {
+            var options = new PrintOptions();
 
-        //    var pdf = printer.Print(printOptions);
-        //    Assert.That(pdf.Content.Contains(MAGIC_STRING), Is.True, "Printed PDF does not contain the expected magic string.");
-        //}
+            options.AddPageRangeToPrint("1-2");
 
-        //[Test]
-        //[Ignore("Skipped for Chrome because it needs to run headless, a workaround is needed.")]
-        //public void CanPrintWithValidParams()
-        //{
-        //    PrintOptions printOptions = new PrintOptions();
+            var pdf = printer.Print(options);
 
-        //    //set all options
-        //    printOptions.PageRanges = "1";
-        //    printOptions.Orientation = PrintOrientation.Landscape;
-        //    printOptions.PageSize = new PageSize();
-        //    printOptions.Scale = 0.5;
-        //    printOptions.DisplayHeaderFooter = true;
-        //    printOptions.HeaderTemplate = "Header";
-        //    printOptions.FooterTemplate = "Footer";
-        //    printOptions.PrintBackground = true;
-        //    printOptions.shrinkToFit = true;
+            Assert.That(pdf.AsBase64EncodedString, Does.Contain(MagicString));
+        }
 
-        //    var pdf = printer.Print(printOptions);
-        //    Assert.That(pdf.Content.Contains(MAGIC_STRING), Is.True, "Printed PDF does not contain the expected magic string.");
-        //}
+        [Test]
+        public void CanPrintWithMostParams()
+        {
+            var options = new PrintOptions()
+            {
+                Orientation = PrintOrientation.Landscape,
+                ScaleFactor = 0.5,
+                PageDimensions = new PrintOptions.PageSize { Width = 200, Height = 100 },
+                PageMargins = new PrintOptions.Margins { Top = 1, Bottom = 1, Left = 2, Right = 2 },
+                OutputBackgroundImages = true,
+                ShrinkToFit = false
+            };
+
+            options.AddPageRangeToPrint("1-3");
+
+            var pdf = printer.Print(options);
+
+            Assert.That(pdf.AsBase64EncodedString, Does.Contain(MagicString));
+        }
     }
 }
