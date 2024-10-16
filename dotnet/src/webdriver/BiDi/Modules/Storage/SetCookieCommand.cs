@@ -1,6 +1,8 @@
 using OpenQA.Selenium.BiDi.Communication;
 using System;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Storage;
 
 internal class SetCookieCommand(SetCookieCommandParameters @params) : Command<SetCookieCommandParameters>(@params);

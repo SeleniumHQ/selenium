@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Communication;
 
 public abstract class EventHandler(string eventName, Type eventArgsType, IEnumerable<BrowsingContext>? contexts = null)

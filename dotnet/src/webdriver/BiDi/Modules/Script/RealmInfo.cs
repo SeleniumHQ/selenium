@@ -1,36 +1,37 @@
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
 // https://github.com/dotnet/runtime/issues/72604
 //[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-//[JsonDerivedType(typeof(WindowRealmInfo), "window")]
-//[JsonDerivedType(typeof(DedicatedWorkerRealmInfo), "dedicated-worker")]
-//[JsonDerivedType(typeof(SharedWorkerRealmInfo), "shared-worker")]
-//[JsonDerivedType(typeof(ServiceWorkerRealmInfo), "service-worker")]
-//[JsonDerivedType(typeof(WorkerRealmInfo), "worker")]
-//[JsonDerivedType(typeof(PaintWorkletRealmInfo), "paint-worklet")]
-//[JsonDerivedType(typeof(AudioWorkletRealmInfo), "audio-worklet")]
-//[JsonDerivedType(typeof(WorkletRealmInfo), "worklet")]
-public abstract record RealmInfo(BiDi BiDi) : EventArgs(BiDi);
-
-public abstract record BaseRealmInfo(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi);
-
-public record WindowRealmInfo(BiDi BiDi, Realm Realm, string Origin, BrowsingContext.BrowsingContext Context) : BaseRealmInfo(BiDi, Realm, Origin)
+//[JsonDerivedType(typeof(Window), "window")]
+//[JsonDerivedType(typeof(DedicatedWorker), "dedicated-worker")]
+//[JsonDerivedType(typeof(SharedWorker), "shared-worker")]
+//[JsonDerivedType(typeof(ServiceWorker), "service-worker")]
+//[JsonDerivedType(typeof(Worker), "worker")]
+//[JsonDerivedType(typeof(PaintWorklet), "paint-worklet")]
+//[JsonDerivedType(typeof(AudioWorklet), "audio-worklet")]
+//[JsonDerivedType(typeof(Worklet), "worklet")]
+public abstract record RealmInfo(BiDi BiDi, Realm Realm, string Origin) : EventArgs(BiDi)
 {
-    public string? Sandbox { get; set; }
+    public record Window(BiDi BiDi, Realm Realm, string Origin, BrowsingContext.BrowsingContext Context) : RealmInfo(BiDi, Realm, Origin)
+    {
+        public string? Sandbox { get; set; }
+    }
+
+    public record DedicatedWorker(BiDi BiDi, Realm Realm, string Origin, IReadOnlyList<Realm> Owners) : RealmInfo(BiDi, Realm, Origin);
+
+    public record SharedWorker(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
+
+    public record ServiceWorker(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
+
+    public record Worker(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
+
+    public record PaintWorklet(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
+
+    public record AudioWorklet(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
+
+    public record Worklet(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
 }
-
-public record DedicatedWorkerRealmInfo(BiDi BiDi, Realm Realm, string Origin, IReadOnlyList<Realm> Owners) : BaseRealmInfo(BiDi, Realm, Origin);
-
-public record SharedWorkerRealmInfo(BiDi BiDi, Realm Realm, string Origin) : BaseRealmInfo(BiDi, Realm, Origin);
-
-public record ServiceWorkerRealmInfo(BiDi BiDi, Realm Realm, string Origin) : BaseRealmInfo(BiDi, Realm, Origin);
-
-public record WorkerRealmInfo(BiDi BiDi, Realm Realm, string Origin) : BaseRealmInfo(BiDi, Realm, Origin);
-
-public record PaintWorkletRealmInfo(BiDi BiDi, Realm Realm, string Origin) : BaseRealmInfo(BiDi, Realm, Origin);
-
-public record AudioWorkletRealmInfo(BiDi BiDi, Realm Realm, string Origin) : BaseRealmInfo(BiDi, Realm, Origin);
-
-public record WorkletRealmInfo(BiDi BiDi, Realm Realm, string Origin) : BaseRealmInfo(BiDi, Realm, Origin);

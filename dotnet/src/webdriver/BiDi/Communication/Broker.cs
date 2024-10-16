@@ -10,6 +10,8 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Communication;
 
 public class Broker : IAsyncDisposable
@@ -34,7 +36,7 @@ public class Broker : IAsyncDisposable
 
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-    public Broker(BiDi bidi, ITransport transport)
+    internal Broker(BiDi bidi, ITransport transport)
     {
         _bidi = bidi;
         _transport = transport;
@@ -51,7 +53,7 @@ public class Broker : IAsyncDisposable
                 new NavigationConverter(),
                 new InterceptConverter(_bidi),
                 new RequestConverter(_bidi),
-                new ChannelConverter(_bidi),
+                new ChannelConverter(),
                 new HandleConverter(_bidi),
                 new InternalIdConverter(_bidi),
                 new PreloadScriptConverter(_bidi),
@@ -59,6 +61,7 @@ public class Broker : IAsyncDisposable
                 new RealmTypeConverter(),
                 new DateTimeOffsetConverter(),
                 new PrintPageRangeConverter(),
+                new InputOriginConverter(),
                 new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
                 
                 // https://github.com/dotnet/runtime/issues/72604
@@ -68,6 +71,13 @@ public class Broker : IAsyncDisposable
                 new Json.Converters.Polymorphic.RealmInfoConverter(),
                 new Json.Converters.Polymorphic.LogEntryConverter(),
                 //
+
+                // Enumerable
+                new Json.Converters.Enumerable.GetCookiesResultConverter(),
+                new Json.Converters.Enumerable.LocateNodesResultConverter(),
+                new Json.Converters.Enumerable.InputSourceActionsConverter(),
+                new Json.Converters.Enumerable.GetUserContextsResultConverter(),
+                new Json.Converters.Enumerable.GetRealmsResultConverter(),
             }
         };
     }

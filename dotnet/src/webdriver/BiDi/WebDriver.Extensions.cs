@@ -1,6 +1,8 @@
 using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi;
 
 public static class WebDriverExtensions

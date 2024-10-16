@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
 public class PreloadScript : IAsyncDisposable
@@ -17,7 +19,7 @@ public class PreloadScript : IAsyncDisposable
 
     public Task RemoveAsync()
     {
-        return _bidi.ScriptModule.RemovePreloadScriptAsync(this);
+        return _bidi.Script.RemovePreloadScriptAsync(this);
     }
 
     public async ValueTask DisposeAsync()

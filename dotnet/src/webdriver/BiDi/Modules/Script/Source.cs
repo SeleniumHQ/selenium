@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
 public record Source(Realm Realm)

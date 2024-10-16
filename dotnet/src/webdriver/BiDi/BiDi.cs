@@ -1,8 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
 using OpenQA.Selenium.BiDi.Communication.Transport;
+
+#nullable enable
 
 namespace OpenQA.Selenium.BiDi;
 
@@ -38,11 +39,11 @@ public class BiDi : IAsyncDisposable
     }
 
     internal Modules.Session.SessionModule SessionModule => _sessionModule.Value;
-    internal Modules.BrowsingContext.BrowsingContextModule BrowsingContextModule => _browsingContextModule.Value;
+    internal Modules.BrowsingContext.BrowsingContextModule BrowsingContext => _browsingContextModule.Value;
     public Modules.Browser.BrowserModule Browser => _browserModule.Value;
     public Modules.Network.NetworkModule Network => _networkModule.Value;
     internal Modules.Input.InputModule InputModule => _inputModule.Value;
-    internal Modules.Script.ScriptModule ScriptModule => _scriptModule.Value;
+    public Modules.Script.ScriptModule Script => _scriptModule.Value;
     public Modules.Log.LogModule Log => _logModule.Value;
     public Modules.Storage.StorageModule Storage => _storageModule.Value;
 
@@ -60,16 +61,6 @@ public class BiDi : IAsyncDisposable
         return bidi;
     }
 
-    public Task<Modules.BrowsingContext.BrowsingContext> CreateContextAsync(Modules.BrowsingContext.ContextType type, Modules.BrowsingContext.CreateOptions? options = null)
-    {
-        return BrowsingContextModule.CreateAsync(type, options);
-    }
-
-    public Task<IReadOnlyList<Modules.BrowsingContext.BrowsingContextInfo>> GetTreeAsync(Modules.BrowsingContext.GetTreeOptions? options = null)
-    {
-        return BrowsingContextModule.GetTreeAsync(options);
-    }
-
     public Task EndAsync(Modules.Session.EndOptions? options = null)
     {
         return SessionModule.EndAsync(options);
@@ -80,45 +71,5 @@ public class BiDi : IAsyncDisposable
         await _broker.DisposeAsync().ConfigureAwait(false);
 
         _transport?.Dispose();
-    }
-
-    public Task<Subscription> OnContextCreatedAsync(Func<Modules.BrowsingContext.BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
-    {
-        return BrowsingContextModule.OnContextCreatedAsync(handler, options);
-    }
-
-    public Task<Subscription> OnContextCreatedAsync(Action<Modules.BrowsingContext.BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
-    {
-        return BrowsingContextModule.OnContextCreatedAsync(handler, options);
-    }
-
-    public Task<Subscription> OnContextDestroyedAsync(Func<Modules.BrowsingContext.BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
-    {
-        return BrowsingContextModule.OnContextDestroyedAsync(handler, options);
-    }
-
-    public Task<Subscription> OnContextDestroyedAsync(Action<Modules.BrowsingContext.BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
-    {
-        return BrowsingContextModule.OnContextDestroyedAsync(handler, options);
-    }
-
-    public Task<Subscription> OnUserPromptOpenedAsync(Func<Modules.BrowsingContext.UserPromptOpenedEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
-    {
-        return BrowsingContextModule.OnUserPromptOpenedAsync(handler, options);
-    }
-
-    public Task<Subscription> OnUserPromptOpenedAsync(Action<Modules.BrowsingContext.UserPromptOpenedEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
-    {
-        return BrowsingContextModule.OnUserPromptOpenedAsync(handler, options);
-    }
-
-    public Task<Subscription> OnUserPromptClosedAsync(Func<Modules.BrowsingContext.UserPromptClosedEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
-    {
-        return BrowsingContextModule.OnUserPromptClosedAsync(handler, options);
-    }
-
-    public Task<Subscription> OnUserPromptClosedAsync(Action<Modules.BrowsingContext.UserPromptClosedEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
-    {
-        return BrowsingContextModule.OnUserPromptClosedAsync(handler, options);
     }
 }

@@ -1,12 +1,14 @@
 using System.Text.Json.Serialization;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Network;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(BasicAuthCredentials), "password")]
+[JsonDerivedType(typeof(Basic), "password")]
 public abstract record AuthCredentials
 {
-    public static BasicAuthCredentials Basic(string username, string password) => new(username, password);
+    public record Basic(string Username, string Password) : AuthCredentials;
 }
 
-public record BasicAuthCredentials(string Username, string Password) : AuthCredentials;
+

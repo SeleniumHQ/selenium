@@ -7,9 +7,11 @@ using System.Text.Json;
 using System.Text;
 using OpenQA.Selenium.Internal.Logging;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Communication.Transport;
 
-public class WebSocketTransport(Uri _uri) : ITransport, IDisposable
+class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 {
     private readonly static ILogger _logger = Log.GetLogger<WebSocketTransport>();
 
@@ -59,7 +61,7 @@ public class WebSocketTransport(Uri _uri) : ITransport, IDisposable
         {
             if (_logger.IsEnabled(LogEventLevel.Trace))
             {
-                _logger.Trace($"BiDi SND >> {buffer.Length} > {Encoding.UTF8.GetString(buffer)}");
+                _logger.Trace($"BiDi SND >> {Encoding.UTF8.GetString(buffer)}");
             }
 
             await _webSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);

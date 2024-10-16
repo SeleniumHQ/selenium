@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Network;
 
 public sealed class NetworkModule(Broker broker) : Module(broker)
@@ -47,7 +49,7 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
         return intercept;
     }
 
-    public async Task<Intercept> InterceptAuthenticationAsync(Func<AuthRequiredEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
+    public async Task<Intercept> InterceptAuthAsync(Func<AuthRequiredEventArgs, Task> handler, AddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
     {
         var intercept = await AddInterceptAsync([InterceptPhase.AuthRequired], interceptOptions).ConfigureAwait(false);
 
@@ -113,17 +115,17 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
 
     internal async Task ContinueWithAuthAsync(Request request, AuthCredentials credentials, ContinueWithAuthOptions? options = null)
     {
-        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthCredentials(request, credentials)), options).ConfigureAwait(false);
+        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthParameters.Credentials(request, credentials)), options).ConfigureAwait(false);
     }
 
     internal async Task ContinueWithAuthAsync(Request request, ContinueWithDefaultAuthOptions? options = null)
     {
-        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithDefaultAuth(request)), options).ConfigureAwait(false);
+        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthParameters.Default(request)), options).ConfigureAwait(false);
     }
 
     internal async Task ContinueWithAuthAsync(Request request, ContinueWithCancelledAuthOptions? options = null)
     {
-        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithCancelledAuth(request)), options).ConfigureAwait(false);
+        await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthParameters.Cancel(request)), options).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)
@@ -166,7 +168,12 @@ public sealed class NetworkModule(Broker broker) : Module(broker)
         return await Broker.SubscribeAsync("network.fetchError", handler, options).ConfigureAwait(false);
     }
 
-    internal async Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public async Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
+    {
+        return await Broker.SubscribeAsync("network.authRequired", handler, options).ConfigureAwait(false);
+    }
+
+    public async Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("network.authRequired", handler, options).ConfigureAwait(false);
     }

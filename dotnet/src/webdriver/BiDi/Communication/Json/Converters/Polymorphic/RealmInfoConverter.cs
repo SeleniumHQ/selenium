@@ -3,6 +3,8 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
 
 // https://github.com/dotnet/runtime/issues/72604
@@ -14,14 +16,14 @@ internal class RealmInfoConverter : JsonConverter<RealmInfo>
 
         return jsonDocument.RootElement.GetProperty("type").ToString() switch
         {
-            "window" => jsonDocument.Deserialize<WindowRealmInfo>(options),
-            "dedicated-worker" => jsonDocument.Deserialize<DedicatedWorkerRealmInfo>(options),
-            "shared-worker" => jsonDocument.Deserialize<SharedWorkerRealmInfo>(options),
-            "service-worker" => jsonDocument.Deserialize<ServiceWorkerRealmInfo>(options),
-            "worker" => jsonDocument.Deserialize<WorkerRealmInfo>(options),
-            "paint-worklet" => jsonDocument.Deserialize<PaintWorkletRealmInfo>(options),
-            "audio-worklet" => jsonDocument.Deserialize<AudioWorkletRealmInfo>(options),
-            "worklet" => jsonDocument.Deserialize<WorkletRealmInfo>(options),
+            "window" => jsonDocument.Deserialize<RealmInfo.Window>(options),
+            "dedicated-worker" => jsonDocument.Deserialize<RealmInfo.DedicatedWorker>(options),
+            "shared-worker" => jsonDocument.Deserialize<RealmInfo.SharedWorker>(options),
+            "service-worker" => jsonDocument.Deserialize<RealmInfo.ServiceWorker>(options),
+            "worker" => jsonDocument.Deserialize<RealmInfo.Worker>(options),
+            "paint-worklet" => jsonDocument.Deserialize<RealmInfo.PaintWorklet>(options),
+            "audio-worklet" => jsonDocument.Deserialize<RealmInfo.AudioWorklet>(options),
+            "worklet" => jsonDocument.Deserialize<RealmInfo.Worklet>(options),
             _ => null,
         };
     }
