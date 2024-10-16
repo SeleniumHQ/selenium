@@ -241,9 +241,9 @@ class RemoteConnection:
         proxy_without_auth = protocol + no_protocol[len(auth) + 1 :]
         return proxy_without_auth, auth
 
-    def _get_connection_manager(self, **pool_manager_kwargs):
+    def _get_connection_manager(self):
         pool_manager_init_args = {"timeout": self.get_timeout()}
-        pool_manager_init_args.update(pool_manager_kwargs.get("init_args_for_pool_manager", {}))
+        pool_manager_init_args.update(self._init_args_for_pool_manager.get("init_args_for_pool_manager", {}))
 
         if self._ignore_certificates:
             pool_manager_init_args["cert_reqs"] = "CERT_NONE"
@@ -270,10 +270,12 @@ class RemoteConnection:
         keep_alive: bool = False,
         ignore_proxy: bool = False,
         ignore_certificates: bool = False,
+        init_args_for_pool_manager: dict = None,
     ):
         self.keep_alive = keep_alive
         self._url = remote_server_addr
         self._ignore_certificates = ignore_certificates
+        self._init_args_for_pool_manager = init_args_for_pool_manager or {}
 
         # Env var NO_PROXY will override this part of the code
         _no_proxy = os.environ.get("no_proxy", os.environ.get("NO_PROXY"))

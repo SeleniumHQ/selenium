@@ -304,9 +304,9 @@ def test_get_connection_manager_ignores_certificates(monkeypatch):
 
 
 def test_get_connection_manager_with_custom_args():
-    custom_args = {"retries": 3, "block": True}
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
-    conn = remote_connection._get_connection_manager(init_args_for_pool_manager=custom_args)
+    custom_args = {"init_args_for_pool_manager": {"retries": 3, "block": True}}
+    remote_connection = RemoteConnection("http://remote", keep_alive=False, init_args_for_pool_manager=custom_args)
+    conn = remote_connection._get_connection_manager()
 
     assert isinstance(conn, urllib3.PoolManager)
     assert conn.connection_pool_kw["retries"] == 3
