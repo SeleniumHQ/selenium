@@ -23,7 +23,8 @@ require_relative '../../../../lib/selenium/webdriver/common/network'
 
 module Selenium
   module WebDriver
-    describe Network, only: {browser: %i[chrome edge firefox]} do
+    describe Network, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
+                      only: {browser: %i[chrome edge firefox]} do
       let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
       let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
 
