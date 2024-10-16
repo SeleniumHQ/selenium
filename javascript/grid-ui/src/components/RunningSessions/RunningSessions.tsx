@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -52,6 +52,9 @@ import LiveView from '../LiveView/LiveView'
 import SessionData, { createSessionData } from '../../models/session-data'
 
 function descendingComparator<T> (a: T, b: T, orderBy: keyof T): number {
+  if (orderBy === 'sessionDurationMillis') {
+    return Number(b[orderBy]) - Number(a[orderBy])
+  }
   if (b[orderBy] < a[orderBy]) {
     return -1
   }
@@ -94,7 +97,7 @@ const headCells: HeadCell[] = [
   { id: 'id', numeric: false, label: 'Session' },
   { id: 'capabilities', numeric: false, label: 'Capabilities' },
   { id: 'startTime', numeric: false, label: 'Start time' },
-  { id: 'sessionDurationMillis', numeric: false, label: 'Duration' },
+  { id: 'sessionDurationMillis', numeric: true, label: 'Duration' },
   { id: 'nodeUri', numeric: false, label: 'Node URI' }
 ]
 
@@ -170,13 +173,21 @@ function RunningSessions (props) {
   const [rowOpen, setRowOpen] = useState('')
   const [rowLiveViewOpen, setRowLiveViewOpen] = useState('')
   const [order, setOrder] = useState<Order>('asc')
-  const [orderBy, setOrderBy] = useState<keyof SessionData>('startTime')
+  const [orderBy, setOrderBy] = useState<keyof SessionData>('sessionDurationMillis')
   const [selected, setSelected] = useState<string[]>([])
   const [page, setPage] = useState(0)
   const [dense, setDense] = useState(false)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [searchFilter, setSearchFilter] = useState('')
   const [searchBarHelpOpen, setSearchBarHelpOpen] = useState(false)
+  const liveViewRef = useRef(null)
+
+  const handleDialogClose = () => {
+    if (liveViewRef.current) {
+      liveViewRef.current.disconnect()
+    }
+    setRowLiveViewOpen('')
+  }
 
   const handleRequestSort = (event: React.MouseEvent<unknown>,
     property: keyof SessionData) => {
@@ -379,6 +390,7 @@ function RunningSessions (props) {
                                       sx={{ height: '600px' }}
                                     >
                                       <LiveView
+                                        ref={liveViewRef}
                                         url={row.vnc as string}
                                         scaleViewport
                                         onClose={() => setRowLiveViewOpen('')}
@@ -386,7 +398,7 @@ function RunningSessions (props) {
                                     </DialogContent>
                                     <DialogActions>
                                       <Button
-                                        onClick={() => setRowLiveViewOpen('')}
+                                        onClick={handleDialogClose}
                                         color='primary'
                                         variant='contained'
                                       >

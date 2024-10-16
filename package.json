@@ -1,5 +1,6 @@
 {
   "name": "selenium",
+  "packageManager": "pnpm@9.6.0",
   "workspaces": [
     "javascript/grid-ui",
     "javascript/node/selenium-webdriver"
