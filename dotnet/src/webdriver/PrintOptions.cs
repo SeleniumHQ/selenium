@@ -106,14 +106,9 @@ namespace OpenQA.Selenium
         public PageSize PageDimensions
         {
             get { return pageSize; }
-            set 
-            { 
-                if (value == null) 
-                { 
-                    throw new ArgumentNullException("PageDimensions cannot be set to null"); 
-                }
-
-                pageSize = value; 
+            set
+            {
+                pageSize = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
 
@@ -123,14 +118,9 @@ namespace OpenQA.Selenium
         public Margins PageMargins
         {
             get { return margins; }
-            set 
-            { 
-                if (value == null) 
-                { 
-                    throw new ArgumentNullException("PageMargins cannot be set to null"); 
-                }
-
-                margins = value; 
+            set
+            {
+                margins = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
 
@@ -216,7 +206,7 @@ namespace OpenQA.Selenium
             {
                 toReturn["shrinkToFit"] = this.shrinkToFit;
             }
-            
+
             if (this.pageSize.Height != DefaultPageHeight || this.pageSize.Width != DefaultPageWidth)
             {
                 Dictionary<string, object> pageSizeDictionary = new Dictionary<string, object>();
@@ -274,11 +264,6 @@ namespace OpenQA.Selenium
                 get { return height; }
                 set
                 {
-                    if (value == null) 
-                    { 
-                        throw new ArgumentNullException("Height cannot be set to null"); 
-                    }
-
                     if (value < 0)
                     {
                         throw new ArgumentException("Height must be greater than or equal to zero.");
@@ -296,11 +281,6 @@ namespace OpenQA.Selenium
                 get { return width; }
                 set
                 {
-                    if (value == null) 
-                    { 
-                        throw new ArgumentNullException("Width cannot be set to null"); 
-                    }
-
                     if (value < 0)
                     {
                         throw new ArgumentException("Width must be greater than or equal to zero.");
@@ -347,11 +327,6 @@ namespace OpenQA.Selenium
                 get { return top; }
                 set
                 {
-                    if (value == null) 
-                    { 
-                        throw new ArgumentNullException("Top cannot be set to null"); 
-                    }
-
                     if (value < 0)
                     {
                         throw new ArgumentException("Top margin must be greater than or equal to zero.");
@@ -369,11 +344,6 @@ namespace OpenQA.Selenium
                 get { return bottom; }
                 set
                 {
-                    if (value == null) 
-                    { 
-                        throw new ArgumentNullException("Bottom cannot be set to null"); 
-                    }
-
                     if (value < 0)
                     {
                         throw new ArgumentException("Bottom margin must be greater than or equal to zero.");
@@ -391,11 +361,6 @@ namespace OpenQA.Selenium
                 get { return left; }
                 set
                 {
-                    if (value == null) 
-                    { 
-                        throw new ArgumentNullException("Left cannot be set to null"); 
-                    }
-
                     if (value < 0)
                     {
                         throw new ArgumentException("Left margin must be greater than or equal to zero.");
@@ -413,11 +378,6 @@ namespace OpenQA.Selenium
                 get { return right; }
                 set
                 {
-                    if (value == null) 
-                    { 
-                        throw new ArgumentNullException("Right cannot be set to null"); 
-                    }
-
                     if (value < 0)
                     {
                         throw new ArgumentException("Right margin must be greater than or equal to zero.");
