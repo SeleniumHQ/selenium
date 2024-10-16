@@ -243,6 +243,22 @@ class ActionChains:
 
         return self
 
+    def move_to_location(self, x: int, y: int) -> ActionChains:
+        """Moving the mouse to the coordinates.
+
+        :Args:
+         - x: X coordinate to move to, as a positive integer.
+         - y: Y coordinate to move to, as a positive integer.
+        """
+
+        if x < 0 or y < 0:
+            raise ValueError("Coordinates x and y must be non-negative integers") 
+
+        self.w3c_actions.pointer_action.move_to_location(x, y)
+        self.w3c_actions.key_action.pause()
+
+        return self
+
     def move_to_element(self, to_element: WebElement) -> ActionChains:
         """Moving the mouse to the middle of an element.
 
