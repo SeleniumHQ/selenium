@@ -1,9 +1,9 @@
 module Selenium
   module WebDriver
     class Network
-      AUTH_CALLBACKS: Hash[String, String]
-
       @network: BiDi::Network
+
+      attr_reader auth_callbacks: Hash[String, String]
 
       def initialize: (Remote::Bridge bridge) -> void
 

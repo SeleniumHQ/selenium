@@ -20,9 +20,11 @@
 module Selenium
   module WebDriver
     class Network
-      AUTH_CALLBACKS = {}
+      attr_reader :auth_callbacks
+
       def initialize(bridge)
         @network = BiDi::Network.new(bridge.bidi)
+        @auth_callbacks = {}
       end
 
       def add_auth_handler(username, password)
@@ -31,19 +33,19 @@ module Selenium
           request_id = event['requestId']
           @network.continue_with_auth(request_id, username, password)
         end
-        AUTH_CALLBACKS[auth_id] = intercept
+        @auth_callbacks[auth_id] = intercept
 
         auth_id
       end
 
       def remove_auth_handler(id)
-        intercept = AUTH_CALLBACKS[id]
+        intercept = @auth_callbacks[id]
         @network.remove_intercept(intercept['intercept'])
-        AUTH_CALLBACKS.delete(id)
+        @auth_callbacks.delete(id)
       end
 
       def clear_auth_handlers
-        AUTH_CALLBACKS.each_key { |id| remove_auth_handler(id) }
+        @auth_callbacks.each_key { |id| remove_auth_handler(id) }
       end
     end # Network
   end # WebDriver
