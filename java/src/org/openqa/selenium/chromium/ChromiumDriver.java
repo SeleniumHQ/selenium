@@ -212,7 +212,8 @@ public class ChromiumDriver extends RemoteWebDriver
     // Create the actual script we're going to use.
     String scriptToUse =
         String.format(
-            "window.seleniumPinnedScript%s = function(){%s}", Math.abs(script.hashCode()), script);
+            "window.seleniumPinnedScript%s = function(){%s}",
+            Math.abs((long) script.hashCode()), script);
 
     DevTools devTools = getDevTools();
     devTools.createSessionIfThereIsNotOne();
