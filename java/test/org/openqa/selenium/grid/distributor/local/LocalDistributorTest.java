@@ -103,6 +103,7 @@ class LocalDistributorTest {
             .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
             .maximumConcurrentSessions(2)
             .sessionTimeout(Duration.ofSeconds(30))
+            .heartbeatPeriod(Duration.ofSeconds(5))
             .build();
 
     wait =
@@ -145,6 +146,7 @@ class LocalDistributorTest {
     assertThat(distributorNode.getNodeId()).isEqualByComparingTo(localNode.getId());
     assertThat(distributorNode.getExternalUri()).isEqualTo(uri);
     assertThat(distributorNode.getSessionTimeout()).isEqualTo(Duration.ofSeconds(30));
+    assertThat(distributorNode.getHeartbeatPeriod()).isEqualTo(Duration.ofSeconds(5));
   }
 
   @Test
