@@ -149,7 +149,7 @@ class RemoteConnection:
 
     # Class variables for headers
     extra_headers = None
-    user_agent = f"selenium/{__version__} (python {system}"
+    user_agent = f"selenium/{__version__} (python {system})"
 
     @classmethod
     def get_timeout(cls):
