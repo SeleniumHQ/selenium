@@ -60,7 +60,7 @@ def locate_with(by: ByType, using: str) -> "RelativeBy":
 
 class RelativeBy:
     """Gives the opportunity to find elements based on their relative location
-    on the page from a root elelemt. It is recommended that you use the helper
+    on the page from a root element. It is recommended that you use the helper
     function to create it.
 
     Example:
@@ -157,6 +157,78 @@ class RelativeBy:
             raise WebDriverException("Element or locator must be given when calling to_right_of method")
 
         self.filters.append({"kind": "right", "args": [element_or_locator]})
+        return self
+
+    @overload
+    def straight_above(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
+
+    @overload
+    def straight_above(self, element_or_locator: None = None) -> "NoReturn": ...
+
+    def straight_above(self, element_or_locator: Union[WebElement, LocatorType, None] = None) -> "RelativeBy":
+        """Add a filter to look for elements above.
+
+        :Args:
+            - element_or_locator: Element to look above
+        """
+        if not element_or_locator:
+            raise WebDriverException("Element or locator must be given when calling above method")
+
+        self.filters.append({"kind": "straightAbove", "args": [element_or_locator]})
+        return self
+
+    @overload
+    def straight_below(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
+
+    @overload
+    def straight_below(self, element_or_locator: None = None) -> "NoReturn": ...
+
+    def straight_below(self, element_or_locator: Union[WebElement, Dict, None] = None) -> "RelativeBy":
+        """Add a filter to look for elements below.
+
+        :Args:
+            - element_or_locator: Element to look below
+        """
+        if not element_or_locator:
+            raise WebDriverException("Element or locator must be given when calling below method")
+
+        self.filters.append({"kind": "straightBelow", "args": [element_or_locator]})
+        return self
+
+    @overload
+    def straight_left_of(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
+
+    @overload
+    def straight_left_of(self, element_or_locator: None = None) -> "NoReturn": ...
+
+    def straight_left_of(self, element_or_locator: Union[WebElement, Dict, None] = None) -> "RelativeBy":
+        """Add a filter to look for elements to the left of.
+
+        :Args:
+            - element_or_locator: Element to look to the left of
+        """
+        if not element_or_locator:
+            raise WebDriverException("Element or locator must be given when calling to_left_of method")
+
+        self.filters.append({"kind": "straightLeft", "args": [element_or_locator]})
+        return self
+
+    @overload
+    def straight_right_of(self, element_or_locator: Union[WebElement, LocatorType]) -> "RelativeBy": ...
+
+    @overload
+    def straight_right_of(self, element_or_locator: None = None) -> "NoReturn": ...
+
+    def straight_right_of(self, element_or_locator: Union[WebElement, Dict, None] = None) -> "RelativeBy":
+        """Add a filter to look for elements right of.
+
+        :Args:
+            - element_or_locator: Element to look right of
+        """
+        if not element_or_locator:
+            raise WebDriverException("Element or locator must be given when calling to_right_of method")
+
+        self.filters.append({"kind": "straightRight", "args": [element_or_locator]})
         return self
 
     @overload
