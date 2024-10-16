@@ -57,5 +57,17 @@ namespace OpenQA.Selenium
 
             Assert.That(pdf.AsBase64EncodedString, Does.Contain(MagicString));
         }
+
+        [Test]
+        public void PageSizeCannotBeNull()
+        {
+            assert.That(() => printer.Print(new PrintOptions { PageDimensions = null }), Throws.InstanceOf<ArgumentNullException>());
+        }
+
+        [Test]
+        public void MarginsCannotBeNull()
+        {
+            assert.That(() => printer.Print(new PrintOptions { PageMargins = null }), Throws.InstanceOf<ArgumentNullException>());
+        }
     }
 }

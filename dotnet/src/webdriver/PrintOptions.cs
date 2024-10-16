@@ -106,7 +106,15 @@ namespace OpenQA.Selenium
         public PageSize PageDimensions
         {
             get { return pageSize; }
-            set { pageSize = value; }
+            set 
+            { 
+                if (value == null) 
+                { 
+                    throw new ArgumentNullException("PageDimensions cannot be set to null"); 
+                }
+
+                pageSize = value; 
+            }
         }
 
         /// <summary>
@@ -115,7 +123,15 @@ namespace OpenQA.Selenium
         public Margins PageMargins
         {
             get { return margins; }
-            set { margins = value; }
+            set 
+            { 
+                if (value == null) 
+                { 
+                    throw new ArgumentNullException("PageMargins cannot be set to null"); 
+                }
+
+                margins = value; 
+            }
         }
 
         /// <summary>
@@ -201,7 +217,7 @@ namespace OpenQA.Selenium
                 toReturn["shrinkToFit"] = this.shrinkToFit;
             }
             
-            if (this.pageSize != null && (this.pageSize.Height != DefaultPageHeight || this.pageSize.Width != DefaultPageWidth))
+            if (this.pageSize.Height != DefaultPageHeight || this.pageSize.Width != DefaultPageWidth)
             {
                 Dictionary<string, object> pageSizeDictionary = new Dictionary<string, object>();
                 pageSizeDictionary["width"] = this.pageSize.Width;
@@ -209,7 +225,7 @@ namespace OpenQA.Selenium
                 toReturn["page"] = pageSizeDictionary;
             }
 
-            if (this.margins != null && (this.margins.Top != DefaultMarginSize || this.margins.Bottom != DefaultMarginSize || this.margins.Left != DefaultMarginSize || this.margins.Right != DefaultMarginSize))
+            if (this.margins.Top != DefaultMarginSize || this.margins.Bottom != DefaultMarginSize || this.margins.Left != DefaultMarginSize || this.margins.Right != DefaultMarginSize)
             {
                 Dictionary<string, object> marginsDictionary = new Dictionary<string, object>();
                 marginsDictionary["top"] = this.margins.Top;
@@ -258,6 +274,11 @@ namespace OpenQA.Selenium
                 get { return height; }
                 set
                 {
+                    if (value == null) 
+                    { 
+                        throw new ArgumentNullException("Height cannot be set to null"); 
+                    }
+
                     if (value < 0)
                     {
                         throw new ArgumentException("Height must be greater than or equal to zero.");
@@ -275,6 +296,11 @@ namespace OpenQA.Selenium
                 get { return width; }
                 set
                 {
+                    if (value == null) 
+                    { 
+                        throw new ArgumentNullException("Width cannot be set to null"); 
+                    }
+
                     if (value < 0)
                     {
                         throw new ArgumentException("Width must be greater than or equal to zero.");
@@ -321,6 +347,11 @@ namespace OpenQA.Selenium
                 get { return top; }
                 set
                 {
+                    if (value == null) 
+                    { 
+                        throw new ArgumentNullException("Top cannot be set to null"); 
+                    }
+
                     if (value < 0)
                     {
                         throw new ArgumentException("Top margin must be greater than or equal to zero.");
@@ -338,6 +369,11 @@ namespace OpenQA.Selenium
                 get { return bottom; }
                 set
                 {
+                    if (value == null) 
+                    { 
+                        throw new ArgumentNullException("Bottom cannot be set to null"); 
+                    }
+
                     if (value < 0)
                     {
                         throw new ArgumentException("Bottom margin must be greater than or equal to zero.");
@@ -355,6 +391,11 @@ namespace OpenQA.Selenium
                 get { return left; }
                 set
                 {
+                    if (value == null) 
+                    { 
+                        throw new ArgumentNullException("Left cannot be set to null"); 
+                    }
+
                     if (value < 0)
                     {
                         throw new ArgumentException("Left margin must be greater than or equal to zero.");
@@ -372,6 +413,11 @@ namespace OpenQA.Selenium
                 get { return right; }
                 set
                 {
+                    if (value == null) 
+                    { 
+                        throw new ArgumentNullException("Right cannot be set to null"); 
+                    }
+
                     if (value < 0)
                     {
                         throw new ArgumentException("Right margin must be greater than or equal to zero.");
