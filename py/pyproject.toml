@@ -19,3 +19,45 @@ markers = [
 ]
 python_files = ["test_*.py", "*_test.py"]
 testpaths = ["test"]
+
+# mypy global options
+[tool.mypy]
+# The aim in future here is we would be able to turn (most) of these flags on, however the typing technical
+# debt is quite colossal right now.  For now we should maybe get everything working with the config here
+# then look at going after partially or completely untyped defs as a phase-2.
+files = "selenium"
+# warn about per-module sections in the config file that do not match any files processed.
+warn_unused_configs = true
+# disallows subclassing of typing.Any.
+disallow_subclassing_any = false
+# disallow usage of generic types that do not specify explicit type parameters.
+disallow_any_generics = false
+# disallow calling functions without type annotations from functions that have type annotations.
+disallow_untyped_calls = false
+# disallow defining functions without type annotations or with incomplete annotations.
+disallow_untyped_defs = false
+# disallow defining functions with incomplete type annotations.
+disallow_incomplete_defs = false
+# type-checks the interior of functions without type annotations.
+check_untyped_defs = false
+# reports an error whenever a function with type annotations is decorated with a decorator without annotations.
+disallow_untyped_decorators = false
+# changes the treatment of arguments with a default value of None by not implicitly making their type `typing.Optional`.
+no_implicit_optional = false
+# warns about casting an expression to it's inferred type.
+warn_redundant_casts = true
+# warns about unneeded `# type: ignore` comments.
+warn_unused_ignores = true
+# warns when returning a value with typing.Any from a function with a non typing.Any return type.
+warn_return_any = false
+# Shows a warning when encountering any code inferred to be unreachable after performing type analysis.
+warn_unreachable = false
+
+# mypy module specific options
+[[tool.mypy.trio_websocket]]
+# suppress error messages about imports that cannot be resolved.
+ignore_missing_imports = true
+
+[[tool.mypy._winreg]]
+# suppress error messages about imports that cannot be resolved.
+ignore_missing_imports = true
