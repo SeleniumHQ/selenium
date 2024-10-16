@@ -113,6 +113,7 @@ module Selenium
       def stop_server
         connect_to_server do |http|
           headers = WebDriver::Remote::Http::Common::DEFAULT_HEADERS.dup
+          WebDriver.logger.debug("Sending shutdown request to server", id: :driver_service)
           http.get('/shutdown', headers)
         end
       end
