@@ -88,6 +88,8 @@ namespace OpenQA.Selenium
         public string scrollFrameOutOfViewport = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html");
         public string scrollFrameInViewport = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/frame_with_nested_scrolling_frame.html");
 
+        public string printPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("printPage.html");
+
         protected IWebDriver driver;
 
         public IWebDriver DriverInstance
