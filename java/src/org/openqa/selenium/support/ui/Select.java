@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -66,6 +64,22 @@ public class Select implements ISelect, WrapsElement {
   @Override
   public boolean isMultiple() {
     return isMulti;
+  }
+
+  /**
+   * @return This is done by checking the value of attributes in "visibility", "display", "opacity"
+   * Return false if visibility is set to 'hidden', display is 'none', or opacity is 0 or 0.0.
+   */
+  private boolean hasCssPropertyAndVisible(WebElement webElement) {
+    List<String> cssValueCandidates = Arrays.asList(new String[]{"hidden", "none", "0", "0.0"});
+    String[] cssPropertyCandidates = new String[]{"visibility", "display", "opacity"};
+
+    for (String property : cssPropertyCandidates) {
+        String cssValue = webElement.getCssValue(property);
+        if (cssValueCandidates.contains(cssValue)) return false;
+    }
+
+    return true;
   }
 
   /**
@@ -140,6 +154,70 @@ public class Select implements ISelect, WrapsElement {
 
       for (WebElement option : candidates) {
         if (trimmed.equals(option.getText().trim())) {
+          setSelected(option, true);
+          if (!isMultiple()) {
+            return;
+          }
+          matched = true;
+        }
+      }
+    }
+
+    if (!matched) {
+      throw new NoSuchElementException("Cannot locate option with text: " + text);
+    }
+  }
+
+  /**
+   * Selects all options that display text matching or containing the provided argument.
+   * This method first attempts to find an exact match and, if not found, will then attempt
+   * to find options that contain the specified text as a substring.
+   *
+   * For example, when given "Bar", this would select an option like:
+   *
+   * <p>&lt;option value="foo"&gt;Bar&lt;/option&gt;
+   *
+   * And also select an option like:
+   *
+   * <p>&lt;option value="baz"&gt;FooBar&lt;/option&gt; or &lt;option value="baz"&gt;1년납&lt;/option&gt; when "1년" is provided.
+   *
+   * @param text The visible text to match against. It can be a full or partial match of the option text.
+   * @throws NoSuchElementException If no matching option elements are found
+   */
+  @Override
+  public void selectByContainsVisibleText(String text) {
+    assertSelectIsEnabled();
+    assertSelectIsVisible();
+
+    // try to find the option via XPATH ...
+    List<WebElement> options =
+      element.findElements(
+        By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
+
+    for (WebElement option : options) {
+      if (!hasCssPropertyAndVisible(option)) throw new NoSuchElementException("Invisible option with text: " + text);
+      setSelected(option, true);
+      if (!isMultiple()) {
+        return;
+      }
+    }
+
+    boolean matched = !options.isEmpty();
+    if (!matched) {
+      String searchText = text.contains(" ") ? getLongestSubstringWithoutSpace(text) : text;
+
+      List<WebElement> candidates;
+      if (searchText.isEmpty()) {
+        candidates = element.findElements(By.tagName("option"));
+      } else {
+        candidates = element.findElements(
+          By.xpath(".//option[contains(., " + Quotes.escape(searchText) + ")]"));
+      }
+
+      String trimmed = text.trim();
+      for (WebElement option : candidates) {
+        if (option.getText().contains(trimmed)) {
+          if (!hasCssPropertyAndVisible(option)) throw new NoSuchElementException("Invisible option with text: " + text);
           setSelected(option, true);
           if (!isMultiple()) {
             return;
@@ -282,6 +360,27 @@ public class Select implements ISelect, WrapsElement {
     }
   }
 
+  @Override
+  public void deSelectByContainsVisibleText(String text) {
+    if (!isMultiple()) {
+      throw new UnsupportedOperationException("You may only deselect options of a multi-select");
+    }
+
+    String trimmed = text.trim();
+    List<WebElement> options =
+      element.findElements(
+        By.xpath(".//option[contains(., " + Quotes.escape(trimmed) + ")]"));
+
+    if (options.isEmpty()) {
+      throw new NoSuchElementException("Cannot locate option with text: " + text);
+    }
+
+    for (WebElement option : options) {
+      if (!hasCssPropertyAndVisible(option)) throw new NoSuchElementException("Invisible option with text: " + text);
+      setSelected(option, false);
+    }
+  }
+
   private List<WebElement> findOptionsByValue(String value) {
     List<WebElement> options =
         element.findElements(By.xpath(".//option[@value = " + Quotes.escape(value) + "]"));
@@ -325,6 +424,12 @@ public class Select implements ISelect, WrapsElement {
   private void assertSelectIsEnabled() {
     if (!element.isEnabled()) {
       throw new UnsupportedOperationException("You may not select an option in disabled select");
+    }
+  }
+
+  private void assertSelectIsVisible() {
+    if (!hasCssPropertyAndVisible(element)) {
+      throw new UnsupportedOperationException("You may not select an option in invisible select");
     }
   }
 

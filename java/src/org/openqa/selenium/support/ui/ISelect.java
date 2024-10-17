@@ -61,6 +61,21 @@ public interface ISelect {
   void selectByVisibleText(String text);
 
   /**
+   * Select all options that display text matching or containing the argument. That is, when given "Bar"
+   * this would select an option like:
+   *
+   * <p>&lt;option value="foo"&gt;Bar&lt;/option&gt;
+   *
+   * Additionally, if no exact match is found, this will attempt to select options that contain the
+   * argument as a substring. For example, when given "1년", this would select an option like:
+   *
+   * <p>&lt;option value="bar"&gt;1년납&lt;/option&gt;
+   *
+   * @param text The visible text to match or partially match against
+   */
+  void selectByContainsVisibleText(String text);
+
+  /**
    * Select the option at the given index. This is done by examining the "index" attribute of an
    * element, and not merely by counting.
    *
@@ -110,4 +125,6 @@ public interface ISelect {
    * @param text The visible text to match against
    */
   void deselectByVisibleText(String text);
+
+  void deSelectByContainsVisibleText(String text);
 }

@@ -136,6 +136,23 @@ class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
+  void shouldAllowOptionsToBeSelectedByContainsVisibleText() {
+    WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
+
+    Select select = new Select(selectElement);
+    select.selectByContainsVisibleText("select");
+    WebElement firstSelected = select.getFirstSelectedOption();
+    int selectedOptionCount = select.getAllSelectedOptions().size();
+
+    assertThat(firstSelected.getText()).isEqualTo("select_1");
+    assertThat(selectedOptionCount).isEqualTo(4);
+
+    select.deselectAll();
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> select.selectByContainsVisibleText("select_12"));
+  }
+
+  @Test
   @Ignore(ALL)
   public void shouldNotAllowInvisibleOptionsToBeSelectedByVisibleText() {
     WebElement selectElement = driver.findElement(By.id("invisi_select"));
@@ -143,6 +160,24 @@ class SelectElementTest extends JupiterTestBase {
 
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> select.selectByVisibleText("Apples"));
+  }
+
+  @Test
+  void shouldNotAllowInvisibleSelectElementToBeSelectedByContainsVisibleText() {
+    WebElement selectElement = driver.findElement(By.id("invisi_select"));
+    Select select = new Select(selectElement);
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> select.selectByContainsVisibleText("Apples"));
+  }
+
+  @Test
+  void shouldNotAllowInvisibleOptionsToBeSelectedByContainsVisibleText() {
+    WebElement selectElement = driver.findElement(By.id("invisible_multi_select"));
+    Select select = new Select(selectElement);
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> select.selectByContainsVisibleText("Apples"));
   }
 
   @Test
@@ -244,6 +279,15 @@ class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
+  void shouldAllowUserToDeselectOptionsByContainsVisibleText() {
+    WebElement selectElement = driver.findElement(By.name("multi"));
+    Select select = new Select(selectElement);
+    select.deSelectByContainsVisibleText("Egg");
+
+    assertThat(select.getAllSelectedOptions()).hasSize(1);
+  }
+
+  @Test
   @Ignore(ALL)
   public void shouldNotAllowUserToDeselectOptionsByInvisibleText() {
     WebElement selectElement = driver.findElement(By.id("invisi_select"));
@@ -251,6 +295,24 @@ class SelectElementTest extends JupiterTestBase {
 
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> select.deselectByVisibleText("Apples"));
+  }
+
+  @Test
+  void shouldNotAllowUserDeselectOptionsByContainsText() {
+    WebElement selectElement = driver.findElement(By.name("multi"));
+    Select select = new Select(selectElement);
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> select.deSelectByContainsVisibleText("Eggs_"));
+  }
+
+  @Test
+  void shouldNotAllowUserDeselectOptionsByContainsInvisibleText() {
+    WebElement selectElement = driver.findElement(By.id("invisible_multi_select"));
+    Select select = new Select(selectElement);
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> select.deSelectByContainsVisibleText("Apples"));
   }
 
   @Test
@@ -300,6 +362,15 @@ class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
+  void shouldThrowExceptionOnDeselectByContainsTextIfOptionDoesNotExist() {
+    WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
+    Select select = new Select(selectElement);
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> select.deSelectByContainsVisibleText("not there"));
+  }
+
+  @Test
   void shouldThrowExceptionOnDeselectByIndexIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
@@ -333,5 +404,14 @@ class SelectElementTest extends JupiterTestBase {
 
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> select.deselectByVisibleText("Four"));
+  }
+
+  @Test
+  void shouldNotAllowUserToDeselectByContainsTextDoesNotSupportMultipleSelections() {
+    WebElement selectElement = driver.findElement(By.name("selectomatic"));
+    Select select = new Select(selectElement);
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> select.deSelectByContainsVisibleText("Four"));
   }
 }
