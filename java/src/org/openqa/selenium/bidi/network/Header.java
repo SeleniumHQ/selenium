@@ -25,7 +25,7 @@ public class Header {
   private final String name;
   private final BytesValue value;
 
-  private Header(String name, BytesValue value) {
+  public Header(String name, BytesValue value) {
     this.name = name;
     this.value = value;
   }

@@ -28,7 +28,7 @@ public class ResponseData {
   private final String url;
 
   private final String protocol;
-  private final long status;
+  private final int status;
   private final String statusText;
   private final boolean fromCache;
   private final List<Header> headers;
@@ -42,7 +42,7 @@ public class ResponseData {
   private ResponseData(
       String url,
       String protocol,
-      long status,
+      int status,
       String statusText,
       boolean fromCache,
       List<Header> headers,
@@ -69,7 +69,7 @@ public class ResponseData {
   public static ResponseData fromJson(JsonInput input) {
     String url = null;
     String protocol = null;
-    long status = 0;
+    int status = 0;
     String statusText = null;
     boolean fromCache = false;
     List<Header> headers = new ArrayList<>();
@@ -89,7 +89,7 @@ public class ResponseData {
           protocol = input.read(String.class);
           break;
         case "status":
-          status = input.read(Long.class);
+          status = input.read(Integer.class);
           break;
         case "statusText":
           statusText = input.read(String.class);
@@ -150,7 +150,7 @@ public class ResponseData {
     return protocol;
   }
 
-  public long getStatus() {
+  public int getStatus() {
     return status;
   }
 

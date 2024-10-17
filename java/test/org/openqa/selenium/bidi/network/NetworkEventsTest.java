@@ -86,7 +86,7 @@ class NetworkEventsTest extends JupiterTestBase {
       assertThat(response.getRequest().getUrl()).isNotNull();
       assertThat(response.getResponseData().getHeaders().size()).isGreaterThanOrEqualTo(1);
       assertThat(response.getResponseData().getUrl()).contains("/bidi/logEntryAdded.html");
-      assertThat(response.getResponseData().getStatus()).isEqualTo(200L);
+      assertThat(response.getResponseData().getStatus()).isEqualTo(200);
     }
   }
 
@@ -108,7 +108,7 @@ class NetworkEventsTest extends JupiterTestBase {
       assertThat(response.getRequest().getUrl()).isNotNull();
       assertThat(response.getResponseData().getHeaders().size()).isGreaterThanOrEqualTo(1);
       assertThat(response.getResponseData().getUrl()).contains("/bidi/logEntryAdded.html");
-      assertThat(response.getResponseData().getStatus()).isEqualTo(200L);
+      assertThat(response.getResponseData().getStatus()).isEqualTo(200);
     }
   }
 
@@ -153,7 +153,7 @@ class NetworkEventsTest extends JupiterTestBase {
       assertThat(response.getRequest().getUrl()).isNotNull();
       assertThat(response.getResponseData().getHeaders().size()).isGreaterThanOrEqualTo(1);
       assertThat(response.getResponseData().getUrl()).contains("basicAuth");
-      assertThat(response.getResponseData().getStatus()).isEqualTo(401L);
+      assertThat(response.getResponseData().getStatus()).isEqualTo(401);
     }
   }
 
