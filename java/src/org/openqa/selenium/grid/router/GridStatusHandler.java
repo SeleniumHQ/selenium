@@ -135,7 +135,19 @@ class GridStatusHandler implements HttpHandler {
 
       List<Map<String, Object>> nodeResults =
           status.getNodes().stream()
-              .map(node -> new ImmutableMap.Builder<String, Object>().putAll(node.toJson()).build())
+              .map(
+                  node ->
+                      new ImmutableMap.Builder<String, Object>()
+                          .put("id", node.getNodeId())
+                          .put("uri", node.getExternalUri())
+                          .put("maxSessions", node.getMaxSessionCount())
+                          .put("sessionTimeout", node.getSessionTimeout().toMillis())
+                          .put("osInfo", node.getOsInfo())
+                          .put("heartbeatPeriod", node.getHeartbeatPeriod().toMillis())
+                          .put("availability", node.getAvailability())
+                          .put("version", node.getVersion())
+                          .put("slots", node.getSlots())
+                          .build())
               .collect(toList());
 
       ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();

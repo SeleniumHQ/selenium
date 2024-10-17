@@ -224,4 +224,10 @@
     <Class name="org.openqa.selenium.edge.AddHasCasting" />
     <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
   </Match>
+
+  <Match>
+    <Class name="~org.openqa.selenium.devtools.v[0-9]+\.v\w+" />
+    <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
+  </Match>
+
 </FindBugsFilter>

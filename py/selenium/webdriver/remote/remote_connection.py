@@ -364,7 +364,9 @@ class RemoteConnection:
             if 300 <= statuscode < 304:
                 return self._request("GET", response.headers.get("location", None))
             if 399 < statuscode <= 500:
-                return {"status": statuscode, "value": data}
+                if statuscode == 401:
+                    return {"status": statuscode, "value": "Authorization Required"}
+                return {"status": statuscode, "value": str(statuscode) if not data else data.strip()}
             content_type = []
             if response.headers.get("Content-Type", None):
                 content_type = response.headers.get("Content-Type", None).split(";")
