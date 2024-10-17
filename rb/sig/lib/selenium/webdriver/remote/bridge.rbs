@@ -32,6 +32,8 @@ module Selenium
 
         def initialize: (url: String | URI, ?http_client: untyped?) -> void
 
+        def bidi: -> WebDriver::Error::WebDriverError
+
         def cancel_fedcm_dialog: -> nil
 
         def click_fedcm_dialog_button: -> nil
