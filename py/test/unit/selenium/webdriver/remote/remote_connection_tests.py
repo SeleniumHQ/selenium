@@ -21,6 +21,7 @@ import pytest
 import urllib3
 
 from selenium import __version__
+from selenium.webdriver.remote.remote_connection import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 
@@ -50,26 +51,35 @@ def test_get_remote_connection_headers_adds_keep_alive_if_requested():
 def test_get_proxy_url_http(mock_proxy_settings):
     proxy = "http://http_proxy.com:8080"
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
-    proxy_url = remote_connection._get_proxy_url()
+    proxy_url = remote_connection._client_config.get_proxy_url()
     assert proxy_url == proxy
+
+
+def test_get_auth_header_if_client_config_pass():
+    custom_config = ClientConfig(
+        remote_server_addr="http://remote", keep_alive=True, username="user", password="pass", auth_type="Basic"
+    )
+    remote_connection = RemoteConnection(custom_config.remote_server_addr, client_config=custom_config)
+    headers = remote_connection._client_config.get_auth_header()
+    assert headers.get("Authorization") == "Basic dXNlcjpwYXNz"
 
 
 def test_get_proxy_url_https(mock_proxy_settings):
     proxy = "http://https_proxy.com:8080"
     remote_connection = RemoteConnection("https://remote", keep_alive=False)
-    proxy_url = remote_connection._get_proxy_url()
+    proxy_url = remote_connection._client_config.get_proxy_url()
     assert proxy_url == proxy
 
 
 def test_get_proxy_url_none(mock_proxy_settings_missing):
     remote_connection = RemoteConnection("https://remote", keep_alive=False)
-    proxy_url = remote_connection._get_proxy_url()
+    proxy_url = remote_connection._client_config.get_proxy_url()
     assert proxy_url is None
 
 
 def test_get_proxy_url_http_auth(mock_proxy_auth_settings):
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
-    proxy_url = remote_connection._get_proxy_url()
+    proxy_url = remote_connection._client_config.get_proxy_url()
     raw_proxy_url, basic_auth_string = remote_connection._separate_http_proxy_auth()
     assert proxy_url == "http://user:password@http_proxy.com:8080"
     assert raw_proxy_url == "http://http_proxy.com:8080"
@@ -78,7 +88,7 @@ def test_get_proxy_url_http_auth(mock_proxy_auth_settings):
 
 def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
     remote_connection = RemoteConnection("https://remote", keep_alive=False)
-    proxy_url = remote_connection._get_proxy_url()
+    proxy_url = remote_connection._client_config.get_proxy_url()
     raw_proxy_url, basic_auth_string = remote_connection._separate_http_proxy_auth()
     assert proxy_url == "https://user:password@https_proxy.com:8080"
     assert raw_proxy_url == "https://https_proxy.com:8080"
