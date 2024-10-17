@@ -19,7 +19,13 @@ import re
 import typing
 from dataclasses import dataclass, fields, is_dataclass
 
+from selenium.webdriver.common.bidi.cdp import import_devtools
+from selenium.webdriver.common.bidi.session import session_subscribe, session_unsubscribe
+
 from . import script
+
+devtools = import_devtools("")
+event_class = devtools.util.event_class
 
 
 @dataclass
@@ -500,3 +506,32 @@ class RemoveIntercept:
     def cmd(self):
         result = yield self.to_json()
         return result
+
+
+class Network:
+    def __init__(self, conn):
+
+        self.conn = conn
+        self.callbacks = {}
+
+    async def add_intercept(self, event, params: AddInterceptParameters):
+        await self.conn.execute(session_subscribe(event.event_class))
+        result = await self.conn.execute(AddIntercept(params).cmd())
+        return result
+
+    async def add_listener(self, event, callback):
+        listener = self.conn.listen(event)
+
+        async for event in listener:
+            request_data = BeforeRequestSentParameters.from_json(
+                event.to_json()["params"]
+            )
+            await callback(request_data)
+
+    async def continue_request(self, params: ContinueRequestParameters):
+        result = await self.conn.execute(ContinueRequest(params).cmd())
+        return result
+
+    async def remove_intercept(self, event, params: RemoveInterceptParameters):
+        await self.conn.execute(session_unsubscribe(event.event_class))
+        await self.conn.execute(RemoveIntercept(params).cmd())
