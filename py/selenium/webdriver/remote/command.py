@@ -25,7 +25,11 @@ class Command:
 
         https://w3c.github.io/webdriver/
     """
-
+    ADD_INTERCEPT: str = "network.addIntercept"
+    REMOVE_INTERCEPT: str = "network.removeIntercept"
+    CONTINUE_RESPONSE: str = "network.continueResponse"
+    CONTINUE_REQUEST: str = "network.continueRequest"
+    CONTINUE_WITH_AUTH: str = "network.continueWithAuth"
     NEW_SESSION: str = "newSession"
     DELETE_SESSION: str = "deleteSession"
     NEW_WINDOW: str = "newWindow"
