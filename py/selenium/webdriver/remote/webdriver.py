@@ -97,11 +97,11 @@ def _create_caps(caps):
 
 
 def get_remote_connection(
-    capabilities,
-    command_executor,
-    keep_alive,
-    ignore_local_proxy,
-    client_config=None,
+    capabilities: dict,
+    command_executor: Union[str, RemoteConnection],
+    keep_alive: bool,
+    ignore_local_proxy: bool,
+    client_config: Optional[ClientConfig] = None,
 ) -> RemoteConnection:
     from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
     from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
@@ -183,7 +183,7 @@ class WebDriver(BaseWebDriver):
         keep_alive: bool = True,
         file_detector: Optional[FileDetector] = None,
         options: Optional[Union[BaseOptions, List[BaseOptions]]] = None,
-        client_config: ClientConfig = None,
+        client_config: Optional[ClientConfig] = None,
     ) -> None:
         """Create a new driver that will issue commands using the wire
         protocol.

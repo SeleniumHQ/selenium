@@ -22,6 +22,7 @@ import socket
 import string
 import warnings
 from base64 import b64encode
+from typing import Optional
 from urllib import parse
 
 import certifi
@@ -252,28 +253,28 @@ class RemoteConnection:
         self,
         remote_server_addr: str,
         keep_alive: bool = True,
-        ignore_proxy: bool = False,
-        client_config: ClientConfig = None,
+        ignore_proxy: Optional[bool] = False,
+        client_config: Optional[ClientConfig] = None,
     ):
         self._client_config = client_config or ClientConfig(remote_server_addr, keep_alive)
 
         if remote_server_addr:
             warnings.warn(
-                "setting keep_alive in RemoteConnection() is deprecated, " "set in ClientConfig instance insttead",
+                "setting remote_server_addr in RemoteConnection() is deprecated, set in ClientConfig instance instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
 
         if not keep_alive:
             warnings.warn(
-                "setting keep_alive in RemoteConnection() is deprecated, " "set in ClientConfig instance insttead",
+                "setting keep_alive in RemoteConnection() is deprecated, set in ClientConfig instance instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
 
         if ignore_proxy:
             warnings.warn(
-                "setting keep_alive in RemoteConnection() is deprecated, " "set in ClientConfig instance insttead",
+                "setting ignore_proxy in RemoteConnection() is deprecated, set in ClientConfig instance instead",
                 DeprecationWarning,
                 stacklevel=2,
             )

@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Optional
+
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
@@ -27,8 +29,8 @@ class SafariRemoteConnection(RemoteConnection):
         self,
         remote_server_addr: str,
         keep_alive: bool = True,
-        ignore_proxy: bool = False,
-        client_config: ClientConfig = None,
+        ignore_proxy: Optional[bool] = False,
+        client_config: Optional[ClientConfig] = None,
     ) -> None:
         super().__init__(
             remote_server_addr=remote_server_addr,

@@ -16,6 +16,7 @@
 # under the License.
 import base64
 import os
+from typing import Optional
 from urllib import parse
 
 from selenium.webdriver.common.proxy import Proxy
@@ -28,10 +29,10 @@ class ClientConfig:
         remote_server_addr: str,
         keep_alive: bool = True,
         proxy: Proxy = Proxy(raw={"proxyType": ProxyType.SYSTEM}),
-        username: str = None,
-        password: str = None,
-        auth_type: str = "Basic",
-        token: str = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        auth_type: Optional[str] = "Basic",
+        token: Optional[str] = None,
     ) -> None:
         self.remote_server_addr = remote_server_addr
         self.keep_alive = keep_alive
@@ -46,7 +47,7 @@ class ClientConfig:
         return self._remote_server_addr
 
     @remote_server_addr.setter
-    def remote_server_addr(self, value: str):
+    def remote_server_addr(self, value: str) -> None:
         self._remote_server_addr = value
 
     @property
@@ -110,12 +111,12 @@ class ClientConfig:
     def token(self, value: str) -> None:
         self._token = value
 
-    def get_proxy_url(self) -> str:
+    def get_proxy_url(self) -> Optional[str]:
         proxy_type = self.proxy.proxy_type
         remote_add = parse.urlparse(self.remote_server_addr)
-        if proxy_type == ProxyType.DIRECT:
+        if proxy_type is ProxyType.DIRECT:
             return None
-        if proxy_type == ProxyType.SYSTEM:
+        if proxy_type is ProxyType.SYSTEM:
             _no_proxy = os.environ.get("no_proxy", os.environ.get("NO_PROXY"))
             if _no_proxy:
                 for entry in map(str.strip, _no_proxy.split(",")):
@@ -130,18 +131,18 @@ class ClientConfig:
                 "https_proxy" if self.remote_server_addr.startswith("https://") else "http_proxy",
                 os.environ.get("HTTPS_PROXY" if self.remote_server_addr.startswith("https://") else "HTTP_PROXY"),
             )
-        if proxy_type == ProxyType.MANUAL:
+        if proxy_type is ProxyType.MANUAL:
             return self.proxy.sslProxy if self.remote_server_addr.startswith("https://") else self.proxy.http_proxy
         return None
 
-    def get_auth_header(self):
+    def get_auth_header(self) -> Optional[dict]:
         auth_type = self.auth_type.lower()
         if auth_type == "basic" and self.username and self.password:
             credentials = f"{self.username}:{self.password}"
-            encoded_credentials = base64.b64encode(credentials.encode()).decode()
+            encoded_credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
             return {"Authorization": f"Basic {encoded_credentials}"}
-        elif auth_type == "bearer" and self.token:
+        if auth_type == "bearer" and self.token:
             return {"Authorization": f"Bearer {self.token}"}
-        elif auth_type == "oauth" and self.token:
+        if auth_type == "oauth" and self.token:
             return {"Authorization": f"OAuth {self.token}"}
         return None
