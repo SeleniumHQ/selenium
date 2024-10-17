@@ -478,9 +478,10 @@ impl SeleniumManager for FirefoxManager {
             }
 
             let mut firefox_versions =
-                self.request_versions_from_online(FIREFOX_HISTORY_MAJOR_ENDPOINT)?;
+                self.request_versions_from_online(FIREFOX_HISTORY_ENDPOINT)?;
             if firefox_versions.is_empty() {
-                firefox_versions = self.request_versions_from_online(FIREFOX_HISTORY_ENDPOINT)?;
+                firefox_versions =
+                    self.request_versions_from_online(FIREFOX_HISTORY_MAJOR_ENDPOINT)?;
                 if firefox_versions.is_empty() {
                     firefox_versions =
                         self.request_versions_from_online(FIREFOX_HISTORY_DEV_ENDPOINT)?;
