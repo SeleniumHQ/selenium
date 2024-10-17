@@ -1,0 +1,29 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class LogHandler
+        @bidi: untyped
+
+        @log_entry_subscribed: untyped
+
+        ConsoleLogEntry: untyped
+
+        JavaScriptLogEntry: untyped
+
+        def initialize: (untyped bidi) -> void
+
+        # @return [int] id of the handler
+        def add_message_handler: (untyped type) { (untyped) -> untyped } -> untyped
+
+        # @param [int] id of the handler previously added
+        def remove_message_handler: (untyped id) -> untyped
+
+        private
+
+        def subscribe_log_entry: () -> untyped
+
+        def unsubscribe_log_entry: () -> untyped
+      end
+    end
+  end
+end

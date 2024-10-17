@@ -1,0 +1,19 @@
+module Selenium
+  module WebDriver
+    module Remote
+      class Bridge
+        class LocatorConverter
+          ESCAPE_CSS_REGEXP: ::Regexp
+
+          UNICODE_CODE_POINT: 30
+
+          def convert: (untyped how, untyped what) -> ::Array[untyped]
+
+          private
+
+          def escape_css: (untyped string) -> untyped
+        end
+      end
+    end
+  end
+end

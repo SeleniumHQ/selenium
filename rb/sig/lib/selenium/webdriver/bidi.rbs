@@ -11,6 +11,8 @@ module Selenium
 
       def callbacks: () -> Hash[untyped, untyped]
 
+      def remove_callback: -> untyped
+
       def session: () -> Session
 
       def send_cmd: (untyped method, **untyped params) -> untyped

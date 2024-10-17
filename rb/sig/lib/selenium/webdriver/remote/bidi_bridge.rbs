@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    module Remote
+      class BiDiBridge < Bridge
+        @bidi: untyped
+
+        attr_reader bidi: untyped
+
+        def create_session: (untyped capabilities) -> untyped
+
+        def quit: () -> untyped
+
+        def close: () -> untyped
+      end
+    end
+  end
+end
