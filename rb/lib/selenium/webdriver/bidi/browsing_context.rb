@@ -17,72 +17,84 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative 'navigate_result'
-require_relative 'browsing_context_info'
-
 module Selenium
   module WebDriver
     class BiDi
+      # Implements the browsingContext Module of the WebDriver-BiDi specification
+      #
+      # @api private
+      #
       class BrowsingContext
-        attr_accessor :id
-
         READINESS_STATE = {
-          none: 'none',
-          interactive: 'interactive',
-          complete: 'complete'
+          'none' => 'none',
+          'eager' => 'interactive',
+          'normal' => 'complete'
         }.freeze
 
-        def initialize(driver:, browsing_context_id: nil, type: nil, reference_context: nil)
-          unless driver.capabilities.web_socket_url
-            raise Error::WebDriverError,
-                  'WebDriver instance must support BiDi protocol'
-          end
-
-          unless type.nil? || %i[window tab].include?(type)
-            raise ArgumentError,
-                  "Valid types are :window & :tab. Received: #{type.inspect}"
-          end
-
-          @bidi = driver.bidi
-          @id = browsing_context_id.nil? ? create(type, reference_context)['context'] : browsing_context_id
+        # TODO: store current window handle in bridge object instead of always calling it
+        def initialize(bridge)
+          @bridge = bridge
+          @bidi = @bridge.bidi
+          page_load_strategy = bridge.capabilities[:page_load_strategy]
+          @readiness = READINESS_STATE[page_load_strategy]
         end
 
-        def navigate(url:, readiness_state: nil)
-          unless readiness_state.nil? || READINESS_STATE.key?(readiness_state)
-            raise ArgumentError,
-                  "Valid readiness states are :none, :interactive & :complete. Received: #{readiness_state.inspect}"
-          end
-
-          navigate_result = @bidi.send_cmd('browsingContext.navigate', context: @id, url: url,
-                                                                       wait: READINESS_STATE[readiness_state])
-
-          NavigateResult.new(
-            url: navigate_result['url'],
-            navigation_id: navigate_result['navigation']
-          )
+        # Navigates to the specified URL in the given browsing context.
+        #
+        # @param url [String] The URL to navigate to.
+        # @param context_id [String, NilClass] The ID of the browsing context to navigate in.
+        #   Defaults to the window handle of the current context.
+        def navigate(url, context_id: nil)
+          context_id ||= @bridge.window_handle
+          @bidi.send_cmd('browsingContext.navigate', context: context_id, url: url, wait: @readiness)
         end
 
-        def get_tree(max_depth: nil)
-          result = @bidi.send_cmd('browsingContext.getTree', root: @id, maxDepth: max_depth).dig('contexts', 0)
-
-          BrowsingContextInfo.new(
-            id: result['context'],
-            url: result['url'],
-            children: result['children'],
-            parent_context: result['parent']
-          )
+        # Traverses the browsing context history by a given delta.
+        #
+        # @param delta [Integer] The number of steps to traverse.
+        #   Positive values go forwards, negative values go backwards.
+        # @param context_id [String, NilClass] The ID of the context to traverse.
+        #   Defaults to the window handle of the current context.
+        def traverse_history(delta, context_id: nil)
+          context_id ||= @bridge.window_handle
+          @bidi.send_cmd('browsingContext.traverseHistory', context: context_id, delta: delta)
         end
 
-        def close
-          @bidi.send_cmd('browsingContext.close', context: @id)
+        # Reloads the browsing context.
+        # @param [String, NilClass] context_id The ID of the context to reload.
+        #   Defaults to the window handle of the current context.
+        # @param [Boolean] ignore_cache Whether to bypass the cache when reloading.
+        #   Defaults to false.
+        def reload(context_id: nil, ignore_cache: false)
+          context_id ||= @bridge.window_handle
+          params = {context: context_id, ignore_cache: ignore_cache, wait: @readiness}
+          @bidi.send_cmd('browsingContext.reload', **params)
         end
 
-        private
-
-        def create(type, reference_context)
-          @bidi.send_cmd('browsingContext.create', type: type.to_s, referenceContext: reference_context)
+        # Closes the browsing context.
+        #
+        # @param [String] context_id The ID of the context to close.
+        #   Defaults to the window handle of the current context.
+        def close(context_id: nil)
+          context_id ||= @bridge.window_handle
+          @bidi.send_cmd('browsingContext.close', context: context_id)
         end
-      end # BrowsingContext
+
+        # Create a new browsing context.
+        #
+        # @param [Symbol] type The type of browsing context to create.
+        #   Valid options are :tab and :window with :window being the default
+        # @param [String] context_id The reference context for the new browsing context.
+        #   Defaults to the current window handle.
+        #
+        # @return [String] The context ID of the created browsing context.
+        def create(type: nil, context_id: nil)
+          type ||= :window
+          context_id ||= @bridge.window_handle
+          result = @bidi.send_cmd('browsingContext.create', type: type.to_s, referenceContext: context_id)
+          result['context']
+        end
+      end
     end # BiDi
   end # WebDriver
 end # Selenium
