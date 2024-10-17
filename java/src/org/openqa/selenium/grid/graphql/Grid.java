@@ -97,6 +97,7 @@ public class Grid {
               status.getExternalUri(),
               status.getAvailability(),
               status.getMaxSessionCount(),
+              status.getSessionTimeout(),
               status.getSlots().size(),
               stereotypes,
               sessions,

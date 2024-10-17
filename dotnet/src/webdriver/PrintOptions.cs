@@ -101,19 +101,27 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Gets the dimensions for each page in the printed document.
+        /// Gets or sets the dimensions for each page in the printed document.
         /// </summary>
         public PageSize PageDimensions
         {
             get { return pageSize; }
+            set
+            {
+                pageSize = value ?? throw new ArgumentNullException(nameof(value));
+            }
         }
 
         /// <summary>
-        /// Gets the margins for each page in the doucment.
+        /// Gets or sets the margins for each page in the doucment.
         /// </summary>
         public Margins PageMargins
         {
             get { return margins; }
+            set
+            {
+                margins = value ?? throw new ArgumentNullException(nameof(value));
+            }
         }
 
         /// <summary>
