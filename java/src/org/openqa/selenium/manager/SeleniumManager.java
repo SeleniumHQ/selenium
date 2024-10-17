@@ -209,7 +209,7 @@ public class SeleniumManager {
         if (!binary.toFile().exists()) {
           String binaryPathInJar = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
           try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPathInJar)) {
-            binary.getParent().toFile().mkdirs();
+            Files.createDirectories(binary.getParent());
             Files.copy(inputStream, binary);
           }
         }
