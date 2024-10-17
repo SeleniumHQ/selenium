@@ -3,15 +3,15 @@ module Selenium
     module Remote
       class Bridge
         class LocatorConverter
-          ESCAPE_CSS_REGEXP: ::Regexp
+          ESCAPE_CSS_REGEXP: Regexp
 
-          UNICODE_CODE_POINT: 30
+          UNICODE_CODE_POINT: Integer
 
-          def convert: (untyped how, untyped what) -> ::Array[untyped]
+          def convert: (String | Symbol how, String what) -> Array[String]
 
           private
 
-          def escape_css: (untyped string) -> untyped
+          def escape_css: (String string) -> String
         end
       end
     end

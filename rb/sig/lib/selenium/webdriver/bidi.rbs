@@ -7,15 +7,17 @@ module Selenium
 
       def initialize: (url: String) -> void
 
+      def add_callback: -> Integer
+
       def close: () -> nil
 
       def callbacks: () -> Hash[untyped, untyped]
 
-      def remove_callback: -> untyped
+      def remove_callback: -> Array[Integer]
 
       def session: () -> Session
 
-      def send_cmd: (untyped method, **untyped params) -> untyped
+      def send_cmd: (String method, **untyped params) -> untyped
 
       def error_message: (Hash[String,String] message) -> String
     end

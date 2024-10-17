@@ -6,11 +6,11 @@ module Selenium
 
         attr_reader bidi: untyped
 
-        def create_session: (untyped capabilities) -> untyped
+        def create_session: (Hash[Symbol, String] capabilities) -> BiDi
 
-        def quit: () -> untyped
+        def quit: () -> nil
 
-        def close: () -> untyped
+        def close: () -> nil
       end
     end
   end

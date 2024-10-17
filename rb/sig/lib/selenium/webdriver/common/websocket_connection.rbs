@@ -35,8 +35,6 @@ module Selenium
 
       def initialize: (url: untyped) -> void
 
-      def add_callback: -> untyped
-
       def close: () -> untyped
 
       def callbacks: () -> untyped
