@@ -42,7 +42,7 @@ class Service(service.Service):
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
-        log_output = open(log_output, "wb")
+        log_output = open(log_output, "wb") if log_output else None
         super().__init__(
             executable_path=executable_path,
             port=port,
