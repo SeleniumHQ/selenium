@@ -59,6 +59,7 @@ from .errorhandler import ErrorHandler
 from .file_detector import FileDetector
 from .file_detector import LocalFileDetector
 from .mobile import Mobile
+from .network import Network
 from .remote_connection import RemoteConnection
 from .script_key import ScriptKey
 from .shadowroot import ShadowRoot
@@ -213,6 +214,7 @@ class WebDriver(BaseWebDriver):
 
         self._websocket_connection = None
         self._script = None
+        self._network = None
 
     def __repr__(self):
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
@@ -1079,6 +1081,13 @@ class WebDriver(BaseWebDriver):
             self._script = Script(self._websocket_connection)
 
         return self._script
+
+    @property
+    def network(self):
+        if not self._network:
+            self._network = Network(self)
+
+        return self._network
 
     def _start_bidi(self):
         if self.caps.get("webSocketUrl"):
