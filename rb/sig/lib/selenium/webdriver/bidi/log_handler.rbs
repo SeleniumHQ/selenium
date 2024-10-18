@@ -1,0 +1,27 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class LogHandler
+        @bidi: BiDi
+
+        @log_entry_subscribed: bool
+
+        ConsoleLogEntry: Struct
+
+        JavaScriptLogEntry: Struct
+
+        def initialize: (BiDi bidi) -> void
+
+        def add_message_handler: (String type) { (untyped) -> untyped } -> Integer
+
+        def remove_message_handler: (Integer id) -> false
+
+        private
+
+        def subscribe_log_entry: () -> false
+
+        def unsubscribe_log_entry: () -> false
+      end
+    end
+  end
+end

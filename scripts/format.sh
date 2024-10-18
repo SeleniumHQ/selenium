@@ -31,5 +31,12 @@ section "Rust"
 echo "   rustfmt" >&2
 bazel run @rules_rust//:rustfmt
 
+# TODO: use bazel target when rules_python supports formatting
+section "Python"
+echo "    python - isort, black, flake8, docformatter" >&2
+pip install tox
+export TOXENV=linting
+tox -c py/tox.ini
+
 section "Copyright"
 bazel run //scripts:update_copyright
