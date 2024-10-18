@@ -20,6 +20,7 @@ package org.openqa.selenium.edge;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 
+import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
@@ -94,6 +95,9 @@ class EdgeOptionsFunctionalTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     EdgeOptions options = new EdgeOptions();
+    options.setExperimentalOption(
+        "prefs",
+        ImmutableMap.of("extensions.ui.developer_mode", true, "extensions-on-chrome-urls", true));
     options.addEncodedExtensions(
         Base64.getEncoder().encodeToString(Files.readAllBytes(InProject.locate(EXT_PATH))));
     localDriver = new WebDriverBuilder().get(options);

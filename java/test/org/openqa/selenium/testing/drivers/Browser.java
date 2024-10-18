@@ -57,11 +57,14 @@ public enum Browser {
           "disable-breakpad",
           "disable-dev-shm-usage",
           "no-sandbox",
-          "disable-search-engine-choice-screen");
+          "disable-search-engine-choice-screen",
+          "handle_prefs");
 
       Map<String, Object> prefs = new HashMap<>();
       prefs.put("exit_type", "None");
       prefs.put("exited_cleanly", true);
+      prefs.put("extensions.ui.developer_mode", true);
+      prefs.put("extensions-on-chrome-urls", true);
       options.setExperimentalOption("prefs", prefs);
 
       options.enableBiDi();
