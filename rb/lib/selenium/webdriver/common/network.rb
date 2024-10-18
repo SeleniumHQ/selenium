@@ -19,24 +19,34 @@
 
 module Selenium
   module WebDriver
-    class BiDi
-      class Struct < ::Struct
-        class << self
-          def new(*args, &block)
-            super(*args) do
-              define_method(:initialize) do |**kwargs|
-                converted_kwargs = kwargs.transform_keys { |key| self.class.camel_to_snake(key.to_s).to_sym }
-                super(*converted_kwargs.values_at(*self.class.members))
-              end
-              class_eval(&block) if block
-            end
-          end
+    class Network
+      attr_reader :auth_callbacks
 
-          def camel_to_snake(camel_str)
-            camel_str.gsub(/([A-Z])/, '_\1').downcase
-          end
-        end
+      def initialize(bridge)
+        @network = BiDi::Network.new(bridge.bidi)
+        @auth_callbacks = {}
       end
-    end # BiDi
+
+      def add_auth_handler(username, password)
+        intercept = @network.add_intercept(phases: [BiDi::Network::PHASES[:auth_required]])
+        auth_id = @network.on(:auth_required) do |event|
+          request_id = event['requestId']
+          @network.continue_with_auth(request_id, username, password)
+        end
+        @auth_callbacks[auth_id] = intercept
+
+        auth_id
+      end
+
+      def remove_auth_handler(id)
+        intercept = @auth_callbacks[id]
+        @network.remove_intercept(intercept['intercept'])
+        @auth_callbacks.delete(id)
+      end
+
+      def clear_auth_handlers
+        @auth_callbacks.each_key { |id| remove_auth_handler(id) }
+      end
+    end # Network
   end # WebDriver
 end # Selenium

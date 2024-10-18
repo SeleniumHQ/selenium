@@ -17,6 +17,8 @@ module Selenium
 
       def inspect: () -> String
 
+      def network: -> untyped
+
       def status: () -> Hash[untyped, untyped]
 
       def navigate: () -> Navigation
