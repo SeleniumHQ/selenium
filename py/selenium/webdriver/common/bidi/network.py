@@ -100,9 +100,3 @@ class Network:
     def handle_event(self, event, data):
         if event in self.callbacks:
             self.callbacks[event](data)
-
-    def off(self, event):
-        event = self.EVENTS.get(event, event)
-        if event in self.callbacks:
-            del self.callbacks[event]
-            session_unsubscribe(self.conn, event, self.handle_event)
