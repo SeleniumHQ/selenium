@@ -53,6 +53,8 @@ module Selenium
 
       def initialize: (?path: untyped?, ?port: untyped?, ?log: untyped?, ?args: untyped?) -> void
 
+      def find_driver_path: -> untyped
+
       def launch: () -> untyped
 
       def shutdown_supported: () -> untyped
