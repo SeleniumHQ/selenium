@@ -141,6 +141,7 @@ namespace OpenQA.Selenium
     [JsonSerializable(typeof(string))]
     [JsonSerializable(typeof(uint))]
     [JsonSerializable(typeof(int))]
+    [JsonSerializable(typeof(ulong))]
     [JsonSerializable(typeof(long))]
     [JsonSerializable(typeof(float))]
     [JsonSerializable(typeof(double))]
