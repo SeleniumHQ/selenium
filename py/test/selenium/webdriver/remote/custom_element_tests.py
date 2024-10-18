@@ -14,9 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import pytest
-
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -25,14 +22,6 @@ from selenium.webdriver.remote.webelement import WebElement
 class MyCustomElement(WebElement):
     def custom_method(self):
         return "Custom element method"
-
-
-@pytest.fixture
-def driver():
-    options = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(options=options)
-    yield driver
-    driver.quit()
 
 
 def test_find_element_with_custom_class(driver, pages):

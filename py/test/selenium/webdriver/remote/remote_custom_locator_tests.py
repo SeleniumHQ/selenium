@@ -14,11 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import pytest
-
-from selenium import webdriver
 from selenium.webdriver.remote.locator_converter import LocatorConverter
-from selenium.webdriver.remote.webdriver import WebDriver
 
 
 class CustomLocatorConverter(LocatorConverter):
@@ -29,24 +25,14 @@ class CustomLocatorConverter(LocatorConverter):
         return super().convert(by, value)
 
 
-@pytest.fixture
-def driver() -> WebDriver:
-    options = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(options=options)
-    driver.locator_converter = CustomLocatorConverter()
+def test_find_element_with_custom_locator(driver):
     driver.get("data:text/html,<div custom-attr='example'>Test</div>")
-
-    yield driver
-    driver.quit()
-
-
-def test_find_element_with_custom_locator(driver: WebDriver) -> None:
     element = driver.find_element("custom", "example")
     assert element is not None
     assert element.text == "Test"
 
 
-def test_find_elements_with_custom_locator(driver: WebDriver) -> None:
+def test_find_elements_with_custom_locator(driver):
     driver.get("data:text/html,<div custom-attr='example'>Test1</div><div custom-attr='example'>Test2</div>")
     elements = driver.find_elements("custom", "example")
     assert len(elements) == 2
