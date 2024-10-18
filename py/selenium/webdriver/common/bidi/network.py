@@ -15,10 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import typing
-from dataclasses import dataclass
-from threading import Thread
-from time import sleep
 from .session import session_subscribe, session_unsubscribe
 
 class Network:
