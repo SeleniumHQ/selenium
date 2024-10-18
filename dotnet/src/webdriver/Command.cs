@@ -28,14 +28,15 @@ namespace OpenQA.Selenium
     /// </summary>
     public class Command
     {
-        private readonly static JsonSerializerOptions s_jsonSerializerOptions = new()
-        {
-            Converters = { new ResponseValueJsonConverter() }
-        };
-
         private SessionId commandSessionId;
         private string commandName;
         private Dictionary<string, object> commandParameters = new Dictionary<string, object>();
+
+        private readonly static JsonSerializerOptions s_jsonSerializerOptions = new()
+        {
+            TypeInfoResolver = CommandSerializerContext.Default,
+            Converters = { new ResponseValueJsonConverter() }
+        };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Command"/> class using a command name and a JSON-encoded string for the parameters.
@@ -101,7 +102,7 @@ namespace OpenQA.Selenium
                 string parametersString = string.Empty;
                 if (this.commandParameters != null && this.commandParameters.Count > 0)
                 {
-                    parametersString = JsonSerializer.Serialize(this.commandParameters);
+                    parametersString = JsonSerializer.Serialize(this.commandParameters, s_jsonSerializerOptions);
                 }
 
                 if (string.IsNullOrEmpty(parametersString))
@@ -132,5 +133,23 @@ namespace OpenQA.Selenium
             Dictionary<string, object> parameters = JsonSerializer.Deserialize<Dictionary<string, object>>(value, s_jsonSerializerOptions);
             return parameters;
         }
+    }
+
+    [JsonSerializable(typeof(Dictionary<string, object>))]
+    [JsonSerializable(typeof(char[]))]
+    [JsonSerializable(typeof(bool))]
+    [JsonSerializable(typeof(string))]
+    [JsonSerializable(typeof(uint))]
+    [JsonSerializable(typeof(int))]
+    [JsonSerializable(typeof(ulong))]
+    [JsonSerializable(typeof(long))]
+    [JsonSerializable(typeof(float))]
+    [JsonSerializable(typeof(double))]
+    [JsonSerializable(typeof(decimal))]
+    [JsonSerializable(typeof(Cookie))]
+    [JsonSerializable(typeof(Proxy))]
+    internal partial class CommandSerializerContext : JsonSerializerContext
+    {
+
     }
 }
