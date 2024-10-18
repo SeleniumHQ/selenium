@@ -230,4 +230,9 @@
     <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
   </Match>
 
+  <Match>
+    <Class name="org.openqa.selenium.manager.SeleniumManager"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
 </FindBugsFilter>
