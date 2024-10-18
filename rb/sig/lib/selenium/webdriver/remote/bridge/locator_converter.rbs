@@ -1,0 +1,19 @@
+module Selenium
+  module WebDriver
+    module Remote
+      class Bridge
+        class LocatorConverter
+          ESCAPE_CSS_REGEXP: Regexp
+
+          UNICODE_CODE_POINT: Integer
+
+          def convert: (String | Symbol how, String what) -> Array[String]
+
+          private
+
+          def escape_css: (String string) -> String
+        end
+      end
+    end
+  end
+end
