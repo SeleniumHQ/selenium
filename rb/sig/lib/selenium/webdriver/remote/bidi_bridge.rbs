@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    module Remote
+      class BiDiBridge < Bridge
+        @bidi: untyped
+
+        attr_reader bidi: untyped
+
+        def create_session: (Hash[Symbol, String] capabilities) -> BiDi
+
+        def quit: () -> nil
+
+        def close: () -> nil
+      end
+    end
+  end
+end
