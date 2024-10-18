@@ -521,18 +521,18 @@ impl SeleniumManager for ChromeManager {
             let good_versions_url = self.create_cft_url_for_browsers(GOOD_VERSIONS_ENDPOINT);
             let all_versions =
                 self.request_versions_from_online::<VersionsWithDownloads>(&good_versions_url)?;
-            let filtered_versions: Vec<Version> = all_versions
-                .versions
-                .into_iter()
-                .filter(|r| r.version.starts_with(major_browser_version.as_str()))
-                .collect();
+            let inter_versions = all_versions.versions.into_iter();
+            let filtered_versions: Vec<Version> = if self.is_browser_version_specific() {
+                inter_versions
+                    .filter(|r| r.version.eq(browser_version.as_str()))
+                    .collect()
+            } else {
+                inter_versions
+                    .filter(|r| r.version.starts_with(major_browser_version.as_str()))
+                    .collect()
+            };
             if filtered_versions.is_empty() {
-                return Err(anyhow!(format_three_args(
-                    UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
-                    browser_name,
-                    &major_browser_version,
-                    &MIN_CHROME_VERSION_CFT.to_string(),
-                )));
+                return self.unavailable_download();
             }
             let last_browser = filtered_versions.last().unwrap();
             let platform_url: Vec<&PlatformUrl> = last_browser
