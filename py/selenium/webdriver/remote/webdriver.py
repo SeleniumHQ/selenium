@@ -42,6 +42,7 @@ from selenium.common.exceptions import NoSuchCookieException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.script import Script
+from selenium.webdriver.common.bidi.network import Network
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
@@ -1087,6 +1088,12 @@ class WebDriver(BaseWebDriver):
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
         self._websocket_connection = WebSocketConnection(ws_url)
+
+    @property
+    def network(self):
+        if not hasattr(self, '_network'):
+            self._network = Network(self._websocket_connection)
+        return self._network
 
     def _get_cdp_details(self):
         import json
