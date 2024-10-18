@@ -15,6 +15,7 @@ module Selenium
 
           attr_reader guarded: untyped
 
+          attr_reader tracker: untyped
           attr_reader type: untyped
 
           attr_reader messages: untyped

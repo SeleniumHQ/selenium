@@ -5,6 +5,10 @@ module Selenium
 
       FINDERS: untyped
 
+      attr_accessor self.extra_finders: untyped
+
+      def self.finders: -> untyped
+
       def find_element: (*untyped args) -> untyped
 
       def find_elements: (*untyped args) -> untyped

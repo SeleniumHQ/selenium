@@ -1,7 +1,22 @@
 module Selenium
   module WebDriver
     class DriverFinder
+      @options: untyped
+
+      @paths: untyped
+      @service: untyped
+
       def self.path: (untyped options, untyped klass) -> untyped
+
+      def browser_path: -> untyped
+
+      def browser_path?: -> untyped
+
+      def driver_path: -> untyped
+
+      private
+
+      def paths: -> untyped
     end
   end
 end
