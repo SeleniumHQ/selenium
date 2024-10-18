@@ -127,7 +127,7 @@ public class v127Network extends Network<AuthRequired, RequestPaused> {
       } catch (DevToolsException e) {
         // Redirects don't seem to have bodies
         int code = pausedReq.getResponseStatusCode().orElse(HTTP_OK);
-        if (code < 300 && code > 399) {
+        if (code >= 300 && code <= 399) {
           LOG.warning("Unable to get body for request id " + pausedReq.getRequestId());
         }
 

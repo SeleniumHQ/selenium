@@ -20,7 +20,7 @@ bazel_dep(name = "rules_cc", version = "0.0.9", dev_dependency = True)
 bazel_dep(name = "rules_dotnet", version = "0.16.0")
 bazel_dep(name = "rules_java", version = "7.11.1")
 bazel_dep(name = "rules_jvm_external", version = "6.3")
-bazel_dep(name = "rules_nodejs", version = "6.2.0")
+bazel_dep(name = "rules_nodejs", version = "6.3.0")
 bazel_dep(name = "rules_oci", version = "1.7.6")
 bazel_dep(name = "rules_pkg", version = "0.10.1")
 bazel_dep(name = "rules_python", version = "0.33.0")
@@ -76,7 +76,7 @@ rules_ts_ext.deps(
 use_repo(rules_ts_ext, "npm_typescript")
 
 esbuild = use_extension("@aspect_rules_esbuild//esbuild:extensions.bzl", "esbuild")
-esbuild.toolchain(esbuild_version = "0.19.9")
+esbuild.toolchain(esbuild_version = "0.23.0")
 use_repo(esbuild, "esbuild_toolchains")
 
 register_toolchains("@esbuild_toolchains//:all")
@@ -178,8 +178,7 @@ maven.install(
         "com.google.auto.service:auto-service:1.1.1",
         "com.google.auto.service:auto-service-annotations:1.1.1",
         "com.google.googlejavaformat:google-java-format:jar:1.23.0",
-        "com.graphql-java:graphql-java:20.2",
-        "com.graphql-java:java-dataloader:3.2.0",
+        "com.graphql-java:graphql-java:22.3",
         "dev.failsafe:failsafe:3.3.2",
         "io.grpc:grpc-context:1.66.0",
         "io.lettuce:lettuce-core:6.4.0.RELEASE",
