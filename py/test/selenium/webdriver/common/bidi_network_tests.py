@@ -2,9 +2,8 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.common.bidi.network import Network
 
-def url_for(path):
-    base_url = "http://your_app_server"
-    return f"{base_url}/{path}"
+def url_for(page):
+    return webserver.where_is(page)
 
 @pytest.fixture
 def driver():
