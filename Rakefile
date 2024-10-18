@@ -483,7 +483,6 @@ namespace :node do
     new_version = updated_version(old_version, arguments[:version], nightly)
 
     ['javascript/node/selenium-webdriver/package.json',
-     'package-lock.json',
      'javascript/node/selenium-webdriver/BUILD.bazel'].each do |file|
       text = File.read(file).gsub(old_version, new_version)
       File.open(file, 'w') { |f| f.puts text }
@@ -1050,8 +1049,7 @@ namespace :all do
                                            'py/BUILD.bazel',
                                            'py/setup.py',
                                            'rb/lib/selenium/webdriver/version.rb',
-                                           'rb/Gemfile.lock',
-                                           'package-lock.json'])
+                                           'rb/Gemfile.lock'])
 
     print 'Do you want to push the committed changes? (Y/n): '
     response = $stdin.gets.chomp.downcase
@@ -1106,7 +1104,6 @@ namespace :all do
              'java/version.bzl',
              'javascript/node/selenium-webdriver/CHANGES.md',
              'javascript/node/selenium-webdriver/package.json',
-             'package-lock.json',
              'py/docs/source/conf.py',
              'py/selenium/__init__.py',
              'py/selenium/webdriver/__init__.py',

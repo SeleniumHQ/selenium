@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.graphql;
 
 import com.google.common.collect.ImmutableList;
 import java.net.URI;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,7 @@ public class Node {
   private final URI uri;
   private final Availability status;
   private final int maxSession;
+  private final Duration sessionTimeout;
   private final Map<Capabilities, Integer> stereotypes;
   private final Map<Session, Slot> activeSessions;
   private final String version;
@@ -49,6 +51,7 @@ public class Node {
       URI uri,
       Availability status,
       int maxSession,
+      Duration sessionTimeout,
       int slotCount,
       Map<Capabilities, Integer> stereotypes,
       Map<Session, Slot> activeSessions,
@@ -63,6 +66,7 @@ public class Node {
     this.activeSessions = Require.nonNull("Active sessions", activeSessions);
     this.version = Require.nonNull("Grid Node version", version);
     this.osInfo = Require.nonNull("Grid Node OS info", osInfo);
+    this.sessionTimeout = Require.positive("Node session timeout", sessionTimeout);
   }
 
   public List<org.openqa.selenium.grid.graphql.Session> getSessions() {
@@ -120,6 +124,10 @@ public class Node {
 
   public OsInfo getOsInfo() {
     return osInfo;
+  }
+
+  public Duration getSessionTimeout() {
+    return sessionTimeout;
   }
 
   private org.openqa.selenium.grid.graphql.Session createGraphqlSession(
