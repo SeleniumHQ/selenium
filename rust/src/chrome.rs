@@ -521,13 +521,13 @@ impl SeleniumManager for ChromeManager {
             let good_versions_url = self.create_cft_url_for_browsers(GOOD_VERSIONS_ENDPOINT);
             let all_versions =
                 self.request_versions_from_online::<VersionsWithDownloads>(&good_versions_url)?;
-            let inter_versions = all_versions.versions.into_iter();
+            let iter_versions = all_versions.versions.into_iter();
             let filtered_versions: Vec<Version> = if self.is_browser_version_specific() {
-                inter_versions
+                iter_versions
                     .filter(|r| r.version.eq(browser_version.as_str()))
                     .collect()
             } else {
-                inter_versions
+                iter_versions
                     .filter(|r| r.version.starts_with(major_browser_version.as_str()))
                     .collect()
             };
