@@ -2,9 +2,8 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.common.bidi.network import Network
 
-# Define the url_for function to construct the URL for the given path
 def url_for(path):
-    base_url = "http://your_app_server"  # Replace with your actual base URL
+    base_url = "http://your_app_server"
     return f"{base_url}/{path}"
 
 @pytest.fixture
