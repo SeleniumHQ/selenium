@@ -34,7 +34,7 @@ namespace OpenQA.Selenium
 
         private readonly static JsonSerializerOptions s_jsonSerializerOptions = new()
         {
-            TypeInfoResolver = CommandSerializerContext.Default,
+            TypeInfoResolver = CommandJsonSerializerContext.Default,
             Converters = { new ResponseValueJsonConverter() }
         };
 
@@ -135,20 +135,31 @@ namespace OpenQA.Selenium
         }
     }
 
-    [JsonSerializable(typeof(Dictionary<string, object>))]
-    [JsonSerializable(typeof(char[]))]
+    // Built-in types
     [JsonSerializable(typeof(bool))]
-    [JsonSerializable(typeof(string))]
-    [JsonSerializable(typeof(uint))]
-    [JsonSerializable(typeof(int))]
-    [JsonSerializable(typeof(ulong))]
-    [JsonSerializable(typeof(long))]
-    [JsonSerializable(typeof(float))]
-    [JsonSerializable(typeof(double))]
+    [JsonSerializable(typeof(byte))]
+    [JsonSerializable(typeof(sbyte))]
+    [JsonSerializable(typeof(char))]
     [JsonSerializable(typeof(decimal))]
+    [JsonSerializable(typeof(double))]
+    [JsonSerializable(typeof(float))]
+    [JsonSerializable(typeof(int))]
+    [JsonSerializable(typeof(uint))]
+    [JsonSerializable(typeof(nint))]
+    [JsonSerializable(typeof(nuint))]
+    [JsonSerializable(typeof(long))]
+    [JsonSerializable(typeof(ulong))]
+    [JsonSerializable(typeof(short))]
+    [JsonSerializable(typeof(ushort))]
+
+    [JsonSerializable(typeof(string))]
+
+    // Selenium WebDriver types
+    [JsonSerializable(typeof(char[]))]
+    [JsonSerializable(typeof(Dictionary<string, object>))]
     [JsonSerializable(typeof(Cookie))]
     [JsonSerializable(typeof(Proxy))]
-    internal partial class CommandSerializerContext : JsonSerializerContext
+    internal partial class CommandJsonSerializerContext : JsonSerializerContext
     {
 
     }

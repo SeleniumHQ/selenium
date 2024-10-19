@@ -32,7 +32,7 @@ namespace OpenQA.Selenium
     {
         private readonly static JsonSerializerOptions s_jsonSerializerOptions = new()
         {
-            TypeInfoResolver = ResponseSerializerContext.Default,
+            TypeInfoResolver = ResponseJsonSerializerContext.Default,
             Converters = { new ResponseValueJsonConverter() } // we still need it to make `Object` as `Dictionary`
         };
 
@@ -212,7 +212,7 @@ namespace OpenQA.Selenium
     }
 
     [JsonSerializable(typeof(Dictionary<string, object>))]
-    internal partial class ResponseSerializerContext : JsonSerializerContext
+    internal partial class ResponseJsonSerializerContext : JsonSerializerContext
     {
 
     }
