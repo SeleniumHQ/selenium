@@ -47,7 +47,7 @@ module Selenium
 
       attr_accessor args: untyped
 
-      def env_path: -> String
+      def env_path: -> String?
 
       alias extra_args args
 
