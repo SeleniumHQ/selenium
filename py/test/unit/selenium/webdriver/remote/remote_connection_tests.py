@@ -27,24 +27,27 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 @pytest.fixture
 def remote_connection():
+    """Fixture to create a RemoteConnection instance."""
     return RemoteConnection("http://localhost:4444")
 
 
-def test_add_command():
-    RemoteConnection.add_command("CUSTOM_COMMAND", "PUT", "/session/$sessionId/custom")
-    assert RemoteConnection.extra_commands["CUSTOM_COMMAND"] == ("PUT", "/session/$sessionId/custom")
+def test_add_command(remote_connection):
+    """Test adding a custom command to the connection."""
+    remote_connection.add_command("CUSTOM_COMMAND", "PUT", "/session/$sessionId/custom")
+    assert remote_connection.get_command("CUSTOM_COMMAND") == ("PUT", "/session/$sessionId/custom")
 
 
 @patch("selenium.webdriver.remote.remote_connection.RemoteConnection._request")
 def test_execute_custom_command(mock_request, remote_connection):
-    RemoteConnection.add_command("CUSTOM_COMMAND", "PUT", "/session/$sessionId/custom")
-    mock_request.return_value = {"status": 0, "value": "OK"}
+    """Test executing a custom command through the connection."""
+    remote_connection.add_command("CUSTOM_COMMAND", "PUT", "/session/$sessionId/custom")
+    mock_request.return_value = {"status": 200, "value": "OK"}
 
     params = {"sessionId": "12345"}
     response = remote_connection.execute("CUSTOM_COMMAND", params)
 
     mock_request.assert_called_once_with("PUT", "http://localhost:4444/session/12345/custom", body="{}")
-    assert response == {"status": 0, "value": "OK"}
+    assert response == {"status": 200, "value": "OK"}
 
 
 def test_get_remote_connection_headers_defaults():
@@ -266,17 +269,17 @@ def mock_no_proxy_settings(monkeypatch):
 
 @patch("selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers")
 def test_override_user_agent_in_headers(mock_get_remote_connection_headers, remote_connection):
-    RemoteConnection.user_agent = "rspec/1.0 (python 3.8)"
+    RemoteConnection.user_agent = "custom-agent/1.0 (python 3.8)"
 
     mock_get_remote_connection_headers.return_value = {
         "Accept": "application/json",
         "Content-Type": "application/json;charset=UTF-8",
-        "User-Agent": "rspec/1.0 (python 3.8)",
+        "User-Agent": "custom-agent/1.0 (python 3.8)",
     }
 
     headers = RemoteConnection.get_remote_connection_headers(parse.urlparse("http://remote"))
 
-    assert headers.get("User-Agent") == "rspec/1.0 (python 3.8)"
+    assert headers.get("User-Agent") == "custom-agent/1.0 (python 3.8)"
     assert headers.get("Accept") == "application/json"
     assert headers.get("Content-Type") == "application/json;charset=UTF-8"
 
@@ -285,7 +288,7 @@ def test_override_user_agent_in_headers(mock_get_remote_connection_headers, remo
 def test_register_extra_headers(mock_request, remote_connection):
     RemoteConnection.extra_headers = {"Foo": "bar"}
 
-    mock_request.return_value = {"status": 0, "value": "OK"}
+    mock_request.return_value = {"status": 200, "value": "OK"}
     remote_connection.execute("newSession", {})
 
     mock_request.assert_called_once_with("POST", "http://localhost:4444/session", body="{}")

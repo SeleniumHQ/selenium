@@ -303,10 +303,13 @@ class RemoteConnection:
 
     extra_commands = {}
 
-    @classmethod
-    def add_command(cls, name, method, url):
+    def add_command(self, name, method, url):
         """Register a new command."""
-        cls.extra_commands[name] = (method, url)
+        self._commands[name] = (method, url)
+
+    def get_command(self, name: str):
+        """Retrieve a command if it exists."""
+        return self._commands.get(name)
 
     def execute(self, command, params):
         """Send a command to the remote server.
