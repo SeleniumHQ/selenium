@@ -207,8 +207,8 @@ public class DockerOptions {
         config.getAll(DOCKER_SECTION, "devices").orElseGet(Collections::emptyList);
 
     List<Device> deviceMapping = new ArrayList<>();
-    for (int i = 0; i < devices.size(); i++) {
-      String deviceMappingDefined = devices.get(i).trim();
+    for (String device : devices) {
+      String deviceMappingDefined = device.trim();
       Matcher matcher =
           linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
 

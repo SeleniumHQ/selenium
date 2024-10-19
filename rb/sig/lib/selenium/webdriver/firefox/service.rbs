@@ -4,6 +4,7 @@ module Selenium
       class Service < WebDriver::Service
         DEFAULT_PORT: 4444
 
+        DRIVER_PATH_ENV_KEY: String
         EXECUTABLE: "geckodriver"
 
         SHUTDOWN_SUPPORTED: false

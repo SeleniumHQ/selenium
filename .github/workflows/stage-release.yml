@@ -2,58 +2,73 @@ name: Release Staging
 
 on:
   pull_request:
-    types: [closed]
+    types: [ closed ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Selenium version to release'
+        required: true
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
 
 jobs:
   github-release:
     if: >
-      github.event.pull_request.merged == true &&
+      (github.event.pull_request.merged == true &&
       github.repository_owner == 'seleniumhq' &&
-      startsWith(github.event.pull_request.head.ref, 'release-preparation-')
+      startsWith(github.event.pull_request.head.ref, 'release-preparation-')) ||
+      (github.event_name == 'workflow_dispatch' && 
+      github.event.inputs.version != '' && 
+      github.repository_owner == 'seleniumhq')
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Extract version from branch name
-        id: extract_version
+        if: github.event.pull_request.merged == true
         run: |
-          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
           VERSION=$(echo $BRANCH_NAME | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Extract version from workflow input
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION=${{ inputs.version }}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
       - name: Prep git
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-      - name: Tag Release
-        run: |
-          git tag selenium-${{ env.VERSION }}
-          git push origin selenium-${{ env.VERSION }}
-      - name: Update Nightly Tag to Remove pre-release
-        run: |
-          git fetch --tags
-          git tag -d nightly || echo "Nightly tag not found"
-          git tag nightly
-          git push origin refs/tags/nightly --force
+      #      - name: Tag Release
+      #        run: |
+      #          git tag selenium-${{ env.VERSION }} || echo "Tag already exists"
+      #          git push origin selenium-${{ env.VERSION }} || echo "Tag already exists remotely"
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: 'temurin'
+      - name: Setup curl for Ubuntu
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Build and Stage Packages
         run: ./go all:package[--config=release]
       - name: Generate Draft Release
-        uses: softprops/action-gh-release@v2
+        uses: ncipollo/release-action@v1
         with:
-          name: Selenium ${{ env.VERSION }}
-          body: |
-              ## Detailed Changelogs by Component
-              <img src="https://www.selenium.dev/images/programming/java.svg" width="20" height="20"> **[Java](https://github.com/SeleniumHQ/selenium/blob/trunk/java/CHANGELOG)** &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;<img src="https://www.selenium.dev/images/programming/python.svg" width="20" height="20"> **[Python](https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES)** &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;<img src="https://www.selenium.dev/images/programming/csharp.svg" width="20" height="20"> **[DotNet](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG)** &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;<img src="https://www.selenium.dev/images/programming/ruby.svg" width="20" height="20"> **[Ruby](https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES)** &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;<img src="https://www.selenium.dev/images/programming/javascript.svg" width="20" height="20"> **[JavaScript](https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/CHANGES.md)** &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;<img src="https://www.selenium.dev/images/browsers/internet-explorer.svg" width="20" height="20"> **[IEDriver](https://github.com/SeleniumHQ/selenium/blob/trunk/cpp/iedriverserver/CHANGELOG)**
-              <br>
-          tag_name: selenium-${{ env.VERSION }}
+          artifacts: "build/dist/*.*"
+          bodyFile: "scripts/github-actions/release_header.md"
           draft: true
-          generate_release_notes: true
+          generateReleaseNotes: true
+          name: "Selenium ${{ env.VERSION }}"
           prerelease: false
-          files: build/dist/*.*
+          skipIfReleaseExists: true
+          tag: "selenium-${{ env.VERSION }}"
+          commit: "${{ github.sha }}"
+
+  update-documentation:
+    needs: github-release
+    uses: ./.github/workflows/update-documentation.yml
+    with:
+      tag: selenium-${{ needs.github-release.outputs.version }}

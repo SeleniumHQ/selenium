@@ -31,7 +31,7 @@ module Selenium
       autoload :Capabilities, 'selenium/webdriver/remote/capabilities'
 
       module Http
-        autoload :Common,  'selenium/webdriver/remote/http/common'
+        autoload :Common, 'selenium/webdriver/remote/http/common'
         autoload :Default, 'selenium/webdriver/remote/http/default'
       end
     end

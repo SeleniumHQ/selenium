@@ -26,7 +26,7 @@ generated_assembly_info(
 )
 
 csharp_library(
-    name = "webdriver",
+    name = "webdriver-netstandard2.0",
     srcs = [
         ":assembly-info",
     ] + glob([
@@ -36,7 +36,7 @@ csharp_library(
     internals_visible_to = [
         "WebDriver.Common.Tests",
     ],
-    langversion = "10.0",
+    langversion = "12.0",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -52,12 +52,48 @@ csharp_library(
     ],
     deps = [
         framework("nuget", "NETStandard.Library"),
-        framework("nuget", "Newtonsoft.Json"),
+        framework("nuget", "Microsoft.Bcl.AsyncInterfaces"),
+        framework("nuget", "System.Threading.Tasks.Extensions"),
+        framework("nuget", "System.Memory"),
+        framework("nuget", "System.Text.Encodings.Web"),
+        framework("nuget", "System.Text.Json"),
     ],
 )
 
 csharp_library(
-    name = "webdriver-strongnamed",
+    name = "webdriver-net8.0",
+    srcs = [
+        ":assembly-info",
+    ] + glob([
+        "**/*.cs",
+    ]) + devtools_version_targets(),
+    out = "WebDriver",
+    defines = [
+        "NET8_0_OR_GREATER",
+    ],
+    internals_visible_to = [
+        "WebDriver.Common.Tests",
+    ],
+    langversion = "12.0",
+    resources = [
+        "//javascript/atoms/fragments:find-elements.js",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/cdp-support:mutation-listener.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
+    ],
+    target_frameworks = [
+        "net8.0",
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
+    deps = [
+    ],
+)
+
+csharp_library(
+    name = "webdriver-netstandard2.0-strongnamed",
     srcs = [
         ":assembly-info",
     ] + glob([
@@ -65,7 +101,7 @@ csharp_library(
     ]) + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
-    langversion = "10.0",
+    langversion = "12.0",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -81,7 +117,41 @@ csharp_library(
     ],
     deps = [
         framework("nuget", "NETStandard.Library"),
-        framework("nuget", "Newtonsoft.Json"),
+        framework("nuget", "Microsoft.Bcl.AsyncInterfaces"),
+        framework("nuget", "System.Threading.Tasks.Extensions"),
+        framework("nuget", "System.Memory"),
+        framework("nuget", "System.Text.Encodings.Web"),
+        framework("nuget", "System.Text.Json"),
+    ],
+)
+
+csharp_library(
+    name = "webdriver-net8.0-strongnamed",
+    srcs = [
+        ":assembly-info",
+    ] + glob([
+        "**/*.cs",
+    ]) + devtools_version_targets(),
+    out = "WebDriver.StrongNamed",
+    defines = [
+        "NET8_0_OR_GREATER",
+    ],
+    keyfile = "//dotnet:WebDriver.snk",
+    langversion = "12.0",
+    resources = [
+        "//javascript/atoms/fragments:find-elements.js",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/cdp-support:mutation-listener.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
+    ],
+    target_frameworks = [
+        "net8.0",
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
+    deps = [
     ],
 )
 
@@ -137,7 +207,8 @@ nuget_pack(
     },
     id = "Selenium.WebDriver",
     libs = {
-        ":webdriver": "WebDriver",
+        ":webdriver-net8.0": "WebDriver",
+        ":webdriver-netstandard2.0": "WebDriver",
     },
     nuspec_template = "WebDriver.nuspec",
     tags = [
@@ -162,7 +233,8 @@ nuget_pack(
     },
     id = "Selenium.WebDriver.StrongNamed",
     libs = {
-        ":webdriver-strongnamed": "WebDriver.StrongNamed",
+        ":webdriver-net8.0-strongnamed": "WebDriver.StrongNamed",
+        ":webdriver-netstandard2.0-strongnamed": "WebDriver.StrongNamed",
     },
     nuspec_template = "WebDriver.StrongNamed.nuspec",
     property_group_vars = {

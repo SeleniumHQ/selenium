@@ -17,16 +17,16 @@
 
 'use strict'
 
-const Capabilities = require('../../lib/capabilities').Capabilities
-const Symbols = require('../../lib/symbols')
+const Capabilities = require('selenium-webdriver/lib/capabilities').Capabilities
+const Symbols = require('selenium-webdriver/lib/symbols')
 const test = require('../../lib/test')
-const chrome = require('../../chrome')
-const { Browser, By, until } = require('../../')
-const remote = require('../../remote')
+const chrome = require('selenium-webdriver/chrome')
+const { Browser, By, until } = require('selenium-webdriver')
+const remote = require('selenium-webdriver/remote')
 
 const assert = require('node:assert')
 const fs = require('node:fs')
-const io = require('../../io')
+const io = require('selenium-webdriver/io')
 
 const Pages = test.Pages
 

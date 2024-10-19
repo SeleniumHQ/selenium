@@ -22,7 +22,10 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
-      it_behaves_like 'driver that can be started concurrently', exclude: {browser: %i[safari safari_preview]}
+      it_behaves_like 'driver that can be started concurrently', exclude: [
+        {browser: %i[safari safari_preview]},
+        {driver: :remote, rbe: true, reason: 'Cannot start 2+ drivers at once.'}
+      ]
 
       it 'creates default capabilities', exclude: {browser: %i[safari safari_preview]} do
         reset_driver! do |driver|

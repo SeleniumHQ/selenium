@@ -16,10 +16,16 @@
 // under the License.
 
 const logInspector = require('../bidi/logInspector')
+const scriptManager = require('../bidi//scriptManager')
+const { LocalValue, ChannelValue } = require('../bidi/protocolValue')
+const fs = require('node:fs')
+const path = require('node:path')
+const by = require('./by')
 
 class Script {
   #driver
   #logInspector
+  #script
 
   constructor(driver) {
     this.#driver = driver
@@ -36,6 +42,13 @@ class Script {
       return
     }
     this.#logInspector = await logInspector(this.#driver)
+  }
+
+  async #initScript() {
+    if (this.#script !== undefined) {
+      return
+    }
+    this.#script = await scriptManager([], this.#driver)
   }
 
   async addJavaScriptErrorHandler(callback) {
@@ -57,6 +70,72 @@ class Script {
     await this.#init()
 
     await this.#logInspector.removeCallback(id)
+  }
+
+  async addDomMutationHandler(callback) {
+    await this.#initScript()
+
+    let argumentValues = []
+    let value = LocalValue.createChannelValue(new ChannelValue('channel_name'))
+    argumentValues.push(value)
+
+    const filePath = path.join(__dirname, 'atoms', 'bidi-mutation-listener.js')
+
+    let mutationListener = fs.readFileSync(filePath, 'utf-8').toString()
+    await this.#script.addPreloadScript(mutationListener, argumentValues)
+
+    let id = await this.#script.onMessage(async (message) => {
+      let payload = JSON.parse(message['data']['value'])
+      let elements = await this.#driver.findElements({
+        css: '*[data-__webdriver_id=' + by.escapeCss(payload['target']) + ']',
+      })
+
+      if (elements.length === 0) {
+        return
+      }
+
+      let event = {
+        element: elements[0],
+        attribute_name: payload['name'],
+        current_value: payload['value'],
+        old_value: payload['oldValue'],
+      }
+      callback(event)
+    })
+
+    return id
+  }
+
+  async removeDomMutationHandler(id) {
+    await this.#initScript()
+
+    await this.#script.removeCallback(id)
+  }
+
+  async pin(script) {
+    await this.#initScript()
+    return await this.#script.addPreloadScript(script)
+  }
+
+  async unpin(id) {
+    await this.#initScript()
+    await this.#script.removePreloadScript(id)
+  }
+
+  async execute(script, ...args) {
+    await this.#initScript()
+
+    const browsingContextId = await this.#driver.getWindowHandle()
+
+    const argumentList = []
+
+    args.forEach((arg) => {
+      argumentList.push(LocalValue.getArgument(arg))
+    })
+
+    const response = await this.#script.callFunctionInBrowsingContext(browsingContextId, script, true, argumentList)
+
+    return response.result
   }
 }
 

@@ -36,7 +36,7 @@ jobs:
           git checkout -b release-${{ github.event.inputs.version }}
       - name: Update Rust Version
         run: |
-          ./go rust:version
+          ./go rust:version[${{ github.event.inputs.version }}]
           ./go rust:version:commit
       - name: Push changes
         uses: ad-m/github-push-action@master
@@ -72,6 +72,8 @@ jobs:
         with:
           ruby-version: '3.1'
           working-directory: 'rb'
+      - name: Setup curl for Ubuntu
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: "Prep git"
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"

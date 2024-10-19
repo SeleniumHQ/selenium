@@ -136,7 +136,11 @@ class RemoteConnection:
     """
 
     browser_name = None
-    _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+    _timeout = (
+        float(os.getenv("GLOBAL_DEFAULT_TIMEOUT", str(socket.getdefaulttimeout())))
+        if os.getenv("GLOBAL_DEFAULT_TIMEOUT") is not None
+        else socket.getdefaulttimeout()
+    )
     _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
 
     @classmethod
@@ -301,7 +305,7 @@ class RemoteConnection:
         LOGGER.debug("%s %s %s", command_info[0], url, str(trimmed))
         return self._request(command_info[0], url, body=data)
 
-    def _request(self, method, url, body=None):
+    def _request(self, method, url, body=None, timeout=120):
         """Send an HTTP request to the remote server.
 
         :Args:
@@ -319,12 +323,12 @@ class RemoteConnection:
             body = None
 
         if self.keep_alive:
-            response = self._conn.request(method, url, body=body, headers=headers)
+            response = self._conn.request(method, url, body=body, headers=headers, timeout=timeout)
             statuscode = response.status
         else:
             conn = self._get_connection_manager()
             with conn as http:
-                response = http.request(method, url, body=body, headers=headers)
+                response = http.request(method, url, body=body, headers=headers, timeout=timeout)
             statuscode = response.status
         data = response.data.decode("UTF-8")
         LOGGER.debug("Remote response: status=%s | data=%s | headers=%s", response.status, data, response.headers)
@@ -332,7 +336,9 @@ class RemoteConnection:
             if 300 <= statuscode < 304:
                 return self._request("GET", response.headers.get("location", None))
             if 399 < statuscode <= 500:
-                return {"status": statuscode, "value": data}
+                if statuscode == 401:
+                    return {"status": statuscode, "value": "Authorization Required"}
+                return {"status": statuscode, "value": str(statuscode) if not data else data.strip()}
             content_type = []
             if response.headers.get("Content-Type", None):
                 content_type = response.headers.get("Content-Type", None).split(";")

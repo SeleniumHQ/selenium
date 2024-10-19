@@ -1,3 +1,63 @@
+v4.25.0
+======
+* Add CDP for Chrome 129 and remove 126
+* replace `fedcm` links with new ones (#14478)
+* toml: warn about upcoming change enforcing string to have quotes (#14491)
+* Escape cookie values when required for tests (#14486)
+
+v4.24.0
+======
+* Add "se" prefixed capabilities to session response (#14323)
+* Ensure all prefixed caps in request are added in response
+* [bidi] return the id of the listener added
+* [grid] shutdown the websocket on unexpected failures
+* Add JSpecify annotations to WebElement and SearchContext (#14291)
+* Add JSpecify annotations for WebDriver and 3 other interfaces (#14371)
+* Implement getAttributes() method of MBean, and update Number-based MBean attributes to return Number objects instead of Strings (#14153)
+* [grid] shutdown the client related to a websocket
+* [grid] release the upstream websocket
+* [grid] close the httpclient after connecting the websocket failed
+* [bidi] Add execute script high-level API (#14330)
+* [ci] Use a tag to figure out what we might want to release (#14378)
+* Add CDP for Chrome 128 and remove 125
+
+v4.23.1
+======
+* [bidi] Add dom mutation handler support (#14304)
+* [grid] Exclude status DRAINING when distributor getting available nodes (#14282)
+* [bidi] Add script pinning methods (#14305)
+* Allow setting JDKHttpClient connectionTimeout, readTimeout, version via system property (#14306)
+* remove package org.openqa.selenium.grid.session.remote (#14295)
+* close the HttClient in case starting the session fails
+* Adding system property to disable tracing `webdriver.remote.enableTracing`
+* wait for the close response #14280
+* [bidi] Add authentication handlers (#14334)
+* [grid] ensure the local_sessionmap.remove event is raised (#14337)
+* [bidi] Add filter auth handler (#14349)
+
+v4.23.0
+======
+* Use Files.notExists to check files #14088
+* Setting proxy in SM only when it is needed.
+* Remove `LocateNodeParameters.Builder`, deprecated since 4.20
+* Remove usage of deprecated methods in Require.java
+* Delete tests referencing deprecated methods in Require.java
+* [bidi] Remove the method that converts node value to RemoteWebElement
+* [bidi] Ensure the listeners returns an id (#14215)
+* [bidi] Fix the adding and the removing listener
+* [bidi] Ensure empty values are removed from the call back map
+* [bidi] Avoid creating new instances of log entry event
+* [bidi] Add source type to log entry (#14244)
+* Revert workaround for old netty http client (addendum to #12843) (#14134)
+* [grid] Remove 'browserName' capability from stereotype when using RelaySession (#14247)
+* Merge android specific parameters in chrome options (#14217)
+* Add custom duration for Actions constructor (#14085)
+* Consistent UTF-8 Encoding and Code Enhancements (#14218)
+* [grid] Set session-request-timeout as client readTimeout in RemoteNewSessionQueue (#14272)
+* [bidi]Add high-level logging APIs (#14225)
+* Add CDP for Chrome 127 and remove 124
+
+
 v4.22.0
 ======
 

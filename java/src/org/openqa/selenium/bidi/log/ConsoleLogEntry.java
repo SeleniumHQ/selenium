@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.openqa.selenium.bidi.script.RemoteValue;
+import org.openqa.selenium.bidi.script.Source;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
@@ -31,30 +32,24 @@ import org.openqa.selenium.json.TypeToken;
 public class ConsoleLogEntry extends GenericLogEntry {
 
   private final String method;
-  private final String realm;
   private final List<RemoteValue> args;
 
   public ConsoleLogEntry(
       LogLevel level,
+      Source source,
       String text,
       long timestamp,
       String type,
       String method,
-      String realm,
       List<RemoteValue> args,
       StackTrace stackTrace) {
-    super(level, text, timestamp, type, stackTrace);
+    super(level, source, text, timestamp, type, stackTrace);
     this.method = method;
-    this.realm = realm;
     this.args = args;
   }
 
   public String getMethod() {
     return method;
-  }
-
-  public String getRealm() {
-    return realm;
   }
 
   public List<RemoteValue> getArgs() {
@@ -63,11 +58,11 @@ public class ConsoleLogEntry extends GenericLogEntry {
 
   public static ConsoleLogEntry fromJson(JsonInput input) {
     LogLevel level = null;
+    Source source = null;
     String text = null;
     long timestamp = 0;
     String type = null;
     String method = null;
-    String realm = null;
     List<RemoteValue> args = null;
     StackTrace stackTrace = null;
 
@@ -76,6 +71,10 @@ public class ConsoleLogEntry extends GenericLogEntry {
       switch (input.nextName()) {
         case "level":
           level = input.read(LogLevel.class);
+          break;
+
+        case "source":
+          source = input.read(Source.class);
           break;
 
         case "text":
@@ -94,10 +93,6 @@ public class ConsoleLogEntry extends GenericLogEntry {
           method = input.read(String.class);
           break;
 
-        case "realm":
-          realm = input.read(String.class);
-          break;
-
         case "args":
           args = input.read(new TypeToken<List<RemoteValue>>() {}.getType());
           break;
@@ -114,18 +109,18 @@ public class ConsoleLogEntry extends GenericLogEntry {
 
     input.endObject();
 
-    return new ConsoleLogEntry(level, text, timestamp, type, method, realm, args, stackTrace);
+    return new ConsoleLogEntry(level, source, text, timestamp, type, method, args, stackTrace);
   }
 
   private Map<String, Object> toJson() {
     Map<String, Object> toReturn = new TreeMap<>();
 
     toReturn.put("type", super.getType());
+    toReturn.put("source", super.getSource());
     toReturn.put("level", super.getLevel());
     toReturn.put("text", super.getText());
     toReturn.put("timestamp", super.getTimestamp());
     toReturn.put("method", method);
-    toReturn.put("realm", realm);
     toReturn.put("args", args);
     toReturn.put("stackTrace", super.getStackTrace());
 

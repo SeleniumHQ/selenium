@@ -127,16 +127,39 @@ class BrowsingContextInspector {
         let response = null
         if ('navigation' in params) {
           response = new NavigationInfo(params.context, params.navigation, params.timestamp, params.url)
-        } else if ('type' in params) {
-          response = new UserPromptOpened(params.context, params.type, params.message)
         } else if ('accepted' in params) {
           response = new UserPromptClosed(params.context, params.accepted, params.userText)
+        } else if ('type' in params) {
+          response = new UserPromptOpened(params.context, params.type, params.message)
         } else {
           response = new BrowsingContextInfo(params.context, params.url, params.children, params.parent)
         }
         callback(response)
       }
     })
+  }
+
+  async close() {
+    if (
+      this._browsingContextIds !== null &&
+      this._browsingContextIds !== undefined &&
+      this._browsingContextIds.length > 0
+    ) {
+      await this.bidi.unsubscribe(
+        'browsingContext.contextCreated',
+        'browsingContext.contextDestroyed',
+        'browsingContext.fragmentNavigated',
+        'browsingContext.userPromptClosed',
+        this._browsingContextIds,
+      )
+    } else {
+      await this.bidi.unsubscribe(
+        'browsingContext.contextCreated',
+        'browsingContext.contextDestroyed',
+        'browsingContext.fragmentNavigated',
+        'browsingContext.userPromptClosed',
+      )
+    }
   }
 }
 

@@ -21,8 +21,8 @@ const assert = require('node:assert')
 const http = require('node:http')
 const url = require('node:url')
 
-const HttpClient = require('../../http').HttpClient
-const HttpRequest = require('../../lib/http').Request
+const HttpClient = require('selenium-webdriver/http').HttpClient
+const HttpRequest = require('selenium-webdriver/lib/http').Request
 const Server = require('../../lib/test/httpserver').Server
 
 describe('HttpClient', function () {

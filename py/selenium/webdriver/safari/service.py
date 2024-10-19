@@ -28,6 +28,7 @@ class Service(service.Service):
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+    :param enable_logging: (Optional) Enable logging of the service. Logs can be located at `~/Library/Logs/com.apple.WebDriver/`
     """
 
     def __init__(
@@ -37,15 +38,22 @@ class Service(service.Service):
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         reuse_service=False,
+        enable_logging: bool = False,
+        driver_path_env_key: str = None,
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
+        driver_path_env_key = driver_path_env_key or "SE_SAFARIDRIVER"
+
+        if enable_logging:
+            self.service_args.append("--diagnose")
 
         self.reuse_service = reuse_service
         super().__init__(
             executable_path=executable_path,
             port=port,
             env=env,
+            driver_path_env_key=driver_path_env_key,
             **kwargs,
         )
 

@@ -1,3 +1,33 @@
+0.4.25
+======
+
+* Reuse driver mirror URL (when available) to discover Firefox versions (#13941) (#14493)
+* Selenium Manager errors when browser-path is wrong (#13352) (#14381)
+
+0.4.24
+======
+
+* Use Firefox history major releases endpoint for version discovery
+* Use the Debug format specifier to display error messages (#14388)
+* Include arguments for skipping drivers and browsers in path (#14444)
+
+0.4.23
+======
+
+* No logical changes in this release.
+
+0.4.22
+======
+
+* Include mixed output (INFO, WARN, DEBUG, etc. to stderr and minimal JSON to stdout) (#13414)
+* Display driver path in error trace when driver is unavailable
+* Include cache paths with non-ascii characters in test (#14066)
+* Use pure Rust implementation for which command (#14114)
+* Include PATH env for testing SM in CI
+* Bump dependencies to latest versions
+* Micro optimization in the strings usage and other minor issues
+* Use rules_rust 0.42.1 (Rust 1.77.2)
+
 0.4.21
 ======
 

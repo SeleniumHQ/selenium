@@ -164,6 +164,7 @@ public class JdkHttpClient implements HttpClient {
       throw new ConnectionFailedException("JdkWebSocket initial request execution error", e);
     }
 
+    CompletableFuture<Integer> closed = new CompletableFuture<>();
     CompletableFuture<java.net.http.WebSocket> webSocketCompletableFuture =
         client
             .newWebSocketBuilder()
@@ -222,6 +223,7 @@ public class JdkHttpClient implements HttpClient {
                   public CompletionStage<?> onClose(
                       java.net.http.WebSocket webSocket, int statusCode, String reason) {
                     LOG.fine("Closing websocket");
+                    closed.complete(statusCode);
                     listener.onClose(statusCode, reason);
                     return null;
                   }
@@ -277,7 +279,24 @@ public class JdkHttpClient implements HttpClient {
                     Level.FINE,
                     "Sending close message, statusCode {0}, reason: {1}",
                     new Object[] {statusCode, closeMessage.reason()});
-                makeCall = () -> underlyingSocket.sendClose(statusCode, closeMessage.reason());
+                makeCall =
+                    () -> {
+                      CompletableFuture<java.net.http.WebSocket> future =
+                          underlyingSocket.sendClose(statusCode, closeMessage.reason());
+                      try {
+                        closed.get(4, TimeUnit.SECONDS);
+                      } catch (ExecutionException e) {
+                        LOG.log(
+                            Level.WARNING,
+                            "failed to wait for the websocket to close",
+                            e.getCause());
+                      } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                      } catch (java.util.concurrent.TimeoutException e) {
+                        LOG.finer("wait for the websocket to close timed out");
+                      }
+                      return future;
+                    };
               } else {
                 LOG.fine("Output is closed, not sending close message");
                 return this;
@@ -402,7 +421,7 @@ public class JdkHttpClient implements HttpClient {
         switch (response.statusCode()) {
           case 303:
             method = HttpMethod.GET;
-            // fall-through
+          // fall-through
           case 301:
           case 302:
           case 307:

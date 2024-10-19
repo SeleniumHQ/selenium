@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net8.0;</TargetFrameworks>
     <AssemblyName>WebDriver</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>12.0</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -51,8 +51,8 @@
     <None Remove="WebDriver.ruleset" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Text.Json" Version="8.0.4" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -71,7 +71,7 @@
   </ItemGroup>
 
   <Target Name="GenerateSeleniumManagerBinaries" BeforeTargets="PrepareForBuild">
-    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos" />
+    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos" WorkingDirectory="../../.." />
 
     <PropertyGroup>
       <BaseSeleniumManagerPath>..\..\..\bazel-bin\dotnet\src\webdriver\manager</BaseSeleniumManagerPath>
@@ -79,7 +79,7 @@
   </Target>
 
   <Target Name="GenerateAtoms" BeforeTargets="PrepareForBuild">
-    <Exec Command="bazel build //javascript/webdriver/atoms:get-attribute.js //javascript/atoms/fragments:is-displayed.js //javascript/atoms/fragments:find-elements.js" />
+    <Exec Command="bazel build //javascript/webdriver/atoms:get-attribute.js //javascript/atoms/fragments:is-displayed.js //javascript/atoms/fragments:find-elements.js" WorkingDirectory="../../.." />
 
     <ItemGroup>
       <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
@@ -106,7 +106,7 @@
   </Target>
 
   <Target Name="GenerateCdp" BeforeTargets="CoreCompile">
-    <Exec Command="bazel build //dotnet/src/webdriver/cdp:generate-v85 //dotnet/src/webdriver/cdp:generate-v124 //dotnet/src/webdriver/cdp:generate-v125 //dotnet/src/webdriver/cdp:generate-v126" />
+    <Exec Command="bazel build //dotnet/src/webdriver/cdp/..." WorkingDirectory="../../.." />
 
     <ItemGroup>
       <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />

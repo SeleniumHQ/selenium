@@ -18,9 +18,9 @@
 'use strict'
 
 const assert = require('node:assert')
-const error = require('../lib/error')
+const error = require('selenium-webdriver/lib/error')
 const test = require('../lib/test')
-const { Browser, By, until } = require('..')
+const { Browser, By, until } = require('selenium-webdriver')
 const Pages = test.Pages
 
 test.suite(function (env) {

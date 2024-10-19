@@ -719,6 +719,50 @@ class NodeOptionsTest {
     assertThat(nodeOptions.getSlotMatcher()).isExactlyInstanceOf(YesSlotMatcher.class);
   }
 
+  @Test
+  void testIsVncEnabledAcceptListEnvVarsAndReturnTrue() {
+    System.setProperty("SE_START_XVFB", "true");
+    System.setProperty("SE_START_VNC", "true");
+    System.setProperty("SE_START_NO_VNC", "true");
+    String[] rawConfig =
+        new String[] {
+          "[node]", "vnc-env-var = [\"SE_START_XVFB\", \"SE_START_VNC\", \"SE_START_NO_VNC\"]",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    NodeOptions nodeOptionsEnabled = new NodeOptions(config);
+    assertThat(config.getAll("node", "vnc-env-var").get())
+        .containsExactly("SE_START_XVFB", "SE_START_VNC", "SE_START_NO_VNC");
+    assertThat(nodeOptionsEnabled.isVncEnabled()).isTrue();
+  }
+
+  @Test
+  void testIsVncEnabledAcceptListEnvVarsAndReturnFalse() {
+    System.setProperty("SE_START_XVFB", "true");
+    System.setProperty("SE_START_VNC", "false");
+    String[] rawConfig =
+        new String[] {
+          "[node]", "vnc-env-var = [\"SE_START_XVFB\", \"SE_START_VNC\", \"SE_START_NO_VNC\"]",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    NodeOptions nodeOptionsEnabled = new NodeOptions(config);
+    assertThat(config.getAll("node", "vnc-env-var").get())
+        .containsExactly("SE_START_XVFB", "SE_START_VNC", "SE_START_NO_VNC");
+    assertThat(nodeOptionsEnabled.isVncEnabled()).isFalse();
+  }
+
+  @Test
+  void testIsVncEnabledAcceptSingleEnvVar() {
+    System.setProperty("SE_START_XVFB", "false");
+    String[] rawConfig =
+        new String[] {
+          "[node]", "vnc-env-var = \"SE_START_XVFB\"",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    NodeOptions nodeOptionsEnabled = new NodeOptions(config);
+    assertThat(config.getAll("node", "vnc-env-var").get()).containsExactly("SE_START_XVFB");
+    assertThat(nodeOptionsEnabled.isVncEnabled()).isFalse();
+  }
+
   private Condition<? super List<? extends Capabilities>> supporting(String name) {
     return new Condition<>(
         caps -> caps.stream().anyMatch(cap -> name.equals(cap.getBrowserName())),

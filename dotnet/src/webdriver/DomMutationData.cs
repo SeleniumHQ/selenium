@@ -16,7 +16,7 @@
 // limitations under the License.
 // </copyright>
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium
 {
@@ -33,7 +33,8 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the ID of the element whose value is changing.
         /// </summary>
-        [JsonProperty(PropertyName = "target")]
+        [JsonPropertyName("target")]
+        [JsonInclude]
         public string TargetId
         {
             get { return this.targetId; }
@@ -43,7 +44,8 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the name of the attribute that is changing.
         /// </summary>
-        [JsonProperty(PropertyName = "name")]
+        [JsonPropertyName("name")]
+        [JsonInclude]
         public string AttributeName
         {
             get { return this.attributeName; }
@@ -53,7 +55,8 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the value to which the attribute is being changed.
         /// </summary>
-        [JsonProperty(PropertyName = "value")]
+        [JsonPropertyName("value")]
+        [JsonInclude]
         public string AttributeValue
         {
             get { return this.attributeValue; }
@@ -63,7 +66,8 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the value from which the attribute has been changed.
         /// </summary>
-        [JsonProperty(PropertyName = "oldValue")]
+        [JsonPropertyName("oldValue")]
+        [JsonInclude]
         public string AttributeOriginalValue
         {
             get { return this.attributeOriginalValue; }

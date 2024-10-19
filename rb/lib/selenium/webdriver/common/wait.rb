@@ -65,7 +65,7 @@ module Selenium
         msg = if @message
                 @message.dup
               else
-                +"timed out after #{@timeout} seconds"
+                "timed out after #{@timeout} seconds"
               end
 
         msg << " (#{last_error.message})" if last_error

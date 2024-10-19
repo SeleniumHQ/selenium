@@ -7,16 +7,17 @@ load("@npm//javascript/node/selenium-webdriver:prettier/package_json.bzl", prett
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("//common:defs.bzl", "copy_file")
 load("//javascript:defs.bzl", "mocha_test")
+load("//javascript/private:browsers.bzl", "BROWSERS")
 
 npm_link_all_packages(name = "node_modules")
 
-VERSION = "4.23.0-nightly202406201609"
+VERSION = "4.26.0-nightly202409202352"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v125",
-    "v126",
-    "v124",
+    "v128",
+    "v129",
+    "v127",
 ]
 
 js_library(
@@ -31,6 +32,7 @@ js_library(
         "http/*.js",
         "io/*.js",
         "lib/*.js",
+        "lib/atoms/bidi-mutation-listener.js",
         "net/*.js",
         "remote/*.js",
         "testing/*.js",
@@ -39,6 +41,7 @@ js_library(
         "bidi/*.js",
     ]),
     deps = [
+        ":node_modules/@bazel/runfiles",
         ":node_modules/jszip",
         ":node_modules/tmp",
         ":node_modules/ws",
@@ -53,12 +56,17 @@ npm_package(
         ":manager-macos",
         ":manager-windows",
         ":prod-src-files",
+        "//javascript/node/selenium-webdriver/lib/atoms:bidi-mutation-listener",
         "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
         "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
     ],
     package = "selenium-webdriver",
+    publishable = True,
+    tags = [
+        "release-artifact",
+    ],
     version = VERSION,
     visibility = ["//visibility:public"],
 )
@@ -117,6 +125,9 @@ js_library(
             "test/**/*_test.js",
         ],
     ),
+    deps = [
+        ":node_modules/@bazel/runfiles",
+    ],
 )
 
 mocha_test(
@@ -152,41 +163,31 @@ mocha_test(
             ],
             chdir = package_name(),
             data = [
-                "test-data",
                 ":large-test-srcs",
-                ":node_modules/@bazel/runfiles",
                 ":node_modules/express",
-                ":node_modules/jszip",
+                ":node_modules/mocha",
+                ":node_modules/mocha-junit-reporter",
                 ":node_modules/multer",
                 ":node_modules/serve-index",
                 ":node_modules/sinon",
-                ":node_modules/tmp",
-                ":node_modules/ws",
+                ":test-data",
                 "//:node_modules/selenium-webdriver",
                 "//common/extensions:js-lib",
                 "//common/src/web:js-lib",
-                "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
-                "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
-                "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
-                "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
-            ],
+            ] + BROWSERS[browser]["data"],
             env = {
                 "SELENIUM_BROWSER": browser,
-            },
+            } | BROWSERS[browser]["env"],
             tags = [
                 browser,
                 "browser-test",
                 "no-sandbox",
                 "requires-network",
-                "skip-remote",
             ],
         ),
     ]
     for test in LARGE_TESTS
-    for browser in [
-        "chrome",
-        "firefox",
-    ]
+    for browser in BROWSERS.keys()
 ]
 
 # npm_package does not pick up filegroup sources.

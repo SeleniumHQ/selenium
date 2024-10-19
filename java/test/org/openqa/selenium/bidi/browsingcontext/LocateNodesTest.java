@@ -27,7 +27,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.bidi.script.EvaluateResult;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
@@ -243,17 +242,6 @@ public class LocateNodesTest extends JupiterTestBase {
 
     String sharedId = (String) ((RemoteValue) sharedIdMap.get("sharedId")).getValue().get();
     assertThat(sharedId).isEqualTo(nodeId);
-  }
-
-  @Test
-  void canFindElement() {
-    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
-    assertThat(browsingContext.getId()).isNotEmpty();
-
-    driver.get(pages.xhtmlTestPage);
-
-    WebElement element = browsingContext.locateElement(Locator.css("p"));
-    assertThat(element.getText()).isEqualTo("Open new window");
   }
 
   @AfterEach

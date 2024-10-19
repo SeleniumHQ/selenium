@@ -189,40 +189,40 @@ class RequireTest {
   @Test
   void canCheckFileArgument() throws IOException {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.argument("Target", (File) null).isFile())
+        .isThrownBy(() -> Require.argument("Target", (Path) null).isFile())
         .withMessage("Target must be set");
     File tempFile = File.createTempFile("example", "tmp");
     tempFile.deleteOnExit();
-    assertThat(Require.argument("Target", tempFile).isFile()).isSameAs(tempFile);
+    assertThat(Require.argument("Target", tempFile.toPath()).isFile()).isSameAs(tempFile.toPath());
     File dir = tempFile.getParentFile();
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.argument("Target", dir).isFile())
+        .isThrownBy(() -> Require.argument("Target", dir.toPath()).isFile())
         .withMessage("Target must be a regular file: %s", dir);
     if (!tempFile.delete()) {
       fail("Unable to delete temp file");
     }
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.argument("Target", tempFile).isFile())
+        .isThrownBy(() -> Require.argument("Target", tempFile.toPath()).isFile())
         .withMessage("Target must exist: %s", tempFile);
   }
 
   @Test
   void canCheckDirectoryArgument() throws IOException {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.argument("Target", (File) null).isDirectory())
+        .isThrownBy(() -> Require.argument("Target", (Path) null).isDirectory())
         .withMessage("Target must be set");
     File tempFile = File.createTempFile("example", "tmp");
     tempFile.deleteOnExit();
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.argument("Target", tempFile).isDirectory())
+        .isThrownBy(() -> Require.argument("Target", tempFile.toPath()).isDirectory())
         .withMessage("Target must be a directory: %s", tempFile);
     File dir = tempFile.getParentFile();
-    assertThat(Require.argument("Target", dir).isDirectory()).isSameAs(dir);
+    assertThat(Require.argument("Target", dir.toPath()).isDirectory()).isSameAs(dir.toPath());
     if (!tempFile.delete()) {
       fail("Unable to delete temp file");
     }
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.argument("Target", tempFile).isDirectory())
+        .isThrownBy(() -> Require.argument("Target", tempFile.toPath()).isDirectory())
         .withMessage("Target must exist: %s", tempFile);
   }
 
@@ -259,46 +259,6 @@ class RequireTest {
         .isThrownBy(() -> Require.state("This", arg2).instanceOf(Number.class))
         .withMessage("This must be an instance of class java.lang.Number");
     assertThat(Require.state("That", arg2).instanceOf(String.class)).isSameAs(arg2);
-  }
-
-  @Test
-  void canCheckFileState() throws IOException {
-    assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> Require.state("Target", (File) null).isFile())
-        .withMessage("Target must be set");
-    File tempFile = File.createTempFile("example", "tmp");
-    tempFile.deleteOnExit();
-    assertThat(Require.state("Target", tempFile).isFile()).isSameAs(tempFile);
-    File dir = tempFile.getParentFile();
-    assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> Require.state("Target", dir).isFile())
-        .withMessage("Target must be a regular file: %s", dir);
-    if (!tempFile.delete()) {
-      fail("Unable to delete temp file");
-    }
-    assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> Require.state("Target", tempFile).isFile())
-        .withMessage("Target must exist: %s", tempFile);
-  }
-
-  @Test
-  void canCheckDirectoryState() throws IOException {
-    assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> Require.state("Target", (File) null).isDirectory())
-        .withMessage("Target must be set");
-    File tempFile = File.createTempFile("example", "tmp");
-    tempFile.deleteOnExit();
-    assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> Require.state("Target", tempFile).isDirectory())
-        .withMessage("Target must be a directory: %s", tempFile);
-    File dir = tempFile.getParentFile();
-    assertThat(Require.state("Target", dir).isDirectory()).isSameAs(dir);
-    if (!tempFile.delete()) {
-      fail("Unable to delete temp file");
-    }
-    assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> Require.state("Target", tempFile).isDirectory())
-        .withMessage("Target must exist: %s", tempFile);
   }
 
   @Test

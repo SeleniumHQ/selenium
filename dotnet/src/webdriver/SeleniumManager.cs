@@ -16,16 +16,15 @@
 // limitations under the License.
 // </copyright>
 
-using Newtonsoft.Json;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium
 {
@@ -38,6 +37,8 @@ namespace OpenQA.Selenium
         private static readonly ILogger _logger = Log.GetLogger(typeof(SeleniumManager));
 
         private static readonly string BinaryFullPath = Environment.GetEnvironmentVariable("SE_MANAGER_PATH");
+
+        private static readonly JsonSerializerOptions _serializerOptions = new() { PropertyNameCaseInsensitive = true, TypeInfoResolver = SeleniumManagerSerializerContext.Default };
 
         static SeleniumManager()
         {
@@ -87,10 +88,12 @@ namespace OpenQA.Selenium
                 argsBuilder.Append(" --debug");
             }
 
-            Dictionary<string, object> output = RunCommand(BinaryFullPath, argsBuilder.ToString());
-            Dictionary<string, string> binaryPaths = new Dictionary<string, string>();
-            binaryPaths.Add("browser_path", (string)output["browser_path"]);
-            binaryPaths.Add("driver_path", (string)output["driver_path"]);
+            var smCommandResult = RunCommand(BinaryFullPath, argsBuilder.ToString());
+            Dictionary<string, string> binaryPaths = new()
+            {
+                { "browser_path", smCommandResult.BrowserPath },
+                { "driver_path", smCommandResult.DriverPath }
+            };
 
             if (_logger.IsEnabled(LogEventLevel.Trace))
             {
@@ -109,7 +112,7 @@ namespace OpenQA.Selenium
         /// <returns>
         /// the standard output of the execution.
         /// </returns>
-        private static Dictionary<string, object> RunCommand(string fileName, string arguments)
+        private static SeleniumManagerResponse.ResultResponse RunCommand(string fileName, string arguments)
         {
             Process process = new Process();
             process.StartInfo.FileName = BinaryFullPath;
@@ -175,42 +178,76 @@ namespace OpenQA.Selenium
             }
 
             string output = outputBuilder.ToString().Trim();
-            Dictionary<string, object> result;
+
+            SeleniumManagerResponse jsonResponse;
+
             try
             {
-                Dictionary<string, object> deserializedOutput = JsonConvert.DeserializeObject<Dictionary<string, object>>(output, new ResponseValueJsonConverter());
-                result = deserializedOutput["result"] as Dictionary<string, object>;
+                jsonResponse = JsonSerializer.Deserialize<SeleniumManagerResponse>(output, _serializerOptions);
             }
             catch (Exception ex)
             {
                 throw new WebDriverException($"Error deserializing Selenium Manager's response: {output}", ex);
             }
 
-            if (result.ContainsKey("logs"))
+            if (jsonResponse.Logs is not null)
             {
-                Dictionary<string, string> logs = result["logs"] as Dictionary<string, string>;
-                foreach (KeyValuePair<string, string> entry in logs)
+                foreach (var entry in jsonResponse.Logs)
                 {
-                    switch (entry.Key)
+                    switch (entry.Level)
                     {
                         case "WARN":
                             if (_logger.IsEnabled(LogEventLevel.Warn))
                             {
-                                _logger.Warn(entry.Value);
+                                _logger.Warn(entry.Message);
                             }
                             break;
                         case "DEBUG":
-                        case "INFO":
-                            if (_logger.IsEnabled(LogEventLevel.Debug) && (entry.Key == "DEBUG" || entry.Key == "INFO"))
+                            if (_logger.IsEnabled(LogEventLevel.Debug))
                             {
-                                _logger.Debug(entry.Value);
+                                _logger.Debug(entry.Message);
+                            }
+                            break;
+                        case "INFO":
+                            if (_logger.IsEnabled(LogEventLevel.Info))
+                            {
+                                _logger.Info(entry.Message);
                             }
                             break;
                     }
                 }
             }
 
-            return result;
+            return jsonResponse.Result;
         }
+    }
+
+    internal class SeleniumManagerResponse
+    {
+        public IReadOnlyList<LogEntryResponse> Logs { get; set; }
+
+        public ResultResponse Result { get; set; }
+
+        public class LogEntryResponse
+        {
+            public string Level { get; set; }
+
+            public string Message { get; set; }
+        }
+
+        public class ResultResponse
+        {
+            [JsonPropertyName("driver_path")]
+            public string DriverPath { get; set; }
+
+            [JsonPropertyName("browser_path")]
+            public string BrowserPath { get; set; }
+        }
+    }
+
+    [JsonSerializable(typeof(SeleniumManagerResponse))]
+    internal partial class SeleniumManagerSerializerContext : JsonSerializerContext
+    {
+
     }
 }

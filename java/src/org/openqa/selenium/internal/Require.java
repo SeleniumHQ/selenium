@@ -442,7 +442,9 @@ public final class Require {
       if (path == null) {
         throw new IllegalStateException(String.format(MUST_BE_SET, name));
       }
-      if (!Files.exists(path)) {
+      // notExists returns false in case it is impossible to determinate the exact result of a link
+      // target e.g. Windows app execution aliases
+      if (Files.notExists(path)) {
         throw new IllegalStateException(String.format(MUST_EXIST, name, path));
       }
       if (!Files.isRegularFile(path)) {
@@ -455,7 +457,9 @@ public final class Require {
       if (path == null) {
         throw new IllegalStateException(String.format(MUST_BE_SET, name));
       }
-      if (!Files.exists(path)) {
+      // notExists returns false in case it is impossible to determinate the exact result of a link
+      // target e.g. Windows app execution aliases
+      if (Files.notExists(path)) {
         throw new IllegalStateException(String.format(MUST_EXIST, name, path));
       }
       if (!Files.isDirectory(path)) {
@@ -468,7 +472,9 @@ public final class Require {
       if (path == null) {
         throw new IllegalStateException(String.format(MUST_BE_SET, name));
       }
-      if (!Files.exists(path)) {
+      // notExists returns false in case it is impossible to determinate the exact result of a link
+      // target e.g. Windows app execution aliases
+      if (Files.notExists(path)) {
         throw new IllegalStateException(String.format(MUST_EXIST, name, path));
       }
       // do not check for isRegularFile here, there are executable none regular files e.g. Windows

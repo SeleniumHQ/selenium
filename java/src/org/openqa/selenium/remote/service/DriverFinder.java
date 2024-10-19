@@ -148,12 +148,16 @@ public class DriverFinder {
     }
 
     Proxy proxy = Proxy.extractFrom(options);
-    if (proxy != null) {
+    if (proxy != null
+        && proxy.getProxyType() != Proxy.ProxyType.DIRECT
+        && proxy.getProxyType() != Proxy.ProxyType.AUTODETECT) {
       arguments.add("--proxy");
       if (proxy.getSslProxy() != null) {
         arguments.add(proxy.getSslProxy());
       } else if (proxy.getHttpProxy() != null) {
         arguments.add(proxy.getHttpProxy());
+      } else if (proxy.getProxyAutoconfigUrl() != null) {
+        arguments.add(proxy.getProxyAutoconfigUrl());
       }
     }
     return arguments;

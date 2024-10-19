@@ -5,13 +5,17 @@ module Selenium
         class Curb < Common
           @client: untyped
 
-          def quit_errors: () -> untyped
+          attr_accessor timeout: Numeric?
+
+          def initialize: (timeout: Numeric?) -> void
+
+          def quit_errors: () -> Array[StandardError]
 
           private
 
-          def request: (untyped verb, untyped url, untyped headers, untyped payload) -> untyped
+          def request: (Symbol verb, URI | String url, Hash[String, String] headers, String payload) -> Remote::Response
 
-          def client: () -> untyped
+          def client: () -> Curl::Easy
         end
       end
     end

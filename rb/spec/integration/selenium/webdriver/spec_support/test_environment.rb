@@ -88,6 +88,16 @@ module Selenium
         end
 
         def remote_server
+          args = if ENV.key?('CHROMEDRIVER_BINARY')
+                   ["-Dwebdriver.chrome.driver=#{ENV['CHROMEDRIVER_BINARY']}"]
+                 elsif ENV.key?('MSEDGEDRIVER_BINARY')
+                   ["-Dwebdriver.edge.driver=#{ENV['MSEDGEDRIVER_BINARY']}"]
+                 elsif ENV.key?('GECKODRIVER_BINARY')
+                   ["-Dwebdriver.gecko.driver=#{ENV['GECKODRIVER_BINARY']}"]
+                 else
+                   %w[--selenium-manager true --enable-managed-downloads true]
+                 end
+
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
             java: bazel_java,
@@ -95,7 +105,7 @@ module Selenium
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 60,
-            args: %w[--selenium-manager true --enable-managed-downloads true]
+            args: args
           )
         end
 
@@ -103,6 +113,10 @@ module Selenium
           return unless ENV.key?('WD_BAZEL_JAVA_LOCATION')
 
           File.expand_path(File.read(File.expand_path(ENV.fetch('WD_BAZEL_JAVA_LOCATION'))).chomp)
+        end
+
+        def rbe?
+          Dir.pwd.start_with?('/mnt/engflow')
         end
 
         def reset_remote_server
@@ -191,7 +205,8 @@ module Selenium
             driver: driver,
             version: driver_instance.capabilities.browser_version,
             platform: Platform.os,
-            ci: Platform.ci
+            ci: Platform.ci,
+            rbe: rbe?
           }
         end
 
@@ -255,7 +270,7 @@ module Selenium
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
-          args << '--no-sandbox' if ENV['NO_SANDBOX']
+          args << '--no-sandbox' unless Platform.windows?
           args << '--disable-gpu'
           WebDriver::Options.chrome(args: args, **opts)
         end
@@ -265,7 +280,7 @@ module Selenium
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
-          args << '--no-sandbox' if ENV['NO_SANDBOX']
+          args << '--no-sandbox' unless Platform.windows?
           args << '--disable-gpu'
           WebDriver::Options.edge(args: args, **opts)
         end

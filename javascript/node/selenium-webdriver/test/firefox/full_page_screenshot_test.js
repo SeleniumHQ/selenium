@@ -18,7 +18,7 @@
 'use strict'
 
 const assert = require('node:assert')
-const { Browser } = require('../../index')
+const { Browser } = require('selenium-webdriver/index')
 const { Pages, suite } = require('../../lib/test')
 let startIndex = 0
 let endIndex = 5

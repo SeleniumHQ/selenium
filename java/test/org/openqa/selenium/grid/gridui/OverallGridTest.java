@@ -68,7 +68,7 @@ class OverallGridTest extends JupiterTestBase {
 
   @Test
   void shouldReportConcurrencyZeroPercentWhenGridIsStartedWithoutLoad() {
-    driver.get(whereIs(server, "/ui#/sessions"));
+    driver.get(whereIs(server, "/ui/#/sessions"));
 
     WebElement concurrency =
         wait.until(
@@ -79,7 +79,7 @@ class OverallGridTest extends JupiterTestBase {
 
   @Test
   void shouldShowOneNodeRegistered() {
-    driver.get(whereIs(server, "/ui"));
+    driver.get(whereIs(server, "/ui/"));
 
     List<WebElement> nodeInfoIcons =
         wait.until(
@@ -93,7 +93,7 @@ class OverallGridTest extends JupiterTestBase {
     WebDriver remoteWebDriver =
         new RemoteWebDriver(server.getUrl(), Browser.detect().getCapabilities());
     try {
-      driver.get(whereIs(server, "/ui#/sessions"));
+      driver.get(whereIs(server, "/ui/#/sessions"));
 
       wait.until(textToBe(By.cssSelector("div[data-testid='session-count']"), "1"));
     } finally {

@@ -90,6 +90,6 @@ public class FormEncodedData {
       builder.append(c);
     }
 
-    return URLDecoder.decode(builder.toString(), charSet.toString());
+    return URLDecoder.decode(builder.toString(), charSet);
   }
 }

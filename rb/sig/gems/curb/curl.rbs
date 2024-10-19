@@ -1,0 +1,5 @@
+module Curl
+  class Easy
+    def initialize: () -> void
+  end
+end

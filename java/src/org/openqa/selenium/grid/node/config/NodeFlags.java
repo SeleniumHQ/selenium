@@ -30,7 +30,7 @@ import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_USE_SELENIUM_MANAGER;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VAR;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VARS;
 import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
 import static org.openqa.selenium.grid.node.config.NodeOptions.OVERRIDE_MAX_SESSIONS;
 
@@ -202,8 +202,11 @@ public class NodeFlags implements HasRoles {
       description =
           "Environment variable to check in order to determine if a vnc stream is "
               + "available or not.")
-  @ConfigValue(section = NODE_SECTION, name = "vnc-env-var", example = "SE_START_XVFB")
-  public String vncEnvVar = DEFAULT_VNC_ENV_VAR;
+  @ConfigValue(
+      section = NODE_SECTION,
+      name = "vnc-env-var",
+      example = "[\"SE_START_XVFB\", \"SE_START_VNC\", \"SE_START_NO_VNC\"]")
+  public List<String> vncEnvVar = DEFAULT_VNC_ENV_VARS;
 
   @Parameter(
       names = "--no-vnc-port",
