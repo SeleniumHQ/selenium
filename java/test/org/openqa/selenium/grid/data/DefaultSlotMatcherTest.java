@@ -19,6 +19,8 @@ package org.openqa.selenium.grid.data;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -424,7 +426,7 @@ class DefaultSlotMatcherTest {
   }
 
   @Test
-  void vendorExtensionPrefixedCapabilitiesAreIgnoredForMatching() {
+  void vendorExtensionPrefixedCapabilitiesWithSimpleValuesAreConsideredForMatching() {
     Capabilities stereotype =
         new ImmutableCapabilities(
             CapabilityType.BROWSER_NAME,
@@ -450,6 +452,36 @@ class DefaultSlotMatcherTest {
             "gouda",
             "ms:fruit",
             "orange");
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  void vendorExtensionPrefixedCapabilitiesWithComplexValuesAreIgnoredForMatching() {
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            CapabilityType.BROWSER_NAME,
+            "chrome",
+            CapabilityType.BROWSER_VERSION,
+            "84",
+            CapabilityType.PLATFORM_NAME,
+            Platform.WINDOWS,
+            "food:dairy",
+            Map.of("cheese", "amsterdam"),
+            "food:fruit",
+            List.of("mango"));
+
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            CapabilityType.BROWSER_NAME,
+            "chrome",
+            CapabilityType.BROWSER_VERSION,
+            "84",
+            CapabilityType.PLATFORM_NAME,
+            Platform.WINDOWS,
+            "food:dairy",
+            Map.of("cheese", "gouda"),
+            "food:fruit",
+            List.of("orange"));
     assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
 
