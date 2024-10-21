@@ -48,7 +48,39 @@ function Overview (): JSX.Element {
     fetchPolicy: 'network-only'
   })
 
-  const [sortOption, setSortOption] = useState('osInfo.name')
+  function compareSlotStereotypes(a: NodeInfo, b: NodeInfo, attribute: string): number {
+    const joinA = a.slotStereotypes.length === 1
+      ? a.slotStereotypes[0][attribute]
+      : a.slotStereotypes.slice().map(st => st[attribute]).reverse().join(',')
+    const joinB = b.slotStereotypes.length === 1
+      ? b.slotStereotypes[0][attribute]
+      : b.slotStereotypes.slice().map(st => st[attribute]).reverse().join(',')
+    return joinA.localeCompare(joinB)
+  }
+
+  const sortProperties = {
+    'platformName': (a, b) => compareSlotStereotypes(a, b, 'platformName'),
+    'status': (a, b) => a.status.localeCompare(b.status),
+    'browserName': (a, b) => compareSlotStereotypes(a, b, 'browserName'),
+    'browserVersion': (a, b) => compareSlotStereotypes(a, b, 'browserVersion'),
+    'slotCount': (a, b) => {
+      const valueA = a.slotStereotypes.reduce((sum, st) => sum + st.slotCount, 0)
+      const valueB = b.slotStereotypes.reduce((sum, st) => sum + st.slotCount, 0)
+      return valueA < valueB ? -1 : 1
+    },
+    'id': (a, b) => (a.id < b.id ? -1 : 1)
+  }
+
+  const sortPropertiesLabel = {
+    'platformName': 'Platform Name',
+    'status': 'Status',
+    'browserName': 'Browser Name',
+    'browserVersion': 'Browser Version',
+    'slotCount': 'Slot Count',
+    'id': 'ID'
+  }
+
+  const [sortOption, setSortOption] = useState(Object.keys(sortProperties)[0])
   const [sortOrder, setSortOrder] = useState(1)
   const [sortedNodes, setSortedNodes] = useState<NodeInfo[]>([])
   const [isDescending, setIsDescending] = useState(false)
@@ -60,12 +92,6 @@ function Overview (): JSX.Element {
   const handleOrderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsDescending(event.target.checked)
     setSortOrder(event.target.checked ? -1 : 1)
-  }
-
-  const sortProperties = {
-    'osInfo.name': (a, b) => a.osInfo.name.localeCompare(b.osInfo.name),
-    'status': (a, b) => a.status.localeCompare(b.status),
-    'id': (a, b) => (a.id < b.id ? -1 : 1)
   }
 
   const sortNodes = useMemo(() => {
@@ -156,10 +182,12 @@ function Overview (): JSX.Element {
           <InputLabel>Sort By</InputLabel>
           <Box display="flex" alignItems="center">
             <Select value={sortOption} onChange={handleSortChange}
-                    label="Sort By" style={{ minWidth: '150px' }}>
-              <MenuItem value="osInfo.name">Platform</MenuItem>
-              <MenuItem value="status">Status</MenuItem>
-              <MenuItem value="id">ID</MenuItem>
+                    label="Sort By" style={{ minWidth: '170px' }}>
+              {Object.keys(sortProperties).map((key) => (
+                <MenuItem value={key}>
+                  {sortPropertiesLabel[key]}
+                </MenuItem>
+              ))}
             </Select>
             <FormControlLabel
               control={<Checkbox checked={isDescending}

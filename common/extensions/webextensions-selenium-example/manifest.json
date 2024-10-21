@@ -14,6 +14,14 @@
       ]
     }
   ],
+  "permissions": [
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
   "browser_specific_settings": {
     "gecko": {
       "id": "webextensions-selenium-example-v3@example.com"
