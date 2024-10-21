@@ -14,13 +14,13 @@ module Selenium
 
         def add_message_handler: (String type) { (untyped) -> untyped } -> Integer
 
-        def remove_message_handler: (Integer id) -> false
+        def remove_message_handler: (Integer id) -> bool
 
         private
 
-        def subscribe_log_entry: () -> false
+        def subscribe_log_entry: () -> bool
 
-        def unsubscribe_log_entry: () -> false
+        def unsubscribe_log_entry: () -> bool
       end
     end
   end

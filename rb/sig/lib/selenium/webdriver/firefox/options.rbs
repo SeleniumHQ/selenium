@@ -6,6 +6,8 @@ module Selenium
 
         @profile: untyped
 
+        @options: untyped
+
         attr_accessor debugger_address: untyped
 
         KEY: String

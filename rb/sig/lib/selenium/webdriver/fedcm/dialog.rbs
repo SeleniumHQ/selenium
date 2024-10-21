@@ -7,6 +7,8 @@ module Selenium
 
         @bridge: Remote::Bridge
 
+        def initialize: (Remote::Bridge bridge) -> void
+
         def accounts: -> Array[Account]
 
         def cancel: -> Remote::Response?

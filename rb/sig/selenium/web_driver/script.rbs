@@ -4,11 +4,13 @@ module Selenium
       @bidi: BiDi
       @log_entry_subscribed: bool
 
+      def initialize: (BiDi bidi) -> void
+
       def add_console_message_handler: -> untyped
 
       def add_javascript_error_handler: -> untyped
 
-      def remove_console_message_handler: -> untyped
+      def remove_console_message_handler: (untyped id) -> untyped
 
       alias remove_javascript_error_handler remove_console_message_handler
 
