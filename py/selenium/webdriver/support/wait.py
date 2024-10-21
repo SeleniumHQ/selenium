@@ -99,9 +99,9 @@ class WebDriverWait(Generic[D]):
             except self._ignored_exceptions as exc:
                 screen = getattr(exc, "screen", None)
                 stacktrace = getattr(exc, "stacktrace", None)
-            time.sleep(self._poll)
             if time.monotonic() > end_time:
                 break
+            time.sleep(self._poll)
         raise TimeoutException(message, screen, stacktrace)
 
     def until_not(self, method: Callable[[D], T], message: str = "") -> Union[T, Literal[True]]:
@@ -122,7 +122,7 @@ class WebDriverWait(Generic[D]):
                     return value
             except self._ignored_exceptions:
                 return True
-            time.sleep(self._poll)
             if time.monotonic() > end_time:
                 break
+            time.sleep(self._poll)
         raise TimeoutException(message)
