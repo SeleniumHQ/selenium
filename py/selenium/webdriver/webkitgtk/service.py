@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
+import warnings
 
 from selenium.webdriver.common import service
 
@@ -36,17 +37,21 @@ class Service(service.Service):
         self,
         executable_path: str = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
+        log_path: typing.Optional[str] = None,
         log_output: typing.Optional[str] = None,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
+        if log_path is not None:
+            warnings.warn("log_path is deprecated, use log_output instead", DeprecationWarning, stacklevel=2)
+            log_path = open(log_path, "wb")
         log_output = open(log_output, "wb") if log_output else None
         super().__init__(
             executable_path=executable_path,
             port=port,
-            log_output=log_output,
+            log_output=log_path or log_output,
             env=env,
             **kwargs,
         )
