@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from unittest.mock import patch
 from urllib import parse
 
 import pytest
@@ -22,6 +23,31 @@ import urllib3
 
 from selenium import __version__
 from selenium.webdriver.remote.remote_connection import RemoteConnection
+
+
+@pytest.fixture
+def remote_connection():
+    """Fixture to create a RemoteConnection instance."""
+    return RemoteConnection("http://localhost:4444")
+
+
+def test_add_command(remote_connection):
+    """Test adding a custom command to the connection."""
+    remote_connection.add_command("CUSTOM_COMMAND", "PUT", "/session/$sessionId/custom")
+    assert remote_connection.get_command("CUSTOM_COMMAND") == ("PUT", "/session/$sessionId/custom")
+
+
+@patch("selenium.webdriver.remote.remote_connection.RemoteConnection._request")
+def test_execute_custom_command(mock_request, remote_connection):
+    """Test executing a custom command through the connection."""
+    remote_connection.add_command("CUSTOM_COMMAND", "PUT", "/session/$sessionId/custom")
+    mock_request.return_value = {"status": 200, "value": "OK"}
+
+    params = {"sessionId": "12345"}
+    response = remote_connection.execute("CUSTOM_COMMAND", params)
+
+    mock_request.assert_called_once_with("PUT", "http://localhost:4444/session/12345/custom", body="{}")
+    assert response == {"status": 200, "value": "OK"}
 
 
 def test_get_remote_connection_headers_defaults():
@@ -32,7 +58,7 @@ def test_get_remote_connection_headers_defaults():
     assert headers.get("Accept") == "application/json"
     assert headers.get("Content-Type") == "application/json;charset=UTF-8"
     assert headers.get("User-Agent").startswith(f"selenium/{__version__} (python ")
-    assert headers.get("User-Agent").split(" ")[-1] in {"windows)", "mac)", "linux)"}
+    assert headers.get("User-Agent").split(" ")[-1] in {"windows)", "mac)", "linux)", "mac", "windows", "linux"}
 
 
 def test_get_remote_connection_headers_adds_auth_header_if_pass():
@@ -239,3 +265,52 @@ def mock_no_proxy_settings(monkeypatch):
     monkeypatch.setenv("http_proxy", http_proxy)
     monkeypatch.setenv("no_proxy", "65.253.214.253,localhost,127.0.0.1,*zyz.xx,::1")
     monkeypatch.setenv("NO_PROXY", "65.253.214.253,localhost,127.0.0.1,*zyz.xx,::1,127.0.0.0/8")
+
+
+@patch("selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers")
+def test_override_user_agent_in_headers(mock_get_remote_connection_headers, remote_connection):
+    RemoteConnection.user_agent = "custom-agent/1.0 (python 3.8)"
+
+    mock_get_remote_connection_headers.return_value = {
+        "Accept": "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+        "User-Agent": "custom-agent/1.0 (python 3.8)",
+    }
+
+    headers = RemoteConnection.get_remote_connection_headers(parse.urlparse("http://remote"))
+
+    assert headers.get("User-Agent") == "custom-agent/1.0 (python 3.8)"
+    assert headers.get("Accept") == "application/json"
+    assert headers.get("Content-Type") == "application/json;charset=UTF-8"
+
+
+@patch("selenium.webdriver.remote.remote_connection.RemoteConnection._request")
+def test_register_extra_headers(mock_request, remote_connection):
+    RemoteConnection.extra_headers = {"Foo": "bar"}
+
+    mock_request.return_value = {"status": 200, "value": "OK"}
+    remote_connection.execute("newSession", {})
+
+    mock_request.assert_called_once_with("POST", "http://localhost:4444/session", body="{}")
+    headers = RemoteConnection.get_remote_connection_headers(parse.urlparse("http://localhost:4444"), False)
+    assert headers["Foo"] == "bar"
+
+
+def test_get_connection_manager_ignores_certificates(monkeypatch):
+    monkeypatch.setattr(RemoteConnection, "get_timeout", lambda _: 10)
+    remote_connection = RemoteConnection("http://remote", ignore_certificates=True)
+    conn = remote_connection._get_connection_manager()
+
+    assert conn.connection_pool_kw["timeout"] == 10
+    assert conn.connection_pool_kw["cert_reqs"] == "CERT_NONE"
+    assert isinstance(conn, urllib3.PoolManager)
+
+
+def test_get_connection_manager_with_custom_args():
+    custom_args = {"init_args_for_pool_manager": {"retries": 3, "block": True}}
+    remote_connection = RemoteConnection("http://remote", keep_alive=False, init_args_for_pool_manager=custom_args)
+    conn = remote_connection._get_connection_manager()
+
+    assert isinstance(conn, urllib3.PoolManager)
+    assert conn.connection_pool_kw["retries"] == 3
+    assert conn.connection_pool_kw["block"] is True

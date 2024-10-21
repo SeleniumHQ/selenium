@@ -715,3 +715,21 @@ def test_should_not_be_able_to_find_an_element_on_a_blank_page(driver, pages):
     driver.get("about:blank")
     with pytest.raises(NoSuchElementException):
         driver.find_element(By.TAG_NAME, "a")
+
+
+# custom finders tests
+
+
+def test_register_and_get_custom_finder():
+    By.register_custom_finder("custom", "custom strategy")
+    assert By.get_finder("custom") == "custom strategy"
+
+
+def test_get_nonexistent_finder():
+    assert By.get_finder("nonexistent") is None
+
+
+def test_clear_custom_finders():
+    By.register_custom_finder("custom", "custom strategy")
+    By.clear_custom_finders()
+    assert By.get_finder("custom") is None
