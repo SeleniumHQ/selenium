@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.AfterAll;
@@ -230,6 +231,35 @@ public abstract class HttpClientTestBase {
       System.clearProperty("webdriver.httpclient.connectionTimeout");
       System.clearProperty("webdriver.httpclient.readTimeout");
       System.clearProperty("webdriver.httpclient.version");
+    }
+  }
+
+  @Test
+  public void shouldStopRequestAfterTimeout() throws InterruptedException {
+    AtomicInteger counter = new AtomicInteger();
+
+    delegate =
+        req -> {
+          counter.incrementAndGet();
+          try {
+            Thread.sleep(1600);
+          } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+          }
+          HttpResponse response = new HttpResponse();
+          response.setStatus(302);
+          response.addHeader("Location", "/");
+          return response;
+        };
+    ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMillis(800));
+
+    try (HttpClient client =
+        createFactory().createClient(clientConfig.baseUri(URI.create(server.whereIs("/"))))) {
+      HttpRequest request = new HttpRequest(GET, "/delayed");
+      assertThatExceptionOfType(TimeoutException.class).isThrownBy(() -> client.execute(request));
+      Thread.sleep(4200);
+
+      assertThat(counter.get()).isEqualTo(1);
     }
   }
 
