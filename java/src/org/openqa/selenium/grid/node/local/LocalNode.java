@@ -297,7 +297,13 @@ public class LocalNode extends Node {
         heartbeatPeriod.getSeconds(),
         TimeUnit.SECONDS);
 
-    Runtime.getRuntime().addShutdownHook(new Thread(this::stopAllSessions));
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  stopAllSessions();
+                  drain();
+                }));
     new JMXHelper().register(this);
   }
 
@@ -316,7 +322,6 @@ public class LocalNode extends Node {
       }
       // Attempt to stop the session
       slot.stop();
-      this.sessionToDownloadsDir.invalidate(id);
       // Decrement pending sessions if Node is draining
       if (this.isDraining()) {
         int done = pendingSessions.decrementAndGet();
@@ -473,8 +478,6 @@ public class LocalNode extends Node {
         sessionToDownloadsDir.put(session.getId(), uuidForSessionDownloads);
         currentSessions.put(session.getId(), slotToUse);
 
-        checkSessionCount();
-
         SessionId sessionId = session.getId();
         Capabilities caps = session.getCapabilities();
         SESSION_ID.accept(span, sessionId);
@@ -513,6 +516,8 @@ public class LocalNode extends Node {
         span.addEvent("Unable to create session with the driver", attributeMap);
         return Either.left(possibleSession.left());
       }
+    } finally {
+      checkSessionCount();
     }
   }
 
@@ -764,6 +769,10 @@ public class LocalNode extends Node {
   @Override
   public void stop(SessionId id) throws NoSuchSessionException {
     Require.nonNull("Session ID", id);
+
+    if (sessionToDownloadsDir.getIfPresent(id) != null) {
+      sessionToDownloadsDir.invalidate(id);
+    }
 
     SessionSlot slot = currentSessions.getIfPresent(id);
     if (slot == null) {

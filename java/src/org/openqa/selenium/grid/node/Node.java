@@ -152,7 +152,7 @@ public abstract class Node implements HasReadyState, Routable {
                     req ->
                         getSessionId(req.getUri())
                             .map(SessionId::new)
-                            .map(this::isSessionOwner)
+                            .map(sessionId -> this.getSession(sessionId) != null)
                             .orElse(false))
                 .to(() -> new ForwardWebDriverCommand(this))
                 .with(spanDecorator("node.forward_command")),
