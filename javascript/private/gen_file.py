@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 
 _copyright = """/*
  * Copyright 2011-2014 Software Freedom Conservancy
@@ -19,9 +20,11 @@ _copyright = """/*
 """
 
 def get_atom_name(name):
-    # TODO: Convert camelCase and snake_case to BIG_SNAKE_CASE
+    # Convert camelCase and snake_case to BIG_SNAKE_CASE
     name = os.path.basename(name)
-    return name.upper()
+    name = re.sub(r'(?<!^)(?<![_-])(?=[A-Z])', '_', name).lower()
+    name = name.replace('-', '_').upper()
+    return name
 
 def write_atom_literal(out, name, contents, lang, utf8):
     # Escape the contents of the file so it can be stored as a literal.
