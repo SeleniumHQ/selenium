@@ -41,7 +41,7 @@ namespace OpenQA.Selenium.Internal
                     writer.WriteNullValue();
                     break;
                 case Enum:
-                    writer.WriteNumberValue((decimal)value);
+                    writer.WriteNumberValue((long)value);
                     break;
                 case IEnumerable<object> list:
                     writer.WriteStartArray();
