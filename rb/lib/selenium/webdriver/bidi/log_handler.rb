@@ -21,8 +21,8 @@ module Selenium
   module WebDriver
     class BiDi
       class LogHandler
-        ConsoleLogEntry = BiDi::Struct.new(:level, :text, :timestamp, :method, :args, :type)
-        JavaScriptLogEntry = BiDi::Struct.new(:level, :text, :timestamp, :stack_trace, :type)
+        ConsoleLogEntry = BiDi::Struct.new(:level, :text, :timestamp, :stack_trace, :type, :source, :method, :args)
+        JavaScriptLogEntry = BiDi::Struct.new(:level, :text, :timestamp, :stack_trace, :type, :source)
 
         def initialize(bidi)
           @bidi = bidi
