@@ -17,7 +17,9 @@
 
 import re
 import typing
-from dataclasses import dataclass, fields, is_dataclass
+from dataclasses import dataclass
+from dataclasses import fields
+from dataclasses import is_dataclass
 
 from .session import session_subscribe
 from .session import session_unsubscribe
@@ -30,11 +32,15 @@ class Script:
 
     def add_console_message_handler(self, handler):
         self._subscribe_to_log_entries()
-        return self.conn.add_callback(LogEntryAdded, self._handle_log_entry("console", handler))
+        return self.conn.add_callback(
+            LogEntryAdded, self._handle_log_entry("console", handler)
+        )
 
     def add_javascript_error_handler(self, handler):
         self._subscribe_to_log_entries()
-        return self.conn.add_callback(LogEntryAdded, self._handle_log_entry("javascript", handler))
+        return self.conn.add_callback(
+            LogEntryAdded, self._handle_log_entry("javascript", handler)
+        )
 
     def remove_console_message_handler(self, id):
         self.conn.remove_callback(LogEntryAdded, id)
@@ -48,7 +54,10 @@ class Script:
             self.log_entry_subscribed = True
 
     def _unsubscribe_from_log_entries(self):
-        if self.log_entry_subscribed and LogEntryAdded.event_class not in self.conn.callbacks:
+        if (
+            self.log_entry_subscribed
+            and LogEntryAdded.event_class not in self.conn.callbacks
+        ):
             self.conn.execute(session_unsubscribe(LogEntryAdded.event_class))
             self.log_entry_subscribed = False
 
@@ -109,6 +118,7 @@ class JavaScriptLogEntry:
             stacktrace=json["stackTrace"],
             type_=json["type"],
         )
+
 
 @dataclass
 class StackFrame:

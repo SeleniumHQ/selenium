@@ -17,12 +17,15 @@
 
 import re
 import typing
-from dataclasses import dataclass, fields, is_dataclass
+from dataclasses import dataclass
+from dataclasses import fields
+from dataclasses import is_dataclass
 
 from selenium.webdriver.common.bidi.cdp import import_devtools
 
 devtools = import_devtools("")
 event_class = devtools.util.event_class
+
 
 @dataclass
 class NavigateParameters:
@@ -45,6 +48,7 @@ class NavigateParameters:
     @classmethod
     def from_json(cls, json):
         return cls(**json)
+
 
 @dataclass
 class Navigate:

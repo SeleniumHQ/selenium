@@ -17,10 +17,13 @@
 
 import re
 import typing
-from dataclasses import dataclass, fields, is_dataclass
+from dataclasses import dataclass
+from dataclasses import fields
+from dataclasses import is_dataclass
 
 from selenium.webdriver.common.bidi.cdp import import_devtools
-from selenium.webdriver.common.bidi.session import session_subscribe, session_unsubscribe
+from selenium.webdriver.common.bidi.session import session_subscribe
+from selenium.webdriver.common.bidi.session import session_unsubscribe
 
 from . import script
 
@@ -412,7 +415,9 @@ class BeforeRequestSent:
 
 @dataclass
 class AddInterceptParameters:
-    phases: typing.List[typing.Literal["beforeRequestSent", "responseStarted", "authRequired"]]
+    phases: typing.List[
+        typing.Literal["beforeRequestSent", "responseStarted", "authRequired"]
+    ]
     contexts: typing.Optional[typing.List[str]] = None
     urlPatterns: typing.Optional[
         typing.List[typing.Union[UrlPatternPattern, UrlPatternString]]

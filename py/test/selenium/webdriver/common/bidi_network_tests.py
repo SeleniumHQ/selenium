@@ -21,6 +21,7 @@ from selenium.webdriver.common.bidi.cdp import open_cdp
 from selenium.webdriver.common.bidi.network import BeforeRequestSentParameters
 from selenium.webdriver.common.bidi.network import ContinueRequestParameters
 
+
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_edge
