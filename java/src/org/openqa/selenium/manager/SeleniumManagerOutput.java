@@ -98,6 +98,10 @@ public class SeleniumManagerOutput {
           case "message":
             message = input.nextString();
             break;
+
+          default:
+            input.skipValue();
+            break;
         }
       }
       input.endObject();
