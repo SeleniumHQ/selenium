@@ -237,43 +237,47 @@ pub trait SeleniumManager {
             )));
         }
 
-        // Browser version is checked in the local metadata
-        match get_browser_version_from_metadata(
-            &metadata.browsers,
-            self.get_browser_name(),
-            &major_browser_version,
-        ) {
-            Some(version) => {
-                self.get_logger().trace(format!(
-                    "Browser with valid TTL. Getting {} version from metadata",
-                    self.get_browser_name()
-                ));
-                browser_version = version;
-                self.set_browser_version(browser_version.clone());
-            }
-            _ => {
-                // If not in metadata, discover version using online metadata
-                if self.is_browser_version_stable() || self.is_browser_version_empty() {
-                    browser_version =
-                        self.request_latest_browser_version_from_online(original_browser_version)?;
-                } else {
-                    browser_version =
-                        self.request_fixed_browser_version_from_online(original_browser_version)?;
-                }
-                self.set_browser_version(browser_version.clone());
-
-                let browser_ttl = self.get_ttl();
-                if browser_ttl > 0
-                    && !self.is_browser_version_empty()
-                    && !self.is_browser_version_stable()
-                {
-                    metadata.browsers.push(create_browser_metadata(
-                        self.get_browser_name(),
-                        &major_browser_version,
-                        &browser_version,
-                        browser_ttl,
+        if self.is_version_specific(original_browser_version) {
+            browser_version = original_browser_version.to_string();
+        } else {
+            // Browser version is checked in the local metadata
+            match get_browser_version_from_metadata(
+                &metadata.browsers,
+                self.get_browser_name(),
+                &major_browser_version,
+            ) {
+                Some(version) => {
+                    self.get_logger().trace(format!(
+                        "Browser with valid TTL. Getting {} version from metadata",
+                        self.get_browser_name()
                     ));
-                    write_metadata(&metadata, self.get_logger(), cache_path);
+                    browser_version = version;
+                    self.set_browser_version(browser_version.clone());
+                }
+                _ => {
+                    // If not in metadata, discover version using online metadata
+                    if self.is_browser_version_stable() || self.is_browser_version_empty() {
+                        browser_version = self
+                            .request_latest_browser_version_from_online(original_browser_version)?;
+                    } else {
+                        browser_version = self
+                            .request_fixed_browser_version_from_online(original_browser_version)?;
+                    }
+                    self.set_browser_version(browser_version.clone());
+
+                    let browser_ttl = self.get_ttl();
+                    if browser_ttl > 0
+                        && !self.is_browser_version_empty()
+                        && !self.is_browser_version_stable()
+                    {
+                        metadata.browsers.push(create_browser_metadata(
+                            self.get_browser_name(),
+                            &major_browser_version,
+                            &browser_version,
+                            browser_ttl,
+                        ));
+                        write_metadata(&metadata, self.get_logger(), cache_path);
+                    }
                 }
             }
         }
@@ -713,6 +717,14 @@ pub trait SeleniumManager {
 
     fn is_browser_version_stable(&self) -> bool {
         self.is_stable(self.get_browser_version())
+    }
+
+    fn is_version_specific(&self, version: &str) -> bool {
+        version.contains(".")
+    }
+
+    fn is_browser_version_specific(&self) -> bool {
+        self.is_version_specific(self.get_browser_version())
     }
 
     fn setup(&mut self) -> Result<PathBuf, Error> {
