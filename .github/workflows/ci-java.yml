@@ -22,6 +22,7 @@ jobs:
       # https://github.com/bazelbuild/rules_jvm_external/issues/1046
       java-version: 17
       run: |
+        fsutil 8dot3name set 0
         bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest `
             //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest `
             //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest `
