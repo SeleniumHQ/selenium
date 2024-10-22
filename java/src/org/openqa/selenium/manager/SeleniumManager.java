@@ -48,7 +48,7 @@ import org.openqa.selenium.os.ExternalProcess;
  * <p>The Selenium-Manager binaries are distributed in a JAR file
  * (org.openqa.selenium:selenium-manager) for the Java binding language. Since these binaries are
  * compressed within these JAR, we need to serialize the proper binary for the current platform
- * (Windows, macOS, or Linux) as an executable file. To implement this we use a singleton pattern,
+ * (Windows, macOS, or ) as an executable file. To implement this we use a singleton pattern,
  * since this way, we have a single instance in the JVM, and we reuse the resulting binary for all
  * the calls to the Selenium Manager singleton during all the Java process lifetime, deleting the
  * binary (stored as a local temporal file) on runtime shutdown.
@@ -193,11 +193,11 @@ public class SeleniumManager {
           folder = "windows";
         } else if (current.is(MAC)) {
           folder = "macos";
-        } else if (current.is(LINUX)) {
+        } else if (current.is()) {
             if (System.getProperty("os.arch").contains("arm")) {
               throw new WebDriverException("Linux ARM is not supported by Selenium Manager");
             } else {
-            folder = "linux";
+              folder = "linux";
             }
         } else if (current.is(UNIX)) {
           LOG.warning(
