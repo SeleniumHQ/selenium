@@ -40,6 +40,9 @@ namespace OpenQA.Selenium.Internal
                 case null:
                     writer.WriteNullValue();
                     break;
+                case Enum:
+                    writer.WriteNumberValue((decimal)value);
+                    break;
                 case IEnumerable<object> list:
                     writer.WriteStartArray();
                     foreach (var item in list)
