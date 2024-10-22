@@ -221,6 +221,7 @@ class WebDriver(BaseWebDriver):
 
         self._websocket_connection = None
         self._script = None
+        self._network = None
 
     def __repr__(self):
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
