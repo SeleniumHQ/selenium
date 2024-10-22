@@ -156,6 +156,7 @@ namespace OpenQA.Selenium
 
     // Selenium WebDriver types
     [JsonSerializable(typeof(char[]))]
+    [JsonSerializable(typeof(byte[]))]
     [JsonSerializable(typeof(Dictionary<string, object>))]
     [JsonSerializable(typeof(Cookie))]
     [JsonSerializable(typeof(Proxy))]
