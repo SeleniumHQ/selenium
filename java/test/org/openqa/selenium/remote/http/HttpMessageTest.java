@@ -40,8 +40,8 @@ class HttpMessageTest {
 
       message.getHeaderNames().forEach(headers::add);
 
-      assertThat(headers.contains("Content-Length")).isTrue();
-      assertThat(headers.contains("Content-length")).isTrue();
+      assertThat(headers.contains("Content-Length")).isFalse();
+      assertThat(headers.contains("Content-length")).isFalse();
       assertThat(headers.contains("content-length")).isTrue();
     }
   }
@@ -54,7 +54,7 @@ class HttpMessageTest {
       message.addHeader("Content-length", "2048");
       message.addHeader("content-length", "4096");
 
-      assertThat(message.getHeader("Content-Length")).isEqualTo("4096");
+      assertThat(message.getHeader("Content-Length")).isEqualTo("1024");
     }
   }
 
@@ -74,7 +74,8 @@ class HttpMessageTest {
       assertThat(message.getHeader("content-length")).isEqualTo("8192");
       assertThat(headers.contains("Content-Length")).isFalse();
       assertThat(headers.contains("Content-length")).isFalse();
-      assertThat(headers.contains("content-length")).isFalse();
+      assertThat(headers.contains("contenT-length")).isFalse();
+      assertThat(headers.contains("content-length")).isTrue();
     }
   }
 
