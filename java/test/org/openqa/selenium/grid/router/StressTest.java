@@ -20,6 +20,8 @@ package org.openqa.selenium.grid.router;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.StringReader;
 import java.util.LinkedList;
@@ -33,6 +35,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.MemoizedConfig;
@@ -65,7 +68,12 @@ class StressTest {
         DeploymentTypes.DISTRIBUTED.start(
             browser.getCapabilities(),
             new TomlConfig(
-                new StringReader("[node]\n" + "driver-implementation = " + browser.displayName())));
+                new StringReader(
+                    "[node]\n"
+                        + "driver-implementation = "
+                        + browser.displayName()
+                        + "\n"
+                        + "session-timeout = 15")));
     tearDowns.add(deployment);
 
     server = deployment.getServer();
@@ -123,5 +131,16 @@ class StressTest {
     }
 
     CompletableFuture.allOf(futures).get(4, MINUTES);
+  }
+
+  @Test
+  void testStopTimedOutSession() throws Exception {
+    assertThat(server.isStarted()).isTrue();
+    WebDriver driver =
+        RemoteWebDriver.builder().oneOf(browser.getCapabilities()).address(server.getUrl()).build();
+    driver.get(appServer.getUrl().toString());
+    Thread.sleep(15000);
+    NoSuchSessionException exception = assertThrows(NoSuchSessionException.class, driver::getTitle);
+    assertTrue(exception.getMessage().startsWith("Cannot find session with id:"));
   }
 }
