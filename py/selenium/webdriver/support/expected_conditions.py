@@ -491,7 +491,7 @@ def element_attribute_to_include(locator: Tuple[str, str], attribute_: str) -> C
     return _predicate
 
 
-def any_of(*expected_conditions: Callable[[D], T]) -> Callable[[D], Union[Literal[False], T]]:
+def any_of(*expected_conditions: Callable[[D], Union[T, Literal[False]]]) -> Callable[[D], Union[Literal[False], T]]:
     """An expectation that any of multiple expected conditions is true.
 
     Equivalent to a logical 'OR'. Returns results of the first matching
