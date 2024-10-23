@@ -92,3 +92,7 @@ class Network:
         event = self.EVENTS.get(event, event)
         self.callbacks[event] = callback
         await session_subscribe(self.conn, event, self.handle_event)
+
+    async def handle_event(self, event, data):
+        if event in self.callbacks:
+            await self.callbacks[event](data)
