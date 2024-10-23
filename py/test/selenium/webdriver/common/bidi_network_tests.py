@@ -10,7 +10,6 @@ def url_for(page):
 @pytest.fixture
 def driver():
     options = webdriver.ChromeOptions()
-    options.add_argument('--remote-debugging-port=9222')
     driver = webdriver.Chrome(options=options)
     yield driver
     driver.quit()
