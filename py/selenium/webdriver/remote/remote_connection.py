@@ -35,6 +35,11 @@ from .errorhandler import ErrorCode
 LOGGER = logging.getLogger(__name__)
 
 remote_commands = {
+    Command.ADD_INTERCEPT: ("POST", "/session/$sessionId/network/intercept"),
+    Command.REMOVE_INTERCEPT: ("DELETE", "/session/$sessionId/network/intercept/$intercept"),
+    Command.CONTINUE_RESPONSE: ("POST", "/session/$sessionId/network/response/$requestId"),
+    Command.CONTINUE_REQUEST: ("POST", "/session/$sessionId/network/request/$requestId"),
+    Command.CONTINUE_WITH_AUTH: ("POST", "/session/$sessionId/network/auth"),
     Command.NEW_SESSION: ("POST", "/session"),
     Command.QUIT: ("DELETE", "/session/$sessionId"),
     Command.W3C_GET_CURRENT_WINDOW_HANDLE: ("GET", "/session/$sessionId/window"),
