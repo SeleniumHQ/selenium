@@ -281,6 +281,10 @@ def test_expected_condition_element_to_be_clickable(driver, pages):
     element.click()
     WebDriverWait(driver, 4.5).until(EC.invisibility_of_element_located((By.ID, "clickToHide")))
     assert element.is_displayed() is False
+    element = driver.find_element(By.ID, "btnPointerEventsNone")
+    with pytest.raises(TimeoutException):
+        WebDriverWait(driver, 0.7).until(EC.element_to_be_clickable((By.ID, "btnPointerEventsNone")))
+
 
 
 def test_expected_condition_staleness_of(driver, pages):
