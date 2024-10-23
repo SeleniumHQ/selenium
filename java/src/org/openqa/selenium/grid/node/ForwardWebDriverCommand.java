@@ -17,9 +17,11 @@
 
 package org.openqa.selenium.grid.node;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 
-import org.openqa.selenium.NoSuchSessionException;
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -45,6 +47,11 @@ class ForwardWebDriverCommand implements HttpHandler {
     if (matches(req)) {
       return node.executeWebDriverCommand(req);
     }
-    throw new NoSuchSessionException(String.format("Session not found in node %s", node.getId()));
+    return new HttpResponse()
+        .setStatus(HTTP_INTERNAL_ERROR)
+        .setContent(
+            asJson(
+                ImmutableMap.of(
+                    "error", String.format("Session not found in node %s", node.getId()))));
   }
 }

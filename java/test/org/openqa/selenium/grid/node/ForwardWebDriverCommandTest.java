@@ -17,15 +17,15 @@
 
 package org.openqa.selenium.grid.node;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -66,11 +66,15 @@ class ForwardWebDriverCommandTest {
     SessionId sessionId = new SessionId("5678");
     when(mockNode.isSessionOwner(sessionId)).thenReturn(false);
 
-    NoSuchSessionException exception =
-        assertThrows(NoSuchSessionException.class, () -> command.execute(mockRequest));
-    assertTrue(
-        exception
-            .getMessage()
-            .startsWith(String.format("Session not found in node %s", mockNode.getId())));
+    HttpResponse actualResponse = command.execute(mockRequest);
+    HttpResponse expectResponse =
+        new HttpResponse()
+            .setStatus(HTTP_INTERNAL_ERROR)
+            .setContent(
+                asJson(
+                    ImmutableMap.of(
+                        "error", String.format("Session not found in node %s", mockNode.getId()))));
+    assertEquals(expectResponse.getStatus(), actualResponse.getStatus());
+    assertEquals(expectResponse.getContentEncoding(), actualResponse.getContentEncoding());
   }
 }
