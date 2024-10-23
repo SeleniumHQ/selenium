@@ -15,8 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import re
 import typing
 from dataclasses import dataclass
+from dataclasses import fields
+from dataclasses import is_dataclass
 
 from .session import session_subscribe
 from .session import session_unsubscribe
@@ -108,3 +111,48 @@ class JavaScriptLogEntry:
             stacktrace=json["stackTrace"],
             type_=json["type"],
         )
+
+
+@dataclass
+class StackFrame:
+    columnNumber: int
+    functionName: str
+    lineNumber: int
+    url: str
+
+    def to_json(self):
+        json = {}
+        for field in fields(self):
+            key = field.name
+            value = getattr(self, key)
+            if value is None:
+                continue
+            if is_dataclass(value):
+                value = value.to_json()
+            json[re.sub(r"^_", "", key)] = value
+        return json
+
+    @classmethod
+    def from_json(cls, json):
+        return cls(**json)
+
+
+@dataclass
+class StackTrace:
+    callFrames: typing.Optional[typing.List[StackFrame]]
+
+    def to_json(self):
+        json = {}
+        for field in fields(self):
+            key = field.name
+            value = getattr(self, key)
+            if value is None:
+                continue
+            if is_dataclass(value):
+                value = value.to_json()
+            json[re.sub(r"^_", "", key)] = value
+        return json
+
+    @classmethod
+    def from_json(cls, json):
+        return cls(**json)
