@@ -36,17 +36,13 @@ class Network:
         self.intercept = None
         self.scope = None
 
-    async def add_request_handler(
-        self, request_filter=lambda _: True, handler=default_request_handler, conn=None
-    ):
+    async def add_request_handler(self, request_filter=lambda _: True, handler=default_request_handler, conn=None):
         with trio.CancelScope() as scope:
             self.scope = scope
             self.network = network.Network(conn)
             params = AddInterceptParameters(["beforeRequestSent"])
             callback = self._callback(request_filter, handler)
-            result = await self.network.add_intercept(
-                event=BeforeRequestSent, params=params
-            )
+            result = await self.network.add_intercept(event=BeforeRequestSent, params=params)
             intercept = result["intercept"]
             self.intercept = intercept
             await self.network.add_listener(event=BeforeRequestSent, callback=callback)

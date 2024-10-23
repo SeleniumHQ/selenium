@@ -415,13 +415,9 @@ class BeforeRequestSent:
 
 @dataclass
 class AddInterceptParameters:
-    phases: typing.List[
-        typing.Literal["beforeRequestSent", "responseStarted", "authRequired"]
-    ]
+    phases: typing.List[typing.Literal["beforeRequestSent", "responseStarted", "authRequired"]]
     contexts: typing.Optional[typing.List[str]] = None
-    urlPatterns: typing.Optional[
-        typing.List[typing.Union[UrlPatternPattern, UrlPatternString]]
-    ] = None
+    urlPatterns: typing.Optional[typing.List[typing.Union[UrlPatternPattern, UrlPatternString]]] = None
 
     def to_json(self):
         json = {}
@@ -528,9 +524,7 @@ class Network:
         listener = self.conn.listen(event)
 
         async for event in listener:
-            request_data = BeforeRequestSentParameters.from_json(
-                event.to_json()["params"]
-            )
+            request_data = BeforeRequestSentParameters.from_json(event.to_json()["params"])
             await callback(request_data)
 
     async def continue_request(self, params: ContinueRequestParameters):
