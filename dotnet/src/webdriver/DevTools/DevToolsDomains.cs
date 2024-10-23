@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace OpenQA.Selenium.DevTools
@@ -33,14 +34,22 @@ namespace OpenQA.Selenium.DevTools
         // This is the list of known supported DevTools version implementation.
         // When new versions are implemented for support, new types must be
         // added to this dictionary.
-        private static readonly Dictionary<int, Type> SupportedDevToolsVersions = new Dictionary<int, Type>()
+        private static readonly Dictionary<int, DomainType> SupportedDevToolsVersions = new Dictionary<int, DomainType>()
         {
-            { 127, typeof(V127.V127Domains) },
-            { 129, typeof(V129.V129Domains) },
-            { 128, typeof(V128.V128Domains) },
-            { 85, typeof(V85.V85Domains) }
+            { 127, new DomainType(typeof(V127.V127Domains)) },
+            { 129, new DomainType(typeof(V129.V129Domains)) },
+            { 128, new DomainType(typeof(V128.V128Domains)) },
+            { 85, new DomainType(typeof(V85.V85Domains)) }
         };
 
+        /// <summary>Workaround for trimming.</summary>
+        struct DomainType
+        {
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+            public Type Type;
+
+            public DomainType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type t) => Type = t;
+        }
         /// <summary>
         /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.
         /// </summary>
@@ -102,12 +111,13 @@ namespace OpenQA.Selenium.DevTools
             return domains;
         }
 
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
         private static Type MatchDomainsVersion(int desiredVersion, int versionRange)
         {
             // Return fast on an exact match
-            if (SupportedDevToolsVersions.ContainsKey(desiredVersion))
+            if (SupportedDevToolsVersions.TryGetValue(desiredVersion, out DomainType type))
             {
-                return SupportedDevToolsVersions[desiredVersion];
+                return type.Type;
             }
 
             // Get the list of supported versions and sort descending
@@ -121,7 +131,7 @@ namespace OpenQA.Selenium.DevTools
                 // (that is, closest without going over).
                 if (desiredVersion >= supportedVersion && desiredVersion - supportedVersion < versionRange)
                 {
-                    return SupportedDevToolsVersions[supportedVersion];
+                    return SupportedDevToolsVersions[supportedVersion].Type;
                 }
             }
 
