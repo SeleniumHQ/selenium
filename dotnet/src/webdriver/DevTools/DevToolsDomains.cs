@@ -39,7 +39,7 @@ namespace OpenQA.Selenium.DevTools
             { 127, new DomainType(typeof(V127.V127Domains)) },
             { 129, new DomainType(typeof(V129.V129Domains) )},
             { 128, new DomainType(typeof(V128.V128Domains) )},
-            { 85, new DomainType(typeof(V85.V85Domains)) },
+            { 85, new DomainType(typeof(V85.V85Domains)) }
         };
 
         /// <summary>Workaround for trimming.</summary>
