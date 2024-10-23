@@ -15,7 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from .session import session_subscribe, session_unsubscribe
+from .session import session_subscribe
+from .session import session_unsubscribe
+
 
 class Network:
     EVENTS = {
