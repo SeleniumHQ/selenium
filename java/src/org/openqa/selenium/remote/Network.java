@@ -19,8 +19,10 @@ package org.openqa.selenium.remote;
 
 import java.net.URI;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.UsernameAndPassword;
+import org.openqa.selenium.remote.http.HttpRequest;
 
 @Beta
 public interface Network {
@@ -32,4 +34,10 @@ public interface Network {
   void removeAuthenticationHandler(long id);
 
   void clearAuthenticationHandlers();
+
+  long addRequestHandler(Predicate<URI> filter, UnaryOperator<HttpRequest> handler);
+
+  void removeRequestHandler(long id);
+
+  void clearRequestHandlers();
 }
