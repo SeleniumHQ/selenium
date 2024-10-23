@@ -1,6 +1,8 @@
 import pytest
+
 from selenium import webdriver
 from selenium.webdriver.common.bidi.network import Network
+
 
 def url_for(page):
     return webserver.where_is(page)
