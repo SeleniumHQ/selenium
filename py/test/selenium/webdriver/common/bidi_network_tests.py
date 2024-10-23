@@ -25,14 +25,16 @@ from selenium.webdriver.common.bidi.network import ContinueRequestParameters
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_edge
-async def test_add_request_handler(driver):
+async def test_add_request_handler(driver, pages):
+
+    target = pages.url("simpleTest.html")
 
     def request_filter(params: BeforeRequestSentParameters):
-        return params.request["url"] == "https://www.example.com/"
+        return params.request["url"] == target
 
     def request_handler(params: BeforeRequestSentParameters):
         request = params.request["request"]
-        json = {"request": request, "url": "https://www.selenium.dev/about/"}
+        json = {"request": request, "url": pages.url("formPage.html")}
         return ContinueRequestParameters(**json)
 
     ws_url = driver.caps.get("webSocketUrl")
@@ -45,9 +47,9 @@ async def test_add_request_handler(driver):
                 conn,
             )
             await trio.sleep(1)
-            await driver.network.get("https://www.example.com", conn)
-            assert "Selenium" in driver.title
+            await driver.network.get(target, conn)
+            assert "We Leave From Here" == driver.title
             await trio.sleep(1)
             await driver.network.remove_request_handler()
-            await driver.network.get("https://www.example.com", conn)
-            assert "Example" in driver.title
+            await driver.network.get(target, conn)
+            assert "Hello WebDriver" == driver.title
