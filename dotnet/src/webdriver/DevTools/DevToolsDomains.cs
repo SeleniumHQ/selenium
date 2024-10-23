@@ -43,10 +43,10 @@ namespace OpenQA.Selenium.DevTools
         };
 
         /// <summary>Workaround for trimming.</summary>
-        struct DomainType
+        private readonly struct DomainType
         {
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-            public Type Type;
+            public readonly Type Type;
 
             public DomainType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type t) => Type = t;
         }
