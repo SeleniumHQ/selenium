@@ -196,7 +196,7 @@ namespace OpenQA.Selenium
             {
                 foreach (var entry in jsonResponse.Logs)
                 {
-                    switch (entry.Level)
+                    switch (entry?.Level)
                     {
                         case "WARN":
                             if (_logger.IsEnabled(LogEventLevel.Warn))
@@ -226,7 +226,7 @@ namespace OpenQA.Selenium
 
     internal class SeleniumManagerResponse
     {
-        public IReadOnlyList<LogEntryResponse>? Logs { get; set; }
+        public IReadOnlyList<LogEntryResponse?>? Logs { get; set; }
 
         public ResultResponse? Result { get; set; }
 
