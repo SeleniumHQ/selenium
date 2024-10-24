@@ -59,6 +59,7 @@ from .command import Command
 from .errorhandler import ErrorHandler
 from .file_detector import FileDetector
 from .file_detector import LocalFileDetector
+from .locator_converter import LocatorConverter
 from .mobile import Mobile
 from .remote_connection import RemoteConnection
 from .script_key import ScriptKey
@@ -183,6 +184,8 @@ class WebDriver(BaseWebDriver):
         keep_alive: bool = True,
         file_detector: Optional[FileDetector] = None,
         options: Optional[Union[BaseOptions, List[BaseOptions]]] = None,
+        locator_converter: Optional[LocatorConverter] = None,
+        web_element_cls: Optional[type] = None,
         client_config: Optional[ClientConfig] = None,
     ) -> None:
         """Create a new driver that will issue commands using the wire
@@ -196,6 +199,8 @@ class WebDriver(BaseWebDriver):
          - file_detector - Pass custom file detector object during instantiation. If None,
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
+         - locator_converter - Custom locator converter to use. Defaults to None.
+         - web_element_cls - Custom class to use for web elements. Defaults to WebElement.
         """
 
         if isinstance(options, list):
@@ -221,6 +226,8 @@ class WebDriver(BaseWebDriver):
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
         self.file_detector = file_detector or LocalFileDetector()
+        self.locator_converter = locator_converter or LocatorConverter()
+        self._web_element_cls = web_element_cls or self._web_element_cls
         self._authenticator_id = None
         self.start_client()
         self.start_session(capabilities)
@@ -743,21 +750,13 @@ class WebDriver(BaseWebDriver):
 
         :rtype: WebElement
         """
+        by, value = self.locator_converter.convert(by, value)
+
         if isinstance(by, RelativeBy):
             elements = self.find_elements(by=by, value=value)
             if not elements:
                 raise NoSuchElementException(f"Cannot locate relative element with: {by.root}")
             return elements[0]
-
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = f'[id="{value}"]'
-        elif by == By.CLASS_NAME:
-            by = By.CSS_SELECTOR
-            value = f".{value}"
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = f'[name="{value}"]'
 
         return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
 
@@ -771,21 +770,13 @@ class WebDriver(BaseWebDriver):
 
         :rtype: list of WebElement
         """
+        by, value = self.locator_converter.convert(by, value)
+
         if isinstance(by, RelativeBy):
             _pkg = ".".join(__name__.split(".")[:-1])
             raw_function = pkgutil.get_data(_pkg, "findElements.js").decode("utf8")
             find_element_js = f"/* findElements */return ({raw_function}).apply(null, arguments);"
             return self.execute_script(find_element_js, by.to_dict())
-
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = f'[id="{value}"]'
-        elif by == By.CLASS_NAME:
-            by = By.CSS_SELECTOR
-            value = f".{value}"
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = f'[name="{value}"]'
 
         # Return empty list if driver returns null
         # See https://github.com/SeleniumHQ/selenium/issues/4555
