@@ -1,21 +1,24 @@
 using OpenQA.Selenium.BiDi.Communication;
 using System.Text.Json.Serialization;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Network;
 
 internal class ContinueWithAuthCommand(ContinueWithAuthParameters @params) : Command<ContinueWithAuthParameters>(@params);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "action")]
-[JsonDerivedType(typeof(ContinueWithAuthCredentials), "provideCredentials")]
-[JsonDerivedType(typeof(ContinueWithDefaultAuth), "default")]
-[JsonDerivedType(typeof(ContinueWithCancelledAuth), "cancel")]
-internal abstract record ContinueWithAuthParameters(Request Request) : CommandParameters;
+[JsonDerivedType(typeof(Credentials), "provideCredentials")]
+[JsonDerivedType(typeof(Default), "default")]
+[JsonDerivedType(typeof(Cancel), "cancel")]
+internal abstract record ContinueWithAuthParameters(Request Request) : CommandParameters
+{
+    internal record Credentials(Request Request, [property: JsonPropertyName("credentials")] AuthCredentials AuthCredentials) : ContinueWithAuthParameters(Request);
 
-internal record ContinueWithAuthCredentials(Request Request, AuthCredentials Credentials) : ContinueWithAuthParameters(Request);
+    internal record Default(Request Request) : ContinueWithAuthParameters(Request);
 
-internal record ContinueWithDefaultAuth(Request Request) : ContinueWithAuthParameters(Request);
-
-internal record ContinueWithCancelledAuth(Request Request) : ContinueWithAuthParameters(Request);
+    internal record Cancel(Request Request) : ContinueWithAuthParameters(Request);
+}
 
 public record ContinueWithAuthOptions : CommandOptions;
 

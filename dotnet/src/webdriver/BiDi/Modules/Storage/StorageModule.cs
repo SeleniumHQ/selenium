@@ -1,6 +1,8 @@
 using OpenQA.Selenium.BiDi.Communication;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Storage;
 
 public class StorageModule(Broker broker) : Module(broker)

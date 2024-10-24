@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using System;
 using OpenQA.Selenium.BiDi.Modules.Network;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 
 public class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule networkModule)
@@ -34,7 +36,7 @@ public class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule
         return intercept;
     }
 
-    public async Task<Intercept> InterceptAuthenticationAsync(Func<AuthRequiredEventArgs, Task> handler, BrowsingContextAddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
+    public async Task<Intercept> InterceptAuthAsync(Func<AuthRequiredEventArgs, Task> handler, BrowsingContextAddInterceptOptions? interceptOptions = null, SubscriptionOptions? options = null)
     {
         AddInterceptOptions addInterceptOptions = new(interceptOptions)
         {
@@ -88,7 +90,12 @@ public class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule
         return networkModule.OnFetchErrorAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
     }
 
-    internal Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
+    {
+        return networkModule.OnAuthRequiredAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+    }
+
+    public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null)
     {
         return networkModule.OnAuthRequiredAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
     }

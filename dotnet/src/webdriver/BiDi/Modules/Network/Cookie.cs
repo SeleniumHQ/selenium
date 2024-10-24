@@ -1,6 +1,8 @@
 using System;
 using System.Text.Json.Serialization;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Network;
 
 public record Cookie(string Name, BytesValue Value, string Domain, string Path, long Size, bool HttpOnly, bool Secure, SameSite SameSite)

@@ -1,5 +1,7 @@
 using OpenQA.Selenium.BiDi.Communication;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
 internal class EvaluateCommand(EvaluateCommandParameters @params) : Command<EvaluateCommandParameters>(@params);
@@ -24,12 +26,16 @@ public record EvaluateOptions : CommandOptions
 
 // https://github.com/dotnet/runtime/issues/72604
 //[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-//[JsonDerivedType(typeof(EvaluateResultSuccess), "success")]
-//[JsonDerivedType(typeof(EvaluateResultException), "exception")]
-public abstract record EvaluateResult;
+//[JsonDerivedType(typeof(Success), "success")]
+//[JsonDerivedType(typeof(Exception), "exception")]
+public abstract record EvaluateResult
+{
+    public record Success(RemoteValue Result, Realm Realm) : EvaluateResult
+    {
+        public static implicit operator RemoteValue(Success success) => success.Result;
+    }
 
-public record EvaluateResultSuccess(RemoteValue Result) : EvaluateResult;
-
-public record EvaluateResultException(ExceptionDetails ExceptionDetails) : EvaluateResult;
+    public record Exception(ExceptionDetails ExceptionDetails, Realm Realm) : EvaluateResult;
+}
 
 public record ExceptionDetails(long ColumnNumber, long LineNumber, StackTrace StackTrace, string Text);

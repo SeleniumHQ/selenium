@@ -1,5 +1,7 @@
 using OpenQA.Selenium.BiDi.Communication;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 
 class HandleUserPromptCommand(HandleUserPromptCommandParameters @params) : Command<HandleUserPromptCommandParameters>(@params);

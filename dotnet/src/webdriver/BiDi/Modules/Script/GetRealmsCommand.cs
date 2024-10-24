@@ -1,5 +1,8 @@
 using OpenQA.Selenium.BiDi.Communication;
+using System.Collections;
 using System.Collections.Generic;
+
+#nullable enable
 
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
@@ -19,4 +22,20 @@ public record GetRealmsOptions : CommandOptions
     public RealmType? Type { get; set; }
 }
 
-internal record GetRealmsResult(IReadOnlyList<RealmInfo> Realms);
+public record GetRealmsResult : IReadOnlyList<RealmInfo>
+{
+    private readonly IReadOnlyList<RealmInfo> _realms;
+
+    internal GetRealmsResult(IReadOnlyList<RealmInfo> realms)
+    {
+        _realms = realms;
+    }
+
+    public RealmInfo this[int index] => _realms[index];
+
+    public int Count => _realms.Count;
+
+    public IEnumerator<RealmInfo> GetEnumerator() => _realms.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => (_realms as IEnumerable).GetEnumerator();
+}

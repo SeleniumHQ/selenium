@@ -3,22 +3,24 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi;
 
 public class Subscription : IAsyncDisposable
 {
-    private readonly Broker Broker;
+    private readonly Broker _broker;
     private readonly Communication.EventHandler _eventHandler;
 
     internal Subscription(Broker broker, Communication.EventHandler eventHandler)
     {
-        Broker = broker;
+        _broker = broker;
         _eventHandler = eventHandler;
     }
 
     public async Task UnsubscribeAsync()
     {
-        await Broker.UnsubscribeAsync(_eventHandler).ConfigureAwait(false);
+        await _broker.UnsubscribeAsync(_eventHandler).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()

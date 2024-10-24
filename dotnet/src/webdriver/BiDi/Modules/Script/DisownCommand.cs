@@ -1,6 +1,8 @@
 using OpenQA.Selenium.BiDi.Communication;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Script;
 
 internal class DisownCommand(DisownCommandParameters @params) : Command<DisownCommandParameters>(@params);

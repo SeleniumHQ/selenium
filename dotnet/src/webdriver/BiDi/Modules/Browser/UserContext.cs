@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace OpenQA.Selenium.BiDi.Modules.Browser;
 
 public class UserContext : IAsyncDisposable
@@ -13,7 +15,7 @@ public class UserContext : IAsyncDisposable
         Id = id;
     }
 
-    public string Id { get; }
+    internal string Id { get; }
 
     public Task RemoveAsync()
     {
@@ -23,5 +25,17 @@ public class UserContext : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await RemoveAsync().ConfigureAwait(false);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is UserContext userContextObj) return userContextObj.Id == Id;
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
     }
 }
