@@ -23,6 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
@@ -102,7 +104,9 @@ class NodeTest {
   private Tracer tracer;
   private EventBus bus;
   private LocalNode local;
+  private LocalNode local2;
   private Node node;
+  private Node node2;
   private ImmutableCapabilities stereotype;
   private ImmutableCapabilities caps;
   private URI uri;
@@ -150,6 +154,7 @@ class NodeTest {
       builder = builder.enableManagedDownloads(true).sessionTimeout(Duration.ofSeconds(1));
     }
     local = builder.build();
+    local2 = builder.build();
 
     node =
         new RemoteNode(
@@ -159,6 +164,16 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
+            ImmutableSet.of(caps));
+
+    node2 =
+        new RemoteNode(
+            tracer,
+            new PassthroughHttpClient.Factory(local2),
+            new NodeId(UUID.randomUUID()),
+            uri,
+            registrationSecret,
+            local2.getSessionTimeout(),
             ImmutableSet.of(caps));
   }
 
@@ -371,13 +386,36 @@ class NodeTest {
     assertThatEither(response).isRight();
     Session session = response.right().getSession();
 
+    Either<WebDriverException, CreateSessionResponse> response2 =
+        node2.newSession(createSessionRequest(caps));
+    assertThatEither(response2).isRight();
+    Session session2 = response2.right().getSession();
+
+    // Assert that should respond to commands for sessions Node 1 owns
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/url", session.getId()));
     assertThat(local.matches(req)).isTrue();
     assertThat(node.matches(req)).isTrue();
 
-    req = new HttpRequest(POST, String.format("/session/%s/url", UUID.randomUUID()));
-    assertThat(local.matches(req)).isFalse();
-    assertThat(node.matches(req)).isFalse();
+    // Assert that should respond to commands for sessions Node 2 owns
+    HttpRequest req2 = new HttpRequest(POST, String.format("/session/%s/url", session2.getId()));
+    assertThat(local2.matches(req2)).isTrue();
+    assertThat(node2.matches(req2)).isTrue();
+
+    // Assert that should not respond to commands for sessions Node 1 does not own
+    NoSuchSessionException exception =
+        assertThrows(NoSuchSessionException.class, () -> node.execute(req2));
+    assertTrue(
+        exception
+            .getMessage()
+            .startsWith(String.format("Cannot find session with id: %s", session2.getId())));
+
+    // Assert that should not respond to commands for sessions Node 2 does not own
+    NoSuchSessionException exception2 =
+        assertThrows(NoSuchSessionException.class, () -> node2.execute(req));
+    assertTrue(
+        exception2
+            .getMessage()
+            .startsWith(String.format("Cannot find session with id: %s", session.getId())));
   }
 
   @Test
