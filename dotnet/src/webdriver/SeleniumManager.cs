@@ -36,27 +36,28 @@ namespace OpenQA.Selenium
     {
         private static readonly ILogger _logger = Log.GetLogger(typeof(SeleniumManager));
 
-        private static readonly string BinaryFullPath = Environment.GetEnvironmentVariable("SE_MANAGER_PATH");
+        private static string? _binaryFullPath;
+        private static string BinaryFullPath => _binaryFullPath ??= GetBinaryFullPath();
 
         private static readonly JsonSerializerOptions _serializerOptions = new() { PropertyNameCaseInsensitive = true, TypeInfoResolver = SeleniumManagerSerializerContext.Default };
 
-        static SeleniumManager()
+        private static string GetBinaryFullPath()
         {
-
-            if (BinaryFullPath == null)
+            string? binaryFullPath = Environment.GetEnvironmentVariable("SE_MANAGER_PATH");
+            if (binaryFullPath == null)
             {
                 var currentDirectory = AppContext.BaseDirectory;
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    BinaryFullPath = Path.Combine(currentDirectory, "selenium-manager", "windows", "selenium-manager.exe");
+                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager", "windows", "selenium-manager.exe");
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    BinaryFullPath = Path.Combine(currentDirectory, "selenium-manager", "linux", "selenium-manager");
+                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager", "linux", "selenium-manager");
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    BinaryFullPath = Path.Combine(currentDirectory, "selenium-manager", "macos", "selenium-manager");
+                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager", "macos", "selenium-manager");
                 }
                 else
                 {
@@ -65,10 +66,11 @@ namespace OpenQA.Selenium
                 }
             }
 
-            if (!File.Exists(BinaryFullPath))
+            if (!File.Exists(binaryFullPath))
             {
-                throw new WebDriverException($"Unable to locate or obtain Selenium Manager binary at {BinaryFullPath}");
+                throw new WebDriverException($"Unable to locate or obtain Selenium Manager binary at {binaryFullPath}");
             }
+            return binaryFullPath;
         }
 
         /// <summary>
