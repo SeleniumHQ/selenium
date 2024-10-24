@@ -229,13 +229,12 @@ namespace OpenQA.Selenium
     {
         public record LogEntryResponse(string Level, string Message);
 
-        public record ResultResponse(string DriverPath, string BrowserPath)
+        public record ResultResponse(
+            [property: JsonPropertyName("driver_path")]
+            string DriverPath,
+            [property: JsonPropertyName("browser_path")]
+            string BrowserPath)
         {
-            [JsonPropertyName("driver_path")]
-            public string DriverPath { get; } = DriverPath;
-
-            [JsonPropertyName("browser_path")]
-            public string BrowserPath { get; } = BrowserPath;
         }
     }
 
