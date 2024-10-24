@@ -35,8 +35,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.config.TomlConfig;
@@ -73,7 +75,9 @@ class StressTest {
                         + "driver-implementation = "
                         + browser.displayName()
                         + "\n"
-                        + "session-timeout = 15")));
+                        + "session-timeout = 11"
+                        + "\n"
+                        + "enable-managed-downloads = true")));
     tearDowns.add(deployment);
 
     server = deployment.getServer();
@@ -114,7 +118,10 @@ class StressTest {
             try {
               WebDriver driver =
                   RemoteWebDriver.builder()
-                      .oneOf(browser.getCapabilities())
+                      .oneOf(
+                          browser
+                              .getCapabilities()
+                              .merge(new MutableCapabilities(Map.of("se:downloadsEnabled", true))))
                       .address(server.getUrl())
                       .build();
 
@@ -134,13 +141,42 @@ class StressTest {
   }
 
   @Test
-  void testStopTimedOutSession() throws Exception {
+  void multipleSimultaneousSessionsTimedOut() throws Exception {
     assertThat(server.isStarted()).isTrue();
-    WebDriver driver =
-        RemoteWebDriver.builder().oneOf(browser.getCapabilities()).address(server.getUrl()).build();
-    driver.get(appServer.getUrl().toString());
-    Thread.sleep(15000);
-    NoSuchSessionException exception = assertThrows(NoSuchSessionException.class, driver::getTitle);
-    assertTrue(exception.getMessage().startsWith("Cannot find session with id:"));
+
+    CompletableFuture<?>[] futures = new CompletableFuture<?>[10];
+    for (int i = 0; i < futures.length; i++) {
+      CompletableFuture<Object> future = new CompletableFuture<>();
+      futures[i] = future;
+
+      executor.submit(
+          () -> {
+            try {
+              WebDriver driver =
+                  RemoteWebDriver.builder()
+                      .oneOf(browser.getCapabilities())
+                      .address(server.getUrl())
+                      .build();
+              driver.get(appServer.getUrl().toString());
+              Thread.sleep(11000);
+              NoSuchSessionException exception =
+                  assertThrows(NoSuchSessionException.class, driver::getTitle);
+              assertTrue(exception.getMessage().startsWith("Cannot find session with id:"));
+              WebDriverException webDriverException =
+                  assertThrows(
+                      WebDriverException.class,
+                      () -> ((RemoteWebDriver) driver).getDownloadableFiles());
+              assertTrue(
+                  webDriverException
+                      .getMessage()
+                      .startsWith("Cannot find downloads file system for session id:"));
+              future.complete(true);
+            } catch (Exception e) {
+              future.completeExceptionally(e);
+            }
+          });
+    }
+
+    CompletableFuture.allOf(futures).get(5, MINUTES);
   }
 }
