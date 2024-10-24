@@ -156,6 +156,8 @@ public class DriverFinder {
         arguments.add(proxy.getSslProxy());
       } else if (proxy.getHttpProxy() != null) {
         arguments.add(proxy.getHttpProxy());
+      } else if (proxy.getProxyAutoconfigUrl() != null) {
+        arguments.add(proxy.getProxyAutoconfigUrl());
       }
     }
     return arguments;

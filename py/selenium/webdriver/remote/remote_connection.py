@@ -143,6 +143,14 @@ class RemoteConnection:
     )
     _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
 
+    system = platform.system().lower()
+    if system == "darwin":
+        system = "mac"
+
+    # Class variables for headers
+    extra_headers = None
+    user_agent = f"selenium/{__version__} (python {system})"
+
     @classmethod
     def get_timeout(cls):
         """:Returns:
@@ -196,14 +204,10 @@ class RemoteConnection:
          - keep_alive (Boolean) - Is this a keep-alive connection (default: False)
         """
 
-        system = platform.system().lower()
-        if system == "darwin":
-            system = "mac"
-
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json;charset=UTF-8",
-            "User-Agent": f"selenium/{__version__} (python {system})",
+            "User-Agent": cls.user_agent,
         }
 
         if parsed_url.username:
@@ -212,6 +216,9 @@ class RemoteConnection:
 
         if keep_alive:
             headers.update({"Connection": "keep-alive"})
+
+        if cls.extra_headers:
+            headers.update(cls.extra_headers)
 
         return headers
 
@@ -236,7 +243,12 @@ class RemoteConnection:
 
     def _get_connection_manager(self):
         pool_manager_init_args = {"timeout": self.get_timeout()}
-        if self._ca_certs:
+        pool_manager_init_args.update(self._init_args_for_pool_manager.get("init_args_for_pool_manager", {}))
+
+        if self._ignore_certificates:
+            pool_manager_init_args["cert_reqs"] = "CERT_NONE"
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        elif self._ca_certs:
             pool_manager_init_args["cert_reqs"] = "CERT_REQUIRED"
             pool_manager_init_args["ca_certs"] = self._ca_certs
 
@@ -252,9 +264,18 @@ class RemoteConnection:
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
-    def __init__(self, remote_server_addr: str, keep_alive: bool = False, ignore_proxy: bool = False):
+    def __init__(
+        self,
+        remote_server_addr: str,
+        keep_alive: bool = False,
+        ignore_proxy: bool = False,
+        ignore_certificates: bool = False,
+        init_args_for_pool_manager: dict = None,
+    ):
         self.keep_alive = keep_alive
         self._url = remote_server_addr
+        self._ignore_certificates = ignore_certificates
+        self._init_args_for_pool_manager = init_args_for_pool_manager or {}
 
         # Env var NO_PROXY will override this part of the code
         _no_proxy = os.environ.get("no_proxy", os.environ.get("NO_PROXY"))
@@ -280,6 +301,16 @@ class RemoteConnection:
             self._conn = self._get_connection_manager()
         self._commands = remote_commands
 
+    extra_commands = {}
+
+    def add_command(self, name, method, url):
+        """Register a new command."""
+        self._commands[name] = (method, url)
+
+    def get_command(self, name: str):
+        """Retrieve a command if it exists."""
+        return self._commands.get(name)
+
     def execute(self, command, params):
         """Send a command to the remote server.
 
@@ -291,7 +322,7 @@ class RemoteConnection:
          - params - A dictionary of named parameters to send with the command as
            its JSON payload.
         """
-        command_info = self._commands[command]
+        command_info = self._commands.get(command) or self.extra_commands.get(command)
         assert command_info is not None, f"Unrecognised command {command}"
         path_string = command_info[1]
         path = string.Template(path_string).substitute(params)
@@ -305,7 +336,7 @@ class RemoteConnection:
         LOGGER.debug("%s %s %s", command_info[0], url, str(trimmed))
         return self._request(command_info[0], url, body=data)
 
-    def _request(self, method, url, body=None):
+    def _request(self, method, url, body=None, timeout=120):
         """Send an HTTP request to the remote server.
 
         :Args:
@@ -323,12 +354,12 @@ class RemoteConnection:
             body = None
 
         if self.keep_alive:
-            response = self._conn.request(method, url, body=body, headers=headers)
+            response = self._conn.request(method, url, body=body, headers=headers, timeout=timeout)
             statuscode = response.status
         else:
             conn = self._get_connection_manager()
             with conn as http:
-                response = http.request(method, url, body=body, headers=headers)
+                response = http.request(method, url, body=body, headers=headers, timeout=timeout)
             statuscode = response.status
         data = response.data.decode("UTF-8")
         LOGGER.debug("Remote response: status=%s | data=%s | headers=%s", response.status, data, response.headers)
@@ -336,7 +367,9 @@ class RemoteConnection:
             if 300 <= statuscode < 304:
                 return self._request("GET", response.headers.get("location", None))
             if 399 < statuscode <= 500:
-                return {"status": statuscode, "value": data}
+                if statuscode == 401:
+                    return {"status": statuscode, "value": "Authorization Required"}
+                return {"status": statuscode, "value": str(statuscode) if not data else data.strip()}
             content_type = []
             if response.headers.get("Content-Type", None):
                 content_type = response.headers.get("Content-Type", None).split(";")
