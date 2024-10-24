@@ -16,16 +16,13 @@
 # under the License.
 
 import logging
-import os
 import platform
-import socket
 import string
 import warnings
 from base64 import b64encode
 from typing import Optional
 from urllib import parse
 
-import certifi
 import urllib3
 
 from selenium import __version__
@@ -139,12 +136,7 @@ class RemoteConnection:
     """
 
     browser_name = None
-    _timeout = (
-        float(os.getenv("GLOBAL_DEFAULT_TIMEOUT", str(socket.getdefaulttimeout())))
-        if os.getenv("GLOBAL_DEFAULT_TIMEOUT") is not None
-        else socket.getdefaulttimeout()
-    )
-    _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
+    _client_config: ClientConfig = None
 
     system = platform.system().lower()
     if system == "darwin":
@@ -161,7 +153,12 @@ class RemoteConnection:
         Timeout value in seconds for all http requests made to the
         Remote Connection
         """
-        return None if cls._timeout == socket._GLOBAL_DEFAULT_TIMEOUT else cls._timeout
+        warnings.warn(
+            "get_timeout() in RemoteConnection is deprecated, get timeout from ClientConfig instance instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls._client_config.timeout
 
     @classmethod
     def set_timeout(cls, timeout):
@@ -170,12 +167,22 @@ class RemoteConnection:
         :Args:
             - timeout - timeout value for http requests in seconds
         """
-        cls._timeout = timeout
+        warnings.warn(
+            "set_timeout() in RemoteConnection is deprecated, set timeout to ClientConfig instance in constructor instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        cls._client_config.timeout = timeout
 
     @classmethod
     def reset_timeout(cls):
         """Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT."""
-        cls._timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+        warnings.warn(
+            "reset_timeout() in RemoteConnection is deprecated, use reset_timeout() in ClientConfig instance instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        cls._client_config.reset_timeout()
 
     @classmethod
     def get_certificate_bundle_path(cls):
@@ -185,7 +192,12 @@ class RemoteConnection:
         command executor. Defaults to certifi.where() or
         REQUESTS_CA_BUNDLE env variable if set.
         """
-        return cls._ca_certs
+        warnings.warn(
+            "get_certificate_bundle_path() in RemoteConnection is deprecated, get ca_certs from ClientConfig instance instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls._client_config.ca_certs
 
     @classmethod
     def set_certificate_bundle_path(cls, path):
@@ -196,7 +208,12 @@ class RemoteConnection:
         :Args:
             - path - path of a .pem encoded certificate chain.
         """
-        cls._ca_certs = path
+        warnings.warn(
+            "set_certificate_bundle_path() in RemoteConnection is deprecated, set ca_certs to ClientConfig instance in constructor instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        cls._client_config.ca_certs = path
 
     @classmethod
     def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
@@ -239,15 +256,17 @@ class RemoteConnection:
         return proxy_without_auth, auth
 
     def _get_connection_manager(self):
-        pool_manager_init_args = {"timeout": self.get_timeout()}
-        pool_manager_init_args.update(self._init_args_for_pool_manager.get("init_args_for_pool_manager", {}))
+        pool_manager_init_args = {"timeout": self._client_config.timeout}
+        pool_manager_init_args.update(
+            self._client_config.init_args_for_pool_manager.get("init_args_for_pool_manager", {})
+        )
 
-        if self._ignore_certificates:
+        if self._client_config.ignore_certificates:
             pool_manager_init_args["cert_reqs"] = "CERT_NONE"
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        elif self._ca_certs:
+        elif self._client_config.ca_certs:
             pool_manager_init_args["cert_reqs"] = "CERT_REQUIRED"
-            pool_manager_init_args["ca_certs"] = self._ca_certs
+            pool_manager_init_args["ca_certs"] = self._client_config.ca_certs
 
         if self._proxy_url:
             if self._proxy_url.lower().startswith("sock"):
@@ -263,18 +282,21 @@ class RemoteConnection:
 
     def __init__(
         self,
-        remote_server_addr: str,
+        remote_server_addr: Optional[str] = None,
         keep_alive: Optional[bool] = True,
         ignore_proxy: Optional[bool] = False,
         ignore_certificates: Optional[bool] = False,
         init_args_for_pool_manager: Optional[dict] = None,
         client_config: Optional[ClientConfig] = None,
     ):
-        self.keep_alive = keep_alive
-        self._url = remote_server_addr
-        self._ignore_certificates = ignore_certificates
-        self._init_args_for_pool_manager = init_args_for_pool_manager or {}
-        self._client_config = client_config or ClientConfig(remote_server_addr, keep_alive)
+        self._client_config = client_config or ClientConfig(
+            remote_server_addr=remote_server_addr,
+            keep_alive=keep_alive,
+            ignore_certificates=ignore_certificates,
+            init_args_for_pool_manager=init_args_for_pool_manager,
+        )
+
+        RemoteConnection._client_config = self._client_config
 
         if remote_server_addr:
             warnings.warn(
@@ -286,6 +308,20 @@ class RemoteConnection:
         if not keep_alive:
             warnings.warn(
                 "setting keep_alive in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+        if ignore_certificates:
+            warnings.warn(
+                "setting ignore_certificates in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+        if init_args_for_pool_manager:
+            warnings.warn(
+                "setting init_args_for_pool_manager in RemoteConnection() is deprecated, set in ClientConfig instance instead",
                 DeprecationWarning,
                 stacklevel=2,
             )

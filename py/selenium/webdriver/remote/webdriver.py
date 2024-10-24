@@ -104,6 +104,10 @@ def get_remote_connection(
     ignore_local_proxy: bool,
     client_config: Optional[ClientConfig] = None,
 ) -> RemoteConnection:
+    if isinstance(command_executor, str):
+        client_config = client_config or ClientConfig(remote_server_addr=command_executor)
+        client_config.remote_server_addr = command_executor
+        command_executor = RemoteConnection(client_config=client_config)
     from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
     from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
     from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
@@ -201,6 +205,7 @@ class WebDriver(BaseWebDriver):
          - options - instance of a driver options.Options class
          - locator_converter - Custom locator converter to use. Defaults to None.
          - web_element_cls - Custom class to use for web elements. Defaults to WebElement.
+         - client_config - Custom client configuration to use. Defaults to None.
         """
 
         if isinstance(options, list):

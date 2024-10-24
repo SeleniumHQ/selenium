@@ -127,9 +127,10 @@ def test_get_connection_manager_without_proxy(mock_proxy_settings_missing):
     assert isinstance(conn, urllib3.PoolManager)
 
 
-def test_get_connection_manager_for_certs_and_timeout(monkeypatch):
-    monkeypatch.setattr(RemoteConnection, "get_timeout", lambda _: 10)  # Class state; leaks into subsequent tests.
+def test_get_connection_manager_for_certs_and_timeout():
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    remote_connection.set_timeout(10)
+    assert remote_connection.get_timeout() == 10
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] == 10
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
@@ -306,21 +307,74 @@ def test_register_extra_headers(mock_request, remote_connection):
     assert headers["Foo"] == "bar"
 
 
-def test_get_connection_manager_ignores_certificates(monkeypatch):
-    monkeypatch.setattr(RemoteConnection, "get_timeout", lambda _: 10)
-    remote_connection = RemoteConnection("http://remote", ignore_certificates=True)
+def test_get_connection_manager_with_timeout_from_client_config():
+    remote_connection = RemoteConnection(remote_server_addr="http://remote", keep_alive=False)
+    remote_connection.set_timeout(10)
     conn = remote_connection._get_connection_manager()
+    assert remote_connection.get_timeout() == 10
+    assert conn.connection_pool_kw["timeout"] == 10
+    assert isinstance(conn, urllib3.PoolManager)
 
+    client_config = ClientConfig("http://remote", timeout=300)
+    remote_connection = RemoteConnection(client_config=client_config)
+    conn = remote_connection._get_connection_manager()
+    assert conn.connection_pool_kw["timeout"] == 300
+    assert isinstance(conn, urllib3.PoolManager)
+
+
+def test_get_connection_manager_with_ca_certs_from_client_config():
+    remote_connection = RemoteConnection(remote_server_addr="http://remote")
+    remote_connection.set_certificate_bundle_path("/path/to/cacert.pem")
+    conn = remote_connection._get_connection_manager()
+    assert conn.connection_pool_kw["timeout"] is None
+    assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
+    assert conn.connection_pool_kw["ca_certs"] == "/path/to/cacert.pem"
+    assert isinstance(conn, urllib3.PoolManager)
+
+    client_config = ClientConfig(remote_server_addr="http://remote", ca_certs="/path/to/cacert.pem")
+    remote_connection = RemoteConnection(client_config=client_config)
+    conn = remote_connection._get_connection_manager()
+    assert conn.connection_pool_kw["timeout"] is None
+    assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
+    assert conn.connection_pool_kw["ca_certs"] == "/path/to/cacert.pem"
+    assert isinstance(conn, urllib3.PoolManager)
+
+
+def test_get_connection_manager_ignores_certificates():
+    remote_connection = RemoteConnection(remote_server_addr="http://remote", keep_alive=False, ignore_certificates=True)
+    remote_connection.set_timeout(10)
+    conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] == 10
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_NONE"
     assert isinstance(conn, urllib3.PoolManager)
 
+    client_config = ClientConfig(remote_server_addr="http://remote", ignore_certificates=True, timeout=10)
+    remote_connection = RemoteConnection(client_config=client_config)
+    conn = remote_connection._get_connection_manager()
+    assert conn.connection_pool_kw["timeout"] == 10
+    assert conn.connection_pool_kw["cert_reqs"] == "CERT_NONE"
+    assert isinstance(conn, urllib3.PoolManager)
+
+    remote_connection.reset_timeout()
+    assert remote_connection.get_timeout() is None
+
 
 def test_get_connection_manager_with_custom_args():
     custom_args = {"init_args_for_pool_manager": {"retries": 3, "block": True}}
-    remote_connection = RemoteConnection("http://remote", keep_alive=False, init_args_for_pool_manager=custom_args)
-    conn = remote_connection._get_connection_manager()
 
+    remote_connection = RemoteConnection(
+        remote_server_addr="http://remote", keep_alive=False, init_args_for_pool_manager=custom_args
+    )
+    conn = remote_connection._get_connection_manager()
+    assert isinstance(conn, urllib3.PoolManager)
+    assert conn.connection_pool_kw["retries"] == 3
+    assert conn.connection_pool_kw["block"] is True
+
+    client_config = ClientConfig(
+        remote_server_addr="http://remote", keep_alive=False, init_args_for_pool_manager=custom_args
+    )
+    remote_connection = RemoteConnection(client_config=client_config)
+    conn = remote_connection._get_connection_manager()
     assert isinstance(conn, urllib3.PoolManager)
     assert conn.connection_pool_kw["retries"] == 3
     assert conn.connection_pool_kw["block"] is True
