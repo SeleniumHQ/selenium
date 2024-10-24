@@ -27,16 +27,12 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Describes the kind of proxy.
     /// </summary>
-    /// <remarks>
-    /// Keep these in sync with the Firefox preferences numbers:
-    /// http://kb.mozillazine.org/Network.proxy.type
-    /// </remarks>
     public enum ProxyKind
     {
         /// <summary>
-        ///  Direct connection, no proxy (default on Windows).
+        ///  Direct connection, no proxy.
         /// </summary>
-        Direct = 0,
+        Direct,
 
         /// <summary>
         /// Manual proxy settings (e.g., for httpProxy).
@@ -51,15 +47,15 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Use proxy automatic detection.
         /// </summary>
-        AutoDetect = 4,
+        AutoDetect,
 
         /// <summary>
-        /// Use the system values for proxy settings (default on Linux).
+        /// Use the system values for proxy settings.
         /// </summary>
         System,
 
         /// <summary>
-        /// No proxy type is specified.
+        /// No proxy type is specified. This must be changed before use
         /// </summary>
         Unspecified
     }
@@ -496,7 +492,10 @@ namespace OpenQA.Selenium
         private Dictionary<string, object> AsDictionary(bool isSpecCompliant)
         {
             Dictionary<string, object> serializedDictionary = null;
-            if (this.proxyKind != ProxyKind.Unspecified)
+            if (this.proxyKind == ProxyKind.Unspecified) {
+                throw new InvalidOperationException("proxyKind must be set before use");
+            }
+            else
             {
                 serializedDictionary = new Dictionary<string, object>();
                 if (this.proxyKind == ProxyKind.ProxyAutoConfigure)
