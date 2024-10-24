@@ -43,6 +43,24 @@ module Selenium
             expect(ua).to eq('foo;bar')
           end
         end
+
+        it 'enables bidi' do
+          quit_driver
+
+          options = Selenium::WebDriver::Options.chrome
+          expect(options.web_socket_url).to be_nil
+          expect(options.bidi?).to be false
+
+          options.enable_bidi!
+          expect(options.web_socket_url).to be true
+          expect(options.bidi?).to be true
+
+          driver = Selenium::WebDriver.for :chrome, options: options
+
+          expect(driver.capabilities.web_socket_url).to be_a String
+
+          driver.quit
+        end
       end
     end # Chrome
   end # WebDriver

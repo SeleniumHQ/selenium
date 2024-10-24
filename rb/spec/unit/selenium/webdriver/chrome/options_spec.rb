@@ -141,6 +141,18 @@ module Selenium
           end
         end
 
+        describe '#enable_bidi!' do
+          it 'allows setting and querying bidi' do
+            expect(options.web_socket_url).to be_nil
+            expect(options.bidi?).to be false
+
+            options.enable_bidi!
+
+            expect(options.bidi?).to be true
+            expect(options.web_socket_url).to be true
+          end
+        end
+
         describe '#add_extension' do
           it 'adds an extension' do
             allow(File).to receive(:file?).and_return(true)
