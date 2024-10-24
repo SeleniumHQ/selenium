@@ -14,7 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from typing import Optional
 
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 
@@ -25,9 +27,15 @@ class ChromiumRemoteConnection(RemoteConnection):
         vendor_prefix: str,
         browser_name: str,
         keep_alive: bool = True,
-        ignore_proxy: bool = False,
+        ignore_proxy: Optional[bool] = False,
+        client_config: Optional[ClientConfig] = None,
     ) -> None:
-        super().__init__(remote_server_addr, keep_alive, ignore_proxy)
+        super().__init__(
+            remote_server_addr=remote_server_addr,
+            keep_alive=keep_alive,
+            ignore_proxy=ignore_proxy,
+            client_config=client_config,
+        )
         self.browser_name = browser_name
         commands = self._remote_commands(vendor_prefix)
         for key, value in commands.items():

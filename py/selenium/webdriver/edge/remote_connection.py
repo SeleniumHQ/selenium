@@ -14,10 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
+
+from typing import Optional
 
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+from selenium.webdriver.remote.client_config import ClientConfig
 
 
 class EdgeRemoteConnection(ChromiumRemoteConnection):
@@ -27,7 +29,8 @@ class EdgeRemoteConnection(ChromiumRemoteConnection):
         self,
         remote_server_addr: str,
         keep_alive: bool = True,
-        ignore_proxy: typing.Optional[bool] = False,
+        ignore_proxy: Optional[bool] = False,
+        client_config: Optional[ClientConfig] = None,
     ) -> None:
         super().__init__(
             remote_server_addr=remote_server_addr,
@@ -35,4 +38,5 @@ class EdgeRemoteConnection(ChromiumRemoteConnection):
             browser_name=EdgeRemoteConnection.browser_name,
             keep_alive=keep_alive,
             ignore_proxy=ignore_proxy,
+            client_config=client_config,
         )
