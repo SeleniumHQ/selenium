@@ -1,0 +1,23 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class Network
+        @bidi: BiDi
+
+        EVENTS: Hash[Symbol, String]
+
+        PHASES: Hash[Symbol, String]
+
+        def initialize: (BiDi bidi) -> void
+
+        def add_intercept: (?phases: Array[String], ?contexts: BrowsingContext?, ?url_patterns: untyped?) -> Hash[String, String]
+
+        def remove_intercept: (String intercept) -> untyped
+
+        def continue_with_auth: (String request_id, String username, String password) -> untyped
+
+        def on: (Symbol event) { (?) -> untyped } -> untyped
+      end
+    end
+  end
+end

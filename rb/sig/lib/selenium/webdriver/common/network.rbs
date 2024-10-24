@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    class Network
+      @network: BiDi::Network
+
+      attr_reader auth_callbacks: Hash[String, String]
+
+      def initialize: (Remote::Bridge bridge) -> void
+
+      def add_auth_handler: (String username, String password) -> String
+
+      def clear_auth_handlers: -> Hash[nil, nil]
+
+      def remove_auth_handler: (String id) -> nil
+    end
+  end
+end
