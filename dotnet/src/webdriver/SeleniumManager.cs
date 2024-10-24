@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using static OpenQA.Selenium.SeleniumManagerResponse;
 
 #nullable enable
 
@@ -69,6 +70,7 @@ namespace OpenQA.Selenium
             {
                 throw new WebDriverException($"Unable to locate or obtain Selenium Manager binary at {binaryFullPath}");
             }
+
             return binaryFullPath;
         });
 
@@ -79,7 +81,7 @@ namespace OpenQA.Selenium
         /// <returns>
         /// An array with two entries, one for the driver path, and another one for the browser path.
         /// </returns>
-        public static Dictionary<string, string?> BinaryPaths(string arguments)
+        public static Dictionary<string, string> BinaryPaths(string arguments)
         {
             StringBuilder argsBuilder = new StringBuilder(arguments);
             argsBuilder.Append(" --language-binding csharp");
@@ -90,7 +92,7 @@ namespace OpenQA.Selenium
             }
 
             var smCommandResult = RunCommand(_lazyBinaryFullPath.Value, argsBuilder.ToString());
-            Dictionary<string, string?> binaryPaths = new()
+            Dictionary<string, string> binaryPaths = new()
             {
                 { "browser_path", smCommandResult.BrowserPath },
                 { "driver_path", smCommandResult.DriverPath }
@@ -113,7 +115,7 @@ namespace OpenQA.Selenium
         /// <returns>
         /// the standard output of the execution.
         /// </returns>
-        private static SeleniumManagerResponse.ResultResponse RunCommand(string fileName, string arguments)
+        private static ResultResponse RunCommand(string fileName, string arguments)
         {
             Process process = new Process();
             process.StartInfo.FileName = _lazyBinaryFullPath.Value;
@@ -184,8 +186,7 @@ namespace OpenQA.Selenium
 
             try
             {
-                jsonResponse = JsonSerializer.Deserialize<SeleniumManagerResponse>(output, _serializerOptions)
-                    ?? throw new WebDriverException("SeleniumManagerResponse was null");
+                jsonResponse = JsonSerializer.Deserialize<SeleniumManagerResponse>(output, _serializerOptions)!;
             }
             catch (Exception ex)
             {
@@ -196,7 +197,7 @@ namespace OpenQA.Selenium
             {
                 foreach (var entry in jsonResponse.Logs)
                 {
-                    switch (entry?.Level)
+                    switch (entry.Level)
                     {
                         case "WARN":
                             if (_logger.IsEnabled(LogEventLevel.Warn))
@@ -220,35 +221,24 @@ namespace OpenQA.Selenium
                 }
             }
 
-            return jsonResponse.Result ?? throw new WebDriverException("Selenium manager response's Result was null");
+            return jsonResponse.Result;
         }
     }
 
-    internal class SeleniumManagerResponse
+    internal record SeleniumManagerResponse(IReadOnlyList<LogEntryResponse> Logs, ResultResponse Result)
     {
-        public IReadOnlyList<LogEntryResponse?>? Logs { get; set; }
+        public record LogEntryResponse(string Level, string Message);
 
-        public ResultResponse? Result { get; set; }
-
-        public class LogEntryResponse
-        {
-            public string? Level { get; set; }
-
-            public string? Message { get; set; }
-        }
-
-        public class ResultResponse
+        public record ResultResponse(string DriverPath, string BrowserPath)
         {
             [JsonPropertyName("driver_path")]
-            public string? DriverPath { get; set; }
+            public string DriverPath { get; } = DriverPath;
 
             [JsonPropertyName("browser_path")]
-            public string? BrowserPath { get; set; }
+            public string BrowserPath { get; } = BrowserPath;
         }
     }
 
     [JsonSerializable(typeof(SeleniumManagerResponse))]
-    internal partial class SeleniumManagerSerializerContext : JsonSerializerContext
-    {
-    }
+    internal partial class SeleniumManagerSerializerContext : JsonSerializerContext;
 }
