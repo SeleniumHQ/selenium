@@ -36,12 +36,9 @@ namespace OpenQA.Selenium
     {
         private static readonly ILogger _logger = Log.GetLogger(typeof(SeleniumManager));
 
-        private static string? _binaryFullPath;
-        private static string BinaryFullPath => _binaryFullPath ??= GetBinaryFullPath();
-
         private static readonly JsonSerializerOptions _serializerOptions = new() { PropertyNameCaseInsensitive = true, TypeInfoResolver = SeleniumManagerSerializerContext.Default };
 
-        private static string GetBinaryFullPath()
+        private static readonly Lazy<string> _lazyBinaryFullPath = new(() =>
         {
             string? binaryFullPath = Environment.GetEnvironmentVariable("SE_MANAGER_PATH");
             if (binaryFullPath == null)
@@ -71,7 +68,7 @@ namespace OpenQA.Selenium
                 throw new WebDriverException($"Unable to locate or obtain Selenium Manager binary at {binaryFullPath}");
             }
             return binaryFullPath;
-        }
+        });
 
         /// <summary>
         /// Determines the location of the browser and driver binaries.
@@ -90,7 +87,7 @@ namespace OpenQA.Selenium
                 argsBuilder.Append(" --debug");
             }
 
-            var smCommandResult = RunCommand(BinaryFullPath, argsBuilder.ToString());
+            var smCommandResult = RunCommand(_lazyBinaryFullPath.Value, argsBuilder.ToString());
             Dictionary<string, string> binaryPaths = new()
             {
                 { "browser_path", smCommandResult.BrowserPath },
@@ -117,7 +114,7 @@ namespace OpenQA.Selenium
         private static SeleniumManagerResponse.ResultResponse RunCommand(string fileName, string arguments)
         {
             Process process = new Process();
-            process.StartInfo.FileName = BinaryFullPath;
+            process.StartInfo.FileName = _lazyBinaryFullPath.Value;
             process.StartInfo.Arguments = arguments;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
