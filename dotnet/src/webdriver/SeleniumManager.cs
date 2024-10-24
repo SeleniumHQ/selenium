@@ -26,6 +26,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+#nullable enable
+
 namespace OpenQA.Selenium
 {
     /// <summary>
@@ -77,7 +79,7 @@ namespace OpenQA.Selenium
         /// <returns>
         /// An array with two entries, one for the driver path, and another one for the browser path.
         /// </returns>
-        public static Dictionary<string, string> BinaryPaths(string arguments)
+        public static Dictionary<string, string?> BinaryPaths(string arguments)
         {
             StringBuilder argsBuilder = new StringBuilder(arguments);
             argsBuilder.Append(" --language-binding csharp");
@@ -88,7 +90,7 @@ namespace OpenQA.Selenium
             }
 
             var smCommandResult = RunCommand(_lazyBinaryFullPath.Value, argsBuilder.ToString());
-            Dictionary<string, string> binaryPaths = new()
+            Dictionary<string, string?> binaryPaths = new()
             {
                 { "browser_path", smCommandResult.BrowserPath },
                 { "driver_path", smCommandResult.DriverPath }
@@ -182,7 +184,8 @@ namespace OpenQA.Selenium
 
             try
             {
-                jsonResponse = JsonSerializer.Deserialize<SeleniumManagerResponse>(output, _serializerOptions);
+                jsonResponse = JsonSerializer.Deserialize<SeleniumManagerResponse>(output, _serializerOptions)
+                    ?? throw new WebDriverException("SeleniumManagerResponse was null");
             }
             catch (Exception ex)
             {
@@ -217,36 +220,35 @@ namespace OpenQA.Selenium
                 }
             }
 
-            return jsonResponse.Result;
+            return jsonResponse.Result ?? throw new WebDriverException("Selenium manager response's Result was null");
         }
     }
 
     internal class SeleniumManagerResponse
     {
-        public IReadOnlyList<LogEntryResponse> Logs { get; set; }
+        public IReadOnlyList<LogEntryResponse>? Logs { get; set; }
 
-        public ResultResponse Result { get; set; }
+        public ResultResponse? Result { get; set; }
 
         public class LogEntryResponse
         {
-            public string Level { get; set; }
+            public string? Level { get; set; }
 
-            public string Message { get; set; }
+            public string? Message { get; set; }
         }
 
         public class ResultResponse
         {
             [JsonPropertyName("driver_path")]
-            public string DriverPath { get; set; }
+            public string? DriverPath { get; set; }
 
             [JsonPropertyName("browser_path")]
-            public string BrowserPath { get; set; }
+            public string? BrowserPath { get; set; }
         }
     }
 
     [JsonSerializable(typeof(SeleniumManagerResponse))]
     internal partial class SeleniumManagerSerializerContext : JsonSerializerContext
     {
-
     }
 }
