@@ -64,22 +64,20 @@ def test_should_be_able_to_combine_filters(driver, pages):
     pages.load("relative_locators.html")
 
     elements = driver.find_elements(
-        with_tag_name("td")
-        .above(driver.find_element(By.ID, "center"))
-        .to_right_of(driver.find_element(By.ID, "second"))
+        with_tag_name("td").above(driver.find_element(By.ID, "center")).to_right_of(driver.find_element(By.ID, "top"))
     )
 
     ids = [el.get_attribute("id") for el in elements]
-    assert "third" in ids
+    assert "topRight" in ids
 
 
 def test_should_be_able_to_combine_filters_by_locator(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(with_tag_name("td").above({By.ID: "center"}).to_right_of({By.ID: "second"}))
+    elements = driver.find_elements(with_tag_name("td").above({By.ID: "center"}).to_right_of({By.ID: "top"}))
 
     ids = [el.get_attribute("id") for el in elements]
-    assert "third" in ids
+    assert "topRight" in ids
 
 
 def test_should_be_able_to_use_css_selectors(driver, pages):
@@ -88,22 +86,22 @@ def test_should_be_able_to_use_css_selectors(driver, pages):
     elements = driver.find_elements(
         locate_with(By.CSS_SELECTOR, "td")
         .above(driver.find_element(By.ID, "center"))
-        .to_right_of(driver.find_element(By.ID, "second"))
+        .to_right_of(driver.find_element(By.ID, "top"))
     )
 
     ids = [el.get_attribute("id") for el in elements]
-    assert "third" in ids
+    assert "topRight" in ids
 
 
 def test_should_be_able_to_use_css_selectors_by_locator(driver, pages):
     pages.load("relative_locators.html")
 
     elements = driver.find_elements(
-        locate_with(By.CSS_SELECTOR, "td").above({By.ID: "center"}).to_right_of({By.ID: "second"})
+        locate_with(By.CSS_SELECTOR, "td").above({By.ID: "center"}).to_right_of({By.ID: "top"})
     )
 
     ids = [el.get_attribute("id") for el in elements]
-    assert "third" in ids
+    assert "topRight" in ids
 
 
 def test_should_be_able_to_use_xpath(driver, pages):
@@ -111,27 +109,41 @@ def test_should_be_able_to_use_xpath(driver, pages):
 
     elements = driver.find_elements(
         locate_with(By.XPATH, "//td[1]")
-        .below(driver.find_element(By.ID, "second"))
-        .above(driver.find_element(By.ID, "seventh"))
+        .below(driver.find_element(By.ID, "top"))
+        .above(driver.find_element(By.ID, "bottomLeft"))
     )
 
     ids = [el.get_attribute("id") for el in elements]
-    assert "fourth" in ids
+    assert "left" in ids
 
 
 def test_should_be_able_to_use_xpath_by_locator(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(locate_with(By.XPATH, "//td[1]").below({By.ID: "second"}).above({By.ID: "seventh"}))
+    elements = driver.find_elements(locate_with(By.XPATH, "//td[1]").below({By.ID: "top"}).above({By.ID: "bottomLeft"}))
 
     ids = [el.get_attribute("id") for el in elements]
-    assert "fourth" in ids
+    assert "left" in ids
+
+
+def test_should_be_able_to_combine_straight_filters(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(
+        with_tag_name("td")
+        .straight_below(driver.find_element(By.ID, "topRight"))
+        .straight_right_of(driver.find_element(By.ID, "bottomLeft"))
+    )
+
+    ids = [el.get_attribute("id") for el in elements]
+    assert len(ids) == 1
+    assert "bottomRight" in ids
 
 
 def test_no_such_element_is_raised_rather_than_index_error(driver, pages):
     pages.load("relative_locators.html")
     with pytest.raises(NoSuchElementException) as exc:
-        anchor = driver.find_element(By.ID, "second")
+        anchor = driver.find_element(By.ID, "top")
         driver.find_element(locate_with(By.ID, "nonexistentid").above(anchor))
     assert "Cannot locate relative element with: {'id': 'nonexistentid'}" in exc.value.msg
 
@@ -139,15 +151,15 @@ def test_no_such_element_is_raised_rather_than_index_error(driver, pages):
 def test_no_such_element_is_raised_rather_than_index_error_by_locator(driver, pages):
     pages.load("relative_locators.html")
     with pytest.raises(NoSuchElementException) as exc:
-        driver.find_element(locate_with(By.ID, "nonexistentid").above({By.ID: "second"}))
+        driver.find_element(locate_with(By.ID, "nonexistentid").above({By.ID: "top"}))
     assert "Cannot locate relative element with: {'id': 'nonexistentid'}" in exc.value.msg
 
 
 def test_near_locator_should_find_near_elements(driver, pages):
     pages.load("relative_locators.html")
-    rect1 = driver.find_element(By.ID, "rect1")
+    rect = driver.find_element(By.ID, "rect1")
 
-    el = driver.find_element(locate_with(By.ID, "rect2").near(rect1))
+    el = driver.find_element(locate_with(By.ID, "rect2").near(rect))
 
     assert el.get_attribute("id") == "rect2"
 
@@ -162,10 +174,10 @@ def test_near_locator_should_find_near_elements_by_locator(driver, pages):
 
 def test_near_locator_should_not_find_far_elements(driver, pages):
     pages.load("relative_locators.html")
-    rect3 = driver.find_element(By.ID, "rect3")
+    rect = driver.find_element(By.ID, "rect2")
 
     with pytest.raises(NoSuchElementException) as exc:
-        driver.find_element(locate_with(By.ID, "rect4").near(rect3))
+        driver.find_element(locate_with(By.ID, "rect4").near(rect))
 
     assert "Cannot locate relative element with: {'id': 'rect4'}" in exc.value.msg
 
@@ -174,16 +186,16 @@ def test_near_locator_should_not_find_far_elements_by_locator(driver, pages):
     pages.load("relative_locators.html")
 
     with pytest.raises(NoSuchElementException) as exc:
-        driver.find_element(locate_with(By.ID, "rect4").near({By.ID: "rect3"}))
+        driver.find_element(locate_with(By.ID, "rect4").near({By.ID: "rect2"}))
 
     assert "Cannot locate relative element with: {'id': 'rect4'}" in exc.value.msg
 
 
 def test_near_locator_should_find_far_elements(driver, pages):
     pages.load("relative_locators.html")
-    rect3 = driver.find_element(By.ID, "rect3")
+    rect = driver.find_element(By.ID, "rect2")
 
-    el = driver.find_element(locate_with(By.ID, "rect4").near(rect3, 100))
+    el = driver.find_element(locate_with(By.ID, "rect4").near(rect, 100))
 
     assert el.get_attribute("id") == "rect4"
 
@@ -191,6 +203,98 @@ def test_near_locator_should_find_far_elements(driver, pages):
 def test_near_locator_should_find_far_elements_by_locator(driver, pages):
     pages.load("relative_locators.html")
 
-    el = driver.find_element(locate_with(By.ID, "rect4").near({By.ID: "rect3"}, 100))
+    el = driver.find_element(locate_with(By.ID, "rect4").near({By.ID: "rect2"}, 100))
 
     assert el.get_attribute("id") == "rect4"
+
+
+def test_should_find_elements_above_another(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(with_tag_name("td").above({By.ID: "center"}))
+
+    ids = [el.get_attribute("id") for el in elements]
+    assert len(ids) == 3
+    assert "top" in ids
+    assert "topLeft" in ids
+    assert "topRight" in ids
+
+
+def test_should_find_elements_below_another(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(with_tag_name("td").below({By.ID: "center"}))
+
+    ids = [el.get_attribute("id") for el in elements]
+    assert len(ids) == 3
+    assert "bottom" in ids
+    assert "bottomLeft" in ids
+    assert "bottomRight" in ids
+
+
+def test_should_find_elements_left_of_another(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(with_tag_name("td").to_left_of({By.ID: "center"}))
+
+    ids = [el.get_attribute("id") for el in elements]
+    assert len(ids) == 3
+    assert "left" in ids
+    assert "topLeft" in ids
+    assert "bottomLeft" in ids
+
+
+def test_should_find_elements_right_of_another(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(with_tag_name("td").to_right_of({By.ID: "center"}))
+
+    ids = [el.get_attribute("id") for el in elements]
+    assert len(ids) == 3
+    assert "right" in ids
+    assert "topRight" in ids
+    assert "bottomRight" in ids
+
+
+def test_should_find_elements_straight_above_another(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(with_tag_name("td").straight_above({By.ID: "bottom"}))
+
+    ids = [el.get_attribute("id") for el in elements]
+    assert len(ids) == 2
+    assert "top" in ids
+    assert "center" in ids
+
+
+def test_should_find_elements_straight_below_another(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(with_tag_name("td").straight_below({By.ID: "top"}))
+
+    ids = [el.get_attribute("id") for el in elements]
+    assert len(ids) == 2
+    assert "bottom" in ids
+    assert "center" in ids
+
+
+def test_should_find_elements_straight_left_of_another(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(with_tag_name("td").straight_left_of({By.ID: "right"}))
+
+    ids = [el.get_attribute("id") for el in elements]
+    assert len(ids) == 2
+    assert "left" in ids
+    assert "center" in ids
+
+
+def test_should_find_elements_straight_right_of_another(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(with_tag_name("td").straight_right_of({By.ID: "left"}))
+
+    ids = [el.get_attribute("id") for el in elements]
+    assert len(ids) == 2
+    assert "right" in ids
+    assert "center" in ids

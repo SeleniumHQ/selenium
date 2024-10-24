@@ -52,13 +52,13 @@ class RelativeLocatorTest extends JupiterTestBase {
   void shouldBeAbleToFindElementsAboveAnotherWithXpath() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
-    WebElement lowest = driver.findElement(By.id("seventh"));
+    WebElement lowest = driver.findElement(By.id("bottomLeft"));
 
     List<WebElement> seen = driver.findElements(with(xpath("//td[1]")).above(lowest));
 
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-    assertThat(ids).containsExactly("fourth", "first");
+    assertThat(ids).containsExactly("left", "topLeft");
   }
 
   @Test
@@ -75,15 +75,132 @@ class RelativeLocatorTest extends JupiterTestBase {
   }
 
   @Test
+  void shouldBeAbleToFindElementsBelowAnother() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    WebElement midpoint = driver.findElement(By.id("mid"));
+
+    List<WebElement> elements = driver.findElements(with(tagName("p")).below(midpoint));
+    List<String> ids =
+     elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+    assertThat(ids).containsExactly("below");
+  }
+
+  @Test
+  void shouldFindElementsAboveAnother() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    WebElement midpoint = driver.findElement(By.id("center"));
+
+    List<WebElement> elements = driver.findElements(with(tagName("td")).above(midpoint));
+    List<String> ids =
+        elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+    assertThat(ids).containsExactly("top", "topLeft", "topRight");
+  }
+
+  @Test
+  void shouldFindElementsBelowAnother() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    WebElement midpoint = driver.findElement(By.id("center"));
+
+    List<WebElement> elements = driver.findElements(with(tagName("td")).below(midpoint));
+    List<String> ids =
+        elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+    assertThat(ids).containsExactly("bottom", "bottomLeft", "bottomRight");
+  }
+
+  @Test
+  void shouldFindElementsLeftOfAnother() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    WebElement midpoint = driver.findElement(By.id("center"));
+
+    List<WebElement> elements = driver.findElements(with(tagName("td")).left(midpoint));
+    List<String> ids =
+        elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+    assertThat(ids).containsExactly("left", "topLeft", "bottomLeft");
+  }
+
+  @Test
+  void shouldFindElementsRightOfAnother() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    WebElement midpoint = driver.findElement(By.id("center"));
+
+    List<WebElement> elements = driver.findElements(with(tagName("td")).right(midpoint));
+    List<String> ids =
+        elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+    assertThat(ids).containsExactly("right", "topRight", "bottomRight");
+  }
+
+  @Test
+  void shouldBeAbleToFindElementsStraightAboveAnother() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    WebElement bottom = driver.findElement(By.id("bottom"));
+
+    List<WebElement> elements = driver.findElements(with(tagName("td")).straightAbove(bottom));
+    List<String> ids =
+        elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+    assertThat(ids).containsExactly("center", "top");
+  }
+
+  @Test
+  void shouldBeAbleToFindElementsStraightBelowAnother() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    WebElement top = driver.findElement(By.id("top"));
+
+    List<WebElement> elements = driver.findElements(with(tagName("td")).straightBelow(top));
+    List<String> ids =
+        elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+    assertThat(ids).containsExactly("center", "bottom");
+  }
+
+  @Test
+  void shouldBeAbleToFindElementsStraightLeftOfAnother() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    WebElement right = driver.findElement(By.id("right"));
+
+    List<WebElement> elements = driver.findElements(with(tagName("td")).straightLeft(right));
+    List<String> ids =
+        elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+    assertThat(ids).containsExactly("left", "center");
+  }
+
+  @Test
+  void shouldBeAbleToFindElementsStraightRightOfAnother() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    WebElement left = driver.findElement(By.id("left"));
+
+    List<WebElement> elements = driver.findElements(with(tagName("td")).straightRight(left));
+    List<String> ids =
+        elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+    assertThat(ids).containsExactly("center", "right");
+  }
+
+  @Test
   void shouldBeAbleToCombineFilters() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     List<WebElement> seen =
-        driver.findElements(with(tagName("td")).above(By.id("center")).toRightOf(By.id("second")));
+      driver.findElements(with(tagName("td")).above(By.id("center")).toRightOf(By.id("top")));
 
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-    assertThat(ids).containsExactly("third");
+    assertThat(ids).containsExactly("topRight");
   }
 
   @Test
@@ -91,11 +208,11 @@ class RelativeLocatorTest extends JupiterTestBase {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     List<WebElement> seen =
-        driver.findElements(with(xpath("//td[1]")).below(By.id("second")).above(By.id("seventh")));
+        driver.findElements(with(xpath("//td[1]")).below(By.id("top")).above(By.id("bottomLeft")));
 
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-    assertThat(ids).containsExactly("fourth");
+    assertThat(ids).containsExactly("left");
   }
 
   @Test
@@ -104,11 +221,11 @@ class RelativeLocatorTest extends JupiterTestBase {
 
     List<WebElement> seen =
         driver.findElements(
-            with(cssSelector("td")).above(By.id("center")).toRightOf(By.id("second")));
+            with(cssSelector("td")).above(By.id("center")).toRightOf(By.id("top")));
 
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-    assertThat(ids).containsExactly("third");
+    assertThat(ids).containsExactly("topRight");
   }
 
   @Test
@@ -127,9 +244,23 @@ class RelativeLocatorTest extends JupiterTestBase {
     // 5-8. Diagonally close (pythagoras sorting, with top row first
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-    assertThat(ids)
-        .containsExactly(
-            "second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
+    assertThat(ids).containsExactly(
+      "top", "bottom", "left", "right", "topLeft", "topRight", "bottomLeft", "bottomRight"
+    );
+  }
+
+  @Test
+  void shouldBeAbleToCombineStraightFilters() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    List<WebElement> seen = driver.findElements(with(tagName("td"))
+      .straightBelow(By.id("topRight"))
+      .straightRight(By.id("bottomLeft"))
+    );
+
+    List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+    assertThat(ids).containsExactly("bottomRight");
   }
 
   @Test
@@ -149,9 +280,9 @@ class RelativeLocatorTest extends JupiterTestBase {
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-    assertThat(ids)
-        .containsExactly(
-            "second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
+    assertThat(ids).containsExactly(
+      "top", "bottom", "left", "right", "topLeft", "topRight", "bottomLeft", "bottomRight"
+    );
   }
 
   @Test
@@ -170,35 +301,14 @@ class RelativeLocatorTest extends JupiterTestBase {
     // 5-8. Diagonally close (pythagoras sorting, with top row first
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-    assertThat(ids)
-        .containsExactly(
-            "second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
+    assertThat(ids).containsExactly(
+      "top", "bottom", "left", "right", "topLeft", "topRight", "bottomLeft", "bottomRight"
+    );
   }
 
   @Test
   void ensureNoRepeatedElements() {
-    String url =
-        appServer.create(
-            new Page()
-                .withTitle("Repeated Elements")
-                .withStyles(
-                    " .c {\n"
-                        + "    \tposition: absolute;\n"
-                        + "    \tborder: 1px solid black;\n"
-                        + "    \theight: 50px;\n"
-                        + "    \twidth: 50px;\n"
-                        + "    }")
-                .withBody(
-                    "<span style=\"position: relative;\">\n"
-                        + "    <div id= \"a\" class=\"c\" style=\"left:25;top:0;\">El-A</div>\n"
-                        + "    <div id= \"b\" class=\"c\" style=\"left:78;top:30;\">El-B</div>\n"
-                        + "    <div id= \"c\" class=\"c\" style=\"left:131;top:60;\">El-C</div>\n"
-                        + "    <div id= \"d\" class=\"c\" style=\"left:0;top:53;\">El-D</div>\n"
-                        + "    <div id= \"e\" class=\"c\" style=\"left:53;top:83;\">El-E</div>\n"
-                        + "    <div id= \"f\" class=\"c\" style=\"left:106;top:113;\">El-F</div>\n"
-                        + "  </span>"));
-
-    driver.get(url);
+    driver.get(appServer.whereIs("relative_locators.html"));
 
     WebElement base = driver.findElement(By.id("e"));
     List<WebElement> cells = driver.findElements(with(tagName("div")).above(base));
@@ -206,10 +316,9 @@ class RelativeLocatorTest extends JupiterTestBase {
     WebElement a = driver.findElement(By.id("a"));
     WebElement b = driver.findElement(By.id("b"));
 
-    assertThat(cells)
-        .describedAs(
-            cells.stream().map(e -> e.getAttribute("id")).collect(Collectors.joining(", ")))
-        .isEqualTo(List.of(b, a));
+    assertThat(cells).describedAs(
+      cells.stream().map(e -> e.getAttribute("id")).collect(Collectors.joining(", "))
+    ).isEqualTo(List.of(b, a));
   }
 
   @Test
@@ -217,7 +326,6 @@ class RelativeLocatorTest extends JupiterTestBase {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     WebElement rect1 = driver.findElement(By.id("rect1"));
-
     WebElement rect2 = driver.findElement(with(By.id("rect2")).near(rect1));
 
     assertThat(rect2.getAttribute("id")).isEqualTo("rect2");
@@ -230,7 +338,7 @@ class RelativeLocatorTest extends JupiterTestBase {
     WebElement rect3 = driver.findElement(By.id("rect3"));
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(with(By.id("rect4")).near(rect3)))
-        .withMessageContaining("Cannot locate an element using");
+      .isThrownBy(() -> driver.findElement(with(By.id("rect4")).near(rect3)))
+      .withMessageContaining("Cannot locate an element using");
   }
 }

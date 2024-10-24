@@ -147,6 +147,50 @@ public class RelativeLocator {
       return simpleDirection("right", locator);
     }
 
+    public RelativeBy straightAbove(WebElement element) {
+      Require.nonNull("Element to search straight above of", element);
+      return simpleDirection("straightAbove", element);
+    }
+
+    public RelativeBy straightAbove(By locator) {
+      Require.nonNull("Locator", locator);
+      assertLocatorCanBeSerialized(locator);
+      return simpleDirection("straightAbove", locator);
+    }
+
+    public RelativeBy straightBelow(WebElement element) {
+      Require.nonNull("Element to search straight below of", element);
+      return simpleDirection("straightBelow", element);
+    }
+
+    public RelativeBy straightBelow(By locator) {
+      Require.nonNull("Locator", locator);
+      assertLocatorCanBeSerialized(locator);
+      return simpleDirection("straightBelow", locator);
+    }
+
+    public RelativeBy straightLeftOf(WebElement element) {
+      Require.nonNull("Element to search straight to the left of", element);
+      return simpleDirection("straightLeft", element);
+    }
+
+    public RelativeBy straightLeftOf(By locator) {
+      Require.nonNull("Locator", locator);
+      assertLocatorCanBeSerialized(locator);
+      return simpleDirection("straightLeft", locator);
+    }
+
+    public RelativeBy straightRightOf(WebElement element) {
+      Require.nonNull("Element to search straight to the right of", element);
+      return simpleDirection("straightRight", element);
+    }
+
+    public RelativeBy straightRightOf(By locator) {
+      Require.nonNull("Locator", locator);
+      assertLocatorCanBeSerialized(locator);
+      return simpleDirection("straightRight", locator);
+    }
+
     public RelativeBy near(WebElement element) {
       Require.nonNull("Element to search near", element);
       return near(element, CLOSE_IN_PIXELS);
