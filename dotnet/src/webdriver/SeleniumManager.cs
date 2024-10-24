@@ -230,15 +230,12 @@ namespace OpenQA.Selenium
         public record LogEntryResponse(string Level, string Message);
 
         public record ResultResponse
-        {
-            [JsonPropertyName("driver_path")]
-            [JsonRequired]
-            public string DriverPath { get; init; } = null!;
-
-            [JsonPropertyName("browser_path")]
-            [JsonRequired]
-            public string BrowserPath { get; init; } = null!;
-        }
+        (
+            [property: JsonPropertyName("driver_path")]
+            string DriverPath,
+            [property: JsonPropertyName("browser_path")]
+            string BrowserPath
+        );
     }
 
     [JsonSerializable(typeof(SeleniumManagerResponse))]
