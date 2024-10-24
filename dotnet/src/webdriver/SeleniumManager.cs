@@ -232,10 +232,12 @@ namespace OpenQA.Selenium
         public record ResultResponse
         {
             [JsonPropertyName("driver_path")]
-            public string? DriverPath { get; init; }
+            [JsonRequired]
+            public string DriverPath { get; init; } = null!;
 
             [JsonPropertyName("browser_path")]
-            public string? BrowserPath { get; init; }
+            [JsonRequired]
+            public string BrowserPath { get; init; } = null!;
         }
     }
 
