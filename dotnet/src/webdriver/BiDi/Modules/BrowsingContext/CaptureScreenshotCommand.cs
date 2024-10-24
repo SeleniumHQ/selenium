@@ -43,11 +43,7 @@ public abstract record ClipRectangle
 {
     public record Box(double X, double Y, double Width, double Height) : ClipRectangle;
 
-    public record Element(Script.SharedReference SharedReference) : ClipRectangle
-    {
-        [JsonPropertyName("element")]
-        public Script.SharedReference SharedReference { get; } = SharedReference;
-    }
+    public record Element([property: JsonPropertyName("element")] Script.SharedReference SharedReference) : ClipRectangle;
 }
 
 public record CaptureScreenshotResult(string Data)

@@ -8,17 +8,10 @@ namespace OpenQA.Selenium.BiDi.Modules.Script;
 [JsonDerivedType(typeof(Context))]
 public abstract record Target
 {
-    public record Realm(Script.Realm Target) : Target
-    {
-        [JsonPropertyName("realm")]
-        public Script.Realm Target { get; } = Target;
-    }
+    public record Realm([property: JsonPropertyName("realm")] Script.Realm Target) : Target;
 
-    public record Context(BrowsingContext.BrowsingContext Target) : Target
+    public record Context([property: JsonPropertyName("context")] BrowsingContext.BrowsingContext Target) : Target
     {
-        [JsonPropertyName("context")]
-        public BrowsingContext.BrowsingContext Target { get; } = Target;
-
         public string? Sandbox { get; set; }
     }
 }

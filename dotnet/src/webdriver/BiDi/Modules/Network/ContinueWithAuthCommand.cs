@@ -13,11 +13,7 @@ internal class ContinueWithAuthCommand(ContinueWithAuthParameters @params) : Com
 [JsonDerivedType(typeof(Cancel), "cancel")]
 internal abstract record ContinueWithAuthParameters(Request Request) : CommandParameters
 {
-    internal record Credentials(Request Request, AuthCredentials AuthCredentials) : ContinueWithAuthParameters(Request)
-    {
-        [JsonPropertyName("credentials")]
-        public AuthCredentials AuthCredentials { get; } = AuthCredentials;
-    }
+    internal record Credentials(Request Request, [property: JsonPropertyName("credentials")] AuthCredentials AuthCredentials) : ContinueWithAuthParameters(Request);
 
     internal record Default(Request Request) : ContinueWithAuthParameters(Request);
 

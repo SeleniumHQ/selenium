@@ -71,11 +71,7 @@ public class CookieFilter
 [JsonDerivedType(typeof(StorageKey), "storageKey")]
 public abstract record PartitionDescriptor
 {
-    public record Context(BrowsingContext.BrowsingContext Descriptor) : PartitionDescriptor
-    {
-        [JsonPropertyName("context")]
-        public BrowsingContext.BrowsingContext Descriptor { get; } = Descriptor;
-    }
+    public record Context([property: JsonPropertyName("context")] BrowsingContext.BrowsingContext Descriptor) : PartitionDescriptor;
 
     public record StorageKey : PartitionDescriptor
     {
