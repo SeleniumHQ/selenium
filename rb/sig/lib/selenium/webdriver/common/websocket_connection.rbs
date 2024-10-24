@@ -35,9 +35,13 @@ module Selenium
 
       def initialize: (url: untyped) -> void
 
+      def add_callback: (untyped event, untyped id) -> untyped
+
       def close: () -> untyped
 
       def callbacks: () -> untyped
+
+      def remove_callback: (untyped event, untyped id) -> untyped
 
       def send_cmd: (**untyped payload) -> untyped
 

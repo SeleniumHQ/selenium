@@ -47,11 +47,13 @@ module Selenium
 
       attr_accessor args: untyped
 
-      def env_path: -> String
+      def env_path: -> String?
 
       alias extra_args args
 
       def initialize: (?path: untyped?, ?port: untyped?, ?log: untyped?, ?args: untyped?) -> void
+
+      def find_driver_path: -> untyped
 
       def launch: () -> untyped
 

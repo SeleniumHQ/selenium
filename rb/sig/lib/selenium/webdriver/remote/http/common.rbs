@@ -9,6 +9,14 @@ module Selenium
 
           DEFAULT_HEADERS: Hash[String, untyped]
 
+          @common_headers: untyped
+
+          attr_accessor self.extra_headers: untyped
+
+          attr_writer self.user_agent: untyped
+
+          def self.user_agent: -> untyped
+
           attr_writer server_url: untyped
 
           def quit_errors: () -> Array[untyped]
@@ -18,6 +26,8 @@ module Selenium
           def call: (untyped verb, untyped url, untyped command_hash) -> untyped
 
           private
+
+          def common_headers: -> untyped
 
           def server_url: () -> untyped
 
