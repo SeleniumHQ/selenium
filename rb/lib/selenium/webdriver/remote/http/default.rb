@@ -119,6 +119,8 @@ module Selenium
           end
 
           def new_http_client
+            raise Error::WebDriverError, 'server_url not set' unless server_url
+
             if proxy
               url = proxy.http
               unless proxy.respond_to?(:http) && url
