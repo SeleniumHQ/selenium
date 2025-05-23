@@ -144,7 +144,7 @@ module Selenium
               end
             end
 
-            it "uses the specified proxy if the wildcard character is used in #{no_proxy_var}" do
+            it "ignores wildcard characters in #{no_proxy_var} and uses the proxy" do
               with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => '*') do
                 http = client.send :http
                 expect(http).to be_proxy
