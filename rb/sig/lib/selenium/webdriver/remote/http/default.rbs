@@ -39,8 +39,6 @@ module Selenium
           def new_http_client: () -> untyped
 
           def proxy: () -> untyped
-
-          def use_proxy?: () -> untyped
         end
       end
     end

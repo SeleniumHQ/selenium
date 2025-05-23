@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# For more information on the proxy settings, see: https://www.w3.org/TR/webdriver2/#dfn-proxy-configuration
+
 module Selenium
   module WebDriver
     class Proxy
@@ -89,7 +91,11 @@ module Selenium
 
       def no_proxy=(value)
         self.type = :manual
-        @no_proxy = value
+        @no_proxy = if value.is_a?(String)
+                      value.scan(/([^:,\s]+)(:\d+)?/).map(&:join) # adapted from URI::Generic.use_proxy?
+                    else
+                      value
+                    end
       end
 
       def ssl=(value)
@@ -145,7 +151,7 @@ module Selenium
           'proxyType' => TYPES[type].downcase,
           'ftpProxy' => ftp,
           'httpProxy' => http,
-          'noProxy' => no_proxy.is_a?(String) ? no_proxy.split(', ') : no_proxy,
+          'noProxy' => no_proxy,
           'proxyAutoconfigUrl' => pac,
           'sslProxy' => ssl,
           'autodetect' => auto_detect,

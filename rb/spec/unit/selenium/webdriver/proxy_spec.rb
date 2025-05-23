@@ -26,7 +26,7 @@ module Selenium
         {
           ftp: 'mythicalftpproxy:21',
           http: 'mythicalproxy:80',
-          no_proxy: 'noproxy',
+          no_proxy: 'noproxy,noproxy2,noproxy3:443,127.0.0.1,127.0.0.1:80',
           ssl: 'mythicalsslproxy',
           socks: 'mythicalsocksproxy:65555',
           socks_username: 'test',
@@ -59,12 +59,18 @@ module Selenium
 
         expect(proxy.ftp).to            eq(proxy_settings[:ftp])
         expect(proxy.http).to           eq(proxy_settings[:http])
-        expect(proxy.no_proxy).to       eq(proxy_settings[:no_proxy])
+        expect(proxy.no_proxy).to       eq(%w[noproxy noproxy2 noproxy3:443 127.0.0.1 127.0.0.1:80])
         expect(proxy.ssl).to            eq(proxy_settings[:ssl])
         expect(proxy.socks).to          eq(proxy_settings[:socks])
         expect(proxy.socks_username).to eq(proxy_settings[:socks_username])
         expect(proxy.socks_password).to eq(proxy_settings[:socks_password])
         expect(proxy.socks_version).to  eq(proxy_settings[:socks_version])
+      end
+
+      it 'allows different kinds of separator for no_proxy string list', :aggregate_failures do
+        proxy = described_class.new({no_proxy: 'noproxy,noproxy2, noproxy3:443 127.0.0.1 , 127.0.0.1:80'})
+
+        expect(proxy.no_proxy).to eq(%w[noproxy noproxy2 noproxy3:443 127.0.0.1 127.0.0.1:80])
       end
 
       it 'returns a hash of the json properties to serialize', :aggregate_failures do
@@ -73,7 +79,7 @@ module Selenium
         expect(proxy_json['proxyType']).to     eq('manual')
         expect(proxy_json['ftpProxy']).to      eq(proxy_settings[:ftp])
         expect(proxy_json['httpProxy']).to     eq(proxy_settings[:http])
-        expect(proxy_json['noProxy']).to       eq([proxy_settings[:no_proxy]])
+        expect(proxy_json['noProxy']).to       eq(%w[noproxy noproxy2 noproxy3:443 127.0.0.1 127.0.0.1:80])
         expect(proxy_json['sslProxy']).to      eq(proxy_settings[:ssl])
         expect(proxy_json['socksProxy']).to    eq(proxy_settings[:socks])
         expect(proxy_json['socksUsername']).to eq(proxy_settings[:socks_username])
@@ -95,7 +101,7 @@ module Selenium
         expect(proxy_json['autodetect']).to be true
       end
 
-      it 'onlies add settings that are not nil', :aggregate_failures do
+      it 'only add settings that are not nil', :aggregate_failures do
         settings = {type: :manual, http: 'http proxy'}
 
         proxy = described_class.new(settings)

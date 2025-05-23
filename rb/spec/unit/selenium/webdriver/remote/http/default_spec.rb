@@ -26,7 +26,7 @@ module Selenium
         describe Default do
           let(:client) do
             client = described_class.new
-            client.server_url = URI.parse('http://example.com')
+            client.server_url = URI.parse('http://test.example.com')
 
             client
           end
@@ -60,7 +60,7 @@ module Selenium
             expect(http.proxy_user).to eq('foo')
             expect(http.proxy_pass).to eq('bar')
 
-            expect(http.address).to eq('example.com')
+            expect(http.address).to eq('test.example.com')
           end
 
           it 'raises an error if the proxy is not an HTTP proxy' do
@@ -96,10 +96,23 @@ module Selenium
                 http = client.send :http
                 expect(http).not_to be_proxy
               end
+
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'test.example.com') do
+                http = client.send :http
+                expect(http).not_to be_proxy
+              end
             end
 
             it "ignores the #{no_proxy_var} environment variable when not matching" do
               with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'foo.com') do
+                http = client.send :http
+
+                expect(http).to be_proxy
+                expect(http.proxy_address).to eq('proxy.org')
+                expect(http.proxy_port).to eq(8080)
+              end
+
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'ample.com') do
                 http = client.send :http
 
                 expect(http).to be_proxy
@@ -115,12 +128,31 @@ module Selenium
               end
             end
 
+            it "understands a space separated list of domains in #{no_proxy_var}" do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'example.com foo.com') do
+                http = client.send :http
+                expect(http).not_to be_proxy
+              end
+            end
+
             it "understands subnetting in #{no_proxy_var}" do
               with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'localhost,127.0.0.0/8') do
                 client.server_url = URI.parse('http://127.0.0.1:4444/wd/hub')
 
                 http = client.send :http
                 expect(http).not_to be_proxy
+              end
+            end
+
+            it "uses the specified proxy if the wildcard character is used in #{no_proxy_var}" do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => '*') do
+                http = client.send :http
+                expect(http).to be_proxy
+              end
+
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => '*.example.com') do
+                http = client.send :http
+                expect(http).to be_proxy
               end
             end
           end

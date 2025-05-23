@@ -138,7 +138,8 @@ module Selenium
             set_manual_proxy_preference 'ssl', proxy.ssl
             set_manual_proxy_preference 'socks', proxy.socks
 
-            self['network.proxy.no_proxies_on'] = proxy.no_proxy || ''
+            # cf. http://kb.mozillazine.org/Network.proxy.no_proxies_on
+            self['network.proxy.no_proxies_on'] = proxy.no_proxy&.join(',') || ''
           when :pac
             self['network.proxy.type'] = 2
             self['network.proxy.autoconfig_url'] = proxy.pac

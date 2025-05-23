@@ -16,7 +16,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-require 'ipaddr'
+require 'uri/generic'
 
 module Selenium
   module WebDriver
@@ -88,7 +88,7 @@ module Selenium
               sleep 2
               retry
             rescue Errno::ECONNREFUSED => e
-              raise e.class, "using proxy: #{proxy.http}" if use_proxy?
+              raise e.class, "using proxy: #{http.proxy_uri}" if http.proxy?
 
               raise
             end
@@ -119,18 +119,20 @@ module Selenium
           end
 
           def new_http_client
-            if use_proxy?
-              url = @proxy.http
+            if proxy
+              url = proxy.http
               unless proxy.respond_to?(:http) && url
                 raise Error::WebDriverError,
-                      "expected HTTP proxy, got #{@proxy.inspect}"
+                      "expected HTTP proxy, got #{proxy.inspect}"
               end
 
-              proxy = URI.parse(url)
+              proxy_url = URI.parse(url)
 
-              Net::HTTP.new(server_url.host, server_url.port, proxy.host, proxy.port, proxy.user, proxy.password)
+              Net::HTTP.new(server_url.host, server_url.port,
+                            proxy_url.host, proxy_url.port, proxy_url.user, proxy_url.password,
+                            proxy.no_proxy&.join(','))
             else
-              Net::HTTP.new server_url.host, server_url.port
+              Net::HTTP.new(server_url.host, server_url.port, nil)
             end
           end
 
@@ -143,27 +145,6 @@ module Selenium
                 proxy = "http://#{proxy}" unless proxy.start_with?('http://')
                 Proxy.new(http: proxy, no_proxy: no_proxy)
               end
-            end
-          end
-
-          def use_proxy?
-            return false if proxy.nil?
-
-            if proxy.no_proxy
-              ignored = proxy.no_proxy.split(',').any? do |host|
-                host == '*' ||
-                  host == server_url.host || (
-                begin
-                  IPAddr.new(host).include?(server_url.host)
-                rescue ArgumentError
-                  false
-                end
-              )
-              end
-
-              !ignored
-            else
-              true
             end
           end
         end # Default
