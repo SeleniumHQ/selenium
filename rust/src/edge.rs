@@ -28,6 +28,7 @@ use crate::{
     DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_PV_ARG,
     REG_VERSION_ARG, STABLE,
 };
+use anyhow::anyhow;
 use anyhow::Error;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
@@ -288,6 +289,8 @@ impl SeleniumManager for EdgeManager {
             } else {
                 "mac64"
             }
+        } else if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!("Linux arm64 is not supported yet by Google Chrome. Please try another browser."));
         } else {
             "linux64"
         };

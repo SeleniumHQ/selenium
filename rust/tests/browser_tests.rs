@@ -19,6 +19,7 @@ use crate::common::{assert_output, get_selenium_manager, get_stdout};
 
 use exitcode::DATAERR;
 use rstest::rstest;
+use std::env::consts::ARCH;
 use std::env::consts::OS;
 use std::path::Path;
 
@@ -40,6 +41,10 @@ fn browser_version_test(
     #[case] browser_version: String,
     #[case] driver_version: String,
 ) {
+    if OS.eq("linux") && ARCH.eq("aarch64") && !browser.eq("firefox") {
+      return
+    }
+
     let mut cmd = get_selenium_manager();
     cmd.args([
         "--browser",
@@ -78,6 +83,10 @@ fn wrong_parameters_test(
     #[case] driver_version: String,
     #[case] error_code: i32,
 ) {
+    if OS.eq("linux") && ARCH.eq("aarch64") && !browser.eq("firefox") {
+      return
+    }
+
     let mut cmd = get_selenium_manager();
     let result = cmd
         .args([

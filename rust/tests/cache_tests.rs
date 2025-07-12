@@ -23,6 +23,7 @@ use std::path::Path;
 
 mod common;
 
+#[cfg(not(all(target_os = "linux", target_arch = "aarch64")))]
 #[rstest]
 #[case("../tmp")]
 #[case("../áèîö")]

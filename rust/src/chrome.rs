@@ -383,6 +383,8 @@ impl SeleniumManager for ChromeManager {
             } else {
                 "mac64"
             }
+        } else if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!("Linux arm64 is not supported yet by Google Chrome. Please try another browser."));
         } else {
             "linux64"
         };
