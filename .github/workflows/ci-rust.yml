@@ -35,6 +35,7 @@ jobs:
         include:
           - os: macos
           - os: ubuntu
+          - os: ubuntu-24.04-arm
           - os: windows
     with:
       name: Tests (${{ matrix.os }})
