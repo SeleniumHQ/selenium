@@ -28,7 +28,11 @@ async fn wrong_proxy_test() {
         .args([
             "--debug",
             "--browser",
-          if is_linux_arm64() { "firefox" } else { "chrome" },
+            if is_linux_arm64() {
+                "firefox"
+            } else {
+                "chrome"
+            },
             "--proxy",
             "http://localhost:12345",
         ])
@@ -43,10 +47,14 @@ fn wrong_protocol_proxy_test() {
     let mut cmd = get_selenium_manager();
     let result = cmd
         .args([
-          "--browser",
-          if is_linux_arm64() { "firefox" } else { "chrome" },
-          "--proxy",
-          "wrong:://proxy"
+            "--browser",
+            if is_linux_arm64() {
+                "firefox"
+            } else {
+                "chrome"
+            },
+            "--proxy",
+            "wrong:://proxy",
         ])
         .assert()
         .try_success();
@@ -60,7 +68,11 @@ fn wrong_port_proxy_test() {
     let result = cmd
         .args([
             "--browser",
-            if is_linux_arm64() { "firefox" } else { "chrome" },
+            if is_linux_arm64() {
+                "firefox"
+            } else {
+                "chrome"
+            },
             "--proxy",
             "https:://localhost:1234567",
         ])

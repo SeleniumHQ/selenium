@@ -33,7 +33,7 @@ mod common;
 #[case("edge")]
 fn config_test(#[case] browser_name: String) {
     if OS.eq("linux") && ARCH.eq("aarch64") && !browser_name.eq("firefox") {
-      return
+        return;
     }
     let tmp_dir = Builder::new().prefix("sm-config-test").tempdir().unwrap();
     let config_path = tmp_dir.path().join("se-config.toml");

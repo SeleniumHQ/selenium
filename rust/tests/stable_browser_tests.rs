@@ -29,7 +29,7 @@ mod common;
 #[case("edge")]
 fn stable_browser_test(#[case] browser_name: String) {
     if OS.eq("linux") && ARCH.eq("aarch64") && !browser_name.eq("firefox") {
-      return
+        return;
     }
 
     let mut cmd = get_selenium_manager();

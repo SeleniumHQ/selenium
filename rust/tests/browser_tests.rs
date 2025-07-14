@@ -42,7 +42,7 @@ fn browser_version_test(
     #[case] driver_version: String,
 ) {
     if OS.eq("linux") && ARCH.eq("aarch64") && !browser.eq("firefox") {
-      return;
+        return;
     }
 
     let mut cmd = get_selenium_manager();
@@ -84,7 +84,7 @@ fn wrong_parameters_test(
     #[case] error_code: i32,
 ) {
     if OS.eq("linux") && ARCH.eq("aarch64") && !browser.eq("firefox") {
-      return
+        return;
     }
 
     let mut cmd = get_selenium_manager();

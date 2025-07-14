@@ -123,5 +123,5 @@ pub fn assert_output(
 
 #[allow(dead_code)]
 pub fn is_linux_arm64() -> bool {
-  OS == "linux" && ARCH == "aarch64"
+    OS == "linux" && ARCH == "aarch64"
 }

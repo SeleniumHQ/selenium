@@ -29,9 +29,9 @@ mod common;
 #[case("edge")]
 fn browser_latest_download_test(#[case] browser: String) {
     if browser.eq("edge") && OS.eq("windows") {
-      return;
+        return;
     } else if OS.eq("linux") && ARCH.eq("aarch64") && !browser.eq("firefox") {
-      return;
+        return;
     }
 
     let mut cmd = get_selenium_manager();

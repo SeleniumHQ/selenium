@@ -25,8 +25,12 @@ fn offline_test() {
     cmd.args([
         "--debug",
         "--browser",
-        if is_linux_arm64() { "firefox" } else { "chrome" },
-        "--offline"
+        if is_linux_arm64() {
+            "firefox"
+        } else {
+            "chrome"
+        },
+        "--offline",
     ])
     .assert()
     .success()

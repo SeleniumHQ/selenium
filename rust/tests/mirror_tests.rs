@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_driver, is_linux_arm64, get_selenium_manager};
+use crate::common::{assert_driver, get_selenium_manager, is_linux_arm64};
 
 mod common;
 
@@ -24,7 +24,11 @@ fn mirror_test() {
     let mut cmd = get_selenium_manager();
     cmd.args([
         "--browser",
-        if is_linux_arm64() { "firefox" } else { "chrome" },
+        if is_linux_arm64() {
+            "firefox"
+        } else {
+            "chrome"
+        },
         "--driver-mirror-url",
         "https://registry.npmmirror.com/-/binary/chromedriver/",
         "--browser-version",

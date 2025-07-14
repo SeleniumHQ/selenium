@@ -26,10 +26,14 @@ mod common;
 fn json_output_test() {
     let mut cmd = get_selenium_manager();
     cmd.args([
-      "--browser",
-      if is_linux_arm64() { "firefox" } else { "chrome" },
-      "--output",
-      "json"
+        "--browser",
+        if is_linux_arm64() {
+            "firefox"
+        } else {
+            "chrome"
+        },
+        "--output",
+        "json",
     ])
     .assert()
     .success()
@@ -51,10 +55,14 @@ fn json_output_test() {
 fn shell_output_test() {
     let mut cmd = get_selenium_manager();
     cmd.args([
-      "--browser",
-      if is_linux_arm64() { "firefox" } else { "chrome" },
-      "--output",
-      "shell"
+        "--browser",
+        if is_linux_arm64() {
+            "firefox"
+        } else {
+            "chrome"
+        },
+        "--output",
+        "shell",
     ])
     .assert()
     .success()
@@ -68,10 +76,14 @@ fn shell_output_test() {
 fn mixed_output_test() {
     let mut cmd = get_selenium_manager();
     cmd.args([
-      "--browser",
-      if is_linux_arm64() { "firefox" } else { "chrome" },
-      "--output",
-      "mixed"
+        "--browser",
+        if is_linux_arm64() {
+            "firefox"
+        } else {
+            "chrome"
+        },
+        "--output",
+        "mixed",
     ])
     .assert()
     .success()

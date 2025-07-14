@@ -30,7 +30,7 @@ mod common;
 #[case("iexplorer", "IEDriverServer")]
 fn exec_driver_test(#[case] browser_name: String, #[case] driver_name: String) {
     if OS.eq("linux") && ARCH.eq("aarch64") && !browser_name.eq("firefox") {
-      return
+        return;
     }
 
     let mut cmd = get_selenium_manager();
