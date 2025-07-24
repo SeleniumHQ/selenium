@@ -21,6 +21,7 @@ import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
@@ -43,6 +44,7 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.bidi.log.Log;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
@@ -145,6 +147,32 @@ public class DriverServiceSessionFactory implements SessionFactory {
       if (browserVersion.isPresent()) {
         capabilities = removeCapability(capabilities, "browserVersion");
       }
+
+      //connect adb
+      String adbDeviceId = (String) capabilities.asMap().get("se:adbDeviceId");
+
+      if (adbDeviceId != null && !adbDeviceId.isEmpty()) {
+        LOG.info("[AdbSessionFactory] adbDeviceId found: " + adbDeviceId + ", executing adb connect...");
+        try {
+          // 1. connect 前
+          String beforeDevices = execAndLog("adb devices");
+          // 2. connect
+          String connectOutput = execAndLog("adb connect " + adbDeviceId);
+          // 3. connect 后
+          String afterDevices = execAndLog("adb devices");
+
+          // 检查 afterDevices 是否包含 adbDeviceId 且状态为 device
+          if (!afterDevices.contains(adbDeviceId) || !afterDevices.matches("(?s).*" + adbDeviceId + "\\s+device.*")) {
+            throw new WebDriverException("ADB连接后设备未处于 device 状态，adb devices 输出:\n" + afterDevices);
+          }
+        } catch (IOException | InterruptedException e) {
+          LOG.severe("[AdbSessionFactory] adb connect failed: " + e.getMessage());
+          throw new WebDriverException("ADB连接失败: " + adbDeviceId, e);
+        }
+      } else {
+        LOG.info("[AdbSessionFactory] adbDeviceId is null or empty, skipping adb connect.");
+      }
+
 
       HttpClient client = null;
       try {
@@ -359,5 +387,19 @@ public class DriverServiceSessionFactory implements SessionFactory {
       }
     }
     return options;
+  }
+
+  private String execAndLog(String cmd) throws IOException, InterruptedException {
+    Process process = Runtime.getRuntime().exec(cmd);
+    StringBuilder output = new StringBuilder();
+    try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(process.getInputStream()))) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        output.append(line).append("\n");
+      }
+    }
+    int exitCode = process.waitFor();
+    LOG.info("[AdbSessionFactory] 执行命令: " + cmd + "，退出码: " + exitCode + "\n输出:\n" + output);
+    return output.toString();
   }
 }
