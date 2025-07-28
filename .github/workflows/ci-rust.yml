@@ -120,16 +120,27 @@ jobs:
       - name: "Install cross"
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
-      - name: "Build release binary"
+      - name: "Build release binary (x64)"
         run: cross build --target x86_64-unknown-linux-musl --release
         working-directory: rust
+      - name: "Build release binary (arm64)"
+        run: cross build --target aarch64-unknown-linux-musl --release
+        working-directory: rust  
       - name: "Rename binary"
-        run: mv rust/target/x86_64-unknown-linux-musl/release/selenium-manager selenium-manager-linux
+        run: |
+          mv rust/target/x86_64-unknown-linux-musl/release/selenium-manager selenium-manager-linux
+          mv rust/target/aarch64-unknown-linux-musl/release/selenium-manager selenium-manager-linux-arm64
       - name: "Upload release binary"
         uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-linux
           path: selenium-manager-linux
+          retention-days: 6
+      - name: "Upload release binary"
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-manager-linux-arm64
+          path: selenium-manager-linux-arm64
           retention-days: 6
 
   linux-debug:
@@ -149,17 +160,29 @@ jobs:
       - name: "Install cross"
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
-      - name: "Build release binary"
+      - name: "Build release binary (x64)"
         run: |
           cross build --target x86_64-unknown-linux-musl --profile dev
           cd target/x86_64-unknown-linux-musl/debug
           tar -cvf ../../../../selenium-manager-linux-debug.tar selenium-manager
+        working-directory: rust
+      - name: "Build release binary (arm64)"
+        run: |
+          cross build --target aarch64-unknown-linux-musl --profile dev
+          cd target/aarch64-unknown-linux-musl/debug
+          tar -cvf ../../../../selenium-manager-linux-arm64-debug.tar selenium-manager
         working-directory: rust
       - name: "Upload release binary"
         uses: actions/upload-artifact@v4
         with:
           name: selenium-manager-linux-debug
           path: selenium-manager-linux-debug.tar
+          retention-days: 6
+      - name: "Upload release binary"
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-manager-linux-arm64-debug
+          path: selenium-manager-linux-arm64-debug.tar
           retention-days: 6
 
   macos-stable:
@@ -246,9 +269,10 @@ jobs:
       - name: "Prepare and Commit"
         run: |
           linux_sha=$(shasum -a 256 artifacts/selenium-manager-linux/selenium-manager-linux | awk '{print $1}')
+          linux_arm64_sha=$(shasum -a 256 artifacts/selenium-manager-linux-arm64/selenium-manager-linux-arm64 | awk '{print $1}')
           macos_sha=$(shasum -a 256 artifacts/selenium-manager-macos/selenium-manager-macos | awk '{print $1}')
           windows_sha=$(shasum -a 256 artifacts/selenium-manager-windows/selenium-manager-windows.exe | awk '{print $1}')
-          echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"linux\": \"$linux_sha\"}" > latest.json
+          echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"linux\": \"$linux_sha\", \"linux-arm64\": \"$linux_arm64_sha\" }" > latest.json
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           git add latest.json
@@ -267,6 +291,7 @@ jobs:
           prerelease: false
           files: |
             artifacts/selenium-manager-linux/selenium-manager-linux
+            artifacts/selenium-manager-linux-arm64/selenium-manager-linux-arm64
             artifacts/selenium-manager-macos/selenium-manager-macos
             artifacts/selenium-manager-windows/selenium-manager-windows.exe
             artifacts/selenium-manager-linux-debug/selenium-manager-linux-debug.tar
