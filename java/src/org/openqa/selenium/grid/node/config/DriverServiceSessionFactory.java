@@ -150,6 +150,29 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
       //connect adb
       String adbDeviceId = (String) capabilities.asMap().get("se:adbDeviceId");
+      String userId = (String) capabilities.asMap().get("se:userId");
+
+      if (userId != null && !userId.isEmpty()) {
+        try {
+          String userIdFilePath = "/tmp/adb_proxy_user_id.txt";
+
+          // 删除旧文件（如果存在）
+          java.nio.file.Files.deleteIfExists(java.nio.file.Paths.get(userIdFilePath));
+
+          // 写入新的 userId
+          java.nio.file.Files.write(
+            java.nio.file.Paths.get(userIdFilePath),
+            userId.getBytes(java.nio.charset.StandardCharsets.UTF_8)
+          );
+
+          LOG.info("[AdbSessionFactory] userId saved to file: " + userId + " -> " + userIdFilePath);
+
+        } catch (IOException e) {
+          LOG.warning("[AdbSessionFactory] Failed to save userId to file: " + e.getMessage());
+        }
+      } else {
+        LOG.info("[AdbSessionFactory] userId is null or empty, skipping file save.");
+      }
 
       if (adbDeviceId != null && !adbDeviceId.isEmpty()) {
         LOG.info("[AdbSessionFactory] adbDeviceId found: " + adbDeviceId + ", executing adb connect...");
