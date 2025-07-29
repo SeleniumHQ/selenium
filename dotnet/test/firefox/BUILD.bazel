@@ -1,0 +1,27 @@
+load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "framework")
+
+dotnet_nunit_test_suite(
+    name = "LargeTests",
+    size = "large",
+    srcs = glob(
+        [
+            "**/*Test.cs",
+            "**/*Tests.cs",
+        ],
+    ) + [
+        "//dotnet/test/common:assembly-fixtures",
+    ],
+    browsers = [
+        "firefox",
+    ],
+    data = [
+        "//dotnet/test/common:test-data",
+    ],
+    target_frameworks = ["net8.0"],
+    deps = [
+        "//dotnet/src/support",
+        "//dotnet/src/webdriver:webdriver-net8.0",
+        "//dotnet/test/common:fixtures",
+        framework("nuget", "NUnit"),
+    ],
+)

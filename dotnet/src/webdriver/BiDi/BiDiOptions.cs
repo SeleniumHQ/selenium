@@ -1,4 +1,4 @@
-// <copyright file="WebDriver.Extensions.cs" company="Selenium Committers">
+// <copyright file="BiDiOptions.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,28 +17,8 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.BiDi;
 
-public static class WebDriverExtensions
+public sealed class BiDiOptions
 {
-    public static async Task<BiDi> AsBiDiAsync(this IWebDriver webDriver, BiDiOptions? options = null)
-    {
-        if (webDriver is null) throw new ArgumentNullException(nameof(webDriver));
-
-        string? webSocketUrl = null;
-
-        if (webDriver is IHasCapabilities hasCapabilities)
-        {
-            webSocketUrl = hasCapabilities.Capabilities.GetCapability("webSocketUrl")?.ToString();
-        }
-
-        if (webSocketUrl is null) throw new BiDiException("The driver is not compatible with bidirectional protocol or \"webSocketUrl\" not enabled in driver options.");
-
-        var bidi = await BiDi.ConnectAsync(webSocketUrl).ConfigureAwait(false);
-
-        return bidi;
-    }
 }

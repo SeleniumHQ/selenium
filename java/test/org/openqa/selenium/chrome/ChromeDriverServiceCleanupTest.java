@@ -15,53 +15,32 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.chrome;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 
-import java.io.File;
-import java.time.Duration;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.SessionNotCreatedException;
 
 @Tag("UnitTests")
-class GeckoDriverServiceTest {
-
-  @Test
-  void builderPassesTimeoutToDriverService() {
-    File exe = new File("someFile");
-    Duration defaultTimeout = Duration.ofSeconds(20);
-    Duration customTimeout = Duration.ofSeconds(60);
-
-    GeckoDriverService.Builder builderMock = spy(GeckoDriverService.Builder.class);
-    builderMock.build();
-
-    verify(builderMock).createDriverService(any(), anyInt(), eq(defaultTimeout), any(), any());
-
-    builderMock.withTimeout(customTimeout);
-    builderMock.build();
-    verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
-  }
+class ChromeDriverServiceCleanupTest {
 
   @Test
   void shouldStopServiceWhenSessionCreationFails() {
-    // Create Firefox options that will cause session creation to fail
-    FirefoxOptions options = new FirefoxOptions();
-    options.setBinary("/path/to/nonexistent/firefox/binary");
+    // Create a Chrome options that will cause session creation to fail
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--user-data-dir=/no/such/location");
 
     // Create a service
-    GeckoDriverService service = GeckoDriverService.createDefaultService();
-    GeckoDriverService serviceSpy = spy(service);
+    ChromeDriverService service = ChromeDriverService.createDefaultService();
+    ChromeDriverService serviceSpy = spy(service);
 
     // Attempt to create driver - should fail and cleanup the service
-    assertThatExceptionOfType(Exception.class)
-        .isThrownBy(() -> new FirefoxDriver(serviceSpy, options));
+    assertThatExceptionOfType(SessionNotCreatedException.class)
+        .isThrownBy(() -> new ChromeDriver(serviceSpy, options));
 
     // Verify that the service was stopped
     assertThat(serviceSpy.isRunning()).isFalse();

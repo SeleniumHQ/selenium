@@ -284,7 +284,7 @@ public abstract class DriverService : ICommandServer
     /// Raises the <see cref="DriverProcessStarting"/> event.
     /// </summary>
     /// <param name="eventArgs">A <see cref="DriverProcessStartingEventArgs"/> that contains the event data.</param>
-    protected void OnDriverProcessStarting(DriverProcessStartingEventArgs eventArgs)
+    protected virtual void OnDriverProcessStarting(DriverProcessStartingEventArgs eventArgs)
     {
         if (eventArgs == null)
         {
@@ -298,7 +298,7 @@ public abstract class DriverService : ICommandServer
     /// Raises the <see cref="DriverProcessStarted"/> event.
     /// </summary>
     /// <param name="eventArgs">A <see cref="DriverProcessStartedEventArgs"/> that contains the event data.</param>
-    protected void OnDriverProcessStarted(DriverProcessStartedEventArgs eventArgs)
+    protected virtual void OnDriverProcessStarted(DriverProcessStartedEventArgs eventArgs)
     {
         if (eventArgs == null)
         {

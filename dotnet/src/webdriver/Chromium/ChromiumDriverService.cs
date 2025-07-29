@@ -85,6 +85,11 @@ public abstract class ChromiumDriverService : DriverService
     public bool EnableAppendLog { get; set; }
 
     /// <summary>
+    /// Gets or sets the level at which log output is displayed.
+    /// </summary>
+    public ChromiumDriverLogLevel LogLevel { get; set; } = ChromiumDriverLogLevel.Default;
+
+    /// <summary>
     /// <para>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</para>
     /// <para>A value of <see langword="null"/> or <see cref="string.Empty"/> means only the local loopback address can connect.</para>
     /// </summary>
@@ -153,6 +158,15 @@ public abstract class ChromiumDriverService : DriverService
             {
                 argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -allowed-ips={0}", this.AllowedIPAddresses));
             }
+
+            if (this.LogLevel != ChromiumDriverLogLevel.Default)
+            {
+                if (Enum.IsDefined(typeof(ChromiumDriverLogLevel), this.LogLevel))
+                {
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
+                }
+            }
+
 
             return argsBuilder.ToString();
         }
