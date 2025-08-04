@@ -24,11 +24,13 @@ namespace OpenQA.Selenium.BiDi.Browser;
 internal sealed class CreateUserContextCommand(CreateUserContextCommandParameters @params)
     : Command<CreateUserContextCommandParameters, UserContextInfo>(@params, "browser.createUserContext");
 
-internal sealed record CreateUserContextCommandParameters(bool? AcceptInsecureCerts, Session.ProxyConfiguration? Proxy) : CommandParameters;
+internal sealed record CreateUserContextCommandParameters(bool? AcceptInsecureCerts, Session.ProxyConfiguration? Proxy, Session.UserPromptHandler? UnhandledPromptBehavior) : CommandParameters;
 
 public sealed class CreateUserContextOptions : CommandOptions
 {
     public bool? AcceptInsecureCerts { get; set; }
 
     public Session.ProxyConfiguration? Proxy { get; set; }
+
+    public Session.UserPromptHandler? UnhandledPromptBehavior { get; set; }
 }

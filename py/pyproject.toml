@@ -50,8 +50,9 @@ exclude = ["test*"]
 namespaces = true
 # include-package-data is `true` by default in pyproject.toml
 
-[[tool.setuptools-rust.bins]]
+[[tool.setuptools-rust.ext-modules]]
 target = "selenium.webdriver.common.selenium-manager"
+binding = "Exec"
 
 [tool.setuptools.package-data]
 "*" = [

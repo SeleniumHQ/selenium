@@ -41,11 +41,11 @@ public sealed class BrowsingContextModule(Broker broker) : Module(broker)
         return await Broker.ExecuteCommandAsync<NavigateCommand, NavigateResult>(new NavigateCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task ActivateAsync(BrowsingContext context, ActivateOptions? options = null)
+    public async Task<EmptyResult> ActivateAsync(BrowsingContext context, ActivateOptions? options = null)
     {
         var @params = new ActivateCommandParameters(context);
 
-        await Broker.ExecuteCommandAsync(new ActivateCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<ActivateCommand, EmptyResult>(new ActivateCommand(@params), options).ConfigureAwait(false);
     }
 
     public async Task<LocateNodesResult> LocateNodesAsync(BrowsingContext context, Locator locator, LocateNodesOptions? options = null)
@@ -62,11 +62,11 @@ public sealed class BrowsingContextModule(Broker broker) : Module(broker)
         return await Broker.ExecuteCommandAsync<CaptureScreenshotCommand, CaptureScreenshotResult>(new CaptureScreenshotCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task CloseAsync(BrowsingContext context, CloseOptions? options = null)
+    public async Task<EmptyResult> CloseAsync(BrowsingContext context, CloseOptions? options = null)
     {
         var @params = new CloseCommandParameters(context, options?.PromptUnload);
 
-        await Broker.ExecuteCommandAsync(new CloseCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<CloseCommand, EmptyResult>(new CloseCommand(@params), options).ConfigureAwait(false);
     }
 
     public async Task<TraverseHistoryResult> TraverseHistoryAsync(BrowsingContext context, int delta, TraverseHistoryOptions? options = null)
@@ -83,11 +83,11 @@ public sealed class BrowsingContextModule(Broker broker) : Module(broker)
         return await Broker.ExecuteCommandAsync<ReloadCommand, NavigateResult>(new ReloadCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task SetViewportAsync(BrowsingContext context, SetViewportOptions? options = null)
+    public async Task<EmptyResult> SetViewportAsync(BrowsingContext context, SetViewportOptions? options = null)
     {
         var @params = new SetViewportCommandParameters(context, options?.Viewport, options?.DevicePixelRatio);
 
-        await Broker.ExecuteCommandAsync(new SetViewportCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<SetViewportCommand, EmptyResult>(new SetViewportCommand(@params), options).ConfigureAwait(false);
     }
 
     public async Task<GetTreeResult> GetTreeAsync(GetTreeOptions? options = null)
@@ -104,11 +104,11 @@ public sealed class BrowsingContextModule(Broker broker) : Module(broker)
         return await Broker.ExecuteCommandAsync<PrintCommand, PrintResult>(new PrintCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task HandleUserPromptAsync(BrowsingContext context, HandleUserPromptOptions? options = null)
+    public async Task<EmptyResult> HandleUserPromptAsync(BrowsingContext context, HandleUserPromptOptions? options = null)
     {
         var @params = new HandleUserPromptCommandParameters(context, options?.Accept, options?.UserText);
 
-        await Broker.ExecuteCommandAsync(new HandleUserPromptCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<HandleUserPromptCommand, EmptyResult>(new HandleUserPromptCommand(@params), options).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)

@@ -1,4 +1,4 @@
-// <copyright file="ConsoleLogHandler.cs" company="Selenium Committers">
+// <copyright file="BiDiOptions.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,12 +17,8 @@
 // under the License.
 // </copyright>
 
-using System;
+namespace OpenQA.Selenium.BiDi;
 
-namespace OpenQA.Selenium.Internal.Logging;
-
-/// <summary>
-/// Represents a log handler that writes log events to the given text writer.
-/// </summary>
-[Obsolete("Use TextWriterHandler instead, will be removed in v4.32")]
-public class ConsoleLogHandler() : TextWriterHandler(Console.Error);
+public sealed class BiDiOptions
+{
+}
