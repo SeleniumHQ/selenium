@@ -535,6 +535,30 @@ py_test_suite(
 )
 
 py_test_suite(
+    name = "test-chrome-beta",
+    size = "large",
+    srcs = glob(
+        [
+            "test/selenium/webdriver/chrome/**/*.py",
+        ],
+        exclude = ["test/selenium/webdriver/common/devtools_tests.py"],  # see if this correctly excludes
+    ),
+    args = [
+        "--instafail",
+    ] + BROWSERS["chrome-beta"]["args"],
+    data = BROWSERS["chrome-beta"]["data"],
+    env_inherit = ["DISPLAY"],
+    tags = [
+        "no-sandbox",
+    ] + BROWSERS["chrome-beta"]["tags"],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+    ] + TEST_DEPS,
+)
+
+py_test_suite(
     name = "test-edge",
     size = "large",
     srcs = glob([
