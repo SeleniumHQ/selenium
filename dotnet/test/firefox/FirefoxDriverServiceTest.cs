@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using System.IO;
+using System.Linq;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Firefox;
@@ -55,13 +56,14 @@ public class FirefoxDriverServiceTest
     {
         FirefoxOptions options = new FirefoxOptions();
         string logPath = Path.GetTempFileName();
-        options.LogLevel = FirefoxDriverLogLevel.Trace;
+        options.LogLevel = FirefoxDriverLogLevel.Info;
 
         FirefoxDriverService service = FirefoxDriverService.CreateDefaultService();
         service.LogPath = logPath;
 
         IWebDriver firefoxDriver = new FirefoxDriver(service, options);
-
+        firefoxDriver.Quit();
+        
         try
         {
             Assert.That(File.Exists(logPath), Is.True);
@@ -70,7 +72,6 @@ public class FirefoxDriverServiceTest
         }
         finally
         {
-            firefoxDriver.Quit();
             File.Delete(logPath);
         }
     }
@@ -83,14 +84,13 @@ public class FirefoxDriverServiceTest
         options.LogLevel = FirefoxDriverLogLevel.Info;
 
         FirefoxDriverService service = FirefoxDriverService.CreateDefaultService();
-        service.LogToConsole = true;
 
         IWebDriver firefoxDriver = new FirefoxDriver(service, options);
 
         try
         {
             Assert.That(testLogHandler.Events, Has.Count.AtLeast(1));
-            Assert.That(testLogHandler.Events[0].Message, Does.Contain("geckodriver"));
+            Assert.That(testLogHandler.Events.Any(e => e.Message.Contains("geckodriver")), Is.True);
         }
         finally
         {

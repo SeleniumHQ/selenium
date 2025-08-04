@@ -206,6 +206,7 @@ public sealed class FirefoxDriverService : DriverService
     {
         if (!string.IsNullOrEmpty(this.LogPath))
         {
+            this.WriteDriverLogToConsole = false;
             string? directory = Path.GetDirectoryName(this.LogPath);
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
             {

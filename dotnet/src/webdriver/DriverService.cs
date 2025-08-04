@@ -155,11 +155,10 @@ public abstract class DriverService : ICommandServer
     public string? DriverServicePath { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the driver process console output should be logged
-    /// to the console. Defaults to <see langword="false"/>, meaning console output from the
-    /// driver will be suppressed.
+    /// Collects the driver log output and writes it to the console. Defaults to <see langword="true"/>.
+    /// Internal variable to avoid using the stream when logs are sent to a file.
     /// </summary>
-    public bool LogToConsole { get; set; } = false;
+    protected bool WriteDriverLogToConsole { get; set; } = true;
 
     /// <summary>
     /// Gets the command-line arguments for the driver service.
@@ -253,8 +252,8 @@ public abstract class DriverService : ICommandServer
         this.driverServiceProcess.StartInfo.UseShellExecute = false;
         this.driverServiceProcess.StartInfo.CreateNoWindow = this.HideCommandPromptWindow;
 
-        this.driverServiceProcess.StartInfo.RedirectStandardOutput = this.LogToConsole;
-        this.driverServiceProcess.StartInfo.RedirectStandardError = this.LogToConsole;
+        this.driverServiceProcess.StartInfo.RedirectStandardOutput = this.WriteDriverLogToConsole;
+        this.driverServiceProcess.StartInfo.RedirectStandardError = this.WriteDriverLogToConsole;
 
         DriverProcessStartingEventArgs eventArgs = new DriverProcessStartingEventArgs(this.driverServiceProcess.StartInfo);
         this.OnDriverProcessStarting(eventArgs);
@@ -318,12 +317,12 @@ public abstract class DriverService : ICommandServer
             throw new ArgumentNullException(nameof(eventArgs), "eventArgs must not be null");
         }
 
-        if (this.LogToConsole && eventArgs.StandardOutputStreamReader != null)
+        if (this.WriteDriverLogToConsole && eventArgs.StandardOutputStreamReader != null)
         {
             _ = Task.Run(() => ReadStreamAsync(eventArgs.StandardOutputStreamReader, "stdout"));
         }
 
-        if (this.LogToConsole && eventArgs.StandardErrorStreamReader != null)
+        if (this.WriteDriverLogToConsole && eventArgs.StandardErrorStreamReader != null)
         {
             _ = Task.Run(() => ReadStreamAsync(eventArgs.StandardErrorStreamReader, "stderr"));
         }
