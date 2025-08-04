@@ -63,7 +63,7 @@ public class FirefoxDriverServiceTest
 
         IWebDriver firefoxDriver = new FirefoxDriver(service, options);
         firefoxDriver.Quit();
-        
+
         try
         {
             Assert.That(File.Exists(logPath), Is.True);
