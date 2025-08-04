@@ -436,7 +436,7 @@ public abstract class DriverService : ICommandServer
         {
             if (_logger.IsEnabled(LogEventLevel.Error))
             {
-                _logger.Error($"Error reading stream: {ex.Message}");
+                _logger.Error($"Error reading stream: {ex}");
             }
         }
     }
