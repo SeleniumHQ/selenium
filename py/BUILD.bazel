@@ -441,7 +441,8 @@ BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ],
-            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"],
+            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+                      (["test/selenium/webdriver/common/devtools_tests.py"] if browser == "chrome-beta" else []),
         ),
         args = [
             "--instafail",
@@ -467,7 +468,8 @@ BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ],
-            exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"],
+            exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+                      (["test/selenium/webdriver/common/devtools_tests.py"] if browser == "chrome-beta" else []),
         ),
         args = [
             "--instafail",
@@ -541,7 +543,6 @@ py_test_suite(
         [
             "test/selenium/webdriver/chrome/**/*.py",
         ],
-        exclude = ["test/selenium/webdriver/common/devtools_tests.py"],  # see if this correctly excludes
     ),
     args = [
         "--instafail",
