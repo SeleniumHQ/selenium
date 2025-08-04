@@ -85,7 +85,7 @@ class EmulationTest extends JupiterTestBase {
     Emulation emul = new Emulation(driver);
     GeolocationCoordinates coords = new GeolocationCoordinates(37.7749, -122.4194);
     emul.setGeolocationOverride(
-        new SetGeolocationOverrideParameters(coords, null, List.of(contextId), null));
+        new SetGeolocationOverrideParameters(coords).contexts(List.of(contextId)));
 
     Object result = getBrowserGeolocation(driver, null, origin);
     Map<String, Object> r = ((Map<String, Object>) result);
@@ -121,8 +121,8 @@ class EmulationTest extends JupiterTestBase {
 
     Emulation emulation = new Emulation(driver);
     emulation.setGeolocationOverride(
-        new SetGeolocationOverrideParameters(
-            coords, null, null, List.of(userContext1, userContext2)));
+        new SetGeolocationOverrideParameters(coords)
+            .userContexts(List.of(userContext1, userContext2)));
 
     driver.switchTo().window(context1.getId());
     String url1 = appServer.whereIsSecure("blank.html");
@@ -187,7 +187,7 @@ class EmulationTest extends JupiterTestBase {
     GeolocationPositionError error = new GeolocationPositionError();
     Emulation emul = new Emulation(driver);
     emul.setGeolocationOverride(
-        new SetGeolocationOverrideParameters(null, error, List.of(contextId), null));
+        new SetGeolocationOverrideParameters(error).contexts(List.of(contextId)));
 
     Object result = getBrowserGeolocation(driver, null, origin);
     Map<String, Object> r = ((Map<String, Object>) result);

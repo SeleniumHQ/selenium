@@ -8,7 +8,7 @@
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
-// Unless required by applicable law or agreed to in writing,
+// Unless required by applicable law or agreed in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
@@ -22,56 +22,51 @@ import java.util.List;
 import java.util.Map;
 
 public class SetGeolocationOverrideParameters {
-  private final GeolocationCoordinates coordinates;
-  private final GeolocationPositionError error;
-  private final List<String> contexts;
-  private final List<String> userContexts;
+  private final Map<String, Object> map = new HashMap<>();
 
-  public SetGeolocationOverrideParameters(
-      GeolocationCoordinates coordinates,
-      GeolocationPositionError error,
-      List<String> contexts,
-      List<String> userContexts) {
-
-    this.coordinates = coordinates;
-    this.error = error;
-    this.contexts = contexts;
-    this.userContexts = userContexts;
-
-    if (this.coordinates != null && this.error != null) {
-      throw new IllegalArgumentException("Cannot specify both coordinates and error");
+  // Constructor for coordinates - must specify either contexts or userContexts later
+  public SetGeolocationOverrideParameters(GeolocationCoordinates coordinates) {
+    if (coordinates == null) {
+      throw new IllegalArgumentException("GeolocationCoordinates cannot be null");
     }
-    if (this.contexts != null && this.userContexts != null) {
-      throw new IllegalArgumentException("Cannot specify both contexts and userContexts");
-    }
-
-    if (this.contexts == null && this.userContexts == null) {
-      throw new IllegalArgumentException("Must specify either contexts or userContexts");
-    }
+    map.put("coordinates", coordinates.toMap());
   }
 
-  public SetGeolocationOverrideParameters(
-      GeolocationCoordinates coordinates, GeolocationPositionError error) {
-    this(coordinates, error, null, null);
+  // Constructor for error - must specify either contexts or userContexts later
+  public SetGeolocationOverrideParameters(GeolocationPositionError error) {
+    if (error == null) {
+      throw new IllegalArgumentException("GeolocationPositionError cannot be null");
+    }
+    map.put("error", error.toMap());
+  }
+
+  public SetGeolocationOverrideParameters contexts(List<String> contexts) {
+    if (contexts == null || contexts.isEmpty()) {
+      throw new IllegalArgumentException("Contexts cannot be null or empty");
+    }
+    if (map.containsKey("userContexts")) {
+      throw new IllegalArgumentException("Cannot specify both contexts and userContexts");
+    }
+    map.put("contexts", contexts);
+    return this;
+  }
+
+  public SetGeolocationOverrideParameters userContexts(List<String> userContexts) {
+    if (userContexts == null || userContexts.isEmpty()) {
+      throw new IllegalArgumentException("User contexts cannot be null or empty");
+    }
+    if (map.containsKey("contexts")) {
+      throw new IllegalArgumentException("Cannot specify both contexts and userContexts");
+    }
+    map.put("userContexts", userContexts);
+    return this;
   }
 
   public Map<String, Object> toMap() {
-    Map<String, Object> param = new HashMap<>();
-
-    if (this.coordinates != null) {
-      param.put("coordinates", this.coordinates.toMap());
+    // Validate that either contexts or userContexts is set
+    if (!map.containsKey("contexts") && !map.containsKey("userContexts")) {
+      throw new IllegalStateException("Must specify either contexts or userContexts");
     }
-
-    if (this.error != null) {
-      param.put("error", this.error.toMap());
-    }
-
-    if (this.contexts != null) {
-      param.put("contexts", this.contexts);
-    } else {
-      param.put("userContexts", this.userContexts);
-    }
-
-    return Map.copyOf(param);
+    return Map.copyOf(map);
   }
 }
