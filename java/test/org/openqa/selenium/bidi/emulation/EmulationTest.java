@@ -83,8 +83,7 @@ class EmulationTest extends JupiterTestBase {
         (String) ((JavascriptExecutor) driver).executeScript("return window.location.origin;");
 
     Emulation emul = new Emulation(driver);
-    GeolocationCoordinates coords =
-        new GeolocationCoordinates(37.7749, -122.4194, 10.0, null, null, null);
+    GeolocationCoordinates coords = new GeolocationCoordinates(37.7749, -122.4194);
     emul.setGeolocationOverride(
         new SetGeolocationOverrideParameters(coords, null, List.of(contextId), null));
 
@@ -118,8 +117,7 @@ class EmulationTest extends JupiterTestBase {
         new BrowsingContext(
             driver, new CreateContextParameters(WindowType.TAB).userContext(userContext2));
 
-    GeolocationCoordinates coords =
-        new GeolocationCoordinates(45.5, -122.4194, 10.0, null, null, null);
+    GeolocationCoordinates coords = new GeolocationCoordinates(45.5, -122.4194);
 
     Emulation emulation = new Emulation(driver);
     emulation.setGeolocationOverride(
