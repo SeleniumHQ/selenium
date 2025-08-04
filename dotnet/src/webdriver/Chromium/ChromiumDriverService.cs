@@ -93,17 +93,6 @@ public abstract class ChromiumDriverService : DriverService
     /// <para>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</para>
     /// <para>A value of <see langword="null"/> or <see cref="string.Empty"/> means only the local loopback address can connect.</para>
     /// </summary>
-    [Obsolete($"Use {nameof(AllowedIPAddresses)}")]
-    public string? WhitelistedIPAddresses
-    {
-        get => this.AllowedIPAddresses;
-        set => this.AllowedIPAddresses = value;
-    }
-
-    /// <summary>
-    /// <para>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</para>
-    /// <para>A value of <see langword="null"/> or <see cref="string.Empty"/> means only the local loopback address can connect.</para>
-    /// </summary>
     public string? AllowedIPAddresses { get; set; }
 
     /// <summary>
