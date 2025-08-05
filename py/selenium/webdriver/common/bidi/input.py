@@ -17,7 +17,7 @@
 
 import math
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import Session
@@ -101,7 +101,7 @@ class PointerCommonProperties:
 
     def to_dict(self) -> dict:
         """Convert the PointerCommonProperties to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.width != 1:
             result["width"] = self.width
         if self.height != 1:
@@ -132,7 +132,7 @@ class PauseAction:
 
     def to_dict(self) -> dict:
         """Convert the PauseAction to a dictionary."""
-        result: Dict[str, Any] = {"type": self.type}
+        result: dict[str, Any] = {"type": self.type}
         if self.duration is not None:
             result["duration"] = self.duration
         return result
@@ -181,7 +181,7 @@ class PointerDownAction:
 
     def to_dict(self) -> dict:
         """Convert the PointerDownAction to a dictionary."""
-        result: Dict[str, Any] = {"type": self.type, "button": self.button}
+        result: dict[str, Any] = {"type": self.type, "button": self.button}
         if self.properties:
             result.update(self.properties.to_dict())
         return result
@@ -218,7 +218,7 @@ class PointerMoveAction:
 
     def to_dict(self) -> dict:
         """Convert the PointerMoveAction to a dictionary."""
-        result: Dict[str, Any] = {"type": self.type, "x": self.x, "y": self.y}
+        result: dict[str, Any] = {"type": self.type, "x": self.x, "y": self.y}
         if self.duration is not None:
             result["duration"] = self.duration
         if self.origin is not None:
@@ -248,7 +248,7 @@ class WheelScrollAction:
 
     def to_dict(self) -> dict:
         """Convert the WheelScrollAction to a dictionary."""
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             "type": self.type,
             "x": self.x,
             "y": self.y,
@@ -271,7 +271,7 @@ class NoneSourceActions:
     """Represents a sequence of none actions."""
 
     id: str = ""
-    actions: List[PauseAction] = field(default_factory=list)
+    actions: list[PauseAction] = field(default_factory=list)
 
     @property
     def type(self) -> str:
@@ -287,7 +287,7 @@ class KeySourceActions:
     """Represents a sequence of key actions."""
 
     id: str = ""
-    actions: List[Union[PauseAction, KeyDownAction, KeyUpAction]] = field(default_factory=list)
+    actions: list[Union[PauseAction, KeyDownAction, KeyUpAction]] = field(default_factory=list)
 
     @property
     def type(self) -> str:
@@ -304,7 +304,7 @@ class PointerSourceActions:
 
     id: str = ""
     parameters: Optional[PointerParameters] = None
-    actions: List[Union[PauseAction, PointerDownAction, PointerUpAction, PointerMoveAction]] = field(
+    actions: list[Union[PauseAction, PointerDownAction, PointerUpAction, PointerMoveAction]] = field(
         default_factory=list
     )
 
@@ -318,7 +318,7 @@ class PointerSourceActions:
 
     def to_dict(self) -> dict:
         """Convert the PointerSourceActions to a dictionary."""
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             "type": self.type,
             "id": self.id,
             "actions": [action.to_dict() for action in self.actions],
@@ -333,7 +333,7 @@ class WheelSourceActions:
     """Represents a sequence of wheel actions."""
 
     id: str = ""
-    actions: List[Union[PauseAction, WheelScrollAction]] = field(default_factory=list)
+    actions: list[Union[PauseAction, WheelScrollAction]] = field(default_factory=list)
 
     @property
     def type(self) -> str:
@@ -392,7 +392,7 @@ class Input:
     def perform_actions(
         self,
         context: str,
-        actions: List[Union[NoneSourceActions, KeySourceActions, PointerSourceActions, WheelSourceActions]],
+        actions: list[Union[NoneSourceActions, KeySourceActions, PointerSourceActions, WheelSourceActions]],
     ) -> None:
         """Performs a sequence of user input actions.
 
@@ -414,7 +414,7 @@ class Input:
         params = {"context": context}
         self.conn.execute(command_builder("input.releaseActions", params))
 
-    def set_files(self, context: str, element: dict, files: List[str]) -> None:
+    def set_files(self, context: str, element: dict, files: list[str]) -> None:
         """Sets files for a file input element.
 
         Parameters:
