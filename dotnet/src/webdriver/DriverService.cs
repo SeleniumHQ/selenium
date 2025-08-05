@@ -25,6 +25,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Internal.Logging;
 
@@ -319,12 +320,22 @@ public abstract class DriverService : ICommandServer
 
         if (this.WriteDriverLogToConsole && eventArgs.StandardOutputStreamReader != null)
         {
-            _ = Task.Run(() => ReadStreamAsync(eventArgs.StandardOutputStreamReader, "stdout"));
+            var stdoutThread = new Thread(() => ReadStreamSync(eventArgs.StandardOutputStreamReader, "stdout"))
+            {
+                IsBackground = true,
+                Name = "DriverService-stdout"
+            };
+            stdoutThread.Start();            
         }
 
         if (this.WriteDriverLogToConsole && eventArgs.StandardErrorStreamReader != null)
         {
-            _ = Task.Run(() => ReadStreamAsync(eventArgs.StandardErrorStreamReader, "stderr"));
+            var stderrThread = new Thread(() => ReadStreamSync(eventArgs.StandardErrorStreamReader, "stderr"))
+            {
+                IsBackground = true,
+                Name = "DriverService-stderr"
+            };
+            stderrThread.Start();            
         }
 
         this.DriverProcessStarted?.Invoke(this, eventArgs);
@@ -409,6 +420,38 @@ public abstract class DriverService : ICommandServer
         return isInitialized;
     }
 
+    private void ReadStreamSync(StreamReader reader, string streamType)
+    {
+        try
+        {
+            string? line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                if (streamType.Equals("stdout", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Info))
+                    {
+                        _logger.Info(line);
+                    }
+                }
+                else
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error(line);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Error))
+            {
+                _logger.Error($"Error reading stream: {ex}");
+            }
+        }
+    }
+    
     private async Task ReadStreamAsync(StreamReader reader, string streamType)
     {
         try

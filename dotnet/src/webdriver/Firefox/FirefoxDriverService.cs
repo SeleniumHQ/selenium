@@ -22,7 +22,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Firefox;
@@ -233,12 +233,22 @@ public sealed class FirefoxDriverService : DriverService
     {
         if (!string.IsNullOrEmpty(this.LogPath) && eventArgs.StandardOutputStreamReader != null)
         {
-            _ = Task.Run(() => ReadStreamAsync(eventArgs.StandardOutputStreamReader));
+            var stdoutThread = new Thread(() => ReadStream(eventArgs.StandardOutputStreamReader))
+            {
+                IsBackground = true,
+                Name = "FirefoxDriverService-stdout"
+            };
+            stdoutThread.Start();
         }
 
         if (!string.IsNullOrEmpty(this.LogPath) && eventArgs.StandardErrorStreamReader != null)
         {
-            _ = Task.Run(() => ReadStreamAsync(eventArgs.StandardErrorStreamReader));
+            var stderrThread = new Thread(() => ReadStream(eventArgs.StandardErrorStreamReader))
+            {
+                IsBackground = true,
+                Name = "FirefoxDriverService-stderr"
+            };
+            stderrThread.Start();
         }
 
         base.OnDriverProcessStarted(eventArgs);
@@ -344,24 +354,15 @@ public sealed class FirefoxDriverService : DriverService
         return fileName;
     }
 
-    private async Task ReadStreamAsync(StreamReader reader)
+    private void ReadStream(StreamReader reader)
     {
-        try
+        string line;
+        while ((line = reader.ReadLine()) != null)
         {
-            string? line;
-            while ((line = await reader.ReadLineAsync()) != null)
+            if (logWriter != null)
             {
-                if (logWriter != null)
-                {
-                    logWriter.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {line}");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            if (_logger.IsEnabled(LogEventLevel.Error))
-            {
-                _logger.Error($"Error reading stream: {ex.Message}");
+                logWriter.WriteLine(line);
+                logWriter.Flush();
             }
         }
     }
