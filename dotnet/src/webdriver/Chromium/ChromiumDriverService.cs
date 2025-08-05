@@ -94,7 +94,7 @@ public abstract class ChromiumDriverService : DriverService
     /// <para>A value of <see langword="null"/> or <see cref="string.Empty"/> means only the local loopback address can connect.</para>
     /// </summary>
     public string? AllowedIPAddresses { get; set; }
-    
+
     /// <summary>
     /// Adds readable timestamps to log
     /// </summary>
