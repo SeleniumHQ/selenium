@@ -325,7 +325,7 @@ public abstract class DriverService : ICommandServer
                 IsBackground = true,
                 Name = "DriverService-stdout"
             };
-            stdoutThread.Start();            
+            stdoutThread.Start();
         }
 
         if (this.WriteDriverLogToConsole && eventArgs.StandardErrorStreamReader != null)
@@ -335,7 +335,7 @@ public abstract class DriverService : ICommandServer
                 IsBackground = true,
                 Name = "DriverService-stderr"
             };
-            stderrThread.Start();            
+            stderrThread.Start();
         }
 
         this.DriverProcessStarted?.Invoke(this, eventArgs);
@@ -451,7 +451,7 @@ public abstract class DriverService : ICommandServer
             }
         }
     }
-    
+
     private async Task ReadStreamAsync(StreamReader reader, string streamType)
     {
         try
