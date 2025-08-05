@@ -1,8 +1,7 @@
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_library")
 
 java_library(
-    name = "module",
+    name = "emulation",
     srcs = glob(
         [
             "*.java",
@@ -10,7 +9,6 @@ java_library(
     ),
     visibility = [
         "//java/src/org/openqa/selenium/bidi:__subpackages__",
-        "//java/src/org/openqa/selenium/firefox:__subpackages__",
         "//java/src/org/openqa/selenium/remote:__pkg__",
         "//java/test/org/openqa/selenium/bidi:__subpackages__",
         "//java/test/org/openqa/selenium/grid:__subpackages__",
@@ -18,17 +16,8 @@ java_library(
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/bidi",
-        "//java/src/org/openqa/selenium/bidi/browser",
         "//java/src/org/openqa/selenium/bidi/browsingcontext",
-        "//java/src/org/openqa/selenium/bidi/emulation",
-        "//java/src/org/openqa/selenium/bidi/log",
-        "//java/src/org/openqa/selenium/bidi/network",
-        "//java/src/org/openqa/selenium/bidi/permissions",
-        "//java/src/org/openqa/selenium/bidi/script",
-        "//java/src/org/openqa/selenium/bidi/storage",
-        "//java/src/org/openqa/selenium/bidi/webextension",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote/http",
-        artifact("com.google.auto.service:auto-service-annotations"),
     ],
 )
