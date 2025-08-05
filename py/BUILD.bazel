@@ -441,7 +441,8 @@ BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ],
-            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"],
+            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+                      (["test/selenium/webdriver/common/devtools_tests.py"] if browser == "chrome-beta" else []),
         ),
         args = [
             "--instafail",
@@ -467,7 +468,8 @@ BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ],
-            exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"],
+            exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+                      (["test/selenium/webdriver/common/devtools_tests.py"] if browser == "chrome-beta" else []),
         ),
         args = [
             "--instafail",
@@ -527,6 +529,29 @@ py_test_suite(
         "no-sandbox",
         "skip-rbe",
     ] + BROWSERS["chrome"]["tags"],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+    ] + TEST_DEPS,
+)
+
+py_test_suite(
+    name = "test-chrome-beta",
+    size = "large",
+    srcs = glob(
+        [
+            "test/selenium/webdriver/chrome/**/*.py",
+        ],
+    ),
+    args = [
+        "--instafail",
+    ] + BROWSERS["chrome-beta"]["args"],
+    data = BROWSERS["chrome-beta"]["data"],
+    env_inherit = ["DISPLAY"],
+    tags = [
+        "no-sandbox",
+    ] + BROWSERS["chrome-beta"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
