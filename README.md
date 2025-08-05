@@ -528,8 +528,6 @@ To update API documentation for a specific language: `./go <language>:docs`
 
 To update all documentation: `./go all:docs`
 
-Note that JavaScript generation is [currently broken](https://github.com/SeleniumHQ/selenium/issues/10185).
-
 
 ## Releasing
 
