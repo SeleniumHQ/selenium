@@ -5,7 +5,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "selenium"
 version = "4.35.0.202507081456"
-license = { text = "Apache 2.0" }
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
 readme = "README.rst"
 requires-python = "~=3.9"
@@ -67,7 +68,8 @@ binding = "Exec"
     "selenium-manager",
     "selenium-manager.exe",
     "CHANGES",
-    "LICENSE"
+    "LICENSE",
+    "NOTICE",
 ]
 
 [tool.pytest.ini_options]

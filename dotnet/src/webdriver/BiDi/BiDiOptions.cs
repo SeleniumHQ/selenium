@@ -1,4 +1,4 @@
-// <copyright file="LogContextManager.cs" company="Selenium Committers">
+// <copyright file="BiDiOptions.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,29 +17,8 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading;
+namespace OpenQA.Selenium.BiDi;
 
-namespace OpenQA.Selenium.Internal.Logging;
-
-internal class LogContextManager
+public sealed class BiDiOptions
 {
-    private readonly AsyncLocal<ILogContext?> _currentAmbientLogContext = new();
-
-    public LogContextManager()
-    {
-        var defaulLogHandler = new TextWriterHandler(Console.Error);
-
-        GlobalContext = new LogContext(LogEventLevel.Warn, null, null, [defaulLogHandler]);
-    }
-
-    public ILogContext GlobalContext { get; }
-
-    [AllowNull]
-    public ILogContext CurrentContext
-    {
-        get => _currentAmbientLogContext.Value ?? GlobalContext;
-        set => _currentAmbientLogContext.Value = value;
-    }
 }
