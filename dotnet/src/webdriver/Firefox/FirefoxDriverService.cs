@@ -102,6 +102,11 @@ public sealed class FirefoxDriverService : DriverService
     /// offer a way to specify a log file path directly.
     /// </remarks>
     public string? LogPath { get; set; }
+    
+    /// <summary>
+    /// Disable truncation of long log lines in GeckoDriver.
+    /// </summary>
+    public bool LogTruncate { get; set; }
 
     /// <summary>
     /// Gets or sets the level at which log output is displayed.
@@ -187,6 +192,11 @@ public sealed class FirefoxDriverService : DriverService
             if (this.OpenBrowserToolbox)
             {
                 argsBuilder.Append(" --jsdebugger");
+            }
+
+            if (this.LogTruncate)
+            {
+                argsBuilder.Append(" --log-no-truncate");
             }
 
             return argsBuilder.ToString().Trim();
