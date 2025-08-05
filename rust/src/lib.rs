@@ -16,6 +16,7 @@
 // under the License.
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
+use crate::config::ARCH::{ARM64, ARMV7, X32, X64};
 use crate::config::OS::{MACOS, WINDOWS};
 use crate::config::{str_to_os, ManagerConfig};
 use crate::downloads::download_to_tmp_folder;
@@ -98,8 +99,10 @@ pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
 pub const ENV_PROCESSOR_ARCHITECTURE: &str = "PROCESSOR_ARCHITECTURE";
 pub const ENV_X86: &str = " (x86)";
 pub const ARCH_X86: &str = "x86";
-pub const ARCH_AMD64: &str = "amd64";
+pub const ARCH_X64: &str = "x86_64";
 pub const ARCH_ARM64: &str = "arm64";
+pub const ARCH_ARM7L: &str = "arm7l";
+pub const ARCH_OTHER: &str = "other";
 pub const TTL_SEC: u64 = 3600;
 pub const UNAME_COMMAND: &str = "uname -{}";
 pub const ESCAPE_COMMAND: &str = r#"printf %q "{}""#;
@@ -897,7 +900,10 @@ pub trait SeleniumManager {
                 browser: self.get_browser_name().to_ascii_lowercase(),
                 browser_version: self.get_browser_version().to_ascii_lowercase(),
                 os: self.get_os().to_ascii_lowercase(),
-                arch: self.get_arch().to_ascii_lowercase(),
+                arch: self
+                    .get_normalized_arch()
+                    .unwrap_or(ARCH_OTHER)
+                    .to_ascii_lowercase(),
                 lang: self.get_language_binding().to_ascii_lowercase(),
                 selenium_version: self.get_selenium_version().to_ascii_lowercase(),
             };
@@ -1289,6 +1295,23 @@ pub trait SeleniumManager {
 
     fn get_arch(&self) -> &str {
         self.get_config().arch.as_str()
+    }
+
+    fn get_normalized_arch(&self) -> Result<&str, Error> {
+        let arch = self.get_arch();
+        if X32.is(arch) {
+            Ok(ARCH_X86)
+        } else if X64.is(arch) {
+            Ok(ARCH_X64)
+        } else if ARM64.is(arch) {
+            Ok(ARCH_ARM64)
+        } else if ARMV7.is(arch) {
+            Ok(ARCH_ARM7L)
+        } else {
+            let err_msg = format!("Unsupported architecture: {}", arch);
+            self.get_logger().warn(err_msg.clone());
+            Err(anyhow!(err_msg))
+        }
     }
 
     fn set_arch(&mut self, arch: String) {

@@ -22,6 +22,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Firefox;
 
@@ -31,6 +32,11 @@ namespace OpenQA.Selenium.Firefox;
 public sealed class FirefoxDriverService : DriverService
 {
     private const string DefaultFirefoxDriverServiceFileName = "geckodriver";
+
+    /// <summary>
+    /// Process management fields for the log writer.
+    /// </summary>
+    private StreamWriter? logWriter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FirefoxDriverService"/> class.
@@ -86,6 +92,16 @@ public sealed class FirefoxDriverService : DriverService
     /// when Firefox is launched.
     /// </summary>
     public bool OpenBrowserToolbox { get; set; }
+
+    /// <summary>
+    /// Gets or sets the file path where log output should be written.
+    /// </summary>
+    /// <remarks>
+    /// A <see langword="null"/> or <see cref="string.Empty"/> value indicates no log file to specify.
+    /// This approach takes the process output and redirects it to a file because GeckoDriver does not
+    /// offer a way to specify a log file path directly.
+    /// </remarks>
+    public string? LogPath { get; set; }
 
     /// <summary>
     /// Gets or sets the level at which log output is displayed.
@@ -178,6 +194,75 @@ public sealed class FirefoxDriverService : DriverService
     }
 
     /// <summary>
+    /// Handles the event when the driver service process is starting.
+    /// </summary>
+    /// <param name="eventArgs">The event arguments containing information about the driver service process.</param>
+    /// <remarks>
+    /// This method initializes a log writer if a log path is specified and redirects output streams to capture logs.
+    /// </remarks>
+    protected override void OnDriverProcessStarting(DriverProcessStartingEventArgs eventArgs)
+    {
+        if (!string.IsNullOrEmpty(this.LogPath))
+        {
+            string? directory = Path.GetDirectoryName(this.LogPath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            // Initialize the log writer
+            logWriter = new StreamWriter(this.LogPath, append: true) { AutoFlush = true };
+
+            // Configure process to redirect output
+            eventArgs.DriverServiceProcessStartInfo.RedirectStandardOutput = true;
+            eventArgs.DriverServiceProcessStartInfo.RedirectStandardError = true;
+        }
+
+        base.OnDriverProcessStarting(eventArgs);
+    }
+
+    /// <summary>
+    /// Handles the event when the driver process has started.
+    /// </summary>
+    /// <param name="eventArgs">The event arguments containing information about the started driver process.</param>
+    /// <remarks>
+    /// This method reads the output and error streams asynchronously and writes them to the log file if available.
+    /// </remarks>
+    protected override void OnDriverProcessStarted(DriverProcessStartedEventArgs eventArgs)
+    {
+        if (logWriter == null) return;
+        if (eventArgs.StandardOutputStreamReader != null)
+        {
+            _ = Task.Run(() => ReadStreamAsync(eventArgs.StandardOutputStreamReader));
+        }
+
+        if (eventArgs.StandardErrorStreamReader != null)
+        {
+            _ = Task.Run(() => ReadStreamAsync(eventArgs.StandardErrorStreamReader));
+        }
+
+        base.OnDriverProcessStarted(eventArgs);
+    }
+
+    /// <summary>
+    /// Disposes of the resources used by the <see cref="FirefoxDriverService"/> instance.
+    /// </summary>
+    /// <param name="disposing">A value indicating whether the method is being called from Dispose.</param>
+    /// <remarks>
+    /// If disposing is true, it disposes of the log writer if it exists.
+    /// </remarks>
+    protected override void Dispose(bool disposing)
+    {
+        if (logWriter != null && disposing)
+        {
+            logWriter.Dispose();
+            logWriter = null;
+        }
+
+        base.Dispose(disposing);
+    }
+
+    /// <summary>
     /// Creates a default instance of the FirefoxDriverService.
     /// </summary>
     /// <returns>A FirefoxDriverService that implements default settings.</returns>
@@ -257,5 +342,25 @@ public sealed class FirefoxDriverService : DriverService
         }
 
         return fileName;
+    }
+
+    private async Task ReadStreamAsync(StreamReader reader)
+    {
+        try
+        {
+            string? line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                if (logWriter != null)
+                {
+                    logWriter.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {line}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log or handle the exception appropriately
+            System.Diagnostics.Debug.WriteLine($"Error reading stream: {ex.Message}");
+        }
     }
 }

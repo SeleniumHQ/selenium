@@ -187,7 +187,7 @@ public abstract class DriverService : ICommandServer
                     using (var response = Task.Run(async () => await httpClient.GetAsync(serviceHealthUri)).GetAwaiter().GetResult())
                     {
                         // Checking the response from the 'status' end point. Note that we are simply checking
-                        // that the HTTP status returned is a 200 status, and that the resposne has the correct
+                        // that the HTTP status returned is a 200 status, and that the response has the correct
                         // Content-Type header. A more sophisticated check would parse the JSON response and
                         // validate its values. At the moment we do not do this more sophisticated check.
                         isInitialized = response.StatusCode == HttpStatusCode.OK && response.Content.Headers.ContentType is { MediaType: string mediaType } && mediaType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
@@ -284,7 +284,7 @@ public abstract class DriverService : ICommandServer
     /// Raises the <see cref="DriverProcessStarting"/> event.
     /// </summary>
     /// <param name="eventArgs">A <see cref="DriverProcessStartingEventArgs"/> that contains the event data.</param>
-    protected void OnDriverProcessStarting(DriverProcessStartingEventArgs eventArgs)
+    protected virtual void OnDriverProcessStarting(DriverProcessStartingEventArgs eventArgs)
     {
         if (eventArgs == null)
         {
@@ -298,7 +298,7 @@ public abstract class DriverService : ICommandServer
     /// Raises the <see cref="DriverProcessStarted"/> event.
     /// </summary>
     /// <param name="eventArgs">A <see cref="DriverProcessStartedEventArgs"/> that contains the event data.</param>
-    protected void OnDriverProcessStarted(DriverProcessStartedEventArgs eventArgs)
+    protected virtual void OnDriverProcessStarted(DriverProcessStartedEventArgs eventArgs)
     {
         if (eventArgs == null)
         {
