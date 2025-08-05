@@ -50,8 +50,6 @@ import org.openqa.selenium.remote.http.Route;
 public class NewSessionQueueServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(NewSessionQueueServer.class.getName());
-  private static final String LOCAL_NEW_SESSION_QUEUE =
-      "org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue";
 
   @Override
   public String getName() {
@@ -87,7 +85,7 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
   protected Handlers createHandlers(Config config) {
     NewSessionQueueOptions queueOptions = new NewSessionQueueOptions(config);
 
-    NewSessionQueue sessionQueue = queueOptions.getSessionQueue(LOCAL_NEW_SESSION_QUEUE);
+    NewSessionQueue sessionQueue = queueOptions.getSessionQueue();
 
     return new Handlers(
         Route.combine(

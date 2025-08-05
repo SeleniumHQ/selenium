@@ -35,6 +35,8 @@ import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 public class NewSessionQueueOptions {
 
   static final String SESSION_QUEUE_SECTION = "sessionqueue";
+  static final String DEFAULT_SESSION_QUEUE =
+      "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue";
   static final int DEFAULT_MAXIMUM_RESPONSE_DELAY = 8;
   static final int DEFAULT_REQUEST_TIMEOUT = 300;
   static final int DEFAULT_REQUEST_TIMEOUT_PERIOD = 10;
@@ -49,6 +51,12 @@ public class NewSessionQueueOptions {
   }
 
   public URI getSessionQueueUri() {
+
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    String scheme =
+        config
+            .get(SESSION_QUEUE_SECTION, "scheme")
+            .orElse((serverOptions.isSecure() || serverOptions.isSelfSigned()) ? "https" : "http");
 
     Optional<URI> host =
         config
@@ -72,8 +80,6 @@ public class NewSessionQueueOptions {
       return host.get();
     }
 
-    BaseServerOptions serverOptions = new BaseServerOptions(config);
-    String schema = (serverOptions.isSecure() || serverOptions.isSelfSigned()) ? "https" : "http";
     Optional<Integer> port = config.getInt(SESSION_QUEUE_SECTION, "port");
     Optional<String> hostname = config.get(SESSION_QUEUE_SECTION, "hostname");
 
@@ -82,12 +88,93 @@ public class NewSessionQueueOptions {
     }
 
     try {
-      return new URI(schema, null, hostname.get(), port.get(), "", null, null);
+      return new URI(scheme, null, hostname.get(), port.get(), "", null, null);
     } catch (URISyntaxException e) {
       throw new ConfigException(
           "Session queue server uri configured through host (%s) and port (%d) is not a valid URI",
           hostname.get(), port.get());
     }
+  }
+
+  /**
+   * Gets the Redis URI for Redis-backed session queue configuration.
+   *
+   * @return Redis URI constructed from hostname and port configuration
+   */
+  public URI getRedisUri() {
+    Optional<Integer> port = config.getInt(SESSION_QUEUE_SECTION, "port");
+    Optional<String> hostname = config.get(SESSION_QUEUE_SECTION, "hostname");
+
+    if (!(port.isPresent() && hostname.isPresent())) {
+      throw new ConfigException(
+          "Unable to determine Redis hostname and port for the session queue");
+    }
+
+    try {
+      return new URI("redis", null, hostname.get(), port.get(), "", null, null);
+    } catch (URISyntaxException e) {
+      throw new ConfigException(
+          "Redis session queue uri configured through hostname (%s) and port (%d) is not a valid"
+              + " URI",
+          hostname.get(), port.get());
+    }
+  }
+
+  /**
+   * Gets the session queue scheme (e.g., "redis", "local", "remote").
+   *
+   * @return the session queue scheme
+   */
+  public Optional<String> getSessionQueueScheme() {
+    return config.get(SESSION_QUEUE_SECTION, "scheme");
+  }
+
+  /**
+   * Gets the session queue implementation class name.
+   *
+   * @return the implementation class name
+   */
+  public Optional<String> getSessionQueueImplementation() {
+    return config.get(SESSION_QUEUE_SECTION, "implementation");
+  }
+
+  /**
+   * Gets the session queue hostname.
+   *
+   * @return the hostname
+   */
+  public Optional<String> getSessionQueueHostname() {
+    return config.get(SESSION_QUEUE_SECTION, "hostname");
+  }
+
+  /**
+   * Gets the session queue port.
+   *
+   * @return the port number
+   */
+  public Optional<Integer> getSessionQueuePort() {
+    return config.getInt(SESSION_QUEUE_SECTION, "port");
+  }
+
+  @ManagedAttribute(name = "SessionQueueScheme")
+  public String getSessionQueueSchemeAttribute() {
+    return getSessionQueueScheme().orElse("http");
+  }
+
+  @ManagedAttribute(name = "SessionQueueImplementation")
+  public String getSessionQueueImplementationAttribute() {
+    return getSessionQueueImplementation()
+        .orElse("org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue");
+  }
+
+  @ManagedAttribute(name = "SessionQueueHostname")
+  public String getSessionQueueHostnameAttribute() {
+    return getSessionQueueHostname().orElse("localhost");
+  }
+
+  @ManagedAttribute(name = "SessionQueuePort")
+  public int getSessionQueuePortAttribute() {
+    return getSessionQueuePort().orElse(-1);
   }
 
   public Duration getMaximumResponseDelay() {
@@ -156,8 +243,8 @@ public class NewSessionQueueOptions {
     return getSessionRequestRetryInterval().toMillis();
   }
 
-  public NewSessionQueue getSessionQueue(String implementation) {
+  public NewSessionQueue getSessionQueue() {
     return config.getClass(
-        SESSION_QUEUE_SECTION, "implementation", NewSessionQueue.class, implementation);
+        SESSION_QUEUE_SECTION, "implementation", NewSessionQueue.class, DEFAULT_SESSION_QUEUE);
   }
 }

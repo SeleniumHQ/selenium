@@ -268,9 +268,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     SessionMap sessions = new SessionMapOptions(config).getSessionMap();
     SecretOptions secretOptions = new SecretOptions(config);
     NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
-    NewSessionQueue sessionQueue =
-        newSessionQueueOptions.getSessionQueue(
-            "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue");
+    NewSessionQueue sessionQueue = newSessionQueueOptions.getSessionQueue();
     return new LocalDistributor(
         tracer,
         bus,
