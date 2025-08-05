@@ -49,16 +49,6 @@ public sealed class EdgeDriverService : ChromiumDriverService
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the service should use verbose logging.
-    /// </summary>
-    [Obsolete("Use EnableVerboseLogging")]
-    public bool UseVerboseLogging
-    {
-        get => this.EnableVerboseLogging;
-        set => this.EnableVerboseLogging = value;
-    }
-
-    /// <summary>
     /// Creates a default instance of the EdgeDriverService.
     /// </summary>
     /// <returns>A EdgeDriverService that implements default settings.</returns>

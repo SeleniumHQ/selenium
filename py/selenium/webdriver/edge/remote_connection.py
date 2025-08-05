@@ -34,7 +34,7 @@ class EdgeRemoteConnection(ChromiumRemoteConnection):
     ) -> None:
         super().__init__(
             remote_server_addr=remote_server_addr,
-            vendor_prefix="goog",
+            vendor_prefix="ms",
             browser_name=EdgeRemoteConnection.browser_name,
             keep_alive=keep_alive,
             ignore_proxy=ignore_proxy,

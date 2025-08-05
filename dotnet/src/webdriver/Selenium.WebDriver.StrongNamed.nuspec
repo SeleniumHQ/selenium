@@ -43,12 +43,12 @@
     <file src="lib/net8.0/WebDriver.StrongNamed.pdb" target="lib/net8.0/WebDriver.StrongNamed.pdb" />
     <file src="lib/net8.0/WebDriver.StrongNamed.xml" target="lib/net8.0/WebDriver.StrongNamed.xml" />
 
-    <file src="build/Selenium.WebDriver.StrongNamed.targets" target="build/Selenium.WebDriver.StrongNamed.targets"/>
-    <file src="buildTransitive/Selenium.WebDriver.StrongNamed.targets" target="buildTransitive/Selenium.WebDriver.StrongNamed.targets"/>
+    <file src="build/netstandard2.0/Selenium.WebDriver.StrongNamed.targets" target="build/netstandard2.0/Selenium.WebDriver.StrongNamed.targets"/>
+    <file src="buildTransitive/netstandard2.0/Selenium.WebDriver.StrongNamed.targets" target="buildTransitive/netstandard2.0/Selenium.WebDriver.StrongNamed.targets"/>
 
-    <file src="manager/linux/selenium-manager" target="manager/linux/selenium-manager" />
-    <file src="manager/macos/selenium-manager" target="manager/macos/selenium-manager" />
-    <file src="manager/windows/selenium-manager.exe" target="manager/windows/selenium-manager.exe" />
+    <file src="manager/linux/selenium-manager" target="runtimes/linux/native/selenium-manager" />
+    <file src="manager/macos/selenium-manager" target="runtimes/osx/native/selenium-manager" />
+    <file src="manager/windows/selenium-manager.exe" target="runtimes/win/native/selenium-manager.exe" />
 
     <file src="icon.png" />
     <file src="README.md" />
