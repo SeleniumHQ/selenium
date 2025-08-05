@@ -102,12 +102,12 @@ public sealed class FirefoxDriverService : DriverService
     /// offer a way to specify a log file path directly.
     /// </remarks>
     public string? LogPath { get; set; }
-    
+
     /// <summary>
     /// Disable truncation of long log lines in GeckoDriver.
     /// </summary>
     public bool LogTruncate { get; set; }
-    
+
     /// <summary>
     /// Directory in which GeckoDriver creates profiles.
     /// </summary>
@@ -210,9 +210,9 @@ public sealed class FirefoxDriverService : DriverService
                 {
                     throw new ArgumentException($"Profile root directory does not exist: {this.ProfileRoot}", nameof(ProfileRoot));
                 }
-    
+
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --profile-root \"{0}\"", this.ProfileRoot);
-            }            
+            }
 
             return argsBuilder.ToString().Trim();
         }
