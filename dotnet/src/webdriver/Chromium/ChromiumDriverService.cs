@@ -94,6 +94,11 @@ public abstract class ChromiumDriverService : DriverService
     /// <para>A value of <see langword="null"/> or <see cref="string.Empty"/> means only the local loopback address can connect.</para>
     /// </summary>
     public string? AllowedIPAddresses { get; set; }
+    
+    /// <summary>
+    /// Adds readable timestamps to log
+    /// </summary>
+    public bool ReadableTimestamp { get; set; }
 
     /// <summary>
     /// Gets the command-line arguments for the driver service.
@@ -126,6 +131,11 @@ public abstract class ChromiumDriverService : DriverService
             if (this.EnableAppendLog)
             {
                 argsBuilder.Append(" --append-log");
+            }
+
+            if (this.ReadableTimestamp)
+            {
+                argsBuilder.Append(" --readable-timestamp");
             }
 
             if (!string.IsNullOrEmpty(this.LogPath))
