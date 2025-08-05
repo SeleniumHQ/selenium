@@ -26,6 +26,7 @@ class SameSite:
     STRICT = "strict"
     LAX = "lax"
     NONE = "none"
+    DEFAULT = "default"
 
 
 class BytesValue:
