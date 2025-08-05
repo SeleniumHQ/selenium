@@ -1,4 +1,3 @@
-// <copyright file="LogContextManager.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,31 +14,15 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading;
+package org.openqa.selenium.bidi.emulation;
 
-namespace OpenQA.Selenium.Internal.Logging;
+import java.util.Map;
 
-internal class LogContextManager
-{
-    private readonly AsyncLocal<ILogContext?> _currentAmbientLogContext = new();
+public class GeolocationPositionError {
 
-    public LogContextManager()
-    {
-        var defaulLogHandler = new TextWriterHandler(Console.Error);
-
-        GlobalContext = new LogContext(LogEventLevel.Warn, null, null, [defaulLogHandler]);
-    }
-
-    public ILogContext GlobalContext { get; }
-
-    [AllowNull]
-    public ILogContext CurrentContext
-    {
-        get => _currentAmbientLogContext.Value ?? GlobalContext;
-        set => _currentAmbientLogContext.Value = value;
-    }
+  public Map<String, Object> toMap() {
+    String type = "positionUnavailable";
+    return Map.of("type", type);
+  }
 }
