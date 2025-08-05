@@ -107,6 +107,11 @@ public sealed class FirefoxDriverService : DriverService
     /// Disable truncation of long log lines in GeckoDriver.
     /// </summary>
     public bool LogTruncate { get; set; }
+    
+    /// <summary>
+    /// Directory in which GeckoDriver creates profiles.
+    /// </summary>
+    public string? ProfileRoot { get; set; }
 
     /// <summary>
     /// Gets or sets the level at which log output is displayed.
@@ -198,6 +203,16 @@ public sealed class FirefoxDriverService : DriverService
             {
                 argsBuilder.Append(" --log-no-truncate");
             }
+
+            if (!string.IsNullOrEmpty(this.ProfileRoot))
+            {
+                if (!Directory.Exists(this.ProfileRoot))
+                {
+                    throw new ArgumentException($"Profile root directory does not exist: {this.ProfileRoot}", nameof(ProfileRoot));
+                }
+    
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --profile-root \"{0}\"", this.ProfileRoot);
+            }            
 
             return argsBuilder.ToString().Trim();
         }
