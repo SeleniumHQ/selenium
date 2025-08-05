@@ -94,7 +94,7 @@ public class FirefoxExtension
             extensionZipArchive.ExtractToDirectory(tempFileName);
         }
 
-        // Then, copy the contents of the temporarly location into the
+        // Then, copy the contents of the temporary location into the
         // proper location in the Firefox profile directory.
         string id = GetExtensionId(tempFileName);
         string extensionDirectory = Path.Combine(Path.Combine(profileDirectory, "extensions"), id);
@@ -114,7 +114,7 @@ public class FirefoxExtension
     private static string GetExtensionId(string root)
     {
         // Checks if manifest.json or install.rdf file exists and extracts
-        // the addon/extenion id from the file accordingly
+        // the addon/extension id from the file accordingly
         string manifestJsonPath = Path.Combine(root, JsonManifestFileName);
         string installRdfPath = Path.Combine(root, RdfManifestFileName);
 

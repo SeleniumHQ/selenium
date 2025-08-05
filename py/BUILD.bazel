@@ -196,6 +196,24 @@ copy_file(
     out = "selenium-%s.dist-info/LICENSE" % SE_VERSION,
 )
 
+select_file(
+    name = "global-notice",
+    srcs = "//:license",
+    subpath = "NOTICE",
+)
+
+copy_file(
+    name = "notice",
+    src = ":global-notice",
+    out = "NOTICE",
+)
+
+copy_file(
+    name = "notice-wheel",
+    src = ":global-notice",
+    out = "selenium-%s.dist-info/NOTICE" % SE_VERSION,
+)
+
 py_library(
     name = "selenium",
     srcs = glob(
@@ -251,6 +269,7 @@ pkg_files(
         "README.rst",
         "pyproject.toml",
         ":license",
+        ":notice",
         ":selenium-pkg",
         ":selenium-pkginfo",
         "//rust:selenium_manager_srcs",
@@ -304,7 +323,7 @@ py_wheel(
     description_file = "README.rst",
     distribution = "selenium",
     homepage = "https://www.selenium.dev",
-    license = "Apache 2.0",
+    license = "Apache-2.0",
     python_requires = ">=3.9",
     python_tag = "py3",
     requires = [
@@ -326,6 +345,7 @@ py_wheel(
     visibility = ["//visibility:public"],
     deps = [
         ":license-wheel",
+        ":notice-wheel",
         ":selenium-pkg",
     ],
 )

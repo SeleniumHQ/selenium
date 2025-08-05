@@ -162,21 +162,21 @@ csharp_library(
 )
 
 copy_file(
-    name = "readme",
-    src = "//dotnet/src/webdriver/assets:README.md",
+    name = "assets-nuget-readme",
+    src = "//dotnet/src/webdriver/assets:nuget/README.md",
     out = "README.md",
 )
 
 copy_file(
-    name = "props",
-    src = "//dotnet/src/webdriver/assets:Selenium.WebDriver.targets",
+    name = "assets-nuget-build-netstandard20-targets",
+    src = "//dotnet/src/webdriver/assets:nuget/build/netstandard2.0/Selenium.WebDriver.targets",
     out = "Selenium.WebDriver.targets",
 )
 
 copy_file(
-    name = "transitive-props",
-    src = "//dotnet/src/webdriver/assets:Selenium.WebDriver.targets",
-    out = "transitive.Selenium.WebDriver.targets",
+    name = "assets-nuget-buildtransitive-netstandard20-targets",
+    src = "//dotnet/src/webdriver/assets:nuget/buildTransitive/netstandard2.0/Selenium.WebDriver.targets",
+    out = "transitiveSelenium.WebDriver.targets",
 )
 
 copy_file(
@@ -207,9 +207,9 @@ nuget_pack(
         "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
-        ":readme": "README.md",
-        ":props": "build/Selenium.WebDriver.targets",
-        ":transitive-props": "buildTransitive/Selenium.WebDriver.targets",
+        ":assets-nuget-readme": "README.md",
+        ":assets-nuget-build-netstandard20-targets": "build/netstandard2.0/Selenium.WebDriver.targets",
+        ":assets-nuget-buildtransitive-netstandard20-targets": "buildTransitive/netstandard2.0/Selenium.WebDriver.targets",
     },
     id = "Selenium.WebDriver",
     libs = {
@@ -233,9 +233,9 @@ nuget_pack(
         "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
-        ":readme": "README.md",
-        ":props": "build/Selenium.WebDriver.StrongNamed.targets",
-        ":transitive-props": "buildTransitive/Selenium.WebDriver.StrongNamed.targets",
+        ":assets-nuget-readme": "README.md",
+        ":assets-nuget-build-netstandard20-targets": "build/netstandard2.0/Selenium.WebDriver.StrongNamed.targets",
+        ":assets-nuget-buildtransitive-netstandard20-targets": "buildTransitive/netstandard2.0/Selenium.WebDriver.StrongNamed.targets",
     },
     id = "Selenium.WebDriver.StrongNamed",
     libs = {

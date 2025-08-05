@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
@@ -32,11 +32,5 @@
   <Target Name="BuildTestWebServer" AfterTargets="AfterBuild">
     <Exec Command="bazel build //java/test/org/openqa/selenium/environment:appserver" WorkingDirectory="../../.." />
   </Target>
-
-  <!-- It is automatically imported when Selenium.WebDriver consumed via nuget package -->
-  <PropertyGroup>
-    <Selenium_Manager_BinariesRootPath>..\..\..\bazel-bin\dotnet\src\webdriver\manager</Selenium_Manager_BinariesRootPath>
-  </PropertyGroup>
-  <Import Project="..\..\src\webdriver\assets\Selenium.WebDriver.targets" />
 
 </Project>

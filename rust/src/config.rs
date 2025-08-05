@@ -18,10 +18,10 @@
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::shell::run_shell_command_by_os;
 use crate::{
-    default_cache_folder, format_one_arg, path_to_string, Command, ENV_PROCESSOR_ARCHITECTURE,
-    REQUEST_TIMEOUT_SEC, UNAME_COMMAND,
+    default_cache_folder, format_one_arg, path_to_string, Command, ARCH_ARM7L,
+    ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC, UNAME_COMMAND,
 };
-use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_SEC};
+use crate::{ARCH_ARM64, ARCH_X64, ARCH_X86, TTL_SEC};
 use anyhow::anyhow;
 use anyhow::Error;
 use std::cell::RefCell;
@@ -88,7 +88,7 @@ impl ManagerConfig {
             } else if _architecture.contains("ARM") {
                 ARCH_ARM64.to_string()
             } else {
-                ARCH_AMD64.to_string()
+                ARCH_X64.to_string()
             }
         } else {
             let uname_a_command = Command::new_single(format_one_arg(UNAME_COMMAND, "a"));
@@ -181,14 +181,16 @@ pub enum ARCH {
     X32,
     X64,
     ARM64,
+    ARMV7,
 }
 
 impl ARCH {
     pub fn to_str_vector(&self) -> Vec<&str> {
         match self {
             ARCH::X32 => vec![ARCH_X86, "i386", "x32"],
-            ARCH::X64 => vec![ARCH_AMD64, "x86_64", "x64", "i686", "ia64"],
-            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm", "arm64"],
+            ARCH::X64 => vec![ARCH_X64, "amd64", "x64", "i686", "ia64"],
+            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm"],
+            ARCH::ARMV7 => vec![ARCH_ARM7L, "armv7l"],
         }
     }
 

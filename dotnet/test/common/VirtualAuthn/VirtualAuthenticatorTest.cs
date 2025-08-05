@@ -543,7 +543,7 @@ public class VirtualAuthenticatorTest : DriverTestFixture
             Throws.ArgumentNullException);
 
         Assert.That(
-           () => webDriver.RemoveVirtualAuthenticator("non-existant"),
+           () => webDriver.RemoveVirtualAuthenticator("non-existent"),
            Throws.TypeOf<WebDriverArgumentException>());
     }
 }

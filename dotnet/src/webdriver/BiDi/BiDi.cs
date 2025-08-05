@@ -18,12 +18,13 @@
 // </copyright>
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi;
 
-public class BiDi : IAsyncDisposable
+public sealed class BiDi : IAsyncDisposable
 {
     private readonly Broker _broker;
 
@@ -38,7 +39,7 @@ public class BiDi : IAsyncDisposable
 
     private readonly object _moduleLock = new();
 
-    internal BiDi(string url)
+    private BiDi(string url)
     {
         var uri = new Uri(url);
 
@@ -49,15 +50,10 @@ public class BiDi : IAsyncDisposable
     {
         get
         {
-            if (_sessionModule is null)
+            if (_sessionModule is not null) return _sessionModule;
+            lock (_moduleLock)
             {
-                lock (_moduleLock)
-                {
-                    if (_sessionModule is null)
-                    {
-                        _sessionModule = new Session.SessionModule(_broker);
-                    }
-                }
+                _sessionModule ??= new Session.SessionModule(_broker);
             }
             return _sessionModule;
         }
@@ -67,15 +63,10 @@ public class BiDi : IAsyncDisposable
     {
         get
         {
-            if (_browsingContextModule is null)
+            if (_browsingContextModule is not null) return _browsingContextModule;
+            lock (_moduleLock)
             {
-                lock (_moduleLock)
-                {
-                    if (_browsingContextModule is null)
-                    {
-                        _browsingContextModule = new BrowsingContext.BrowsingContextModule(_broker);
-                    }
-                }
+                _browsingContextModule ??= new BrowsingContext.BrowsingContextModule(_broker);
             }
             return _browsingContextModule;
         }
@@ -85,15 +76,10 @@ public class BiDi : IAsyncDisposable
     {
         get
         {
-            if (_browserModule is null)
+            if (_browserModule is not null) return _browserModule;
+            lock (_moduleLock)
             {
-                lock (_moduleLock)
-                {
-                    if (_browserModule is null)
-                    {
-                        _browserModule = new Browser.BrowserModule(_broker);
-                    }
-                }
+                _browserModule ??= new Browser.BrowserModule(_broker);
             }
             return _browserModule;
         }
@@ -103,15 +89,10 @@ public class BiDi : IAsyncDisposable
     {
         get
         {
-            if (_networkModule is null)
+            if (_networkModule is not null) return _networkModule;
+            lock (_moduleLock)
             {
-                lock (_moduleLock)
-                {
-                    if (_networkModule is null)
-                    {
-                        _networkModule = new Network.NetworkModule(_broker);
-                    }
-                }
+                _networkModule ??= new Network.NetworkModule(_broker);
             }
             return _networkModule;
         }
@@ -121,15 +102,10 @@ public class BiDi : IAsyncDisposable
     {
         get
         {
-            if (_inputModule is null)
+            if (_inputModule is not null) return _inputModule;
+            lock (_moduleLock)
             {
-                lock (_moduleLock)
-                {
-                    if (_inputModule is null)
-                    {
-                        _inputModule = new Input.InputModule(_broker);
-                    }
-                }
+                _inputModule ??= new Input.InputModule(_broker);
             }
             return _inputModule;
         }
@@ -139,15 +115,10 @@ public class BiDi : IAsyncDisposable
     {
         get
         {
-            if (_scriptModule is null)
+            if (_scriptModule is not null) return _scriptModule;
+            lock (_moduleLock)
             {
-                lock (_moduleLock)
-                {
-                    if (_scriptModule is null)
-                    {
-                        _scriptModule = new Script.ScriptModule(_broker);
-                    }
-                }
+                _scriptModule ??= new Script.ScriptModule(_broker);
             }
             return _scriptModule;
         }
@@ -157,15 +128,10 @@ public class BiDi : IAsyncDisposable
     {
         get
         {
-            if (_logModule is null)
+            if (_logModule is not null) return _logModule;
+            lock (_moduleLock)
             {
-                lock (_moduleLock)
-                {
-                    if (_logModule is null)
-                    {
-                        _logModule = new Log.LogModule(_broker);
-                    }
-                }
+                _logModule ??= new Log.LogModule(_broker);
             }
             return _logModule;
         }
@@ -175,15 +141,10 @@ public class BiDi : IAsyncDisposable
     {
         get
         {
-            if (_storageModule is null)
+            if (_storageModule is not null) return _storageModule;
+            lock (_moduleLock)
             {
-                lock (_moduleLock)
-                {
-                    if (_storageModule is null)
-                    {
-                        _storageModule = new Storage.StorageModule(_broker);
-                    }
-                }
+                _storageModule ??= new Storage.StorageModule(_broker);
             }
             return _storageModule;
         }
@@ -198,7 +159,7 @@ public class BiDi : IAsyncDisposable
     {
         var bidi = new BiDi(url);
 
-        await bidi._broker.ConnectAsync(default).ConfigureAwait(false);
+        await bidi._broker.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
 
         return bidi;
     }
@@ -210,12 +171,7 @@ public class BiDi : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await DisposeAsyncCore();
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual async ValueTask DisposeAsyncCore()
-    {
         await _broker.DisposeAsync().ConfigureAwait(false);
+        GC.SuppressFinalize(this);
     }
 }
