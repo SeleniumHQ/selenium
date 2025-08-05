@@ -1,0 +1,30 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
+    name = "redis",
+    srcs = glob(["*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-session-queue-redis:%s" % SE_VERSION,
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    tags = [
+        "release-artifact",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+    exports = [
+        "//java/src/org/openqa/selenium/grid",
+    ],
+    deps = [
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/redis",
+        "//java/src/org/openqa/selenium/remote",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+        artifact("io.lettuce:lettuce-core"),
+        artifact("org.redisson:redisson"),
+    ],
+)

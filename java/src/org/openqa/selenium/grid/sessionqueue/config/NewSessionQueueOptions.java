@@ -50,6 +50,12 @@ public class NewSessionQueueOptions {
 
   public URI getSessionQueueUri() {
 
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    String scheme =
+        config
+            .get(SESSION_QUEUE_SECTION, "scheme")
+            .orElse((serverOptions.isSecure() || serverOptions.isSelfSigned()) ? "https" : "http");
+
     Optional<URI> host =
         config
             .get(SESSION_QUEUE_SECTION, "host")
@@ -72,8 +78,6 @@ public class NewSessionQueueOptions {
       return host.get();
     }
 
-    BaseServerOptions serverOptions = new BaseServerOptions(config);
-    String schema = (serverOptions.isSecure() || serverOptions.isSelfSigned()) ? "https" : "http";
     Optional<Integer> port = config.getInt(SESSION_QUEUE_SECTION, "port");
     Optional<String> hostname = config.get(SESSION_QUEUE_SECTION, "hostname");
 
@@ -82,7 +86,7 @@ public class NewSessionQueueOptions {
     }
 
     try {
-      return new URI(schema, null, hostname.get(), port.get(), "", null, null);
+      return new URI(scheme, null, hostname.get(), port.get(), "", null, null);
     } catch (URISyntaxException e) {
       throw new ConfigException(
           "Session queue server uri configured through host (%s) and port (%d) is not a valid URI",

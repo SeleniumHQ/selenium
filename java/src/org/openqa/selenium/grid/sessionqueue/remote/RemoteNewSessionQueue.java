@@ -68,6 +68,10 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   private static final Json JSON = new Json();
   private final HttpClient client;
   private final Filter addSecret;
+  private volatile long backoffMs = 100; // Start with 100ms backoff
+  private static final long MAX_BACKOFF_MS = 5000; // Max 5 seconds backoff
+  private static final long MIN_BACKOFF_MS = 100; // Min 100ms backoff
+  private volatile long lastRequestTime = 0;
 
   public RemoteNewSessionQueue(Tracer tracer, HttpClient client, Secret registrationSecret) {
     super(tracer, registrationSecret);
@@ -146,17 +150,51 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   public List<SessionRequest> getNextAvailable(Map<Capabilities, Long> stereotypes) {
     Require.nonNull("Stereotypes", stereotypes);
 
-    Map<String, Long> stereotypeJson = new HashMap<>();
-    stereotypes.forEach((k, v) -> stereotypeJson.put(JSON.toJson(k), v));
+    // Apply backoff if needed
+    long now = System.currentTimeMillis();
+    long timeSinceLastRequest = now - lastRequestTime;
 
-    HttpRequest upstream =
-        new HttpRequest(POST, "/se/grid/newsessionqueue/session/next")
-            .setContent(Contents.asJson(stereotypeJson));
+    if (timeSinceLastRequest < backoffMs) {
+      long sleepTime = backoffMs - timeSinceLastRequest;
+      try {
+        // Add some jitter to prevent thundering herd
+        long jitter = (long) (Math.random() * sleepTime * 0.1); // Up to 10% jitter
+        Thread.sleep(sleepTime + jitter);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        return List.of();
+      }
+    }
 
-    HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
-    HttpResponse response = client.with(addSecret).execute(upstream);
+    try {
+      Map<String, Long> stereotypeJson = new HashMap<>();
+      stereotypes.forEach((k, v) -> stereotypeJson.put(JSON.toJson(k), v));
 
-    return Values.get(response, SESSION_REQUEST_TYPE);
+      HttpRequest upstream =
+          new HttpRequest(POST, "/se/grid/newsessionqueue/session/next")
+              .setContent(Contents.asJson(stereotypeJson));
+
+      HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
+      HttpResponse response = client.with(addSecret).execute(upstream);
+
+      List<SessionRequest> result = Values.get(response, SESSION_REQUEST_TYPE);
+
+      // If we got results, reduce backoff. Otherwise, increase it.
+      if (result == null || result.isEmpty()) {
+        backoffMs = Math.min((long) (backoffMs * 1.5), MAX_BACKOFF_MS);
+      } else {
+        backoffMs = Math.max(MIN_BACKOFF_MS, backoffMs / 2);
+      }
+
+      return result != null ? result : List.of();
+
+    } catch (Exception e) {
+      // On error, increase backoff more aggressively
+      backoffMs = Math.min(backoffMs * 2, MAX_BACKOFF_MS);
+      throw e;
+    } finally {
+      lastRequestTime = System.currentTimeMillis();
+    }
   }
 
   @Override

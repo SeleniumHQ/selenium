@@ -38,6 +38,7 @@ import java.io.Closeable;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -248,13 +249,15 @@ public class LocalDistributor extends Distributor implements Closeable {
         this.healthcheckInterval.toMillis(),
         TimeUnit.MILLISECONDS);
 
-    // if sessionRequestRetryInterval is 0, we will schedule session creation every 10 millis
+    // Default to 100ms if no interval is specified (was 10ms)
     long period =
-        sessionRequestRetryInterval.isZero() ? 10 : sessionRequestRetryInterval.toMillis();
-    newSessionService.scheduleAtFixedRate(
+        sessionRequestRetryInterval.isZero() ? 100 : sessionRequestRetryInterval.toMillis();
+
+    // Use scheduleWithFixedDelay instead of scheduleAtFixedRate to prevent task pileup
+    newSessionService.scheduleWithFixedDelay(
         GuardedRunnable.guard(newSessionRunnable),
-        sessionRequestRetryInterval.toMillis(),
-        period,
+        period, // Initial delay
+        period, // Subsequent delays
         TimeUnit.MILLISECONDS);
 
     new JMXHelper().register(this);
@@ -771,11 +774,46 @@ public class LocalDistributor extends Distributor implements Closeable {
   }
 
   private class NewSessionRunnable implements Runnable {
+    private long backoffMs = 100; // Start with 100ms backoff
+    private static final long MAX_BACKOFF_MS = 5000; // Max 5 seconds backoff
+    private static final long MIN_BACKOFF_MS = 100; // Min 100ms backoff
+    private Instant lastNodeAvailableCheck = Instant.MIN;
+    private boolean hadNodesLastCheck = false;
 
     @Override
     public void run() {
       Set<RequestId> inQueue;
       boolean pollQueue;
+
+      // Check if we have any available nodes
+      boolean hasNodes = !getAvailableNodes().isEmpty();
+
+      // If we had nodes before but don't now, or vice versa, reset the backoff
+      if (hasNodes != hadNodesLastCheck
+          || Duration.between(lastNodeAvailableCheck, Instant.now()).toMillis() > 5000) {
+        backoffMs = MIN_BACKOFF_MS;
+      }
+
+      hadNodesLastCheck = hasNodes;
+      lastNodeAvailableCheck = Instant.now();
+
+      // If no nodes available, apply backoff before proceeding
+      if (!hasNodes) {
+        try {
+          // Add some jitter to prevent thundering herd
+          long jitter = (long) (Math.random() * backoffMs * 0.1); // Up to 10% jitter
+          Thread.sleep(backoffMs + jitter);
+
+          // Double the backoff for next time, up to the max
+          backoffMs = Math.min(backoffMs * 2, MAX_BACKOFF_MS);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          return;
+        }
+      } else {
+        // Reset backoff when we have nodes
+        backoffMs = MIN_BACKOFF_MS;
+      }
 
       if (rejectUnsupportedCaps) {
         inQueue =
@@ -801,9 +839,21 @@ public class LocalDistributor extends Distributor implements Closeable {
                     Collectors.groupingBy(ImmutableCapabilities::copyOf, Collectors.counting()));
 
         if (!stereotypes.isEmpty()) {
-          List<SessionRequest> matchingRequests = sessionQueue.getNextAvailable(stereotypes);
-          matchingRequests.forEach(
-              req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
+          try {
+            List<SessionRequest> matchingRequests = sessionQueue.getNextAvailable(stereotypes);
+            if (!matchingRequests.isEmpty()) {
+              // Process requests in batch
+              matchingRequests.forEach(
+                  req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
+            } else if (backoffMs < MAX_BACKOFF_MS) {
+              // If we didn't get any requests, increase backoff slightly
+              backoffMs = Math.min((long) (backoffMs * 1.5), MAX_BACKOFF_MS);
+            }
+          } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Error processing session requests", e);
+            // On error, back off more aggressively
+            backoffMs = Math.min(backoffMs * 2, MAX_BACKOFF_MS);
+          }
         }
       }
 
