@@ -8,7 +8,7 @@ homepage = "https://www.selenium.dev/"
 repository = "https://github.com/SeleniumHQ/selenium"
 documentation = "https://www.selenium.dev/documentation/"
 description = """
-Selenium Manager is a CLI tool that automatically manages the browser/driver infrastructure required by Selenium.
+Selenium Manager is a CLI tool that automatically manages the browser/driver resources required by Selenium.
 """
 
 [dependencies]

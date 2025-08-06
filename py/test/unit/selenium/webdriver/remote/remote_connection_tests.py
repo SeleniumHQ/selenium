@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
 from unittest.mock import patch
 from urllib import parse
 
@@ -222,7 +223,7 @@ def test_get_connection_manager_for_certs_and_timeout():
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] == 10
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
-    assert "certifi/cacert.pem" in conn.connection_pool_kw["ca_certs"]
+    assert f"certifi{os.path.sep}cacert.pem" in conn.connection_pool_kw["ca_certs"]
 
 
 def test_default_socket_timeout_is_correct():
@@ -277,7 +278,7 @@ def test_get_connection_manager_with_auth_https_proxy(mock_proxy_auth_settings):
         "*",
         ".localhost",
         "localhost:80",
-        "locahost",
+        "localhost",
         "LOCALHOST",
         "LOCALHOST:80",
         "http://localhost",

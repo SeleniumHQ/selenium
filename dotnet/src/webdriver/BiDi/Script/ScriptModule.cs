@@ -69,11 +69,11 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
         return result.Script;
     }
 
-    public async Task RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null)
+    public async Task<EmptyResult> RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null)
     {
         var @params = new RemovePreloadScriptCommandParameters(script);
 
-        await Broker.ExecuteCommandAsync(new RemovePreloadScriptCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<RemovePreloadScriptCommand, EmptyResult>(new RemovePreloadScriptCommand(@params), options).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null)

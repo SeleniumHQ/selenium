@@ -1855,7 +1855,7 @@ Safari:
   * Replace 'libwebsocket' with 'websocket' gem. This should ensure
     support with recent Safari.
 Other:
-  * Fix Cygwin issue in PortProber/Firefox::Bianry (#4963)
+  * Fix Cygwin issue in PortProber/Firefox::Binary (#4963)
 
 2.27.2 (2012-12-11)
 ===================
@@ -1945,7 +1945,7 @@ IE:
 * Fix conflict with ActiveSupport's Object#load (#3819)
 * IE:
   * Default to standalone server executable, fall back to bundled DLLs.
-  * The 'nativeEvents' capabilitiy is exposed as :native_events in the Ruby client (mode still experimental).
+  * The 'nativeEvents' capability is exposed as :native_events in the Ruby client (mode still experimental).
 * Firefox:
   * Native events for Firefox 12.
   * Native events retained for Firefox 3.x, 10 and 11.
@@ -2085,7 +2085,7 @@ IE:
 ===================
 
 * Firefox:
-  * Now supports up to Firefox 11 (for syntesized events)
+  * Now supports up to Firefox 11 (for synthesized events)
   * Implicit waits now change how long we wait for alerts. This
     functionality will change in 2.16
   * Fix scrolling issue (#2700)
@@ -2279,7 +2279,7 @@ IE:
 2.1.0 (2011-07-18)
 ==================
 
-* Various improvments to the IE driver (#2049, #1870)
+* Various improvements to the IE driver (#2049, #1870)
 * Atoms fixes (#1776, #1972).
 * Synthetic mouse clicks do not propagate errors in onmouseover.
 
@@ -2429,7 +2429,7 @@ IE:
 * Cookie expiration dates are now handled correctly (#730)
 * Make Driver#bridge private, since this seems to be a common cause of confusion.
 * Add {Element,Remote::Capabilities}#as_json for Rails 3 (http://jonathanjulian.com/2010/04/rails-to_json-or-as_json/)
-* User can configure path to exectuables with {Firefox,Chrome}.path = "/some/path"
+* User can configure path to executables with {Firefox,Chrome}.path = "/some/path"
 * Added "chromium" as a possible name for the Chrome binary (#769)
 * Correctly set the HTTP client timeout (#768)
 * switch_to.window with block now handles exceptions and non-local returns.

@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -40,6 +42,7 @@ import org.openqa.selenium.internal.Require;
  * }
  * </code></pre>
  */
+@NullMarked
 public abstract class By {
   /**
    * @param id The value of the "id" attribute to search for.
@@ -158,7 +161,7 @@ public abstract class By {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (!(o instanceof By)) {
       return false;
     }
@@ -342,9 +345,9 @@ public abstract class By {
 
     class Parameters {
       private final String using;
-      private final Object value;
+      private final @Nullable Object value;
 
-      public Parameters(String using, Object value) {
+      public Parameters(String using, @Nullable Object value) {
         this.using = Require.nonNull("Search mechanism", using);
         // There may be subclasses where the value is optional. Allow for this.
         this.value = value;
@@ -354,7 +357,7 @@ public abstract class By {
         return using;
       }
 
-      public Object value() {
+      public @Nullable Object value() {
         return value;
       }
 
@@ -364,7 +367,7 @@ public abstract class By {
       }
 
       @Override
-      public boolean equals(Object o) {
+      public boolean equals(@Nullable Object o) {
         if (!(o instanceof Parameters)) {
           return false;
         }
@@ -377,8 +380,8 @@ public abstract class By {
         return Objects.hash(using, value);
       }
 
-      private Map<String, Object> toJson() {
-        Map<String, Object> params = new HashMap<>();
+      private Map<String, @Nullable Object> toJson() {
+        Map<String, @Nullable Object> params = new HashMap<>();
         params.put("using", using);
         params.put("value", value);
         return Collections.unmodifiableMap(params);
@@ -410,7 +413,7 @@ public abstract class By {
       return params;
     }
 
-    protected final Map<String, Object> toJson() {
+    protected final Map<String, @Nullable Object> toJson() {
       return getRemoteParameters().toJson();
     }
   }
@@ -441,7 +444,7 @@ public abstract class By {
       return remoteParams;
     }
 
-    protected final Map<String, Object> toJson() {
+    protected final Map<String, @Nullable Object> toJson() {
       return fallback.toJson();
     }
 

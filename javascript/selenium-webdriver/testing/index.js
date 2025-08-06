@@ -260,7 +260,7 @@ const URL_MAP = /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */ n
  */
 class Environment {
   /**
-   * @param {!TargetBrowser} browser the browser targetted in this environment.
+   * @param {!TargetBrowser} browser the browser targeted in this environment.
    * @param {?(string|remote.SeleniumServer)=} url remote URL of an existing
    *     Selenium server to test against.
    */

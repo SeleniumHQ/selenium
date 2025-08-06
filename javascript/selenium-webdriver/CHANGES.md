@@ -891,7 +891,7 @@ to a remote Selenium server that supports Firefox 45.
 ### Changes
 
 - Removed native support for Firefox 46 and older.
-  - The `SELENIUM_MARIONETTE` enviornment variable no longer has an effect.
+  - The `SELENIUM_MARIONETTE` environment variable no longer has an effect.
   - `selenium-webdriver/firefox.Capability.MARIONETTE` is deprecated.
   - `selenium-webdriver/firefox.Options#useGeckoDriver()` is deprecated and now
     a no-op.
@@ -1001,7 +1001,7 @@ or newer.
 - (**NOTICE**) The minimum supported version of Node is now 6.9.0 LTS
 - Removed support for the SafariDriver browser extension. This has been replaced
   by Apple's
-  safaridriver, which is included wtih Safari 10
+  safaridriver, which is included with Safari 10
   (available on OS X El Capitan and macOS Sierra).
 
   To use Safari 9 or older, users will have to use an older version of Selenium.
@@ -1018,7 +1018,7 @@ or newer.
 - Extending the `selenium-webdriver/testing` module to support tests defined
   using generator
   functions.
-- The promise manager can be disabled by setting an enviornment variable:
+- The promise manager can be disabled by setting an environment variable:
   `SELENIUM_PROMISE_MANAGER=0`. This is part of a larger plan to remove the
   promise manager, as
   documented at

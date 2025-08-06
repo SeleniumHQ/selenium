@@ -1276,6 +1276,10 @@ public class CdpClientGenerator {
       fromJson.addParameter(JsonInput.class, "input");
       fromJson.getBody().get().addStatement(String.format("return new %s(%s);", name, getMapper()));
 
+      MethodDeclaration getter = classDecl.addMethod("get" + capitalize(name)).setPublic(true);
+      getter.setType(getJavaType());
+      getter.getBody().get().addStatement(String.format("return %s;", propertyName));
+
       MethodDeclaration toString = classDecl.addMethod("toString").setPublic(true);
       toString.setType(String.class);
       toString.getBody().get().addStatement(String.format("return %s.toString();", propertyName));

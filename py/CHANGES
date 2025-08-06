@@ -684,7 +684,7 @@ Selenium 4.0 Alpha 7
 * Add debugpy to requirements
 * Fix uploading multiple files on remote driver (#7472) (#8734)
 * Correct docstring around find_element and find_elements. Fixes #8806
-* Add the ability to ignore local proxys that are available
+* Add the ability to ignore local proxies that are available
 * add script pinning to python bindings
 * Deprecate desired_capabilities property in favour of capabilities property
 * Update tests to use requirements file
