@@ -96,6 +96,11 @@ public abstract class ChromiumDriverService : DriverService
     public string? AllowedIPAddresses { get; set; }
 
     /// <summary>
+    /// Adds readable timestamps to log
+    /// </summary>
+    public bool ReadableTimestamp { get; set; }
+
+    /// <summary>
     /// Gets the command-line arguments for the driver service.
     /// </summary>
     protected override string CommandLineArguments
@@ -126,6 +131,11 @@ public abstract class ChromiumDriverService : DriverService
             if (this.EnableAppendLog)
             {
                 argsBuilder.Append(" --append-log");
+            }
+
+            if (this.ReadableTimestamp)
+            {
+                argsBuilder.Append(" --readable-timestamp");
             }
 
             if (!string.IsNullOrEmpty(this.LogPath))
