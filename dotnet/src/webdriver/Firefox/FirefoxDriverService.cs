@@ -19,10 +19,10 @@
 
 using OpenQA.Selenium.Internal;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Threading;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Firefox;
@@ -196,11 +196,11 @@ public sealed class FirefoxDriverService : DriverService
     }
 
     /// <summary>
-    /// Handles the event when the driver service process is starting.
+    /// Called when the driver process is starting. This method sets up log file writing if a log path is specified.
     /// </summary>
     /// <param name="eventArgs">The event arguments containing information about the driver service process.</param>
     /// <remarks>
-    /// This method initializes a log writer if a log path is specified and redirects output streams to capture logs.
+    /// This method initializes a log writer if a log path is specified.
     /// </remarks>
     protected override void OnDriverProcessStarting(DriverProcessStartingEventArgs eventArgs)
     {
@@ -214,45 +214,36 @@ public sealed class FirefoxDriverService : DriverService
             }
 
             logWriter = new StreamWriter(this.LogPath, append: true) { AutoFlush = true };
-
-            eventArgs.DriverServiceProcessStartInfo.RedirectStandardOutput = true;
-            eventArgs.DriverServiceProcessStartInfo.RedirectStandardError = true;
         }
 
         base.OnDriverProcessStarting(eventArgs);
     }
 
     /// <summary>
-    /// Handles the event when the driver process has started.
+    /// Handles the output and error data received from the driver process and sends it to the log writer if available.
     /// </summary>
-    /// <param name="eventArgs">The event arguments containing information about the started driver process.</param>
-    /// <remarks>
-    /// This method reads the output and error streams asynchronously and writes them to the log file if available.
-    /// </remarks>
-    protected override void OnDriverProcessStarted(DriverProcessStartedEventArgs eventArgs)
+    /// <param name="sender">The sender of the event.</param>
+    /// <param name="args">The data received event arguments.</param>
+    /// <param name="isError">A value indicating whether the data received is from the error stream.</param>
+    protected override void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args, bool isError)
     {
-        if (!string.IsNullOrEmpty(this.LogPath) && eventArgs.StandardOutputStreamReader != null)
-        {
-            var stdoutThread = new Thread(() => ReadStream(eventArgs.StandardOutputStreamReader))
-            {
-                IsBackground = true,
-                Name = "FirefoxDriverService-stdout"
-            };
-            stdoutThread.Start();
-        }
+        if (string.IsNullOrEmpty(args.Data))
+            return;
 
-        if (!string.IsNullOrEmpty(this.LogPath) && eventArgs.StandardErrorStreamReader != null)
+        if (!string.IsNullOrEmpty(this.LogPath))
         {
-            var stderrThread = new Thread(() => ReadStream(eventArgs.StandardErrorStreamReader))
+            if (logWriter != null)
             {
-                IsBackground = true,
-                Name = "FirefoxDriverService-stderr"
-            };
-            stderrThread.Start();
+                logWriter.WriteLine(args.Data);
+                logWriter.Flush();
+            }
         }
-
-        base.OnDriverProcessStarted(eventArgs);
+        else
+        {
+            base.OnDriverProcessDataReceived(sender, args, isError);
+        }
     }
+
 
     /// <summary>
     /// Disposes of the resources used by the <see cref="FirefoxDriverService"/> instance.
@@ -352,18 +343,5 @@ public sealed class FirefoxDriverService : DriverService
         }
 
         return fileName;
-    }
-
-    private void ReadStream(StreamReader reader)
-    {
-        string line;
-        while ((line = reader.ReadLine()) != null)
-        {
-            if (logWriter != null)
-            {
-                logWriter.WriteLine(line);
-                logWriter.Flush();
-            }
-        }
     }
 }

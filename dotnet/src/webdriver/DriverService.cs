@@ -25,7 +25,6 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Internal.Logging;
 
@@ -253,8 +252,11 @@ public abstract class DriverService : ICommandServer
         this.driverServiceProcess.StartInfo.UseShellExecute = false;
         this.driverServiceProcess.StartInfo.CreateNoWindow = this.HideCommandPromptWindow;
 
-        this.driverServiceProcess.StartInfo.RedirectStandardOutput = this.WriteDriverLogToConsole;
-        this.driverServiceProcess.StartInfo.RedirectStandardError = this.WriteDriverLogToConsole;
+        this.driverServiceProcess.StartInfo.RedirectStandardOutput = true;
+        this.driverServiceProcess.StartInfo.RedirectStandardError = true;
+
+        this.driverServiceProcess.OutputDataReceived += (s, e) => this.OnDriverProcessDataReceived(s, e, isError: false);
+        this.driverServiceProcess.ErrorDataReceived += (s, e) => this.OnDriverProcessDataReceived(s, e, isError: true);
 
         DriverProcessStartingEventArgs eventArgs = new DriverProcessStartingEventArgs(this.driverServiceProcess.StartInfo);
         this.OnDriverProcessStarting(eventArgs);
@@ -263,6 +265,9 @@ public abstract class DriverService : ICommandServer
         bool serviceAvailable = this.WaitForServiceInitialization();
         DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
         this.OnDriverProcessStarted(processStartedEventArgs);
+
+        this.driverServiceProcess.BeginOutputReadLine();
+        this.driverServiceProcess.BeginErrorReadLine();
 
         if (!serviceAvailable)
         {
@@ -318,27 +323,28 @@ public abstract class DriverService : ICommandServer
             throw new ArgumentNullException(nameof(eventArgs), "eventArgs must not be null");
         }
 
-        if (this.WriteDriverLogToConsole && eventArgs.StandardOutputStreamReader != null)
-        {
-            var stdoutThread = new Thread(() => ReadStreamSync(eventArgs.StandardOutputStreamReader, "stdout"))
-            {
-                IsBackground = true,
-                Name = "DriverService-stdout"
-            };
-            stdoutThread.Start();
-        }
-
-        if (this.WriteDriverLogToConsole && eventArgs.StandardErrorStreamReader != null)
-        {
-            var stderrThread = new Thread(() => ReadStreamSync(eventArgs.StandardErrorStreamReader, "stderr"))
-            {
-                IsBackground = true,
-                Name = "DriverService-stderr"
-            };
-            stderrThread.Start();
-        }
-
         this.DriverProcessStarted?.Invoke(this, eventArgs);
+    }
+
+    /// <summary>
+    /// Handles the output and error data received from the driver process.
+    /// </summary>
+    /// <param name="sender">The sender of the event.</param>
+    /// <param name="args">The data received event arguments.</param>
+    /// <param name="isError">A value indicating whether the data received is from the error stream.</param>
+    protected virtual void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args, bool isError)
+    {
+        if (string.IsNullOrEmpty(args.Data))
+            return;
+
+        if (this.WriteDriverLogToConsole && !isError && _logger.IsEnabled(LogEventLevel.Info))
+        {
+            _logger.Info(args.Data);
+        }
+        if (this.WriteDriverLogToConsole && isError && _logger.IsEnabled(LogEventLevel.Error))
+        {
+            _logger.Error(args.Data);
+        }
     }
 
     /// <summary>
@@ -419,69 +425,4 @@ public abstract class DriverService : ICommandServer
 
         return isInitialized;
     }
-
-    private void ReadStreamSync(StreamReader reader, string streamType)
-    {
-        try
-        {
-            string? line;
-            while ((line = reader.ReadLine()) != null)
-            {
-                if (streamType.Equals("stdout", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Info))
-                    {
-                        _logger.Info(line);
-                    }
-                }
-                else
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Error))
-                    {
-                        _logger.Error(line);
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            if (_logger.IsEnabled(LogEventLevel.Error))
-            {
-                _logger.Error($"Error reading stream: {ex}");
-            }
-        }
-    }
-
-    private async Task ReadStreamAsync(StreamReader reader, string streamType)
-    {
-        try
-        {
-            string? line;
-            while ((line = await reader.ReadLineAsync()) != null)
-            {
-                if (streamType.Equals("stdout", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Info))
-                    {
-                        _logger.Info(line);
-                    }
-                }
-                else
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Error))
-                    {
-                        _logger.Error(line);
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            if (_logger.IsEnabled(LogEventLevel.Error))
-            {
-                _logger.Error($"Error reading stream: {ex}");
-            }
-        }
-    }
-
 }
