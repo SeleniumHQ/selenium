@@ -19,7 +19,7 @@
 
 const assert = require('node:assert')
 const { Browser } = require('selenium-webdriver')
-const { Pages, suite } = require('../../lib/test')
+const { ignore, Pages, suite } = require('../../lib/test')
 const { By } = require('selenium-webdriver/index')
 
 suite(
@@ -35,7 +35,7 @@ suite(
     })
 
     // Failing due to - https://issues.chromium.org/u/0/issues/425801332, enable when Chrome 140 is released
-    describe.skip('Federated Credential Management Test', function () {
+    ignore(env.browsers(Browser.CHROME, Browser.EDGE)).describe('Federated Credential Management Test', function () {
       it('credential management dialog should appear', async function () {
         await driver.get(Pages.fedcm)
 
