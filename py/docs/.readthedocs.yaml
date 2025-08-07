@@ -1,22 +1,31 @@
 # .readthedocs.yaml
-# configuration file for publishing Python API documentation on "Read the Docs"
-#
-# configuration file reference: https://docs.readthedocs.io/en/stable/config-file/v2.html
-# job configuration: https://app.readthedocs.org/projects/selenium-python-api-docs
-# published docs: https://selenium-python-api-docs.readthedocs.io
+# ✅ Configuration file for building and publishing Selenium's Python API docs using Read the Docs.
+# ℹ️ Reference: https://docs.readthedocs.io/en/stable/config-file/v2.html
 
-version: 2
+version: 2  # ✅ YAML schema version (v2 is current as per ReadTheDocs)
 
 build:
-  os: ubuntu-24.04
+  os: ubuntu-24.04  # ✅ Use Ubuntu 24.04 as build environment
+
   tools:
-    python: "3.12"
+    python: "3.12"  # ✅ Use Python version 3.12
+
   commands:
+    # ✅ Install documentation-specific dependencies (like Sphinx and extensions)
     - pip install -r py/docs/requirements.txt
+
+    # ✅ Install main Python dependencies for Selenium (may be required by docstrings)
     - pip install -r py/requirements.txt
+
+    # ✅ Generate dynamic module listing before building the docs
     - cd py && python3 generate_api_module_listing.py && cd
+
+    # ✅ Automatically generate API stub `.rst` files using autodoc
     - PYTHONPATH=py sphinx-autogen -o $READTHEDOCS_OUTPUT/html py/docs/source/api.rst
+
+    # ✅ Build HTML docs using Sphinx with correct path
     - PYTHONPATH=py sphinx-build -b html -d build/docs/doctrees py/docs/source $READTHEDOCS_OUTPUT/html
 
 sphinx:
-  configuration: py/docs/source/conf.py
+  configuration: py/docs/source/conf.py  # ✅ Main Sphinx configuration file path
+
