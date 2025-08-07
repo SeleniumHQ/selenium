@@ -198,28 +198,33 @@ def test_pen_pointer_properties(driver, pages):
     ).pointer_up().move_to(pointerArea, x=5, y=10)
     actions.perform()
     events = _get_events(driver)
-    assert events[3]["type"] == "pointerdown"
-    assert events[3]["pageX"] == pytest.approx(center["x"], abs=1.0)
-    assert events[3]["pageY"] == pytest.approx(center["y"], abs=1.0)
-    assert events[3]["target"] == "pointerArea"
-    assert events[3]["pointerType"] == "pen"
-    # The default value of width and height for mouse and pen inputs is 1
-    assert round(events[3]["width"], 2) == 1
-    assert round(events[3]["height"], 2) == 1
-    assert round(events[3]["pressure"], 2) == 0.36
-    assert events[3]["tiltX"] == -72
-    assert events[3]["tiltY"] == 9
-    assert events[3]["twist"] == 86
-    assert events[6]["type"] == "pointermove"
-    assert events[6]["target"] == "pointerArea"
-    assert events[6]["pointerType"] == "pen"
-    assert round(events[6]["width"], 2) == 1
-    assert round(events[6]["height"], 2) == 1
-    # The default value of pressure for all inputs is 0.5, other properties are 0
-    assert round(events[6]["pressure"], 2) == 0.5
-    assert events[6]["tiltX"] == 0
-    assert events[6]["tiltY"] == 0
-    assert events[6]["twist"] == 0
+
+    # Find the first pointerdown and pointermove events for pen
+    pen_events = [e for e in events if e["pointerType"] == "pen"]
+    pointerdown_event = next((e for e in pen_events if e["type"] == "pointerdown"), None)
+    pointermove_event = next((e for e in pen_events if e["type"] == "pointermove" and e.get("buttons", 0) == 1), None)
+
+    assert pointerdown_event is not None, "No pointerdown event found for pen"
+    assert pointerdown_event["pageX"] == pytest.approx(center["x"], abs=1.0)
+    assert pointerdown_event["pageY"] == pytest.approx(center["y"], abs=1.0)
+    assert pointerdown_event["target"] == "pointerArea"
+    assert pointerdown_event["pointerType"] == "pen"
+    assert round(pointerdown_event["width"], 2) == 1
+    assert round(pointerdown_event["height"], 2) == 1
+    assert round(pointerdown_event["pressure"], 2) == 0.36
+    assert pointerdown_event["tiltX"] == -72
+    assert pointerdown_event["tiltY"] == 9
+    assert pointerdown_event["twist"] == 86
+
+    assert pointermove_event is not None, "No pointermove event found for pen with buttons == 1"
+    assert pointermove_event["target"] == "pointerArea"
+    assert pointermove_event["pointerType"] == "pen"
+    assert round(pointermove_event["width"], 2) == 1
+    assert round(pointermove_event["height"], 2) == 1
+    assert round(pointermove_event["pressure"], 2) == 0.5
+    assert pointermove_event["tiltX"] == 0
+    assert pointermove_event["tiltY"] == 0
+    assert pointermove_event["twist"] == 0
 
 
 @pytest.mark.xfail_firefox
