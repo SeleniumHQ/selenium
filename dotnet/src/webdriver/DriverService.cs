@@ -155,12 +155,6 @@ public abstract class DriverService : ICommandServer
     public string? DriverServicePath { get; set; }
 
     /// <summary>
-    /// Collects the driver log output and writes it to the console. Defaults to <see langword="true"/>.
-    /// Internal variable to avoid using the stream when logs are sent to a file.
-    /// </summary>
-    protected bool WriteDriverLogToConsole { get; set; } = true;
-
-    /// <summary>
     /// Gets the command-line arguments for the driver service.
     /// </summary>
     protected virtual string CommandLineArguments => string.Format(CultureInfo.InvariantCulture, "--port={0}", this.Port);
@@ -255,8 +249,8 @@ public abstract class DriverService : ICommandServer
         this.driverServiceProcess.StartInfo.RedirectStandardOutput = true;
         this.driverServiceProcess.StartInfo.RedirectStandardError = true;
 
-        this.driverServiceProcess.OutputDataReceived += (s, e) => this.OnDriverProcessDataReceived(s, e, isError: false);
-        this.driverServiceProcess.ErrorDataReceived += (s, e) => this.OnDriverProcessDataReceived(s, e, isError: true);
+        this.driverServiceProcess.OutputDataReceived += this.OnDriverProcessDataReceived;
+        this.driverServiceProcess.ErrorDataReceived += this.OnDriverProcessDataReceived;
 
         DriverProcessStartingEventArgs eventArgs = new DriverProcessStartingEventArgs(this.driverServiceProcess.StartInfo);
         this.OnDriverProcessStarting(eventArgs);
@@ -332,18 +326,14 @@ public abstract class DriverService : ICommandServer
     /// <param name="sender">The sender of the event.</param>
     /// <param name="args">The data received event arguments.</param>
     /// <param name="isError">A value indicating whether the data received is from the error stream.</param>
-    protected virtual void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args, bool isError)
+    protected virtual void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args)
     {
         if (string.IsNullOrEmpty(args.Data))
             return;
 
-        if (this.WriteDriverLogToConsole && !isError && _logger.IsEnabled(LogEventLevel.Info))
+        if (_logger.IsEnabled(LogEventLevel.Trace))
         {
-            _logger.Info(args.Data);
-        }
-        if (this.WriteDriverLogToConsole && isError && _logger.IsEnabled(LogEventLevel.Error))
-        {
-            _logger.Error(args.Data);
+            _logger.Trace(args.Data);
         }
     }
 

@@ -79,7 +79,7 @@ public class FirefoxDriverServiceTest
     [Test]
     public void ShouldRedirectGeckoDriverLogsToConsole()
     {
-        Log.SetLevel(LogEventLevel.Info).Handlers.Add(testLogHandler);
+        Log.SetLevel(LogEventLevel.Trace).Handlers.Add(testLogHandler);
         FirefoxOptions options = new FirefoxOptions();
         options.LogLevel = FirefoxDriverLogLevel.Info;
 

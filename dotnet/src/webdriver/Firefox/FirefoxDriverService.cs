@@ -23,7 +23,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Firefox;
 
@@ -33,7 +32,6 @@ namespace OpenQA.Selenium.Firefox;
 public sealed class FirefoxDriverService : DriverService
 {
     private const string DefaultFirefoxDriverServiceFileName = "geckodriver";
-    private static readonly ILogger _logger = Log.GetLogger(typeof(FirefoxDriverService));
 
     /// <summary>
     /// Process management fields for the log writer.
@@ -235,7 +233,6 @@ public sealed class FirefoxDriverService : DriverService
     {
         if (!string.IsNullOrEmpty(this.LogPath))
         {
-            this.WriteDriverLogToConsole = false;
             string? directory = Path.GetDirectoryName(this.LogPath);
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
             {
@@ -254,7 +251,7 @@ public sealed class FirefoxDriverService : DriverService
     /// <param name="sender">The sender of the event.</param>
     /// <param name="args">The data received event arguments.</param>
     /// <param name="isError">A value indicating whether the data received is from the error stream.</param>
-    protected override void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args, bool isError)
+    protected override void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args)
     {
         if (string.IsNullOrEmpty(args.Data))
             return;
@@ -264,12 +261,11 @@ public sealed class FirefoxDriverService : DriverService
             if (logWriter != null)
             {
                 logWriter.WriteLine(args.Data);
-                logWriter.Flush();
             }
         }
         else
         {
-            base.OnDriverProcessDataReceived(sender, args, isError);
+            base.OnDriverProcessDataReceived(sender, args);
         }
     }
 
