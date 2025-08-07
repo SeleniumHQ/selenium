@@ -203,7 +203,7 @@ public sealed class FirefoxDriverService : DriverService
                 argsBuilder.Append(" --jsdebugger");
             }
 
-            if (this.LogTruncate.HasValue && this.LogTruncate.Value)
+            if (this.LogTruncate is true)
             {
                 argsBuilder.Append(" --log-no-truncate");
             }
