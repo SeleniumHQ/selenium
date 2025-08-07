@@ -104,9 +104,13 @@ public sealed class FirefoxDriverService : DriverService
     public string? LogPath { get; set; }
 
     /// <summary>
-    /// Disable truncation of long log lines in GeckoDriver.
+    /// Gets or sets a value indicating whether to disable truncation of long log lines in GeckoDriver.
     /// </summary>
-    public bool LogNoTruncate { get; set; }
+    /// <remarks>
+    /// A <see langword="null"/> value indicates no log truncation setting to specify.
+    /// Set to <see langword="true"/> to disable truncation, or <see langword="false"/> to enable truncation.
+    /// </remarks>
+    public bool? LogTruncate { get; set; }
 
     /// <summary>
     /// Directory in which GeckoDriver creates profiles.
@@ -199,7 +203,7 @@ public sealed class FirefoxDriverService : DriverService
                 argsBuilder.Append(" --jsdebugger");
             }
 
-            if (this.LogNoTruncate)
+            if (this.LogTruncate is true)
             {
                 argsBuilder.Append(" --log-no-truncate");
             }
