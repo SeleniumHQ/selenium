@@ -1,0 +1,42 @@
+# Selenium WebDriver Test Template using Bazel
+
+# 1. Setup WebDriver and Browser
+# Initialize WebDriver with a specific browser (Chrome, Firefox, etc.)
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.By;
+import org.openqa.selenium.chrome.ChromeOptions;
+
+public class ExampleWebTest {
+
+    public static void main(String[] args) {
+        WebDriver driver;
+
+        // Choose the browser (Chrome example here)
+        System.setProperty("webdriver.chrome.driver", "/path/to/chromedriver"); // Update the path
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // Headless mode, optional
+        driver = new ChromeDriver(options);
+
+        // 2. Open URL
+        driver.get("http://www.example.com");
+
+        // 3. Perform actions (click, send keys, etc.)
+        WebElement element = driver.findElement(By.id("example-element"));
+        element.click(); // Example action
+
+        // 4. Validate Results
+        String pageTitle = driver.getTitle();
+        if (pageTitle.equals("Expected Title")) {
+            System.out.println("Test Passed!");
+        } else {
+            System.out.println("Test Failed.");
+        }
+
+        // 5. Clean Up
+        driver.quit(); // Close the browser
+    }
+}
