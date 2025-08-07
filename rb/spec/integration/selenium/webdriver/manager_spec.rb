@@ -169,8 +169,9 @@ module Selenium
           end
 
           it 'does not allow adding with value None when secure is false',
-             only: {browser: %i[chrome edge],
-                    reason: 'https://github.com/mozilla/geckodriver/issues/1842'} do
+             except: [{browser: :firefox,
+                       reason: 'https://github.com/mozilla/geckodriver/issues/1842'},
+                      {browser: %i[safari safari_preview]}] do
             expect {
               driver.manage.add_cookie name: 'samesite',
                                        value: 'none-insecure',
