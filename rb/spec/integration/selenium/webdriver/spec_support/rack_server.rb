@@ -100,7 +100,7 @@ module Selenium
           BASIC_AUTH_CREDENTIALS = %w[test test].freeze
 
           def initialize(file_root)
-            @static = Rack::File.new(file_root)
+            @static = Rack::Files.new(file_root)
           end
 
           def call(env)
