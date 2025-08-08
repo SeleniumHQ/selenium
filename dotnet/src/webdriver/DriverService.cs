@@ -290,6 +290,12 @@ public abstract class DriverService : ICommandServer
                 this.Stop();
             }
 
+            if (this.driverServiceProcess is not null)
+            {
+                this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
+                this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
+            }
+
             this.isDisposed = true;
         }
     }
