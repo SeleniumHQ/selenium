@@ -256,12 +256,14 @@ public abstract class DriverService : ICommandServer
         this.OnDriverProcessStarting(eventArgs);
 
         this.driverServiceProcess.Start();
-        bool serviceAvailable = this.WaitForServiceInitialization();
-        DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
-        this.OnDriverProcessStarted(processStartedEventArgs);
 
         this.driverServiceProcess.BeginOutputReadLine();
         this.driverServiceProcess.BeginErrorReadLine();
+
+        bool serviceAvailable = this.WaitForServiceInitialization();
+
+        DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
+        this.OnDriverProcessStarted(processStartedEventArgs);
 
         if (!serviceAvailable)
         {
