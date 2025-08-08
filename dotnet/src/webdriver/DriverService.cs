@@ -288,12 +288,12 @@ public abstract class DriverService : ICommandServer
             if (disposing)
             {
                 this.Stop();
-            }
 
-            if (this.driverServiceProcess is not null)
-            {
-                this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
-                this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
+                if (this.driverServiceProcess is not null)
+                {
+                    this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
+                    this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
+                }
             }
 
             this.isDisposed = true;
