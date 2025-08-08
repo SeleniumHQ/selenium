@@ -279,13 +279,13 @@ public sealed class FirefoxDriverService : DriverService
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
+        base.Dispose(disposing);
+
         if (logWriter != null && disposing)
         {
             logWriter.Dispose();
             logWriter = null;
         }
-
-        base.Dispose(disposing);
     }
 
     /// <summary>
