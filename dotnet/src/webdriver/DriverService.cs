@@ -255,8 +255,8 @@ public abstract class DriverService : ICommandServer
         DriverProcessStartingEventArgs eventArgs = new DriverProcessStartingEventArgs(this.driverServiceProcess.StartInfo);
         this.OnDriverProcessStarting(eventArgs);
 
+        // Important: Start the process and immediately begin reading the output and error streams to avoid IO deadlocks.
         this.driverServiceProcess.Start();
-
         this.driverServiceProcess.BeginOutputReadLine();
         this.driverServiceProcess.BeginErrorReadLine();
 
