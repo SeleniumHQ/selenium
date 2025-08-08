@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.v1_51;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.docker.v1_51.V151Docker.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -50,6 +50,7 @@ class InspectContainer {
   public ContainerInfo apply(ContainerId id) {
     Require.nonNull("Container id", id);
 
+    // API v1.48+ includes ImageManifestDescriptor field in container inspection
     HttpResponse res =
         client.execute(
             new HttpRequest(GET, String.format("/v%s/containers/%s/json", DOCKER_API_VERSION, id))

@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.v1_51;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.docker.v1_51.V151Docker.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -55,7 +55,8 @@ class ListImages {
     String familiarName = reference.getFamiliarName();
     Map<String, Object> filters = ImmutableMap.of("reference", ImmutableMap.of(familiarName, true));
 
-    // https://docs.docker.com/engine/api/v1.41/#operation/ImageList
+    // https://docs.docker.com/engine/api/v1.51/#operation/ImageList
+    // Note: In API v1.51, the Containers field now shows the actual count of containers using the image
     HttpRequest req =
         new HttpRequest(GET, String.format("/v%s/images/json", DOCKER_API_VERSION))
             .addHeader("Content-Type", JSON_UTF_8)

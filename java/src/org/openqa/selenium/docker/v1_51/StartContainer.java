@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.v1_51;
 
-import static org.openqa.selenium.docker.v1_41.DockerMessages.throwIfNecessary;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.docker.v1_51.DockerMessages.throwIfNecessary;
+import static org.openqa.selenium.docker.v1_51.V151Docker.DOCKER_API_VERSION;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.openqa.selenium.docker.ContainerId;

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.v1_51;
 
 import java.time.Duration;
 import java.util.Set;
@@ -32,30 +32,30 @@ import org.openqa.selenium.docker.internal.Reference;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 
-public class V141Docker implements DockerProtocol {
+public class V151Docker implements DockerProtocol {
 
-  static final String DOCKER_API_VERSION = "1.41";
-  private static final Logger LOG = Logger.getLogger(V141Docker.class.getName());
-  private final org.openqa.selenium.docker.v1_41.ListImages listImages;
+  static final String DOCKER_API_VERSION = "1.51";
+  private static final Logger LOG = Logger.getLogger(V151Docker.class.getName());
+  private final org.openqa.selenium.docker.v1_51.ListImages listImages;
   private final PullImage pullImage;
-  private final org.openqa.selenium.docker.v1_41.CreateContainer createContainer;
+  private final org.openqa.selenium.docker.v1_51.CreateContainer createContainer;
   private final StartContainer startContainer;
   private final StopContainer stopContainer;
   private final IsContainerPresent isContainerPresent;
-  private final org.openqa.selenium.docker.v1_41.InspectContainer inspectContainer;
-  private final org.openqa.selenium.docker.v1_41.GetContainerLogs containerLogs;
+  private final org.openqa.selenium.docker.v1_51.InspectContainer inspectContainer;
+  private final org.openqa.selenium.docker.v1_51.GetContainerLogs containerLogs;
 
-  public V141Docker(HttpHandler client) {
+  public V151Docker(HttpHandler client) {
     Require.nonNull("HTTP client", client);
-    listImages = new org.openqa.selenium.docker.v1_41.ListImages(client);
+    listImages = new org.openqa.selenium.docker.v1_51.ListImages(client);
     pullImage = new PullImage(client);
 
-    createContainer = new org.openqa.selenium.docker.v1_41.CreateContainer(this, client);
+    createContainer = new org.openqa.selenium.docker.v1_51.CreateContainer(this, client);
     startContainer = new StartContainer(client);
     stopContainer = new StopContainer(client);
     isContainerPresent = new IsContainerPresent(client);
-    inspectContainer = new org.openqa.selenium.docker.v1_41.InspectContainer(client);
-    containerLogs = new org.openqa.selenium.docker.v1_41.GetContainerLogs(client);
+    inspectContainer = new org.openqa.selenium.docker.v1_51.InspectContainer(client);
+    containerLogs = new org.openqa.selenium.docker.v1_51.GetContainerLogs(client);
   }
 
   @Override

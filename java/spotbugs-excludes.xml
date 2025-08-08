@@ -44,7 +44,7 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.docker.v1_41.PullImage"/>
+    <Class name="org.openqa.selenium.docker.v1_51.PullImage"/>
     <Bug pattern="DE_MIGHT_IGNORE"/>
   </Match>
 

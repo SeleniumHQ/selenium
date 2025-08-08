@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.v1_51;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -48,26 +48,25 @@ class ListImagesTest {
           assertThat(rawRef.get("selenium/standalone-firefox:latest")).isEqualTo(true);
 
           return new HttpResponse()
-              .addHeader("Content-Type", "application/json")
               .setContent(
                   utf8String(
-                      "[{\"Containers\":-1,\"Created\":1581716253,"
-                          + "\"Id\":\"sha256:bc24341497a00a3afbf04c518cb4bf98834d933ae331d1c5d3cd6f52c079049e\","
-                          + "\"Labels\":{\"authors\":\"SeleniumHQ\"},\"ParentId\":\"\","
-                          + "\"RepoDigests\":null,"
-                          + "\"RepoTags\":[\"selenium/standalone-firefox:latest\"],"
-                          + "\"SharedSize\":-1,\"Size\":765131593,\"VirtualSize\":765131593}]"));
+                      "["
+                          + "{"
+                          + "\"Id\": \"sha256:bc25c9ceb77d\","
+                          + "\"RepoTags\": [\"selenium/standalone-firefox:latest\"],"
+                          + "\"Containers\": 2"  // API v1.51: Containers field now shows actual count
+                          + "}"
+                          + "]"));
         };
 
+    ListImages listImages = new ListImages(handler);
     Reference reference = Reference.parse("selenium/standalone-firefox:latest");
+    Set<Image> images = listImages.apply(reference);
 
-    Set<Image> images = new ListImages(handler).apply(reference);
+    assertThat(images).hasSize(1);
 
-    assertThat(images.size()).isEqualTo(1);
     Image image = images.iterator().next();
-
-    assertThat(image.getId())
-        .isEqualTo(
-            new ImageId("sha256:bc24341497a00a3afbf04c518cb4bf98834d933ae331d1c5d3cd6f52c079049e"));
+    assertThat(image.getId()).isEqualTo(new ImageId("sha256:bc25c9ceb77d"));
+    assertThat(image.getTags()).contains("selenium/standalone-firefox:latest");
   }
 }

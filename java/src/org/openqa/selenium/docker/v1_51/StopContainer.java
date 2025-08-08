@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.v1_51;
 
-import static org.openqa.selenium.docker.v1_41.DockerMessages.throwIfNecessary;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.docker.v1_51.DockerMessages.throwIfNecessary;
+import static org.openqa.selenium.docker.v1_51.V151Docker.DOCKER_API_VERSION;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import java.time.Duration;
@@ -45,6 +45,9 @@ class StopContainer {
         new HttpRequest(POST, requestUrl)
             .addHeader("Content-Type", "text/plain")
             .addQueryParameter("t", seconds);
+    
+    // API v1.42+ supports signal query parameter to override container's default stop signal
+    // For now, we maintain backward compatibility by not adding it unless needed
 
     throwIfNecessary(client.execute(request), "Unable to stop container: %s", id);
   }

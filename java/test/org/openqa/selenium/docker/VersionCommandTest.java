@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-// https://docs.docker.com/engine/api/v1.41/#operation/SystemVersion
+// https://docs.docker.com/engine/api/v1.51/#operation/SystemVersion
 class VersionCommandTest {
 
   @Test
@@ -88,11 +88,11 @@ class VersionCommandTest {
             new HttpResponse()
                 .addHeader("Content-Type", "application/json")
                 // Note: the version here does not exactly match any we claim to provide
-                .setContent(utf8String("{\"ApiVersion\":\"1.42\",\"MinAPIVersion\":\"1.12\"}"));
+                .setContent(utf8String("{\"ApiVersion\":\"1.52\",\"MinAPIVersion\":\"1.12\"}"));
 
     Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
 
     assertThat(maybeDocker).isPresent();
-    assertThat(maybeDocker.get().version()).isEqualTo("1.41");
+    assertThat(maybeDocker.get().version()).isEqualTo("1.51");
   }
 }

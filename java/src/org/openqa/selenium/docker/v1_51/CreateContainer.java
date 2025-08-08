@@ -15,9 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.v1_51;
 
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.docker.v1_51.V151Docker.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
@@ -53,6 +53,8 @@ class CreateContainer {
 
   public Container apply(ContainerConfig info) {
     this.protocol.getImage(info.getImage().getName());
+    
+    // API v1.51 supports Mount type "image" and includes warnings for VolumeDriver with Mounts
     HttpResponse res =
         DockerMessages.throwIfNecessary(
             client.execute(

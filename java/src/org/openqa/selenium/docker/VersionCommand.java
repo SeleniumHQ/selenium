@@ -25,7 +25,7 @@ import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import org.openqa.selenium.docker.v1_41.V141Docker;
+import org.openqa.selenium.docker.v1_51.V151Docker;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
@@ -39,7 +39,7 @@ class VersionCommand {
   private static final Json JSON = new Json();
   // Insertion order matters, and is preserved by ImmutableMap.
   private static final Map<Version, Function<HttpHandler, DockerProtocol>> SUPPORTED_VERSIONS =
-      ImmutableMap.of(new Version("1.40"), V141Docker::new);
+      ImmutableMap.of(new Version("1.51"), V151Docker::new);
 
   private final HttpHandler handler;
 
