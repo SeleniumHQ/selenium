@@ -69,6 +69,7 @@ suite(
         await driver.navigate().refresh()
 
         assert.equal(beforeRequestEvent.request.method, 'GET')
+        await driver.wait(() => beforeRequestEvent.request.cookies.length > 0, 2000)
         assert.equal(beforeRequestEvent.request.cookies[0].name, 'north')
         assert.equal(beforeRequestEvent.request.cookies[0].value.value, 'biryani')
         const url = beforeRequestEvent.request.url
@@ -80,6 +81,7 @@ suite(
         })
         await driver.navigate().refresh()
 
+        await driver.wait(() => beforeRequestEvent.request.cookies.length > 1, 2000)
         assert.equal(beforeRequestEvent.request.cookies[1].name, 'south')
         assert.equal(beforeRequestEvent.request.cookies[1].value.value, 'dosa')
       })
