@@ -169,7 +169,7 @@ module Selenium
           end
 
           it 'does not allow adding with value None when secure is false',
-             except: [{browser: :firefox,
+             except: [{version: GlobalTestEnv.beta_browser_version(:firefox),
                        reason: 'https://github.com/mozilla/geckodriver/issues/1842'},
                       {browser: %i[safari safari_preview]}] do
             expect {

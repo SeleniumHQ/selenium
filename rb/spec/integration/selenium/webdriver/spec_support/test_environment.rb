@@ -193,16 +193,26 @@ module Selenium
           raise e
         end
 
-        def beta_chrome_version
-          chrome_beta_url = 'https://chromereleases.googleblog.com/search/label/Beta%20updates'
+        def beta_browser_version(browser)
+          case browser
+          when :chrome
+            uri = URI.parse('https://chromereleases.googleblog.com/search/label/Beta%20updates')
+            response = Net::HTTP.get_response(uri)
+            return "Failed to fetch Chrome Beta page: #{response.code}" unless response.is_a?(Net::HTTPSuccess)
 
-          uri = URI.parse(chrome_beta_url)
+            response.body.match(/\d+\.\d+\.\d+\.\d+/).to_s
 
-          response = Net::HTTP.get_response(uri)
+          when :firefox
+            uri = URI.parse('https://product-details.mozilla.org/1.0/firefox_versions.json')
+            response = Net::HTTP.get_response(uri)
+            return "Failed to fetch Firefox version API: #{response.code}" unless response.is_a?(Net::HTTPSuccess)
 
-          return "Failed to fetch Chrome Beta page: #{response&.code}" unless response.is_a?(Net::HTTPSuccess)
+            versions = JSON.parse(response.body)
+            versions['LATEST_FIREFOX_RELEASED_DEVEL_VERSION']
 
-          response.body.match(/\d+\.\d+\.\d+\.\d+/).to_s
+          else
+            raise ArgumentError, "Unsupported browser: #{browser}"
+          end
         end
 
         private
