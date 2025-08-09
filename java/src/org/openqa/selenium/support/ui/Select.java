@@ -123,13 +123,15 @@ public class Select implements ISelect, WrapsElement {
   @Override
   public void selectByVisibleText(String text) {
     assertSelectIsEnabled();
-
+    assertSelectIsVisible();
     // try to find the option via XPATH ...
     List<WebElement> options =
         element.findElements(
             By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
 
     for (WebElement option : options) {
+       if (!hasCssPropertyAndVisible(option))
+		        throw new NoSuchElementException("Invisible option with text: " + text);
       setSelected(option, true);
       if (!isMultiple()) {
         return;
@@ -137,17 +139,18 @@ public class Select implements ISelect, WrapsElement {
     }
 
     boolean matched = !options.isEmpty();
-    if (!matched && text.contains(" ")) {
-      String subStringWithoutSpace = getLongestSubstringWithoutSpace(text);
-      List<WebElement> candidates;
-      if ("".equals(subStringWithoutSpace)) {
+    if (!matched) {
+      String searchText = text.contains(" ") ? getLongestSubstringWithoutSpace(text) : text;
+		      List<WebElement> candidates;
+    
+      if (searchText.isEmpty()) {
         // hmm, text is either empty or contains only spaces - get all options ...
         candidates = element.findElements(By.tagName("option"));
       } else {
         // get candidates via XPATH ...
         candidates =
             element.findElements(
-                By.xpath(".//option[contains(., " + Quotes.escape(subStringWithoutSpace) + ")]"));
+                By.xpath(".//option[contains(., " + Quotes.escape(searchText) + ")]"));
       }
 
       String trimmed = text.trim();
