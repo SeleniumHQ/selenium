@@ -200,11 +200,6 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.remote.internal.WebElementToJsonConverter" />
-    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.chrome.AddHasCasting" />
     <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
   </Match>
