@@ -93,18 +93,12 @@ public abstract class ChromiumDriverService : DriverService
     /// <para>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</para>
     /// <para>A value of <see langword="null"/> or <see cref="string.Empty"/> means only the local loopback address can connect.</para>
     /// </summary>
-    [Obsolete($"Use {nameof(AllowedIPAddresses)}")]
-    public string? WhitelistedIPAddresses
-    {
-        get => this.AllowedIPAddresses;
-        set => this.AllowedIPAddresses = value;
-    }
+    public string? AllowedIPAddresses { get; set; }
 
     /// <summary>
-    /// <para>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</para>
-    /// <para>A value of <see langword="null"/> or <see cref="string.Empty"/> means only the local loopback address can connect.</para>
+    /// Adds readable timestamps to log
     /// </summary>
-    public string? AllowedIPAddresses { get; set; }
+    public bool ReadableTimestamp { get; set; }
 
     /// <summary>
     /// Gets the command-line arguments for the driver service.
@@ -139,6 +133,11 @@ public abstract class ChromiumDriverService : DriverService
                 argsBuilder.Append(" --append-log");
             }
 
+            if (this.ReadableTimestamp)
+            {
+                argsBuilder.Append(" --readable-timestamp");
+            }
+
             if (!string.IsNullOrEmpty(this.LogPath))
             {
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --log-path=\"{0}\"", this.LogPath);
@@ -161,10 +160,7 @@ public abstract class ChromiumDriverService : DriverService
 
             if (this.LogLevel != ChromiumDriverLogLevel.Default)
             {
-                if (Enum.IsDefined(typeof(ChromiumDriverLogLevel), this.LogLevel))
-                {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
-                }
+                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
             }
 
 

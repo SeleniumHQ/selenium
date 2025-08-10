@@ -60,6 +60,9 @@ public enum Browser {
           "no-sandbox",
           "disable-search-engine-choice-screen");
 
+      // Accept self-signed and invalid certificates for HTTPS testing
+      options.setAcceptInsecureCerts(true);
+
       Map<String, Object> prefs = new HashMap<>();
       prefs.put("exit_type", "None");
       prefs.put("exited_cleanly", true);
@@ -93,6 +96,9 @@ public enum Browser {
           "disable-breakpad",
           "disable-dev-shm-usage",
           "no-sandbox");
+
+      // Accept self-signed and invalid certificates for HTTPS testing
+      options.setAcceptInsecureCerts(true);
 
       Map<String, Object> prefs = new HashMap<>();
       prefs.put("exit_type", "None");
