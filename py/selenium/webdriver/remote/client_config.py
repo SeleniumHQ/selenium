@@ -24,8 +24,7 @@ from urllib import parse
 
 import certifi
 
-from selenium.webdriver.common.proxy import Proxy
-from selenium.webdriver.common.proxy import ProxyType
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 
 
 class AuthType(Enum):

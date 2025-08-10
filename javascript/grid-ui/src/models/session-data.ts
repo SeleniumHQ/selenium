@@ -33,6 +33,7 @@ interface SessionData {
   slot: any
   vnc: string
   name: string
+  [key: string]: any
 }
 
 export function createSessionData (

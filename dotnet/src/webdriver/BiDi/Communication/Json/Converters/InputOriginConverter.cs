@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Modules.Input;
+using OpenQA.Selenium.BiDi.Input;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;

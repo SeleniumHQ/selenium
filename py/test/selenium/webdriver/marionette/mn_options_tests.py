@@ -22,8 +22,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.firefox.options import Log
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.options import Log, Options
 
 
 @pytest.fixture

@@ -17,8 +17,7 @@
 
 import pytest
 
-from selenium.common.exceptions import InvalidSelectorException
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import InvalidSelectorException, NoSuchElementException
 from selenium.webdriver.common.by import By
 
 # By.id positive
@@ -95,7 +94,7 @@ def test_finding_multiple_elements_by_id_with_space_should_return_empty_list(dri
 
 def test_no_such_element_error(driver, pages):
     pages.load("formPage.html")
-    msg = r"\/errors#no-such-element-exception"
+    msg = r"\/errors#nosuchelementexception"
     with pytest.raises(NoSuchElementException, match=msg):
         driver.find_element(By.ID, "non_Existent_Button")
 
@@ -284,7 +283,7 @@ def test_should_not_find_element_by_class_when_the_name_queried_is_shorter_than_
 @pytest.mark.xfail_edge(reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=4743")
 def test_finding_asingle_element_by_empty_class_name_should_throw(driver, pages):
     pages.load("xhtmlTest.html")
-    msg = r"\/errors#invalid-selector-exception"
+    msg = r"\/errors#invalidselectorexception"
     with pytest.raises(InvalidSelectorException, match=msg):
         driver.find_element(By.CLASS_NAME, "")
 

@@ -1,3 +1,23 @@
+## 4.34.0
+
+- Bumping to nightly versions
+- Add warning when ftp proxy is used (#15905)
+- specify min required node version to >=20.0.0
+- [cdp] Add CDP for Chrome 138 and remove 135
+
+## 4.33.0
+
+- [cdp] Add CDP for Chrome 137 and remove 134
+- Fixing JS FF test that needs to add arguments.
+- Making Bidi Network, DevTools and Options test pass in RBE
+- Chrome capabilities test passes now in RBE
+- update old freenode channel link to libera (#15698)
+
+## 4.32.0
+
+- [cdp] Add CDP for Chrome 136 and remove 133
+- Set remote active protocol in Firefox to BiDi only
+
 ## 4.31.0
 
 - [bidi]: fix storage module instance checks and add user context cookie test (#15467)
@@ -871,7 +891,7 @@ to a remote Selenium server that supports Firefox 45.
 ### Changes
 
 - Removed native support for Firefox 46 and older.
-  - The `SELENIUM_MARIONETTE` enviornment variable no longer has an effect.
+  - The `SELENIUM_MARIONETTE` environment variable no longer has an effect.
   - `selenium-webdriver/firefox.Capability.MARIONETTE` is deprecated.
   - `selenium-webdriver/firefox.Options#useGeckoDriver()` is deprecated and now
     a no-op.
@@ -981,7 +1001,7 @@ or newer.
 - (**NOTICE**) The minimum supported version of Node is now 6.9.0 LTS
 - Removed support for the SafariDriver browser extension. This has been replaced
   by Apple's
-  safaridriver, which is included wtih Safari 10
+  safaridriver, which is included with Safari 10
   (available on OS X El Capitan and macOS Sierra).
 
   To use Safari 9 or older, users will have to use an older version of Selenium.
@@ -998,7 +1018,7 @@ or newer.
 - Extending the `selenium-webdriver/testing` module to support tests defined
   using generator
   functions.
-- The promise manager can be disabled by setting an enviornment variable:
+- The promise manager can be disabled by setting an environment variable:
   `SELENIUM_PROMISE_MANAGER=0`. This is part of a larger plan to remove the
   promise manager, as
   documented at

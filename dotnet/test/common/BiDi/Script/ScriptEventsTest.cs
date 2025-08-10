@@ -18,7 +18,6 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.Script;
 using System;
 using System.Threading.Tasks;
 
@@ -55,7 +54,7 @@ class ScriptEventsTest : BiDiTestFixture
 
         await bidi.Script.OnRealmCreatedAsync(tcs.SetResult);
 
-        await bidi.BrowsingContext.CreateAsync(Modules.BrowsingContext.ContextType.Window);
+        await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Window);
 
         var realmInfo = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -71,7 +70,7 @@ class ScriptEventsTest : BiDiTestFixture
 
         await bidi.Script.OnRealmDestroyedAsync(tcs.SetResult);
 
-        var ctx = await bidi.BrowsingContext.CreateAsync(Modules.BrowsingContext.ContextType.Window);
+        var ctx = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Window);
         await ctx.CloseAsync();
 
         var args = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));

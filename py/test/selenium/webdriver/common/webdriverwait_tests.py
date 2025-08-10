@@ -20,11 +20,13 @@ import time
 import pytest
 from urllib3.exceptions import ReadTimeoutError
 
-from selenium.common.exceptions import InvalidElementStateException
-from selenium.common.exceptions import InvalidSelectorException
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import (
+    InvalidElementStateException,
+    InvalidSelectorException,
+    StaleElementReferenceException,
+    TimeoutException,
+    WebDriverException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -205,7 +207,8 @@ def test_expected_condition_text_to_be_present_in_element(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.01).until(EC.text_to_be_present_in_element((By.ID, "unwrappable"), "Expected"))
     driver.execute_script(
-        "setTimeout(function(){var el = document.getElementById('unwrappable'); el.textContent = el.innerText = 'Unwrappable Expected text'}, 200)"
+        "setTimeout(function(){var el = document.getElementById('unwrappable'); el.textContent = el.innerText = "
+        + "'Unwrappable Expected text'}, 200)"
     )
     WebDriverWait(driver, 5).until(EC.text_to_be_present_in_element((By.ID, "unwrappable"), "Expected"))
     assert "Unwrappable Expected text" == driver.find_element(By.ID, "unwrappable").text

@@ -22,6 +22,7 @@ const error = require('selenium-webdriver/lib/error')
 const { Browser } = require('selenium-webdriver/index')
 const { Context } = require('selenium-webdriver/firefox')
 const { suite } = require('../../lib/test')
+const firefox = require('selenium-webdriver/firefox')
 
 suite(
   function (env) {
@@ -38,7 +39,9 @@ suite(
 
       describe('context switching', function () {
         beforeEach(async function () {
-          driver = await env.builder().build()
+          let options = env.builder().getFirefoxOptions() || new firefox.Options()
+          options.addArguments('-remote-allow-system-access')
+          driver = await env.builder().setFirefoxOptions(options).build()
         })
 
         it('can get context', async function () {

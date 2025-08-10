@@ -101,26 +101,6 @@ public class BrowsingContext {
     this.id = this.create(type);
   }
 
-  /*
-   * @deprecated
-   * Use {@link #BrowsingContext(WebDriver, CreateParameters)} instead.
-   */
-  @Deprecated
-  public BrowsingContext(WebDriver driver, WindowType type, String referenceContextId) {
-    Require.nonNull("WebDriver", driver);
-    Require.nonNull("Reference browsing context id", referenceContextId);
-
-    Require.precondition(!referenceContextId.isEmpty(), "Reference Context id cannot be empty");
-
-    if (!(driver instanceof HasBiDi)) {
-      throw new IllegalArgumentException("WebDriver instance must support BiDi protocol");
-    }
-
-    this.driver = driver;
-    this.bidi = ((HasBiDi) driver).getBiDi();
-    this.id = this.create(new CreateContextParameters(type).referenceContext(referenceContextId));
-  }
-
   public BrowsingContext(WebDriver driver, CreateContextParameters parameters) {
     Require.nonNull("WebDriver", driver);
 
@@ -168,12 +148,28 @@ public class BrowsingContext {
             "browsingContext.getTree", Map.of("root", id), browsingContextInfoListMapper));
   }
 
+  public List<BrowsingContextInfo> getTree(String root) {
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.getTree", Map.of("root", root), browsingContextInfoListMapper));
+  }
+
   public List<BrowsingContextInfo> getTree(int maxDepth) {
     return this.bidi.send(
         new Command<>(
             "browsingContext.getTree",
             Map.of(
                 "root", id,
+                "maxDepth", maxDepth),
+            browsingContextInfoListMapper));
+  }
+
+  public List<BrowsingContextInfo> getTree(String root, int maxDepth) {
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.getTree",
+            Map.of(
+                "root", root,
                 "maxDepth", maxDepth),
             browsingContextInfoListMapper));
   }

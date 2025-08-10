@@ -20,17 +20,13 @@ from unittest.mock import patch
 import pytest
 import urllib3
 
-from selenium import webdriver
-
 
 @pytest.mark.no_driver_after_test
-def test_bad_proxy_doesnt_interfere(clean_driver, clean_service):
+def test_bad_proxy_doesnt_interfere(clean_driver, clean_options, clean_service):
     # Proxy environment variables should be ignored if
     # ignore_local_proxy_environment_variables() is called.
-
-    options = webdriver.ChromeOptions()
-    options.ignore_local_proxy_environment_variables()
-    chrome_kwargs = {"options": options, "service": clean_service}
+    clean_options.ignore_local_proxy_environment_variables()
+    chrome_kwargs = {"options": clean_options, "service": clean_service}
     with patch.dict("os.environ", {"http_proxy": "bad", "https_proxy": "bad"}):
         driver = clean_driver(**chrome_kwargs)
     assert hasattr(driver, "command_executor")

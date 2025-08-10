@@ -23,6 +23,8 @@ module Selenium
   module WebDriver
     module Remote
       describe Driver, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {driver: :remote}] do
+        let(:tempfile) { create_tempfile }
+
         it 'exposes session_id' do
           expect(driver.session_id).to be_a(String)
         end
@@ -35,7 +37,7 @@ module Selenium
            flaky: {browser: :safari, ci: :github, reason: 'unreliable with downloads'} do
           driver.navigate.to url_for('upload.html')
 
-          driver.find_element(id: 'upload').send_keys(__FILE__)
+          driver.find_element(id: 'upload').send_keys(tempfile.path)
           driver.find_element(id: 'go').submit
           wait.until { driver.find_element(id: 'upload_label').displayed? }
 
@@ -43,7 +45,7 @@ module Selenium
           wait.until { driver.find_element(xpath: '//body') }
 
           body = driver.find_element(xpath: '//body')
-          expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(2)
+          expect(body.text.scan('This is a dummy test file').count).to eq(1)
         end
 
         it 'lists downloads', exclude: {browser: :safari, reason: 'grid hangs'} do

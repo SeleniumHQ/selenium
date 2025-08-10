@@ -37,7 +37,6 @@ def test_remove_intercept(driver):
 
 
 def test_add_and_remove_request_handler(driver, pages):
-
     requests = []
 
     def callback(request: Request):
@@ -72,7 +71,6 @@ def test_clear_request_handlers(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_edge
 def test_continue_request(driver, pages):
-
     def callback(request: Request):
         request.continue_request()
 
@@ -85,7 +83,6 @@ def test_continue_request(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_edge
 def test_continue_with_auth(driver):
-
     callback_id = driver.network.add_auth_handler("user", "passwd")
     assert callback_id is not None, "Request handler not added"
     driver.get("https://httpbin.org/basic-auth/user/passwd")

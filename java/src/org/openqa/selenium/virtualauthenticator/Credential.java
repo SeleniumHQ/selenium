@@ -66,7 +66,7 @@ public class Credential {
     Object credentialId = Require.nonNull("credentialId", map.get("credentialId"));
     Object isResidentCredential =
         Require.nonNull("isResidentCredential", map.get("isResidentCredential"));
-    Object rpId = Require.nonNull("rpId", map.get("rpId"));
+    Object rpId = map.get("rpId");
     Object privateKey = Require.nonNull("privateKey", map.get("privateKey"));
     Object userHandle = map.get("userHandle");
     Object signCount = Require.nonNull("signCount", map.get("signCount"));

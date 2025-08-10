@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.BiDi.Communication.Transport;
 
 class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 {
-    private readonly static ILogger _logger = Log.GetLogger<WebSocketTransport>();
+    private readonly static ILogger _logger = Internal.Logging.Log.GetLogger<WebSocketTransport>();
 
     private readonly ClientWebSocket _webSocket = new();
     private readonly ArraySegment<byte> _receiveBuffer = new(new byte[1024 * 8]);

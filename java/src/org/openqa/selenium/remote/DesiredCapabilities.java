@@ -23,6 +23,8 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import java.util.Map;
+import java.util.Optional;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -39,12 +41,8 @@ public class DesiredCapabilities extends MutableCapabilities {
     // no-arg constructor
   }
 
-  public DesiredCapabilities(Map<String, ?> rawMap) {
-    if (rawMap == null) {
-      return;
-    }
-
-    rawMap.forEach(this::setCapability);
+  public DesiredCapabilities(@Nullable Map<String, ?> rawMap) {
+    Optional.ofNullable(rawMap).ifPresent(map -> map.forEach(this::setCapability));
   }
 
   public DesiredCapabilities(Capabilities other) {
@@ -94,10 +92,9 @@ public class DesiredCapabilities extends MutableCapabilities {
    * @return DesiredCapabilities after the merge
    */
   @Override
-  public DesiredCapabilities merge(Capabilities extraCapabilities) {
-    if (extraCapabilities != null) {
-      extraCapabilities.asMap().forEach(this::setCapability);
-    }
+  public DesiredCapabilities merge(@Nullable Capabilities extraCapabilities) {
+    Optional.ofNullable(extraCapabilities)
+        .ifPresent(caps -> caps.asMap().forEach(this::setCapability));
     return this;
   }
 }

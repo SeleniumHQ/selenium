@@ -18,7 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication.Json.Internal;
-using OpenQA.Selenium.BiDi.Modules.Browser;
+using OpenQA.Selenium.BiDi.Browser;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;

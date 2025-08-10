@@ -29,13 +29,23 @@ use directories::BaseDirs;
 use flate2::read::GzDecoder;
 use fs_extra::dir::{move_dir, CopyOptions};
 use regex::Regex;
+#[cfg(windows)]
+use std::ffi::OsStr;
 use std::fs;
 use std::fs::File;
 use std::io;
 use std::io::{BufReader, Cursor, Read};
+#[cfg(windows)]
+use std::os::windows::ffi::OsStrExt;
 use std::path::{Path, PathBuf};
+#[cfg(windows)]
+use std::ptr;
 use tar::Archive;
 use walkdir::{DirEntry, WalkDir};
+#[cfg(windows)]
+use winapi::shared::minwindef::LPVOID;
+#[cfg(windows)]
+use winapi::um::winver::{GetFileVersionInfoSizeW, GetFileVersionInfoW, VerQueryValueW};
 use xz2::read::XzDecoder;
 use zip::ZipArchive;
 
@@ -179,7 +189,7 @@ pub fn uncompress_sfx(compressed_file: &str, target: &Path, log: &Logger) -> Res
 
     let zip_parent_str = path_to_string(zip_parent);
     let core_str = format!(r"{}\core", zip_parent_str);
-    move_folder_content(&core_str, &target, &log)?;
+    move_folder_content(&core_str, target, log)?;
 
     Ok(())
 }
@@ -294,7 +304,7 @@ pub fn uncompress_deb(
         fs::remove_file(Path::new(&link)).unwrap_or_default();
     }
 
-    move_folder_content(&opt_edge_str, &target, &log)?;
+    move_folder_content(&opt_edge_str, target, log)?;
 
     Ok(())
 }
@@ -592,5 +602,88 @@ pub fn capitalize(s: &str) -> String {
     match chars.next() {
         None => String::new(),
         Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+    }
+}
+
+#[cfg(not(windows))]
+pub fn get_win_file_version(_file_path: &str) -> Option<String> {
+    None
+}
+
+#[cfg(windows)]
+pub fn get_win_file_version(file_path: &str) -> Option<String> {
+    unsafe {
+        let wide_path: Vec<u16> = OsStr::new(file_path).encode_wide().chain(Some(0)).collect();
+
+        let mut dummy = 0;
+        let size = GetFileVersionInfoSizeW(wide_path.as_ptr(), &mut dummy);
+        if size == 0 {
+            return None;
+        }
+
+        let mut buffer: Vec<u8> = Vec::with_capacity(size as usize);
+        if GetFileVersionInfoW(wide_path.as_ptr(), 0, size, buffer.as_mut_ptr() as LPVOID) == 0 {
+            return None;
+        }
+        buffer.set_len(size as usize);
+
+        let mut lang_and_codepage_ptr: LPVOID = ptr::null_mut();
+        let mut lang_and_codepage_len: u32 = 0;
+
+        if VerQueryValueW(
+            buffer.as_ptr() as LPVOID,
+            OsStr::new("\\VarFileInfo\\Translation")
+                .encode_wide()
+                .chain(Some(0))
+                .collect::<Vec<u16>>()
+                .as_ptr(),
+            &mut lang_and_codepage_ptr,
+            &mut lang_and_codepage_len,
+        ) == 0
+        {
+            return None;
+        }
+
+        if lang_and_codepage_len == 0 {
+            return None;
+        }
+
+        let lang_and_codepage_slice = std::slice::from_raw_parts(
+            lang_and_codepage_ptr as *const u16,
+            lang_and_codepage_len as usize / 2,
+        );
+        let lang = lang_and_codepage_slice[0];
+        let codepage = lang_and_codepage_slice[1];
+
+        let query = format!(
+            "\\StringFileInfo\\{:04x}{:04x}\\ProductVersion",
+            lang, codepage
+        );
+        let query_wide: Vec<u16> = OsStr::new(&query).encode_wide().chain(Some(0)).collect();
+
+        let mut product_version_ptr: LPVOID = ptr::null_mut();
+        let mut product_version_len: u32 = 0;
+
+        if VerQueryValueW(
+            buffer.as_ptr() as LPVOID,
+            query_wide.as_ptr(),
+            &mut product_version_ptr,
+            &mut product_version_len,
+        ) == 0
+        {
+            return None;
+        }
+
+        if product_version_ptr.is_null() {
+            return None;
+        }
+
+        let product_version_slice = std::slice::from_raw_parts(
+            product_version_ptr as *const u16,
+            product_version_len as usize,
+        );
+        let product_version = String::from_utf16_lossy(product_version_slice);
+
+        Some(product_version.trim_end_matches('\0').to_string())
     }
 }

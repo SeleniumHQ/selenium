@@ -67,7 +67,7 @@ class Alert:
         :Usage:
             ::
 
-                Alert(driver).accept() # Confirm a alert dialog.
+                Alert(driver).accept()  # Confirm a alert dialog.
         """
         self.driver.execute(Command.W3C_ACCEPT_ALERT)
 

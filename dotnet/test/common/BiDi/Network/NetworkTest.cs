@@ -18,8 +18,7 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
-using OpenQA.Selenium.BiDi.Modules.Network;
+using OpenQA.Selenium.BiDi.BrowsingContext;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;

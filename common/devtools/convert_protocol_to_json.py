@@ -10,13 +10,20 @@ import sys
 
 import pdl
 
+
 def main(argv):
-    parser = argparse.ArgumentParser(description=(
-        "Converts from .pdl to .json by invoking the pdl Python module."))
-    parser.add_argument('--map_binary_to_string', type=bool,
-                        help=('If set, binary in the .pdl is mapped to a '
-                              'string in .json. Client code will have to '
-                              'base64 decode the string to get the payload.'))
+    parser = argparse.ArgumentParser(
+        description=("Converts from .pdl to .json by invoking the pdl Python module.")
+    )
+    parser.add_argument(
+        "--map_binary_to_string",
+        type=bool,
+        help=(
+            "If set, binary in the .pdl is mapped to a "
+            "string in .json. Client code will have to "
+            "base64 decode the string to get the payload."
+        ),
+    )
     parser.add_argument("pdl_file", help="The .pdl input file to parse.")
     parser.add_argument("json_file", help="The .json output file write.")
     args = parser.parse_args(argv)
@@ -26,10 +33,10 @@ def main(argv):
     protocol = pdl.loads(pdl_string, file_name, args.map_binary_to_string)
     input_file.close()
 
-    output_file = open(os.path.normpath(args.json_file), 'w')
-    json.dump(protocol, output_file, indent=4, separators=(',', ': '))
+    output_file = open(os.path.normpath(args.json_file), "w")
+    json.dump(protocol, output_file, indent=4, separators=(",", ": "))
     output_file.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))

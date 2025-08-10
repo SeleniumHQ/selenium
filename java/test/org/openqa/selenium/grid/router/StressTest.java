@@ -21,6 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
 import java.io.StringReader;
 import java.util.LinkedList;
@@ -123,8 +124,7 @@ class StressTest {
                         .oneOf(
                             browser
                                 .getCapabilities()
-                                .merge(
-                                    new MutableCapabilities(Map.of("se:downloadsEnabled", true))))
+                                .merge(new MutableCapabilities(Map.of(ENABLE_DOWNLOADS, true))))
                         .address(server.getUrl())
                         .build();
 

@@ -51,6 +51,7 @@ import { Size } from '../../models/size'
 import LiveView from '../LiveView/LiveView'
 import SessionData, { createSessionData } from '../../models/session-data'
 import { useNavigate } from 'react-router-dom'
+import ColumnSelector from './ColumnSelector'
 
 function descendingComparator<T> (a: T, b: T, orderBy: keyof T): number {
   if (orderBy === 'sessionDurationMillis') {
@@ -94,7 +95,7 @@ interface HeadCell {
   numeric: boolean
 }
 
-const headCells: HeadCell[] = [
+const fixedHeadCells: HeadCell[] = [
   { id: 'id', numeric: false, label: 'Session' },
   { id: 'capabilities', numeric: false, label: 'Capabilities' },
   { id: 'startTime', numeric: false, label: 'Start time' },
@@ -107,10 +108,11 @@ interface EnhancedTableProps {
     property: keyof SessionData) => void
   order: Order
   orderBy: string
+  headCells: HeadCell[]
 }
 
 function EnhancedTableHead (props: EnhancedTableProps): JSX.Element {
-  const { order, orderBy, onRequestSort } = props
+  const { order, orderBy, onRequestSort, headCells } = props
   const createSortHandler = (property: keyof SessionData) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property)
   }
@@ -173,6 +175,12 @@ const Transition = React.forwardRef(function Transition (
 function RunningSessions (props) {
   const [rowOpen, setRowOpen] = useState('')
   const [rowLiveViewOpen, setRowLiveViewOpen] = useState('')
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+  const [sessionToDelete, setSessionToDelete] = useState('')
+  const [deleteLocation, setDeleteLocation] = useState('') // 'info' or 'liveview'
+  const [feedbackMessage, setFeedbackMessage] = useState('')
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
+  const [feedbackSeverity, setFeedbackSeverity] = useState('success')
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<keyof SessionData>('sessionDurationMillis')
   const [selected, setSelected] = useState<string[]>([])
@@ -181,6 +189,16 @@ function RunningSessions (props) {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [searchFilter, setSearchFilter] = useState('')
   const [searchBarHelpOpen, setSearchBarHelpOpen] = useState(false)
+  const [selectedColumns, setSelectedColumns] = useState<string[]>(() => {
+    try {
+      const savedColumns = localStorage.getItem('selenium-grid-selected-columns')
+      return savedColumns ? JSON.parse(savedColumns) : []
+    } catch (e) {
+      console.error('Error loading saved columns:', e)
+      return []
+    }
+  })
+  const [headCells, setHeadCells] = useState<HeadCell[]>(fixedHeadCells)
   const liveViewRef = useRef(null)
   const navigate = useNavigate()
 
@@ -232,6 +250,79 @@ function RunningSessions (props) {
 
   const isSelected = (name: string): boolean => selected.includes(name)
 
+  const handleDeleteConfirmation = (sessionId: string, location: string) => {
+    setSessionToDelete(sessionId)
+    setDeleteLocation(location)
+    setConfirmDeleteOpen(true)
+  }
+
+  const handleDeleteSession = async () => {
+    try {
+      const session = sessions.find(s => s.id === sessionToDelete)
+      if (!session) {
+        setFeedbackMessage('Session not found')
+        setFeedbackSeverity('error')
+        setConfirmDeleteOpen(false)
+        setFeedbackOpen(true)
+        return
+      }
+
+      let deleteUrl = ''
+
+      const parsed = JSON.parse(session.capabilities)
+      let wsUrl = parsed['webSocketUrl'] ?? ''
+      if (wsUrl.length > 0) {
+        try {
+          const url = new URL(origin)
+          const sessionUrl = new URL(wsUrl)
+          url.pathname = sessionUrl.pathname.split('/se/')[0] // Remove /se/ and everything after
+          url.protocol = sessionUrl.protocol === 'wss:' ? 'https:' : 'http:'
+          deleteUrl = url.href
+        } catch (error) {
+          deleteUrl = ''
+        }
+      }
+
+      if (!deleteUrl) {
+        const currentUrl = window.location.href
+        const baseUrl = currentUrl.split('/ui/')[0] // Remove /ui/ and everything after
+        deleteUrl = `${baseUrl}/session/${sessionToDelete}`
+      }
+
+      const response = await fetch(deleteUrl, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        setFeedbackMessage('Session deleted successfully')
+        setFeedbackSeverity('success')
+        if (deleteLocation === 'liveview') {
+          handleDialogClose()
+        } else {
+          setRowOpen('')
+        }
+      } else {
+        setFeedbackMessage('Failed to delete session')
+        setFeedbackSeverity('error')
+      }
+    } catch (error) {
+      console.error('Error deleting session:', error)
+      setFeedbackMessage('Error deleting session')
+      setFeedbackSeverity('error')
+    }
+
+    setConfirmDeleteOpen(false)
+    setFeedbackOpen(true)
+    setSessionToDelete('')
+    setDeleteLocation('')
+  }
+
+  const handleCancelDelete = () => {
+    setConfirmDeleteOpen(false)
+    setSessionToDelete('')
+    setDeleteLocation('')
+  }
+
   const displaySessionInfo = (id: string): JSX.Element => {
     const handleInfoIconClick = (): void => {
       setRowOpen(id)
@@ -264,8 +355,36 @@ function RunningSessions (props) {
 
   const { sessions, origin, sessionId } = props
 
+  const getCapabilityValue = (capabilitiesStr: string, key: string): string => {
+    try {
+      const capabilities = JSON.parse(capabilitiesStr as string)
+      const value = capabilities[key]
+
+      if (value === undefined || value === null) {
+        return ''
+      }
+
+      if (typeof value === 'object') {
+        return JSON.stringify(value)
+      }
+
+      return String(value)
+    } catch (e) {
+      return ''
+    }
+  }
+
+  const hasDeleteSessionCapability = (capabilitiesStr: string): boolean => {
+    try {
+      const capabilities = JSON.parse(capabilitiesStr as string)
+      return capabilities['se:deleteSessionOnUi'] === true
+    } catch (e) {
+      return false
+    }
+  }
+
   const rows = sessions.map((session) => {
-    return createSessionData(
+    const sessionData = createSessionData(
       session.id,
       session.capabilities,
       session.startTime,
@@ -276,6 +395,12 @@ function RunningSessions (props) {
       session.slot,
       origin
     )
+
+    selectedColumns.forEach(column => {
+      sessionData[column] = getCapabilityValue(session.capabilities, column)
+    })
+
+    return sessionData
   })
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage)
 
@@ -292,18 +417,38 @@ function RunningSessions (props) {
     }
   }, [sessionId, sessions])
 
+  useEffect(() => {
+    const dynamicHeadCells = selectedColumns.map(column => ({
+      id: column,
+      numeric: false,
+      label: column
+    }))
+
+    setHeadCells([...fixedHeadCells, ...dynamicHeadCells])
+  }, [selectedColumns])
+
   return (
     <Box width='100%'>
       {rows.length > 0 && (
         <div>
           <Paper sx={{ width: '100%', marginBottom: 2 }}>
             <EnhancedTableToolbar title='Running'>
-              <RunningSessionsSearchBar
-                searchFilter={searchFilter}
-                handleSearch={setSearchFilter}
-                searchBarHelpOpen={searchBarHelpOpen}
-                setSearchBarHelpOpen={setSearchBarHelpOpen}
-              />
+              <Box display="flex" alignItems="center">
+                <ColumnSelector
+                  sessions={sessions}
+                  selectedColumns={selectedColumns}
+                  onColumnSelectionChange={(columns) => {
+                    setSelectedColumns(columns)
+                    localStorage.setItem('selenium-grid-selected-columns', JSON.stringify(columns))
+                  }}
+                />
+                <RunningSessionsSearchBar
+                  searchFilter={searchFilter}
+                  handleSearch={setSearchFilter}
+                  searchBarHelpOpen={searchBarHelpOpen}
+                  setSearchBarHelpOpen={setSearchBarHelpOpen}
+                />
+              </Box>
             </EnhancedTableToolbar>
             <TableContainer>
               <Table
@@ -316,6 +461,7 @@ function RunningSessions (props) {
                   order={order}
                   orderBy={orderBy}
                   onRequestSort={handleRequestSort}
+                  headCells={headCells}
                 />
                 <TableBody>
                   {stableSort(rows, getComparator(order, orderBy))
@@ -474,6 +620,16 @@ function RunningSessions (props) {
                                 </Typography>
                               </DialogContent>
                               <DialogActions>
+                                {hasDeleteSessionCapability(row.capabilities as string) && (
+                                  <Button
+                                    onClick={() => handleDeleteConfirmation(row.id as string, 'info')}
+                                    color='error'
+                                    variant='contained'
+                                    sx={{ marginRight: 1 }}
+                                  >
+                                    Delete
+                                  </Button>
+                                )}
                                 <Button
                                   onClick={() => setRowOpen('')}
                                   color='primary'
@@ -494,6 +650,10 @@ function RunningSessions (props) {
                           <TableCell align='left'>
                             {row.nodeUri}
                           </TableCell>
+                          {/* Add dynamic columns */}
+                          {selectedColumns.map(column => (
+                            <TableCell key={column} align='left'>{row[column]}</TableCell>
+                          ))}
                         </TableRow>
                       )
                     })}
@@ -524,6 +684,63 @@ function RunningSessions (props) {
           />
         </div>
       )}
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={confirmDeleteOpen}
+        onClose={handleCancelDelete}
+        aria-labelledby='delete-confirmation-dialog'
+      >
+        <DialogTitle id='delete-confirmation-dialog'>
+          Confirm Session Deletion
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete this session? This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCancelDelete}
+            color='primary'
+            variant='outlined'
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleDeleteSession}
+            color='error'
+            variant='contained'
+            autoFocus
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Feedback Dialog */}
+      <Dialog
+        open={feedbackOpen}
+        onClose={() => setFeedbackOpen(false)}
+        aria-labelledby='feedback-dialog'
+      >
+        <DialogTitle id='feedback-dialog'>
+          {feedbackSeverity === 'success' ? 'Success' : 'Error'}
+        </DialogTitle>
+        <DialogContent>
+          <Typography color={feedbackSeverity === 'success' ? 'success.main' : 'error.main'}>
+            {feedbackMessage}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setFeedbackOpen(false)}
+            color='primary'
+            variant='contained'
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

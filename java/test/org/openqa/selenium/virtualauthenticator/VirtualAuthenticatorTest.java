@@ -190,9 +190,10 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
             credentialId, "localhost", privateKey, /* signCount= */ 0);
     authenticator.addCredential(credential);
 
-    // Attempt to use the credential to generate an assertion.
-    Object response = getAssertionFor(Arrays.asList(1, 2, 3, 4));
-    assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
+    List<Credential> credentialList = authenticator.getCredentials();
+    assertThat(credentialList.size()).isEqualTo(1);
+    Credential retrievedCredential = credentialList.get(0);
+    assertThat(retrievedCredential.getId()).isEqualTo(credentialId);
   }
 
   @Test
@@ -201,7 +202,7 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
 
     createRKDisabledU2FAuthenticator();
 
-    /** A pkcs#8 encoded unencrypted EC256 private key as a base64url string. */
+    // A pkcs#8 encoded unencrypted EC256 private key as a base64url string.
     String base64EncodedPK =
         "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
             + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"

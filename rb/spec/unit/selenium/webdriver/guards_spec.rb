@@ -1,0 +1,116 @@
+# frozen_string_literal: true
+
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+require_relative 'spec_helper'
+require 'selenium/webdriver/support/guards'
+
+module Selenium
+  module WebDriver
+    module Support
+      describe Guards do
+        before do |example|
+          guards = described_class.new(example, bug_tracker: 'https://github.com/SeleniumHQ/selenium/issues')
+          guards.add_condition(:condition, :guarded)
+
+          results = guards.disposition
+          send(*results) if results
+        end
+
+        context 'with single guard' do
+          describe '#exclude' do
+            it 'ignores an unrecognized guard parameter', invalid: { condition: :guarded } do
+              # pass
+            end
+
+            it 'skips without running', exclude: { condition: :guarded } do
+              raise 'This code will not get executed so it will not fail'
+            end
+          end
+
+          describe '#flaky' do
+            it 'skips without running', flaky: { condition: :guarded } do
+              raise 'This code will not get executed so it will not fail'
+            end
+          end
+
+          describe '#exclusive' do
+            it 'skips without running if it does not match', exclusive: { condition: :not_guarded } do
+              raise 'This code will not get executed so it will not fail'
+            end
+
+            it 'does not guard if it does match', exclusive: { condition: :guarded } do
+              # pass
+            end
+          end
+
+          describe '#only' do
+            it 'guards when value does not match', only: { condition: :not_guarded } do
+              raise 'This code is executed but expected to fail'
+            end
+
+            it 'does not guard when value matches', only: { condition: :guarded } do
+              # pass
+            end
+          end
+
+          describe '#except' do
+            it 'guards when value matches and test fails', except: { condition: :guarded } do
+              raise 'This code is executed but expected to fail'
+            end
+
+            it 'does not guard when value does not match and test passes', except: { condition: :not_guarded } do
+              # pass
+            end
+          end
+        end
+
+        context 'when multiple guards' do
+          it 'guards if neither only nor except match and test fails', except: { condition: :not_guarded },
+             only: { condition: :not_guarded } do
+            raise 'This code is executed but expected to fail'
+          end
+
+          it 'guards if both only and except match', except: { condition: :guarded }, only: { condition: :guarded } do
+            raise 'This code is executed but expected to fail'
+          end
+
+          it 'guards if except matches and only does not', except: { condition: :guarded }, only: { condition: :not_guarded } do
+            raise 'This code is executed but expected to fail'
+          end
+
+          it 'does not guard if only matches and except does not', except: { condition: :not_guarded },
+             only: { condition: :guarded } do
+            # pass
+          end
+
+          it 'gives correct reason', except: [{ condition: :guarded, reason: 'bug1' },
+                                              { condition: :not_guarded, reason: 'bug2' }] do
+            raise 'This code is executed but expected to fail'
+          end
+        end
+
+        context 'when array of hashes' do
+          it 'guards if any Hash value is satisfied', only: [{ condition: :guarded }, { condition: :not_guarded }] do
+            raise 'This code is executed but expected to fail'
+          end
+        end
+      end
+    end # Support
+  end # WebDriver
+end # Selenium

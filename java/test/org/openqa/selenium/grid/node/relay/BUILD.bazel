@@ -15,5 +15,6 @@ java_test_suite(
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
     ] + JUNIT5_DEPS,
 )

@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
+using OpenQA.Selenium.BiDi.BrowsingContext;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;

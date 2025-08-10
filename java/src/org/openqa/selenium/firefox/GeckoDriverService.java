@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
@@ -47,6 +48,8 @@ public class GeckoDriverService extends FirefoxDriverService {
    * the {@link #createDefaultService() default service}.
    */
   public static final String GECKO_DRIVER_EXE_PROPERTY = "webdriver.gecko.driver";
+
+  public static final String GECKO_DRIVER_EXE_ENVIRONMENT_VARIABLE = "SE_GECKODRIVER";
 
   /**
    * System property that defines the location of the file where GeckoDriver should write log
@@ -81,11 +84,11 @@ public class GeckoDriverService extends FirefoxDriverService {
    * @throws IOException If an I/O error occurs.
    */
   public GeckoDriverService(
-      File executable,
+      @Nullable File executable,
       int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment)
+      @Nullable Duration timeout,
+      @Nullable List<String> args,
+      @Nullable Map<String, String> environment)
       throws IOException {
     super(
         executable,
@@ -101,6 +104,10 @@ public class GeckoDriverService extends FirefoxDriverService {
 
   public String getDriverProperty() {
     return GECKO_DRIVER_EXE_PROPERTY;
+  }
+
+  public String getDriverEnvironmentVariable() {
+    return GECKO_DRIVER_EXE_ENVIRONMENT_VARIABLE;
   }
 
   @Override
@@ -136,10 +143,10 @@ public class GeckoDriverService extends FirefoxDriverService {
   public static class Builder
       extends FirefoxDriverService.Builder<GeckoDriverService, GeckoDriverService.Builder> {
 
-    private String allowHosts;
-    private FirefoxDriverLogLevel logLevel;
-    private Boolean logTruncate;
-    private File profileRoot;
+    private @Nullable String allowHosts;
+    private @Nullable FirefoxDriverLogLevel logLevel;
+    private @Nullable Boolean logTruncate;
+    private @Nullable File profileRoot;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -162,7 +169,7 @@ public class GeckoDriverService extends FirefoxDriverService {
      * @param allowHosts Space-separated list of host names.
      * @return A self reference.
      */
-    public Builder withAllowHosts(String allowHosts) {
+    public Builder withAllowHosts(@Nullable String allowHosts) {
       this.allowHosts = allowHosts;
       return this;
     }
@@ -171,7 +178,7 @@ public class GeckoDriverService extends FirefoxDriverService {
      * @param logLevel which log events to record.
      * @return A self reference.
      */
-    public Builder withLogLevel(FirefoxDriverLogLevel logLevel) {
+    public Builder withLogLevel(@Nullable FirefoxDriverLogLevel logLevel) {
       this.logLevel = logLevel;
       return this;
     }
@@ -181,7 +188,7 @@ public class GeckoDriverService extends FirefoxDriverService {
      *     default; setting "false" removes truncation
      * @return A self reference.
      */
-    public Builder withTruncatedLogs(Boolean truncate) {
+    public Builder withTruncatedLogs(@Nullable Boolean truncate) {
       this.logTruncate = truncate;
       return this;
     }
@@ -192,7 +199,7 @@ public class GeckoDriverService extends FirefoxDriverService {
      * @param root location to store temporary profiles Defaults to the system temporary directory.
      * @return A self reference.
      */
-    public GeckoDriverService.Builder withProfileRoot(File root) {
+    public GeckoDriverService.Builder withProfileRoot(@Nullable File root) {
       this.profileRoot = root;
       return this;
     }
@@ -251,7 +258,11 @@ public class GeckoDriverService extends FirefoxDriverService {
 
     @Override
     protected GeckoDriverService createDriverService(
-        File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
+        @Nullable File exe,
+        int port,
+        @Nullable Duration timeout,
+        @Nullable List<String> args,
+        @Nullable Map<String, String> environment) {
       try {
         return new GeckoDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

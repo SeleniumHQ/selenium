@@ -16,14 +16,10 @@
 # under the License.
 
 
-from typing import TYPE_CHECKING
-from typing import List
-from typing import Optional
-from typing import Type
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from typing import Literal
-    from typing import TypedDict
+    from typing import Literal, TypedDict
 
     Orientation = Literal["portrait", "landscape"]
 
@@ -44,14 +40,13 @@ if TYPE_CHECKING:
         orientation: Orientation
         scale: float
         shrinkToFit: bool
-        pageRanges: List[str]
+        pageRanges: list[str]
 
 else:
     from typing import Any
-    from typing import Dict
 
     Orientation = str
-    _MarginOpts = _PageOpts = _PrintOpts = Dict[str, Any]
+    _MarginOpts = _PageOpts = _PrintOpts = dict[str, Any]
 
 
 class _PageSettingsDescriptor:
@@ -126,7 +121,7 @@ class _PageOrientationDescriptor:
 class _ValidateTypeDescriptor:
     """Base Class Descriptor which validates type of any subclass attribute."""
 
-    def __init__(self, name, expected_type: Type):
+    def __init__(self, name, expected_type: type):
         self.name = name
         self.expected_type = expected_type
 

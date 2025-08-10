@@ -26,9 +26,7 @@ if TYPE_CHECKING:
         script: int
 
 else:
-    from typing import Dict
-
-    JSONTimeouts = Dict[str, int]
+    JSONTimeouts = dict[str, int]
 
 
 class _TimeoutsDescriptor:

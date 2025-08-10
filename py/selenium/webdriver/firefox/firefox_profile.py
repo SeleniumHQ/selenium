@@ -229,10 +229,12 @@ class FirefoxProfile:
 
         Returns::
 
-            {'id':      u'rainbow@colors.org', # id of the addon
-             'version': u'1.4',                # version of the addon
-             'name':    u'Rainbow',            # name of the addon
-             'unpack':  False }                # whether to unpack the addon
+            {
+                "id": "rainbow@colors.org",  # id of the addon
+                "version": "1.4",  # version of the addon
+                "name": "Rainbow",  # name of the addon
+                "unpack": False,
+            }  # whether to unpack the addon
         """
 
         details = {"id": None, "unpack": False, "name": None, "version": None}

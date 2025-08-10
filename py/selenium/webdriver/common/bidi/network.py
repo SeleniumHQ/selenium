@@ -135,6 +135,7 @@ class Network:
                 body_size=event_data.params["request"].get("bodySize", None),
                 cookies=event_data.params["request"].get("cookies", None),
                 resource_type=event_data.params["request"].get("goog:resourceType", None),
+                headers=event_data.params["request"].get("headers", None),
                 headers_size=event_data.params["request"].get("headersSize", None),
                 timings=event_data.params["request"].get("timings", None),
                 url=event_data.params["request"].get("url", None),

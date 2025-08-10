@@ -21,6 +21,7 @@ from selenium.common.exceptions import NoAlertPresentException
 
 
 @pytest.mark.xfail_safari(reason="FedCM not supported")
+@pytest.mark.xfail_chrome(reason="https://issues.chromium.org/u/0/issues/425801332")
 @pytest.mark.xfail_firefox(reason="FedCM not supported")
 @pytest.mark.xfail_ie(reason="FedCM not supported")
 @pytest.mark.xfail_remote(reason="FedCM not supported, since remote uses Firefox")

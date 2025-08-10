@@ -14,7 +14,10 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 """The Proxy implementation."""
+
+import warnings
 
 
 class ProxyTypeFactory:
@@ -28,8 +31,8 @@ class ProxyTypeFactory:
 class ProxyType:
     """Set of possible types of proxy.
 
-    Each proxy type has 2 properties:    'ff_value' is value of Firefox
-    profile preference,    'string' is id of proxy type.
+    Each proxy type has 2 properties: 'ff_value' is value of Firefox
+    profile preference, 'string' is id of proxy type.
     """
 
     DIRECT = ProxyTypeFactory.make(0, "DIRECT")  # Direct connection, no proxy (default on Windows).
@@ -63,6 +66,14 @@ class _ProxyTypeDescriptor:
     def __set__(self, obj, value):
         if self.name == "autodetect" and not isinstance(value, bool):
             raise ValueError("Autodetect proxy value needs to be a boolean")
+        if self.name == "ftpProxy":
+            # TODO: Remove ftpProxy in future version and remove deprecation warning
+            # https://github.com/SeleniumHQ/selenium/issues/15905
+            warnings.warn(
+                "ftpProxy is deprecated and will be removed in the future",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         getattr(obj, "_verify_proxy_type_compatibility")(self.p_type)
         setattr(obj, "proxyType", self.p_type)
         setattr(obj, self.name, value)
@@ -74,7 +85,7 @@ class Proxy:
 
     proxyType = ProxyType.UNSPECIFIED
     autodetect = False
-    ftpProxy = ""
+    ftpProxy = ""  # TODO: Remove ftpProxy in future version and remove deprecation warning
     httpProxy = ""
     noProxy = ""
     proxyAutoconfigUrl = ""
@@ -100,6 +111,7 @@ class Proxy:
     `value`: `str`
     """
 
+    # TODO: Remove ftpProxy in future version and remove deprecation warning
     ftp_proxy = _ProxyTypeDescriptor("ftpProxy", ProxyType.MANUAL)
     """Gets and Sets `ftp_proxy`
 
@@ -244,7 +256,14 @@ class Proxy:
         if raw:
             if "proxyType" in raw and raw["proxyType"]:
                 self.proxy_type = ProxyType.load(raw["proxyType"])
+            # TODO: Remove ftpProxy in future version and remove deprecation warning
+            # https://github.com/SeleniumHQ/selenium/issues/15905
             if "ftpProxy" in raw and raw["ftpProxy"]:
+                warnings.warn(
+                    "ftpProxy is deprecated and will be removed in the future",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
                 self.ftp_proxy = raw["ftpProxy"]
             if "httpProxy" in raw and raw["httpProxy"]:
                 self.http_proxy = raw["httpProxy"]
@@ -288,6 +307,7 @@ class Proxy:
 
     def to_capabilities(self):
         proxy_caps = {"proxyType": self.proxyType["string"].lower()}
+        # TODO: Remove ftpProxy in future version and remove deprecation warning
         proxies = [
             "autodetect",
             "ftpProxy",
@@ -305,3 +325,39 @@ class Proxy:
             if attr_value:
                 proxy_caps[proxy] = attr_value
         return proxy_caps
+
+    def to_bidi_dict(self):
+        """Convert proxy settings to BiDi format.
+
+        Returns:
+        -------
+            dict: Proxy configuration in BiDi format.
+        """
+        proxy_type = self.proxyType["string"].lower()
+        result = {"proxyType": proxy_type}
+
+        if proxy_type == "manual":
+            if self.httpProxy:
+                result["httpProxy"] = self.httpProxy
+            if self.sslProxy:
+                result["sslProxy"] = self.sslProxy
+            if self.socksProxy:
+                result["socksProxy"] = self.socksProxy
+            if self.socksVersion is not None:
+                result["socksVersion"] = self.socksVersion
+            if self.noProxy:
+                # Convert comma-separated string to list
+                if isinstance(self.noProxy, str):
+                    result["noProxy"] = [host.strip() for host in self.noProxy.split(",") if host.strip()]
+                elif isinstance(self.noProxy, list):
+                    if not all(isinstance(h, str) for h in self.noProxy):
+                        raise TypeError("no_proxy list must contain only strings")
+                    result["noProxy"] = self.noProxy
+                else:
+                    raise TypeError("no_proxy must be a comma-separated string or a list of strings")
+
+        elif proxy_type == "pac":
+            if self.proxyAutoconfigUrl:
+                result["proxyAutoconfigUrl"] = self.proxyAutoconfigUrl
+
+        return result

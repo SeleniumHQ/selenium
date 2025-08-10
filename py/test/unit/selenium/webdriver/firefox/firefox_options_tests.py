@@ -19,8 +19,7 @@ import pytest
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.options import PageLoadStrategy
-from selenium.webdriver.common.proxy import Proxy
-from selenium.webdriver.common.proxy import ProxyType
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.options import Options

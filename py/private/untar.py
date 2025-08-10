@@ -19,7 +19,7 @@ import os
 import sys
 import tarfile
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     outdir = sys.argv[2]
     if not os.path.exists(outdir):
         os.makedirs(outdir)

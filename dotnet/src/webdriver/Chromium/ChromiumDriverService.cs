@@ -85,21 +85,20 @@ public abstract class ChromiumDriverService : DriverService
     public bool EnableAppendLog { get; set; }
 
     /// <summary>
-    /// <para>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</para>
-    /// <para>A value of <see langword="null"/> or <see cref="string.Empty"/> means only the local loopback address can connect.</para>
+    /// Gets or sets the level at which log output is displayed.
     /// </summary>
-    [Obsolete($"Use {nameof(AllowedIPAddresses)}")]
-    public string? WhitelistedIPAddresses
-    {
-        get => this.AllowedIPAddresses;
-        set => this.AllowedIPAddresses = value;
-    }
+    public ChromiumDriverLogLevel LogLevel { get; set; } = ChromiumDriverLogLevel.Default;
 
     /// <summary>
     /// <para>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</para>
     /// <para>A value of <see langword="null"/> or <see cref="string.Empty"/> means only the local loopback address can connect.</para>
     /// </summary>
     public string? AllowedIPAddresses { get; set; }
+
+    /// <summary>
+    /// Adds readable timestamps to log
+    /// </summary>
+    public bool ReadableTimestamp { get; set; }
 
     /// <summary>
     /// Gets the command-line arguments for the driver service.
@@ -134,6 +133,11 @@ public abstract class ChromiumDriverService : DriverService
                 argsBuilder.Append(" --append-log");
             }
 
+            if (this.ReadableTimestamp)
+            {
+                argsBuilder.Append(" --readable-timestamp");
+            }
+
             if (!string.IsNullOrEmpty(this.LogPath))
             {
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --log-path=\"{0}\"", this.LogPath);
@@ -153,6 +157,12 @@ public abstract class ChromiumDriverService : DriverService
             {
                 argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -allowed-ips={0}", this.AllowedIPAddresses));
             }
+
+            if (this.LogLevel != ChromiumDriverLogLevel.Default)
+            {
+                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
+            }
+
 
             return argsBuilder.ToString();
         }

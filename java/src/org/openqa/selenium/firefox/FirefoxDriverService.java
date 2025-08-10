@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.remote.service.DriverService;
 
 public abstract class FirefoxDriverService extends DriverService {
@@ -35,11 +36,11 @@ public abstract class FirefoxDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   public FirefoxDriverService(
-      File executable,
+      @Nullable File executable,
       int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment)
+      @Nullable Duration timeout,
+      @Nullable List<String> args,
+      @Nullable Map<String, String> environment)
       throws IOException {
     super(executable, port, timeout, args, environment);
   }

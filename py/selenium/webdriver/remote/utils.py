@@ -16,8 +16,7 @@
 # under the License.
 
 import json
-from typing import Any
-from typing import Union
+from typing import Any, Union
 
 
 def dump_json(json_struct: Any) -> str:

@@ -77,16 +77,22 @@ module Selenium
             guards = described_class.new(example)
             guards.add_condition(:foo, false)
 
-            expect(guards.disposition).to eq [:pending,
-                                              'Test guarded; Guarded by {:foo=>false, :reason=>"No reason given"};']
+            expect(guards.disposition.size).to eq(2)
+            expect(guards.disposition[0]).to eq :pending
+            message = /Test guarded;/
+            guarded_by = /Guarded by {:?foo[:=][ >]false, :?reason[:=][ >]"No reason given"};/
+            expect(guards.disposition[1]).to match(/#{message} #{guarded_by}/)
           end
 
           it 'is skipped without provided reason', exclusive: {foo: true} do |example|
             guards = described_class.new(example)
             guards.add_condition(:foo, false)
 
-            message = 'Test does not apply to this configuration; Guarded by {:foo=>true, :reason=>"No reason given"};'
-            expect(guards.disposition).to eq [:skip, message]
+            expect(guards.disposition.size).to eq(2)
+            expect(guards.disposition[0]).to eq :skip
+            message = /Test does not apply to this configuration;/
+            guarded_by = /Guarded by {:?foo[:=][ >]true, :?reason[:=][ >]"No reason given"};/
+            expect(guards.disposition[1]).to match(/#{message} #{guarded_by}/)
           end
         end
 
@@ -158,7 +164,7 @@ module Selenium
           it 'defaults to no reason given' do
             guard = described_class.new({}, :only)
 
-            expect(guard.message).to eq('Test guarded; Guarded by {:reason=>"No reason given"};')
+            expect(guard.message).to match(/Test guarded; Guarded by {:?reason[:=][ >]"No reason given"};/)
           end
 
           it 'accepts integer' do |example|
@@ -171,7 +177,7 @@ module Selenium
           it 'accepts String' do
             guard = described_class.new({reason: 'because'}, :only)
 
-            expect(guard.message).to eq('Test guarded; Guarded by {:reason=>"because"};')
+            expect(guard.message).to match(/Test guarded; Guarded by {:?reason[:=][ >]"because"};/)
           end
 
           it 'accepts Symbol of known message' do
@@ -191,20 +197,25 @@ module Selenium
           it 'has special message for exclude' do
             guard = described_class.new({reason: 'because'}, :exclude)
 
-            expect(guard.message).to eq('Test skipped because it breaks test run; Guarded by {:reason=>"because"};')
+            message = /Test skipped because it breaks test run;/
+            guarded_by = /Guarded by {:?reason[:=][ >]"because"};/
+            expect(guard.message).to match(/#{message} #{guarded_by}/)
           end
 
           it 'has special message for flaky' do
             guard = described_class.new({reason: 'because'}, :flaky)
 
-            msg = 'Test skipped because it is unreliable in this configuration; Guarded by {:reason=>"because"};'
-            expect(guard.message).to eq(msg)
+            message = /Test skipped because it is unreliable in this configuration;/
+            guarded_by = /Guarded by {:?reason[:=][ >]"because"};/
+            expect(guard.message).to match(/#{message} #{guarded_by}/)
           end
 
           it 'has special message for exclusive' do
             guard = described_class.new({reason: 'because'}, :exclusive)
 
-            expect(guard.message).to eq('Test does not apply to this configuration; Guarded by {:reason=>"because"};')
+            message = /Test does not apply to this configuration;/
+            guarded_by = /Guarded by {:?reason[:=][ >]"because"};/
+            expect(guard.message).to match(/#{message} #{guarded_by}/)
           end
         end
       end

@@ -31,7 +31,6 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 class BrowsingContextInspectorTest extends JupiterTestBase {
 
@@ -218,7 +217,6 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canListenToNavigationCommittedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {

@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.32.0.202504060755"
-license = { text = "Apache 2.0" }
+version = "4.35.0.202507081456"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
 readme = "README.rst"
 requires-python = "~=3.9"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
     "Operating System :: POSIX",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: MacOS :: MacOS X",
@@ -26,12 +26,12 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     ]
 dependencies = [
-    "urllib3[socks]>=1.26,<3",
-    "trio~=0.17",
-    "trio-websocket~=0.9",
-    "certifi>=2021.10.8",
-    "typing_extensions~=4.9",
-    "websocket-client~=1.8",
+    "urllib3[socks]~=2.5.0",
+    "trio~=0.30.0",
+    "trio-websocket~=0.12.2",
+    "certifi>=2025.6.15",
+    "typing_extensions~=4.14.0",
+    "websocket-client~=1.8.0",
     ]
 
 [project.urls]
@@ -51,8 +51,9 @@ exclude = ["test*"]
 namespaces = true
 # include-package-data is `true` by default in pyproject.toml
 
-[[tool.setuptools-rust.bins]]
+[[tool.setuptools-rust.ext-modules]]
 target = "selenium.webdriver.common.selenium-manager"
+binding = "Exec"
 
 [tool.setuptools.package-data]
 "*" = [
@@ -67,7 +68,8 @@ target = "selenium.webdriver.common.selenium-manager"
     "selenium-manager",
     "selenium-manager.exe",
     "CHANGES",
-    "LICENSE"
+    "LICENSE",
+    "NOTICE",
 ]
 
 [tool.pytest.ini_options]
@@ -91,6 +93,7 @@ testpaths = ["test"]
 
 # mypy global options
 [tool.mypy]
+exclude = "selenium/webdriver/common/devtools"
 # The aim in future here is we would be able to turn (most) of these flags on, however the typing technical
 # debt is quite colossal right now.  For now we should maybe get everything working with the config here
 # then look at going after partially or completely untyped defs as a phase-2.
@@ -131,41 +134,19 @@ ignore_missing_imports = true
 # suppress error messages about imports that cannot be resolved.
 ignore_missing_imports = true
 
-[tool.isort]
-# isort is a common python tool for keeping imports nicely formatted.
-# Automatically keep imports alphabetically sorted, on single lines in
-# PEP recommended sections (https://peps.python.org/pep-0008/#imports)
-# files or individual lines can be ignored via `# isort:skip|# isort:skip_file`.
-force_single_line = true
-profile = "black"
-py_version = 39
-quiet = true
-skip = "selenium/webdriver/common/devtools"
-
-[tool.black]
-extend-exclude = "selenium/webdriver/common/devtools"
+[tool.ruff]
+extend-exclude = [
+    "selenium/webdriver/common/devtools/",
+    "generate.py",
+]
 line-length = 120
-target-version = ["py39"]
+respect-gitignore = true
+target-version = "py39"
 
-[tool.autoflake]
-exclude = "selenium/webdriver/common/devtools"
-ignore-pass-after-docstring = true
-in-place = true
-quiet = true
-recursive = true
-remove-all-unused-imports = true
-remove-duplicate-keys = true
-remove-unused-variables = true
+[tool.ruff.lint]
+extend-select = ["E4", "E7", "E9", "F", "I", "E501", "RUF022"]
+fixable = ["ALL"]
 
-[tool.flake8]
-exclude = "selenium/webdriver/common/devtools"
-# Disable E501 once line length is better handled
-extend-ignore = ["E501", "E203"]
-# This does nothing for now as E501 is ignored
-max-line-length = 120
-min-python-version = "3.9"
-
-[tool.docformatter]
-exclude = "selenium/webdriver/common/devtools"
-in-place = true
-recursive = true
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 120

@@ -18,7 +18,6 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.Script;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -207,7 +206,7 @@ class CallFunctionParameterTest : BiDiTestFixture
     [Test]
     public async Task CanCallFunctionInARealm()
     {
-        await bidi.BrowsingContext.CreateAsync(Modules.BrowsingContext.ContextType.Tab);
+        await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
 
         var realms = await bidi.Script.GetRealmsAsync();
 

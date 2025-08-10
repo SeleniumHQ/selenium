@@ -77,11 +77,11 @@ module Selenium
             expect(service.extra_args).to include(*%w[--foo --bar])
           end
 
-          it 'there is a random port for websocket' do
+          it 'there is a zero port for websocket' do
             service = described_class.new
             ws_index = service.extra_args.index('--websocket-port')
             port = service.extra_args[ws_index + 1].to_i
-            expect(port).to be_positive
+            expect(port).to be_zero
           end
 
           context 'with connect existing' do
@@ -89,6 +89,14 @@ module Selenium
               service = described_class.new(args: ['--connect-existing'])
               expect(service.extra_args).not_to include('--websocket-port')
               expect(service.extra_args).to eq(['--connect-existing'])
+            end
+          end
+
+          context 'with websocket port' do
+            it 'does not add websocket-port' do
+              service = described_class.new(args: ['--websocket-port=1234'])
+              expect(service.extra_args).not_to include('--websocket-port=0')
+              expect(service.extra_args).to eq(['--websocket-port=1234'])
             end
           end
         end

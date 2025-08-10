@@ -22,6 +22,8 @@ from time import sleep
 
 from websocket import WebSocketApp  # type: ignore
 
+from selenium.common import WebDriverException
+
 logger = logging.getLogger(__name__)
 
 
@@ -65,7 +67,12 @@ class WebSocketConnection:
         response = self._messages.pop(current_id)
 
         if "error" in response:
-            raise Exception(response["error"])
+            error = response["error"]
+            if "message" in response:
+                error_msg = f"{error}: {response['message']}"
+                raise WebDriverException(error_msg)
+            else:
+                raise WebDriverException(error)
         else:
             result = response["result"]
             return self._deserialize_result(result, command)
@@ -97,7 +104,7 @@ class WebSocketConnection:
     def _deserialize_result(self, result, command):
         try:
             _ = command.send(result)
-            raise Exception("The command's generator function did not exit when expected!")
+            raise WebDriverException("The command's generator function did not exit when expected!")
         except StopIteration as exit:
             return exit.value
 

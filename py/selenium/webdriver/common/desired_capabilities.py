@@ -31,12 +31,11 @@ class DesiredCapabilities:
 
         # Create a desired capabilities object as a starting point.
         capabilities = DesiredCapabilities.FIREFOX.copy()
-        capabilities['platform'] = "WINDOWS"
-        capabilities['version'] = "10"
+        capabilities["platform"] = "WINDOWS"
+        capabilities["version"] = "10"
 
         # Instantiate an instance of Remote WebDriver with the desired capabilities.
-        driver = webdriver.Remote(desired_capabilities=capabilities,
-                                  command_executor=selenium_grid_url)
+        driver = webdriver.Remote(desired_capabilities=capabilities, command_executor=selenium_grid_url)
 
     Note: Always use '.copy()' on the DesiredCapabilities object to avoid the side
     effects of altering the Global class instance.

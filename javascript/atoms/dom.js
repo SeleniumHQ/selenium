@@ -52,14 +52,14 @@ bot.dom.IS_SHADOW_DOM_ENABLED = (typeof ShadowRoot === 'function');
  *     the active element for.
  * @return {?Element} The active element, if any.
  */
-bot.dom.getActiveElement = function(nodeOrWindow) {
+bot.dom.getActiveElement = function (nodeOrWindow) {
   var active = goog.dom.getActiveElement(
-      goog.dom.getOwnerDocument(nodeOrWindow));
+    goog.dom.getOwnerDocument(nodeOrWindow));
   // IE has the habit of returning an empty object from
   // goog.dom.getActiveElement instead of null.
   if (goog.userAgent.IE &&
-      active &&
-      typeof active.nodeType === 'undefined') {
+    active &&
+    typeof active.nodeType === 'undefined') {
     return null;
   }
   return active;
@@ -81,10 +81,10 @@ bot.dom.isElement = bot.dom.core.isElement;
  * @see bot.dom.isShown.
  * @see bot.dom.isEnabled
  */
-bot.dom.isInteractable = function(element) {
+bot.dom.isInteractable = function (element) {
   return bot.dom.isShown(element, /*ignoreOpacity=*/true) &&
-      bot.dom.isEnabled(element) &&
-      !bot.dom.hasPointerEventsDisabled_(element);
+    bot.dom.isEnabled(element) &&
+    !bot.dom.hasPointerEventsDisabled_(element);
 };
 
 
@@ -94,9 +94,9 @@ bot.dom.isInteractable = function(element) {
  *     not to be interactable.
  * @private
  */
-bot.dom.hasPointerEventsDisabled_ = function(element) {
+bot.dom.hasPointerEventsDisabled_ = function (element) {
   if (goog.userAgent.IE ||
-      (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.2'))) {
+    (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.2'))) {
     // Don't support pointer events
     return false;
   }
@@ -139,11 +139,11 @@ bot.dom.FOCUSABLE_FORM_FIELDS_ = [
  * @param {!Element} element The node to test.
  * @return {boolean} Whether the node is focusable.
  */
-bot.dom.isFocusable = function(element) {
+bot.dom.isFocusable = function (element) {
   return goog.array.some(bot.dom.FOCUSABLE_FORM_FIELDS_, tagNameMatches) ||
-      (bot.dom.getAttribute(element, 'tabindex') != null &&
-          Number(bot.dom.getProperty(element, 'tabIndex')) >= 0) ||
-      bot.dom.isEditable(element);
+    (bot.dom.getAttribute(element, 'tabindex') != null &&
+      Number(bot.dom.getProperty(element, 'tabIndex')) >= 0) ||
+    bot.dom.isEditable(element);
 
   function tagNameMatches(tagName) {
     return bot.dom.isElement(element, tagName);
@@ -186,10 +186,10 @@ bot.dom.DISABLED_ATTRIBUTE_SUPPORTED_ = [
  * @param {!Element} el The element to test.
  * @return {boolean} Whether the element is enabled.
  */
-bot.dom.isEnabled = function(el) {
+bot.dom.isEnabled = function (el) {
   var isSupported = goog.array.some(
-      bot.dom.DISABLED_ATTRIBUTE_SUPPORTED_,
-      function(tagName) { return bot.dom.isElement(el, tagName); });
+    bot.dom.DISABLED_ATTRIBUTE_SUPPORTED_,
+    function (tagName) { return bot.dom.isElement(el, tagName); });
   if (!isSupported) {
     return true;
   }
@@ -201,22 +201,22 @@ bot.dom.isEnabled = function(el) {
   // The element is not explicitly disabled, but if it is an OPTION or OPTGROUP,
   // we must test if it inherits its state from a parent.
   if (el.parentNode &&
-      el.parentNode.nodeType == goog.dom.NodeType.ELEMENT &&
-      bot.dom.isElement(el, goog.dom.TagName.OPTGROUP) ||
-      bot.dom.isElement(el, goog.dom.TagName.OPTION)) {
-    return bot.dom.isEnabled(/**@type{!Element}*/ (el.parentNode));
+    el.parentNode.nodeType == goog.dom.NodeType.ELEMENT &&
+    bot.dom.isElement(el, goog.dom.TagName.OPTGROUP) ||
+    bot.dom.isElement(el, goog.dom.TagName.OPTION)) {
+    return bot.dom.isEnabled(/**@type{!Element}*/(el.parentNode));
   }
 
   // Is there an ancestor of the current element that is a disabled fieldset
   // and whose child is also an ancestor-or-self of the current element but is
   // not the first legend child of the fieldset. If so then the element is
   // disabled.
-  return !goog.dom.getAncestor(el, function(e) {
+  return !goog.dom.getAncestor(el, function (e) {
     var parent = e.parentNode;
 
     if (parent &&
-        bot.dom.isElement(parent, goog.dom.TagName.FIELDSET) &&
-        bot.dom.getProperty(/** @type {!Element} */ (parent), 'disabled')) {
+      bot.dom.isElement(parent, goog.dom.TagName.FIELDSET) &&
+      bot.dom.getProperty(/** @type {!Element} */(parent), 'disabled')) {
       if (!bot.dom.isElement(e, goog.dom.TagName.LEGEND)) {
         return true;
       }
@@ -258,7 +258,7 @@ bot.dom.TEXTUAL_INPUT_TYPES_ = [
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element accepts user-typed text.
  */
-bot.dom.isTextual = function(element) {
+bot.dom.isTextual = function (element) {
   if (bot.dom.isElement(element, goog.dom.TagName.TEXTAREA)) {
     return true;
   }
@@ -280,7 +280,7 @@ bot.dom.isTextual = function(element) {
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element is a file input.
  */
-bot.dom.isFileInput = function(element) {
+bot.dom.isFileInput = function (element) {
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     var type = element.type.toLowerCase();
     return type == 'file';
@@ -295,7 +295,7 @@ bot.dom.isFileInput = function(element) {
  * @param {string} inputType The type of input to check.
  * @return {boolean} Whether the element is an input with specified type.
  */
-bot.dom.isInputType = function(element, inputType) {
+bot.dom.isInputType = function (element, inputType) {
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     var type = element.type.toLowerCase();
     return type == inputType;
@@ -309,7 +309,7 @@ bot.dom.isInputType = function(element, inputType) {
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element is contentEditable.
  */
-bot.dom.isContentEditable = function(element) {
+bot.dom.isContentEditable = function (element) {
   // Check if browser supports contentEditable.
   if (!goog.isDef(element['contentEditable'])) {
     return false;
@@ -345,17 +345,17 @@ bot.dom.isContentEditable = function(element) {
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element accepts user-typed text.
  */
-bot.dom.isEditable = function(element) {
+bot.dom.isEditable = function (element) {
   return (bot.dom.isTextual(element) ||
-          bot.dom.isFileInput(element) ||
-          bot.dom.isInputType(element, 'range') ||
-          bot.dom.isInputType(element, 'date') ||
-          bot.dom.isInputType(element, 'month') ||
-          bot.dom.isInputType(element, 'week') ||
-          bot.dom.isInputType(element, 'time') ||
-          bot.dom.isInputType(element, 'datetime-local') ||
-          bot.dom.isInputType(element, 'color')) &&
-      !bot.dom.getProperty(element, 'readOnly');
+    bot.dom.isFileInput(element) ||
+    bot.dom.isInputType(element, 'range') ||
+    bot.dom.isInputType(element, 'date') ||
+    bot.dom.isInputType(element, 'month') ||
+    bot.dom.isInputType(element, 'week') ||
+    bot.dom.isInputType(element, 'time') ||
+    bot.dom.isInputType(element, 'datetime-local') ||
+    bot.dom.isInputType(element, 'color')) &&
+    !bot.dom.getProperty(element, 'readOnly');
 };
 
 
@@ -366,13 +366,13 @@ bot.dom.isEditable = function(element) {
  * @param {!Node} node The node who's parent is desired.
  * @return {Element} The parent element, if available, null otherwise.
  */
-bot.dom.getParentElement = function(node) {
+bot.dom.getParentElement = function (node) {
   var elem = node.parentNode;
 
   while (elem &&
-         elem.nodeType != goog.dom.NodeType.ELEMENT &&
-         elem.nodeType != goog.dom.NodeType.DOCUMENT &&
-         elem.nodeType != goog.dom.NodeType.DOCUMENT_FRAGMENT) {
+    elem.nodeType != goog.dom.NodeType.ELEMENT &&
+    elem.nodeType != goog.dom.NodeType.DOCUMENT &&
+    elem.nodeType != goog.dom.NodeType.DOCUMENT_FRAGMENT) {
     elem = elem.parentNode;
   }
   return /** @type {Element} */ (bot.dom.isElement(elem) ? elem : null);
@@ -388,7 +388,7 @@ bot.dom.getParentElement = function(node) {
  * @param {string} styleName Name of the style property in selector-case.
  * @return {string} The value of the style property.
  */
-bot.dom.getInlineStyle = function(elem, styleName) {
+bot.dom.getInlineStyle = function (elem, styleName) {
   return goog.style.getStyle(elem, styleName);
 };
 
@@ -406,15 +406,15 @@ bot.dom.getInlineStyle = function(elem, styleName) {
  * @param {string} propertyName Name of the CSS property.
  * @return {?string} The value of the style property, or null.
  */
-bot.dom.getEffectiveStyle = function(elem, propertyName) {
+bot.dom.getEffectiveStyle = function (elem, propertyName) {
   var styleName = goog.string.toCamelCase(propertyName);
   if (styleName == 'float' ||
-      styleName == 'cssFloat' ||
-      styleName == 'styleFloat') {
+    styleName == 'cssFloat' ||
+    styleName == 'styleFloat') {
     styleName = bot.userAgent.IE_DOC_PRE9 ? 'styleFloat' : 'cssFloat';
   }
   var style = goog.style.getComputedStyle(elem, styleName) ||
-      bot.dom.getCascadedStyle_(elem, styleName);
+    bot.dom.getCascadedStyle_(elem, styleName);
   if (style === null) {
     return null;
   }
@@ -431,7 +431,7 @@ bot.dom.getEffectiveStyle = function(elem, propertyName) {
  * @return {?string} The value of the style property, or null.
  * @private
  */
-bot.dom.getCascadedStyle_ = function(elem, styleName) {
+bot.dom.getCascadedStyle_ = function (elem, styleName) {
   var style = elem.currentStyle || elem.style;
   var value = style[styleName];
   if (!goog.isDef(value) && goog.isFunction(style.getPropertyValue)) {
@@ -457,7 +457,7 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
  * @return {boolean} Whether or not the element is visible.
  * @private
  */
-bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
+bot.dom.isShown_ = function (elem, ignoreOpacity, parentsDisplayedFn) {
   if (!bot.dom.isElement(elem)) {
     throw new Error('Argument to isShown must be of type Element');
   }
@@ -472,8 +472,8 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
   // Option or optgroup is shown iff enclosing select is shown (ignoring the
   // select's opacity).
   if (bot.dom.isElement(elem, goog.dom.TagName.OPTION) ||
-      bot.dom.isElement(elem, goog.dom.TagName.OPTGROUP)) {
-    var select = /**@type {Element}*/ (goog.dom.getAncestor(elem, function(e) {
+    bot.dom.isElement(elem, goog.dom.TagName.OPTGROUP)) {
+    var select = /**@type {Element}*/ (goog.dom.getAncestor(elem, function (e) {
       return bot.dom.isElement(e, goog.dom.TagName.SELECT);
     }));
     return !!select && bot.dom.isShown_(select, true, parentsDisplayedFn);
@@ -484,14 +484,14 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
   var imageMap = bot.dom.maybeFindImageMap_(elem);
   if (imageMap) {
     return !!imageMap.image &&
-           imageMap.rect.width > 0 && imageMap.rect.height > 0 &&
-           bot.dom.isShown_(
-               imageMap.image, ignoreOpacity, parentsDisplayedFn);
+      imageMap.rect.width > 0 && imageMap.rect.height > 0 &&
+      bot.dom.isShown_(
+        imageMap.image, ignoreOpacity, parentsDisplayedFn);
   }
 
   // Any hidden input is not shown.
   if (bot.dom.isElement(elem, goog.dom.TagName.INPUT) &&
-      elem.type.toLowerCase() == 'hidden') {
+    elem.type.toLowerCase() == 'hidden') {
     return false;
   }
 
@@ -531,10 +531,10 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
     // if they have a child element or text node with positive size, unless
     // the element has an 'overflow' style of 'hidden'.
     return bot.dom.getEffectiveStyle(e, 'overflow') != 'hidden' &&
-        goog.array.some(e.childNodes, function(n) {
-          return n.nodeType == goog.dom.NodeType.TEXT ||
-                 (bot.dom.isElement(n) && positiveSize(n));
-        });
+      goog.array.some(e.childNodes, function (n) {
+        return n.nodeType == goog.dom.NodeType.TEXT ||
+          (bot.dom.isElement(n) && positiveSize(n));
+      });
   }
   if (!positiveSize(elem)) {
     return false;
@@ -543,10 +543,10 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
   // Elements that are hidden by overflow are not shown.
   function hiddenByOverflow(e) {
     return bot.dom.getOverflowState(e) == bot.dom.OverflowState.HIDDEN &&
-        goog.array.every(e.childNodes, function(n) {
-          return !bot.dom.isElement(n) || hiddenByOverflow(n) ||
-                 !positiveSize(n);
-        });
+      goog.array.every(e.childNodes, function (n) {
+        return !bot.dom.isElement(n) || hiddenByOverflow(n) ||
+          !positiveSize(n);
+      });
   }
   return !hiddenByOverflow(elem);
 };
@@ -570,7 +570,7 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
  *     when determining whether it is shown; defaults to false.
  * @return {boolean} Whether or not the element is visible.
  */
-bot.dom.isShown = function(elem, opt_ignoreOpacity) {
+bot.dom.isShown = function (elem, opt_ignoreOpacity) {
   /**
    * Determines whether an element or its parents have `display: none` set
    * @param {!Node} e the element
@@ -579,7 +579,8 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   function displayed(e) {
     if (bot.dom.isElement(e)) {
       var elem = /** @type {!Element} */ (e);
-      if (bot.dom.getEffectiveStyle(elem, 'display') == 'none') {
+      if ((bot.dom.getEffectiveStyle(elem, 'display') == 'none')
+        || (bot.dom.getEffectiveStyle(elem, 'content-visibility') == 'hidden')) {
         return false;
       }
     }
@@ -598,14 +599,14 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     }
 
     if (parent && (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
-        parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT)) {
+      parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT)) {
       return true;
     }
 
     // Child of DETAILS element is not shown unless the DETAILS element is open
     // or the child is a SUMMARY element.
     if (parent && bot.dom.isElement(parent, goog.dom.TagName.DETAILS) &&
-        !parent.open && !bot.dom.isElement(e, goog.dom.TagName.SUMMARY)) {
+      !parent.open && !bot.dom.isElement(e, goog.dom.TagName.SUMMARY)) {
       return false;
     }
 
@@ -642,7 +643,7 @@ bot.dom.OverflowState = {
  *     Coordinate or rectangle relative to the top-left corner of the element.
  * @return {bot.dom.OverflowState} Overflow state of the element.
  */
-bot.dom.getOverflowState = function(elem, opt_region) {
+bot.dom.getOverflowState = function (elem, opt_region) {
   var region = bot.dom.getClientRegion(elem, opt_region);
   var ownerDoc = goog.dom.getOwnerDocument(elem);
   var htmlElem = ownerDoc.documentElement;
@@ -672,14 +673,14 @@ bot.dom.getOverflowState = function(elem, opt_region) {
       }
       // An element cannot overflow an element with an inline or contents display style.
       var containerDisplay = /** @type {string} */ (
-          bot.dom.getEffectiveStyle(container, 'display'));
+        bot.dom.getEffectiveStyle(container, 'display'));
       if (goog.string.startsWith(containerDisplay, 'inline') ||
-          (containerDisplay == 'contents')) {
+        (containerDisplay == 'contents')) {
         return false;
       }
       // An absolute-positioned element cannot overflow a static-positioned one.
       if (position == 'absolute' &&
-          bot.dom.getEffectiveStyle(container, 'position') == 'static') {
+        bot.dom.getEffectiveStyle(container, 'position') == 'static') {
         return false;
       }
       return true;
@@ -696,7 +697,7 @@ bot.dom.getOverflowState = function(elem, opt_region) {
       if (e == htmlElem && bodyElem) {
         overflowElem = bodyElem;
       } else if (e == bodyElem) {
-        return {x: 'visible', y: 'visible'};
+        return { x: 'visible', y: 'visible' };
       }
     }
     var overflow = {
@@ -723,8 +724,8 @@ bot.dom.getOverflowState = function(elem, opt_region) {
 
   // Check if the element overflows any ancestor element.
   for (var container = getOverflowParent(elem);
-       !!container;
-       container = getOverflowParent(container)) {
+    !!container;
+    container = getOverflowParent(container)) {
     var containerOverflow = getOverflowStyles(container);
 
     // If the container has overflow:visible, the element cannot overflow it.
@@ -743,10 +744,10 @@ bot.dom.getOverflowState = function(elem, opt_region) {
     var underflowsX = region.right < containerRect.left;
     var underflowsY = region.bottom < containerRect.top;
     if ((underflowsX && containerOverflow.x == 'hidden') ||
-        (underflowsY && containerOverflow.y == 'hidden')) {
+      (underflowsY && containerOverflow.y == 'hidden')) {
       return bot.dom.OverflowState.HIDDEN;
     } else if ((underflowsX && containerOverflow.x != 'visible') ||
-               (underflowsY && containerOverflow.y != 'visible')) {
+      (underflowsY && containerOverflow.y != 'visible')) {
       // When the element is positioned to the left or above a container, we
       // have to distinguish between the element being completely outside the
       // container and merely scrolled out of view within the container.
@@ -754,28 +755,28 @@ bot.dom.getOverflowState = function(elem, opt_region) {
       var unscrollableX = region.right < containerRect.left - containerScroll.x;
       var unscrollableY = region.bottom < containerRect.top - containerScroll.y;
       if ((unscrollableX && containerOverflow.x != 'visible') ||
-          (unscrollableY && containerOverflow.x != 'visible')) {
+        (unscrollableY && containerOverflow.x != 'visible')) {
         return bot.dom.OverflowState.HIDDEN;
       }
       var containerState = bot.dom.getOverflowState(container);
       return containerState == bot.dom.OverflowState.HIDDEN ?
-          bot.dom.OverflowState.HIDDEN : bot.dom.OverflowState.SCROLL;
+        bot.dom.OverflowState.HIDDEN : bot.dom.OverflowState.SCROLL;
     }
 
     // Check "overflow": if an element is to the right or below a container
     var overflowsX = region.left >= containerRect.left + containerRect.width;
     var overflowsY = region.top >= containerRect.top + containerRect.height;
     if ((overflowsX && containerOverflow.x == 'hidden') ||
-        (overflowsY && containerOverflow.y == 'hidden')) {
+      (overflowsY && containerOverflow.y == 'hidden')) {
       return bot.dom.OverflowState.HIDDEN;
     } else if ((overflowsX && containerOverflow.x != 'visible') ||
-               (overflowsY && containerOverflow.y != 'visible')) {
+      (overflowsY && containerOverflow.y != 'visible')) {
       // If the element has fixed position and falls outside the scrollable area
       // of the document, then it is hidden.
       if (treatAsFixedPosition) {
         var docScroll = getScroll(container);
         if ((region.left >= htmlElem.scrollWidth - docScroll.x) ||
-            (region.right >= htmlElem.scrollHeight - docScroll.y)) {
+          (region.right >= htmlElem.scrollHeight - docScroll.y)) {
           return bot.dom.OverflowState.HIDDEN;
         }
       }
@@ -784,7 +785,7 @@ bot.dom.getOverflowState = function(elem, opt_region) {
       // which it is also hidden by overflow.
       var containerState = bot.dom.getOverflowState(container);
       return containerState == bot.dom.OverflowState.HIDDEN ?
-          bot.dom.OverflowState.HIDDEN : bot.dom.OverflowState.SCROLL;
+        bot.dom.OverflowState.HIDDEN : bot.dom.OverflowState.SCROLL;
     }
   }
 
@@ -799,9 +800,9 @@ bot.dom.getOverflowState = function(elem, opt_region) {
  * @const
  */
 bot.dom.CSS_TRANSFORM_MATRIX_REGEX_ =
-    new RegExp('matrix\\(([\\d\\.\\-]+), ([\\d\\.\\-]+), ' +
-               '([\\d\\.\\-]+), ([\\d\\.\\-]+), ' +
-               '([\\d\\.\\-]+)(?:px)?, ([\\d\\.\\-]+)(?:px)?\\)');
+  new RegExp('matrix\\(([\\d\\.\\-]+), ([\\d\\.\\-]+), ' +
+    '([\\d\\.\\-]+), ([\\d\\.\\-]+), ' +
+    '([\\d\\.\\-]+)(?:px)?, ([\\d\\.\\-]+)(?:px)?\\)');
 
 
 /**
@@ -815,7 +816,7 @@ bot.dom.CSS_TRANSFORM_MATRIX_REGEX_ =
  * @param {!Element} elem The element to use.
  * @return {!goog.math.Rect} The interaction box of the element.
  */
-bot.dom.getClientRect = function(elem) {
+bot.dom.getClientRect = function (elem) {
   var imageMap = bot.dom.maybeFindImageMap_(elem);
   if (imageMap) {
     return imageMap.rect;
@@ -837,7 +838,7 @@ bot.dom.getClientRect = function(elem) {
     }
 
     var rect = new goog.math.Rect(nativeRect.left, nativeRect.top,
-        nativeRect.right - nativeRect.left, nativeRect.bottom - nativeRect.top);
+      nativeRect.right - nativeRect.left, nativeRect.bottom - nativeRect.top);
 
     // In IE, the element can additionally be offset by a border around the
     // documentElement or body element that we have to subtract.
@@ -862,7 +863,7 @@ bot.dom.getClientRect = function(elem) {
  * @return {?{image: Element, rect: !goog.math.Rect}} Image and rectangle.
  * @private
  */
-bot.dom.maybeFindImageMap_ = function(elem) {
+bot.dom.maybeFindImageMap_ = function (elem) {
   // If not a <map> or <area>, return null indicating so.
   var isMap = bot.dom.isElement(elem, goog.dom.TagName.MAP);
   if (!isMap && !bot.dom.isElement(elem, goog.dom.TagName.AREA)) {
@@ -871,8 +872,8 @@ bot.dom.maybeFindImageMap_ = function(elem) {
 
   // Get the <map> associated with this element, or null if none.
   var map = isMap ? elem :
-      (bot.dom.isElement(elem.parentNode, goog.dom.TagName.MAP) ?
-          elem.parentNode : null);
+    (bot.dom.isElement(elem.parentNode, goog.dom.TagName.MAP) ?
+      elem.parentNode : null);
 
   var image = null, rect = null;
   if (map && map.name) {
@@ -899,7 +900,7 @@ bot.dom.maybeFindImageMap_ = function(elem) {
     }
   }
 
-  return {image: image, rect: rect || new goog.math.Rect(0, 0, 0, 0)};
+  return { image: image, rect: rect || new goog.math.Rect(0, 0, 0, 0) };
 };
 
 
@@ -911,7 +912,7 @@ bot.dom.maybeFindImageMap_ = function(elem) {
  * @return {!goog.math.Rect} Bounding box of the area element.
  * @private
  */
-bot.dom.getAreaRelativeRect_ = function(area) {
+bot.dom.getAreaRelativeRect_ = function (area) {
   var shape = area.shape.toLowerCase();
   var coords = area.coords.split(',');
   if (shape == 'rect' && coords.length == 4) {
@@ -920,7 +921,7 @@ bot.dom.getAreaRelativeRect_ = function(area) {
   } else if (shape == 'circle' && coords.length == 3) {
     var centerX = coords[0], centerY = coords[1], radius = coords[2];
     return new goog.math.Rect(centerX - radius, centerY - radius,
-                              2 * radius, 2 * radius);
+      2 * radius, 2 * radius);
   } else if (shape == 'poly' && coords.length > 2) {
     var minX = coords[0], minY = coords[1], maxX = minX, maxY = minY;
     for (var i = 2; i + 1 < coords.length; i += 2) {
@@ -945,20 +946,20 @@ bot.dom.getAreaRelativeRect_ = function(area) {
  *     Coordinate or rectangle relative to the top-left corner of the element.
  * @return {!goog.math.Box} The client region box.
  */
-bot.dom.getClientRegion = function(elem, opt_region) {
+bot.dom.getClientRegion = function (elem, opt_region) {
   var region = bot.dom.getClientRect(elem).toBox();
 
   if (opt_region) {
     var rect = opt_region instanceof goog.math.Rect ? opt_region :
-        new goog.math.Rect(opt_region.x, opt_region.y, 1, 1);
+      new goog.math.Rect(opt_region.x, opt_region.y, 1, 1);
     region.left = goog.math.clamp(
-        region.left + rect.left, region.left, region.right);
+      region.left + rect.left, region.left, region.right);
     region.top = goog.math.clamp(
-        region.top + rect.top, region.top, region.bottom);
+      region.top + rect.top, region.top, region.bottom);
     region.right = goog.math.clamp(
-        region.left + rect.width, region.left, region.right);
+      region.left + rect.width, region.left, region.right);
     region.bottom = goog.math.clamp(
-        region.top + rect.height, region.top, region.bottom);
+      region.top + rect.height, region.top, region.bottom);
   }
 
   return region;
@@ -974,7 +975,7 @@ bot.dom.getClientRegion = function(elem, opt_region) {
  *     except non-breaking spaces.
  * @private
  */
-bot.dom.trimExcludingNonBreakingSpaceCharacters_ = function(str) {
+bot.dom.trimExcludingNonBreakingSpaceCharacters_ = function (str) {
   return str.replace(/^[^\S\xa0]+|[^\S\xa0]+$/g, '');
 };
 
@@ -985,7 +986,7 @@ bot.dom.trimExcludingNonBreakingSpaceCharacters_ = function(str) {
  * @return {string} cleaned up concatenated lines
  * @private
  */
-bot.dom.concatenateCleanedLines_ = function(lines) {
+bot.dom.concatenateCleanedLines_ = function (lines) {
   lines = goog.array.map(
     lines,
     bot.dom.trimExcludingNonBreakingSpaceCharacters_);
@@ -1001,7 +1002,7 @@ bot.dom.concatenateCleanedLines_ = function(lines) {
  * @param {!Element} elem The element to consider.
  * @return {string} visible text.
  */
-bot.dom.getVisibleText = function(elem) {
+bot.dom.getVisibleText = function (elem) {
   var lines = [];
 
   if (bot.dom.IS_SHADOW_DOM_ENABLED) {
@@ -1024,8 +1025,8 @@ bot.dom.getVisibleText = function(elem) {
  *     childNodeFn function to call to append lines from any child nodes
  * @private
  */
-bot.dom.appendVisibleTextLinesFromElementCommon_ = function(
-    elem, lines, isShownFn, childNodeFn) {
+bot.dom.appendVisibleTextLinesFromElementCommon_ = function (
+  elem, lines, isShownFn, childNodeFn) {
   function currLine() {
     return /** @type {string|undefined} */ (goog.array.peek(lines)) || '';
   }
@@ -1039,7 +1040,7 @@ bot.dom.appendVisibleTextLinesFromElementCommon_ = function(
     var display = bot.dom.getEffectiveStyle(elem, 'display');
     // On some browsers, table cells incorrectly show up with block styles.
     var isBlock = !isTD &&
-        !goog.array.contains(bot.dom.INLINE_DISPLAY_BOXES_, display);
+      !goog.array.contains(bot.dom.INLINE_DISPLAY_BOXES_, display);
 
     // Add a newline before block elems when there is text on the current line,
     // except when the previous sibling has a display: run-in.
@@ -1047,14 +1048,14 @@ bot.dom.appendVisibleTextLinesFromElementCommon_ = function(
 
     var previousElementSibling = goog.dom.getPreviousElementSibling(elem);
     var prevDisplay = (previousElementSibling) ?
-        bot.dom.getEffectiveStyle(previousElementSibling, 'display') : '';
+      bot.dom.getEffectiveStyle(previousElementSibling, 'display') : '';
     // TODO: getEffectiveStyle should mask this for us
     var thisFloat = bot.dom.getEffectiveStyle(elem, 'float') ||
-        bot.dom.getEffectiveStyle(elem, 'cssFloat') ||
-        bot.dom.getEffectiveStyle(elem, 'styleFloat');
+      bot.dom.getEffectiveStyle(elem, 'cssFloat') ||
+      bot.dom.getEffectiveStyle(elem, 'styleFloat');
     var runIntoThis = prevDisplay == 'run-in' && thisFloat == 'none';
     if (isBlock && !runIntoThis &&
-        !goog.string.isEmptyOrWhitespace(currLine())) {
+      !goog.string.isEmptyOrWhitespace(currLine())) {
       lines.push('');
     }
 
@@ -1073,7 +1074,7 @@ bot.dom.appendVisibleTextLinesFromElementCommon_ = function(
       textTransform = bot.dom.getEffectiveStyle(elem, 'text-transform');
     }
 
-    goog.array.forEach(elem.childNodes, function(node) {
+    goog.array.forEach(elem.childNodes, function (node) {
       childNodeFn(node, lines, shown, whitespace, textTransform);
     });
 
@@ -1083,14 +1084,14 @@ bot.dom.appendVisibleTextLinesFromElementCommon_ = function(
     // such a thing). Usually, table cells are separated by a tab, but we
     // normalize tabs into single spaces.
     if ((isTD || display == 'table-cell') && line &&
-        !goog.string.endsWith(line, ' ')) {
+      !goog.string.endsWith(line, ' ')) {
       lines[lines.length - 1] += ' ';
     }
 
     // Add a newline after block elems when there is text on the current line,
     // and the current element isn't marked as run-in.
     if (isBlock && display != 'run-in' &&
-        !goog.string.isEmptyOrWhitespace(line)) {
+      !goog.string.isEmptyOrWhitespace(line)) {
       lines.push('');
     }
   }
@@ -1102,19 +1103,19 @@ bot.dom.appendVisibleTextLinesFromElementCommon_ = function(
  * @param {!Array.<string>} lines Accumulated visible lines of text.
  * @private
  */
-bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
-    bot.dom.appendVisibleTextLinesFromElementCommon_(
-      elem, lines, bot.dom.isShown,
-      function(node, lines, shown, whitespace, textTransform) {
-        if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
-          var textNode = /** @type {!Text} */ (node);
-          bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
-              whitespace, textTransform);
-        } else if (bot.dom.isElement(node)) {
-          var castElem = /** @type {!Element} */ (node);
-          bot.dom.appendVisibleTextLinesFromElement_(castElem, lines);
-        }
-      });
+bot.dom.appendVisibleTextLinesFromElement_ = function (elem, lines) {
+  bot.dom.appendVisibleTextLinesFromElementCommon_(
+    elem, lines, bot.dom.isShown,
+    function (node, lines, shown, whitespace, textTransform) {
+      if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
+        var textNode = /** @type {!Text} */ (node);
+        bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
+          whitespace, textTransform);
+      } else if (bot.dom.isElement(node)) {
+        var castElem = /** @type {!Element} */ (node);
+        bot.dom.appendVisibleTextLinesFromElement_(castElem, lines);
+      }
+    });
 };
 
 
@@ -1142,8 +1143,8 @@ bot.dom.INLINE_DISPLAY_BOXES_ = [
  * @param {?string} textTransform Parent element's "text-transform" style.
  * @private
  */
-bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
-    whitespace, textTransform) {
+bot.dom.appendVisibleTextLinesFromTextNode_ = function (textNode, lines,
+  whitespace, textTransform) {
 
   // First, remove zero-width characters. Do this before regularizing spaces as
   // the zero-width space is both zero-width and a space, but we do not want to
@@ -1174,7 +1175,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
   if (textTransform == 'capitalize') {
     // the unicode regex ending with /gu does not work in IE
     var re = goog.userAgent.IE ? /(^|\s|\b)(\S)/g : /(^|\s|\b)(\S)/gu;
-    text = text.replace(re, function() {
+    text = text.replace(re, function () {
       return arguments[1] + arguments[2].toUpperCase();
     });
   } else if (textTransform == 'uppercase') {
@@ -1185,7 +1186,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
 
   var currLine = lines.pop() || '';
   if (goog.string.endsWith(currLine, ' ') &&
-      goog.string.startsWith(text, ' ')) {
+    goog.string.startsWith(text, ' ')) {
     text = text.substr(1);
   }
   lines.push(currLine + text);
@@ -1200,7 +1201,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
  * @param {!Element} elem Element whose opacity has to be found.
  * @return {number} Opacity between 0 and 1.
  */
-bot.dom.getOpacity = function(elem) {
+bot.dom.getOpacity = function (elem) {
   // TODO: Does this need to deal with rgba colors?
   if (!bot.userAgent.IE_DOC_PRE9) {
     return bot.dom.getOpacityNonIE_(elem);
@@ -1212,7 +1213,7 @@ bot.dom.getOpacity = function(elem) {
 
     var opacityStyle = bot.dom.getEffectiveStyle(elem, 'filter');
     var groups = opacityStyle.match(/^alpha\(opacity=(\d*)\)/) ||
-        opacityStyle.match(
+      opacityStyle.match(
         /^progid:DXImageTransform.Microsoft.Alpha\(Opacity=(\d*)\)/);
 
     if (groups) {
@@ -1232,7 +1233,7 @@ bot.dom.getOpacity = function(elem) {
  * @return {number} Opacity between 0 and 1.
  * @private
  */
-bot.dom.getOpacityNonIE_ = function(elem) {
+bot.dom.getOpacityNonIE_ = function (elem) {
   // By default the element is opaque.
   var elemOpacity = 1;
 
@@ -1266,7 +1267,7 @@ bot.dom.getOpacityNonIE_ = function(elem) {
  * @param {!Node} node The node whose parent is desired.
  * @return {Node} The parent node, if available, null otherwise.
  */
-bot.dom.getParentNodeInComposedDom = function(node) {
+bot.dom.getParentNodeInComposedDom = function (node) {
   var /**@type {Node}*/ parent = node.parentNode;
 
   // Shadow DOM v1
@@ -1297,13 +1298,13 @@ bot.dom.getParentNodeInComposedDom = function(node) {
  * @private
  * @suppress {missingProperties}
  */
-bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
-    node, lines, shown, whitespace, textTransform) {
+bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function (
+  node, lines, shown, whitespace, textTransform) {
 
   if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
     var textNode = /** @type {!Text} */ (node);
     bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
-        whitespace, textTransform);
+      whitespace, textTransform);
   } else if (bot.dom.isElement(node)) {
     var castElem = /** @type {!Element} */ (node);
 
@@ -1326,7 +1327,7 @@ bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
           shadowChildren.length > 0 ? shadowChildren : contentElem.childNodes;
         goog.array.forEach(childrenToTraverse, function (node) {
           bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
-              node, lines, shown, whitespace, textTransform);
+            node, lines, shown, whitespace, textTransform);
         });
       } else {
         // if we're not inside a shadow DOM, then we just treat <content>
@@ -1348,10 +1349,10 @@ bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
           var olderShadowRoot = thisShadowRoot.olderShadowRoot;
           while (olderShadowRoot) {
             goog.array.forEach(
-                olderShadowRoot.childNodes, function(childNode) {
-              bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
+              olderShadowRoot.childNodes, function (childNode) {
+                bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
                   childNode, lines, shown, whitespace, textTransform);
-            });
+              });
             olderShadowRoot = olderShadowRoot.olderShadowRoot;
           }
         }
@@ -1371,7 +1372,7 @@ bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
  * @param {!Node} node The node to check
  * @return {boolean} True if the node has been distributed.
  */
-bot.dom.isNodeDistributedIntoShadowDom = function(node) {
+bot.dom.isNodeDistributedIntoShadowDom = function (node) {
   var elemOrText = null;
   if (node.nodeType == goog.dom.NodeType.ELEMENT) {
     elemOrText = /** @type {!Element} */ (node);
@@ -1379,10 +1380,10 @@ bot.dom.isNodeDistributedIntoShadowDom = function(node) {
     elemOrText = /** @type {!Text} */ (node);
   }
   return elemOrText != null &&
-      (elemOrText.assignedSlot != null ||
-        (elemOrText.getDestinationInsertionPoints &&
+    (elemOrText.assignedSlot != null ||
+      (elemOrText.getDestinationInsertionPoints &&
         elemOrText.getDestinationInsertionPoints().length > 0)
-      );
+    );
 };
 
 
@@ -1391,24 +1392,24 @@ bot.dom.isNodeDistributedIntoShadowDom = function(node) {
  * @param {!Array.<string>} lines Accumulated visible lines of text.
  * @private
  */
-bot.dom.appendVisibleTextLinesFromElementInComposedDom_ = function(
-    elem, lines) {
+bot.dom.appendVisibleTextLinesFromElementInComposedDom_ = function (
+  elem, lines) {
   if (elem.shadowRoot) {
-      goog.array.forEach(elem.shadowRoot.childNodes, function(node) {
-        bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
-            node, lines, true, null, null);
-      });
+    goog.array.forEach(elem.shadowRoot.childNodes, function (node) {
+      bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
+        node, lines, true, null, null);
+    });
   }
 
   bot.dom.appendVisibleTextLinesFromElementCommon_(
     elem, lines, bot.dom.isShown,
-    function(node, lines, shown, whitespace, textTransform) {
+    function (node, lines, shown, whitespace, textTransform) {
       // If the node has been distributed into a shadowDom element
       // to be displayed elsewhere, then we shouldn't append
       // its contents here).
       if (!bot.dom.isNodeDistributedIntoShadowDom(node)) {
         bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
-            node, lines, shown, whitespace, textTransform);
+          node, lines, shown, whitespace, textTransform);
       }
     });
 };

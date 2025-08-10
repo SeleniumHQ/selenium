@@ -74,10 +74,9 @@ public @interface FindBy {
 
   String xpath() default "";
 
-  class FindByBuilder extends AbstractFindByBuilder {
+  class FindByBuilder extends AbstractFindByBuilder<FindBy> {
     @Override
-    public By buildIt(Object annotation, Field field) {
-      FindBy findBy = (FindBy) annotation;
+    public By buildIt(FindBy findBy, Field field) {
       assertValidFindBy(findBy);
 
       By ans = buildByFromShortFindBy(findBy);

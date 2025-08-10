@@ -21,10 +21,8 @@ from importlib import import_module
 import pytest
 
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.common.options import ArgOptions
-from selenium.webdriver.common.options import PageLoadStrategy
-from selenium.webdriver.common.proxy import Proxy
-from selenium.webdriver.common.proxy import ProxyType
+from selenium.webdriver.common.options import ArgOptions, PageLoadStrategy
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.webdriver.remote import webdriver
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver

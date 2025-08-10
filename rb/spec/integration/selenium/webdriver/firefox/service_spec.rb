@@ -22,7 +22,9 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Service, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}] do
+      describe Service,
+               {exclude: {driver: :remote},
+                exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}]} do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 
@@ -36,21 +38,6 @@ module Selenium
 
         it 'can be started outside driver' do
           expect(service_manager.uri).to be_a(URI)
-        end
-
-        context 'with BiDi enabled', exclusive: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          it 'ensures two service instances use different websocket port' do
-            service1 = described_class.new
-            service2 = described_class.new
-
-            ws_index1 = service1.args.index('--websocket-port')
-            ws_index2 = service2.args.index('--websocket-port')
-
-            port1 = service1.args[ws_index1 + 1].to_i
-            port2 = service2.args[ws_index2 + 1].to_i
-
-            expect(port1).not_to eq(port2)
-          end
         end
       end
     end # Firefox

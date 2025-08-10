@@ -4,6 +4,7 @@ import glob
 import os
 from pathlib import Path
 
+
 class Copyright:
     NOTICE = """Licensed to the Software Freedom Conservancy (SFC) under one
 or more contributor license agreements.  See the NOTICE file
@@ -22,19 +23,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License."""
 
-    def __init__(self, comment_characters='//', prefix=None):
+    def __init__(self, comment_characters="//", prefix=None):
         self._comment_characters = comment_characters
         self._prefix = prefix or []
 
     def update(self, files):
         for file in files:
-            with open(file, 'r', encoding='utf-8-sig') as f:
+            with open(file, "r", encoding="utf-8-sig") as f:
                 lines = f.readlines()
 
             index = -1
             for i, line in enumerate(lines):
-                if line.startswith(self._comment_characters) or \
-                  self.valid_copyright_notice_line(line, index, file):
+                if line.startswith(
+                    self._comment_characters
+                ) or self.valid_copyright_notice_line(line, index, file):
                     index += 1
                 else:
                     break
@@ -42,38 +44,47 @@ under the License."""
             if index == -1:
                 self.write_update_notice(file, lines)
             else:
-                current = ''.join(lines[:index + 1])
+                current = "".join(lines[: index + 1])
                 if current != self.copyright_notice(file):
-                    self.write_update_notice(file, lines[index + 1:])
+                    self.write_update_notice(file, lines[index + 1 :])
 
     def valid_copyright_notice_line(self, line, index, file):
-        return index + 1 < len(self.copyright_notice_lines(file)) and \
-            line.startswith(self.copyright_notice_lines(file)[index + 1])
+        return index + 1 < len(self.copyright_notice_lines(file)) and line.startswith(
+            self.copyright_notice_lines(file)[index + 1]
+        )
 
     def copyright_notice(self, file):
-        return ''.join(self.copyright_notice_lines(file))
+        return "".join(self.copyright_notice_lines(file))
 
     def copyright_notice_lines(self, file):
-        return self.dotnet(file) if file.endswith("cs") else self._prefix + self.commented_notice_lines
+        return (
+            self.dotnet(file)
+            if file.endswith("cs")
+            else self._prefix + self.commented_notice_lines
+        )
 
     def dotnet(self, file):
         file_name = os.path.basename(file)
-        first = f"{self._comment_characters} <copyright file=\"{file_name}\" company=\"Selenium Committers\">\n"
+        first = f'{self._comment_characters} <copyright file="{file_name}" company="Selenium Committers">\n'
         last = f"{self._comment_characters} </copyright>"
         return [first] + self.commented_notice_lines + [last]
 
     @property
     def commented_notice_lines(self):
-        return [f"{self._comment_characters} {line}".rstrip() + "\n" for line in self.NOTICE.split('\n')]
+        return [
+            f"{self._comment_characters} {line}".rstrip() + "\n"
+            for line in self.NOTICE.split("\n")
+        ]
 
     def write_update_notice(self, file, lines):
         print(f"Adding notice to {file}")
-        with open(file, 'w') as f:
+        with open(file, "w") as f:
             f.write(self.copyright_notice(file) + "\n")
             if lines and lines[0] != "\n":
                 f.write("\n")
             trimmed_lines = [line.rstrip() + "\n" for line in lines]
             f.writelines(trimmed_lines)
+
 
 ROOT = Path(os.path.realpath(__file__)).parent.parent
 
@@ -87,18 +98,19 @@ JS_EXCLUSIONS = [
     f"{ROOT}/javascript/selenium-core/scripts/user-extensions.js",
     f"{ROOT}/javascript/selenium-core/scripts/xmlextras.js",
     f"{ROOT}/javascript/selenium-core/xpath/**/*.js",
-    f"{ROOT}/javascript/grid-ui/node_modules/**/*.js"
+    f"{ROOT}/javascript/grid-ui/node_modules/**/*.js",
+    f"{ROOT}/javascript/node/selenium-webdriver/node_modules/**/*.js",
 ]
 
 PY_EXCLUSIONS = [
     f"{ROOT}/py/selenium/webdriver/common/bidi/cdp.py",
     f"{ROOT}/py/generate.py",
     f"{ROOT}/py/selenium/webdriver/common/devtools/**/*",
-    f"{ROOT}/py/venv/**/*"
+    f"{ROOT}/py/venv/**/*",
 ]
 
 
-def update_files(file_pattern, exclusions, comment_characters='//', prefix=None):
+def update_files(file_pattern, exclusions, comment_characters="//", prefix=None):
     included = set(glob.glob(file_pattern, recursive=True))
     excluded = set()
     for pattern in exclusions:
@@ -113,7 +125,12 @@ if __name__ == "__main__":
     update_files(f"{ROOT}/javascript/**/*.js", JS_EXCLUSIONS)
     update_files(f"{ROOT}/javascript/**/*.tsx", [])
     update_files(f"{ROOT}/py/**/*.py", PY_EXCLUSIONS, comment_characters="#")
-    update_files(f"{ROOT}/rb/**/*.rb", [], comment_characters="#", prefix=["# frozen_string_literal: true\n", "\n"])
+    update_files(
+        f"{ROOT}/rb/**/*.rb",
+        [],
+        comment_characters="#",
+        prefix=["# frozen_string_literal: true\n", "\n"],
+    )
     update_files(f"{ROOT}/java/**/*.java", [])
     update_files(f"{ROOT}/rust/**/*.rs", [])
     update_files(f"{ROOT}/dotnet/**/*.cs", [])

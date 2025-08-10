@@ -16,8 +16,7 @@
 # under the License.
 
 import warnings
-from abc import ABCMeta
-from abc import abstractmethod
+from abc import ABCMeta, abstractmethod
 from enum import Enum
 from typing import Optional
 
@@ -423,7 +422,7 @@ class BaseOptions(metaclass=ABCMeta):
         self._caps = self.default_capabilities
         self._proxy = None
         self.set_capability("pageLoadStrategy", PageLoadStrategy.normal)
-        self.mobile_options = None
+        self.mobile_options: Optional[dict[str, str]] = None
         self._ignore_local_proxy = False
 
     @property
@@ -475,14 +474,14 @@ class ArgOptions(BaseOptions):
 
     def __init__(self) -> None:
         super().__init__()
-        self._arguments = []
+        self._arguments: list[str] = []
 
     @property
     def arguments(self):
         """:Returns: A list of arguments needed for the browser."""
         return self._arguments
 
-    def add_argument(self, argument) -> None:
+    def add_argument(self, argument: str) -> None:
         """Adds an argument to the list.
 
         :Args:

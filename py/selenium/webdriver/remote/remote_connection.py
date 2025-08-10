@@ -145,7 +145,7 @@ class RemoteConnection:
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
     """
 
-    browser_name = None
+    browser_name: Optional[str] = None
     # Keep backward compatibility for AppiumConnection - https://github.com/SeleniumHQ/selenium/issues/14694
     import os
     import socket
@@ -154,7 +154,7 @@ class RemoteConnection:
 
     _timeout = socket.getdefaulttimeout()
     _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
-    _client_config: ClientConfig = None
+    _client_config: Optional[ClientConfig] = None
 
     system = platform.system().lower()
     if system == "darwin":
@@ -437,10 +437,10 @@ class RemoteConnection:
         try:
             if 300 <= statuscode < 304:
                 return self._request("GET", response.headers.get("location", None))
-            if 399 < statuscode <= 500:
-                if statuscode == 401:
-                    return {"status": statuscode, "value": "Authorization Required"}
-                return {"status": statuscode, "value": str(statuscode) if not data else data.strip()}
+            if statuscode == 401:
+                return {"status": statuscode, "value": "Authorization Required"}
+            if statuscode >= 400:
+                return {"status": statuscode, "value": response.reason if not data else data.strip()}
             content_type = []
             if response.headers.get("Content-Type", None):
                 content_type = response.headers.get("Content-Type", None).split(";")

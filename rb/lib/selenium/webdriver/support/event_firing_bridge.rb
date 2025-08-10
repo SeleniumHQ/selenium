@@ -112,10 +112,10 @@ module Selenium
           @driver ||= Driver.new(bridge: self)
         end
 
-        def dispatch(name, *args)
-          @listener.__send__(:"before_#{name}", *args)
+        def dispatch(name, *)
+          @listener.__send__(:"before_#{name}", *)
           returned = yield
-          @listener.__send__(:"after_#{name}", *args)
+          @listener.__send__(:"after_#{name}", *)
 
           returned
         end

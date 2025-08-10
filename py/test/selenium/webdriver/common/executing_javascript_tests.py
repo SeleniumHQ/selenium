@@ -99,7 +99,7 @@ def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_ins
 def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_inside_anested_dict(driver, pages):
     pages.load("xhtmlTest.html")
 
-    result = driver.execute_script("return {el1: document.body, " "nested: {el2: document.getElementById('id1')}}")
+    result = driver.execute_script("return {el1: document.body, nested: {el2: document.getElementById('id1')}}")
 
     assert result is not None
     assert isinstance(result, dict)

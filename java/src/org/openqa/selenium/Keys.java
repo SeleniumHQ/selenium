@@ -23,13 +23,26 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Representations of pressable keys that aren't text. These are stored in the Unicode PUA (Private
- * Use Area) code points, 0xE000-0xF8FF.
+ * Use Area) code points, 0xE000–0xF8FF. These values are used internally by WebDriver to simulate
+ * keyboard input where standard Unicode characters are insufficient, such as modifier and control
+ * keys.
  *
- * @see <a
- *     href="http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnK=Search">http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnK=Search</a>
+ * <p>The codes follow conventions partially established by the W3C WebDriver specification and the
+ * Selenium project. Some values (e.g., RIGHT_SHIFT, RIGHT_COMMAND) are used in ChromeDriver but are
+ * not currently part of the W3C spec. Others (e.g., OPTION, FN) are symbolic and reserved for
+ * possible future mapping.
+ *
+ * <p>For consistency across platforms and drivers, values should be verified before assuming native
+ * support.
+ *
+ * @see <a href="https://www.w3.org/TR/webdriver/#keyboard-actions">W3C WebDriver Keyboard
+ *     Actions</a>
+ * @see <a href="http://www.google.com.au/search?&q=unicode+pua&btnK=Search">Unicode PUA
+ *     Overview</a>
  */
 @NullMarked
 public enum Keys implements CharSequence {
+  // Basic control characters
   NULL('\uE000'),
   CANCEL('\uE001'), // ^break
   HELP('\uE002'),
@@ -99,6 +112,16 @@ public enum Keys implements CharSequence {
   META('\uE03D'),
   COMMAND(Keys.META),
 
+  // Extended macOS/ChromeDriver keys (based on observed Chrome usage)
+  RIGHT_SHIFT('\uE050'), // aligns with ChromeDriver usage
+  RIGHT_CONTROL('\uE051'),
+  RIGHT_ALT('\uE052'),
+  RIGHT_COMMAND('\uE053'),
+
+  // Symbolic macOS keys not yet standardized
+  OPTION('\uE052'),
+  FN('\uE051'), // TODO: symbolic only; confirm or remove in future
+
   ZENKAKU_HANKAKU('\uE040');
 
   private final char keyCode;
@@ -122,7 +145,6 @@ public enum Keys implements CharSequence {
     if (index == 0) {
       return keyCode;
     }
-
     return 0;
   }
 
@@ -136,7 +158,6 @@ public enum Keys implements CharSequence {
     if (start == 0 && end == 1) {
       return String.valueOf(keyCode);
     }
-
     throw new IndexOutOfBoundsException();
   }
 
@@ -147,11 +168,9 @@ public enum Keys implements CharSequence {
 
   /**
    * Simulate pressing many keys at once in a "chord". Takes a sequence of Keys.XXXX or strings;
-   * appends each of the values to a string, and adds the chord termination key (Keys.NULL) and
-   * returns the resultant string.
+   * appends each to a string, adds the chord termination key (Keys.NULL), and returns it.
    *
-   * <p>Note: When the low-level webdriver key handlers see Keys.NULL, active modifier keys
-   * (CTRL/ALT/SHIFT/etc) release via a keyup event.
+   * <p>Note: Keys.NULL signals release of modifier keys like CTRL/ALT/SHIFT via keyup events.
    *
    * @param value characters to send
    * @return String representation of the char sequence
@@ -161,27 +180,25 @@ public enum Keys implements CharSequence {
   }
 
   /**
-   * @see #chord(CharSequence...)
+   * Overload of {@link #chord(CharSequence...)} that accepts an iterable.
+   *
    * @param value characters to send
    * @return String representation of the char sequence
    */
   public static String chord(Iterable<CharSequence> value) {
     StringBuilder builder = new StringBuilder();
-
     for (CharSequence seq : value) {
       builder.append(seq);
     }
-
     builder.append(Keys.NULL);
     return builder.toString();
   }
 
   /**
-   * Get the special key representation, {@link Keys}, of the supplied character if there is one. If
-   * there is no special key tied to this character, null will be returned.
+   * Retrieves the {@link Keys} enum constant corresponding to the given Unicode character.
    *
    * @param key unicode character code
-   * @return special key linked to the character code, or null if character is not a special key
+   * @return special key linked to the character code, or null if not found
    */
   public static @Nullable Keys getKeyFromUnicode(char key) {
     for (Keys unicodeKey : values()) {
@@ -189,7 +206,6 @@ public enum Keys implements CharSequence {
         return unicodeKey;
       }
     }
-
     return null;
   }
 }

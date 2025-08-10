@@ -32,6 +32,9 @@ exports_files(
         "webextensions-selenium-example.xpi",
         "webextensions-selenium-example.zip",
         "webextensions-selenium-example-unsigned.zip",
+        "webextensions-selenium-example.crx",
+        "webextensions-selenium-example",
+        "webextensions-selenium-example-signed",
     ],
     visibility = [
         "//java/test/org/openqa/selenium/firefox:__pkg__",

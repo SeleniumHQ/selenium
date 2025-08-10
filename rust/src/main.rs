@@ -43,7 +43,7 @@ use std::sync::mpsc::Receiver;
 {usage-heading} {usage}
 {all-args}")]
 struct Cli {
-    /// Browser name (chrome, firefox, edge, iexplorer, safari, safaritp, or webview2)
+    /// Browser name (chrome, firefox, edge, iexplorer, safari, safaritp, webview2, or electron)
     #[clap(long, value_parser)]
     browser: Option<String>,
 

@@ -18,7 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication.Json.Internal;
-using OpenQA.Selenium.BiDi.Modules.Storage;
+using OpenQA.Selenium.BiDi.Storage;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -32,7 +32,7 @@ internal class GetCookiesResultConverter : JsonConverter<GetCookiesResult>
     public override GetCookiesResult Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using var doc = JsonDocument.ParseValue(ref reader);
-        var cookies = doc.RootElement.GetProperty("cookies").Deserialize(options.GetTypeInfo<IReadOnlyList<Modules.Network.Cookie>>());
+        var cookies = doc.RootElement.GetProperty("cookies").Deserialize(options.GetTypeInfo<IReadOnlyList<Network.Cookie>>());
         var partitionKey = doc.RootElement.GetProperty("partitionKey").Deserialize((JsonTypeInfo<PartitionKey>)options.GetTypeInfo(typeof(PartitionKey)));
 
         return new GetCookiesResult(cookies!, partitionKey!);

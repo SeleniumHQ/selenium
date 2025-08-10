@@ -18,11 +18,12 @@
 import pytest
 
 from selenium.webdriver.common.options import ArgOptions
-from selenium.webdriver.common.proxy import Proxy
-from selenium.webdriver.common.proxy import ProxyType
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 
 MANUAL_PROXY = {
     "httpProxy": "some.url:1234",
+    # TODO: Remove ftpProxy in future (currently deprecated)
+    # https://github.com/SeleniumHQ/selenium/issues/15905
     "ftpProxy": "ftp.proxy",
     "noProxy": "localhost, foo.localhost",
     "sslProxy": "ssl.proxy:1234",
@@ -44,6 +45,8 @@ AUTODETECT_PROXY = {
 def test_can_add_manual_proxy_to_options():
     proxy = Proxy()
     proxy.http_proxy = MANUAL_PROXY["httpProxy"]
+    # TODO: Remove ftpProxy in future (currently deprecated)
+    # https://github.com/SeleniumHQ/selenium/issues/15905
     proxy.ftp_proxy = MANUAL_PROXY["ftpProxy"]
     proxy.no_proxy = MANUAL_PROXY["noProxy"]
     proxy.sslProxy = MANUAL_PROXY["sslProxy"]
@@ -99,6 +102,8 @@ def test_can_init_manual_proxy():
 
     assert ProxyType.MANUAL == proxy.proxy_type
     assert MANUAL_PROXY["httpProxy"] == proxy.http_proxy
+    # TODO: Remove ftpProxy in future (currently deprecated)
+    # https://github.com/SeleniumHQ/selenium/issues/15905
     assert MANUAL_PROXY["ftpProxy"] == proxy.ftp_proxy
     assert MANUAL_PROXY["noProxy"] == proxy.no_proxy
     assert MANUAL_PROXY["sslProxy"] == proxy.sslProxy
@@ -124,6 +129,8 @@ def test_can_init_empty_proxy():
     proxy = Proxy()
     assert ProxyType.UNSPECIFIED == proxy.proxy_type
     assert "" == proxy.http_proxy
+    # TODO: Remove ftpProxy in future (currently deprecated)
+    # https://github.com/SeleniumHQ/selenium/issues/15905
     assert "" == proxy.ftp_proxy
     assert "" == proxy.no_proxy
     assert "" == proxy.sslProxy

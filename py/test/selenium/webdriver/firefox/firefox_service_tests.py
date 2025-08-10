@@ -27,13 +27,12 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 
 
-def test_log_output_as_filename() -> None:
+def test_log_output_as_filename(recwarn) -> None:
     log_file = "geckodriver.log"
     service = Service(log_output=log_file)
     try:
-        with pytest.warns(None) as record:
-            driver = Firefox(service=service)
-        assert len(record) == 0
+        driver = Firefox(service=service)
+        assert len(recwarn) == 0
         with open(log_file) as fp:
             assert "geckodriver\tINFO\tListening" in fp.readline()
     finally:

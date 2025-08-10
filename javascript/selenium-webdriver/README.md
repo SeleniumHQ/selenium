@@ -116,7 +116,7 @@ script provided with `selenium-webdriver`.
 API documentation is available online from the [Selenium project][api].
 Additional resources include
 
-- the #selenium channel on freenode IRC
+- the #selenium channel on Libera IRC
 - the [selenium-users@googlegroups.com][users] list
 - [SeleniumHQ](https://selenium.dev/documentation/) documentation
 

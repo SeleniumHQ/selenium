@@ -18,7 +18,6 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.Log;
 using System;
 using System.Threading.Tasks;
 
@@ -29,7 +28,7 @@ class LogTest : BiDiTestFixture
     [Test]
     public async Task CanListenToConsoleLog()
     {
-        TaskCompletionSource<Modules.Log.LogEntry> tcs = new();
+        TaskCompletionSource<LogEntry> tcs = new();
 
         await using var subscription = await context.Log.OnEntryAddedAsync(tcs.SetResult);
 
@@ -52,13 +51,13 @@ class LogTest : BiDiTestFixture
 
         Assert.That(consoleLogEntry.Args, Is.Not.Null);
         Assert.That(consoleLogEntry.Args, Has.Count.EqualTo(1));
-        Assert.That(consoleLogEntry.Args[0], Is.AssignableFrom<Modules.Script.StringRemoteValue>());
+        Assert.That(consoleLogEntry.Args[0], Is.AssignableFrom<Script.StringRemoteValue>());
     }
 
     [Test]
     public async Task CanListenToJavascriptLog()
     {
-        TaskCompletionSource<Modules.Log.LogEntry> tcs = new();
+        TaskCompletionSource<Log.LogEntry> tcs = new();
 
         await using var subscription = await context.Log.OnEntryAddedAsync(tcs.SetResult);
 
@@ -79,7 +78,7 @@ class LogTest : BiDiTestFixture
     [Test]
     public async Task CanRetrieveStacktrace()
     {
-        TaskCompletionSource<Modules.Log.LogEntry> tcs = new();
+        TaskCompletionSource<LogEntry> tcs = new();
 
         await using var subscription = await bidi.Log.OnEntryAddedAsync(tcs.SetResult);
 

@@ -63,7 +63,7 @@ suite(
 
         describe('setProfile', function () {
           it('use profile with custom prefs', async function () {
-            let options = new firefox.Options()
+            let options = env.builder().getFirefoxOptions() || new firefox.Options()
             options.setProfile(profileWithUserPrefs)
 
             driver = env.builder().setFirefoxOptions(options).build()
@@ -73,7 +73,7 @@ suite(
           })
 
           it('use profile with extension', async function () {
-            let options = new firefox.Options()
+            let options = env.builder().getFirefoxOptions() || new firefox.Options()
             options.setProfile(profileWithWebExtension)
 
             driver = env.builder().setFirefoxOptions(options).build()
@@ -116,7 +116,7 @@ suite(
           })
 
           it('can start Firefox with custom preferences', async function () {
-            let options = new firefox.Options()
+            let options = env.builder().getFirefoxOptions() || new firefox.Options()
             options.setPreference('general.useragent.override', 'foo;bar')
 
             driver = env.builder().setFirefoxOptions(options).build()
@@ -126,9 +126,9 @@ suite(
           })
 
           it('can add extra prefs on top of an existing profile', async function () {
-            let options = new firefox.Options()
-              .setPreference('general.useragent.override', 'foo;bar')
-              .setProfile(profileWithWebExtension)
+            let options = env.builder().getFirefoxOptions() || new firefox.Options()
+            options.setPreference('general.useragent.override', 'foo;bar')
+            options.setProfile(profileWithWebExtension)
 
             driver = env.builder().setFirefoxOptions(options).build()
 
@@ -140,7 +140,7 @@ suite(
 
         describe('addExtensions', function () {
           it('can add extension to brand new profile', async function () {
-            let options = new firefox.Options()
+            let options = env.builder().getFirefoxOptions() || new firefox.Options()
             options.addExtensions(EXT_XPI)
 
             driver = env.builder().setFirefoxOptions(options).build()
@@ -150,7 +150,8 @@ suite(
           })
 
           it('can add extension to custom profile', async function () {
-            let options = new firefox.Options().addExtensions(EXT_XPI).setProfile(profileWithUserPrefs)
+            let options = env.builder().getFirefoxOptions() || new firefox.Options()
+            options.addExtensions(EXT_XPI).setProfile(profileWithUserPrefs)
 
             driver = env.builder().setFirefoxOptions(options).build()
 
@@ -160,9 +161,9 @@ suite(
           })
 
           it('can addExtensions and setPreference', async function () {
-            let options = new firefox.Options()
-              .addExtensions(EXT_XPI)
-              .setPreference('general.useragent.override', 'foo;bar')
+            let options = env.builder().getFirefoxOptions() || new firefox.Options()
+            options.addExtensions(EXT_XPI)
+            options.setPreference('general.useragent.override', 'foo;bar')
 
             driver = env.builder().setFirefoxOptions(options).build()
 
@@ -172,7 +173,7 @@ suite(
           })
 
           it('can load .zip webextensions', async function () {
-            let options = new firefox.Options()
+            let options = env.builder().getFirefoxOptions() || new firefox.Options()
             options.addExtensions(EXT_XPI)
 
             driver = env.builder().setFirefoxOptions(options).build()

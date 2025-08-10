@@ -15,74 +15,76 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from .exceptions import DetachedShadowRootException
-from .exceptions import ElementClickInterceptedException
-from .exceptions import ElementNotInteractableException
-from .exceptions import ElementNotSelectableException
-from .exceptions import ElementNotVisibleException
-from .exceptions import ImeActivationFailedException
-from .exceptions import ImeNotAvailableException
-from .exceptions import InsecureCertificateException
-from .exceptions import InvalidArgumentException
-from .exceptions import InvalidCookieDomainException
-from .exceptions import InvalidCoordinatesException
-from .exceptions import InvalidElementStateException
-from .exceptions import InvalidSelectorException
-from .exceptions import InvalidSessionIdException
-from .exceptions import InvalidSwitchToTargetException
-from .exceptions import JavascriptException
-from .exceptions import MoveTargetOutOfBoundsException
-from .exceptions import NoAlertPresentException
-from .exceptions import NoSuchAttributeException
-from .exceptions import NoSuchCookieException
-from .exceptions import NoSuchDriverException
-from .exceptions import NoSuchElementException
-from .exceptions import NoSuchFrameException
-from .exceptions import NoSuchShadowRootException
-from .exceptions import NoSuchWindowException
-from .exceptions import ScreenshotException
-from .exceptions import SessionNotCreatedException
-from .exceptions import StaleElementReferenceException
-from .exceptions import TimeoutException
-from .exceptions import UnableToSetCookieException
-from .exceptions import UnexpectedAlertPresentException
-from .exceptions import UnexpectedTagNameException
-from .exceptions import UnknownMethodException
-from .exceptions import WebDriverException
+from .exceptions import (
+    DetachedShadowRootException,
+    ElementClickInterceptedException,
+    ElementNotInteractableException,
+    ElementNotSelectableException,
+    ElementNotVisibleException,
+    ImeActivationFailedException,
+    ImeNotAvailableException,
+    InsecureCertificateException,
+    InvalidArgumentException,
+    InvalidCookieDomainException,
+    InvalidCoordinatesException,
+    InvalidElementStateException,
+    InvalidSelectorException,
+    InvalidSessionIdException,
+    InvalidSwitchToTargetException,
+    JavascriptException,
+    MoveTargetOutOfBoundsException,
+    NoAlertPresentException,
+    NoSuchAttributeException,
+    NoSuchCookieException,
+    NoSuchDriverException,
+    NoSuchElementException,
+    NoSuchFrameException,
+    NoSuchShadowRootException,
+    NoSuchWindowException,
+    ScreenshotException,
+    SessionNotCreatedException,
+    StaleElementReferenceException,
+    TimeoutException,
+    UnableToSetCookieException,
+    UnexpectedAlertPresentException,
+    UnexpectedTagNameException,
+    UnknownMethodException,
+    WebDriverException,
+)
 
 __all__ = [
-    "WebDriverException",
-    "InvalidSwitchToTargetException",
-    "NoSuchFrameException",
-    "NoSuchWindowException",
-    "NoSuchElementException",
-    "NoSuchAttributeException",
-    "NoSuchDriverException",
-    "NoSuchShadowRootException",
-    "StaleElementReferenceException",
-    "InvalidElementStateException",
-    "UnexpectedAlertPresentException",
-    "NoAlertPresentException",
-    "ElementNotVisibleException",
+    "DetachedShadowRootException",
+    "ElementClickInterceptedException",
     "ElementNotInteractableException",
     "ElementNotSelectableException",
-    "InvalidCookieDomainException",
-    "UnableToSetCookieException",
-    "TimeoutException",
-    "MoveTargetOutOfBoundsException",
-    "UnexpectedTagNameException",
-    "InvalidSelectorException",
-    "ImeNotAvailableException",
+    "ElementNotVisibleException",
     "ImeActivationFailedException",
-    "InvalidArgumentException",
-    "JavascriptException",
-    "NoSuchCookieException",
-    "ScreenshotException",
-    "ElementClickInterceptedException",
+    "ImeNotAvailableException",
     "InsecureCertificateException",
+    "InvalidArgumentException",
+    "InvalidCookieDomainException",
     "InvalidCoordinatesException",
+    "InvalidElementStateException",
+    "InvalidSelectorException",
     "InvalidSessionIdException",
+    "InvalidSwitchToTargetException",
+    "JavascriptException",
+    "MoveTargetOutOfBoundsException",
+    "NoAlertPresentException",
+    "NoSuchAttributeException",
+    "NoSuchCookieException",
+    "NoSuchDriverException",
+    "NoSuchElementException",
+    "NoSuchFrameException",
+    "NoSuchShadowRootException",
+    "NoSuchWindowException",
+    "ScreenshotException",
     "SessionNotCreatedException",
+    "StaleElementReferenceException",
+    "TimeoutException",
+    "UnableToSetCookieException",
+    "UnexpectedAlertPresentException",
+    "UnexpectedTagNameException",
     "UnknownMethodException",
-    "DetachedShadowRootException",
+    "WebDriverException",
 ]

@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   }
 
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=
-  s.required_ruby_version = Gem::Requirement.new('>= 3.1')
+  s.required_ruby_version = Gem::Requirement.new('>= 3.2')
 
   s.files = [
     'CHANGES',
@@ -52,7 +52,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'base64', ['~> 0.2']
   s.add_dependency 'logger', ['~> 1.4']
   s.add_dependency 'rexml', ['~> 3.2', '>= 3.2.5']
-  s.add_dependency 'rubyzip', ['>= 1.2.2', '< 3.0']
+  s.add_dependency 'rubyzip', ['>= 1.2.2', '< 4.0']
   s.add_dependency 'websocket', ['~> 1.0']
 
   s.add_development_dependency 'git', ['~> 1.19']

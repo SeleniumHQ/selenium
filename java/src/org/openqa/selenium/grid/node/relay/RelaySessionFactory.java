@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node.relay;
 
+import static org.openqa.selenium.grid.data.DefaultSlotMatcher.matchConditionToRemoveCapability;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.tracing.AttributeKey.DOWNSTREAM_DIALECT;
@@ -72,7 +73,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 public class RelaySessionFactory implements SessionFactory {
 
   private static final Logger LOG = Logger.getLogger(RelaySessionFactory.class.getName());
-
   private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
   private final Duration sessionTimeout;
@@ -140,24 +140,30 @@ public class RelaySessionFactory implements SessionFactory {
             .orElse(false);
   }
 
+  public Capabilities filterRelayCapabilities(Capabilities capabilities) {
+    /*
+    Remove browserName capability if 'appium:app' (or similar based on driver) is present as it breaks appium tests when app is provided
+    they are mutually exclusive
+    */
+    if (matchConditionToRemoveCapability(capabilities)) {
+      MutableCapabilities filteredStereotype = new MutableCapabilities(capabilities);
+      filteredStereotype.setCapability(CapabilityType.BROWSER_NAME, (String) null);
+      return filteredStereotype;
+    }
+    return capabilities;
+  }
+
   @Override
   public Either<WebDriverException, ActiveSession> apply(CreateSessionRequest sessionRequest) {
     Capabilities capabilities = sessionRequest.getDesiredCapabilities();
+    capabilities = filterRelayCapabilities(capabilities);
+
     if (!test(capabilities)) {
       return Either.left(
           new SessionNotCreatedException(
               "New session request capabilities do not " + "match the stereotype."));
     }
 
-    // remove browserName capability if 'appium:app' is present as it breaks appium tests when app
-    // is provided
-    // they are mutually exclusive
-    MutableCapabilities filteredStereotype = new MutableCapabilities(stereotype);
-    if (capabilities.getCapability("appium:app") != null) {
-      filteredStereotype.setCapability(CapabilityType.BROWSER_NAME, (String) null);
-    }
-
-    capabilities = capabilities.merge(filteredStereotype);
     LOG.info("Starting session for " + capabilities);
 
     try (Span span = tracer.getCurrentContext().createSpan("relay_session_factory.apply")) {

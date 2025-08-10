@@ -30,7 +30,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 #     old_size = driver.get_window_size()
 #     driver.set_window_size(200, 200)
 #     wait.until(
-#         lambda dr: dr.get_window_size() != old_size if old_size["width"] != 200 and old_size["height"] != 200 else True)
+#         lambda dr: dr.get_window_size() != old_size if old_size["width"] != 200 \
+#             and old_size["height"] != 200 else True)
 #     size = driver.get_window_size()
 #     driver.maximize_window()
 #     wait.until(lambda dr: dr.get_window_size() != size)

@@ -18,7 +18,6 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.Script;
 using System;
 using System.Threading.Tasks;
 
@@ -29,7 +28,7 @@ class ScriptCommandsTest : BiDiTestFixture
     [Test]
     public async Task CanGetAllRealms()
     {
-        _ = await bidi.BrowsingContext.CreateAsync(Modules.BrowsingContext.ContextType.Window);
+        _ = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Window);
 
         var realms = await bidi.Script.GetRealmsAsync();
 
@@ -46,7 +45,7 @@ class ScriptCommandsTest : BiDiTestFixture
     [Test]
     public async Task CanGetAllRealmsByType()
     {
-        _ = await bidi.BrowsingContext.CreateAsync(Modules.BrowsingContext.ContextType.Window);
+        _ = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Window);
 
         var realms = await bidi.Script.GetRealmsAsync(new() { Type = RealmType.Window });
 
@@ -63,7 +62,7 @@ class ScriptCommandsTest : BiDiTestFixture
     [Test]
     public async Task CanGetRealmInBrowsingContext()
     {
-        var tab = await bidi.BrowsingContext.CreateAsync(Modules.BrowsingContext.ContextType.Tab);
+        var tab = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
 
         var realms = await tab.Script.GetRealmsAsync();
 
@@ -76,7 +75,7 @@ class ScriptCommandsTest : BiDiTestFixture
     [Test]
     public async Task CanGetRealmInBrowsingContextByType()
     {
-        var tab = await bidi.BrowsingContext.CreateAsync(Modules.BrowsingContext.ContextType.Tab);
+        var tab = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
 
         var realms = await tab.Script.GetRealmsAsync(new() { Type = RealmType.Window });
 
@@ -93,15 +92,15 @@ class ScriptCommandsTest : BiDiTestFixture
 
         Assert.That(preloadScript, Is.Not.Null);
 
-        TaskCompletionSource<Modules.Log.LogEntry> tcs = new();
+        TaskCompletionSource<Log.LogEntry> tcs = new();
 
         await context.Log.OnEntryAddedAsync(tcs.SetResult);
 
-        await context.ReloadAsync(new() { Wait = Modules.BrowsingContext.ReadinessState.Interactive });
+        await context.ReloadAsync(new() { Wait = BrowsingContext.ReadinessState.Interactive });
 
         var entry = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
-        Assert.That(entry.Level, Is.EqualTo(Modules.Log.Level.Info));
+        Assert.That(entry.Level, Is.EqualTo(Log.Level.Info));
         Assert.That(entry.Text, Is.EqualTo("preload_script_console_text"));
     }
 
@@ -142,7 +141,7 @@ class ScriptCommandsTest : BiDiTestFixture
 
         Assert.That(preloadScript, Is.Not.Null);
 
-        await context.ReloadAsync(new() { Wait = Modules.BrowsingContext.ReadinessState.Interactive });
+        await context.ReloadAsync(new() { Wait = BrowsingContext.ReadinessState.Interactive });
 
         var bar = await context.Script.EvaluateAsync<int>("window.bar", true, targetOptions: new() { Sandbox = "sandbox" });
 
@@ -154,7 +153,7 @@ class ScriptCommandsTest : BiDiTestFixture
     {
         var preloadScript = await context.Script.AddPreloadScriptAsync("() => { window.bar = 2; }");
 
-        await context.ReloadAsync(new() { Wait = Modules.BrowsingContext.ReadinessState.Interactive });
+        await context.ReloadAsync(new() { Wait = BrowsingContext.ReadinessState.Interactive });
 
         var bar = await context.Script.EvaluateAsync<int>("window.bar", true);
 

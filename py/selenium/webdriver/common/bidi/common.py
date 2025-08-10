@@ -15,10 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Dict
+from collections.abc import Generator
+from typing import Optional
 
 
-def command_builder(method: str, params: Dict = None) -> Dict:
+def command_builder(method: str, params: Optional[dict] = None) -> Generator[dict, dict, dict]:
     """Build a command iterator to send to the BiDi protocol.
 
     Parameters:

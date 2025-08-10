@@ -44,36 +44,36 @@ from .wpewebkit.options import Options as WPEWebKitOptions  # noqa
 from .wpewebkit.service import Service as WPEWebKitService  # noqa
 from .wpewebkit.webdriver import WebDriver as WPEWebKit  # noqa
 
-__version__ = "4.32.0.202504060755"
+__version__ = "4.35.0.202507081456"
 
 # We need an explicit __all__ because the above won't otherwise be exported.
 __all__ = [
-    "Firefox",
-    "FirefoxProfile",
-    "FirefoxOptions",
-    "FirefoxService",
+    "ActionChains",
     "Chrome",
     "ChromeOptions",
     "ChromeService",
+    "ChromiumEdge",
+    "DesiredCapabilities",
+    "Edge",
+    "EdgeOptions",
+    "EdgeService",
+    "Firefox",
+    "FirefoxOptions",
+    "FirefoxProfile",
+    "FirefoxService",
     "Ie",
     "IeOptions",
     "IeService",
-    "Edge",
-    "ChromiumEdge",
-    "EdgeOptions",
-    "EdgeService",
+    "Keys",
+    "Proxy",
+    "Remote",
     "Safari",
     "SafariOptions",
     "SafariService",
-    "WebKitGTK",
-    "WebKitGTKOptions",
-    "WebKitGTKService",
     "WPEWebKit",
     "WPEWebKitOptions",
     "WPEWebKitService",
-    "Remote",
-    "DesiredCapabilities",
-    "ActionChains",
-    "Proxy",
-    "Keys",
+    "WebKitGTK",
+    "WebKitGTKOptions",
+    "WebKitGTKService",
 ]

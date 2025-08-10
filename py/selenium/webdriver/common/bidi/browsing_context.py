@@ -15,10 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import Any, Callable, Optional, Union
 
 from selenium.webdriver.common.bidi.common import command_builder
 
@@ -58,7 +55,7 @@ class NavigationInfo:
         self.url = url
 
     @classmethod
-    def from_json(cls, json: Dict) -> "NavigationInfo":
+    def from_json(cls, json: dict) -> "NavigationInfo":
         """Creates a NavigationInfo instance from a dictionary.
 
         Parameters:
@@ -69,12 +66,23 @@ class NavigationInfo:
         -------
             NavigationInfo: A new instance of NavigationInfo.
         """
-        return cls(
-            context=json.get("context"),
-            navigation=json.get("navigation"),
-            timestamp=json.get("timestamp"),
-            url=json.get("url"),
-        )
+        context = json.get("context")
+        if context is None or not isinstance(context, str):
+            raise ValueError("context is required and must be a string")
+
+        navigation = json.get("navigation")
+        if navigation is not None and not isinstance(navigation, str):
+            raise ValueError("navigation must be a string")
+
+        timestamp = json.get("timestamp")
+        if timestamp is None or not isinstance(timestamp, int) or timestamp < 0:
+            raise ValueError("timestamp is required and must be a non-negative integer")
+
+        url = json.get("url")
+        if url is None or not isinstance(url, str):
+            raise ValueError("url is required and must be a string")
+
+        return cls(context, navigation, timestamp, url)
 
 
 class BrowsingContextInfo:
@@ -84,11 +92,11 @@ class BrowsingContextInfo:
         self,
         context: str,
         url: str,
-        children: Optional[List["BrowsingContextInfo"]],
+        children: Optional[list["BrowsingContextInfo"]],
+        client_window: str,
+        user_context: str,
         parent: Optional[str] = None,
-        user_context: Optional[str] = None,
         original_opener: Optional[str] = None,
-        client_window: Optional[str] = None,
     ):
         self.context = context
         self.url = url
@@ -99,7 +107,7 @@ class BrowsingContextInfo:
         self.client_window = client_window
 
     @classmethod
-    def from_json(cls, json: Dict) -> "BrowsingContextInfo":
+    def from_json(cls, json: dict) -> "BrowsingContextInfo":
         """Creates a BrowsingContextInfo instance from a dictionary.
 
         Parameters:
@@ -111,17 +119,49 @@ class BrowsingContextInfo:
             BrowsingContextInfo: A new instance of BrowsingContextInfo.
         """
         children = None
-        if json.get("children") is not None:
-            children = [BrowsingContextInfo.from_json(child) for child in json.get("children")]
+        raw_children = json.get("children")
+        if raw_children is not None:
+            if not isinstance(raw_children, list):
+                raise ValueError("children must be a list if provided")
+
+            children = []
+            for child in raw_children:
+                if not isinstance(child, dict):
+                    raise ValueError(f"Each child must be a dictionary, got {type(child)}")
+                children.append(BrowsingContextInfo.from_json(child))
+
+        context = json.get("context")
+        if context is None or not isinstance(context, str):
+            raise ValueError("context is required and must be a string")
+
+        url = json.get("url")
+        if url is None or not isinstance(url, str):
+            raise ValueError("url is required and must be a string")
+
+        parent = json.get("parent")
+        if parent is not None and not isinstance(parent, str):
+            raise ValueError("parent must be a string if provided")
+
+        user_context = json.get("userContext")
+        if user_context is None or not isinstance(user_context, str):
+            raise ValueError("userContext is required and must be a string")
+
+        original_opener = json.get("originalOpener")
+        if original_opener is not None and not isinstance(original_opener, str):
+            raise ValueError("originalOpener must be a string if provided")
+
+        client_window = json.get("clientWindow")
+        if client_window is None or not isinstance(client_window, str):
+            raise ValueError("clientWindow is required and must be a string")
 
         return cls(
-            context=json.get("context"),
-            url=json.get("url"),
+            context=context,
+            url=url,
             children=children,
-            parent=json.get("parent"),
-            user_context=json.get("userContext"),
-            original_opener=json.get("originalOpener"),
-            client_window=json.get("clientWindow"),
+            client_window=client_window,
+            user_context=user_context,
+            parent=parent,
+            original_opener=original_opener,
         )
 
 
@@ -140,7 +180,7 @@ class DownloadWillBeginParams(NavigationInfo):
         self.suggested_filename = suggested_filename
 
     @classmethod
-    def from_json(cls, json: Dict) -> "DownloadWillBeginParams":
+    def from_json(cls, json: dict) -> "DownloadWillBeginParams":
         """Creates a DownloadWillBeginParams instance from a dictionary.
 
         Parameters:
@@ -151,12 +191,32 @@ class DownloadWillBeginParams(NavigationInfo):
         -------
             DownloadWillBeginParams: A new instance of DownloadWillBeginParams.
         """
+        context = json.get("context")
+        if context is None or not isinstance(context, str):
+            raise ValueError("context is required and must be a string")
+
+        navigation = json.get("navigation")
+        if navigation is not None and not isinstance(navigation, str):
+            raise ValueError("navigation must be a string")
+
+        timestamp = json.get("timestamp")
+        if timestamp is None or not isinstance(timestamp, int) or timestamp < 0:
+            raise ValueError("timestamp is required and must be a non-negative integer")
+
+        url = json.get("url")
+        if url is None or not isinstance(url, str):
+            raise ValueError("url is required and must be a string")
+
+        suggested_filename = json.get("suggestedFilename")
+        if suggested_filename is None or not isinstance(suggested_filename, str):
+            raise ValueError("suggestedFilename is required and must be a string")
+
         return cls(
-            context=json.get("context"),
-            navigation=json.get("navigation"),
-            timestamp=json.get("timestamp"),
-            url=json.get("url"),
-            suggested_filename=json.get("suggestedFilename"),
+            context=context,
+            navigation=navigation,
+            timestamp=timestamp,
+            url=url,
+            suggested_filename=suggested_filename,
         )
 
 
@@ -178,7 +238,7 @@ class UserPromptOpenedParams:
         self.default_value = default_value
 
     @classmethod
-    def from_json(cls, json: Dict) -> "UserPromptOpenedParams":
+    def from_json(cls, json: dict) -> "UserPromptOpenedParams":
         """Creates a UserPromptOpenedParams instance from a dictionary.
 
         Parameters:
@@ -189,12 +249,32 @@ class UserPromptOpenedParams:
         -------
             UserPromptOpenedParams: A new instance of UserPromptOpenedParams.
         """
+        context = json.get("context")
+        if context is None or not isinstance(context, str):
+            raise ValueError("context is required and must be a string")
+
+        handler = json.get("handler")
+        if handler is None or not isinstance(handler, str):
+            raise ValueError("handler is required and must be a string")
+
+        message = json.get("message")
+        if message is None or not isinstance(message, str):
+            raise ValueError("message is required and must be a string")
+
+        type_value = json.get("type")
+        if type_value is None or not isinstance(type_value, str):
+            raise ValueError("type is required and must be a string")
+
+        default_value = json.get("defaultValue")
+        if default_value is not None and not isinstance(default_value, str):
+            raise ValueError("defaultValue must be a string if provided")
+
         return cls(
-            context=json.get("context"),
-            handler=json.get("handler"),
-            message=json.get("message"),
-            type=json.get("type"),
-            default_value=json.get("defaultValue"),
+            context=context,
+            handler=handler,
+            message=message,
+            type=type_value,
+            default_value=default_value,
         )
 
 
@@ -214,7 +294,7 @@ class UserPromptClosedParams:
         self.user_text = user_text
 
     @classmethod
-    def from_json(cls, json: Dict) -> "UserPromptClosedParams":
+    def from_json(cls, json: dict) -> "UserPromptClosedParams":
         """Creates a UserPromptClosedParams instance from a dictionary.
 
         Parameters:
@@ -225,11 +305,27 @@ class UserPromptClosedParams:
         -------
             UserPromptClosedParams: A new instance of UserPromptClosedParams.
         """
+        context = json.get("context")
+        if context is None or not isinstance(context, str):
+            raise ValueError("context is required and must be a string")
+
+        accepted = json.get("accepted")
+        if accepted is None or not isinstance(accepted, bool):
+            raise ValueError("accepted is required and must be a boolean")
+
+        type_value = json.get("type")
+        if type_value is None or not isinstance(type_value, str):
+            raise ValueError("type is required and must be a string")
+
+        user_text = json.get("userText")
+        if user_text is not None and not isinstance(user_text, str):
+            raise ValueError("userText must be a string if provided")
+
         return cls(
-            context=json.get("context"),
-            accepted=json.get("accepted"),
-            type=json.get("type"),
-            user_text=json.get("userText"),
+            context=context,
+            accepted=accepted,
+            type=type_value,
+            user_text=user_text,
         )
 
 
@@ -239,13 +335,15 @@ class HistoryUpdatedParams:
     def __init__(
         self,
         context: str,
+        timestamp: int,
         url: str,
     ):
         self.context = context
+        self.timestamp = timestamp
         self.url = url
 
     @classmethod
-    def from_json(cls, json: Dict) -> "HistoryUpdatedParams":
+    def from_json(cls, json: dict) -> "HistoryUpdatedParams":
         """Creates a HistoryUpdatedParams instance from a dictionary.
 
         Parameters:
@@ -256,9 +354,22 @@ class HistoryUpdatedParams:
         -------
             HistoryUpdatedParams: A new instance of HistoryUpdatedParams.
         """
+        context = json.get("context")
+        if context is None or not isinstance(context, str):
+            raise ValueError("context is required and must be a string")
+
+        timestamp = json.get("timestamp")
+        if timestamp is None or not isinstance(timestamp, int) or timestamp < 0:
+            raise ValueError("timestamp is required and must be a non-negative integer")
+
+        url = json.get("url")
+        if url is None or not isinstance(url, str):
+            raise ValueError("url is required and must be a string")
+
         return cls(
-            context=json.get("context"),
-            url=json.get("url"),
+            context=context,
+            timestamp=timestamp,
+            url=url,
         )
 
 
@@ -270,7 +381,7 @@ class BrowsingContextEvent:
         self.params = kwargs
 
     @classmethod
-    def from_json(cls, json: Dict) -> "BrowsingContextEvent":
+    def from_json(cls, json: dict) -> "BrowsingContextEvent":
         """Creates a BrowsingContextEvent instance from a dictionary.
 
         Parameters:
@@ -281,7 +392,11 @@ class BrowsingContextEvent:
         -------
             BrowsingContextEvent: A new instance of BrowsingContextEvent.
         """
-        return cls(event_class=json.get("event_class"), **json)
+        event_class = json.get("event_class")
+        if event_class is None or not isinstance(event_class, str):
+            raise ValueError("event_class is required and must be a string")
+
+        return cls(event_class=event_class, **json)
 
 
 class BrowsingContext:
@@ -326,8 +441,8 @@ class BrowsingContext:
         self,
         context: str,
         origin: str = "viewport",
-        format: Optional[Dict] = None,
-        clip: Optional[Dict] = None,
+        format: Optional[dict] = None,
+        clip: Optional[dict] = None,
     ) -> str:
         """Captures an image of the given navigable, and returns it as a Base64-encoded string.
 
@@ -342,7 +457,7 @@ class BrowsingContext:
         -------
             str: The Base64-encoded screenshot.
         """
-        params = {"context": context, "origin": origin}
+        params: dict[str, Any] = {"context": context, "origin": origin}
         if format is not None:
             params["format"] = format
         if clip is not None:
@@ -386,7 +501,7 @@ class BrowsingContext:
         -------
             str: The browsing context ID of the created navigable.
         """
-        params = {"type": type}
+        params: dict[str, Any] = {"type": type}
         if reference_context is not None:
             params["referenceContext"] = reference_context
         if background is not None:
@@ -401,8 +516,9 @@ class BrowsingContext:
         self,
         max_depth: Optional[int] = None,
         root: Optional[str] = None,
-    ) -> List[BrowsingContextInfo]:
-        """Returns a tree of all descendent navigables including the given parent itself, or all top-level contexts when no parent is provided.
+    ) -> list[BrowsingContextInfo]:
+        """Returns a tree of all descendent navigables including the given parent itself, or all top-level contexts
+        when no parent is provided.
 
         Parameters:
         -----------
@@ -413,7 +529,7 @@ class BrowsingContext:
         -------
             List[BrowsingContextInfo]: A list of browsing context information.
         """
-        params = {}
+        params: dict[str, Any] = {}
         if max_depth is not None:
             params["maxDepth"] = max_depth
         if root is not None:
@@ -436,7 +552,7 @@ class BrowsingContext:
             accept: Whether to accept the prompt.
             user_text: The text to enter in the prompt.
         """
-        params = {"context": context}
+        params: dict[str, Any] = {"context": context}
         if accept is not None:
             params["accept"] = accept
         if user_text is not None:
@@ -447,11 +563,11 @@ class BrowsingContext:
     def locate_nodes(
         self,
         context: str,
-        locator: Dict,
+        locator: dict,
         max_node_count: Optional[int] = None,
-        serialization_options: Optional[Dict] = None,
-        start_nodes: Optional[List[Dict]] = None,
-    ) -> List[Dict]:
+        serialization_options: Optional[dict] = None,
+        start_nodes: Optional[list[dict]] = None,
+    ) -> list[dict]:
         """Returns a list of all nodes matching the specified locator.
 
         Parameters:
@@ -466,7 +582,7 @@ class BrowsingContext:
         -------
             List[Dict]: A list of nodes.
         """
-        params = {"context": context, "locator": locator}
+        params: dict[str, Any] = {"context": context, "locator": locator}
         if max_node_count is not None:
             params["maxNodeCount"] = max_node_count
         if serialization_options is not None:
@@ -482,7 +598,7 @@ class BrowsingContext:
         context: str,
         url: str,
         wait: Optional[str] = None,
-    ) -> Dict:
+    ) -> dict:
         """Navigates a navigable to the given URL.
 
         Parameters:
@@ -506,14 +622,15 @@ class BrowsingContext:
         self,
         context: str,
         background: bool = False,
-        margin: Optional[Dict] = None,
+        margin: Optional[dict] = None,
         orientation: str = "portrait",
-        page: Optional[Dict] = None,
-        page_ranges: Optional[List[Union[int, str]]] = None,
+        page: Optional[dict] = None,
+        page_ranges: Optional[list[Union[int, str]]] = None,
         scale: float = 1.0,
         shrink_to_fit: bool = True,
     ) -> str:
-        """Creates a paginated representation of a document, and returns it as a PDF document represented as a Base64-encoded string.
+        """Creates a paginated representation of a document, and returns it as a PDF document represented as a
+        Base64-encoded string.
 
         Parameters:
         -----------
@@ -552,7 +669,7 @@ class BrowsingContext:
         context: str,
         ignore_cache: Optional[bool] = None,
         wait: Optional[str] = None,
-    ) -> Dict:
+    ) -> dict:
         """Reloads a navigable.
 
         Parameters:
@@ -565,7 +682,7 @@ class BrowsingContext:
         -------
             Dict: A dictionary containing the navigation result.
         """
-        params = {"context": context}
+        params: dict[str, Any] = {"context": context}
         if ignore_cache is not None:
             params["ignoreCache"] = ignore_cache
         if wait is not None:
@@ -577,9 +694,9 @@ class BrowsingContext:
     def set_viewport(
         self,
         context: Optional[str] = None,
-        viewport: Optional[Dict] = None,
+        viewport: Optional[dict] = None,
         device_pixel_ratio: Optional[float] = None,
-        user_contexts: Optional[List[str]] = None,
+        user_contexts: Optional[list[str]] = None,
     ) -> None:
         """Modifies specific viewport characteristics on the given top-level traversable.
 
@@ -594,7 +711,7 @@ class BrowsingContext:
         ------
             Exception: If the browsing context is not a top-level traversable.
         """
-        params = {}
+        params: dict[str, Any] = {}
         if context is not None:
             params["context"] = context
         if viewport is not None:
@@ -606,7 +723,7 @@ class BrowsingContext:
 
         self.conn.execute(command_builder("browsingContext.setViewport", params))
 
-    def traverse_history(self, context: str, delta: int) -> Dict:
+    def traverse_history(self, context: str, delta: int) -> dict:
         """Traverses the history of a given navigable by a delta.
 
         Parameters:
@@ -622,7 +739,7 @@ class BrowsingContext:
         result = self.conn.execute(command_builder("browsingContext.traverseHistory", params))
         return result
 
-    def _on_event(self, event_name: str, callback: callable) -> int:
+    def _on_event(self, event_name: str, callback: Callable) -> int:
         """Set a callback function to subscribe to a browsing context event.
 
         Parameters:
@@ -666,7 +783,7 @@ class BrowsingContext:
 
         return callback_id
 
-    def add_event_handler(self, event: str, callback: callable, contexts: Optional[List[str]] = None) -> int:
+    def add_event_handler(self, event: str, callback: Callable, contexts: Optional[list[str]] = None) -> int:
         """Add an event handler to the browsing context.
 
         Parameters:
@@ -711,15 +828,18 @@ class BrowsingContext:
         except KeyError:
             raise Exception(f"Event {event} not found")
 
-        event = BrowsingContextEvent(event_name)
+        event_obj = BrowsingContextEvent(event_name)
 
-        self.conn.remove_callback(event, callback_id)
-        self.subscriptions[event_name].remove(callback_id)
-        if len(self.subscriptions[event_name]) == 0:
-            params = {"events": [event_name]}
-            session = Session(self.conn)
-            self.conn.execute(session.unsubscribe(**params))
-            del self.subscriptions[event_name]
+        self.conn.remove_callback(event_obj, callback_id)
+        if event_name in self.subscriptions:
+            callbacks = self.subscriptions[event_name]
+            if callback_id in callbacks:
+                callbacks.remove(callback_id)
+                if not callbacks:
+                    params = {"events": [event_name]}
+                    session = Session(self.conn)
+                    self.conn.execute(session.unsubscribe(**params))
+                    del self.subscriptions[event_name]
 
     def clear_event_handlers(self) -> None:
         """Clear all event handlers from the browsing context."""

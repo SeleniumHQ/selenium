@@ -28,9 +28,9 @@ module Selenium
 
         def initialize(path: nil, port: nil, log: nil, args: nil)
           args ||= []
-          unless args.any? { |arg| arg.include?('--connect-existing') }
+          unless args.any? { |arg| arg.include?('--connect-existing') || arg.include?('--websocket-port') }
             args << '--websocket-port'
-            args << WebDriver::PortProber.above(9222).to_s
+            args << '0'
           end
           super
         end

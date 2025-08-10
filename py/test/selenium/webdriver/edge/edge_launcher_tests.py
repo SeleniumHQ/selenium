@@ -19,16 +19,16 @@ import pytest
 
 
 @pytest.mark.no_driver_after_test
-def test_launch_and_close_browser(clean_driver, clean_service):
-    driver = clean_driver(service=clean_service)
+def test_launch_and_close_browser(clean_driver, clean_options, clean_service):
+    driver = clean_driver(options=clean_options, service=clean_service)
     driver.quit()
 
 
 @pytest.mark.no_driver_after_test
-def test_we_can_launch_multiple_edge_instances(clean_driver, clean_service):
-    driver1 = clean_driver(service=clean_service)
-    driver2 = clean_driver(service=clean_service)
-    driver3 = clean_driver(service=clean_service)
+def test_we_can_launch_multiple_edge_instances(clean_driver, clean_options, clean_service):
+    driver1 = clean_driver(options=clean_options, service=clean_service)
+    driver2 = clean_driver(options=clean_options, service=clean_service)
+    driver3 = clean_driver(options=clean_options, service=clean_service)
     driver1.quit()
     driver2.quit()
     driver3.quit()

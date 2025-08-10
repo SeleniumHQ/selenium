@@ -37,15 +37,11 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.HasBiDi;
-import org.openqa.selenium.html5.LocalStorage;
-import org.openqa.selenium.html5.SessionStorage;
-import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
-import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -68,11 +64,10 @@ import org.openqa.selenium.remote.service.DriverService;
  * </pre>
  */
 public class FirefoxDriver extends RemoteWebDriver
-    implements WebStorage, HasExtensions, HasFullPageScreenshot, HasContext, HasBiDi {
+    implements HasExtensions, HasFullPageScreenshot, HasContext, HasBiDi {
 
   private static final Logger LOG = Logger.getLogger(FirefoxDriver.class.getName());
   private final Capabilities capabilities;
-  private final RemoteWebStorage webStorage;
   private final HasExtensions extensions;
   private final HasFullPageScreenshot fullPageScreenshot;
   private final HasContext context;
@@ -140,7 +135,6 @@ public class FirefoxDriver extends RemoteWebDriver
   private FirefoxDriver(
       FirefoxDriverCommandExecutor executor, FirefoxOptions options, ClientConfig clientConfig) {
     super(executor, checkCapabilitiesAndProxy(options));
-    webStorage = new RemoteWebStorage(getExecuteMethod());
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
     fullPageScreenshot =
         new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
@@ -199,18 +193,6 @@ public class FirefoxDriver extends RemoteWebDriver
     throw new WebDriverException(
         "Setting the file detector only works on remote webdriver instances obtained "
             + "via RemoteWebDriver");
-  }
-
-  @Override
-  @Deprecated
-  public LocalStorage getLocalStorage() {
-    return webStorage.getLocalStorage();
-  }
-
-  @Override
-  @Deprecated
-  public SessionStorage getSessionStorage() {
-    return webStorage.getSessionStorage();
   }
 
   @Override
