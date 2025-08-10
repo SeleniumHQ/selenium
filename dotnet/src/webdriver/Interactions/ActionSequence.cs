@@ -63,13 +63,6 @@ public class ActionSequence
     /// <summary>
     /// Gets the input device for this Action sequence.
     /// </summary>
-    [Obsolete("This property has been renamed to InputDevice and will be removed in a future version")]
-    [CLSCompliant(false)]
-    public InputDevice inputDevice => InputDevice;
-
-    /// <summary>
-    /// Gets the input device for this Action sequence.
-    /// </summary>
     public InputDevice InputDevice { get; }
 
     /// <summary>

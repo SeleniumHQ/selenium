@@ -175,6 +175,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       case FIND_CHILD_ELEMENTS:
       case FIND_ELEMENT:
       case FIND_ELEMENTS:
+      case FIND_ELEMENT_FROM_SHADOW_ROOT:
+      case FIND_ELEMENTS_FROM_SHADOW_ROOT:
         String using = (String) parameters.get("using");
         Object value = parameters.get("value");
 

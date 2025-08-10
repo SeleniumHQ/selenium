@@ -19,10 +19,10 @@
 
 using OpenQA.Selenium.Internal;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Firefox;
 
@@ -102,6 +102,20 @@ public sealed class FirefoxDriverService : DriverService
     /// offer a way to specify a log file path directly.
     /// </remarks>
     public string? LogPath { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to disable truncation of long log lines in GeckoDriver.
+    /// </summary>
+    /// <remarks>
+    /// A <see langword="null"/> value indicates no log truncation setting to specify.
+    /// Set to <see langword="true"/> to disable truncation, or <see langword="false"/> to enable truncation.
+    /// </remarks>
+    public bool? LogTruncate { get; set; }
+
+    /// <summary>
+    /// Directory in which GeckoDriver creates profiles.
+    /// </summary>
+    public string? ProfileRoot { get; set; }
 
     /// <summary>
     /// Gets or sets the level at which log output is displayed.
@@ -189,16 +203,31 @@ public sealed class FirefoxDriverService : DriverService
                 argsBuilder.Append(" --jsdebugger");
             }
 
+            if (this.LogTruncate is true)
+            {
+                argsBuilder.Append(" --log-no-truncate");
+            }
+
+            if (!string.IsNullOrEmpty(this.ProfileRoot))
+            {
+                if (!Directory.Exists(this.ProfileRoot))
+                {
+                    throw new ArgumentException($"Profile root directory does not exist: {this.ProfileRoot}", nameof(ProfileRoot));
+                }
+
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --profile-root \"{0}\"", this.ProfileRoot);
+            }
+
             return argsBuilder.ToString().Trim();
         }
     }
 
     /// <summary>
-    /// Handles the event when the driver service process is starting.
+    /// Called when the driver process is starting. This method sets up log file writing if a log path is specified.
     /// </summary>
     /// <param name="eventArgs">The event arguments containing information about the driver service process.</param>
     /// <remarks>
-    /// This method initializes a log writer if a log path is specified and redirects output streams to capture logs.
+    /// This method initializes a log writer if a log path is specified.
     /// </remarks>
     protected override void OnDriverProcessStarting(DriverProcessStartingEventArgs eventArgs)
     {
@@ -210,39 +239,35 @@ public sealed class FirefoxDriverService : DriverService
                 Directory.CreateDirectory(directory);
             }
 
-            // Initialize the log writer
             logWriter = new StreamWriter(this.LogPath, append: true) { AutoFlush = true };
-
-            // Configure process to redirect output
-            eventArgs.DriverServiceProcessStartInfo.RedirectStandardOutput = true;
-            eventArgs.DriverServiceProcessStartInfo.RedirectStandardError = true;
         }
 
         base.OnDriverProcessStarting(eventArgs);
     }
 
     /// <summary>
-    /// Handles the event when the driver process has started.
+    /// Handles the output and error data received from the driver process and sends it to the log writer if available.
     /// </summary>
-    /// <param name="eventArgs">The event arguments containing information about the started driver process.</param>
-    /// <remarks>
-    /// This method reads the output and error streams asynchronously and writes them to the log file if available.
-    /// </remarks>
-    protected override void OnDriverProcessStarted(DriverProcessStartedEventArgs eventArgs)
+    /// <param name="sender">The sender of the event.</param>
+    /// <param name="args">The data received event arguments.</param>
+    protected override void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args)
     {
-        if (logWriter == null) return;
-        if (eventArgs.StandardOutputStreamReader != null)
-        {
-            _ = Task.Run(() => ReadStreamAsync(eventArgs.StandardOutputStreamReader));
-        }
+        if (string.IsNullOrEmpty(args.Data))
+            return;
 
-        if (eventArgs.StandardErrorStreamReader != null)
+        if (!string.IsNullOrEmpty(this.LogPath))
         {
-            _ = Task.Run(() => ReadStreamAsync(eventArgs.StandardErrorStreamReader));
+            if (logWriter != null)
+            {
+                logWriter.WriteLine(args.Data);
+            }
         }
-
-        base.OnDriverProcessStarted(eventArgs);
+        else
+        {
+            base.OnDriverProcessDataReceived(sender, args);
+        }
     }
+
 
     /// <summary>
     /// Disposes of the resources used by the <see cref="FirefoxDriverService"/> instance.
@@ -253,13 +278,13 @@ public sealed class FirefoxDriverService : DriverService
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
+        base.Dispose(disposing);
+
         if (logWriter != null && disposing)
         {
             logWriter.Dispose();
             logWriter = null;
         }
-
-        base.Dispose(disposing);
     }
 
     /// <summary>
@@ -342,25 +367,5 @@ public sealed class FirefoxDriverService : DriverService
         }
 
         return fileName;
-    }
-
-    private async Task ReadStreamAsync(StreamReader reader)
-    {
-        try
-        {
-            string? line;
-            while ((line = await reader.ReadLineAsync()) != null)
-            {
-                if (logWriter != null)
-                {
-                    logWriter.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {line}");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            // Log or handle the exception appropriately
-            System.Diagnostics.Debug.WriteLine($"Error reading stream: {ex.Message}");
-        }
     }
 }

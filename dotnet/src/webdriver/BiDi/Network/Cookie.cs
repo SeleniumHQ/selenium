@@ -32,5 +32,6 @@ public enum SameSite
 {
     Strict,
     Lax,
-    None
+    None,
+    Default
 }
