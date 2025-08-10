@@ -31,6 +31,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.cli.WrappedPrintWriter;
 import org.openqa.selenium.grid.config.Role;
@@ -38,6 +39,8 @@ import org.openqa.selenium.grid.server.HelpFlags;
 
 @AutoService(CliCommand.class)
 public class InfoCommand implements CliCommand {
+
+  private static final Pattern CODE_OR_LIST_PATTERN = Pattern.compile("^\\s*(\\*|\\d+\\.).*");
 
   public String getName() {
     return "info";
@@ -109,7 +112,7 @@ public class InfoCommand implements CliCommand {
           break;
       }
 
-      String path = getClass().getPackage().getName().replaceAll("\\.", "/") + "/" + toDisplay;
+      String path = getClass().getPackage().getName().replace('.', '/') + "/" + toDisplay;
       String content;
       try {
         content = readContent(path);
@@ -143,11 +146,11 @@ public class InfoCommand implements CliCommand {
         } else if ("```".equals(line)) {
           inCode = !inCode;
         } else {
-          if (line.startsWith("=")) {
+          if (line.charAt(0) == '=') {
             formattedText.append("\n");
           }
           formattedText.append(line);
-          if (inCode || line.matches("^\\s*\\*.*") || line.matches("^\\s*\\d+\\..*")) {
+          if (inCode || CODE_OR_LIST_PATTERN.matcher(line).matches()) {
             formattedText.append("\n");
           } else {
             formattedText.append(" ");

@@ -6,7 +6,7 @@
   "dependencies": {
     "@apollo/client": "3.12.6",
     "@emotion/react": "11.14.0",
-    "@emotion/styled": "11.14.0",
+    "@emotion/styled": "11.14.1",
     "@mui/icons-material": "5.15.18",
     "@mui/material": "5.15.18",
     "@novnc/novnc": "1.5.0",
@@ -56,7 +56,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.3.4",
     "ts-standard": "12.0.2",
-    "typescript": "5.7.2"
+    "typescript": "5.8.3"
   },
   "jest": {
     "testMatch": [

@@ -1,6 +1,6 @@
 [package]
 name = "selenium-manager"
-version = "0.4.34-nightly" # don't forget to update rust/BUILD.bazel
+version = "0.4.35-nightly" # don't forget to update rust/BUILD.bazel
 edition = "2021"
 authors = ["Selenium <selenium-developers@googlegroups.com"]
 license = "Apache-2.0"
@@ -8,34 +8,34 @@ homepage = "https://www.selenium.dev/"
 repository = "https://github.com/SeleniumHQ/selenium"
 documentation = "https://www.selenium.dev/documentation/"
 description = """
-Selenium Manager is a CLI tool that automatically manages the browser/driver infrastructure required by Selenium.
+Selenium Manager is a CLI tool that automatically manages the browser/driver resources required by Selenium.
 """
 
 [dependencies]
-clap = { version = "4.5.37", features = ["derive", "cargo"] }
+clap = { version = "4.5.40", features = ["derive", "cargo"] }
 log = "0.4.27"
 env_logger = "0.11.8"
 regex = "1.11.1"
-tokio = { version = "1.45.0", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
-tempfile = "3.19.1"
-reqwest = { version = "0.12.15", default-features = false, features = ["rustls-tls"] }
-zip = { version = "2.6.1", default-features = false, features = ["deflate-zlib"] }
+tokio = { version = "1.46.1", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
+tempfile = "3.20.0"
+reqwest = { version = "0.12.22", default-features = false, features = ["rustls-tls"] }
+zip = { version = "4.2.0", default-features = false, features = ["deflate"] }
 directories = "6.0.0"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.140"
-flate2 = "1.1.1"
+flate2 = "1.1.2"
 tar = "0.4.44"
 infer = "0.19.0"
 exitcode = "1.1.2"
-toml = "0.8.22"
-bzip2 = "0.5.2"
+toml = "0.8.23"
+bzip2 = "0.6.0"
 sevenz-rust = "0.6.1"
 xz2 = "0.1.7"
 walkdir = "2.5.0"
 debpkg = "0.6.0"
 anyhow = { version = "1.0.98", default-features = false, features = ["backtrace", "std"] }
 apple-flat-package = "0.20.0"
-which = "7.0.3"
+which = "8.0.0"
 fs2 = "0.4.3"
 fs_extra = "1.3.0"
 
@@ -45,7 +45,7 @@ winapi = { version = "0.3.9", features = ["winver", "winnt", "sysinfoapi"] }
 [dev-dependencies]
 assert_cmd = "2.0.17"
 is_executable = "1.0.4"
-rstest = "0.19.0"
+rstest = { version = "0.25.0", default-features = false }
 
 [profile.release]
 opt-level = 'z'     # Optimize for size

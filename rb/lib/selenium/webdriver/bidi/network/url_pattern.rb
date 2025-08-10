@@ -44,7 +44,7 @@ module Selenium
               type: 'pattern',
               protocol: uri.scheme || '',
               hostname: uri.host || '',
-              port: uri.port.to_s || '',
+              port: uri.port.to_s,
               pathname: uri.path || '',
               search: uri.query || ''
             }

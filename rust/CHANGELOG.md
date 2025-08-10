@@ -1,3 +1,8 @@
+0.4.34
+======
+* Electron support in Selenium-Manager (#13954) (#15752)
+* Bug-fix: avoid to download safaridriver and clear lock parent folder (#15775)
+
 0.4.33
 ======
 * Replace WMIC commands (deprecated) by WinAPI in Windows (#15363)

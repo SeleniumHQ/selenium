@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# This script updates the development dependendencies used for the Python bindings.
+# This script updates the development dependencies used for the Python bindings.
 #
 # When you run it, it will:
 # - create and activate a temporary virtual env

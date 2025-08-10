@@ -18,6 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
@@ -46,4 +47,20 @@ public sealed record BrowsingContextGetTreeOptions
     public long? MaxDepth { get; set; }
 }
 
-public sealed record GetTreeResult(IReadOnlyList<BrowsingContextInfo> Contexts) : EmptyResult;
+public sealed record GetTreeResult : EmptyResult, IReadOnlyList<BrowsingContextInfo>
+{
+    internal GetTreeResult(IReadOnlyList<BrowsingContextInfo> contexts)
+    {
+        Contexts = contexts;
+    }
+
+    public IReadOnlyList<BrowsingContextInfo> Contexts { get; }
+
+    public BrowsingContextInfo this[int index] => Contexts[index];
+
+    public int Count => Contexts.Count;
+
+    public IEnumerator<BrowsingContextInfo> GetEnumerator() => Contexts.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => (Contexts as IEnumerable).GetEnumerator();
+}

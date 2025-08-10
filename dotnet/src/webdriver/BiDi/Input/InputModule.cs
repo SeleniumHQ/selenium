@@ -25,24 +25,24 @@ namespace OpenQA.Selenium.BiDi.Input;
 
 public sealed class InputModule(Broker broker) : Module(broker)
 {
-    public async Task PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
+    public async Task<EmptyResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
     {
         var @params = new PerformActionsCommandParameters(context, actions);
 
-        await Broker.ExecuteCommandAsync(new PerformActionsCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<PerformActionsCommand, EmptyResult>(new PerformActionsCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null)
+    public async Task<EmptyResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null)
     {
         var @params = new ReleaseActionsCommandParameters(context);
 
-        await Broker.ExecuteCommandAsync(new ReleaseActionsCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<ReleaseActionsCommand, EmptyResult>(new ReleaseActionsCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
+    public async Task<EmptyResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
     {
         var @params = new SetFilesCommandParameters(context, element, files);
 
-        await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<SetFilesCommand, EmptyResult>(new SetFilesCommand(@params), options).ConfigureAwait(false);
     }
 }

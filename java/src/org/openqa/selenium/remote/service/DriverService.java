@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -105,11 +106,11 @@ public class DriverService implements Closeable {
    * @throws IOException If an I/O error occurs.
    */
   protected DriverService(
-      File executable,
+      @Nullable File executable,
       int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment)
+      @Nullable Duration timeout,
+      @Nullable List<String> args,
+      @Nullable Map<String, String> environment)
       throws IOException {
     if (executable != null) {
       this.executable = executable.getCanonicalPath();
@@ -145,15 +146,19 @@ public class DriverService implements Closeable {
     return new ImmutableCapabilities();
   }
 
-  protected String getDriverName() {
+  protected @Nullable String getDriverName() {
     return null;
   }
 
-  public String getDriverProperty() {
+  public @Nullable String getDriverProperty() {
     return null;
   }
 
-  protected File getDriverExecutable() {
+  public String getDriverEnvironmentVariable() {
+    return null;
+  }
+
+  protected @Nullable File getDriverExecutable() {
     return null;
   }
 

@@ -54,7 +54,7 @@ fn browser_latest_download_test(#[case] browser: String) {
 #[case("firefox", "121.0.1")]
 #[case("firefox", "beta")]
 #[case("firefox", "esr")]
-#[case("edge", "132.0.2957.140")]
+#[case("edge", "137.0.3296.93")]
 #[case("edge", "beta")]
 fn browser_version_download_test(#[case] browser: String, #[case] browser_version: String) {
     if OS.eq("windows") && browser.eq("edge") {

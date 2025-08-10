@@ -25,7 +25,8 @@ use crate::metadata::{
 };
 use crate::{
     create_http_client, format_three_args, format_two_args, Logger, SeleniumManager, BETA,
-    DASH_VERSION, DEV, ESR, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_CURRENT_VERSION_ARG, STABLE,
+    DASH_VERSION, DEV, ESR, LATEST_RELEASE, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
+    REG_CURRENT_VERSION_ARG, STABLE,
 };
 use anyhow::anyhow;
 use anyhow::Error;
@@ -41,7 +42,6 @@ use std::sync::mpsc::{Receiver, Sender};
 pub const FIREFOX_NAME: &str = "firefox";
 pub const GECKODRIVER_NAME: &str = "geckodriver";
 const DRIVER_URL: &str = "https://github.com/mozilla/geckodriver/releases/";
-const LATEST_RELEASE: &str = "latest";
 const DRIVER_VERSIONS_URL: &str = "https://raw.githubusercontent.com/SeleniumHQ/selenium/trunk/common/geckodriver/geckodriver-support.json";
 const BROWSER_URL: &str = "https://ftp.mozilla.org/pub/firefox/releases/";
 const FIREFOX_DEFAULT_LANG: &str = "en-US";

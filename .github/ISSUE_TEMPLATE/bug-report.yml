@@ -50,7 +50,7 @@ body:
     id: selenium-version
     attributes:
       label: What version of Selenium are you currently using?
-      description: Important! The latest released version of Selenium is 4.33 and we can't fix old versions.
+      description: Important! The latest released version of Selenium is 4.34 and we can't fix old versions.
       placeholder: e.g., 4.17.0
     validations:
       required: true

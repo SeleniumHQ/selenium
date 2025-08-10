@@ -4,8 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.34.0.202505232017"
-license = { text = "Apache 2.0" }
+version = "4.35.0.202507081456"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
 readme = "README.rst"
 requires-python = "~=3.9"
@@ -50,8 +51,9 @@ exclude = ["test*"]
 namespaces = true
 # include-package-data is `true` by default in pyproject.toml
 
-[[tool.setuptools-rust.bins]]
+[[tool.setuptools-rust.ext-modules]]
 target = "selenium.webdriver.common.selenium-manager"
+binding = "Exec"
 
 [tool.setuptools.package-data]
 "*" = [
@@ -66,7 +68,8 @@ target = "selenium.webdriver.common.selenium-manager"
     "selenium-manager",
     "selenium-manager.exe",
     "CHANGES",
-    "LICENSE"
+    "LICENSE",
+    "NOTICE",
 ]
 
 [tool.pytest.ini_options]

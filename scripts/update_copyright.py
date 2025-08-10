@@ -99,6 +99,7 @@ JS_EXCLUSIONS = [
     f"{ROOT}/javascript/selenium-core/scripts/xmlextras.js",
     f"{ROOT}/javascript/selenium-core/xpath/**/*.js",
     f"{ROOT}/javascript/grid-ui/node_modules/**/*.js",
+    f"{ROOT}/javascript/node/selenium-webdriver/node_modules/**/*.js",
 ]
 
 PY_EXCLUSIONS = [

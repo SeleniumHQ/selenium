@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -67,7 +67,7 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.ReloadAsync(this, options);
     }
 
-    public Task ActivateAsync(ActivateOptions? options = null)
+    public Task<EmptyResult> ActivateAsync(ActivateOptions? options = null)
     {
         return BiDi.BrowsingContext.ActivateAsync(this, options);
     }
@@ -82,27 +82,17 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.CaptureScreenshotAsync(this, options);
     }
 
-    public Task CloseAsync(CloseOptions? options = null)
+    public Task<EmptyResult> CloseAsync(CloseOptions? options = null)
     {
         return BiDi.BrowsingContext.CloseAsync(this, options);
     }
 
-    public Task TraverseHistoryAsync(int delta, TraverseHistoryOptions? options = null)
+    public Task<TraverseHistoryResult> TraverseHistoryAsync(int delta, TraverseHistoryOptions? options = null)
     {
         return BiDi.BrowsingContext.TraverseHistoryAsync(this, delta, options);
     }
 
-    public Task NavigateBackAsync(TraverseHistoryOptions? options = null)
-    {
-        return TraverseHistoryAsync(-1, options);
-    }
-
-    public Task NavigateForwardAsync(TraverseHistoryOptions? options = null)
-    {
-        return TraverseHistoryAsync(1, options);
-    }
-
-    public Task SetViewportAsync(SetViewportOptions? options = null)
+    public Task<EmptyResult> SetViewportAsync(SetViewportOptions? options = null)
     {
         return BiDi.BrowsingContext.SetViewportAsync(this, options);
     }
@@ -112,12 +102,12 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.PrintAsync(this, options);
     }
 
-    public Task HandleUserPromptAsync(HandleUserPromptOptions? options = null)
+    public Task<EmptyResult> HandleUserPromptAsync(HandleUserPromptOptions? options = null)
     {
         return BiDi.BrowsingContext.HandleUserPromptAsync(this, options);
     }
 
-    public Task<IReadOnlyList<BrowsingContextInfo>> GetTreeAsync(BrowsingContextGetTreeOptions? options = null)
+    public Task<GetTreeResult> GetTreeAsync(BrowsingContextGetTreeOptions? options = null)
     {
         GetTreeOptions getTreeOptions = new(options)
         {

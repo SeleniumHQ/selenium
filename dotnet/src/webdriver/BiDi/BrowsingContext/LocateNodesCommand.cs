@@ -39,18 +39,18 @@ public sealed class LocateNodesOptions : CommandOptions
 
 public sealed record LocateNodesResult : EmptyResult, IReadOnlyList<Script.NodeRemoteValue>
 {
-    private readonly IReadOnlyList<Script.NodeRemoteValue> _nodes;
-
     internal LocateNodesResult(IReadOnlyList<Script.NodeRemoteValue> nodes)
     {
-        _nodes = nodes;
+        Nodes = nodes;
     }
 
-    public Script.NodeRemoteValue this[int index] => _nodes[index];
+    public IReadOnlyList<Script.NodeRemoteValue> Nodes { get; }
 
-    public int Count => _nodes.Count;
+    public Script.NodeRemoteValue this[int index] => Nodes[index];
 
-    public IEnumerator<Script.NodeRemoteValue> GetEnumerator() => _nodes.GetEnumerator();
+    public int Count => Nodes.Count;
 
-    IEnumerator IEnumerable.GetEnumerator() => (_nodes as IEnumerable).GetEnumerator();
+    public IEnumerator<Script.NodeRemoteValue> GetEnumerator() => Nodes.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => (Nodes as IEnumerable).GetEnumerator();
 }

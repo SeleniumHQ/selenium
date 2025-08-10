@@ -89,8 +89,8 @@ jobs:
       os: ${{ matrix.os }}
       cache-key: py-browser-${{ matrix.browser }}
       run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:common-${{ matrix.browser }}-bidi
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=true //py:common-${{ matrix.browser }}-bidi
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=true //py:test-${{ matrix.browser }}
 
   safari-tests:
     name: Browser Tests
@@ -108,4 +108,4 @@ jobs:
       os: ${{ matrix.os }}
       cache-key: py-browser-${{ matrix.browser }}
       run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=true //py:test-${{ matrix.browser }}

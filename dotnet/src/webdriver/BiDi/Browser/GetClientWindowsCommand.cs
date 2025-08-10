@@ -30,18 +30,20 @@ public sealed class GetClientWindowsOptions : CommandOptions;
 
 public sealed record GetClientWindowsResult : EmptyResult, IReadOnlyList<ClientWindowInfo>
 {
-    private readonly IReadOnlyList<ClientWindowInfo> _clientWindows;
-
     internal GetClientWindowsResult(IReadOnlyList<ClientWindowInfo> clientWindows)
     {
-        _clientWindows = clientWindows;
+        ClientWindows = clientWindows;
     }
 
-    public ClientWindowInfo this[int index] => _clientWindows[index];
+    public IReadOnlyList<ClientWindowInfo> ClientWindows { get; }
 
-    public int Count => _clientWindows.Count;
+    public ClientWindowInfo this[int index] => ClientWindows[index];
 
-    public IEnumerator<ClientWindowInfo> GetEnumerator() => _clientWindows.GetEnumerator();
+    public int Count => ClientWindows.Count;
 
-    IEnumerator IEnumerable.GetEnumerator() => (_clientWindows as IEnumerable).GetEnumerator();
+
+
+    public IEnumerator<ClientWindowInfo> GetEnumerator() => ClientWindows.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => (ClientWindows as IEnumerable).GetEnumerator();
 }

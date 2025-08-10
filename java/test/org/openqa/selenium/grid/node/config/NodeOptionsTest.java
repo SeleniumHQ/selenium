@@ -764,6 +764,110 @@ class NodeOptionsTest {
     assertThat(nodeOptionsEnabled.isVncEnabled()).isFalse();
   }
 
+  @Test
+  void deleteSessionOnUiIsEnabledByDefault() {
+    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "false")));
+    NodeOptions nodeOptions = new NodeOptions(config);
+    assertThat(nodeOptions.isSessionDeletedOnUi()).isFalse();
+  }
+
+  @Test
+  void deleteSessionOnUiCanBeEnabledExplicitly() {
+    Config config =
+        new MapConfig(
+            singletonMap(
+                "node",
+                ImmutableMap.of("detect-drivers", "false", "delete-session-on-ui", "true")));
+    NodeOptions nodeOptions = new NodeOptions(config);
+    assertThat(nodeOptions.isSessionDeletedOnUi()).isTrue();
+  }
+
+  @Test
+  void deleteSessionOnUiCanBeDisabled() {
+    Config config =
+        new MapConfig(
+            singletonMap(
+                "node",
+                ImmutableMap.of("detect-drivers", "false", "delete-session-on-ui", "false")));
+    NodeOptions nodeOptions = new NodeOptions(config);
+    assertThat(nodeOptions.isSessionDeletedOnUi()).isFalse();
+  }
+
+  @Test
+  void deleteSessionOnUiCapabilityIsAddedWhenEnabled() {
+    assumeTrue(
+        new ChromeDriverInfo().isPresent() || new GeckoDriverInfo().isPresent(),
+        "A driver needs to be available");
+
+    Config config =
+        new MapConfig(
+            singletonMap(
+                "node", ImmutableMap.of("detect-drivers", "true", "delete-session-on-ui", "true")));
+
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config)
+        .getSessionFactories(
+            caps -> {
+              reported.add(caps);
+              return Collections.singleton(HelperFactory.create(config, caps));
+            });
+
+    assertThat(reported)
+        .filteredOn(capabilities -> capabilities.getCapability("se:deleteSessionOnUi") != null)
+        .hasSize(reported.size());
+
+    assertThat(reported)
+        .allMatch(
+            capabilities ->
+                Boolean.TRUE.equals(capabilities.getCapability("se:deleteSessionOnUi")));
+  }
+
+  @Test
+  void deleteSessionOnUiCapabilityIsNotAddedWhenDisabled() {
+    assumeTrue(
+        new ChromeDriverInfo().isPresent() || new GeckoDriverInfo().isPresent(),
+        "A driver needs to be available");
+
+    Config config =
+        new MapConfig(
+            singletonMap(
+                "node",
+                ImmutableMap.of("detect-drivers", "true", "delete-session-on-ui", "false")));
+
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config)
+        .getSessionFactories(
+            caps -> {
+              reported.add(caps);
+              return Collections.singleton(HelperFactory.create(config, caps));
+            });
+
+    assertThat(reported)
+        .filteredOn(capabilities -> capabilities.getCapability("se:deleteSessionOnUi") == null)
+        .hasSize(reported.size());
+  }
+
+  @Test
+  void deleteSessionOnUiCapabilityIsAddedByDefault() {
+    assumeTrue(
+        new ChromeDriverInfo().isPresent() || new GeckoDriverInfo().isPresent(),
+        "A driver needs to be available");
+
+    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
+
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config)
+        .getSessionFactories(
+            caps -> {
+              reported.add(caps);
+              return Collections.singleton(HelperFactory.create(config, caps));
+            });
+
+    assertThat(reported)
+        .filteredOn(capabilities -> capabilities.getCapability("se:deleteSessionOnUi") == null)
+        .hasSize(reported.size());
+  }
+
   private Condition<? super List<? extends Capabilities>> supporting(String name) {
     return new Condition<>(
         caps -> caps.stream().anyMatch(cap -> name.equals(cap.getBrowserName())),
