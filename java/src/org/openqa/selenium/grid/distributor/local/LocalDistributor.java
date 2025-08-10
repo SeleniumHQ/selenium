@@ -512,8 +512,14 @@ public class LocalDistributor extends Distributor implements Closeable {
     try {
       return model.getSnapshot().stream()
           .filter(
-              node ->
-                  !DOWN.equals(node.getAvailability()) && !DRAINING.equals(node.getAvailability()))
+              node -> {
+                // Only consider UP nodes (not DOWN, DRAINING, etc.)
+                if (!UP.equals(node.getAvailability())) {
+                  return false;
+                }
+                // Consider node has at least one free slot
+                return node.getSlots().stream().anyMatch(slot -> slot.getSession() == null);
+              })
           .collect(toImmutableSet());
     } finally {
       readLock.unlock();
@@ -704,8 +710,7 @@ public class LocalDistributor extends Distributor implements Closeable {
   }
 
   private boolean isNotSupported(Capabilities caps) {
-    return getAvailableNodes().stream()
-        .noneMatch(node -> node.hasCapability(caps, slotMatcher) && node.getAvailability() == UP);
+    return getAvailableNodes().stream().noneMatch(node -> node.hasCapability(caps, slotMatcher));
   }
 
   private boolean reserve(SlotId id) {
@@ -795,7 +800,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         // up starving a session request.
         Map<Capabilities, Long> stereotypes =
             getAvailableNodes().stream()
-                .filter(node -> node.hasCapacity() && node.getAvailability() == UP)
+                .filter(NodeStatus::hasCapacity)
                 .flatMap(node -> node.getSlots().stream().map(Slot::getStereotype))
                 .collect(
                     Collectors.groupingBy(ImmutableCapabilities::copyOf, Collectors.counting()));
