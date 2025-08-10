@@ -26,4 +26,4 @@ internal sealed class UninstallCommand(UninstallCommandParameters @params)
 
 internal sealed record UninstallCommandParameters(Extension Extension) : CommandParameters;
 
-public sealed record UninstallOptions : CommandOptions;
+public sealed class UninstallOptions : CommandOptions;

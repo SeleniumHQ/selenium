@@ -36,6 +36,7 @@ public sealed class BiDi : IAsyncDisposable
     private Script.ScriptModule? _scriptModule;
     private Log.LogModule? _logModule;
     private Storage.StorageModule? _storageModule;
+    private WebExtension.WebExtensionModule? _webExtensionModule;
 
     private readonly object _moduleLock = new();
 
@@ -147,6 +148,19 @@ public sealed class BiDi : IAsyncDisposable
                 _storageModule ??= new Storage.StorageModule(_broker);
             }
             return _storageModule;
+        }
+    }
+
+    public WebExtension.WebExtensionModule WebExtension
+    {
+        get
+        {
+            if (_webExtensionModule is not null) return _webExtensionModule;
+            lock (_moduleLock)
+            {
+                _webExtensionModule ??= new WebExtension.WebExtensionModule(_broker);
+            }
+            return _webExtensionModule;
         }
     }
 
