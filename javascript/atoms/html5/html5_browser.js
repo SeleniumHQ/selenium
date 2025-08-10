@@ -142,7 +142,7 @@ bot.html5.isSupported = function(api, opt_window) {
         return false;
       }
       return goog.isDefAndNotNull(win.sessionStorage) &&
-          // To avoid browsers that only support this API partically
+          // To avoid browsers that only support this API partially
           // like some versions of FF.
           goog.isDefAndNotNull(win.sessionStorage.clear);
 

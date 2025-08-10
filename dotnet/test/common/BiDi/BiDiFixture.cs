@@ -29,7 +29,7 @@ public class BiDiTestFixture
 {
     protected IWebDriver driver;
     protected BiDi bidi;
-    protected Modules.BrowsingContext.BrowsingContext context;
+    protected BrowsingContext.BrowsingContext context;
 
     protected UrlBuilder UrlBuilder { get; } = EnvironmentManager.Instance.UrlBuilder;
 

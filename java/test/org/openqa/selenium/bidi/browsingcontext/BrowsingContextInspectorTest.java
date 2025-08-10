@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi.browsingcontext;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -211,6 +212,23 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
       assertThat(userPromptClosed.getUserText().isPresent()).isTrue();
       assertThat(userPromptClosed.getUserText().get()).isEqualTo("selenium");
       assertThat(userPromptClosed.getAccepted()).isTrue();
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canListenToNavigationCommittedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<NavigationInfo> future = new CompletableFuture<>();
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      inspector.onNavigationCommitted(future::complete);
+      context.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+
+      NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(navigationInfo.getUrl()).contains("/bidi/logEntryAdded.html");
     }
   }
 }

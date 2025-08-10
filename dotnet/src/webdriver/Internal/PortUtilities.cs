@@ -20,37 +20,23 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace OpenQA.Selenium.Internal
+namespace OpenQA.Selenium.Internal;
+
+/// <summary>
+/// Encapsulates methods for working with ports.
+/// </summary>
+public static class PortUtilities
 {
     /// <summary>
-    /// Encapsulates methods for working with ports.
+    /// Finds a random, free port to be listened on.
     /// </summary>
-    public static class PortUtilities
+    /// <returns>A random, free port to be listened on.</returns>
+    public static int FindFreePort()
     {
-        /// <summary>
-        /// Finds a random, free port to be listened on.
-        /// </summary>
-        /// <returns>A random, free port to be listened on.</returns>
-        public static int FindFreePort()
-        {
-            // Locate a free port on the local machine by binding a socket to
-            // an IPEndPoint using IPAddress.Any and port 0. The socket will
-            // select a free port.
-            int listeningPort = 0;
-            Socket portSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            try
-            {
-                IPEndPoint socketEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                portSocket.Bind(socketEndPoint);
-                socketEndPoint = (IPEndPoint)portSocket.LocalEndPoint!;
-                listeningPort = socketEndPoint.Port;
-            }
-            finally
-            {
-                portSocket.Close();
-            }
+        using var socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+        socket.DualMode = true;
+        socket.Bind(new IPEndPoint(IPAddress.IPv6Loopback, 0));
+        return (socket.LocalEndPoint as IPEndPoint)!.Port;
 
-            return listeningPort;
-        }
     }
 }

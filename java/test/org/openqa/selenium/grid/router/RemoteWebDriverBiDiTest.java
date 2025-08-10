@@ -50,7 +50,6 @@ import org.openqa.selenium.grid.router.DeploymentTypes.Deployment;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
 
 class RemoteWebDriverBiDiTest {
@@ -84,7 +83,6 @@ class RemoteWebDriverBiDiTest {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
-  @NotYetImplemented(EDGE)
   void ensureBiDiSessionCreation() {
     try (BiDi biDi = ((HasBiDi) driver).getBiDi()) {
       BiDiSessionStatus status = biDi.getBidiSessionStatus();
@@ -96,7 +94,6 @@ class RemoteWebDriverBiDiTest {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
-  @NotYetImplemented(EDGE)
   void canListenToLogs() throws ExecutionException, InterruptedException, TimeoutException {
     driver = new Augmenter().augment(driver);
 
@@ -124,7 +121,6 @@ class RemoteWebDriverBiDiTest {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
-  @NotYetImplemented(EDGE)
   void canNavigateToUrl() {
     BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
 

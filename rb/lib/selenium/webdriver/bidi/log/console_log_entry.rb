@@ -23,8 +23,8 @@ module Selenium
       class ConsoleLogEntry < GenericLogEntry
         attr_accessor :method, :realm, :args
 
-        def initialize(method:, realm:, args:, **opts)
-          super(**opts)
+        def initialize(method:, realm:, args:, **)
+          super(**)
           @method = method
           @realm = realm
           @args = args

@@ -22,119 +22,118 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.Internal
+namespace OpenQA.Selenium.Internal;
+
+/// <summary>
+/// Converts the response to JSON
+/// </summary>
+internal class ResponseValueJsonConverter : JsonConverter<object>
 {
-    /// <summary>
-    /// Converts the response to JSON
-    /// </summary>
-    internal class ResponseValueJsonConverter : JsonConverter<object>
+    public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        return ProcessReadToken(ref reader, options);
+    }
+
+    public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
+    {
+        switch (value)
         {
-            return ProcessReadToken(ref reader, options);
+            case null:
+                writer.WriteNullValue();
+                break;
+            case Enum:
+                writer.WriteNumberValue(Convert.ToInt64(value));
+                break;
+            case IEnumerable<object> list:
+                writer.WriteStartArray();
+                foreach (var item in list)
+                {
+                    Write(writer, item, options);
+                }
+                writer.WriteEndArray();
+                break;
+            case IDictionary<string, object> dictionary:
+                writer.WriteStartObject();
+                foreach (var pair in dictionary)
+                {
+                    writer.WritePropertyName(pair.Key);
+                    Write(writer, pair.Value, options);
+                }
+                writer.WriteEndObject();
+                break;
+            case object obj:
+                JsonSerializer.Serialize(writer, obj, options.GetTypeInfo(obj.GetType()));
+                break;
+        }
+    }
+
+    private static object? ProcessReadToken(ref Utf8JsonReader reader, JsonSerializerOptions options)
+    {
+        // Recursively processes a token. This is required for elements that next other elements.
+        object? processedObject;
+
+        switch (reader.TokenType)
+        {
+            case JsonTokenType.StartObject:
+                {
+                    Dictionary<string, object?> dictionaryValue = [];
+                    while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+                    {
+                        string elementKey = reader.GetString()!;
+                        reader.Read();
+                        dictionaryValue.Add(elementKey, ProcessReadToken(ref reader, options));
+                    }
+
+                    processedObject = dictionaryValue;
+                    break;
+                }
+
+            case JsonTokenType.StartArray:
+                {
+                    List<object?> arrayValue = [];
+                    while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+                    {
+                        arrayValue.Add(ProcessReadToken(ref reader, options));
+                    }
+
+                    processedObject = arrayValue.ToArray();
+                    break;
+                }
+
+            case JsonTokenType.Null:
+                processedObject = null;
+                break;
+            case JsonTokenType.False:
+                processedObject = false;
+                break;
+            case JsonTokenType.True:
+                processedObject = true;
+                break;
+            case JsonTokenType.String:
+                processedObject = reader.GetString();
+                break;
+            case JsonTokenType.Number:
+                {
+                    if (reader.TryGetInt64(out long longValue))
+                    {
+                        processedObject = longValue;
+                    }
+                    else if (reader.TryGetDouble(out double doubleValue))
+                    {
+                        processedObject = doubleValue;
+                    }
+                    else
+                    {
+                        throw new JsonException($"Unrecognized '{JsonElement.ParseValue(ref reader)}' token as a number value.");
+                    }
+
+                    break;
+                }
+
+            default:
+                throw new JsonException($"Unrecognized '{reader.TokenType}' token type while parsing command response.");
         }
 
-        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
-        {
-            switch (value)
-            {
-                case null:
-                    writer.WriteNullValue();
-                    break;
-                case Enum:
-                    writer.WriteNumberValue(Convert.ToInt64(value));
-                    break;
-                case IEnumerable<object> list:
-                    writer.WriteStartArray();
-                    foreach (var item in list)
-                    {
-                        Write(writer, item, options);
-                    }
-                    writer.WriteEndArray();
-                    break;
-                case IDictionary<string, object> dictionary:
-                    writer.WriteStartObject();
-                    foreach (var pair in dictionary)
-                    {
-                        writer.WritePropertyName(pair.Key);
-                        Write(writer, pair.Value, options);
-                    }
-                    writer.WriteEndObject();
-                    break;
-                case object obj:
-                    JsonSerializer.Serialize(writer, obj, options.GetTypeInfo(obj.GetType()));
-                    break;
-            }
-        }
-
-        private static object? ProcessReadToken(ref Utf8JsonReader reader, JsonSerializerOptions options)
-        {
-            // Recursively processes a token. This is required for elements that next other elements.
-            object? processedObject;
-
-            switch (reader.TokenType)
-            {
-                case JsonTokenType.StartObject:
-                    {
-                        Dictionary<string, object?> dictionaryValue = [];
-                        while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
-                        {
-                            string elementKey = reader.GetString()!;
-                            reader.Read();
-                            dictionaryValue.Add(elementKey, ProcessReadToken(ref reader, options));
-                        }
-
-                        processedObject = dictionaryValue;
-                        break;
-                    }
-
-                case JsonTokenType.StartArray:
-                    {
-                        List<object?> arrayValue = [];
-                        while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
-                        {
-                            arrayValue.Add(ProcessReadToken(ref reader, options));
-                        }
-
-                        processedObject = arrayValue.ToArray();
-                        break;
-                    }
-
-                case JsonTokenType.Null:
-                    processedObject = null;
-                    break;
-                case JsonTokenType.False:
-                    processedObject = false;
-                    break;
-                case JsonTokenType.True:
-                    processedObject = true;
-                    break;
-                case JsonTokenType.String:
-                    processedObject = reader.GetString();
-                    break;
-                case JsonTokenType.Number:
-                    {
-                        if (reader.TryGetInt64(out long longValue))
-                        {
-                            processedObject = longValue;
-                        }
-                        else if (reader.TryGetDouble(out double doubleValue))
-                        {
-                            processedObject = doubleValue;
-                        }
-                        else
-                        {
-                            throw new JsonException($"Unrecognized '{JsonElement.ParseValue(ref reader)}' token as a number value.");
-                        }
-
-                        break;
-                    }
-
-                default:
-                    throw new JsonException($"Unrecognized '{reader.TokenType}' token type while parsing command response.");
-            }
-
-            return processedObject;
-        }
+        return processedObject;
     }
 }

@@ -20,7 +20,6 @@ package org.openqa.selenium.firefox;
 import static java.util.stream.Collectors.toMap;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
@@ -30,8 +29,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -62,10 +59,9 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public FirefoxOptions() {
     setCapability(CapabilityType.BROWSER_NAME, FIREFOX.browserName());
     setAcceptInsecureCerts(true);
-    // Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference
-    // will enable it.
     // https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
-    addPreference("remote.active-protocols", 3);
+    // Enable BiDi only
+    addPreference("remote.active-protocols", 1);
   }
 
   public FirefoxOptions(Capabilities source) {
@@ -150,20 +146,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return this;
   }
 
-  /**
-   * Constructs a {@link FirefoxBinary} and returns that to be used, and because of this is only
-   * useful when actually starting firefox.
-   */
-  public FirefoxBinary getBinary() {
-    return getBinaryOrNull().orElseGet(FirefoxBinary::new);
-  }
-
-  public FirefoxOptions setBinary(FirefoxBinary binary) {
-    Require.nonNull("Binary", binary);
-    addArguments(binary.getExtraOptions());
-    return setFirefoxOption(Keys.BINARY, binary.getPath());
-  }
-
   public FirefoxOptions setBinary(Path path) {
     Require.nonNull("Binary", path);
     return setFirefoxOption(Keys.BINARY, path.toString());
@@ -172,25 +154,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public FirefoxOptions setBinary(String path) {
     Require.nonNull("Binary", path);
     return setFirefoxOption(Keys.BINARY, path);
-  }
-
-  public Optional<FirefoxBinary> getBinaryOrNull() {
-    Object binary = firefoxOptions.get(Keys.BINARY.key());
-    if (!(binary instanceof String)) {
-      return Optional.empty();
-    }
-
-    FirefoxBinary toReturn = new FirefoxBinary(new File((String) binary));
-    Object rawArgs = firefoxOptions.getOrDefault(Keys.ARGS.key(), new ArrayList<>());
-    Require.stateCondition(rawArgs instanceof List, "Arguments are not a list: %s", rawArgs);
-
-    ((List<?>) rawArgs)
-        .stream()
-            .filter(Objects::nonNull)
-            .map(String::valueOf)
-            .forEach(toReturn::addCommandLineOptions);
-
-    return Optional.of(toReturn);
   }
 
   public FirefoxProfile getProfile() {
@@ -368,8 +331,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
           newInstance.setBinary((String) binary);
         } else if (binary instanceof Path) {
           newInstance.setBinary((Path) binary);
-        } else if (binary instanceof FirefoxBinary) {
-          newInstance.setBinary((FirefoxBinary) binary);
         }
       }
 
@@ -416,8 +377,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
           newInstance.setBinary((String) binary);
         } else if (binary instanceof Path) {
           newInstance.setBinary((Path) binary);
-        } else if (binary instanceof FirefoxBinary) {
-          newInstance.setBinary((FirefoxBinary) binary);
         }
 
         prefs.forEach(newInstance::addPreference);
@@ -493,12 +452,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       @Override
       public void amend(Map<String, Object> sourceOptions, Map<String, Object> toAmend) {
         Object o = sourceOptions.get(key());
-
-        if (o instanceof FirefoxBinary) {
-          FirefoxBinary binary = (FirefoxBinary) o;
-          toAmend.put(key(), binary.getFile().toString());
-          ARGS.amend(Collections.singletonMap(ARGS.key(), binary.getExtraOptions()), toAmend);
-        } else if (o instanceof String) {
+        if (o instanceof String) {
           toAmend.put(key(), o);
         }
       }

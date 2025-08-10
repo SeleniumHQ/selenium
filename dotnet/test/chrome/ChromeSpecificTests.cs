@@ -21,16 +21,15 @@ using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.Chrome
+namespace OpenQA.Selenium.Chrome;
+
+[TestFixture]
+public class ChromeSpecificTests : DriverTestFixture
 {
-    [TestFixture]
-    public class ChromeSpecificTests : DriverTestFixture
+    [OneTimeTearDown]
+    public async Task RunAfterAnyTestsAsync()
     {
-        [OneTimeTearDown]
-        public async Task RunAfterAnyTestsAsync()
-        {
-            EnvironmentManager.Instance.CloseCurrentDriver();
-            await EnvironmentManager.Instance.WebServer.StopAsync();
-        }
+        EnvironmentManager.Instance.CloseCurrentDriver();
+        await EnvironmentManager.Instance.WebServer.StopAsync();
     }
 }

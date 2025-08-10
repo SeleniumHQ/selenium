@@ -19,33 +19,32 @@
 
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Defines the interface through which the user can manipulate JavaScript alerts.
+/// </summary>
+public interface IAlert
 {
     /// <summary>
-    /// Defines the interface through which the user can manipulate JavaScript alerts.
+    /// Gets the text of the alert.
     /// </summary>
-    public interface IAlert
-    {
-        /// <summary>
-        /// Gets the text of the alert.
-        /// </summary>
-        string? Text { get; }
+    string? Text { get; }
 
-        /// <summary>
-        /// Dismisses the alert.
-        /// </summary>
-        void Dismiss();
+    /// <summary>
+    /// Dismisses the alert.
+    /// </summary>
+    void Dismiss();
 
-        /// <summary>
-        /// Accepts the alert.
-        /// </summary>
-        void Accept();
+    /// <summary>
+    /// Accepts the alert.
+    /// </summary>
+    void Accept();
 
-        /// <summary>
-        /// Sends keys to the alert.
-        /// </summary>
-        /// <param name="keysToSend">The keystrokes to send.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="keysToSend"/> is <see langword="null"/>.</exception>
-        void SendKeys(string keysToSend);
-    }
+    /// <summary>
+    /// Sends keys to the alert.
+    /// </summary>
+    /// <param name="keysToSend">The keystrokes to send.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="keysToSend"/> is <see langword="null"/>.</exception>
+    void SendKeys(string keysToSend);
 }

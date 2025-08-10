@@ -20,68 +20,67 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Defines the interface through which the user can manipulate JavaScript alerts.
+/// </summary>
+internal class Alert : IAlert
 {
+    private readonly WebDriver driver;
+
     /// <summary>
-    /// Defines the interface through which the user can manipulate JavaScript alerts.
+    /// Initializes a new instance of the <see cref="Alert"/> class.
     /// </summary>
-    internal class Alert : IAlert
+    /// <param name="driver">The <see cref="WebDriver"/> for which the alerts will be managed.</param>
+    public Alert(WebDriver driver)
     {
-        private readonly WebDriver driver;
+        this.driver = driver;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Alert"/> class.
-        /// </summary>
-        /// <param name="driver">The <see cref="WebDriver"/> for which the alerts will be managed.</param>
-        public Alert(WebDriver driver)
+    /// <summary>
+    /// Gets the text of the alert.
+    /// </summary>
+    public string? Text
+    {
+        get
         {
-            this.driver = driver;
+            Response commandResponse = this.driver.Execute(DriverCommand.GetAlertText, null);
+            return (string?)commandResponse.Value;
+        }
+    }
+
+    /// <summary>
+    /// Dismisses the alert.
+    /// </summary>
+    public void Dismiss()
+    {
+        this.driver.Execute(DriverCommand.DismissAlert, null);
+    }
+
+    /// <summary>
+    /// Accepts the alert.
+    /// </summary>
+    public void Accept()
+    {
+        this.driver.Execute(DriverCommand.AcceptAlert, null);
+    }
+
+    /// <summary>
+    /// Sends keys to the alert.
+    /// </summary>
+    /// <param name="keysToSend">The keystrokes to send.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="keysToSend" /> is <see langword="null"/>.</exception>
+    public void SendKeys(string keysToSend)
+    {
+        if (keysToSend is null)
+        {
+            throw new ArgumentNullException(nameof(keysToSend), "Keys to send must not be null.");
         }
 
-        /// <summary>
-        /// Gets the text of the alert.
-        /// </summary>
-        public string? Text
-        {
-            get
-            {
-                Response commandResponse = this.driver.Execute(DriverCommand.GetAlertText, null);
-                return (string?)commandResponse.Value;
-            }
-        }
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("text", keysToSend);
 
-        /// <summary>
-        /// Dismisses the alert.
-        /// </summary>
-        public void Dismiss()
-        {
-            this.driver.Execute(DriverCommand.DismissAlert, null);
-        }
-
-        /// <summary>
-        /// Accepts the alert.
-        /// </summary>
-        public void Accept()
-        {
-            this.driver.Execute(DriverCommand.AcceptAlert, null);
-        }
-
-        /// <summary>
-        /// Sends keys to the alert.
-        /// </summary>
-        /// <param name="keysToSend">The keystrokes to send.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="keysToSend" /> is <see langword="null"/>.</exception>
-        public void SendKeys(string keysToSend)
-        {
-            if (keysToSend is null)
-            {
-                throw new ArgumentNullException(nameof(keysToSend), "Keys to send must not be null.");
-            }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("text", keysToSend);
-
-            this.driver.Execute(DriverCommand.SetAlertValue, parameters);
-        }
+        this.driver.Execute(DriverCommand.SetAlertValue, parameters);
     }
 }

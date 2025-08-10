@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import os
 import tempfile
 
@@ -34,12 +35,16 @@ def test_get_downloadable_files(driver, pages):
 def test_download_file(driver, pages):
     _browser_downloads(driver, pages)
 
-    file_name = driver.get_downloadable_files()[0]
-    with tempfile.TemporaryDirectory() as target_directory:
-        driver.download_file(file_name, target_directory)
+    # Get a list of downloadable files and find the txt file
+    downloadable_files = driver.get_downloadable_files()
+    text_file_name = next((file for file in downloadable_files if file.endswith(".txt")), None)
+    assert text_file_name is not None, "Could not find a .txt file in downloadable files"
 
-        target_file = os.path.join(target_directory, file_name)
-        with open(target_file, "r") as file:
+    with tempfile.TemporaryDirectory() as target_directory:
+        driver.download_file(text_file_name, target_directory)
+
+        target_file = os.path.join(target_directory, text_file_name)
+        with open(target_file) as file:
             assert "Hello, World!" in file.read()
 
 

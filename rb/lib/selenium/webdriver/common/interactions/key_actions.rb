@@ -44,8 +44,8 @@ module Selenium
       # @return [ActionBuilder] A self reference
       #
 
-      def key_down(*args, device: nil)
-        key_action(*args, action: :create_key_down, device: device)
+      def key_down(*, device: nil)
+        key_action(*, action: :create_key_down, device: device)
       end
 
       #
@@ -71,8 +71,8 @@ module Selenium
       # @return [ActionBuilder] A self reference
       #
 
-      def key_up(*args, device: nil)
-        key_action(*args, action: :create_key_up, device: device)
+      def key_up(*, device: nil)
+        key_action(*, action: :create_key_up, device: device)
       end
 
       #

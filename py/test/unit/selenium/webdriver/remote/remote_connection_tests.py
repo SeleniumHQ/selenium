@@ -20,16 +20,15 @@ from unittest.mock import patch
 from urllib import parse
 
 import pytest
-import urllib3
-from urllib3.util import Retry
-from urllib3.util import Timeout
+from urllib3 import PoolManager, ProxyManager, make_headers
+from urllib3.contrib.socks import SOCKSProxyManager
+from urllib3.util import Retry, Timeout
 
 from selenium import __version__
 from selenium.webdriver import Proxy
 from selenium.webdriver.common.proxy import ProxyType
 from selenium.webdriver.remote.client_config import AuthType
-from selenium.webdriver.remote.remote_connection import ClientConfig
-from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.remote_connection import ClientConfig, RemoteConnection
 
 
 @pytest.fixture
@@ -68,13 +67,12 @@ def test_get_remote_connection_headers_defaults():
     assert headers.get("User-Agent").split(" ")[-1] in {"windows)", "mac)", "linux)", "mac", "windows", "linux"}
 
 
-def test_get_remote_connection_headers_adds_auth_header_if_pass():
+def test_get_remote_connection_headers_adds_auth_header_if_pass(recwarn):
     url = "http://user:pass@remote"
-    with pytest.warns(None) as record:
-        headers = RemoteConnection.get_remote_connection_headers(parse.urlparse(url))
+    headers = RemoteConnection.get_remote_connection_headers(parse.urlparse(url))
     assert headers.get("Authorization") == "Basic dXNlcjpwYXNz"
     assert (
-        record[0].message.args[0]
+        recwarn[0].message.args[0]
         == "Embedding username and password in URL could be insecure, use ClientConfig instead"
     )
 
@@ -88,41 +86,48 @@ def test_get_remote_connection_headers_adds_keep_alive_if_requested():
 def test_get_proxy_url_http(mock_proxy_settings):
     proxy = "http://http_proxy.com:8080"
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
-    proxy_url = remote_connection._client_config.get_proxy_url()
+    proxy_url = remote_connection.client_config.get_proxy_url()
     assert proxy_url == proxy
 
 
 def test_get_auth_header_if_client_config_pass_basic_auth():
     custom_config = ClientConfig(
-        remote_server_addr="http://remote", keep_alive=True, username="user", password="pass", auth_type=AuthType.BASIC
+        remote_server_addr="http://localhost:4444",
+        keep_alive=True,
+        username="user",
+        password="pass",
+        auth_type=AuthType.BASIC,
     )
     remote_connection = RemoteConnection(custom_config.remote_server_addr, client_config=custom_config)
-    headers = remote_connection._client_config.get_auth_header()
+    headers = remote_connection.client_config.get_auth_header()
     assert headers.get("Authorization") == "Basic dXNlcjpwYXNz"
 
 
 def test_get_auth_header_if_client_config_pass_bearer_token():
     custom_config = ClientConfig(
-        remote_server_addr="http://remote", keep_alive=True, auth_type=AuthType.BEARER, token="dXNlcjpwYXNz"
+        remote_server_addr="http://localhost:4444", keep_alive=True, auth_type=AuthType.BEARER, token="dXNlcjpwYXNz"
     )
     remote_connection = RemoteConnection(custom_config.remote_server_addr, client_config=custom_config)
-    headers = remote_connection._client_config.get_auth_header()
+    headers = remote_connection.client_config.get_auth_header()
     assert headers.get("Authorization") == "Bearer dXNlcjpwYXNz"
 
 
 def test_get_auth_header_if_client_config_pass_x_api_key():
     custom_config = ClientConfig(
-        remote_server_addr="http://remote", keep_alive=True, auth_type=AuthType.X_API_KEY, token="abcdefgh123456789"
+        remote_server_addr="http://localhost:4444",
+        keep_alive=True,
+        auth_type=AuthType.X_API_KEY,
+        token="abcdefgh123456789",
     )
     remote_connection = RemoteConnection(custom_config.remote_server_addr, client_config=custom_config)
-    headers = remote_connection._client_config.get_auth_header()
+    headers = remote_connection.client_config.get_auth_header()
     assert headers.get("X-API-Key") == "abcdefgh123456789"
 
 
 def test_get_proxy_url_https(mock_proxy_settings):
     proxy = "http://https_proxy.com:8080"
     remote_connection = RemoteConnection("https://remote", keep_alive=False)
-    proxy_url = remote_connection._client_config.get_proxy_url()
+    proxy_url = remote_connection.client_config.get_proxy_url()
     assert proxy_url == proxy
 
 
@@ -133,9 +138,9 @@ def test_get_proxy_url_https_via_client_config():
     )
     remote_connection = RemoteConnection(client_config=client_config)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.ProxyManager)
+    assert isinstance(conn, ProxyManager)
     conn.proxy_url = "https://http_proxy.com:8080"
-    conn.connection_pool_kw["proxy_headers"] = urllib3.make_headers(proxy_basic_auth="admin:admin")
+    conn.connection_pool_kw["proxy_headers"] = make_headers(proxy_basic_auth="admin:admin")
 
 
 def test_get_proxy_url_http_via_client_config():
@@ -151,9 +156,9 @@ def test_get_proxy_url_http_via_client_config():
     )
     remote_connection = RemoteConnection(client_config=client_config)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.ProxyManager)
+    assert isinstance(conn, ProxyManager)
     conn.proxy_url = "http://http_proxy.com:8080"
-    conn.connection_pool_kw["proxy_headers"] = urllib3.make_headers(proxy_basic_auth="admin:admin")
+    conn.connection_pool_kw["proxy_headers"] = make_headers(proxy_basic_auth="admin:admin")
 
 
 def test_get_proxy_direct_via_client_config():
@@ -162,35 +167,34 @@ def test_get_proxy_direct_via_client_config():
     )
     remote_connection = RemoteConnection(client_config=client_config)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.PoolManager)
-    proxy_url = remote_connection._client_config.get_proxy_url()
+    assert isinstance(conn, PoolManager)
+    proxy_url = remote_connection.client_config.get_proxy_url()
     assert proxy_url is None
 
 
 def test_get_proxy_system_matches_no_proxy_via_client_config():
-    os.environ["HTTP_PROXY"] = "http://admin:admin@system_proxy.com:8080"
-    os.environ["NO_PROXY"] = "localhost,127.0.0.1"
-    client_config = ClientConfig(
-        remote_server_addr="http://localhost:4444", proxy=Proxy({"proxyType": ProxyType.SYSTEM})
-    )
-    remote_connection = RemoteConnection(client_config=client_config)
-    conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.PoolManager)
-    proxy_url = remote_connection._client_config.get_proxy_url()
-    assert proxy_url is None
-    os.environ.pop("HTTP_PROXY")
-    os.environ.pop("NO_PROXY")
+    with patch.dict(
+        "os.environ", {"HTTP_PROXY": "http://admin:admin@system_proxy.com:8080", "NO_PROXY": "localhost,127.0.0.1"}
+    ):
+        client_config = ClientConfig(
+            remote_server_addr="http://localhost:4444", proxy=Proxy({"proxyType": ProxyType.SYSTEM})
+        )
+        remote_connection = RemoteConnection(client_config=client_config)
+        conn = remote_connection._get_connection_manager()
+        assert isinstance(conn, PoolManager)
+        proxy_url = remote_connection.client_config.get_proxy_url()
+        assert proxy_url is None
 
 
 def test_get_proxy_url_none(mock_proxy_settings_missing):
     remote_connection = RemoteConnection("https://remote", keep_alive=False)
-    proxy_url = remote_connection._client_config.get_proxy_url()
+    proxy_url = remote_connection.client_config.get_proxy_url()
     assert proxy_url is None
 
 
 def test_get_proxy_url_http_auth(mock_proxy_auth_settings):
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
-    proxy_url = remote_connection._client_config.get_proxy_url()
+    proxy_url = remote_connection.client_config.get_proxy_url()
     raw_proxy_url, basic_auth_string = remote_connection._separate_http_proxy_auth()
     assert proxy_url == "http://user:password@http_proxy.com:8080"
     assert raw_proxy_url == "http://http_proxy.com:8080"
@@ -199,7 +203,7 @@ def test_get_proxy_url_http_auth(mock_proxy_auth_settings):
 
 def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
     remote_connection = RemoteConnection("https://remote", keep_alive=False)
-    proxy_url = remote_connection._client_config.get_proxy_url()
+    proxy_url = remote_connection.client_config.get_proxy_url()
     raw_proxy_url, basic_auth_string = remote_connection._separate_http_proxy_auth()
     assert proxy_url == "https://user:password@https_proxy.com:8080"
     assert raw_proxy_url == "https://https_proxy.com:8080"
@@ -209,7 +213,7 @@ def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
 def test_get_connection_manager_without_proxy(mock_proxy_settings_missing):
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.PoolManager)
+    assert isinstance(conn, PoolManager)
 
 
 def test_get_connection_manager_for_certs_and_timeout():
@@ -219,7 +223,7 @@ def test_get_connection_manager_for_certs_and_timeout():
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] == 10
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
-    assert "certifi/cacert.pem" in conn.connection_pool_kw["ca_certs"]
+    assert f"certifi{os.path.sep}cacert.pem" in conn.connection_pool_kw["ca_certs"]
 
 
 def test_default_socket_timeout_is_correct():
@@ -228,33 +232,40 @@ def test_default_socket_timeout_is_correct():
     assert conn.connection_pool_kw["timeout"] is None
 
 
-def test_get_connection_manager_with_proxy(mock_proxy_settings):
+def test_get_connection_manager_with_http_proxy(mock_proxy_settings):
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.ProxyManager)
+    assert isinstance(conn, ProxyManager)
     assert conn.proxy.scheme == "http"
     assert conn.proxy.host == "http_proxy.com"
     assert conn.proxy.port == 8080
+
+
+def test_get_connection_manager_with_https_proxy(mock_proxy_settings):
     remote_connection_https = RemoteConnection("https://remote", keep_alive=False)
     conn = remote_connection_https._get_connection_manager()
-    assert isinstance(conn, urllib3.ProxyManager)
+    assert isinstance(conn, ProxyManager)
     assert conn.proxy.scheme == "http"
     assert conn.proxy.host == "https_proxy.com"
     assert conn.proxy.port == 8080
 
 
-def test_get_connection_manager_with_auth_proxy(mock_proxy_auth_settings):
-    proxy_auth_header = urllib3.make_headers(proxy_basic_auth="user:password")
+def test_get_connection_manager_with_auth_http_proxy(mock_proxy_auth_settings):
+    proxy_auth_header = make_headers(proxy_basic_auth="user:password")
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.ProxyManager)
+    assert isinstance(conn, ProxyManager)
     assert conn.proxy.scheme == "http"
     assert conn.proxy.host == "http_proxy.com"
     assert conn.proxy.port == 8080
     assert conn.proxy_headers == proxy_auth_header
+
+
+def test_get_connection_manager_with_auth_https_proxy(mock_proxy_auth_settings):
+    proxy_auth_header = make_headers(proxy_basic_auth="user:password")
     remote_connection_https = RemoteConnection("https://remote", keep_alive=False)
     conn = remote_connection_https._get_connection_manager()
-    assert isinstance(conn, urllib3.ProxyManager)
+    assert isinstance(conn, ProxyManager)
     assert conn.proxy.scheme == "https"
     assert conn.proxy.host == "https_proxy.com"
     assert conn.proxy.port == 8080
@@ -267,34 +278,33 @@ def test_get_connection_manager_with_auth_proxy(mock_proxy_auth_settings):
         "*",
         ".localhost",
         "localhost:80",
-        "locahost",
-        "127.0.0.1",
+        "localhost",
         "LOCALHOST",
         "LOCALHOST:80",
         "http://localhost",
         "https://localhost",
         "test.localhost",
         " localhost",
-        "::1",
+        "127.0.0.1",
         "127.0.0.2",
+        "::1",
     ],
 )
 def test_get_connection_manager_when_no_proxy_set(mock_no_proxy_settings, url):
     remote_connection = RemoteConnection(url)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.PoolManager)
+    assert isinstance(conn, PoolManager)
 
 
 def test_ignore_proxy_env_vars(mock_proxy_settings):
     remote_connection = RemoteConnection("http://remote", ignore_proxy=True)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.PoolManager)
+    assert isinstance(conn, PoolManager)
 
 
 def test_get_socks_proxy_when_set(mock_socks_proxy_settings):
-    remote_connection = RemoteConnection("http://127.0.0.1:4444/wd/hub")
+    remote_connection = RemoteConnection("http://remote")
     conn = remote_connection._get_connection_manager()
-    from urllib3.contrib.socks import SOCKSProxyManager
 
     assert isinstance(conn, SOCKSProxyManager)
 
@@ -365,17 +375,17 @@ def mock_no_proxy_settings(monkeypatch):
 
 @patch("selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers")
 def test_override_user_agent_in_headers(mock_get_remote_connection_headers, remote_connection):
-    RemoteConnection.user_agent = "custom-agent/1.0 (python 3.8)"
+    RemoteConnection.user_agent = "custom-agent/1.0 (python 3.13)"
 
     mock_get_remote_connection_headers.return_value = {
         "Accept": "application/json",
         "Content-Type": "application/json;charset=UTF-8",
-        "User-Agent": "custom-agent/1.0 (python 3.8)",
+        "User-Agent": "custom-agent/1.0 (python 3.13)",
     }
 
     headers = RemoteConnection.get_remote_connection_headers(parse.urlparse("http://remote"))
 
-    assert headers.get("User-Agent") == "custom-agent/1.0 (python 3.8)"
+    assert headers.get("User-Agent") == "custom-agent/1.0 (python 3.13)"
     assert headers.get("Accept") == "application/json"
     assert headers.get("Content-Type") == "application/json;charset=UTF-8"
 
@@ -384,7 +394,7 @@ def test_override_user_agent_in_headers(mock_get_remote_connection_headers, remo
 def test_override_user_agent_via_client_config(mock_get_remote_connection_headers):
     client_config = ClientConfig(
         remote_server_addr="http://localhost:4444",
-        user_agent="custom-agent/1.0 (python 3.8)",
+        user_agent="custom-agent/1.0 (python 3.13)",
         extra_headers={"Content-Type": "application/xml;charset=UTF-8"},
     )
     remote_connection = RemoteConnection(client_config=client_config)
@@ -392,12 +402,12 @@ def test_override_user_agent_via_client_config(mock_get_remote_connection_header
     mock_get_remote_connection_headers.return_value = {
         "Accept": "application/json",
         "Content-Type": "application/xml;charset=UTF-8",
-        "User-Agent": "custom-agent/1.0 (python 3.8)",
+        "User-Agent": "custom-agent/1.0 (python 3.13)",
     }
 
     headers = remote_connection.get_remote_connection_headers(parse.urlparse("http://localhost:4444"))
 
-    assert headers.get("User-Agent") == "custom-agent/1.0 (python 3.8)"
+    assert headers.get("User-Agent") == "custom-agent/1.0 (python 3.13)"
     assert headers.get("Accept") == "application/json"
     assert headers.get("Content-Type") == "application/xml;charset=UTF-8"
 
@@ -436,7 +446,9 @@ def test_register_extra_headers_via_client_config(mock_request):
 
 def test_backwards_compatibility_with_appium_connection():
     # Keep backward compatibility for AppiumConnection - https://github.com/SeleniumHQ/selenium/issues/14694
-    client_config = ClientConfig(remote_server_addr="http://remote", ca_certs="/path/to/cacert.pem", timeout=300)
+    client_config = ClientConfig(
+        remote_server_addr="http://localhost:4444", ca_certs="/path/to/cacert.pem", timeout=300
+    )
     remote_connection = RemoteConnection(client_config=client_config)
     assert remote_connection._ca_certs == "/path/to/cacert.pem"
     assert remote_connection._timeout == 300
@@ -448,12 +460,12 @@ def test_backwards_compatibility_with_appium_connection():
 
 
 def test_get_connection_manager_with_timeout_from_client_config():
-    remote_connection = RemoteConnection(remote_server_addr="http://remote", keep_alive=False)
+    remote_connection = RemoteConnection(remote_server_addr="http://localhost:4444", keep_alive=False)
     remote_connection.set_timeout(10)
     conn = remote_connection._get_connection_manager()
     assert remote_connection.get_timeout() == 10
     assert conn.connection_pool_kw["timeout"] == 10
-    assert isinstance(conn, urllib3.PoolManager)
+    assert isinstance(conn, PoolManager)
 
 
 def test_connection_manager_with_timeout_via_client_config():
@@ -461,46 +473,47 @@ def test_connection_manager_with_timeout_via_client_config():
     remote_connection = RemoteConnection(client_config=client_config)
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] == 300
-    assert isinstance(conn, urllib3.PoolManager)
+    assert isinstance(conn, PoolManager)
 
 
 def test_get_connection_manager_with_ca_certs():
-    remote_connection = RemoteConnection(remote_server_addr="http://remote")
+    remote_connection = RemoteConnection(remote_server_addr="http://localhost:4444")
     remote_connection.set_certificate_bundle_path("/path/to/cacert.pem")
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] is None
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
     assert conn.connection_pool_kw["ca_certs"] == "/path/to/cacert.pem"
-    assert isinstance(conn, urllib3.PoolManager)
+    assert isinstance(conn, PoolManager)
 
 
 def test_connection_manager_with_ca_certs_via_client_config():
-    client_config = ClientConfig(remote_server_addr="http://remote", ca_certs="/path/to/cacert.pem")
+    client_config = ClientConfig(remote_server_addr="http://localhost:4444", ca_certs="/path/to/cacert.pem")
     remote_connection = RemoteConnection(client_config=client_config)
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] is None
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
     assert conn.connection_pool_kw["ca_certs"] == "/path/to/cacert.pem"
-    assert isinstance(conn, urllib3.PoolManager)
+    assert isinstance(conn, PoolManager)
 
 
 def test_get_connection_manager_ignores_certificates():
-    remote_connection = RemoteConnection(remote_server_addr="http://remote", keep_alive=False, ignore_certificates=True)
+    remote_connection = RemoteConnection(
+        remote_server_addr="http://localhost:4444", keep_alive=False, ignore_certificates=True
+    )
     remote_connection.set_timeout(10)
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] == 10
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_NONE"
-    assert isinstance(conn, urllib3.PoolManager)
-
+    assert isinstance(conn, PoolManager)
     remote_connection.reset_timeout()
     assert remote_connection.get_timeout() is None
 
 
 def test_connection_manager_ignores_certificates_via_client_config():
-    client_config = ClientConfig(remote_server_addr="http://remote", ignore_certificates=True, timeout=10)
+    client_config = ClientConfig(remote_server_addr="http://localhost:4444", ignore_certificates=True, timeout=10)
     remote_connection = RemoteConnection(client_config=client_config)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.PoolManager)
+    assert isinstance(conn, PoolManager)
     assert conn.connection_pool_kw["timeout"] == 10
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_NONE"
 
@@ -509,12 +522,14 @@ def test_get_connection_manager_with_custom_args():
     custom_args = {"init_args_for_pool_manager": {"retries": 3, "block": True}}
 
     remote_connection = RemoteConnection(
-        remote_server_addr="http://remote", keep_alive=False, init_args_for_pool_manager=custom_args
+        remote_server_addr="http://localhost:4444", keep_alive=False, init_args_for_pool_manager=custom_args
     )
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.PoolManager)
-    assert conn.connection_pool_kw["retries"] == 3
+    assert isinstance(conn, PoolManager)
+    assert isinstance(conn.connection_pool_kw["retries"], Retry)
+    assert conn.connection_pool_kw["retries"].total == 3
     assert conn.connection_pool_kw["block"] is True
+    assert conn.connection_pool_kw["timeout"] is None
 
 
 def test_connection_manager_with_custom_args_via_client_config():
@@ -526,6 +541,6 @@ def test_connection_manager_with_custom_args_via_client_config():
     )
     remote_connection = RemoteConnection(client_config=client_config)
     conn = remote_connection._get_connection_manager()
-    assert isinstance(conn, urllib3.PoolManager)
+    assert isinstance(conn, PoolManager)
     assert conn.connection_pool_kw["retries"] == retries
     assert conn.connection_pool_kw["timeout"] == timeout

@@ -19,26 +19,25 @@
 
 using System;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Event arguments present when the ResponseReceived event is raised.
+/// </summary>
+public class ResponsePausedEventArgs : EventArgs
 {
     /// <summary>
-    /// Event arguments present when the ResponseReceived event is raised.
+    /// Initializes a new instance of the <see cref="ResponsePausedEventArgs"/> type.
     /// </summary>
-    public class ResponsePausedEventArgs : EventArgs
+    /// <param name="responseData">The <see cref="HttpRequestData"/> object for this request.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="responseData"/> is <see langword="null"/>.</exception>
+    public ResponsePausedEventArgs(HttpResponseData responseData)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResponsePausedEventArgs"/> type.
-        /// </summary>
-        /// <param name="responseData">The <see cref="HttpRequestData"/> object for this request.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="responseData"/> is <see langword="null"/>.</exception>
-        public ResponsePausedEventArgs(HttpResponseData responseData)
-        {
-            ResponseData = responseData ?? throw new ArgumentNullException(nameof(responseData));
-        }
-
-        /// <summary>
-        /// Gets the <see cref="HttpRequestData"/> object for this request.
-        /// </summary>
-        public HttpResponseData ResponseData { get; }
+        ResponseData = responseData ?? throw new ArgumentNullException(nameof(responseData));
     }
+
+    /// <summary>
+    /// Gets the <see cref="HttpRequestData"/> object for this request.
+    /// </summary>
+    public HttpResponseData ResponseData { get; }
 }

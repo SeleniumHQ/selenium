@@ -25,143 +25,150 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.Environment
+namespace OpenQA.Selenium.Environment;
+
+public class TestWebServer
 {
-    public class TestWebServer
+    private Process webserverProcess;
+
+    private string standaloneAppserverPath;
+    private string projectRootPath;
+    private bool captureWebServerOutput;
+    private bool hideCommandPrompt;
+    private string port;
+
+    public TestWebServer(string projectRoot, TestWebServerConfig config)
     {
-        private Process webserverProcess;
+        this.projectRootPath = projectRoot;
+        this.captureWebServerOutput = config.CaptureConsoleOutput;
+        this.hideCommandPrompt = config.HideCommandPromptWindow;
+        this.port = config.Port;
+    }
 
-        private string standaloneAppserverPath;
-        private string projectRootPath;
-        private bool captureWebServerOutput;
-        private bool hideCommandPrompt;
-        private string port;
-
-        public TestWebServer(string projectRoot, TestWebServerConfig config)
+    public async Task StartAsync()
+    {
+        if (webserverProcess == null || webserverProcess.HasExited)
         {
-            this.projectRootPath = projectRoot;
-            this.captureWebServerOutput = config.CaptureConsoleOutput;
-            this.hideCommandPrompt = config.HideCommandPromptWindow;
-            this.port = config.Port;
-        }
+            try
+            {
+                var runfiles = Runfiles.Create();
 
-        public async Task StartAsync()
-        {
-            if (webserverProcess == null || webserverProcess.HasExited)
+                var standaloneAppserverProbingPath = @"_main/java/test/org/openqa/selenium/environment/appserver";
+
+                if (OperatingSystem.IsWindows())
+                {
+                    standaloneAppserverProbingPath += ".exe";
+                }
+
+                standaloneAppserverPath = runfiles.Rlocation(standaloneAppserverProbingPath);
+            }
+            catch (FileNotFoundException)
+            {
+                // means we are NOT running under bazel runtime
+                // most likely in IDE
+            }
+
+            var processFileName = standaloneAppserverPath ?? "bazel";
+
+            string processArguments = $"{port}";
+
+            if (standaloneAppserverPath is null)
+            {
+                processArguments = $"run //java/test/org/openqa/selenium/environment:appserver {processArguments}";
+
+                // Override project root path to be exact selenium repo path, not 'bazel-bin'
+                projectRootPath = Path.Combine(AppContext.BaseDirectory, "../../../../../..");
+            }
+
+            webserverProcess = new Process();
+
+            webserverProcess.StartInfo.FileName = processFileName;
+            webserverProcess.StartInfo.Arguments = processArguments;
+            webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
+            webserverProcess.StartInfo.UseShellExecute = !(hideCommandPrompt || captureWebServerOutput);
+            webserverProcess.StartInfo.CreateNoWindow = hideCommandPrompt;
+
+            captureWebServerOutput = true;
+
+            if (captureWebServerOutput)
+            {
+                webserverProcess.StartInfo.RedirectStandardOutput = true;
+                webserverProcess.StartInfo.RedirectStandardError = true;
+            }
+
+            webserverProcess.Start();
+
+            TimeSpan timeout = TimeSpan.FromSeconds(30);
+            DateTime endTime = DateTime.Now.Add(TimeSpan.FromSeconds(30));
+            bool isRunning = false;
+
+            // Poll until the webserver is correctly serving pages.
+            using var httpClient = new HttpClient();
+
+            while (!isRunning && DateTime.Now < endTime)
             {
                 try
                 {
-                    var runfiles = Runfiles.Create();
-                    standaloneAppserverPath = runfiles.Rlocation(@"_main/java/test/org/openqa/selenium/environment/appserver");
-                }
-                catch (FileNotFoundException)
-                {
-                    // means we are NOT running under bazel runtime
-                    // most likely in IDE
-                }
+                    using var response = await httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("simpleTest.html"));
 
-                var processFileName = standaloneAppserverPath ?? "bazel";
-
-                string processArguments = $"{port}";
-
-                if (standaloneAppserverPath is null)
-                {
-                    processArguments = $"run //java/test/org/openqa/selenium/environment:appserver {processArguments}";
-
-                    // Override project root path to be exact selenium repo path, not 'bazel-bin'
-                    projectRootPath = Path.Combine(AppContext.BaseDirectory, "../../../../../..");
-                }
-
-                webserverProcess = new Process();
-
-                webserverProcess.StartInfo.FileName = processFileName;
-                webserverProcess.StartInfo.Arguments = processArguments;
-                webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
-                webserverProcess.StartInfo.UseShellExecute = !(hideCommandPrompt || captureWebServerOutput);
-                webserverProcess.StartInfo.CreateNoWindow = hideCommandPrompt;
-
-                captureWebServerOutput = true;
-
-                if (captureWebServerOutput)
-                {
-                    webserverProcess.StartInfo.RedirectStandardOutput = true;
-                    webserverProcess.StartInfo.RedirectStandardError = true;
-                }
-
-                webserverProcess.Start();
-
-                TimeSpan timeout = TimeSpan.FromSeconds(30);
-                DateTime endTime = DateTime.Now.Add(TimeSpan.FromSeconds(30));
-                bool isRunning = false;
-
-                // Poll until the webserver is correctly serving pages.
-                using var httpClient = new HttpClient();
-
-                while (!isRunning && DateTime.Now < endTime)
-                {
-                    try
+                    if (response.StatusCode == HttpStatusCode.OK)
                     {
-                        using var response = await httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("simpleTest.html"));
-
-                        if (response.StatusCode == HttpStatusCode.OK)
-                        {
-                            isRunning = true;
-                        }
-                    }
-                    catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
-                    {
+                        isRunning = true;
                     }
                 }
-
-                if (!isRunning)
+                catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
                 {
-                    string output = "'CaptureWebServerOutput' parameter is false. Web server output not captured";
-                    string error = "'CaptureWebServerOutput' parameter is false. Web server output not being captured.";
-                    if (captureWebServerOutput)
-                    {
-                        error = webserverProcess.StandardError.ReadToEnd();
-                        output = webserverProcess.StandardOutput.ReadToEnd();
-                    }
-
-                    string errorMessage = string.Format("Could not start the test web server in {0} seconds.\nWorking directory: {1}\nProcess Args: {2}\nstdout: {3}\nstderr: {4}", timeout.TotalSeconds, projectRootPath, processArguments, output, error);
-
-                    throw new TimeoutException(errorMessage);
                 }
             }
-        }
 
-        public async Task StopAsync()
-        {
-            if (webserverProcess != null)
+            if (!isRunning)
             {
-                using (var httpClient = new HttpClient())
+                string output = "'CaptureWebServerOutput' parameter is false. Web server output not captured";
+                string error = "'CaptureWebServerOutput' parameter is false. Web server output not being captured.";
+                if (captureWebServerOutput)
                 {
-                    try
-                    {
-                        using (await httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")))
-                        {
-
-                        }
-                    }
-                    catch (HttpRequestException)
-                    {
-
-                    }
+                    error = webserverProcess.StandardError.ReadToEnd();
+                    output = webserverProcess.StandardOutput.ReadToEnd();
                 }
 
+                string errorMessage = string.Format("Could not start the test web server in {0} seconds.\nWorking directory: {1}\nProcess Args: {2}\nstdout: {3}\nstderr: {4}", timeout.TotalSeconds, projectRootPath, processArguments, output, error);
+
+                throw new TimeoutException(errorMessage);
+            }
+        }
+    }
+
+    public async Task StopAsync()
+    {
+        if (webserverProcess != null)
+        {
+            using (var httpClient = new HttpClient())
+            {
                 try
                 {
-                    webserverProcess.WaitForExit(10000);
-                    if (!webserverProcess.HasExited)
+                    using (await httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")))
                     {
-                        webserverProcess.Kill(entireProcessTree: true);
+
                     }
                 }
-                finally
+                catch (HttpRequestException)
                 {
-                    webserverProcess.Dispose();
-                    webserverProcess = null;
+
                 }
+            }
+
+            try
+            {
+                webserverProcess.WaitForExit(10000);
+                if (!webserverProcess.HasExited)
+                {
+                    webserverProcess.Kill(entireProcessTree: true);
+                }
+            }
+            finally
+            {
+                webserverProcess.Dispose();
+                webserverProcess = null;
             }
         }
     }

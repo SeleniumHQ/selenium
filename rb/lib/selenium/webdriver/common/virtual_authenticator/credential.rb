@@ -26,12 +26,12 @@ module Selenium
   module WebDriver
     class Credential
       class << self
-        def resident(**opts)
-          Credential.new(resident_credential: true, **opts)
+        def resident(**)
+          Credential.new(resident_credential: true, **)
         end
 
-        def non_resident(**opts)
-          Credential.new(resident_credential: false, **opts)
+        def non_resident(**)
+          Credential.new(resident_credential: false, **)
         end
 
         def encode(byte_array)

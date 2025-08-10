@@ -19,39 +19,38 @@
 
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Provides data for the JavaScriptConsoleApiCalled event.
+/// </summary>
+public class JavaScriptConsoleApiCalledEventArgs : EventArgs
 {
     /// <summary>
-    /// Provides data for the JavaScriptConsoleApiCalled event.
+    /// Initializes a new instance of the <see cref="JavaScriptConsoleApiCalledEventArgs"/> type.
     /// </summary>
-    public class JavaScriptConsoleApiCalledEventArgs : EventArgs
+    /// <param name="messageContent">The content of the message written to the JavaScript console.</param>
+    /// <param name="messageTimeStamp">The time stamp of the message written to the JavaScript console.</param>
+    /// <param name="messageType">The type of message written to the JavaScript console.</param>
+    public JavaScriptConsoleApiCalledEventArgs(string? messageContent, DateTime messageTimeStamp, string messageType)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JavaScriptConsoleApiCalledEventArgs"/> type.
-        /// </summary>
-        /// <param name="messageContent">The content of the message written to the JavaScript console.</param>
-        /// <param name="messageTimeStamp">The time stamp of the message written to the JavaScript console.</param>
-        /// <param name="messageType">The type of message written to the JavaScript console.</param>
-        public JavaScriptConsoleApiCalledEventArgs(string? messageContent, DateTime messageTimeStamp, string messageType)
-        {
-            this.MessageContent = messageContent;
-            this.MessageTimeStamp = messageTimeStamp;
-            this.MessageType = messageType;
-        }
-
-        /// <summary>
-        /// Gets or sets the content of the message written to the JavaScript console.
-        /// </summary>
-        public string? MessageContent { get; set; }
-
-        /// <summary>
-        /// Gets or sets the time stamp of the message written to the JavaScript console.
-        /// </summary>
-        public DateTime MessageTimeStamp { get; set; }
-
-        /// <summary>
-        /// Gets or sets the type of message written to the JavaScript console.
-        /// </summary>
-        public string MessageType { get; set; }
+        this.MessageContent = messageContent;
+        this.MessageTimeStamp = messageTimeStamp;
+        this.MessageType = messageType;
     }
+
+    /// <summary>
+    /// Gets or sets the content of the message written to the JavaScript console.
+    /// </summary>
+    public string? MessageContent { get; set; }
+
+    /// <summary>
+    /// Gets or sets the time stamp of the message written to the JavaScript console.
+    /// </summary>
+    public DateTime MessageTimeStamp { get; set; }
+
+    /// <summary>
+    /// Gets or sets the type of message written to the JavaScript console.
+    /// </summary>
+    public string MessageType { get; set; }
 }

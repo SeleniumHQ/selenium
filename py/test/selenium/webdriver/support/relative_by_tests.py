@@ -18,8 +18,7 @@ import pytest
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.relative_locator import locate_with
-from selenium.webdriver.support.relative_locator import with_tag_name
+from selenium.webdriver.support.relative_locator import locate_with, with_tag_name
 
 
 def test_should_be_able_to_find_first_one(driver, pages):

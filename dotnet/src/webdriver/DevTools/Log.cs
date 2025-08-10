@@ -20,46 +20,45 @@
 using System;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Class representing the browser's log as referenced by the DevTools Protocol.
+/// </summary>
+public abstract class Log
 {
     /// <summary>
-    /// Class representing the browser's log as referenced by the DevTools Protocol.
+    /// Occurs when an entry is added to the browser's log.
     /// </summary>
-    public abstract class Log
+    public event EventHandler<EntryAddedEventArgs>? EntryAdded;
+
+    /// <summary>
+    /// Asynchronously enables manipulation of the browser's log.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public abstract Task Enable();
+
+    /// <summary>
+    /// Asynchronously disables manipulation of the browser's log.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public abstract Task Disable();
+
+    /// <summary>
+    /// Asynchronously clears the browser's log.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public abstract Task Clear();
+
+    /// <summary>
+    /// Raises the EntryAdded event.
+    /// </summary>
+    /// <param name="e">An <see cref="EntryAddedEventArgs"/> that contains the event data.</param>
+    protected virtual void OnEntryAdded(EntryAddedEventArgs e)
     {
-        /// <summary>
-        /// Occurs when an entry is added to the browser's log.
-        /// </summary>
-        public event EventHandler<EntryAddedEventArgs>? EntryAdded;
-
-        /// <summary>
-        /// Asynchronously enables manipulation of the browser's log.
-        /// </summary>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        public abstract Task Enable();
-
-        /// <summary>
-        /// Asynchronously disables manipulation of the browser's log.
-        /// </summary>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        public abstract Task Disable();
-
-        /// <summary>
-        /// Asynchronously clears the browser's log.
-        /// </summary>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        public abstract Task Clear();
-
-        /// <summary>
-        /// Raises the EntryAdded event.
-        /// </summary>
-        /// <param name="e">An <see cref="EntryAddedEventArgs"/> that contains the event data.</param>
-        protected virtual void OnEntryAdded(EntryAddedEventArgs e)
+        if (this.EntryAdded != null)
         {
-            if (this.EntryAdded != null)
-            {
-                this.EntryAdded(this, e);
-            }
+            this.EntryAdded(this, e);
         }
     }
 }

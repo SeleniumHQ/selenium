@@ -23,39 +23,39 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+using CurrentCdpVersion = V138;
+
+[TestFixture]
+public class DevToolsConsoleTest : DevToolsTestFixture
 {
-    using CurrentCdpVersion = V135;
-
-    [TestFixture]
-    public class DevToolsConsoleTest : DevToolsTestFixture
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
+    public async Task VerifyMessageAdded()
     {
-        [Test]
-        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-        public async Task VerifyMessageAdded()
+        var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
+        string consoleMessage = "Hello Selenium";
+
+        ManualResetEventSlim sync = new ManualResetEventSlim(false);
+        EventHandler<CurrentCdpVersion.Console.MessageAddedEventArgs> messageAddedHandler = (sender, e) =>
         {
-            var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
-            string consoleMessage = "Hello Selenium";
+            Assert.That(e.Message.Text, Is.EqualTo(consoleMessage));
+            sync.Set();
+        };
 
-            ManualResetEventSlim sync = new ManualResetEventSlim(false);
-            EventHandler<CurrentCdpVersion.Console.MessageAddedEventArgs> messageAddedHandler = (sender, e) =>
-            {
-                Assert.That(e.Message.Text, Is.EqualTo(consoleMessage));
-                sync.Set();
-            };
+        domains.Console.MessageAdded += messageAddedHandler;
 
-            domains.Console.MessageAdded += messageAddedHandler;
+        await domains.Console.Enable();
 
-            await domains.Console.Enable();
+        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html");
+        ((IJavaScriptExecutor)driver).ExecuteScript("console.log('" + consoleMessage + "');");
+        sync.Wait(TimeSpan.FromSeconds(5));
+        domains.Console.MessageAdded -= messageAddedHandler;
 
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html");
-            ((IJavaScriptExecutor)driver).ExecuteScript("console.log('" + consoleMessage + "');");
-            sync.Wait(TimeSpan.FromSeconds(5));
-            domains.Console.MessageAdded -= messageAddedHandler;
-
-            await domains.Console.Disable();
-        }
+        await domains.Console.Disable();
     }
 }

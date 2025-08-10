@@ -247,7 +247,7 @@ module Selenium
 
             expect {
               options.as_json
-            }.to raise_error(Error::WebDriverError, 'These options are not w3c compliant: {:foo=>"bar"}')
+            }.to raise_error(Error::WebDriverError, /These options are not w3c compliant: \{:?foo[:=][ >]"bar"\}/)
           end
 
           it 'returns added options' do

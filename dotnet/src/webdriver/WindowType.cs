@@ -18,21 +18,20 @@
 // </copyright>
 
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Represents the type of a new browser window that may be created
+/// </summary>
+public enum WindowType
 {
     /// <summary>
-    /// Represents the type of a new browser window that may be created
+    /// Create a new browser window using a new top-level window.
     /// </summary>
-    public enum WindowType
-    {
-        /// <summary>
-        /// Create a new browser window using a new top-level window.
-        /// </summary>
-        Window,
+    Window,
 
-        /// <summary>
-        /// Create a new browser window using a new tab.
-        /// </summary>
-        Tab
-    }
+    /// <summary>
+    /// Create a new browser window using a new tab.
+    /// </summary>
+    Tab
 }

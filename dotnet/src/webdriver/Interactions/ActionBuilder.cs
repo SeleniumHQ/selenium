@@ -21,118 +21,117 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQA.Selenium.Interactions
+namespace OpenQA.Selenium.Interactions;
+
+/// <summary>
+/// Provides methods that allow the creation of action sequences to enable
+/// advanced user interactions.
+/// </summary>
+public class ActionBuilder
 {
+    private readonly Dictionary<InputDevice, ActionSequence> sequences = new Dictionary<InputDevice, ActionSequence>();
+
     /// <summary>
-    /// Provides methods that allow the creation of action sequences to enable
-    /// advanced user interactions.
+    /// Adds an action to the built set of actions. Adding an action will
+    /// add a "tick" to the set of all actions to be executed.
     /// </summary>
-    public class ActionBuilder
+    /// <param name="actionToAdd">The action to add to the set of actions</param>
+    /// <returns>A self reference.</returns>
+    public ActionBuilder AddAction(Interaction actionToAdd)
     {
-        private readonly Dictionary<InputDevice, ActionSequence> sequences = new Dictionary<InputDevice, ActionSequence>();
+        this.AddActions(actionToAdd);
+        return this;
+    }
 
-        /// <summary>
-        /// Adds an action to the built set of actions. Adding an action will
-        /// add a "tick" to the set of all actions to be executed.
-        /// </summary>
-        /// <param name="actionToAdd">The action to add to the set of actions</param>
-        /// <returns>A self reference.</returns>
-        public ActionBuilder AddAction(Interaction actionToAdd)
+    /// <summary>
+    /// Adds an action to the built set of actions. Adding an action will
+    /// add a "tick" to the set of all actions to be executed. Only one action
+    /// for each input device may be added for a single tick.
+    /// </summary>
+    /// <param name="actionsToAdd">The set actions to add to the existing set of actions.</param>
+    /// <returns>A self reference.</returns>
+    public ActionBuilder AddActions(params Interaction[] actionsToAdd)
+    {
+        this.ProcessTick(actionsToAdd);
+        return this;
+    }
+
+    /// <summary>
+    /// Converts the set of actions in this <see cref="ActionBuilder"/> to a <see cref="List{ActionSequence}"/>.
+    /// </summary>
+    /// <returns>A <see cref="IList{ActionSequence}"/> suitable for transmission across the wire.
+    /// The collection returned is read-only.</returns>
+    public IList<ActionSequence> ToActionSequenceList()
+    {
+        return new List<ActionSequence>(this.sequences.Values).AsReadOnly();
+    }
+
+    /// <summary>
+    /// Resets the list of sequences.
+    /// </summary>
+    public void ClearSequences()
+    {
+        this.sequences.Clear();
+    }
+
+    /// <summary>
+    /// Returns a string that represents the current <see cref="ActionBuilder"/>.
+    /// </summary>
+    /// <returns>A string that represents the current <see cref="ActionBuilder"/>.</returns>
+    public override string ToString()
+    {
+        StringBuilder builder = new StringBuilder();
+        foreach (ActionSequence sequence in this.sequences.Values)
         {
-            this.AddActions(actionToAdd);
-            return this;
+            builder.AppendLine(sequence.ToString());
         }
 
-        /// <summary>
-        /// Adds an action to the built set of actions. Adding an action will
-        /// add a "tick" to the set of all actions to be executed. Only one action
-        /// for each input device may be added for a single tick.
-        /// </summary>
-        /// <param name="actionsToAdd">The set actions to add to the existing set of actions.</param>
-        /// <returns>A self reference.</returns>
-        public ActionBuilder AddActions(params Interaction[] actionsToAdd)
-        {
-            this.ProcessTick(actionsToAdd);
-            return this;
-        }
+        return builder.ToString();
+    }
 
-        /// <summary>
-        /// Converts the set of actions in this <see cref="ActionBuilder"/> to a <see cref="List{ActionSequence}"/>.
-        /// </summary>
-        /// <returns>A <see cref="IList{ActionSequence}"/> suitable for transmission across the wire.
-        /// The collection returned is read-only.</returns>
-        public IList<ActionSequence> ToActionSequenceList()
+    private void ProcessTick(params Interaction[] interactionsToAdd)
+    {
+        List<InputDevice> usedDevices = new List<InputDevice>();
+        foreach (Interaction interaction in interactionsToAdd)
         {
-            return new List<ActionSequence>(this.sequences.Values).AsReadOnly();
-        }
-
-        /// <summary>
-        /// Resets the list of sequences.
-        /// </summary>
-        public void ClearSequences()
-        {
-            this.sequences.Clear();
-        }
-
-        /// <summary>
-        /// Returns a string that represents the current <see cref="ActionBuilder"/>.
-        /// </summary>
-        /// <returns>A string that represents the current <see cref="ActionBuilder"/>.</returns>
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder();
-            foreach (ActionSequence sequence in this.sequences.Values)
+            if (usedDevices.Contains(interaction.SourceDevice))
             {
-                builder.AppendLine(sequence.ToString());
-            }
-
-            return builder.ToString();
-        }
-
-        private void ProcessTick(params Interaction[] interactionsToAdd)
-        {
-            List<InputDevice> usedDevices = new List<InputDevice>();
-            foreach (Interaction interaction in interactionsToAdd)
-            {
-                if (usedDevices.Contains(interaction.SourceDevice))
-                {
-                    throw new ArgumentException("You can only add one action per device for a single tick.");
-                }
-            }
-
-            List<InputDevice> unusedDevices = new List<InputDevice>(this.sequences.Keys);
-            foreach (Interaction interaction in interactionsToAdd)
-            {
-                ActionSequence sequence = this.GetOrAddSequence(interaction.SourceDevice);
-                sequence.AddAction(interaction);
-
-                unusedDevices.Remove(interaction.SourceDevice);
-            }
-
-            foreach (InputDevice unusedDevice in unusedDevices)
-            {
-                ActionSequence sequence = this.sequences[unusedDevice];
-                sequence.AddAction(new PauseInteraction(unusedDevice, TimeSpan.Zero));
+                throw new ArgumentException("You can only add one action per device for a single tick.");
             }
         }
 
-        private ActionSequence GetOrAddSequence(InputDevice device)
+        List<InputDevice> unusedDevices = new List<InputDevice>(this.sequences.Keys);
+        foreach (Interaction interaction in interactionsToAdd)
         {
-            if (this.sequences.TryGetValue(device, out ActionSequence? existingSequence))
-            {
-                return existingSequence;
-            }
+            ActionSequence sequence = this.GetOrAddSequence(interaction.SourceDevice);
+            sequence.AddAction(interaction);
 
-            int longestSequenceLength = 0;
-            foreach (KeyValuePair<InputDevice, ActionSequence> pair in this.sequences)
-            {
-                longestSequenceLength = Math.Max(longestSequenceLength, pair.Value.Count);
-            }
-
-            ActionSequence sequence = new ActionSequence(device, longestSequenceLength);
-            this.sequences[device] = sequence;
-
-            return sequence;
+            unusedDevices.Remove(interaction.SourceDevice);
         }
+
+        foreach (InputDevice unusedDevice in unusedDevices)
+        {
+            ActionSequence sequence = this.sequences[unusedDevice];
+            sequence.AddAction(new PauseInteraction(unusedDevice, TimeSpan.Zero));
+        }
+    }
+
+    private ActionSequence GetOrAddSequence(InputDevice device)
+    {
+        if (this.sequences.TryGetValue(device, out ActionSequence? existingSequence))
+        {
+            return existingSequence;
+        }
+
+        int longestSequenceLength = 0;
+        foreach (KeyValuePair<InputDevice, ActionSequence> pair in this.sequences)
+        {
+            longestSequenceLength = Math.Max(longestSequenceLength, pair.Value.Count);
+        }
+
+        ActionSequence sequence = new ActionSequence(device, longestSequenceLength);
+        this.sequences[device] = sequence;
+
+        return sequence;
     }
 }

@@ -15,8 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from abc import ABCMeta
-from abc import abstractmethod
+from abc import ABCMeta, abstractmethod
 from contextlib import suppress
 from pathlib import Path
 from typing import Optional

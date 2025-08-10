@@ -32,9 +32,4 @@ public class ScreenshotException extends WebDriverException {
   public ScreenshotException(String message, Throwable cause) {
     super(message, cause);
   }
-
-  @Deprecated(forRemoval = true)
-  public String getBase64EncodedScreenshot() {
-    return null;
-  }
 }

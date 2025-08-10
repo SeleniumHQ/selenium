@@ -23,217 +23,216 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Provides a mechanism for finding elements on the page with locators.
+/// </summary>
+internal sealed class TargetLocator : ITargetLocator
 {
+    private readonly WebDriver driver;
+
     /// <summary>
-    /// Provides a mechanism for finding elements on the page with locators.
+    /// Initializes a new instance of the <see cref="TargetLocator"/> class
     /// </summary>
-    internal sealed class TargetLocator : ITargetLocator
+    /// <param name="driver">The driver that is currently in use</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
+    public TargetLocator(WebDriver driver)
     {
-        private readonly WebDriver driver;
+        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TargetLocator"/> class
-        /// </summary>
-        /// <param name="driver">The driver that is currently in use</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
-        public TargetLocator(WebDriver driver)
+    /// <summary>
+    /// Move to a different frame using its index
+    /// </summary>
+    /// <param name="frameIndex">The index of the </param>
+    /// <returns>A WebDriver instance that is currently in use</returns>
+    public IWebDriver Frame(int frameIndex)
+    {
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", frameIndex);
+        this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
+        return this.driver;
+    }
+
+    /// <summary>
+    /// Move to different frame using its name
+    /// </summary>
+    /// <param name="frameName">name of the frame</param>
+    /// <returns>A WebDriver instance that is currently in use</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="frameName"/> is <see langword="null"/>.</exception>
+    public IWebDriver Frame(string frameName)
+    {
+        if (frameName == null)
         {
-            this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+            throw new ArgumentNullException(nameof(frameName), "Frame name cannot be null");
         }
 
-        /// <summary>
-        /// Move to a different frame using its index
-        /// </summary>
-        /// <param name="frameIndex">The index of the </param>
-        /// <returns>A WebDriver instance that is currently in use</returns>
-        public IWebDriver Frame(int frameIndex)
+        string name = Regex.Replace(frameName, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
+        ReadOnlyCollection<IWebElement> frameElements = this.driver.FindElements(By.CssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));
+        if (frameElements.Count == 0)
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", frameIndex);
-            this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
-            return this.driver;
-        }
-
-        /// <summary>
-        /// Move to different frame using its name
-        /// </summary>
-        /// <param name="frameName">name of the frame</param>
-        /// <returns>A WebDriver instance that is currently in use</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="frameName"/> is <see langword="null"/>.</exception>
-        public IWebDriver Frame(string frameName)
-        {
-            if (frameName == null)
-            {
-                throw new ArgumentNullException(nameof(frameName), "Frame name cannot be null");
-            }
-
-            string name = Regex.Replace(frameName, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
-            ReadOnlyCollection<IWebElement> frameElements = this.driver.FindElements(By.CssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));
+            frameElements = this.driver.FindElements(By.CssSelector("frame#" + name + ",iframe#" + name));
             if (frameElements.Count == 0)
             {
-                frameElements = this.driver.FindElements(By.CssSelector("frame#" + name + ",iframe#" + name));
-                if (frameElements.Count == 0)
-                {
-                    throw new NoSuchFrameException("No frame element found with name or id " + frameName);
-                }
+                throw new NoSuchFrameException("No frame element found with name or id " + frameName);
             }
-
-            return this.Frame(frameElements[0]);
         }
 
-        /// <summary>
-        /// Move to a frame element.
-        /// </summary>
-        /// <param name="frameElement">a previously found FRAME or IFRAME element.</param>
-        /// <returns>A WebDriver instance that is currently in use.</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="frameElement"/> is <see langword="null"/>.</exception>
-        /// <exception cref="ArgumentException">If <paramref name="frameElement"/> cannot be converted to an <see cref="IWebDriverObjectReference"/>.</exception>
-        public IWebDriver Frame(IWebElement frameElement)
+        return this.Frame(frameElements[0]);
+    }
+
+    /// <summary>
+    /// Move to a frame element.
+    /// </summary>
+    /// <param name="frameElement">a previously found FRAME or IFRAME element.</param>
+    /// <returns>A WebDriver instance that is currently in use.</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="frameElement"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">If <paramref name="frameElement"/> cannot be converted to an <see cref="IWebDriverObjectReference"/>.</exception>
+    public IWebDriver Frame(IWebElement frameElement)
+    {
+        if (frameElement == null)
         {
-            if (frameElement == null)
+            throw new ArgumentNullException(nameof(frameElement), "Frame element cannot be null");
+        }
+
+        IWebDriverObjectReference? elementReference = frameElement as IWebDriverObjectReference;
+        if (elementReference == null)
+        {
+            if (frameElement is IWrapsElement elementWrapper)
             {
-                throw new ArgumentNullException(nameof(frameElement), "Frame element cannot be null");
+                elementReference = elementWrapper.WrappedElement as IWebDriverObjectReference;
             }
+        }
 
-            IWebDriverObjectReference? elementReference = frameElement as IWebDriverObjectReference;
-            if (elementReference == null)
-            {
-                if (frameElement is IWrapsElement elementWrapper)
-                {
-                    elementReference = elementWrapper.WrappedElement as IWebDriverObjectReference;
-                }
-            }
+        if (elementReference == null)
+        {
+            throw new ArgumentException($"{nameof(frameElement)} cannot be converted to {nameof(IWebDriverObjectReference)}", nameof(frameElement));
+        }
 
-            if (elementReference == null)
-            {
-                throw new ArgumentException($"{nameof(frameElement)} cannot be converted to {nameof(IWebDriverObjectReference)}", nameof(frameElement));
-            }
+        Dictionary<string, object> elementDictionary = elementReference.ToDictionary();
 
-            Dictionary<string, object> elementDictionary = elementReference.ToDictionary();
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", elementDictionary);
+        this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
+        return this.driver;
+    }
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", elementDictionary);
-            this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
+    /// <summary>
+    /// Select the parent frame of the currently selected frame.
+    /// </summary>
+    /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
+    public IWebDriver ParentFrame()
+    {
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        this.driver.Execute(DriverCommand.SwitchToParentFrame, parameters);
+        return this.driver;
+    }
+
+    /// <summary>
+    /// Change to the Window by passing in the name
+    /// </summary>
+    /// <param name="windowHandleOrName">Window handle or name of the window that you wish to move to</param>
+    /// <returns>A WebDriver instance that is currently in use</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="windowHandleOrName"/> is <see langword="null"/>.</exception>
+    public IWebDriver Window(string windowHandleOrName)
+    {
+        if (windowHandleOrName is null)
+        {
+            throw new ArgumentNullException(nameof(windowHandleOrName));
+        }
+
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("handle", windowHandleOrName);
+        try
+        {
+            this.driver.Execute(DriverCommand.SwitchToWindow, parameters);
             return this.driver;
         }
-
-        /// <summary>
-        /// Select the parent frame of the currently selected frame.
-        /// </summary>
-        /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
-        public IWebDriver ParentFrame()
+        catch (NoSuchWindowException)
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            this.driver.Execute(DriverCommand.SwitchToParentFrame, parameters);
-            return this.driver;
-        }
-
-        /// <summary>
-        /// Change to the Window by passing in the name
-        /// </summary>
-        /// <param name="windowHandleOrName">Window handle or name of the window that you wish to move to</param>
-        /// <returns>A WebDriver instance that is currently in use</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="windowHandleOrName"/> is <see langword="null"/>.</exception>
-        public IWebDriver Window(string windowHandleOrName)
-        {
-            if (windowHandleOrName is null)
-            {
-                throw new ArgumentNullException(nameof(windowHandleOrName));
-            }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("handle", windowHandleOrName);
+            // simulate search by name
+            string? original = null;
             try
             {
-                this.driver.Execute(DriverCommand.SwitchToWindow, parameters);
-                return this.driver;
+                original = this.driver.CurrentWindowHandle;
             }
             catch (NoSuchWindowException)
             {
-                // simulate search by name
-                string? original = null;
-                try
-                {
-                    original = this.driver.CurrentWindowHandle;
-                }
-                catch (NoSuchWindowException)
-                {
-                }
-
-                foreach (string handle in this.driver.WindowHandles)
-                {
-                    this.Window(handle);
-                    if (windowHandleOrName == this.driver.ExecuteScript("return window.name")!.ToString())
-                    {
-                        return this.driver; // found by name
-                    }
-                }
-
-                if (original != null)
-                {
-                    this.Window(original);
-                }
-
-                throw;
             }
+
+            foreach (string handle in this.driver.WindowHandles)
+            {
+                this.Window(handle);
+                if (windowHandleOrName == this.driver.ExecuteScript("return window.name")!.ToString())
+                {
+                    return this.driver; // found by name
+                }
+            }
+
+            if (original != null)
+            {
+                this.Window(original);
+            }
+
+            throw;
         }
+    }
 
-        /// <summary>
-        /// Creates a new browser window and switches the focus for future commands
-        /// of this driver to the new window.
-        /// </summary>
-        /// <param name="typeHint">The type of new browser window to be created.
-        /// The created window is not guaranteed to be of the requested type; if
-        /// the driver does not support the requested type, a new browser window
-        /// will be created of whatever type the driver does support.</param>
-        /// <returns>An <see cref="IWebDriver"/> instance focused on the new browser.</returns>
-        public IWebDriver NewWindow(WindowType typeHint)
-        {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("type", typeHint.ToString().ToLowerInvariant());
+    /// <summary>
+    /// Creates a new browser window and switches the focus for future commands
+    /// of this driver to the new window.
+    /// </summary>
+    /// <param name="typeHint">The type of new browser window to be created.
+    /// The created window is not guaranteed to be of the requested type; if
+    /// the driver does not support the requested type, a new browser window
+    /// will be created of whatever type the driver does support.</param>
+    /// <returns>An <see cref="IWebDriver"/> instance focused on the new browser.</returns>
+    public IWebDriver NewWindow(WindowType typeHint)
+    {
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("type", typeHint.ToString().ToLowerInvariant());
 
-            Response response = this.driver.Execute(DriverCommand.NewWindow, parameters);
+        Response response = this.driver.Execute(DriverCommand.NewWindow, parameters);
 
-            Dictionary<string, object> result = (Dictionary<string, object>)response.Value!;
-            string newWindowHandle = result["handle"].ToString()!;
-            this.Window(newWindowHandle);
+        Dictionary<string, object> result = (Dictionary<string, object>)response.Value!;
+        string newWindowHandle = result["handle"].ToString()!;
+        this.Window(newWindowHandle);
 
-            return this.driver;
-        }
+        return this.driver;
+    }
 
-        /// <summary>
-        /// Change the active frame to the default
-        /// </summary>
-        /// <returns>Element of the default</returns>
-        public IWebDriver DefaultContent()
-        {
-            Dictionary<string, object?> parameters = new Dictionary<string, object?>();
-            parameters.Add("id", null);
-            this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
-            return this.driver;
-        }
+    /// <summary>
+    /// Change the active frame to the default
+    /// </summary>
+    /// <returns>Element of the default</returns>
+    public IWebDriver DefaultContent()
+    {
+        Dictionary<string, object?> parameters = new Dictionary<string, object?>();
+        parameters.Add("id", null);
+        this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
+        return this.driver;
+    }
 
-        /// <summary>
-        /// Finds the active element on the page and returns it
-        /// </summary>
-        /// <returns>Element that is active</returns>
-        public IWebElement ActiveElement()
-        {
-            Response response = this.driver.Execute(DriverCommand.GetActiveElement, null);
-            return this.driver.GetElementFromResponse(response)!;
-        }
+    /// <summary>
+    /// Finds the active element on the page and returns it
+    /// </summary>
+    /// <returns>Element that is active</returns>
+    public IWebElement ActiveElement()
+    {
+        Response response = this.driver.Execute(DriverCommand.GetActiveElement, null);
+        return this.driver.GetElementFromResponse(response)!;
+    }
 
-        /// <summary>
-        /// Switches to the currently active modal dialog for this particular driver instance.
-        /// </summary>
-        /// <returns>A handle to the dialog.</returns>
-        public IAlert Alert()
-        {
-            // N.B. We only execute the GetAlertText command to be able to throw
-            // a NoAlertPresentException if there is no alert found.
-            this.driver.Execute(DriverCommand.GetAlertText, null);
-            return new Alert(this.driver);
-        }
+    /// <summary>
+    /// Switches to the currently active modal dialog for this particular driver instance.
+    /// </summary>
+    /// <returns>A handle to the dialog.</returns>
+    public IAlert Alert()
+    {
+        // N.B. We only execute the GetAlertText command to be able to throw
+        // a NoAlertPresentException if there is no alert found.
+        this.driver.Execute(DriverCommand.GetAlertText, null);
+        return new Alert(this.driver);
     }
 }

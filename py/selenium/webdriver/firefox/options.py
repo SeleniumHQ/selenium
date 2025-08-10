@@ -14,10 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Union
+from typing import Any, Optional, Union
 
 from typing_extensions import deprecated
 
@@ -44,9 +41,9 @@ class Options(ArgOptions):
         super().__init__()
         self._binary_location = ""
         self._preferences: dict = {}
-        # Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
         # https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
-        self._preferences["remote.active-protocols"] = 3
+        # Enable BiDi only
+        self._preferences["remote.active-protocols"] = 1
         self._profile: Optional[FirefoxProfile] = None
         self.log = Log()
 
@@ -111,7 +108,7 @@ class Options(ArgOptions):
         # it will defer to geckodriver to find the system Firefox
         # and generate a fresh profile.
         caps = self._caps
-        opts: Dict[str, Any] = {}
+        opts: dict[str, Any] = {}
 
         if self._binary_location:
             opts["binary"] = self._binary_location

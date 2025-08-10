@@ -19,33 +19,32 @@
 
 using System;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Represents information about a an argument in call to the browser's console API.
+/// </summary>
+public class ConsoleApiArgument
 {
     /// <summary>
-    /// Represents information about a an argument in call to the browser's console API.
+    /// Initializes a new instance of the <see cref="ConsoleApiArgument"/> type.
     /// </summary>
-    public class ConsoleApiArgument
+    /// <param name="type">The type of the argument in the call to the browser's console API.</param>
+    /// <param name="value">The value of the argument in the call to the browser's console API.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="type"/> is <see langword="null"/>.</exception>
+    public ConsoleApiArgument(string type, string? value)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConsoleApiArgument"/> type.
-        /// </summary>
-        /// <param name="type">The type of the argument in the call to the browser's console API.</param>
-        /// <param name="value">The value of the argument in the call to the browser's console API.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="type"/> is <see langword="null"/>.</exception>
-        public ConsoleApiArgument(string type, string? value)
-        {
-            Type = type ?? throw new ArgumentNullException(nameof(type));
-            Value = value;
-        }
-
-        /// <summary>
-        /// Gets the type of the argument in the call to the browser's console API.
-        /// </summary>
-        public string Type { get; }
-
-        /// <summary>
-        /// Gets the value of the argument in the call to the browser's console API.
-        /// </summary>
-        public string? Value { get; }
+        Type = type ?? throw new ArgumentNullException(nameof(type));
+        Value = value;
     }
+
+    /// <summary>
+    /// Gets the type of the argument in the call to the browser's console API.
+    /// </summary>
+    public string Type { get; }
+
+    /// <summary>
+    /// Gets the value of the argument in the call to the browser's console API.
+    /// </summary>
+    public string? Value { get; }
 }

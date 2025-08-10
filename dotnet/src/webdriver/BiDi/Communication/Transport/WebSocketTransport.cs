@@ -29,12 +29,13 @@ namespace OpenQA.Selenium.BiDi.Communication.Transport;
 
 class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 {
-    private readonly static ILogger _logger = Log.GetLogger<WebSocketTransport>();
+    private readonly static ILogger _logger = Internal.Logging.Log.GetLogger<WebSocketTransport>();
 
     private readonly ClientWebSocket _webSocket = new();
     private readonly ArraySegment<byte> _receiveBuffer = new(new byte[1024 * 8]);
 
     private readonly SemaphoreSlim _socketSendSemaphoreSlim = new(1, 1);
+    private readonly MemoryStream _sharedMemoryStream = new();
 
     public async Task ConnectAsync(CancellationToken cancellationToken)
     {
@@ -43,7 +44,7 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 
     public async Task<byte[]> ReceiveAsync(CancellationToken cancellationToken)
     {
-        using var ms = new MemoryStream();
+        _sharedMemoryStream.SetLength(0);
 
         WebSocketReceiveResult result;
 
@@ -51,13 +52,11 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
         {
             result = await _webSocket.ReceiveAsync(_receiveBuffer, cancellationToken).ConfigureAwait(false);
 
-            await ms.WriteAsync(_receiveBuffer.Array!, _receiveBuffer.Offset, result.Count, cancellationToken).ConfigureAwait(false);
+            _sharedMemoryStream.Write(_receiveBuffer.Array!, _receiveBuffer.Offset, result.Count);
         }
         while (!result.EndOfMessage);
 
-        ms.Seek(0, SeekOrigin.Begin);
-
-        byte[] data = ms.ToArray();
+        byte[] data = _sharedMemoryStream.ToArray();
 
         if (_logger.IsEnabled(LogEventLevel.Trace))
         {
@@ -69,7 +68,7 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 
     public async Task SendAsync(byte[] data, CancellationToken cancellationToken)
     {
-        await _socketSendSemaphoreSlim.WaitAsync(cancellationToken);
+        await _socketSendSemaphoreSlim.WaitAsync(cancellationToken).ConfigureAwait(false);
 
         try
         {
@@ -89,5 +88,7 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
     public void Dispose()
     {
         _webSocket.Dispose();
+        _sharedMemoryStream.Dispose();
+        _socketSendSemaphoreSlim.Dispose();
     }
 }

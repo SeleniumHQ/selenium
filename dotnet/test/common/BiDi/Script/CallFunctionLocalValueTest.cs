@@ -18,364 +18,351 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.Script;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
 class CallFunctionLocalValueTest : BiDiTestFixture
 {
     [Test]
-    public void CanCallFunctionWithArgumentUndefined()
+    public async Task CanCallFunctionWithArgumentUndefined()
     {
         var arg = new UndefinedLocalValue();
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (typeof arg !== 'undefined') {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentNull()
+    public async Task CanCallFunctionWithArgumentNull()
     {
         var arg = new NullLocalValue();
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg !== null) {
               throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentTrue()
+    public async Task CanCallFunctionWithArgumentTrue()
     {
         var arg = new BooleanLocalValue(true);
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg !== true) {
               throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentFalse()
+    public async Task CanCallFunctionWithArgumentFalse()
     {
         var arg = new BooleanLocalValue(false);
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg !== false) {
               throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentBigInt()
+    public async Task CanCallFunctionWithArgumentBigInt()
     {
         var arg = new BigIntLocalValue("12345");
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg !== 12345n) {
               throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentEmptyString()
+    public async Task CanCallFunctionWithArgumentEmptyString()
     {
         var arg = new StringLocalValue(string.Empty);
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg !== '') {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentNonEmptyString()
+    public async Task CanCallFunctionWithArgumentNonEmptyString()
     {
         var arg = new StringLocalValue("whoa");
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg !== 'whoa') {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentRecentDate()
+    public async Task CanCallFunctionWithArgumentRecentDate()
     {
         const string PinnedDateTimeString = "2025-03-09T00:30:33.083Z";
 
         var arg = new DateLocalValue(PinnedDateTimeString);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg.toISOString() !== '{{PinnedDateTimeString}}') {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentEpochDate()
+    public async Task CanCallFunctionWithArgumentEpochDate()
     {
         const string EpochString = "1970-01-01T00:00:00.000Z";
 
         var arg = new DateLocalValue(EpochString);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg.toISOString() !== '{{EpochString}}') {
                 throw new Error("Assert failed: " + arg.toISOString());
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentNumberFive()
+    public async Task CanCallFunctionWithArgumentNumberFive()
     {
         var arg = new NumberLocalValue(5);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg !== 5) {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentNumberNegativeFive()
+    public async Task CanCallFunctionWithArgumentNumberNegativeFive()
     {
         var arg = new NumberLocalValue(-5);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg !== -5) {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentNumberZero()
+    public async Task CanCallFunctionWithArgumentNumberZero()
     {
         var arg = new NumberLocalValue(0);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg !== 0) {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
     [IgnoreBrowser(Selenium.Browser.Edge, "Chromium can't handle -0 argument as a number: https://github.com/w3c/webdriver-bidi/issues/887")]
     [IgnoreBrowser(Selenium.Browser.Chrome, "Chromium can't handle -0 argument as a number: https://github.com/w3c/webdriver-bidi/issues/887")]
-    public void CanCallFunctionWithArgumentNumberNegativeZero()
+    public async Task CanCallFunctionWithArgumentNumberNegativeZero()
     {
         var arg = new NumberLocalValue(double.NegativeZero);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (!Object.is(arg, -0)) {
                 throw new Error("Assert failed: " + arg.toLocaleString());
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentNumberPositiveInfinity()
+    public async Task CanCallFunctionWithArgumentNumberPositiveInfinity()
     {
         var arg = new NumberLocalValue(double.PositiveInfinity);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg !== Number.POSITIVE_INFINITY) {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentNumberNegativeInfinity()
+    public async Task CanCallFunctionWithArgumentNumberNegativeInfinity()
     {
         var arg = new NumberLocalValue(double.NegativeInfinity);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg !== Number.NEGATIVE_INFINITY) {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentNumberNaN()
+    public async Task CanCallFunctionWithArgumentNumberNaN()
     {
         var arg = new NumberLocalValue(double.NaN);
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (!isNaN(arg)) {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentRegExp()
+    public async Task CanCallFunctionWithArgumentRegExp()
     {
         var arg = new RegExpLocalValue(new RegExpValue("foo*") { Flags = "g" });
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (!arg.test('foo') || arg.source !== 'foo*' || !arg.global) {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentArray()
+    public async Task CanCallFunctionWithArgumentArray()
     {
         var arg = new ArrayLocalValue([new StringLocalValue("hi")]);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg.length !== 1 || arg[0] !== 'hi') {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentObject()
+    public async Task CanCallFunctionWithArgumentObject()
     {
         var arg = new ObjectLocalValue([[new StringLocalValue("objKey"), new StringLocalValue("objValue")]]);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg.objKey !== 'objValue' || Object.keys(arg).length !== 1) {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentMap()
+    public async Task CanCallFunctionWithArgumentMap()
     {
         var arg = new MapLocalValue([[new StringLocalValue("mapKey"), new StringLocalValue("mapValue")]]);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (arg.get('mapKey') !== 'mapValue' || arg.size !== 1) {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 
     [Test]
-    public void CanCallFunctionWithArgumentSet()
+    public async Task CanCallFunctionWithArgumentSet()
     {
         var arg = new SetLocalValue([new StringLocalValue("setKey")]);
 
-        Assert.That(async () =>
-        {
-            await context.Script.CallFunctionAsync($$"""
+        var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {
               if (!arg.has('setKey') || arg.size !== 1) {
                 throw new Error("Assert failed: " + arg);
               }
             }
             """, false, new() { Arguments = [arg] });
-        }, Throws.Nothing);
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
 }

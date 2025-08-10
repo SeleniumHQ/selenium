@@ -21,44 +21,43 @@ using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium.Environment;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+public class NeedsFreshDriverAttribute : TestActionAttribute
 {
-    public class NeedsFreshDriverAttribute : TestActionAttribute
+    private bool isCreatedBeforeTest = false;
+    private bool isCreatedAfterTest = false;
+
+    public bool IsCreatedBeforeTest
     {
-        private bool isCreatedBeforeTest = false;
-        private bool isCreatedAfterTest = false;
+        get { return isCreatedBeforeTest; }
+        set { isCreatedBeforeTest = value; }
+    }
 
-        public bool IsCreatedBeforeTest
+    public bool IsCreatedAfterTest
+    {
+        get { return isCreatedAfterTest; }
+        set { isCreatedAfterTest = value; }
+    }
+
+    public override void BeforeTest(ITest test)
+    {
+        DriverTestFixture fixtureInstance = test.Fixture as DriverTestFixture;
+        if (fixtureInstance != null && this.isCreatedBeforeTest)
         {
-            get { return isCreatedBeforeTest; }
-            set { isCreatedBeforeTest = value; }
+            EnvironmentManager.Instance.CreateFreshDriver();
+            fixtureInstance.DriverInstance = EnvironmentManager.Instance.GetCurrentDriver();
         }
+        base.BeforeTest(test);
+    }
 
-        public bool IsCreatedAfterTest
+    public override void AfterTest(ITest test)
+    {
+        DriverTestFixture fixtureInstance = test.Fixture as DriverTestFixture;
+        if (fixtureInstance != null && this.isCreatedAfterTest)
         {
-            get { return isCreatedAfterTest; }
-            set { isCreatedAfterTest = value; }
-        }
-
-        public override void BeforeTest(ITest test)
-        {
-            DriverTestFixture fixtureInstance = test.Fixture as DriverTestFixture;
-            if (fixtureInstance != null && this.isCreatedBeforeTest)
-            {
-                EnvironmentManager.Instance.CreateFreshDriver();
-                fixtureInstance.DriverInstance = EnvironmentManager.Instance.GetCurrentDriver();
-            }
-            base.BeforeTest(test);
-        }
-
-        public override void AfterTest(ITest test)
-        {
-            DriverTestFixture fixtureInstance = test.Fixture as DriverTestFixture;
-            if (fixtureInstance != null && this.isCreatedAfterTest)
-            {
-                EnvironmentManager.Instance.CreateFreshDriver();
-                fixtureInstance.DriverInstance = EnvironmentManager.Instance.GetCurrentDriver();
-            }
+            EnvironmentManager.Instance.CreateFreshDriver();
+            fixtureInstance.DriverInstance = EnvironmentManager.Instance.GetCurrentDriver();
         }
     }
 }

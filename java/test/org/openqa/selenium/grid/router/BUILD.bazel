@@ -11,7 +11,7 @@ LARGE_TESTS = [
     "StressTest.java",
 ]
 
-FIREFOX_CHROME_ONLY_LARGE_TESTS = [
+FIREFOX_CHROMIUM_ONLY_LARGE_TESTS = [
     "RemoteWebDriverBiDiTest.java",
 ]
 
@@ -78,12 +78,13 @@ java_selenium_test_suite(
 )
 
 java_selenium_test_suite(
-    name = "firefox-chrome-only-large-tests",
+    name = "firefox-chromium-only-large-tests",
     size = "large",
-    srcs = FIREFOX_CHROME_ONLY_LARGE_TESTS,
+    srcs = FIREFOX_CHROMIUM_ONLY_LARGE_TESTS,
     browsers = [
         "firefox",
         "chrome",
+        "edge",
     ],
     deps = [
         ":support",
@@ -107,7 +108,7 @@ java_test_suite(
     size = "medium",
     srcs = glob(
         ["*Test.java"],
-        exclude = LARGE_TESTS + FIREFOX_CHROME_ONLY_LARGE_TESTS,
+        exclude = LARGE_TESTS + FIREFOX_CHROMIUM_ONLY_LARGE_TESTS,
     ),
     tags = [
         "requires-network",

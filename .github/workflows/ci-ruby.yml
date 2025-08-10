@@ -22,15 +22,6 @@ jobs:
       cache-key: rb-docs
       run: bazel run //rb:docs
 
-  lint:
-    name: Lint
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint
-      cache-key: rb-lint
-      run: bazel test //rb:lint
-
   unit-tests:
     name: Unit Tests
     needs: build
@@ -39,17 +30,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby-version: 3.1.6
+          - ruby-version: 3.2.8
             os: ubuntu
-          - ruby-version: 3.1.6
+          - ruby-version: 3.2.8
             os: windows
-          - ruby-version: 3.1.6
+          - ruby-version: 3.2.8
             os: macos
-          - ruby-version: 3.3.5
+          - ruby-version: 3.4.3
             os: ubuntu
-          - ruby-version: jruby-9.4.12.0
+          - ruby-version: jruby-10.0.0.0
             os: ubuntu
-          - ruby-version: truffleruby-24.1.1
+          - ruby-version: truffleruby-24.2.1
             os: ubuntu
     with:
       name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})
@@ -93,7 +84,7 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}
-        ${{ matrix.os != 'windows' && '--pin_browsers' || '' }}
+        --pin_browsers
         //rb/spec/...
 
   integration-tests-remote:
@@ -120,5 +111,5 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}-remote
-        ${{ matrix.os != 'windows' && '--pin_browsers' || '' }}
+        --pin_browsers
         //rb/spec/...

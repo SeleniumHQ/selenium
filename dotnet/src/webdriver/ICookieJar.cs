@@ -20,51 +20,50 @@
 using System;
 using System.Collections.ObjectModel;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Defines an interface allowing the user to manipulate cookies on the current page.
+/// </summary>
+public interface ICookieJar
 {
     /// <summary>
-    /// Defines an interface allowing the user to manipulate cookies on the current page.
+    /// Gets all cookies defined for the current page.
     /// </summary>
-    public interface ICookieJar
-    {
-        /// <summary>
-        /// Gets all cookies defined for the current page.
-        /// </summary>
-        ReadOnlyCollection<Cookie> AllCookies { get; }
+    ReadOnlyCollection<Cookie> AllCookies { get; }
 
-        /// <summary>
-        /// Adds a cookie to the current page.
-        /// </summary>
-        /// <param name="cookie">The <see cref="Cookie"/> object to be added.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="cookie"/> is <see langword="null"/>.</exception>
-        void AddCookie(Cookie cookie);
+    /// <summary>
+    /// Adds a cookie to the current page.
+    /// </summary>
+    /// <param name="cookie">The <see cref="Cookie"/> object to be added.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="cookie"/> is <see langword="null"/>.</exception>
+    void AddCookie(Cookie cookie);
 
-        /// <summary>
-        /// Gets a cookie with the specified name.
-        /// </summary>
-        /// <param name="name">The name of the cookie to retrieve.</param>
-        /// <returns>The <see cref="Cookie"/> containing the name. Returns <see langword="null"/>
-        /// if no cookie with the specified name is found.</returns>
-        /// <exception cref="ArgumentException">If <paramref name="name"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
-        Cookie? GetCookieNamed(string name);
+    /// <summary>
+    /// Gets a cookie with the specified name.
+    /// </summary>
+    /// <param name="name">The name of the cookie to retrieve.</param>
+    /// <returns>The <see cref="Cookie"/> containing the name. Returns <see langword="null"/>
+    /// if no cookie with the specified name is found.</returns>
+    /// <exception cref="ArgumentException">If <paramref name="name"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
+    Cookie? GetCookieNamed(string name);
 
-        /// <summary>
-        /// Deletes the specified cookie from the page.
-        /// </summary>
-        /// <param name="cookie">The <see cref="Cookie"/> to be deleted.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="cookie"/> is <see langword="null"/>.</exception>
-        void DeleteCookie(Cookie cookie);
+    /// <summary>
+    /// Deletes the specified cookie from the page.
+    /// </summary>
+    /// <param name="cookie">The <see cref="Cookie"/> to be deleted.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="cookie"/> is <see langword="null"/>.</exception>
+    void DeleteCookie(Cookie cookie);
 
-        /// <summary>
-        /// Deletes the cookie with the specified name from the page.
-        /// </summary>
-        /// <param name="name">The name of the cookie to be deleted.</param>
-        /// <exception cref="ArgumentException">If <paramref name="name"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
-        void DeleteCookieNamed(string name);
+    /// <summary>
+    /// Deletes the cookie with the specified name from the page.
+    /// </summary>
+    /// <param name="name">The name of the cookie to be deleted.</param>
+    /// <exception cref="ArgumentException">If <paramref name="name"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
+    void DeleteCookieNamed(string name);
 
-        /// <summary>
-        /// Deletes all cookies from the page.
-        /// </summary>
-        void DeleteAllCookies();
-    }
+    /// <summary>
+    /// Deletes all cookies from the page.
+    /// </summary>
+    void DeleteAllCookies();
 }

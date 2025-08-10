@@ -166,10 +166,13 @@ public class JdkHttpClient implements HttpClient {
       throw new ConnectionFailedException("JdkWebSocket initial request execution error", e);
     }
 
+    java.net.http.WebSocket.Builder builder = client.newWebSocketBuilder();
+
+    request.getHeaderNames().forEach(name -> builder.header(name, request.getHeader(name)));
+
     CompletableFuture<Integer> closed = new CompletableFuture<>();
     CompletableFuture<java.net.http.WebSocket> webSocketCompletableFuture =
-        client
-            .newWebSocketBuilder()
+        builder
             .connectTimeout(connectTimeout)
             .buildAsync(
                 uri,

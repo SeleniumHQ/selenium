@@ -21,26 +21,25 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
-namespace OpenQA.Selenium.Internal.Logging
+namespace OpenQA.Selenium.Internal.Logging;
+
+internal class LogContextManager
 {
-    internal class LogContextManager
+    private readonly AsyncLocal<ILogContext?> _currentAmbientLogContext = new();
+
+    public LogContextManager()
     {
-        private readonly AsyncLocal<ILogContext?> _currentAmbientLogContext = new();
+        var defaulLogHandler = new TextWriterHandler(Console.Error);
 
-        public LogContextManager()
-        {
-            var defaulLogHandler = new TextWriterHandler(Console.Error);
+        GlobalContext = new LogContext(LogEventLevel.Warn, null, null, [defaulLogHandler]);
+    }
 
-            GlobalContext = new LogContext(LogEventLevel.Info, null, null, [defaulLogHandler]);
-        }
+    public ILogContext GlobalContext { get; }
 
-        public ILogContext GlobalContext { get; }
-
-        [AllowNull]
-        public ILogContext CurrentContext
-        {
-            get => _currentAmbientLogContext.Value ?? GlobalContext;
-            set => _currentAmbientLogContext.Value = value;
-        }
+    [AllowNull]
+    public ILogContext CurrentContext
+    {
+        get => _currentAmbientLogContext.Value ?? GlobalContext;
+        set => _currentAmbientLogContext.Value = value;
     }
 }

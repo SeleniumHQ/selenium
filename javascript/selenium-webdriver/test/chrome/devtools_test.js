@@ -34,7 +34,9 @@ test.suite(
     let driver
 
     beforeEach(async function () {
-      driver = await env.builder().setChromeOptions(new chrome.Options().addArguments('-headless')).build()
+      let options = env.builder().getChromeOptions() || new chrome.Options()
+      options.addArguments('--headless')
+      driver = await env.builder().setChromeOptions(options).build()
     })
     afterEach(async () => await driver.quit())
 
@@ -125,6 +127,7 @@ test.suite(
         await driver.register('random', 'random', pageCdpConnection)
         await driver.get(fileServer.Pages.basicAuth)
         let source = await driver.getPageSource()
+        console.log(source)
         assert.strictEqual(source.includes('Access granted!'), false, source)
       })
     })

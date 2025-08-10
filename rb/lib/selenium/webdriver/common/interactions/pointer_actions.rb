@@ -46,8 +46,8 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pointer_down(button = :left, device: nil, **opts)
-        button_action(button, :create_pointer_down, device: device, **opts)
+      def pointer_down(button = :left, device: nil, **)
+        button_action(button, :create_pointer_down, device: device, **)
       end
 
       #
@@ -63,8 +63,8 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pointer_up(button = :left, device: nil, **opts)
-        button_action(button, :create_pointer_up, device: device, **opts)
+      def pointer_up(button = :left, device: nil, **)
+        button_action(button, :create_pointer_up, device: device, **)
       end
 
       #
@@ -122,13 +122,13 @@ module Selenium
       # @raise [MoveTargetOutOfBoundsError] if the provided offset is outside the document's boundaries.
       #
 
-      def move_by(right_by, down_by, device: nil, duration: default_move_duration, **opts)
+      def move_by(right_by, down_by, device: nil, duration: default_move_duration, **)
         pointer = pointer_input(device)
         pointer.create_pointer_move(duration: duration,
                                     x: Integer(right_by),
                                     y: Integer(down_by),
                                     origin: Interactions::PointerMove::POINTER,
-                                    **opts)
+                                    **)
         tick(pointer)
         self
       end
@@ -150,13 +150,13 @@ module Selenium
       # @raise [MoveTargetOutOfBoundsError] if the provided x or y value is outside the document's boundaries.
       #
 
-      def move_to_location(x, y, device: nil, duration: default_move_duration, **opts)
+      def move_to_location(x, y, device: nil, duration: default_move_duration, **)
         pointer = pointer_input(device)
         pointer.create_pointer_move(duration: duration,
                                     x: Integer(x),
                                     y: Integer(y),
                                     origin: Interactions::PointerMove::VIEWPORT,
-                                    **opts)
+                                    **)
         tick(pointer)
         self
       end
@@ -336,9 +336,9 @@ module Selenium
 
       private
 
-      def button_action(button, action, device: nil, **opts)
+      def button_action(button, action, device: nil, **)
         pointer = pointer_input(device)
-        pointer.send(action, button, **opts)
+        pointer.send(action, button, **)
         tick(pointer)
         self
       end

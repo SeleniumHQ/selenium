@@ -17,14 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-internal class BrowsingContextConverter : JsonConverter<BrowsingContext>
+internal class BrowsingContextConverter : JsonConverter<BrowsingContext.BrowsingContext>
 {
     private readonly BiDi _bidi;
 
@@ -33,14 +32,14 @@ internal class BrowsingContextConverter : JsonConverter<BrowsingContext>
         _bidi = bidi;
     }
 
-    public override BrowsingContext? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override BrowsingContext.BrowsingContext? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new BrowsingContext(_bidi, id!);
+        return new BrowsingContext.BrowsingContext(_bidi, id!);
     }
 
-    public override void Write(Utf8JsonWriter writer, BrowsingContext value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, BrowsingContext.BrowsingContext value, JsonSerializerOptions options)
     {
         writer.WriteStringValue(value.Id);
     }

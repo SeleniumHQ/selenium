@@ -62,11 +62,11 @@ on Github.
 
 This document will guide you through the contribution process.
 
-### Step 1: Fork
+### Step 1: Fork & Clone
 
 Fork the project [on Github](https://github.com/seleniumhq/selenium)
-and check out your copy locally. Use `--depth 1` for a quick check out.
-The repository is ~2GB and checking the whole history takes a while.
+and clone the repository locally. Use `--depth 1` for a quick clone.
+The repository is over 2GB and cloning the whole history takes a while.
 
 ```shell
 % git clone git@github.com:username/selenium.git --depth 1
@@ -76,7 +76,7 @@ The repository is ~2GB and checking the whole history takes a while.
 
 #### Dependencies
 
-We bundle dependencies in the _third-party/_ directory that is not
+We bundle dependencies in the _third-party/_ directory that are not
 part of the proper project. Any changes to files in this directory or
 its subdirectories should be sent upstream to the respective projects.
 Please don't send your patch to us as we cannot accept it.
@@ -350,7 +350,7 @@ Issues are labelled to make them easier to categorise and find by:
 ## Communication
 
 Selenium contributors frequent the `#selenium` channel on
-[`irc.freenode.org`](https://webchat.freenode.net/). You can also join
+[`libera.chat`](https://web.libera.chat/). You can also join
 the [`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers).
 Check https://selenium.dev/support/ for a complete list of options to communicate.
 

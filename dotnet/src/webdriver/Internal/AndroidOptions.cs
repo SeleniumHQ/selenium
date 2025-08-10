@@ -19,41 +19,40 @@
 
 using System;
 
-namespace OpenQA.Selenium.Internal
+namespace OpenQA.Selenium.Internal;
+
+/// <summary>
+/// Provides a base class for options for browsers to be automated on Android.
+/// </summary>
+public class AndroidOptions
 {
     /// <summary>
-    /// Provides a base class for options for browsers to be automated on Android.
+    /// Initializes a new instance of the <see cref="AndroidOptions"/> class.
     /// </summary>
-    public class AndroidOptions
+    /// <param name="androidPackage"></param>
+    /// <exception cref="ArgumentException">If <paramref name="androidPackage"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
+    protected AndroidOptions(string androidPackage)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AndroidOptions"/> class.
-        /// </summary>
-        /// <param name="androidPackage"></param>
-        /// <exception cref="ArgumentException">If <paramref name="androidPackage"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
-        protected AndroidOptions(string androidPackage)
+        if (string.IsNullOrEmpty(androidPackage))
         {
-            if (string.IsNullOrEmpty(androidPackage))
-            {
-                throw new ArgumentException("The Android package cannot be null or the empty string", nameof(androidPackage));
-            }
-
-            this.AndroidPackage = androidPackage;
+            throw new ArgumentException("The Android package cannot be null or the empty string", nameof(androidPackage));
         }
 
-        /// <summary>
-        /// The package name of the application to automate.
-        /// </summary>
-        public string AndroidPackage { get; }
-
-        /// <summary>
-        /// The serial number of the device on which to launch the application.
-        /// </summary>
-        public string? AndroidDeviceSerial { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the Activity hosting the app.
-        /// </summary>
-        public string? AndroidActivity { get; set; }
+        this.AndroidPackage = androidPackage;
     }
+
+    /// <summary>
+    /// The package name of the application to automate.
+    /// </summary>
+    public string AndroidPackage { get; }
+
+    /// <summary>
+    /// The serial number of the device on which to launch the application.
+    /// </summary>
+    public string? AndroidDeviceSerial { get; set; }
+
+    /// <summary>
+    /// Gets or sets the name of the Activity hosting the app.
+    /// </summary>
+    public string? AndroidActivity { get; set; }
 }

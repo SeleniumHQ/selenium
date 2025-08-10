@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Legacy packages.config support -->
+  <ItemGroup Condition="'$(UsingMicrosoftNETSdk)' != 'true'">
+    <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\win\native\selenium-manager.exe">
+      <Link>runtimes\win\native\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+      <Pack>false</Pack>
+    </Content>
+
+    <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\linux\native\selenium-manager">
+      <Link>runtimes\linux\native\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+      <Pack>false</Pack>
+    </Content>
+
+    <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx\native\selenium-manager">
+      <Link>runtimes\osx\native\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+      <Pack>false</Pack>
+    </Content>
+  </ItemGroup>
+
+</Project>

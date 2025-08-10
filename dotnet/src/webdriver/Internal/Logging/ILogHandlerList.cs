@@ -19,31 +19,30 @@
 
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium.Internal.Logging
+namespace OpenQA.Selenium.Internal.Logging;
+
+/// <summary>
+/// Represents a list of log handlers.
+/// </summary>
+public interface ILogHandlerList : IEnumerable<ILogHandler>
 {
     /// <summary>
-    /// Represents a list of log handlers.
+    /// Adds a log handler to the list.
     /// </summary>
-    public interface ILogHandlerList : IEnumerable<ILogHandler>
-    {
-        /// <summary>
-        /// Adds a log handler to the list.
-        /// </summary>
-        /// <param name="handler">The log handler to add.</param>
-        /// <returns>The log context.</returns>
-        ILogContext Add(ILogHandler handler);
+    /// <param name="handler">The log handler to add.</param>
+    /// <returns>The log context.</returns>
+    ILogContext Add(ILogHandler handler);
 
-        /// <summary>
-        /// Removes a log handler from the list.
-        /// </summary>
-        /// <param name="handler">The log handler to remove.</param>
-        /// <returns>The log context.</returns>
-        ILogContext Remove(ILogHandler handler);
+    /// <summary>
+    /// Removes a log handler from the list.
+    /// </summary>
+    /// <param name="handler">The log handler to remove.</param>
+    /// <returns>The log context.</returns>
+    ILogContext Remove(ILogHandler handler);
 
-        /// <summary>
-        /// Clears all log handlers from the list.
-        /// </summary>
-        /// <returns>The log context.</returns>
-        ILogContext Clear();
-    }
+    /// <summary>
+    /// Clears all log handlers from the list.
+    /// </summary>
+    /// <returns>The log context.</returns>
+    ILogContext Clear();
 }

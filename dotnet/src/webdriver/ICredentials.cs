@@ -17,13 +17,12 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Marker interface describing a set of credentials to be used with network requests.
+/// This allows the ability to expand beyond simple user name/password security mechanisms.
+/// </summary>
+public interface ICredentials
 {
-    /// <summary>
-    /// Marker interface describing a set of credentials to be used with network requests.
-    /// This allows the ability to expand beyond simple user name/password security mechanisms.
-    /// </summary>
-    public interface ICredentials
-    {
-    }
 }

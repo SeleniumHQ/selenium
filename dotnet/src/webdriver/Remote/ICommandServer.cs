@@ -19,16 +19,15 @@
 
 using System;
 
-namespace OpenQA.Selenium.Remote
+namespace OpenQA.Selenium.Remote;
+
+/// <summary>
+/// Provides a way to start a server that understands remote commands
+/// </summary>
+public interface ICommandServer : IDisposable
 {
     /// <summary>
-    /// Provides a way to start a server that understands remote commands
+    /// Starts the server.
     /// </summary>
-    public interface ICommandServer : IDisposable
-    {
-        /// <summary>
-        /// Starts the server.
-        /// </summary>
-        void Start();
-    }
+    void Start();
 }

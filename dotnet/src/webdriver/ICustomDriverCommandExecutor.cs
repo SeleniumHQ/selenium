@@ -20,34 +20,33 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Exposes an interface to allow drivers to register and execute custom commands.
+/// </summary>
+public interface ICustomDriverCommandExecutor
 {
     /// <summary>
-    /// Exposes an interface to allow drivers to register and execute custom commands.
+    /// Executes a command with this driver.
     /// </summary>
-    public interface ICustomDriverCommandExecutor
-    {
-        /// <summary>
-        /// Executes a command with this driver.
-        /// </summary>
-        /// <param name="driverCommandToExecute">The name of the command to execute. The command name must be registered with the command executor, and must not be a command name known to this driver type.</param>
-        /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
-        /// <returns>An object that contains the value returned by the command, if any.</returns>
-        /// <exception cref="WebDriverException">The command returned an exceptional value.</exception>
-        object? ExecuteCustomDriverCommand(string driverCommandToExecute, Dictionary<string, object> parameters);
+    /// <param name="driverCommandToExecute">The name of the command to execute. The command name must be registered with the command executor, and must not be a command name known to this driver type.</param>
+    /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
+    /// <returns>An object that contains the value returned by the command, if any.</returns>
+    /// <exception cref="WebDriverException">The command returned an exceptional value.</exception>
+    object? ExecuteCustomDriverCommand(string driverCommandToExecute, Dictionary<string, object> parameters);
 
-        /// <summary>
-        /// Registers a set of commands to be executed with this driver instance.
-        /// </summary>
-        /// <param name="commands">An <see cref="IReadOnlyDictionary{String, CommandInfo}"/> where the keys are the names of the commands to register, and the values are the <see cref="CommandInfo"/> objects describing the commands.</param>
-        void RegisterCustomDriverCommands(IReadOnlyDictionary<string, CommandInfo> commands);
+    /// <summary>
+    /// Registers a set of commands to be executed with this driver instance.
+    /// </summary>
+    /// <param name="commands">An <see cref="IReadOnlyDictionary{String, CommandInfo}"/> where the keys are the names of the commands to register, and the values are the <see cref="CommandInfo"/> objects describing the commands.</param>
+    void RegisterCustomDriverCommands(IReadOnlyDictionary<string, CommandInfo> commands);
 
-        /// <summary>
-        /// Registers a command to be executed with this driver instance.
-        /// </summary>
-        /// <param name="commandName">The unique name of the command to register.</param>
-        /// <param name="commandInfo">The <see cref="CommandInfo"/> object describing the command.</param>
-        /// <returns><see langword="true"/> if the command was registered; otherwise, <see langword="false"/>.</returns>
-        bool RegisterCustomDriverCommand(string commandName, [NotNullWhen(true)] CommandInfo? commandInfo);
-    }
+    /// <summary>
+    /// Registers a command to be executed with this driver instance.
+    /// </summary>
+    /// <param name="commandName">The unique name of the command to register.</param>
+    /// <param name="commandInfo">The <see cref="CommandInfo"/> object describing the command.</param>
+    /// <returns><see langword="true"/> if the command was registered; otherwise, <see langword="false"/>.</returns>
+    bool RegisterCustomDriverCommand(string commandName, [NotNullWhen(true)] CommandInfo? commandInfo);
 }

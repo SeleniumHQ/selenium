@@ -22,45 +22,44 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace OpenQA.Selenium.Firefox
+namespace OpenQA.Selenium.Firefox;
+
+/// <summary>
+/// Generates the capabilities for automating Firefox applications on Android
+/// </summary>
+public class FirefoxAndroidOptions : AndroidOptions
 {
+    private readonly List<string> androidIntentArguments = new List<string>();
+
     /// <summary>
-    /// Generates the capabilities for automating Firefox applications on Android
+    /// Initializes a new instance of the <see cref="FirefoxAndroidOptions"/> class.
     /// </summary>
-    public class FirefoxAndroidOptions : AndroidOptions
+    /// <param name="androidPackage"></param>
+    public FirefoxAndroidOptions(string androidPackage) : base(androidPackage)
     {
-        private readonly List<string> androidIntentArguments = new List<string>();
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxAndroidOptions"/> class.
-        /// </summary>
-        /// <param name="androidPackage"></param>
-        public FirefoxAndroidOptions(string androidPackage) : base(androidPackage)
-        {
-        }
+    /// <summary>
+    /// Gets a read-only list of the intent arguments set for this set of options.
+    /// </summary>
+    public ReadOnlyCollection<string> AndroidIntentArguments => this.androidIntentArguments.AsReadOnly();
 
-        /// <summary>
-        /// Gets a read-only list of the intent arguments set for this set of options.
-        /// </summary>
-        public ReadOnlyCollection<string> AndroidIntentArguments => this.androidIntentArguments.AsReadOnly();
+    /// <summary>
+    /// Argument to launch the intent with. The given intent arguments are appended to the "am start" command.
+    /// </summary>
+    /// <param name="argument">The argument to add.</param>
+    public void AddIntentArgument(string argument)
+    {
+        this.AddIntentArguments(argument);
+    }
 
-        /// <summary>
-        /// Argument to launch the intent with. The given intent arguments are appended to the "am start" command.
-        /// </summary>
-        /// <param name="argument">The argument to add.</param>
-        public void AddIntentArgument(string argument)
-        {
-            this.AddIntentArguments(argument);
-        }
-
-        /// <summary>
-        /// Arguments to launch the intent with. The given intent arguments are appended to the "am start" command.
-        /// </summary>
-        /// <param name="arguments">The arguments to add.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="arguments"/> is <see langword="null"/>.</exception>
-        public void AddIntentArguments(params string[] arguments)
-        {
-            this.androidIntentArguments.AddRange(arguments);
-        }
+    /// <summary>
+    /// Arguments to launch the intent with. The given intent arguments are appended to the "am start" command.
+    /// </summary>
+    /// <param name="arguments">The arguments to add.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="arguments"/> is <see langword="null"/>.</exception>
+    public void AddIntentArguments(params string[] arguments)
+    {
+        this.androidIntentArguments.AddRange(arguments);
     }
 }

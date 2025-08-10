@@ -16,10 +16,13 @@
 // under the License.
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
+use crate::config::ARCH::{ARM64, ARMV7, X32, X64};
 use crate::config::OS::{MACOS, WINDOWS};
 use crate::config::{str_to_os, ManagerConfig};
 use crate::downloads::download_to_tmp_folder;
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
+use crate::electron::{ElectronManager, ELECTRON_NAME};
+use crate::files::get_win_file_version;
 use crate::files::{
     capitalize, collect_files_from_cache, create_path_if_not_exists, default_cache_folder,
     find_latest_from_cache, get_binary_extension, path_to_string,
@@ -55,6 +58,7 @@ pub mod chrome;
 pub mod config;
 pub mod downloads;
 pub mod edge;
+pub mod electron;
 pub mod files;
 pub mod firefox;
 pub mod grid;
@@ -75,8 +79,6 @@ pub const DEV: &str = "dev";
 pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
 pub const ESR: &str = "esr";
-pub const WMIC_COMMAND: &str = "wmic datafile where name='{}' get Version /value";
-pub const WMIC_COMMAND_OS: &str = "wmic os get osarchitecture";
 pub const REG_VERSION_ARG: &str = "version";
 pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const REG_PV_ARG: &str = "pv";
@@ -97,8 +99,10 @@ pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
 pub const ENV_PROCESSOR_ARCHITECTURE: &str = "PROCESSOR_ARCHITECTURE";
 pub const ENV_X86: &str = " (x86)";
 pub const ARCH_X86: &str = "x86";
-pub const ARCH_AMD64: &str = "amd64";
+pub const ARCH_X64: &str = "x86_64";
 pub const ARCH_ARM64: &str = "arm64";
+pub const ARCH_ARM7L: &str = "arm7l";
+pub const ARCH_OTHER: &str = "other";
 pub const TTL_SEC: u64 = 3600;
 pub const UNAME_COMMAND: &str = "uname -{}";
 pub const ESCAPE_COMMAND: &str = r#"printf %q "{}""#;
@@ -113,6 +117,7 @@ pub const NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG: &str =
 pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {}{} in online repository";
 pub const UNC_PREFIX: &str = r"\\?\";
 pub const SM_BETA_LABEL: &str = "0.";
+pub const LATEST_RELEASE: &str = "latest";
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -193,7 +198,7 @@ pub trait SeleniumManager {
         let driver_name_with_extension = self.get_driver_name_with_extension();
 
         let mut lock = Lock::acquire(
-            &self.get_logger(),
+            self.get_logger(),
             &driver_path_in_cache,
             Some(driver_name_with_extension.clone()),
         )?;
@@ -326,7 +331,7 @@ pub trait SeleniumManager {
             }
 
             let browser_path_in_cache = self.get_browser_path_in_cache()?;
-            let mut lock = Lock::acquire(&self.get_logger(), &browser_path_in_cache, None)?;
+            let mut lock = Lock::acquire(self.get_logger(), &browser_path_in_cache, None)?;
             if !lock.exists() && browser_binary_path.exists() {
                 self.get_logger().debug(format!(
                     "Browser already in cache: {}",
@@ -351,7 +356,7 @@ pub trait SeleniumManager {
             uncompress(
                 &driver_zip_file,
                 &browser_path_in_cache,
-                &self.get_logger(),
+                self.get_logger(),
                 self.get_os(),
                 None,
                 browser_label_for_download,
@@ -453,8 +458,9 @@ pub trait SeleniumManager {
                 driver_version_command,
             ) {
                 Ok(out) => out,
-                Err(_e) => continue,
+                Err(_) => continue,
             };
+
             let full_browser_version = parse_version(output, self.get_logger()).unwrap_or_default();
             if full_browser_version.is_empty() {
                 continue;
@@ -473,7 +479,7 @@ pub trait SeleniumManager {
 
     fn discover_local_browser(&mut self) -> Result<(), Error> {
         let mut download_browser = self.is_force_browser_download();
-        if !download_browser {
+        if !download_browser && !self.is_electron() {
             let major_browser_version = self.get_major_browser_version();
             match self.discover_browser_version()? {
                 Some(discovered_version) => {
@@ -563,6 +569,7 @@ pub trait SeleniumManager {
             && !self.is_grid()
             && !self.is_safari()
             && !self.is_webview2()
+            && !self.is_electron()
         {
             let browser_path = self.download_browser(original_browser_version)?;
             if browser_path.is_some() {
@@ -691,6 +698,10 @@ pub trait SeleniumManager {
         self.get_browser_name().eq(GRID_NAME)
     }
 
+    fn is_electron(&self) -> bool {
+        self.get_browser_name().eq_ignore_ascii_case(ELECTRON_NAME)
+    }
+
     fn is_firefox(&self) -> bool {
         self.get_browser_name().contains(FIREFOX_NAME)
     }
@@ -778,7 +789,7 @@ pub trait SeleniumManager {
         let original_browser_version = self.get_config().browser_version.clone();
 
         // Try to find driver in PATH
-        if !self.is_safari() && !self.is_grid() {
+        if !self.is_safari() && !self.is_grid() && !self.is_electron() {
             self.get_logger()
                 .trace(format!("Checking {} in PATH", self.get_driver_name()));
             (driver_in_path_version, driver_in_path) = self.find_driver_in_path();
@@ -875,7 +886,7 @@ pub trait SeleniumManager {
                     self.get_driver_version()
                 ));
             }
-        } else {
+        } else if !self.is_safari() {
             // If driver is not in the cache, download it
             self.assert_online_or_err(OFFLINE_DOWNLOAD_ERR_MSG)?;
             self.download_driver()?;
@@ -889,7 +900,10 @@ pub trait SeleniumManager {
                 browser: self.get_browser_name().to_ascii_lowercase(),
                 browser_version: self.get_browser_version().to_ascii_lowercase(),
                 os: self.get_os().to_ascii_lowercase(),
-                arch: self.get_arch().to_ascii_lowercase(),
+                arch: self
+                    .get_normalized_arch()
+                    .unwrap_or(ARCH_OTHER)
+                    .to_ascii_lowercase(),
                 lang: self.get_language_binding().to_ascii_lowercase(),
                 selenium_version: self.get_selenium_version().to_ascii_lowercase(),
             };
@@ -1158,9 +1172,7 @@ pub trait SeleniumManager {
         let mut commands = Vec::new();
         if WINDOWS.is(self.get_os()) {
             if !escaped_browser_path.is_empty() {
-                let wmic_command =
-                    Command::new_single(format_one_arg(WMIC_COMMAND, &escaped_browser_path));
-                commands.push(wmic_command);
+                return Ok(get_win_file_version(&escaped_browser_path));
             }
             if !self.is_browser_version_unstable() {
                 let reg_command =
@@ -1283,6 +1295,23 @@ pub trait SeleniumManager {
 
     fn get_arch(&self) -> &str {
         self.get_config().arch.as_str()
+    }
+
+    fn get_normalized_arch(&self) -> Result<&str, Error> {
+        let arch = self.get_arch();
+        if X32.is(arch) {
+            Ok(ARCH_X86)
+        } else if X64.is(arch) {
+            Ok(ARCH_X64)
+        } else if ARM64.is(arch) {
+            Ok(ARCH_ARM64)
+        } else if ARMV7.is(arch) {
+            Ok(ARCH_ARM7L)
+        } else {
+            let err_msg = format!("Unsupported architecture: {}", arch);
+            self.get_logger().warn(err_msg.clone());
+            Err(anyhow!(err_msg))
+        }
     }
 
     fn set_arch(&mut self, arch: String) {
@@ -1621,6 +1650,8 @@ pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumMa
         Ok(SafariManager::new()?)
     } else if SAFARITP_NAMES.contains(&browser_name_lower_case.as_str()) {
         Ok(SafariTPManager::new()?)
+    } else if browser_name_lower_case.eq(ELECTRON_NAME) {
+        Ok(ElectronManager::new()?)
     } else {
         Err(anyhow!(format!("Invalid browser name: {browser_name}")))
     }

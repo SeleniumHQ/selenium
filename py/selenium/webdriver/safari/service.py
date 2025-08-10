@@ -15,9 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
-from typing import List
-from typing import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Optional
 
 from selenium.webdriver.common import service
@@ -29,28 +27,29 @@ class Service(service.Service):
 
     :param executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
+    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param enable_logging: (Optional) Enable logging of the service. Logs can be located at `~/Library/Logs/com.apple.WebDriver/`
+    :param enable_logging: (Optional) Enable logging of the service. Logs can be located at
+        `~/Library/Logs/com.apple.WebDriver/`
     :param driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
 
     def __init__(
         self,
-        executable_path: str = None,
+        executable_path: Optional[str] = None,
         port: int = 0,
-        service_args: Optional[List[str]] = None,
+        service_args: Optional[Sequence[str]] = None,
         env: Optional[Mapping[str, str]] = None,
         reuse_service=False,
         enable_logging: bool = False,
-        driver_path_env_key: str = None,
+        driver_path_env_key: Optional[str] = None,
         **kwargs,
     ) -> None:
-        self.service_args = service_args or []
+        self._service_args = list(service_args or [])
         driver_path_env_key = driver_path_env_key or "SE_SAFARIDRIVER"
 
         if enable_logging:
-            self.service_args.append("--diagnose")
+            self._service_args.append("--diagnose")
 
         self.reuse_service = reuse_service
         super().__init__(
@@ -61,8 +60,8 @@ class Service(service.Service):
             **kwargs,
         )
 
-    def command_line_args(self) -> List[str]:
-        return ["-p", f"{self.port}"] + self.service_args
+    def command_line_args(self) -> list[str]:
+        return ["-p", f"{self.port}"] + self._service_args
 
     @property
     def service_url(self) -> str:
@@ -78,3 +77,13 @@ class Service(service.Service):
         if not isinstance(reuse, bool):
             raise TypeError("reuse must be a boolean")
         self._reuse_service = reuse
+
+    @property
+    def service_args(self) -> Sequence[str]:
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value: Sequence[str]):
+        if isinstance(value, str) or not isinstance(value, Sequence):
+            raise TypeError("service_args must be a sequence")
+        self._service_args = list(value)

@@ -19,33 +19,32 @@
 
 using System;
 
-namespace OpenQA.Selenium.Support.Events
+namespace OpenQA.Selenium.Support.Events;
+
+/// <summary>
+/// Provides data for events related to getting shadow root of the web element.
+/// </summary>
+public class GetShadowRootEventArgs : EventArgs
 {
     /// <summary>
-    /// Provides data for events related to getting shadow root of the web element.
+    /// Initializes a new instance of the <see cref="GetShadowRootEventArgs"/> class.
     /// </summary>
-    public class GetShadowRootEventArgs : EventArgs
+    /// <param name="driver">The WebDriver instance used in the current context.</param>
+    /// <param name="searchContext">The parent searc context used as the context for getting shadow root.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="searchContext"/> are <see langword="null"/>.</exception>
+    public GetShadowRootEventArgs(IWebDriver driver, ISearchContext searchContext)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetShadowRootEventArgs"/> class.
-        /// </summary>
-        /// <param name="driver">The WebDriver instance used in the current context.</param>
-        /// <param name="searchContext">The parent searc context used as the context for getting shadow root.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="searchContext"/> are <see langword="null"/>.</exception>
-        public GetShadowRootEventArgs(IWebDriver driver, ISearchContext searchContext)
-        {
-            this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
-            this.SearchContext = searchContext ?? throw new ArgumentNullException(nameof(searchContext));
-        }
-
-        /// <summary>
-        /// Gets the WebDriver instance used in the current context.
-        /// </summary>
-        public IWebDriver Driver { get; }
-
-        /// <summary>
-        /// Gets the parent search context used as the context for getting shadow root.
-        /// </summary>
-        public ISearchContext SearchContext { get; }
+        this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        this.SearchContext = searchContext ?? throw new ArgumentNullException(nameof(searchContext));
     }
+
+    /// <summary>
+    /// Gets the WebDriver instance used in the current context.
+    /// </summary>
+    public IWebDriver Driver { get; }
+
+    /// <summary>
+    /// Gets the parent search context used as the context for getting shadow root.
+    /// </summary>
+    public ISearchContext SearchContext { get; }
 }

@@ -14,13 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import List
-from typing import Mapping
+
+from collections.abc import Mapping, Sequence
 from typing import Optional
 
 from selenium.types import SubprocessStdAlias
-from selenium.webdriver.common import service
-from selenium.webdriver.common import utils
+from selenium.webdriver.common import service, utils
 
 
 class Service(service.Service):
@@ -29,7 +28,7 @@ class Service(service.Service):
 
     :param executable_path: install path of the geckodriver executable, defaults to `geckodriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
+    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
     :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     :param driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
@@ -37,15 +36,15 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: str = None,
+        executable_path: Optional[str] = None,
         port: int = 0,
-        service_args: Optional[List[str]] = None,
-        log_output: SubprocessStdAlias = None,
+        service_args: Optional[Sequence[str]] = None,
+        log_output: Optional[SubprocessStdAlias] = None,
         env: Optional[Mapping[str, str]] = None,
-        driver_path_env_key: str = None,
+        driver_path_env_key: Optional[str] = None,
         **kwargs,
     ) -> None:
-        self.service_args = service_args or []
+        self._service_args = list(service_args or [])
         driver_path_env_key = driver_path_env_key or "SE_GECKODRIVER"
 
         super().__init__(
@@ -58,9 +57,19 @@ class Service(service.Service):
         )
 
         # Set a port for CDP
-        if "--connect-existing" not in self.service_args:
-            self.service_args.append("--websocket-port")
-            self.service_args.append(f"{utils.free_port()}")
+        if "--connect-existing" not in self._service_args:
+            self._service_args.append("--websocket-port")
+            self._service_args.append(f"{utils.free_port()}")
 
-    def command_line_args(self) -> List[str]:
-        return ["--port", f"{self.port}"] + self.service_args
+    def command_line_args(self) -> list[str]:
+        return ["--port", f"{self.port}"] + self._service_args
+
+    @property
+    def service_args(self) -> Sequence[str]:
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value: Sequence[str]):
+        if isinstance(value, str) or not isinstance(value, Sequence):
+            raise TypeError("service_args must be a sequence")
+        self._service_args = list(value)

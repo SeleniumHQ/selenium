@@ -18,8 +18,8 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication.Json.Internal;
-using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
-using OpenQA.Selenium.BiDi.Modules.Script;
+using OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.BiDi.Script;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;

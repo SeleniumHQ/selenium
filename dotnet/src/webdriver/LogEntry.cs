@@ -21,82 +21,81 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Represents an entry in a log from a driver instance.
+/// </summary>
+public class LogEntry
 {
+
     /// <summary>
-    /// Represents an entry in a log from a driver instance.
+    /// Initializes a new instance of the <see cref="LogEntry"/> class.
     /// </summary>
-    public class LogEntry
+    private LogEntry()
     {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LogEntry"/> class.
-        /// </summary>
-        private LogEntry()
+    /// <summary>
+    /// Gets the timestamp value of the log entry.
+    /// </summary>
+    public DateTime Timestamp { get; private set; } = DateTime.MinValue;
+
+    /// <summary>
+    /// Gets the logging level of the log entry.
+    /// </summary>
+    public LogLevel Level { get; private set; } = LogLevel.All;
+
+    /// <summary>
+    /// Gets the message of the log entry.
+    /// </summary>
+    public string Message { get; private set; } = string.Empty;
+
+    private static readonly DateTime UnixEpoch = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+    /// <summary>
+    /// Returns a string that represents the current <see cref="LogEntry"/>.
+    /// </summary>
+    /// <returns>A string that represents the current <see cref="LogEntry"/>.</returns>
+    public override string ToString()
+    {
+        return string.Format(CultureInfo.InvariantCulture, "[{0:yyyy-MM-ddTHH:mm:ssZ}] [{1}] {2}", this.Timestamp, this.Level, this.Message);
+    }
+
+    /// <summary>
+    /// Creates a <see cref="LogEntry"/> from a dictionary as deserialized from JSON.
+    /// </summary>
+    /// <param name="entryDictionary">The <see cref="Dictionary{TKey, TValue}"/> from
+    /// which to create the <see cref="LogEntry"/>.</param>
+    /// <returns>A <see cref="LogEntry"/> with the values in the dictionary.</returns>
+    internal static LogEntry FromDictionary(Dictionary<string, object?> entryDictionary)
+    {
+        LogEntry entry = new LogEntry();
+        if (entryDictionary.TryGetValue("message", out object? message))
         {
+            entry.Message = message?.ToString() ?? string.Empty;
         }
 
-        /// <summary>
-        /// Gets the timestamp value of the log entry.
-        /// </summary>
-        public DateTime Timestamp { get; private set; } = DateTime.MinValue;
-
-        /// <summary>
-        /// Gets the logging level of the log entry.
-        /// </summary>
-        public LogLevel Level { get; private set; } = LogLevel.All;
-
-        /// <summary>
-        /// Gets the message of the log entry.
-        /// </summary>
-        public string Message { get; private set; } = string.Empty;
-
-        private static readonly DateTime UnixEpoch = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        /// <summary>
-        /// Returns a string that represents the current <see cref="LogEntry"/>.
-        /// </summary>
-        /// <returns>A string that represents the current <see cref="LogEntry"/>.</returns>
-        public override string ToString()
+        if (entryDictionary.TryGetValue("timestamp", out object? timestamp))
         {
-            return string.Format(CultureInfo.InvariantCulture, "[{0:yyyy-MM-ddTHH:mm:ssZ}] [{1}] {2}", this.Timestamp, this.Level, this.Message);
+            double timestampValue = Convert.ToDouble(timestamp, CultureInfo.InvariantCulture);
+            entry.Timestamp = UnixEpoch.AddMilliseconds(timestampValue);
         }
 
-        /// <summary>
-        /// Creates a <see cref="LogEntry"/> from a dictionary as deserialized from JSON.
-        /// </summary>
-        /// <param name="entryDictionary">The <see cref="Dictionary{TKey, TValue}"/> from
-        /// which to create the <see cref="LogEntry"/>.</param>
-        /// <returns>A <see cref="LogEntry"/> with the values in the dictionary.</returns>
-        internal static LogEntry FromDictionary(Dictionary<string, object?> entryDictionary)
+        if (entryDictionary.TryGetValue("level", out object? level))
         {
-            LogEntry entry = new LogEntry();
-            if (entryDictionary.TryGetValue("message", out object? message))
+            if (Enum.TryParse(level?.ToString(), ignoreCase: true, out LogLevel result))
             {
-                entry.Message = message?.ToString() ?? string.Empty;
+                entry.Level = result;
             }
-
-            if (entryDictionary.TryGetValue("timestamp", out object? timestamp))
+            else
             {
-                double timestampValue = Convert.ToDouble(timestamp, CultureInfo.InvariantCulture);
-                entry.Timestamp = UnixEpoch.AddMilliseconds(timestampValue);
+                // If the requested log level string is not a valid log level,
+                // ignore it and use LogLevel.All.
+                entry.Level = LogLevel.All;
             }
-
-            if (entryDictionary.TryGetValue("level", out object? level))
-            {
-                if (Enum.TryParse(level?.ToString(), ignoreCase: true, out LogLevel result))
-                {
-                    entry.Level = result;
-                }
-                else
-                {
-                    // If the requested log level string is not a valid log level,
-                    // ignore it and use LogLevel.All.
-                    entry.Level = LogLevel.All;
-                }
-            }
-
-            return entry;
         }
+
+        return entry;
     }
 }

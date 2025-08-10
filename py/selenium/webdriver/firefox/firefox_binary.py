@@ -19,9 +19,7 @@
 import os
 import time
 from platform import system
-from subprocess import DEVNULL
-from subprocess import STDOUT
-from subprocess import Popen
+from subprocess import DEVNULL, STDOUT, Popen
 
 from typing_extensions import deprecated
 
@@ -124,12 +122,9 @@ class FirefoxBinary:
 
     def _find_exe_in_registry(self):
         try:
-            from _winreg import HKEY_CURRENT_USER
-            from _winreg import HKEY_LOCAL_MACHINE
-            from _winreg import OpenKey
-            from _winreg import QueryValue
+            from _winreg import HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, OpenKey, QueryValue
         except ImportError:
-            from winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
+            from winreg import HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, OpenKey, QueryValue
         import shlex
 
         keys = (

@@ -96,9 +96,9 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v134:v134.publish
-  //java/src/org/openqa/selenium/devtools/v135:v135.publish
-  //java/src/org/openqa/selenium/devtools/v133:v133.publish
+  //java/src/org/openqa/selenium/devtools/v137:v137.publish
+  //java/src/org/openqa/selenium/devtools/v138:v138.publish
+  //java/src/org/openqa/selenium/devtools/v136:v136.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
@@ -510,7 +510,9 @@ namespace :node do
 
   desc 'Generate Node documentation'
   task :docs do |_task, arguments|
-    abort('Aborting documentation update: nightly versions should not update docs.') if node_version.include?('nightly')
+    if node_version.include?('nightly') && !arguments.to_a.include?('force')
+      abort('Aborting documentation update: nightly versions should not update docs.')
+    end
 
     puts 'Generating Node documentation'
     FileUtils.rm_rf('build/docs/api/javascript/')
@@ -608,7 +610,7 @@ namespace :py do
 
   desc 'Generate Python documentation'
   task :docs do |_task, arguments|
-    if python_version.match?(/^\d+\.\d+\.\d+\.\d+$/)
+    if python_version.match?(/^\d+\.\d+\.\d+\.\d+$/) && !arguments.to_a.include?('force')
       abort('Aborting documentation update: nightly versions should not update docs.')
     end
     puts 'Generating Python documentation'
@@ -665,11 +667,6 @@ namespace :py do
     text = File.read(conf).gsub(old_short_version, new_short_version)
     File.open(conf, 'w') { |f| f.puts text }
     @git.add(conf)
-  end
-
-  desc 'Update Python Syntax'
-  task :lint do
-    sh 'tox -c py/tox.ini -e linting'
   end
 
   namespace :test do
@@ -776,7 +773,9 @@ namespace :rb do
 
   desc 'Generate Ruby documentation'
   task :docs do |_task, arguments|
-    abort('Aborting documentation update: nightly versions should not update docs.') if ruby_version.include?('nightly')
+    if ruby_version.include?('nightly') && !arguments.to_a.include?('force')
+      abort('Aborting documentation update: nightly versions should not update docs.')
+    end
     puts 'Generating Ruby documentation'
 
     FileUtils.rm_rf('build/docs/api/rb/')
@@ -872,7 +871,7 @@ namespace :dotnet do
 
   desc 'Generate .NET documentation'
   task :docs do |_task, arguments|
-    if dotnet_version.include?('nightly')
+    if dotnet_version.include?('nightly') && !arguments.to_a.include?('force')
       abort('Aborting documentation update: nightly versions should not update docs.')
     end
 
@@ -964,9 +963,9 @@ namespace :java do
     ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
     ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
     read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
-
-    repo = nightly ? 'content/repositories/snapshots' : 'service/local/staging/deploy/maven2'
-    ENV['MAVEN_REPO'] = "https://oss.sonatype.org/#{repo}"
+    repo_domain = 'central.sonatype.com'
+    repo = nightly ? "#{repo_domain}/repository/maven-snapshots" : "ossrh-staging-api.#{repo_domain}/service/local/staging/deploy/maven2/"
+    ENV['MAVEN_REPO'] = "https://#{repo}"
     ENV['GPG_SIGN'] = (!nightly).to_s
 
     if nightly
@@ -987,7 +986,7 @@ namespace :java do
 
   desc 'Generate Java documentation'
   task :docs do |_task, arguments|
-    if java_version.include?('SNAPSHOT')
+    if java_version.include?('SNAPSHOT') && !arguments.to_a.include?('force')
       abort('Aborting documentation update: snapshot versions should not update docs.')
     end
 
@@ -1106,7 +1105,7 @@ namespace :all do
 
     ['common/devtools/',
      'dotnet/src/webdriver/DevTools/',
-     'dotnet/src/webdriver/WebDriver.csproj',
+     'dotnet/src/webdriver/Selenium.WebDriver.csproj',
      'dotnet/test/common/DevTools/',
      'dotnet/test/common/CustomDriverConfigs/',
      'dotnet/selenium-dotnet-version.bzl',
@@ -1161,7 +1160,6 @@ namespace :all do
   task :lint do
     ext = /mswin|msys|mingw|cygwin|bccwin|wince|emc/.match?(RbConfig::CONFIG['host_os']) ? 'ps1' : 'sh'
     sh "./scripts/format.#{ext}", verbose: true
-    Rake::Task['py:lint'].invoke
   end
 
   # Example: `./go all:prepare 4.31.0 early-stable`

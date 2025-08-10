@@ -35,13 +35,14 @@ body:
       label: Debugging Logs
       placeholder: |
         Note: the stack trace should be in the explanation section above
-        Instructions for enabling logging can be found in the link below
+        Instructions for enabling and referencing logs can be found in the links below
       render: logs
   - type: markdown
     id: link
     attributes:
       value: |
         **Read our [logging documentation](https://www.selenium.dev/documentation/webdriver/troubleshooting/logging/)**
+        **Link to a [gist](https://gist.github.com/) if logs are too long**
         &nbsp;
 
         ## Help us Address Your Issue Faster!
@@ -49,7 +50,7 @@ body:
     id: selenium-version
     attributes:
       label: What version of Selenium are you currently using?
-      description: Important! The latest released version of Selenium is 4.31 and we can't fix old versions.
+      description: Important! The latest released version of Selenium is 4.34 and we can't fix old versions.
       placeholder: e.g., 4.17.0
     validations:
       required: true

@@ -63,7 +63,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void canGetCookieByName() {
     String key = generateUniqueKey();
     String value = "set";
@@ -124,7 +123,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void canGetCookieInAUserContext() {
     Browser browser = new Browser(driver);
     String userContext = browser.createUserContext();
@@ -177,7 +175,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void canAddCookie() {
     String key = generateUniqueKey();
     String value = "foo";
@@ -260,8 +257,8 @@ class StorageCommandsTest extends JupiterTestBase {
     assertThat(key.getUserContext()).isEqualTo("default");
   }
 
-  @Test
   @NotYetImplemented(EDGE)
+  @Test
   public void canGetAllCookies() {
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
@@ -289,7 +286,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void canDeleteAllCookies() {
     addCookieOnServerSide(new Cookie("foo", "set"));
     assertSomeCookiesArePresent();
@@ -303,7 +299,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void canDeleteCookieWithName() {
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
@@ -325,7 +320,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void testAddCookiesWithDifferentPathsThatAreRelatedToOurs() {
     driver.get(appServer.whereIs("/common/animals"));
 

@@ -19,45 +19,44 @@
 
 using System;
 
-namespace OpenQA.Selenium.Support.UI
+namespace OpenQA.Selenium.Support.UI;
+
+/// <summary>
+/// Provides the ability to wait for an arbitrary condition during test execution.
+/// </summary>
+/// <example>
+/// <code>
+/// IWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3))
+/// IWebElement element = wait.Until(driver => driver.FindElement(By.Name("q")));
+/// </code>
+/// </example>
+public class WebDriverWait : DefaultWait<IWebDriver>
 {
     /// <summary>
-    /// Provides the ability to wait for an arbitrary condition during test execution.
+    /// Initializes a new instance of the <see cref="WebDriverWait"/> class.
     /// </summary>
-    /// <example>
-    /// <code>
-    /// IWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3))
-    /// IWebElement element = wait.Until(driver => driver.FindElement(By.Name("q")));
-    /// </code>
-    /// </example>
-    public class WebDriverWait : DefaultWait<IWebDriver>
+    /// <param name="driver">The WebDriver instance used to wait.</param>
+    /// <param name="timeout">The timeout value indicating how long to wait for the condition.</param>
+    public WebDriverWait(IWebDriver driver, TimeSpan timeout)
+        : this(SystemClock.Instance, driver, timeout, DefaultSleepTimeout)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WebDriverWait"/> class.
-        /// </summary>
-        /// <param name="driver">The WebDriver instance used to wait.</param>
-        /// <param name="timeout">The timeout value indicating how long to wait for the condition.</param>
-        public WebDriverWait(IWebDriver driver, TimeSpan timeout)
-            : this(SystemClock.Instance, driver, timeout, DefaultSleepTimeout)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WebDriverWait"/> class.
-        /// </summary>
-        /// <param name="clock">An object implementing the <see cref="IClock"/> interface used to determine when time has passed.</param>
-        /// <param name="driver">The WebDriver instance used to wait.</param>
-        /// <param name="timeout">The timeout value indicating how long to wait for the condition.</param>
-        /// <param name="sleepInterval">A <see cref="TimeSpan"/> value indicating how often to check for the condition to be true.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="clock"/> or <paramref name="driver"/> are <see langword="null"/>.</exception>
-        public WebDriverWait(IClock clock, IWebDriver driver, TimeSpan timeout, TimeSpan sleepInterval)
-            : base(driver, clock)
-        {
-            this.Timeout = timeout;
-            this.PollingInterval = sleepInterval;
-            this.IgnoreExceptionTypes(typeof(NotFoundException));
-        }
-
-        private static TimeSpan DefaultSleepTimeout => TimeSpan.FromMilliseconds(500);
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebDriverWait"/> class.
+    /// </summary>
+    /// <param name="clock">An object implementing the <see cref="IClock"/> interface used to determine when time has passed.</param>
+    /// <param name="driver">The WebDriver instance used to wait.</param>
+    /// <param name="timeout">The timeout value indicating how long to wait for the condition.</param>
+    /// <param name="sleepInterval">A <see cref="TimeSpan"/> value indicating how often to check for the condition to be true.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="clock"/> or <paramref name="driver"/> are <see langword="null"/>.</exception>
+    public WebDriverWait(IClock clock, IWebDriver driver, TimeSpan timeout, TimeSpan sleepInterval)
+        : base(driver, clock)
+    {
+        this.Timeout = timeout;
+        this.PollingInterval = sleepInterval;
+        this.IgnoreExceptionTypes(typeof(NotFoundException));
+    }
+
+    private static TimeSpan DefaultSleepTimeout => TimeSpan.FromMilliseconds(500);
 }

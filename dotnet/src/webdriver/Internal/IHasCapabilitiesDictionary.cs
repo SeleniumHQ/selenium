@@ -19,16 +19,15 @@
 
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium.Internal
+namespace OpenQA.Selenium.Internal;
+
+/// <summary>
+/// Defines the interface through which the user can access the driver used to find an element.
+/// </summary>
+internal interface IHasCapabilitiesDictionary
 {
     /// <summary>
-    /// Defines the interface through which the user can access the driver used to find an element.
+    /// Gets the underlying IDictionary for a given set of capabilities.
     /// </summary>
-    internal interface IHasCapabilitiesDictionary
-    {
-        /// <summary>
-        /// Gets the underlying IDictionary for a given set of capabilities.
-        /// </summary>
-        IDictionary<string, object> CapabilitiesDictionary { get; }
-    }
+    IDictionary<string, object> CapabilitiesDictionary { get; }
 }

@@ -56,7 +56,7 @@ nuget_pack(
     libs = {
         ":support": "WebDriver.Support",
     },
-    nuspec_template = "WebDriver.Support.nuspec",
+    nuspec_template = "Selenium.WebDriver.Support.nuspec",
     tags = [
         "block-network",
     ],
@@ -73,7 +73,7 @@ csharp_library(
         "UI/*.cs",
     ]) + [":assembly-info"],
     out = "WebDriver.Support.StrongNamed",
-    keyfile = "//dotnet:WebDriver.snk",
+    keyfile = "//dotnet:Selenium.snk",
     langversion = "12.0",
     nullable = "enable",
     target_frameworks = [
@@ -96,7 +96,7 @@ nuget_pack(
     libs = {
         ":support-strongnamed": "WebDriver.Support.StrongNamed",
     },
-    nuspec_template = "WebDriver.Support.StrongNamed.nuspec",
+    nuspec_template = "Selenium.WebDriver.Support.StrongNamed.nuspec",
     tags = [
         "block-network",
     ],

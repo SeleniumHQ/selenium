@@ -21,117 +21,116 @@ using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+[TestFixture]
+public class ContentEditableTest : DriverTestFixture
 {
-    [TestFixture]
-    public class ContentEditableTest : DriverTestFixture
+    [TearDown]
+    public void SwitchToDefaultContent()
     {
-        [TearDown]
-        public void SwitchToDefaultContent()
-        {
-            driver.SwitchTo().DefaultContent();
-        }
+        driver.SwitchTo().DefaultContent();
+    }
 
-        [Test]
-        [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
-        public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
-        {
-            driver.Url = richTextPage;
+    [Test]
+    [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
+    public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
+    {
+        driver.Url = richTextPage;
 
-            driver.SwitchTo().Frame("editFrame");
-            IWebElement element = driver.SwitchTo().ActiveElement();
-            element.SendKeys("Fishy");
+        driver.SwitchTo().Frame("editFrame");
+        IWebElement element = driver.SwitchTo().ActiveElement();
+        element.SendKeys("Fishy");
 
-            driver.SwitchTo().DefaultContent();
-            IWebElement trusted = driver.FindElement(By.Id("istrusted"));
-            IWebElement id = driver.FindElement(By.Id("tagId"));
+        driver.SwitchTo().DefaultContent();
+        IWebElement trusted = driver.FindElement(By.Id("istrusted"));
+        IWebElement id = driver.FindElement(By.Id("tagId"));
 
-            // Chrome does not set a trusted flag.
-            Assert.That(trusted.Text, Is.AnyOf("[true]", "[n/a]", "[]"));
-            Assert.That(id.Text, Is.AnyOf("[frameHtml]", "[theBody]"));
-        }
+        // Chrome does not set a trusted flag.
+        Assert.That(trusted.Text, Is.AnyOf("[true]", "[n/a]", "[]"));
+        Assert.That(id.Text, Is.AnyOf("[frameHtml]", "[theBody]"));
+    }
 
-        [Test]
-        [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
-        [IgnoreBrowser(Browser.Safari, "Non-printable characters do not navigate within element")]
-        public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
-        {
-            driver.Url = richTextPage;
+    [Test]
+    [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
+    [IgnoreBrowser(Browser.Safari, "Non-printable characters do not navigate within element")]
+    public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
+    {
+        driver.Url = richTextPage;
 
-            driver.SwitchTo().Frame("editFrame");
-            IWebElement element = driver.SwitchTo().ActiveElement();
-            element.SendKeys("Dishy" + Keys.Backspace + Keys.Left + Keys.Left);
-            element.SendKeys(Keys.Left + Keys.Left + "F" + Keys.Delete + Keys.End + "ee!");
+        driver.SwitchTo().Frame("editFrame");
+        IWebElement element = driver.SwitchTo().ActiveElement();
+        element.SendKeys("Dishy" + Keys.Backspace + Keys.Left + Keys.Left);
+        element.SendKeys(Keys.Left + Keys.Left + "F" + Keys.Delete + Keys.End + "ee!");
 
-            Assert.That(element.Text, Is.EqualTo("Fishee!"));
-        }
+        Assert.That(element.Text, Is.EqualTo("Fishee!"));
+    }
 
-        [Test]
-        public void ShouldBeAbleToTypeIntoEmptyContentEditableElement()
-        {
-            driver.Url = readOnlyPage;
-            IWebElement editable = driver.FindElement(By.Id("content-editable-blank"));
+    [Test]
+    public void ShouldBeAbleToTypeIntoEmptyContentEditableElement()
+    {
+        driver.Url = readOnlyPage;
+        IWebElement editable = driver.FindElement(By.Id("content-editable-blank"));
 
-            editable.SendKeys("cheese");
+        editable.SendKeys("cheese");
 
-            Assert.That(editable.Text, Is.EqualTo("cheese"));
-        }
+        Assert.That(editable.Text, Is.EqualTo("cheese"));
+    }
 
-        [Test]
-        [IgnoreBrowser(Browser.Firefox, "Driver prepends text in contentEditable areas")]
-        [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
-        public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
-        {
-            driver.Url = readOnlyPage;
-            IWebElement editable = driver.FindElement(By.Id("content-editable"));
+    [Test]
+    [IgnoreBrowser(Browser.Firefox, "Driver prepends text in contentEditable areas")]
+    [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
+    public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
+    {
+        driver.Url = readOnlyPage;
+        IWebElement editable = driver.FindElement(By.Id("content-editable"));
 
-            String initialText = editable.Text;
-            editable.SendKeys(", edited");
+        String initialText = editable.Text;
+        editable.SendKeys(", edited");
 
-            Assert.That(editable.Text, Is.EqualTo(initialText + ", edited"));
-        }
+        Assert.That(editable.Text, Is.EqualTo(initialText + ", edited"));
+    }
 
-        [Test]
-        public void ShouldBeAbleToTypeIntoTinyMCE()
-        {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
-            driver.SwitchTo().Frame("mce_0_ifr");
+    [Test]
+    public void ShouldBeAbleToTypeIntoTinyMCE()
+    {
+        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
+        driver.SwitchTo().Frame("mce_0_ifr");
 
-            IWebElement editable = driver.FindElement(By.Id("tinymce"));
+        IWebElement editable = driver.FindElement(By.Id("tinymce"));
 
-            editable.Clear();
-            editable.SendKeys("cheese"); // requires focus on OS X
+        editable.Clear();
+        editable.SendKeys("cheese"); // requires focus on OS X
 
-            Assert.That(editable.Text, Is.EqualTo("cheese"));
-        }
+        Assert.That(editable.Text, Is.EqualTo("cheese"));
+    }
 
-        [Test]
-        [IgnoreBrowser(Browser.Firefox, "Driver prepends text in contentEditable areas")]
-        [IgnoreBrowser(Browser.IE, "Prepends text")]
-        [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
-        public void ShouldAppendToTinyMCE()
-        {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
-            driver.SwitchTo().Frame("mce_0_ifr");
+    [Test]
+    [IgnoreBrowser(Browser.Firefox, "Driver prepends text in contentEditable areas")]
+    [IgnoreBrowser(Browser.IE, "Prepends text")]
+    [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
+    public void ShouldAppendToTinyMCE()
+    {
+        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
+        driver.SwitchTo().Frame("mce_0_ifr");
 
-            IWebElement editable = driver.FindElement(By.Id("tinymce"));
+        IWebElement editable = driver.FindElement(By.Id("tinymce"));
 
-            editable.SendKeys(" and cheese"); // requires focus on OS X
-            WaitFor(() => editable.Text != "Initial content", "Text remained the original text");
+        editable.SendKeys(" and cheese"); // requires focus on OS X
+        WaitFor(() => editable.Text != "Initial content", "Text remained the original text");
 
-            Assert.That(editable.Text, Is.EqualTo("Initial content and cheese"));
-        }
+        Assert.That(editable.Text, Is.EqualTo("Initial content and cheese"));
+    }
 
-        [Test]
-        [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
-        [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
-        public void AppendsTextToEndOfContentEditableWithMultipleTextNodes()
-        {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("content-editable.html");
-            IWebElement input = driver.FindElement(By.Id("editable"));
-            input.SendKeys(", world!");
-            WaitFor(() => input.Text != "Why hello", "Text remained the original text");
-            Assert.That(input.Text, Is.EqualTo("Why hello, world!"));
-        }
+    [Test]
+    [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
+    [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
+    public void AppendsTextToEndOfContentEditableWithMultipleTextNodes()
+    {
+        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("content-editable.html");
+        IWebElement input = driver.FindElement(By.Id("editable"));
+        input.SendKeys(", world!");
+        WaitFor(() => input.Text != "Why hello", "Text remained the original text");
+        Assert.That(input.Text, Is.EqualTo("Why hello, world!"));
     }
 }

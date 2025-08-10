@@ -78,7 +78,7 @@ def test_install_uninstall_unsigned_addon_zip(driver, pages):
 def test_install_uninstall_signed_addon_dir(driver, pages):
     zip = os.path.join(extensions, "webextensions-selenium-example.zip")
 
-    target = os.path.join(extensions, "webextensions-selenium-example")
+    target = os.path.join(extensions, "webextensions-selenium-example-unzip")
     with zipfile.ZipFile(zip, "r") as zip_ref:
         zip_ref.extractall(target)
 
@@ -98,7 +98,7 @@ def test_install_uninstall_signed_addon_dir(driver, pages):
 
 def test_install_uninstall_unsigned_addon_dir(driver, pages):
     zip = os.path.join(extensions, "webextensions-selenium-example-unsigned.zip")
-    target = os.path.join(extensions, "webextensions-selenium-example-unsigned")
+    target = os.path.join(extensions, "webextensions-selenium-example-unsigned-unzip")
     with zipfile.ZipFile(zip, "r") as zip_ref:
         zip_ref.extractall(target)
 

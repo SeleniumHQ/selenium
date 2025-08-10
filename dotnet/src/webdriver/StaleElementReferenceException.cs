@@ -19,58 +19,57 @@
 
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// The exception that is thrown when a reference to an element is no longer valid.
+/// </summary>
+[Serializable]
+public class StaleElementReferenceException : WebDriverException
 {
     /// <summary>
-    /// The exception that is thrown when a reference to an element is no longer valid.
+    /// Link to the documentation for this error
     /// </summary>
-    [Serializable]
-    public class StaleElementReferenceException : WebDriverException
+    private static string supportUrl = baseSupportUrl + "#stale-element-reference-exception";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StaleElementReferenceException"/> class.
+    /// </summary>
+    public StaleElementReferenceException()
+        : base(GetMessage(""))
     {
-        /// <summary>
-        /// Link to the documentation for this error
-        /// </summary>
-        private static string supportUrl = baseSupportUrl + "#stale-element-reference-exception";
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StaleElementReferenceException"/> class.
-        /// </summary>
-        public StaleElementReferenceException()
-            : base(GetMessage(""))
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StaleElementReferenceException"/> class with
+    /// a specified error message.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    public StaleElementReferenceException(string? message)
+        : base(GetMessage(message))
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StaleElementReferenceException"/> class with
-        /// a specified error message.
-        /// </summary>
-        /// <param name="message">The message that describes the error.</param>
-        public StaleElementReferenceException(string? message)
-            : base(GetMessage(message))
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StaleElementReferenceException"/> class with
+    /// a specified error message and a reference to the inner exception that is the
+    /// cause of this exception.
+    /// </summary>
+    /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception,
+    /// or <see langword="null"/> if no inner exception is specified.</param>
+    public StaleElementReferenceException(string? message, Exception? innerException)
+        : base(GetMessage(message), innerException)
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StaleElementReferenceException"/> class with
-        /// a specified error message and a reference to the inner exception that is the
-        /// cause of this exception.
-        /// </summary>
-        /// <param name="message">The error message that explains the reason for the exception.</param>
-        /// <param name="innerException">The exception that is the cause of the current exception,
-        /// or <see langword="null"/> if no inner exception is specified.</param>
-        public StaleElementReferenceException(string? message, Exception? innerException)
-            : base(GetMessage(message), innerException)
-        {
-        }
-
-        /// <summary>
-        /// Add information about obtaining additional support from documentation to this exception.
-        /// </summary>
-        /// <param name="message">The original message for exception</param>
-        /// <returns>The final message for exception</returns>
-        protected static string GetMessage(string? message)
-        {
-            return $"{message}; {supportMsg}{supportUrl}";
-        }
+    /// <summary>
+    /// Add information about obtaining additional support from documentation to this exception.
+    /// </summary>
+    /// <param name="message">The original message for exception</param>
+    /// <returns>The final message for exception</returns>
+    protected static string GetMessage(string? message)
+    {
+        return $"{message}; {supportMsg}{supportUrl}";
     }
 }

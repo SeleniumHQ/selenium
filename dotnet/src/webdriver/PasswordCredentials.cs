@@ -17,40 +17,39 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// A credentials provider that uses a user name and password for authentication.
+/// </summary>
+public class PasswordCredentials : ICredentials
 {
     /// <summary>
-    /// A credentials provider that uses a user name and password for authentication.
+    /// Initializes a new instance of the <see cref="PasswordCredentials"/> class.
     /// </summary>
-    public class PasswordCredentials : ICredentials
+    public PasswordCredentials()
+        : this(null, null)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PasswordCredentials"/> class.
-        /// </summary>
-        public PasswordCredentials()
-            : this(null, null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PasswordCredentials"/> class with the specified user name and password.
-        /// </summary>
-        /// <param name="userName">The user name for the credentials.</param>
-        /// <param name="password">The password for the credentials.</param>
-        public PasswordCredentials(string? userName, string? password)
-        {
-            UserName = userName;
-            Password = password;
-        }
-
-        /// <summary>
-        /// Gets the user name.
-        /// </summary>
-        public string? UserName { get; }
-
-        /// <summary>
-        /// Gets the password.
-        /// </summary>
-        public string? Password { get; }
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PasswordCredentials"/> class with the specified user name and password.
+    /// </summary>
+    /// <param name="userName">The user name for the credentials.</param>
+    /// <param name="password">The password for the credentials.</param>
+    public PasswordCredentials(string? userName, string? password)
+    {
+        UserName = userName;
+        Password = password;
+    }
+
+    /// <summary>
+    /// Gets the user name.
+    /// </summary>
+    public string? UserName { get; }
+
+    /// <summary>
+    /// Gets the password.
+    /// </summary>
+    public string? Password { get; }
 }

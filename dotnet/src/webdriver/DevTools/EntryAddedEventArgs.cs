@@ -19,26 +19,25 @@
 
 using System;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Provides data for events relating to entries being added to the browser's log.
+/// </summary>
+public class EntryAddedEventArgs : EventArgs
 {
     /// <summary>
-    /// Provides data for events relating to entries being added to the browser's log.
+    /// Initializes a new instance of the <see cref="EntryAddedEventArgs"/> type.
     /// </summary>
-    public class EntryAddedEventArgs : EventArgs
+    /// <param name="entry">The entry added to the browser's log.</param>
+    /// <exception cref="ArgumentNullException">If </exception>
+    public EntryAddedEventArgs(LogEntry entry)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EntryAddedEventArgs"/> type.
-        /// </summary>
-        /// <param name="entry">The entry added to the browser's log.</param>
-        /// <exception cref="ArgumentNullException">If </exception>
-        public EntryAddedEventArgs(LogEntry entry)
-        {
-            Entry = entry ?? throw new ArgumentNullException(nameof(entry));
-        }
-
-        /// <summary>
-        /// The entry added to the browser's log.
-        /// </summary>
-        public LogEntry Entry { get; }
+        Entry = entry ?? throw new ArgumentNullException(nameof(entry));
     }
+
+    /// <summary>
+    /// The entry added to the browser's log.
+    /// </summary>
+    public LogEntry Entry { get; }
 }

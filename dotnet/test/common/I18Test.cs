@@ -20,85 +20,84 @@
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+[TestFixture]
+public class I18Test : DriverTestFixture
 {
-    [TestFixture]
-    public class I18Test : DriverTestFixture
+    // The Hebrew word shalom (peace) encoded in order Shin (sh) Lamed (L) Vav (O) final-Mem (M).
+    private string shalom = "\u05E9\u05DC\u05D5\u05DD";
+
+    // The Hebrew word tmunot (images) encoded in order Taf (t) Mem (m) Vav (u) Nun (n) Vav (o) Taf (t).
+    private string tmunot = "\u05EA\u05DE\u05D5\u05E0\u05D5\u05EA";
+
+    // This is the Chinese link text
+    private string linkText = "\u4E2D\u56FD\u4E4B\u58F0";
+
+    [Test]
+    public void ShouldBeAbleToReadChinese()
     {
-        // The Hebrew word shalom (peace) encoded in order Shin (sh) Lamed (L) Vav (O) final-Mem (M).
-        private string shalom = "\u05E9\u05DC\u05D5\u05DD";
+        driver.Url = chinesePage;
+        driver.FindElement(By.LinkText(linkText)).Click();
+    }
 
-        // The Hebrew word tmunot (images) encoded in order Taf (t) Mem (m) Vav (u) Nun (n) Vav (o) Taf (t).
-        private string tmunot = "\u05EA\u05DE\u05D5\u05E0\u05D5\u05EA";
+    [Test]
+    public void ShouldBeAbleToEnterHebrewTextFromLeftToRight()
+    {
+        driver.Url = chinesePage;
+        IWebElement input = driver.FindElement(By.Name("i18n"));
 
-        // This is the Chinese link text
-        private string linkText = "\u4E2D\u56FD\u4E4B\u58F0";
+        input.SendKeys(shalom);
 
-        [Test]
-        public void ShouldBeAbleToReadChinese()
+        Assert.That(input.GetAttribute("value"), Is.EqualTo(shalom));
+    }
+
+    [Test]
+    public void ShouldBeAbleToEnterHebrewTextFromRightToLeft()
+    {
+        driver.Url = chinesePage;
+        IWebElement input = driver.FindElement(By.Name("i18n"));
+
+        input.SendKeys(tmunot);
+
+        Assert.That(input.GetAttribute("value"), Is.EqualTo(tmunot));
+    }
+
+    [Test]
+    [IgnoreBrowser(Browser.Chrome, "ChromeDriver only supports characters in the BMP")]
+    [IgnoreBrowser(Browser.Edge, "EdgeDriver only supports characters in the BMP")]
+    public void ShouldBeAbleToEnterSupplementaryCharacters()
+    {
+        if (TestUtilities.IsOldIE(driver))
         {
-            driver.Url = chinesePage;
-            driver.FindElement(By.LinkText(linkText)).Click();
+            // IE: versions less thank 10 have issue 5069
+            return;
         }
 
-        [Test]
-        public void ShouldBeAbleToEnterHebrewTextFromLeftToRight()
-        {
-            driver.Url = chinesePage;
-            IWebElement input = driver.FindElement(By.Name("i18n"));
+        driver.Url = chinesePage;
 
-            input.SendKeys(shalom);
+        string input = string.Empty;
+        input += char.ConvertFromUtf32(0x20000);
+        input += char.ConvertFromUtf32(0x2070E);
+        input += char.ConvertFromUtf32(0x2000B);
+        input += char.ConvertFromUtf32(0x2A190);
+        input += char.ConvertFromUtf32(0x2A6B2);
 
-            Assert.That(input.GetAttribute("value"), Is.EqualTo(shalom));
-        }
+        IWebElement el = driver.FindElement(By.Name("i18n"));
+        el.SendKeys(input);
 
-        [Test]
-        public void ShouldBeAbleToEnterHebrewTextFromRightToLeft()
-        {
-            driver.Url = chinesePage;
-            IWebElement input = driver.FindElement(By.Name("i18n"));
+        Assert.That(el.GetAttribute("value"), Is.EqualTo(input));
+    }
 
-            input.SendKeys(tmunot);
+    [Test]
+    [NeedsFreshDriver(IsCreatedBeforeTest = true)]
+    public void ShouldBeAbleToReturnTheTextInAPage()
+    {
+        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("encoding");
+        driver.Url = url;
 
-            Assert.That(input.GetAttribute("value"), Is.EqualTo(tmunot));
-        }
+        string text = driver.FindElement(By.TagName("body")).Text;
 
-        [Test]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver only supports characters in the BMP")]
-        [IgnoreBrowser(Browser.Edge, "EdgeDriver only supports characters in the BMP")]
-        public void ShouldBeAbleToEnterSupplementaryCharacters()
-        {
-            if (TestUtilities.IsOldIE(driver))
-            {
-                // IE: versions less thank 10 have issue 5069
-                return;
-            }
-
-            driver.Url = chinesePage;
-
-            string input = string.Empty;
-            input += char.ConvertFromUtf32(0x20000);
-            input += char.ConvertFromUtf32(0x2070E);
-            input += char.ConvertFromUtf32(0x2000B);
-            input += char.ConvertFromUtf32(0x2A190);
-            input += char.ConvertFromUtf32(0x2A6B2);
-
-            IWebElement el = driver.FindElement(By.Name("i18n"));
-            el.SendKeys(input);
-
-            Assert.That(el.GetAttribute("value"), Is.EqualTo(input));
-        }
-
-        [Test]
-        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
-        public void ShouldBeAbleToReturnTheTextInAPage()
-        {
-            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("encoding");
-            driver.Url = url;
-
-            string text = driver.FindElement(By.TagName("body")).Text;
-
-            Assert.That(text, Is.EqualTo(shalom));
-        }
+        Assert.That(text, Is.EqualTo(shalom));
     }
 }

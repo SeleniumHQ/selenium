@@ -19,88 +19,87 @@
 
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Provides a way to store errors from a response
+/// </summary>
+public class ErrorResponse
 {
     /// <summary>
-    /// Provides a way to store errors from a response
+    /// Initializes a new instance of the <see cref="ErrorResponse"/> class.
     /// </summary>
-    public class ErrorResponse
+    public ErrorResponse()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ErrorResponse"/> class.
-        /// </summary>
-        public ErrorResponse()
-        {
-        }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ErrorResponse"/> class using the specified values.
-        /// </summary>
-        /// <param name="responseValue">A <see cref="Dictionary{K, V}"/> containing names and values of
-        /// the properties of this <see cref="ErrorResponse"/>.</param>
-        public ErrorResponse(Dictionary<string, object?>? responseValue)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ErrorResponse"/> class using the specified values.
+    /// </summary>
+    /// <param name="responseValue">A <see cref="Dictionary{K, V}"/> containing names and values of
+    /// the properties of this <see cref="ErrorResponse"/>.</param>
+    public ErrorResponse(Dictionary<string, object?>? responseValue)
+    {
+        if (responseValue != null)
         {
-            if (responseValue != null)
+            if (responseValue.TryGetValue("message", out object? messageObj)
+                && messageObj?.ToString() is string message)
             {
-                if (responseValue.TryGetValue("message", out object? messageObj)
-                    && messageObj?.ToString() is string message)
-                {
-                    this.Message = message;
-                }
-                else
-                {
-                    this.Message = "The error did not contain a message.";
-                }
+                this.Message = message;
+            }
+            else
+            {
+                this.Message = "The error did not contain a message.";
+            }
 
-                if (responseValue.TryGetValue("screen", out object? screenObj))
-                {
-                    this.Screenshot = screenObj?.ToString();
-                }
+            if (responseValue.TryGetValue("screen", out object? screenObj))
+            {
+                this.Screenshot = screenObj?.ToString();
+            }
 
-                if (responseValue.TryGetValue("class", out object? classObj))
-                {
-                    this.ClassName = classObj?.ToString();
-                }
+            if (responseValue.TryGetValue("class", out object? classObj))
+            {
+                this.ClassName = classObj?.ToString();
+            }
 
-                if (responseValue.TryGetValue("stackTrace", out object? stackTraceObj)
-                    || responseValue.TryGetValue("stacktrace", out stackTraceObj))
+            if (responseValue.TryGetValue("stackTrace", out object? stackTraceObj)
+                || responseValue.TryGetValue("stacktrace", out stackTraceObj))
+            {
+                if (stackTraceObj is object?[] stackTraceArray)
                 {
-                    if (stackTraceObj is object?[] stackTraceArray)
+                    List<StackTraceElement> stackTraceList = new List<StackTraceElement>();
+                    foreach (object? rawStackTraceElement in stackTraceArray)
                     {
-                        List<StackTraceElement> stackTraceList = new List<StackTraceElement>();
-                        foreach (object? rawStackTraceElement in stackTraceArray)
+                        if (rawStackTraceElement is Dictionary<string, object?> elementAsDictionary)
                         {
-                            if (rawStackTraceElement is Dictionary<string, object?> elementAsDictionary)
-                            {
-                                stackTraceList.Add(new StackTraceElement(elementAsDictionary));
-                            }
+                            stackTraceList.Add(new StackTraceElement(elementAsDictionary));
                         }
-
-                        this.StackTrace = stackTraceList.ToArray();
                     }
+
+                    this.StackTrace = stackTraceList.ToArray();
                 }
             }
         }
-
-        /// <summary>
-        /// Gets or sets the message from the response
-        /// </summary>
-        public string Message { get; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the class name that threw the error
-        /// </summary>
-        public string? ClassName { get; }
-
-        // TODO: (JimEvans) Change this to return an Image.
-        /// <summary>
-        /// Gets or sets the screenshot of the error
-        /// </summary>
-        public string? Screenshot { get; }
-
-        /// <summary>
-        /// Gets or sets the stack trace of the error
-        /// </summary>
-        public StackTraceElement[]? StackTrace { get; }
     }
+
+    /// <summary>
+    /// Gets or sets the message from the response
+    /// </summary>
+    public string Message { get; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the class name that threw the error
+    /// </summary>
+    public string? ClassName { get; }
+
+    // TODO: (JimEvans) Change this to return an Image.
+    /// <summary>
+    /// Gets or sets the screenshot of the error
+    /// </summary>
+    public string? Screenshot { get; }
+
+    /// <summary>
+    /// Gets or sets the stack trace of the error
+    /// </summary>
+    public StackTraceElement[]? StackTrace { get; }
 }

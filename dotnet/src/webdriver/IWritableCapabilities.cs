@@ -17,24 +17,23 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Capabilities of the browser that you are going to use
+/// </summary>
+public interface IWritableCapabilities : ICapabilities
 {
     /// <summary>
-    /// Capabilities of the browser that you are going to use
+    /// Sets a capability of the browser.
     /// </summary>
-    public interface IWritableCapabilities : ICapabilities
-    {
-        /// <summary>
-        /// Sets a capability of the browser.
-        /// </summary>
-        /// <param name="capability">The capability to set.</param>
-        /// <param name="capabilityValue">The value for the capability.</param>
-        void SetCapability(string capability, object capabilityValue);
+    /// <param name="capability">The capability to set.</param>
+    /// <param name="capabilityValue">The value for the capability.</param>
+    void SetCapability(string capability, object capabilityValue);
 
-        /// <summary>
-        /// Gets this capabilities object as a read-only object.
-        /// </summary>
-        /// <returns>The capabilities object as a read-only object.</returns>
-        ICapabilities AsReadOnly();
-    }
+    /// <summary>
+    /// Gets this capabilities object as a read-only object.
+    /// </summary>
+    /// <returns>The capabilities object as a read-only object.</returns>
+    ICapabilities AsReadOnly();
 }

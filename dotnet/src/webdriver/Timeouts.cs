@@ -21,128 +21,127 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Defines the interface through which the user can define timeouts.
+/// </summary>
+internal class Timeouts : ITimeouts
 {
+    private const string ImplicitTimeoutName = "implicit";
+    private const string AsyncScriptTimeoutName = "script";
+    private const string PageLoadTimeoutName = "pageLoad";
+    private const string LegacyPageLoadTimeoutName = "page load";
+
+    private static readonly TimeSpan DefaultImplicitWaitTimeout = TimeSpan.FromSeconds(0);
+    private static readonly TimeSpan DefaultAsyncScriptTimeout = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan DefaultPageLoadTimeout = TimeSpan.FromSeconds(300);
+
+    private readonly WebDriver driver;
+
     /// <summary>
-    /// Defines the interface through which the user can define timeouts.
+    /// Initializes a new instance of the <see cref="Timeouts"/> class
     /// </summary>
-    internal class Timeouts : ITimeouts
+    /// <param name="driver">The driver that is currently in use</param>
+    public Timeouts(WebDriver driver)
     {
-        private const string ImplicitTimeoutName = "implicit";
-        private const string AsyncScriptTimeoutName = "script";
-        private const string PageLoadTimeoutName = "pageLoad";
-        private const string LegacyPageLoadTimeoutName = "page load";
+        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+    }
 
-        private static readonly TimeSpan DefaultImplicitWaitTimeout = TimeSpan.FromSeconds(0);
-        private static readonly TimeSpan DefaultAsyncScriptTimeout = TimeSpan.FromSeconds(30);
-        private static readonly TimeSpan DefaultPageLoadTimeout = TimeSpan.FromSeconds(300);
+    /// <summary>
+    /// Gets or sets the implicit wait timeout, which is the  amount of time the
+    /// driver should wait when searching for an element if it is not immediately
+    /// present.
+    /// </summary>
+    /// <remarks>
+    /// When searching for a single element, the driver should poll the page
+    /// until the element has been found, or this timeout expires before throwing
+    /// a <see cref="NoSuchElementException"/>. When searching for multiple elements,
+    /// the driver should poll the page until at least one element has been found
+    /// or this timeout has expired.
+    /// <para>
+    /// Increasing the implicit wait timeout should be used judiciously as it
+    /// will have an adverse effect on test run time, especially when used with
+    /// slower location strategies like XPath.
+    /// </para>
+    /// <para>
+    /// Also can be managed via driver <see cref="DriverOptions.ImplicitWaitTimeout"/> option.
+    /// </para>
+    /// </remarks>
+    public TimeSpan ImplicitWait
+    {
+        get => this.ExecuteGetTimeout(ImplicitTimeoutName);
+        set => this.ExecuteSetTimeout(ImplicitTimeoutName, value);
+    }
 
-        private readonly WebDriver driver;
+    /// <summary>
+    /// Gets or sets the asynchronous script timeout, which is the amount
+    /// of time the driver should wait when executing JavaScript asynchronously.
+    /// This timeout only affects the <see cref="IJavaScriptExecutor.ExecuteAsyncScript(string, object[])"/>
+    /// method.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Also can be managed via driver <see cref="DriverOptions.ScriptTimeout"/> option.
+    /// </para>
+    /// </remarks>
+    public TimeSpan AsynchronousJavaScript
+    {
+        get => this.ExecuteGetTimeout(AsyncScriptTimeoutName);
+        set => this.ExecuteSetTimeout(AsyncScriptTimeoutName, value);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Timeouts"/> class
-        /// </summary>
-        /// <param name="driver">The driver that is currently in use</param>
-        public Timeouts(WebDriver driver)
+    /// <summary>
+    /// Gets or sets the page load timeout, which is the amount of time the driver
+    /// should wait for a page to load when setting the <see cref="IWebDriver.Url"/>
+    /// property.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Also can be managed via driver <see cref="DriverOptions.PageLoadTimeout"/> option.
+    /// </para>
+    /// </remarks>
+    public TimeSpan PageLoad
+    {
+        get => this.ExecuteGetTimeout(PageLoadTimeoutName);
+        set => this.ExecuteSetTimeout(PageLoadTimeoutName, value);
+    }
+
+    private TimeSpan ExecuteGetTimeout(string timeoutType)
+    {
+        Response commandResponse = this.driver.Execute(DriverCommand.GetTimeouts, null);
+
+        Dictionary<string, object?> responseValue = (Dictionary<string, object?>)commandResponse.Value!;
+        if (!responseValue.TryGetValue(timeoutType, out object? timeout))
         {
-            this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+            throw new WebDriverException("Specified timeout type not defined");
         }
 
-        /// <summary>
-        /// Gets or sets the implicit wait timeout, which is the  amount of time the
-        /// driver should wait when searching for an element if it is not immediately
-        /// present.
-        /// </summary>
-        /// <remarks>
-        /// When searching for a single element, the driver should poll the page
-        /// until the element has been found, or this timeout expires before throwing
-        /// a <see cref="NoSuchElementException"/>. When searching for multiple elements,
-        /// the driver should poll the page until at least one element has been found
-        /// or this timeout has expired.
-        /// <para>
-        /// Increasing the implicit wait timeout should be used judiciously as it
-        /// will have an adverse effect on test run time, especially when used with
-        /// slower location strategies like XPath.
-        /// </para>
-        /// <para>
-        /// Also can be managed via driver <see cref="DriverOptions.ImplicitWaitTimeout"/> option.
-        /// </para>
-        /// </remarks>
-        public TimeSpan ImplicitWait
-        {
-            get => this.ExecuteGetTimeout(ImplicitTimeoutName);
-            set => this.ExecuteSetTimeout(ImplicitTimeoutName, value);
-        }
+        return TimeSpan.FromMilliseconds(Convert.ToDouble(timeout, CultureInfo.InvariantCulture));
+    }
 
-        /// <summary>
-        /// Gets or sets the asynchronous script timeout, which is the amount
-        /// of time the driver should wait when executing JavaScript asynchronously.
-        /// This timeout only affects the <see cref="IJavaScriptExecutor.ExecuteAsyncScript(string, object[])"/>
-        /// method.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Also can be managed via driver <see cref="DriverOptions.ScriptTimeout"/> option.
-        /// </para>
-        /// </remarks>
-        public TimeSpan AsynchronousJavaScript
+    private void ExecuteSetTimeout(string timeoutType, TimeSpan timeToWait)
+    {
+        double milliseconds = timeToWait.TotalMilliseconds;
+        if (timeToWait == TimeSpan.MinValue)
         {
-            get => this.ExecuteGetTimeout(AsyncScriptTimeoutName);
-            set => this.ExecuteSetTimeout(AsyncScriptTimeoutName, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the page load timeout, which is the amount of time the driver
-        /// should wait for a page to load when setting the <see cref="IWebDriver.Url"/>
-        /// property.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Also can be managed via driver <see cref="DriverOptions.PageLoadTimeout"/> option.
-        /// </para>
-        /// </remarks>
-        public TimeSpan PageLoad
-        {
-            get => this.ExecuteGetTimeout(PageLoadTimeoutName);
-            set => this.ExecuteSetTimeout(PageLoadTimeoutName, value);
-        }
-
-        private TimeSpan ExecuteGetTimeout(string timeoutType)
-        {
-            Response commandResponse = this.driver.Execute(DriverCommand.GetTimeouts, null);
-
-            Dictionary<string, object?> responseValue = (Dictionary<string, object?>)commandResponse.Value!;
-            if (!responseValue.TryGetValue(timeoutType, out object? timeout))
+            if (timeoutType == ImplicitTimeoutName)
             {
-                throw new WebDriverException("Specified timeout type not defined");
+                milliseconds = DefaultImplicitWaitTimeout.TotalMilliseconds;
             }
-
-            return TimeSpan.FromMilliseconds(Convert.ToDouble(timeout, CultureInfo.InvariantCulture));
-        }
-
-        private void ExecuteSetTimeout(string timeoutType, TimeSpan timeToWait)
-        {
-            double milliseconds = timeToWait.TotalMilliseconds;
-            if (timeToWait == TimeSpan.MinValue)
+            else if (timeoutType == AsyncScriptTimeoutName)
             {
-                if (timeoutType == ImplicitTimeoutName)
-                {
-                    milliseconds = DefaultImplicitWaitTimeout.TotalMilliseconds;
-                }
-                else if (timeoutType == AsyncScriptTimeoutName)
-                {
-                    milliseconds = DefaultAsyncScriptTimeout.TotalMilliseconds;
-                }
-                else
-                {
-                    milliseconds = DefaultPageLoadTimeout.TotalMilliseconds;
-                }
+                milliseconds = DefaultAsyncScriptTimeout.TotalMilliseconds;
             }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add(timeoutType, Convert.ToInt64(milliseconds));
-
-            this.driver.Execute(DriverCommand.SetTimeouts, parameters);
+            else
+            {
+                milliseconds = DefaultPageLoadTimeout.TotalMilliseconds;
+            }
         }
+
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add(timeoutType, Convert.ToInt64(milliseconds));
+
+        this.driver.Execute(DriverCommand.SetTimeouts, parameters);
     }
 }

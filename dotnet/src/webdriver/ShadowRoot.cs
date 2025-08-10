@@ -23,113 +23,112 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Provides a representation of an element's shadow root.
+/// </summary>
+public class ShadowRoot : ISearchContext, IWrapsDriver, IWebDriverObjectReference
 {
     /// <summary>
-    /// Provides a representation of an element's shadow root.
+    /// The property name that represents an element shadow root in the wire protocol.
     /// </summary>
-    public class ShadowRoot : ISearchContext, IWrapsDriver, IWebDriverObjectReference
+    public const string ShadowRootReferencePropertyName = "shadow-6066-11e4-a52e-4f735466cecf";
+
+    private readonly WebDriver driver;
+    private readonly string shadowRootId;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ShadowRoot"/> class.
+    /// </summary>
+    /// <param name="parentDriver">The <see cref="WebDriver"/> instance that is driving this shadow root.</param>
+    /// <param name="id">The ID value provided to identify the shadow root.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> or <paramref name="id"/> are <see langword="null"/>.</exception>
+    public ShadowRoot(WebDriver parentDriver, string id)
     {
-        /// <summary>
-        /// The property name that represents an element shadow root in the wire protocol.
-        /// </summary>
-        public const string ShadowRootReferencePropertyName = "shadow-6066-11e4-a52e-4f735466cecf";
+        this.driver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
+        this.shadowRootId = id ?? throw new ArgumentNullException(nameof(id));
+    }
 
-        private readonly WebDriver driver;
-        private readonly string shadowRootId;
+    /// <summary>
+    /// Gets the <see cref="IWebDriver"/> driving this shadow root.
+    /// </summary>
+    public IWebDriver WrappedDriver => this.driver;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ShadowRoot"/> class.
-        /// </summary>
-        /// <param name="parentDriver">The <see cref="WebDriver"/> instance that is driving this shadow root.</param>
-        /// <param name="id">The ID value provided to identify the shadow root.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="parentDriver"/> or <paramref name="id"/> are <see langword="null"/>.</exception>
-        public ShadowRoot(WebDriver parentDriver, string id)
+    /// <summary>
+    /// Gets the internal ID for this ShadowRoot.
+    /// </summary>
+    string IWebDriverObjectReference.ObjectReferenceId => this.shadowRootId;
+
+    internal static bool TryCreate(WebDriver parentDriver, Dictionary<string, object?> shadowRootDictionary, [NotNullWhen(true)] out ShadowRoot? shadowRoot)
+    {
+        if (shadowRootDictionary is null)
         {
-            this.driver = parentDriver ?? throw new ArgumentNullException(nameof(parentDriver));
-            this.shadowRootId = id ?? throw new ArgumentNullException(nameof(id));
+            throw new ArgumentNullException(nameof(shadowRootDictionary), "The dictionary containing the shadow root reference cannot be null");
         }
 
-        /// <summary>
-        /// Gets the <see cref="IWebDriver"/> driving this shadow root.
-        /// </summary>
-        public IWebDriver WrappedDriver => this.driver;
-
-        /// <summary>
-        /// Gets the internal ID for this ShadowRoot.
-        /// </summary>
-        string IWebDriverObjectReference.ObjectReferenceId => this.shadowRootId;
-
-        internal static bool TryCreate(WebDriver parentDriver, Dictionary<string, object?> shadowRootDictionary, [NotNullWhen(true)] out ShadowRoot? shadowRoot)
+        if (shadowRootDictionary.TryGetValue(ShadowRootReferencePropertyName, out object? shadowRootValue))
         {
-            if (shadowRootDictionary is null)
-            {
-                throw new ArgumentNullException(nameof(shadowRootDictionary), "The dictionary containing the shadow root reference cannot be null");
-            }
-
-            if (shadowRootDictionary.TryGetValue(ShadowRootReferencePropertyName, out object? shadowRootValue))
-            {
-                shadowRoot = new ShadowRoot(parentDriver, shadowRootValue?.ToString()!);
-                return true;
-            }
-
-            shadowRoot = null;
-            return false;
+            shadowRoot = new ShadowRoot(parentDriver, shadowRootValue?.ToString()!);
+            return true;
         }
 
-        /// <summary>
-        /// Finds the first <see cref="IWebElement"/> using the given method.
-        /// </summary>
-        /// <param name="by">The locating mechanism to use.</param>
-        /// <returns>The first matching <see cref="IWebElement"/> on the current context.</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="by"/> is <see langword="null"/>.</exception>
-        /// <exception cref="NoSuchElementException">If no element matches the criteria.</exception>
-        public IWebElement FindElement(By by)
+        shadowRoot = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Finds the first <see cref="IWebElement"/> using the given method.
+    /// </summary>
+    /// <param name="by">The locating mechanism to use.</param>
+    /// <returns>The first matching <see cref="IWebElement"/> on the current context.</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="by"/> is <see langword="null"/>.</exception>
+    /// <exception cref="NoSuchElementException">If no element matches the criteria.</exception>
+    public IWebElement FindElement(By by)
+    {
+        if (by is null)
         {
-            if (by is null)
-            {
-                throw new ArgumentNullException(nameof(by), "by cannot be null");
-            }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.shadowRootId);
-            parameters.Add("using", by.Mechanism);
-            parameters.Add("value", by.Criteria);
-
-            Response commandResponse = this.driver.Execute(DriverCommand.FindShadowChildElement, parameters);
-            return this.driver.GetElementFromResponse(commandResponse)!;
+            throw new ArgumentNullException(nameof(by), "by cannot be null");
         }
 
-        /// <summary>
-        /// Finds all <see cref="IWebElement">IWebElements</see> within the current context
-        /// using the given mechanism.
-        /// </summary>
-        /// <param name="by">The locating mechanism to use.</param>
-        /// <returns>A <see cref="ReadOnlyCollection{T}"/> of all <see cref="IWebElement">WebElements</see>
-        /// matching the current criteria, or an empty list if nothing matches.</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="by"/> is <see langword="null"/>.</exception>
-        public ReadOnlyCollection<IWebElement> FindElements(By by)
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.shadowRootId);
+        parameters.Add("using", by.Mechanism);
+        parameters.Add("value", by.Criteria);
+
+        Response commandResponse = this.driver.Execute(DriverCommand.FindShadowChildElement, parameters);
+        return this.driver.GetElementFromResponse(commandResponse)!;
+    }
+
+    /// <summary>
+    /// Finds all <see cref="IWebElement">IWebElements</see> within the current context
+    /// using the given mechanism.
+    /// </summary>
+    /// <param name="by">The locating mechanism to use.</param>
+    /// <returns>A <see cref="ReadOnlyCollection{T}"/> of all <see cref="IWebElement">WebElements</see>
+    /// matching the current criteria, or an empty list if nothing matches.</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="by"/> is <see langword="null"/>.</exception>
+    public ReadOnlyCollection<IWebElement> FindElements(By by)
+    {
+        if (by is null)
         {
-            if (by is null)
-            {
-                throw new ArgumentNullException(nameof(by), "by cannot be null");
-            }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.shadowRootId);
-            parameters.Add("using", by.Mechanism);
-            parameters.Add("value", by.Criteria);
-
-            Response commandResponse = this.driver.Execute(DriverCommand.FindShadowChildElements, parameters);
-            return this.driver.GetElementsFromResponse(commandResponse);
+            throw new ArgumentNullException(nameof(by), "by cannot be null");
         }
 
-        Dictionary<string, object> IWebDriverObjectReference.ToDictionary()
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters.Add("id", this.shadowRootId);
+        parameters.Add("using", by.Mechanism);
+        parameters.Add("value", by.Criteria);
+
+        Response commandResponse = this.driver.Execute(DriverCommand.FindShadowChildElements, parameters);
+        return this.driver.GetElementsFromResponse(commandResponse);
+    }
+
+    Dictionary<string, object> IWebDriverObjectReference.ToDictionary()
+    {
+        return new Dictionary<string, object>
         {
-            return new Dictionary<string, object>
-            {
-                [ShadowRootReferencePropertyName] = this.shadowRootId
-            };
-        }
+            [ShadowRootReferencePropertyName] = this.shadowRootId
+        };
     }
 }

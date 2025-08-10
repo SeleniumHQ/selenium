@@ -25,134 +25,133 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 
-namespace OpenQA.Selenium.Environment
+namespace OpenQA.Selenium.Environment;
+
+public class UrlBuilder
 {
-    public class UrlBuilder
+    string protocol;
+    string hostName;
+    string port;
+    string securePort;
+    string path;
+    string alternateHostName;
+
+    public string AlternateHostName
     {
-        string protocol;
-        string hostName;
-        string port;
-        string securePort;
-        string path;
-        string alternateHostName;
+        get { return alternateHostName; }
+    }
 
-        public string AlternateHostName
-        {
-            get { return alternateHostName; }
-        }
+    public string HostName
+    {
+        get { return hostName; }
+    }
 
-        public string HostName
-        {
-            get { return hostName; }
-        }
+    public string Path
+    {
+        get { return path; }
+    }
 
-        public string Path
+    public UrlBuilder(WebsiteConfig config)
+    {
+        protocol = config.Protocol;
+        hostName = config.HostName;
+        port = config.Port;
+        securePort = config.SecurePort;
+        path = config.Folder;
+        //Use the first IPv4 address that we find
+        IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+        foreach (IPAddress ip in Dns.GetHostEntry(hostName).AddressList)
         {
-            get { return path; }
-        }
-
-        public UrlBuilder(WebsiteConfig config)
-        {
-            protocol = config.Protocol;
-            hostName = config.HostName;
-            port = config.Port;
-            securePort = config.SecurePort;
-            path = config.Folder;
-            //Use the first IPv4 address that we find
-            IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
-            foreach (IPAddress ip in Dns.GetHostEntry(hostName).AddressList)
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    ipAddress = ip;
-                    break;
-                }
+                ipAddress = ip;
+                break;
             }
-            alternateHostName = ipAddress.ToString();
         }
+        alternateHostName = ipAddress.ToString();
+    }
 
-        public string LocalWhereIs(string page)
+    public string LocalWhereIs(string page)
+    {
+        string location = string.Empty;
+        location = "http://localhost:" + port + "/" + path + "/" + page;
+
+        return location;
+    }
+
+    public string WhereIs(string page)
+    {
+        string location = string.Empty;
+        location = "http://" + hostName + ":" + port + "/" + path + "/" + page;
+
+        return location;
+    }
+
+    public string WhereElseIs(string page)
+    {
+        string location = string.Empty;
+        location = "http://" + alternateHostName + ":" + port + "/" + path + "/" + page;
+
+        return location;
+    }
+
+    public string WhereIsViaNonLoopbackAddress(string page)
+    {
+        string hostNameAsIPAddress = "127.0.0.1";
+        IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
+        foreach (IPAddress address in addresses)
         {
-            string location = string.Empty;
-            location = "http://localhost:" + port + "/" + path + "/" + page;
-
-            return location;
-        }
-
-        public string WhereIs(string page)
-        {
-            string location = string.Empty;
-            location = "http://" + hostName + ":" + port + "/" + path + "/" + page;
-
-            return location;
-        }
-
-        public string WhereElseIs(string page)
-        {
-            string location = string.Empty;
-            location = "http://" + alternateHostName + ":" + port + "/" + path + "/" + page;
-
-            return location;
-        }
-
-        public string WhereIsViaNonLoopbackAddress(string page)
-        {
-            string hostNameAsIPAddress = "127.0.0.1";
-            IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
-            foreach (IPAddress address in addresses)
+            if (address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(address))
             {
-                if (address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(address))
-                {
-                    hostNameAsIPAddress = address.ToString();
-                    break;
-                }
+                hostNameAsIPAddress = address.ToString();
+                break;
             }
-
-            string location = string.Empty;
-            location = "http://" + hostNameAsIPAddress + ":" + port + "/" + path + "/" + page;
-
-            return location;
         }
 
-        public string WhereIsSecure(string page)
+        string location = string.Empty;
+        location = "http://" + hostNameAsIPAddress + ":" + port + "/" + path + "/" + page;
+
+        return location;
+    }
+
+    public string WhereIsSecure(string page)
+    {
+        string location = string.Empty;
+        location = "https://" + hostName + ":" + securePort + "/" + path + "/" + page;
+
+        return location;
+    }
+    public string CreateInlinePage(InlinePage page)
+    {
+        Uri createPageUri = new Uri(new Uri(WhereIs(string.Empty)), "createPage");
+
+        Dictionary<string, object> payloadDictionary = new Dictionary<string, object>
         {
-            string location = string.Empty;
-            location = "https://" + hostName + ":" + securePort + "/" + path + "/" + page;
+            ["content"] = page.ToString()
+        };
 
-            return location;
-        }
-        public string CreateInlinePage(InlinePage page)
+        string commandPayload = JsonConvert.SerializeObject(payloadDictionary);
+
+        using var httpClient = new HttpClient();
+
+        var postHttpContent = new StringContent(commandPayload, Encoding.UTF8, "application/json");
+
+        using var response = httpClient.PostAsync(createPageUri, postHttpContent).GetAwaiter().GetResult();
+
+        var responseString = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+        // The response string from the Java remote server has trailing null
+        // characters. This is due to the fix for issue 288.
+        if (responseString.IndexOf('\0') >= 0)
         {
-            Uri createPageUri = new Uri(new Uri(WhereIs(string.Empty)), "createPage");
-
-            Dictionary<string, object> payloadDictionary = new Dictionary<string, object>
-            {
-                ["content"] = page.ToString()
-            };
-
-            string commandPayload = JsonConvert.SerializeObject(payloadDictionary);
-
-            using var httpClient = new HttpClient();
-
-            var postHttpContent = new StringContent(commandPayload, Encoding.UTF8, "application/json");
-
-            using var response = httpClient.PostAsync(createPageUri, postHttpContent).GetAwaiter().GetResult();
-
-            var responseString = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-
-            // The response string from the Java remote server has trailing null
-            // characters. This is due to the fix for issue 288.
-            if (responseString.IndexOf('\0') >= 0)
-            {
-                responseString = responseString.Substring(0, responseString.IndexOf('\0'));
-            }
-
-            if (responseString.Contains("localhost"))
-            {
-                responseString = responseString.Replace("localhost", this.hostName);
-            }
-
-            return responseString;
+            responseString = responseString.Substring(0, responseString.IndexOf('\0'));
         }
+
+        if (responseString.Contains("localhost"))
+        {
+            responseString = responseString.Replace("localhost", this.hostName);
+        }
+
+        return responseString;
     }
 }

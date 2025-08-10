@@ -37,7 +37,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,6 +88,7 @@ import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
@@ -242,46 +242,58 @@ public class RemoteWebDriver
     checkNonW3CCapabilities(capabilities);
     checkChromeW3CFalse(capabilities);
 
-    Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
-
-    if (response == null) {
-      throw new SessionNotCreatedException(
-          "The underlying command executor returned a null response.");
-    }
-
-    Object responseValue = response.getValue();
-
-    if (responseValue == null) {
-      throw new SessionNotCreatedException(
-          "The underlying command executor returned a response without payload: " + response);
-    }
-
-    if (!(responseValue instanceof Map)) {
-      throw new SessionNotCreatedException(
-          "The underlying command executor returned a response with a non well formed payload: "
-              + response);
-    }
-
-    @SuppressWarnings("unchecked")
-    Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
-    MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
-    String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
-    Platform platform;
     try {
-      if (platformString == null || platformString.isEmpty()) {
-        platform = Platform.ANY;
-      } else {
-        platform = Platform.fromString(platformString);
-      }
-    } catch (WebDriverException e) {
-      // The server probably responded with a name matching the os.name
-      // system property. Try to recover and parse this.
-      platform = Platform.extractFromSysProperty(platformString);
-    }
-    returnedCapabilities.setCapability(PLATFORM_NAME, platform);
+      Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
 
-    this.capabilities = returnedCapabilities;
-    sessionId = new SessionId(response.getSessionId());
+      if (response == null) {
+        throw new SessionNotCreatedException(
+            "The underlying command executor returned a null response.");
+      }
+
+      Object responseValue = response.getValue();
+
+      if (responseValue == null) {
+        throw new SessionNotCreatedException(
+            "The underlying command executor returned a response without payload: " + response);
+      }
+
+      if (!(responseValue instanceof Map)) {
+        throw new SessionNotCreatedException(
+            "The underlying command executor returned a response with a non well formed payload: "
+                + response);
+      }
+
+      @SuppressWarnings("unchecked")
+      Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
+      MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
+      String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
+      Platform platform;
+      try {
+        if (platformString == null || platformString.isEmpty()) {
+          platform = Platform.ANY;
+        } else {
+          platform = Platform.fromString(platformString);
+        }
+      } catch (WebDriverException e) {
+        // The server probably responded with a name matching the os.name
+        // system property. Try to recover and parse this.
+        platform = Platform.extractFromSysProperty(platformString);
+      }
+      returnedCapabilities.setCapability(PLATFORM_NAME, platform);
+
+      this.capabilities = returnedCapabilities;
+      sessionId = new SessionId(response.getSessionId());
+    } catch (Exception e) {
+      // If session creation fails, stop the driver service to prevent zombie processes
+      if (executor instanceof DriverCommandExecutor) {
+        try {
+          ((DriverCommandExecutor) executor).close();
+        } catch (Exception ignored) {
+          // Ignore cleanup exceptions, we'll propagate the original failure
+        }
+      }
+      throw e;
+    }
   }
 
   public ErrorHandler getErrorHandler() {
@@ -650,6 +662,11 @@ public class RemoteWebDriver
         Map.of("authenticatorId", authenticator.getId()));
   }
 
+  @Override
+  public boolean isDownloadsEnabled() {
+    return HasDownloads.isDownloadsEnabled(capabilities);
+  }
+
   /**
    * Retrieves the names of the downloadable files.
    *
@@ -955,12 +972,6 @@ public class RemoteWebDriver
 
     protected class RemoteTimeouts implements Timeouts {
 
-      @Deprecated
-      @Override
-      public Timeouts implicitlyWait(long time, TimeUnit unit) {
-        return implicitlyWait(Duration.ofMillis(unit.toMillis(time)));
-      }
-
       @Override
       public Timeouts implicitlyWait(Duration duration) {
         execute(DriverCommand.SET_IMPLICIT_WAIT_TIMEOUT(duration));
@@ -975,18 +986,6 @@ public class RemoteWebDriver
         return Duration.ofMillis(timeout);
       }
 
-      @Deprecated
-      @Override
-      public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-        return setScriptTimeout(Duration.ofMillis(unit.toMillis(time)));
-      }
-
-      @Deprecated
-      @Override
-      public Timeouts setScriptTimeout(Duration duration) {
-        return scriptTimeout(duration);
-      }
-
       @Override
       public Timeouts scriptTimeout(Duration duration) {
         execute(DriverCommand.SET_SCRIPT_TIMEOUT(duration));
@@ -999,12 +998,6 @@ public class RemoteWebDriver
         Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
         long timeout = ((Number) rawSize.get("script")).longValue();
         return Duration.ofMillis(timeout);
-      }
-
-      @Deprecated
-      @Override
-      public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
-        return pageLoadTimeout(Duration.ofMillis(unit.toMillis(time)));
       }
 
       @Override

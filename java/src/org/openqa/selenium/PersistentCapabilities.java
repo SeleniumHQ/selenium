@@ -17,15 +17,16 @@
 
 package org.openqa.selenium;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
+@NullMarked
 public class PersistentCapabilities implements Capabilities {
 
   private final ImmutableCapabilities caps;
@@ -58,11 +59,11 @@ public class PersistentCapabilities implements Capabilities {
   @Override
   public Map<String, Object> asMap() {
     return getCapabilityNames().stream()
-        .collect(toUnmodifiableMap(Function.identity(), this::getCapability));
+        .collect(Collectors.toUnmodifiableMap(Function.identity(), this::getCapability));
   }
 
   @Override
-  public Object getCapability(String capabilityName) {
+  public @Nullable Object getCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);
     Object capability = overrides.getCapability(capabilityName);
     if (capability != null) {
@@ -81,19 +82,7 @@ public class PersistentCapabilities implements Capabilities {
   public Set<String> getCapabilityNames() {
     return Stream.concat(
             caps.getCapabilityNames().stream(), overrides.getCapabilityNames().stream())
-        .collect(toUnmodifiableSet());
-  }
-
-  // Needed, since we're dependent on Java 8 as a minimum version
-  private <T, K, U> Collector<T, ?, Map<K, U>> toUnmodifiableMap(
-      Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends U> valueMapper) {
-    return Collectors.collectingAndThen(
-        Collectors.toMap(keyMapper, valueMapper), Collections::unmodifiableMap);
-  }
-
-  // Needed, since we're dependent on Java 8 as a minimum version
-  private <T> Collector<T, ?, Set<T>> toUnmodifiableSet() {
-    return Collectors.collectingAndThen(Collectors.toSet(), Collections::unmodifiableSet);
+        .collect(Collectors.toUnmodifiableSet());
   }
 
   @Override
@@ -107,7 +96,7 @@ public class PersistentCapabilities implements Capabilities {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (!(o instanceof Capabilities)) {
       return false;
     }

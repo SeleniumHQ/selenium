@@ -121,7 +121,7 @@
         var onTxSuccess = onQueryResult;
         var onTxFailure = success;
 
-        // WITH is errorneously used instead of WHERE
+        // WITH is erroneously used instead of WHERE
         bot.storage.database.executeSql('testDB',
             'SELECT * from docids WITH id = 1', [],
             onQueryResult,

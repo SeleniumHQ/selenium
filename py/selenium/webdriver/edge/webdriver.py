@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Optional
+
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
@@ -27,8 +29,8 @@ class WebDriver(ChromiumDriver):
 
     def __init__(
         self,
-        options: Options = None,
-        service: Service = None,
+        options: Optional[Options] = None,
+        service: Optional[Service] = None,
         keep_alive: bool = True,
     ) -> None:
         """Creates a new instance of the edge driver. Starts the service and

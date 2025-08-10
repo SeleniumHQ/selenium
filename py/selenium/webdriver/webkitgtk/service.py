@@ -14,10 +14,10 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import shutil
 import warnings
-from typing import List
-from typing import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Optional
 
 from selenium.webdriver.common import service
@@ -29,10 +29,12 @@ class Service(service.Service):
     """A Service class that is responsible for the starting and stopping of
     `WebKitWebDriver`.
 
-    :param executable_path: install path of the WebKitWebDriver executable, defaults to the first `WebKitWebDriver` in `$PATH`.
+    :param executable_path: install path of the WebKitWebDriver executable, defaults to the first
+        `WebKitWebDriver` in `$PATH`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
-    :param log_output: (Optional) File path for the file to be opened and passed as the subprocess stdout/stderr handler.
+    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+    :param log_output: (Optional) File path for the file to be opened and passed as the subprocess
+        stdout/stderr handler.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
@@ -42,15 +44,16 @@ class Service(service.Service):
         port: int = 0,
         log_path: Optional[str] = None,
         log_output: Optional[str] = None,
-        service_args: Optional[List[str]] = None,
+        service_args: Optional[Sequence[str]] = None,
         env: Optional[Mapping[str, str]] = None,
         **kwargs,
     ) -> None:
-        self.service_args = service_args or []
+        self._service_args = list(service_args or [])
         if log_path is not None:
             warnings.warn("log_path is deprecated, use log_output instead", DeprecationWarning, stacklevel=2)
             log_path = open(log_path, "wb")
         log_output = open(log_output, "wb") if log_output else None
+
         super().__init__(
             executable_path=executable_path,
             port=port,
@@ -59,5 +62,15 @@ class Service(service.Service):
             **kwargs,
         )
 
-    def command_line_args(self) -> List[str]:
-        return ["-p", f"{self.port}"] + self.service_args
+    def command_line_args(self) -> list[str]:
+        return ["-p", f"{self.port}"] + self._service_args
+
+    @property
+    def service_args(self) -> Sequence[str]:
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value: Sequence[str]):
+        if isinstance(value, str) or not isinstance(value, Sequence):
+            raise TypeError("service_args must be a sequence")
+        self._service_args = list(value)

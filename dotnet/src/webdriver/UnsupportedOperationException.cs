@@ -19,30 +19,29 @@
 
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Indicates that a command that should have executed properly cannot be supported for some reason.
+/// </summary>
+public class UnsupportedOperationException : WebDriverException
 {
     /// <summary>
-    /// Indicates that a command that should have executed properly cannot be supported for some reason.
+    /// Initializes a new instance of the <see cref="UnsupportedOperationException"/> class with the specified message.
     /// </summary>
-    public class UnsupportedOperationException : WebDriverException
+    /// <param name="message">The message of the exception.</param>
+    public UnsupportedOperationException(string? message)
+        : base(message)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnsupportedOperationException"/> class with the specified message.
-        /// </summary>
-        /// <param name="message">The message of the exception.</param>
-        public UnsupportedOperationException(string? message)
-            : base(message)
-        {
-        }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnsupportedOperationException"/> class with the specified message and inner exception.
-        /// </summary>
-        /// <param name="message">The message of the exception.</param>
-        /// <param name="innerException">The inner exception for this exception.</param>
-        public UnsupportedOperationException(string? message, Exception? innerException)
-            : base(message, innerException)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UnsupportedOperationException"/> class with the specified message and inner exception.
+    /// </summary>
+    /// <param name="message">The message of the exception.</param>
+    /// <param name="innerException">The inner exception for this exception.</param>
+    public UnsupportedOperationException(string? message, Exception? innerException)
+        : base(message, innerException)
+    {
     }
 }

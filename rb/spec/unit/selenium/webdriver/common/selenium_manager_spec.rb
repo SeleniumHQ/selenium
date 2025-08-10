@@ -92,6 +92,26 @@ module Selenium
             described_class.send(:run, 'anything')
           }.to raise_error(Error::WebDriverError, msg)
         end
+
+        it 'succeeds when exitstatus is nil and result is present' do
+          status = instance_double(Process::Status, exitstatus: nil)
+          stdout = '{"result": "value", "logs": []}'
+          allow(Open3).to receive(:capture3).and_return([stdout, 'stderr', status])
+
+          expect {
+            expect(described_class.send(:run, 'anything')).to eq 'value'
+          }.to have_info(:selenium_manager)
+        end
+
+        it 'raises if result is nil even with successful exitstatus' do
+          status = instance_double(Process::Status, exitstatus: 0)
+          stdout = '{"logs": []}'
+          allow(Open3).to receive(:capture3).and_return([stdout, 'stderr', status])
+
+          expect {
+            described_class.send(:run, 'anything')
+          }.to raise_error(Error::WebDriverError, /Unsuccessful command executed/)
+        end
       end
 
       describe '.binary_paths' do

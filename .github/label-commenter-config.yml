@@ -6,7 +6,7 @@ labels:
         body: |
           @{{ issue.user.login }}, thank you for creating this issue. We will troubleshoot it as soon as we can.
 
-          Selenium Triage Team: remember to follow the [Triage Guide](https://github.com/SeleniumHQ/selenium/blob/trunk/README.md)
+          Selenium Triage Team: remember to follow the [Triage Guide](https://github.com/SeleniumHQ/selenium/wiki/How-to-Triage-Issues)
   - name: G-w3c
     labeled:
       issue:

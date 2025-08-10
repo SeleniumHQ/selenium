@@ -142,7 +142,7 @@ test.suite(function (env) {
     .it(
       'should fail to upload files to a non interactable input when StrictFileInteractability is on',
       async function () {
-        const options = new chrome.Options()
+        const options = env.builder().getChromeOptions() || new chrome.Options()
         options.setStrictFileInteractability(true)
         const driver = env.builder().setChromeOptions(options).build()
 
@@ -181,7 +181,7 @@ test.suite(function (env) {
         return fp
       })
 
-      const options = new chrome.Options()
+      const options = env.builder().getChromeOptions() || new chrome.Options()
       options.setStrictFileInteractability(false)
       const driver = env.builder().setChromeOptions(options).build()
 

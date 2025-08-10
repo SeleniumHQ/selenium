@@ -16,6 +16,7 @@
 # under the License.
 
 """Tests for advanced user interactions."""
+
 import pytest
 
 from selenium.common.exceptions import MoveTargetOutOfBoundsException
@@ -23,8 +24,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions import interaction
 from selenium.webdriver.common.actions.key_input import KeyInput
 from selenium.webdriver.common.actions.pointer_input import PointerInput
-from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
-from selenium.webdriver.common.actions.wheel_input import WheelInput
+from selenium.webdriver.common.actions.wheel_input import ScrollOrigin, WheelInput
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait

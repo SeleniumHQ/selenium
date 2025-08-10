@@ -19,39 +19,38 @@
 
 using System;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Event arguments present when the BindingCalled event is raised.
+/// </summary>
+public class BindingCalledEventArgs : EventArgs
 {
     /// <summary>
-    /// Event arguments present when the BindingCalled event is raised.
+    /// Initializes a new instance of the <see cref="BindingCalledEventArgs"/> type.
     /// </summary>
-    public class BindingCalledEventArgs : EventArgs
+    /// <param name="executionContextId">The execution ID of the call to the binding.</param>
+    /// <param name="name">The name of the call to the binding.</param>
+    /// <param name="payload">The payload of the call to the binding.</param>
+    public BindingCalledEventArgs(long executionContextId, string name, string payload)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BindingCalledEventArgs"/> type.
-        /// </summary>
-        /// <param name="executionContextId">The execution ID of the call to the binding.</param>
-        /// <param name="name">The name of the call to the binding.</param>
-        /// <param name="payload">The payload of the call to the binding.</param>
-        public BindingCalledEventArgs(long executionContextId, string name, string payload)
-        {
-            this.ExecutionContextId = executionContextId;
-            this.Name = name;
-            this.Payload = payload;
-        }
-
-        /// <summary>
-        /// Gets the execution context ID of the call to the binding.
-        /// </summary>
-        public long ExecutionContextId { get; }
-
-        /// <summary>
-        /// Gets the name of the call to the binding.
-        /// </summary>
-        public string Name { get; }
-
-        /// <summary>
-        /// Gets the payload of the call to the binding.
-        /// </summary>
-        public string Payload { get; }
+        this.ExecutionContextId = executionContextId;
+        this.Name = name;
+        this.Payload = payload;
     }
+
+    /// <summary>
+    /// Gets the execution context ID of the call to the binding.
+    /// </summary>
+    public long ExecutionContextId { get; }
+
+    /// <summary>
+    /// Gets the name of the call to the binding.
+    /// </summary>
+    public string Name { get; }
+
+    /// <summary>
+    /// Gets the payload of the call to the binding.
+    /// </summary>
+    public string Payload { get; }
 }

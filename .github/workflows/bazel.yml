@@ -122,7 +122,7 @@ jobs:
           node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
         if: inputs.caching
-        uses: bazel-contrib/setup-bazel@0.13.0
+        uses: bazel-contrib/setup-bazel@0.15.0
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
@@ -136,7 +136,7 @@ jobs:
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: bazel-contrib/setup-bazel@0.13.0
+        uses: bazel-contrib/setup-bazel@0.15.0
         with:
           bazelrc: common --color=yes
       - name: Setup curl for Ubuntu

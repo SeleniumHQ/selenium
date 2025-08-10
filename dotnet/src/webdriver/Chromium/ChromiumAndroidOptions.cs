@@ -19,29 +19,28 @@
 
 using OpenQA.Selenium.Internal;
 
-namespace OpenQA.Selenium.Chromium
+namespace OpenQA.Selenium.Chromium;
+
+/// <summary>
+/// Generates the capabilities for automating Chromium applications on Android
+/// </summary>
+public class ChromiumAndroidOptions : AndroidOptions
 {
     /// <summary>
-    /// Generates the capabilities for automating Chromium applications on Android
+    /// Initializes a new instance of the <see cref="ChromiumAndroidOptions"/> class.
     /// </summary>
-    public class ChromiumAndroidOptions : AndroidOptions
+    /// <param name="androidPackage"></param>
+    public ChromiumAndroidOptions(string androidPackage) : base(androidPackage)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChromiumAndroidOptions"/> class.
-        /// </summary>
-        /// <param name="androidPackage"></param>
-        public ChromiumAndroidOptions(string androidPackage) : base(androidPackage)
-        {
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to use an already running app.
-        /// </summary>
-        public bool UseRunningApp { get; set; }
-
-        /// <summary>
-        /// Gets or sets the process name of the Activity hosting the app.
-        /// </summary>
-        public string? AndroidProcess { get; set; }
     }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to use an already running app.
+    /// </summary>
+    public bool UseRunningApp { get; set; }
+
+    /// <summary>
+    /// Gets or sets the process name of the Activity hosting the app.
+    /// </summary>
+    public string? AndroidProcess { get; set; }
 }

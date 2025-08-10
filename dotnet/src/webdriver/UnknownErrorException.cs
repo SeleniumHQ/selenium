@@ -19,31 +19,30 @@
 
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// An unknown error occurred in the remote end while processing the command.
+/// </summary>
+[Serializable]
+public class UnknownErrorException : WebDriverException
 {
     /// <summary>
-    /// An unknown error occurred in the remote end while processing the command.
+    /// Initializes a new instance of the <see cref="UnknownErrorException"/> class with the specified message.
     /// </summary>
-    [Serializable]
-    public class UnknownErrorException : WebDriverException
+    /// <param name="message">The message of the exception.</param>
+    public UnknownErrorException(string? message)
+        : base(message)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnknownErrorException"/> class with the specified message.
-        /// </summary>
-        /// <param name="message">The message of the exception.</param>
-        public UnknownErrorException(string? message)
-            : base(message)
-        {
-        }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnknownErrorException"/> class with the specified message and inner exception.
-        /// </summary>
-        /// <param name="message">The message of the exception.</param>
-        /// <param name="innerException">The inner exception for this exception.</param>
-        public UnknownErrorException(string? message, Exception? innerException)
-            : base(message, innerException)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UnknownErrorException"/> class with the specified message and inner exception.
+    /// </summary>
+    /// <param name="message">The message of the exception.</param>
+    /// <param name="innerException">The inner exception for this exception.</param>
+    public UnknownErrorException(string? message, Exception? innerException)
+        : base(message, innerException)
+    {
     }
 }

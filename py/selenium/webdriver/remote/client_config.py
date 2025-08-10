@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import base64
 import os
 import socket
@@ -23,8 +24,7 @@ from urllib import parse
 
 import certifi
 
-from selenium.webdriver.common.proxy import Proxy
-from selenium.webdriver.common.proxy import ProxyType
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 
 
 class AuthType(Enum):
@@ -96,23 +96,13 @@ class ClientConfig:
         self.proxy = proxy
         self.ignore_certificates = ignore_certificates
         self.init_args_for_pool_manager = init_args_for_pool_manager or {}
-        self.timeout = timeout
+        self.timeout = socket.getdefaulttimeout() if timeout is None else timeout
         self.username = username
         self.password = password
         self.auth_type = auth_type
         self.token = token
         self.user_agent = user_agent
         self.extra_headers = extra_headers
-
-        self.timeout = (
-            (
-                float(os.getenv("GLOBAL_DEFAULT_TIMEOUT", str(socket.getdefaulttimeout())))
-                if os.getenv("GLOBAL_DEFAULT_TIMEOUT") is not None
-                else socket.getdefaulttimeout()
-            )
-            if timeout is None
-            else timeout
-        )
 
         self.ca_certs = (
             (os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where())

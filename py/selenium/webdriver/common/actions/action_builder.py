@@ -15,9 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import Optional, Union
 
 from selenium.webdriver.remote.command import Command
 
@@ -63,11 +61,11 @@ class ActionBuilder:
         return next(filter(lambda x: x == name, self.devices), None)
 
     @property
-    def pointer_inputs(self) -> List[PointerInput]:
+    def pointer_inputs(self) -> list[PointerInput]:
         return [device for device in self.devices if device.type == interaction.POINTER]
 
     @property
-    def key_inputs(self) -> List[KeyInput]:
+    def key_inputs(self) -> list[KeyInput]:
         return [device for device in self.devices if device.type == interaction.KEY]
 
     @property
@@ -159,7 +157,7 @@ class ActionBuilder:
         >>> action_builder = ActionBuilder(driver)
         >>> keyboard = action_builder.key_input
         >>> el = driver.find_element(id: "some_id")
-        >>> action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys('keys').perform()
+        >>> action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys").perform()
         """
         enc = {"actions": []}
         for device in self.devices:
@@ -177,7 +175,7 @@ class ActionBuilder:
         >>> action_builder = ActionBuilder(driver)
         >>> keyboard = action_builder.key_input
         >>> el = driver.find_element(By.ID, "some_id")
-        >>> action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys('keys')
+        >>> action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys")
         >>> action_builder.clear_actions()
         """
         self.driver.execute(Command.W3C_CLEAR_ACTIONS)

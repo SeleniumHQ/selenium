@@ -31,7 +31,7 @@ class PointerActions(Interaction):
         - source: PointerInput instance
         - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in source
         """
-        if not source:
+        if source is None:
             source = PointerInput(interaction.POINTER_MOUSE, "mouse")
         self.source = source
         self._duration = duration

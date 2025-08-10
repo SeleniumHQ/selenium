@@ -19,43 +19,42 @@
 
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// The exception that is thrown when a shadow root is not found.
+/// </summary>
+[Serializable]
+public class NoSuchShadowRootException : NotFoundException
 {
     /// <summary>
-    /// The exception that is thrown when a shadow root is not found.
+    /// Initializes a new instance of the <see cref="NoSuchShadowRootException"/> class.
     /// </summary>
-    [Serializable]
-    public class NoSuchShadowRootException : NotFoundException
+    public NoSuchShadowRootException()
+        : base()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NoSuchShadowRootException"/> class.
-        /// </summary>
-        public NoSuchShadowRootException()
-            : base()
-        {
-        }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NoSuchShadowRootException"/> class with
-        /// a specified error message.
-        /// </summary>
-        /// <param name="message">The message that describes the error.</param>
-        public NoSuchShadowRootException(string? message)
-            : base(message)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NoSuchShadowRootException"/> class with
+    /// a specified error message.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    public NoSuchShadowRootException(string? message)
+        : base(message)
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NoSuchShadowRootException"/> class with
-        /// a specified error message and a reference to the inner exception that is the
-        /// cause of this exception.
-        /// </summary>
-        /// <param name="message">The error message that explains the reason for the exception.</param>
-        /// <param name="innerException">The exception that is the cause of the current exception,
-        /// or <see langword="null"/> if no inner exception is specified.</param>
-        public NoSuchShadowRootException(string? message, Exception? innerException)
-            : base(message, innerException)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NoSuchShadowRootException"/> class with
+    /// a specified error message and a reference to the inner exception that is the
+    /// cause of this exception.
+    /// </summary>
+    /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception,
+    /// or <see langword="null"/> if no inner exception is specified.</param>
+    public NoSuchShadowRootException(string? message, Exception? innerException)
+        : base(message, innerException)
+    {
     }
 }

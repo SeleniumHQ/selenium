@@ -45,10 +45,9 @@ import org.openqa.selenium.support.pagefactory.ByAll;
 public @interface FindAll {
   FindBy[] value();
 
-  class FindByBuilder extends AbstractFindByBuilder {
+  class FindByBuilder extends AbstractFindByBuilder<FindAll> {
     @Override
-    public By buildIt(Object annotation, Field field) {
-      FindAll findBys = (FindAll) annotation;
+    public By buildIt(FindAll findBys, Field field) {
       assertValidFindAll(findBys);
 
       FindBy[] findByArray = findBys.value();

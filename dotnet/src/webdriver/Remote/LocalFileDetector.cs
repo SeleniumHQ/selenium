@@ -20,23 +20,22 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
-namespace OpenQA.Selenium.Remote
+namespace OpenQA.Selenium.Remote;
+
+/// <summary>
+/// Represents a file detector for determining whether a file
+/// must be uploaded to a remote server.
+/// </summary>
+public class LocalFileDetector : IFileDetector
 {
     /// <summary>
-    /// Represents a file detector for determining whether a file
-    /// must be uploaded to a remote server.
+    /// Returns a value indicating whether a specified key sequence represents
+    /// a file name and path.
     /// </summary>
-    public class LocalFileDetector : IFileDetector
+    /// <param name="keySequence">The sequence to test for file existence.</param>
+    /// <returns><see langword="true"/> if the key sequence represents a file; otherwise, <see langword="false"/>.</returns>
+    public bool IsFile([NotNullWhen(true)] string? keySequence)
     {
-        /// <summary>
-        /// Returns a value indicating whether a specified key sequence represents
-        /// a file name and path.
-        /// </summary>
-        /// <param name="keySequence">The sequence to test for file existence.</param>
-        /// <returns><see langword="true"/> if the key sequence represents a file; otherwise, <see langword="false"/>.</returns>
-        public bool IsFile([NotNullWhen(true)] string? keySequence)
-        {
-            return File.Exists(keySequence);
-        }
+        return File.Exists(keySequence);
     }
 }

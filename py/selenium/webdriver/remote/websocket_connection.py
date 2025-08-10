@@ -22,6 +22,8 @@ from time import sleep
 
 from websocket import WebSocketApp  # type: ignore
 
+from selenium.common import WebDriverException
+
 logger = logging.getLogger(__name__)
 
 
@@ -60,11 +62,17 @@ class WebSocketConnection:
         logger.debug(f"-> {data}"[: self._max_log_message_size])
         self._ws.send(data)
 
-        self._wait_until(lambda: self._id in self._messages)
-        response = self._messages.pop(self._id)
+        current_id = self._id
+        self._wait_until(lambda: current_id in self._messages)
+        response = self._messages.pop(current_id)
 
         if "error" in response:
-            raise Exception(response["error"])
+            error = response["error"]
+            if "message" in response:
+                error_msg = f"{error}: {response['message']}"
+                raise WebDriverException(error_msg)
+            else:
+                raise WebDriverException(error)
         else:
             result = response["result"]
             return self._deserialize_result(result, command)
@@ -96,7 +104,7 @@ class WebSocketConnection:
     def _deserialize_result(self, result, command):
         try:
             _ = command.send(result)
-            raise Exception("The command's generator function did not exit when expected!")
+            raise WebDriverException("The command's generator function did not exit when expected!")
         except StopIteration as exit:
             return exit.value
 
@@ -131,7 +139,7 @@ class WebSocketConnection:
         if "method" in message:
             params = message["params"]
             for callback in self.callbacks.get(message["method"], []):
-                callback(params)
+                Thread(target=callback, args=(params,)).start()
 
     def _wait_until(self, condition):
         timeout = self._response_wait_timeout

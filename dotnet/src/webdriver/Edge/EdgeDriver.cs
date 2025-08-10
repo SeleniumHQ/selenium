@@ -23,142 +23,141 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace OpenQA.Selenium.Edge
+namespace OpenQA.Selenium.Edge;
+
+/// <summary>
+/// Provides a mechanism to write tests against Edge
+/// </summary>
+public class EdgeDriver : ChromiumDriver
 {
-    /// <summary>
-    /// Provides a mechanism to write tests against Edge
-    /// </summary>
-    public class EdgeDriver : ChromiumDriver
+    private static readonly Dictionary<string, CommandInfo> edgeCustomCommands = new Dictionary<string, CommandInfo>()
     {
-        private static readonly Dictionary<string, CommandInfo> edgeCustomCommands = new Dictionary<string, CommandInfo>()
-        {
-            { ExecuteCdp, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cdp/execute") },
-            { GetCastSinksCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/ms/cast/get_sinks") },
-            { SelectCastSinkCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/set_sink_to_use") },
-            { StartCastTabMirroringCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/start_tab_mirroring") },
-            { StartCastDesktopMirroringCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/start_desktop_mirroring") },
-            { GetCastIssueMessageCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/ms/cast/get_issue_message") },
-            { StopCastingCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/stop_casting") }
-        };
+        { ExecuteCdp, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cdp/execute") },
+        { GetCastSinksCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/ms/cast/get_sinks") },
+        { SelectCastSinkCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/set_sink_to_use") },
+        { StartCastTabMirroringCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/start_tab_mirroring") },
+        { StartCastDesktopMirroringCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/start_desktop_mirroring") },
+        { GetCastIssueMessageCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/ms/cast/get_issue_message") },
+        { StopCastingCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/stop_casting") }
+    };
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class.
-        /// </summary>
-        public EdgeDriver()
-            : this(new EdgeOptions())
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EdgeDriver"/> class.
+    /// </summary>
+    public EdgeDriver()
+        : this(new EdgeOptions())
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified options.
-        /// </summary>
-        /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
-        public EdgeDriver(EdgeOptions options)
-            : this(EdgeDriverService.CreateDefaultService(), options)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified options.
+    /// </summary>
+    /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
+    public EdgeDriver(EdgeOptions options)
+        : this(EdgeDriverService.CreateDefaultService(), options)
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified driver service.
-        /// </summary>
-        /// <param name="service">The <see cref="EdgeDriverService"/> used to initialize the driver.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="service"/> is <see langword="null"/>.</exception>
-        public EdgeDriver(EdgeDriverService service)
-            : this(service, new EdgeOptions())
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified driver service.
+    /// </summary>
+    /// <param name="service">The <see cref="EdgeDriverService"/> used to initialize the driver.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="service"/> is <see langword="null"/>.</exception>
+    public EdgeDriver(EdgeDriverService service)
+        : this(service, new EdgeOptions())
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
-        /// to the directory containing the WebDriver executable.
-        /// </summary>
-        /// <param name="edgeDriverDirectory">The full path to the directory containing the WebDriver executable.</param>
-        public EdgeDriver(string edgeDriverDirectory)
-            : this(edgeDriverDirectory, new EdgeOptions())
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
+    /// to the directory containing the WebDriver executable.
+    /// </summary>
+    /// <param name="edgeDriverDirectory">The full path to the directory containing the WebDriver executable.</param>
+    public EdgeDriver(string edgeDriverDirectory)
+        : this(edgeDriverDirectory, new EdgeOptions())
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
-        /// to the directory containing the WebDriver executable and options.
-        /// </summary>
-        /// <param name="edgeDriverDirectory">The full path to the directory containing the WebDriver executable.</param>
-        /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
-        public EdgeDriver(string edgeDriverDirectory, EdgeOptions options)
-            : this(edgeDriverDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
+    /// to the directory containing the WebDriver executable and options.
+    /// </summary>
+    /// <param name="edgeDriverDirectory">The full path to the directory containing the WebDriver executable.</param>
+    /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
+    public EdgeDriver(string edgeDriverDirectory, EdgeOptions options)
+        : this(edgeDriverDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
-        /// to the directory containing the WebDriver executable, options, and command timeout.
-        /// </summary>
-        /// <param name="edgeDriverDirectory">The full path to the directory containing the WebDriver executable.</param>
-        /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
-        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
-        public EdgeDriver(string edgeDriverDirectory, EdgeOptions options, TimeSpan commandTimeout)
-            : this(EdgeDriverService.CreateDefaultService(edgeDriverDirectory), options, commandTimeout)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
+    /// to the directory containing the WebDriver executable, options, and command timeout.
+    /// </summary>
+    /// <param name="edgeDriverDirectory">The full path to the directory containing the WebDriver executable.</param>
+    /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
+    /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
+    public EdgeDriver(string edgeDriverDirectory, EdgeOptions options, TimeSpan commandTimeout)
+        : this(EdgeDriverService.CreateDefaultService(edgeDriverDirectory), options, commandTimeout)
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified
-        /// <see cref="EdgeDriverService"/> and options.
-        /// </summary>
-        /// <param name="service">The <see cref="EdgeDriverService"/> to use.</param>
-        /// <param name="options">The <see cref="EdgeOptions"/> used to initialize the driver.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="service"/> or <paramref name="options"/> are <see langword="null"/>.</exception>
-        public EdgeDriver(EdgeDriverService service, EdgeOptions options)
-            : this(service, options, RemoteWebDriver.DefaultCommandTimeout)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified
+    /// <see cref="EdgeDriverService"/> and options.
+    /// </summary>
+    /// <param name="service">The <see cref="EdgeDriverService"/> to use.</param>
+    /// <param name="options">The <see cref="EdgeOptions"/> used to initialize the driver.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="service"/> or <paramref name="options"/> are <see langword="null"/>.</exception>
+    public EdgeDriver(EdgeDriverService service, EdgeOptions options)
+        : this(service, options, RemoteWebDriver.DefaultCommandTimeout)
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified <see cref="EdgeDriverService"/>.
-        /// </summary>
-        /// <param name="service">The <see cref="EdgeDriverService"/> to use.</param>
-        /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
-        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="service"/> or <paramref name="options"/> are <see langword="null"/>.</exception>
-        public EdgeDriver(EdgeDriverService service, EdgeOptions options, TimeSpan commandTimeout)
-            : base(service, options, commandTimeout)
-        {
-            this.AddCustomEdgeCommands();
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified <see cref="EdgeDriverService"/>.
+    /// </summary>
+    /// <param name="service">The <see cref="EdgeDriverService"/> to use.</param>
+    /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
+    /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="service"/> or <paramref name="options"/> are <see langword="null"/>.</exception>
+    public EdgeDriver(EdgeDriverService service, EdgeOptions options, TimeSpan commandTimeout)
+        : base(service, options, commandTimeout)
+    {
+        this.AddCustomEdgeCommands();
+    }
 
-        /// <summary>
-        /// Gets a read-only dictionary of the custom WebDriver commands defined for ChromeDriver.
-        /// The keys of the dictionary are the names assigned to the command; the values are the
-        /// <see cref="CommandInfo"/> objects describing the command behavior.
-        /// </summary>
-        public static IReadOnlyDictionary<string, CommandInfo> CustomCommandDefinitions
+    /// <summary>
+    /// Gets a read-only dictionary of the custom WebDriver commands defined for ChromeDriver.
+    /// The keys of the dictionary are the names assigned to the command; the values are the
+    /// <see cref="CommandInfo"/> objects describing the command behavior.
+    /// </summary>
+    public static IReadOnlyDictionary<string, CommandInfo> CustomCommandDefinitions
+    {
+        get
         {
-            get
+            Dictionary<string, CommandInfo> customCommands = new Dictionary<string, CommandInfo>();
+            foreach (KeyValuePair<string, CommandInfo> entry in ChromiumCustomCommands)
             {
-                Dictionary<string, CommandInfo> customCommands = new Dictionary<string, CommandInfo>();
-                foreach (KeyValuePair<string, CommandInfo> entry in ChromiumCustomCommands)
-                {
-                    customCommands[entry.Key] = entry.Value;
-                }
-
-                foreach (KeyValuePair<string, CommandInfo> entry in edgeCustomCommands)
-                {
-                    customCommands[entry.Key] = entry.Value;
-                }
-
-                return new ReadOnlyDictionary<string, CommandInfo>(customCommands);
+                customCommands[entry.Key] = entry.Value;
             }
-        }
 
-        private void AddCustomEdgeCommands()
-        {
-            foreach (KeyValuePair<string, CommandInfo> entry in CustomCommandDefinitions)
+            foreach (KeyValuePair<string, CommandInfo> entry in edgeCustomCommands)
             {
-                this.RegisterInternalDriverCommand(entry.Key, entry.Value);
+                customCommands[entry.Key] = entry.Value;
             }
+
+            return new ReadOnlyDictionary<string, CommandInfo>(customCommands);
+        }
+    }
+
+    private void AddCustomEdgeCommands()
+    {
+        foreach (KeyValuePair<string, CommandInfo> entry in CustomCommandDefinitions)
+        {
+            this.RegisterInternalDriverCommand(entry.Key, entry.Value);
         }
     }
 }

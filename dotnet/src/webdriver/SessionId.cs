@@ -19,51 +19,50 @@
 
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Provides a mechanism for maintaining a session for a test
+/// </summary>
+public class SessionId
 {
+    private readonly string sessionOpaqueKey;
+
     /// <summary>
-    /// Provides a mechanism for maintaining a session for a test
+    /// Initializes a new instance of the <see cref="SessionId"/> class
     /// </summary>
-    public class SessionId
+    /// <param name="opaqueKey">Key for the session in use</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="opaqueKey"/> is <see langword="null"/>.</exception>
+    public SessionId(string opaqueKey)
     {
-        private readonly string sessionOpaqueKey;
+        this.sessionOpaqueKey = opaqueKey ?? throw new ArgumentNullException(nameof(opaqueKey));
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SessionId"/> class
-        /// </summary>
-        /// <param name="opaqueKey">Key for the session in use</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="opaqueKey"/> is <see langword="null"/>.</exception>
-        public SessionId(string opaqueKey)
-        {
-            this.sessionOpaqueKey = opaqueKey ?? throw new ArgumentNullException(nameof(opaqueKey));
-        }
+    /// <summary>
+    /// Get the value of the key
+    /// </summary>
+    /// <returns>The key in use</returns>
+    public override string ToString()
+    {
+        return this.sessionOpaqueKey;
+    }
 
-        /// <summary>
-        /// Get the value of the key
-        /// </summary>
-        /// <returns>The key in use</returns>
-        public override string ToString()
-        {
-            return this.sessionOpaqueKey;
-        }
+    /// <summary>
+    /// Get the hash code of the key
+    /// </summary>
+    /// <returns>The hash code of the key</returns>
+    public override int GetHashCode()
+    {
+        return this.sessionOpaqueKey.GetHashCode();
+    }
 
-        /// <summary>
-        /// Get the hash code of the key
-        /// </summary>
-        /// <returns>The hash code of the key</returns>
-        public override int GetHashCode()
-        {
-            return this.sessionOpaqueKey.GetHashCode();
-        }
-
-        /// <summary>
-        /// Indicates whether the current session ID value is the same as <paramref name="obj"/>.
-        /// </summary>
-        /// <param name="obj">The session to compare to.</param>
-        /// <returns><see langword="true"/> if the values are equal; otherwise, <see langword="false"/>.</returns>
-        public override bool Equals(object? obj)
-        {
-            return obj is SessionId otherSession && this.sessionOpaqueKey.Equals(otherSession.sessionOpaqueKey);
-        }
+    /// <summary>
+    /// Indicates whether the current session ID value is the same as <paramref name="obj"/>.
+    /// </summary>
+    /// <param name="obj">The session to compare to.</param>
+    /// <returns><see langword="true"/> if the values are equal; otherwise, <see langword="false"/>.</returns>
+    public override bool Equals(object? obj)
+    {
+        return obj is SessionId otherSession && this.sessionOpaqueKey.Equals(otherSession.sessionOpaqueKey);
     }
 }

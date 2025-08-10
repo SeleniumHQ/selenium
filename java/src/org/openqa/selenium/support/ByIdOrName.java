@@ -20,11 +20,13 @@ package org.openqa.selenium.support;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
+@NullMarked
 public class ByIdOrName extends By implements Serializable {
 
   private static final long serialVersionUID = 3986638402799576701L;

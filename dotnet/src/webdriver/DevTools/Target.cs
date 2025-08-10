@@ -21,85 +21,84 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Class representing a target for DevTools Protocol commands
+/// </summary>
+public abstract class Target
 {
     /// <summary>
-    /// Class representing a target for DevTools Protocol commands
+    /// Occurs when a target is detached.
     /// </summary>
-    public abstract class Target
+    public event EventHandler<TargetDetachedEventArgs>? TargetDetached;
+
+    /// <summary>
+    /// Occurs when a target is attached.
+    /// </summary>
+    public event EventHandler<TargetAttachedEventArgs>? TargetAttached;
+
+    /// <summary>
+    /// Asynchronously gets the targets available for this session.
+    /// </summary>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result
+    /// contains the list of <see cref="TargetInfo"/> objects describing the
+    /// targets available for this session.
+    /// </returns>
+    public abstract Task<ReadOnlyCollection<TargetInfo>> GetTargets(object? settings = null);
+
+    /// <summary>
+    /// Asynchronously attaches to a target.
+    /// </summary>
+    /// <param name="targetId">The ID of the target to which to attach.</param>
+    /// <returns>
+    /// A task representing the asynchronous attach operation. The task result contains the
+    /// session ID established for commands to the target attached to.
+    /// </returns>
+    public abstract Task<string> AttachToTarget(string targetId);
+
+    /// <summary>
+    /// Asynchronously detaches from a target.
+    /// </summary>
+    /// <param name="sessionId">The ID of the session of the target from which to detach.</param>
+    /// <param name="targetId">The ID of the target from which to detach.</param>
+    /// <returns>
+    /// A task representing the asynchronous detach operation.
+    /// </returns>
+    public abstract Task DetachFromTarget(string? sessionId = null, string? targetId = null);
+
+    /// <summary>
+    /// Asynchronously sets the DevTools Protocol connection to automatically attach to new targets.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public abstract Task SetAutoAttach();
+
+    internal abstract ICommand CreateSetAutoAttachCommand(bool waitForDebuggerOnStart);
+
+    internal abstract ICommand CreateDiscoverTargetsCommand();
+
+    /// <summary>
+    /// Raises the TargetDetached event.
+    /// </summary>
+    /// <param name="e">An <see cref="TargetDetachedEventArgs"/> that contains the event data.</param>
+    protected virtual void OnTargetDetached(TargetDetachedEventArgs e)
     {
-        /// <summary>
-        /// Occurs when a target is detached.
-        /// </summary>
-        public event EventHandler<TargetDetachedEventArgs>? TargetDetached;
-
-        /// <summary>
-        /// Occurs when a target is attached.
-        /// </summary>
-        public event EventHandler<TargetAttachedEventArgs>? TargetAttached;
-
-        /// <summary>
-        /// Asynchronously gets the targets available for this session.
-        /// </summary>
-        /// <returns>
-        /// A task that represents the asynchronous operation. The task result
-        /// contains the list of <see cref="TargetInfo"/> objects describing the
-        /// targets available for this session.
-        /// </returns>
-        public abstract Task<ReadOnlyCollection<TargetInfo>> GetTargets(object? settings = null);
-
-        /// <summary>
-        /// Asynchronously attaches to a target.
-        /// </summary>
-        /// <param name="targetId">The ID of the target to which to attach.</param>
-        /// <returns>
-        /// A task representing the asynchronous attach operation. The task result contains the
-        /// session ID established for commands to the target attached to.
-        /// </returns>
-        public abstract Task<string> AttachToTarget(string targetId);
-
-        /// <summary>
-        /// Asynchronously detaches from a target.
-        /// </summary>
-        /// <param name="sessionId">The ID of the session of the target from which to detach.</param>
-        /// <param name="targetId">The ID of the target from which to detach.</param>
-        /// <returns>
-        /// A task representing the asynchronous detach operation.
-        /// </returns>
-        public abstract Task DetachFromTarget(string? sessionId = null, string? targetId = null);
-
-        /// <summary>
-        /// Asynchronously sets the DevTools Protocol connection to automatically attach to new targets.
-        /// </summary>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        public abstract Task SetAutoAttach();
-
-        internal abstract ICommand CreateSetAutoAttachCommand(bool waitForDebuggerOnStart);
-
-        internal abstract ICommand CreateDiscoverTargetsCommand();
-
-        /// <summary>
-        /// Raises the TargetDetached event.
-        /// </summary>
-        /// <param name="e">An <see cref="TargetDetachedEventArgs"/> that contains the event data.</param>
-        protected virtual void OnTargetDetached(TargetDetachedEventArgs e)
+        if (this.TargetDetached != null)
         {
-            if (this.TargetDetached != null)
-            {
-                this.TargetDetached(this, e);
-            }
+            this.TargetDetached(this, e);
         }
+    }
 
-        /// <summary>
-        /// Raises the TargetAttached event.
-        /// </summary>
-        /// <param name="e"></param>
-        protected virtual void OnTargetAttached(TargetAttachedEventArgs e)
+    /// <summary>
+    /// Raises the TargetAttached event.
+    /// </summary>
+    /// <param name="e"></param>
+    protected virtual void OnTargetAttached(TargetAttachedEventArgs e)
+    {
+        if (this.TargetAttached != null)
         {
-            if (this.TargetAttached != null)
-            {
-                this.TargetAttached(this, e);
-            }
+            this.TargetAttached(this, e);
         }
     }
 }

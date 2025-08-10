@@ -17,6 +17,7 @@
 
 """A simple web server for testing purpose.
 It serves the testing html pages that are needed by the webdriver unit tests."""
+
 import contextlib
 import logging
 import os
@@ -28,12 +29,10 @@ try:
 except ImportError:
     import urllib as urllib_request
 try:
-    from http.server import BaseHTTPRequestHandler
-    from http.server import HTTPServer
+    from http.server import BaseHTTPRequestHandler, HTTPServer
     from socketserver import ThreadingMixIn
 except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler
-    from BaseHTTPServer import HTTPServer
+    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
     from SocketServer import ThreadingMixIn
 
 

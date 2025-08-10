@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.internal;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -161,11 +160,6 @@ public final class Require {
     return new IntChecker(argName, number);
   }
 
-  @Deprecated(forRemoval = true)
-  public static FileChecker argument(String argName, @Nullable File file) {
-    return new FileChecker(argName, file);
-  }
-
   public static PathChecker argument(String argName, @Nullable Path path) {
     return new PathChecker(argName, path);
   }
@@ -178,11 +172,6 @@ public final class Require {
 
   public static <T> StateChecker<T> state(String name, @Nullable T state) {
     return new StateChecker<>(name, state);
-  }
-
-  @Deprecated(forRemoval = true)
-  public static FileStateChecker state(String name, @Nullable File file) {
-    return new FileStateChecker(name, file);
   }
 
   public static PathStateChecker state(String name, @Nullable Path path) {
@@ -252,48 +241,6 @@ public final class Require {
         throw new IllegalArgumentException(message);
       }
       return number;
-    }
-  }
-
-  @Deprecated(forRemoval = true)
-  public static class FileChecker {
-
-    private final String argName;
-    private final @Nullable File file;
-
-    FileChecker(String argName, @Nullable File file) {
-      this.argName = argName;
-      this.file = file;
-    }
-
-    public File isFile() {
-      if (file == null) {
-        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
-      }
-      if (!file.exists()) {
-        throw new IllegalArgumentException(
-            String.format(MUST_EXIST, argName, file.getAbsolutePath()));
-      }
-      if (!file.isFile()) {
-        throw new IllegalArgumentException(
-            String.format(MUST_BE_FILE, argName, file.getAbsolutePath()));
-      }
-      return file;
-    }
-
-    public File isDirectory() {
-      if (file == null) {
-        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
-      }
-      if (!file.exists()) {
-        throw new IllegalArgumentException(
-            String.format(MUST_EXIST, argName, file.getAbsolutePath()));
-      }
-      if (!file.isDirectory()) {
-        throw new IllegalArgumentException(
-            String.format(MUST_BE_DIR, argName, file.getAbsolutePath()));
-      }
-      return file;
     }
   }
 
@@ -370,58 +317,6 @@ public final class Require {
         throw new IllegalStateException(name + " must be an instance of " + cls);
       }
       return state;
-    }
-  }
-
-  @Deprecated(forRemoval = true)
-  public static class FileStateChecker {
-
-    private final String name;
-    private final @Nullable File file;
-
-    FileStateChecker(String name, @Nullable File file) {
-      this.name = name;
-      this.file = file;
-    }
-
-    public File isFile() {
-      if (file == null) {
-        throw new IllegalStateException(String.format(MUST_BE_SET, name));
-      }
-      if (!file.exists()) {
-        throw new IllegalStateException(String.format(MUST_EXIST, name, file.getAbsolutePath()));
-      }
-      if (!file.isFile()) {
-        throw new IllegalStateException(String.format(MUST_BE_FILE, name, file.getAbsolutePath()));
-      }
-      return file;
-    }
-
-    public File isDirectory() {
-      if (file == null) {
-        throw new IllegalStateException(String.format(MUST_BE_SET, name));
-      }
-      if (!file.exists()) {
-        throw new IllegalStateException(String.format(MUST_EXIST, name, file.getAbsolutePath()));
-      }
-      if (!file.isDirectory()) {
-        throw new IllegalStateException(String.format(MUST_BE_DIR, name, file.getAbsolutePath()));
-      }
-      return file;
-    }
-
-    public File isExecutable() {
-      if (file == null) {
-        throw new IllegalStateException(String.format(MUST_BE_SET, name));
-      }
-      if (!file.exists()) {
-        throw new IllegalStateException(String.format(MUST_EXIST, name, file.getAbsolutePath()));
-      }
-      if (!file.canExecute()) {
-        throw new IllegalStateException(
-            String.format(MUST_BE_EXECUTABLE, name, file.getAbsolutePath()));
-      }
-      return file;
     }
   }
 

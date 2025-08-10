@@ -19,19 +19,18 @@
 
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Interface determining whether the driver implementation allows detection of files
+/// when sending keystrokes to a file upload element.
+/// </summary>
+public interface IAllowsFileDetection
 {
     /// <summary>
-    /// Interface determining whether the driver implementation allows detection of files
-    /// when sending keystrokes to a file upload element.
+    /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+    /// sequences of keystrokes representing file paths and names.
     /// </summary>
-    public interface IAllowsFileDetection
-    {
-        /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
-        /// sequences of keystrokes representing file paths and names.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">If the value is set to <see langword="null"/>.</exception>
-        IFileDetector FileDetector { get; set; }
-    }
+    /// <exception cref="ArgumentNullException">If the value is set to <see langword="null"/>.</exception>
+    IFileDetector FileDetector { get; set; }
 }

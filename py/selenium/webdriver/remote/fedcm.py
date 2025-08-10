@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import List
 from typing import Optional
 
 from .command import Command
@@ -41,7 +40,7 @@ class FedCM:
         return self._driver.execute(Command.GET_FEDCM_DIALOG_TYPE).get("value")
 
     @property
-    def account_list(self) -> List[dict]:
+    def account_list(self) -> list[dict]:
         """Gets the list of accounts shown in the dialog."""
         return self._driver.execute(Command.GET_FEDCM_ACCOUNT_LIST).get("value")
 

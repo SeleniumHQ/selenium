@@ -31,7 +31,7 @@ import org.openqa.selenium.remote.tracing.TraceContext;
 public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.Tracer {
 
   private static final Logger LOG = Logger.getLogger(OpenTelemetryTracer.class.getName());
-  private static boolean HTTP_LOGS;
+  private static volatile boolean HTTP_LOGS;
 
   // We obtain the underlying tracer instance from the singleton instance
   // that OpenTelemetry maintains. If we blindly grabbed the tracing provider

@@ -18,8 +18,7 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
-using OpenQA.Selenium.BiDi.Modules.Network;
+using OpenQA.Selenium.BiDi.BrowsingContext;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
@@ -51,7 +50,7 @@ class NetworkTest : BiDiTestFixture
     [Test]
     public async Task CanAddInterceptUrlPattern()
     {
-        await using var intercept = await bidi.Network.InterceptRequestAsync(e => Task.CompletedTask, interceptOptions: new()
+        await using var intercept = await bidi.Network.InterceptRequestAsync(e => Task.CompletedTask, options: new()
         {
             UrlPatterns = [new PatternUrlPattern()
             {
@@ -67,11 +66,11 @@ class NetworkTest : BiDiTestFixture
     public async Task CanContinueRequest()
     {
         int times = 0;
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
         {
             times++;
 
-            await e.Request.Request.ContinueAsync();
+            await req.ContinueAsync();
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
@@ -85,11 +84,11 @@ class NetworkTest : BiDiTestFixture
     {
         int times = 0;
 
-        await using var intercept = await bidi.Network.InterceptResponseAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptResponseAsync(async res =>
         {
             times++;
 
-            await e.Request.Request.ContinueResponseAsync();
+            await res.ContinueAsync();
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
@@ -103,11 +102,11 @@ class NetworkTest : BiDiTestFixture
     {
         int times = 0;
 
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
         {
             times++;
 
-            await e.Request.Request.ProvideResponseAsync();
+            await req.ProvideResponseAsync();
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
@@ -121,11 +120,11 @@ class NetworkTest : BiDiTestFixture
     {
         int times = 0;
 
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
         {
             times++;
 
-            await e.Request.Request.ProvideResponseAsync(new() { Body = """
+            await req.ProvideResponseAsync(new() { Body = """
                 <html>
                     <head>
                         <title>Hello</title>
@@ -160,9 +159,9 @@ class NetworkTest : BiDiTestFixture
     [Test]
     public async Task CanContinueWithAuthCredentials()
     {
-        await using var intercept = await bidi.Network.InterceptAuthAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptAuthAsync(async auth =>
         {
-            await e.Request.Request.ContinueWithAuthAsync(new AuthCredentials("test", "test"));
+            await auth.ContinueAsync(new AuthCredentials("test", "test"));
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
@@ -174,9 +173,9 @@ class NetworkTest : BiDiTestFixture
     [IgnoreBrowser(Selenium.Browser.Firefox)]
     public async Task CanContinueWithDefaultCredentials()
     {
-        await using var intercept = await bidi.Network.InterceptAuthAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptAuthAsync(async auth =>
         {
-            await e.Request.Request.ContinueWithAuthAsync(new ContinueWithAuthDefaultCredentialsOptions());
+            await auth.ContinueAsync(new ContinueWithAuthDefaultCredentialsOptions());
         });
 
         var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
@@ -188,9 +187,9 @@ class NetworkTest : BiDiTestFixture
     [IgnoreBrowser(Selenium.Browser.Firefox)]
     public async Task CanContinueWithCanceledCredentials()
     {
-        await using var intercept = await bidi.Network.InterceptAuthAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptAuthAsync(async auth =>
         {
-            await e.Request.Request.ContinueWithAuthAsync(new ContinueWithAuthCancelCredentialsOptions());
+            await auth.ContinueAsync(new ContinueWithAuthCancelCredentialsOptions());
         });
 
         var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
@@ -201,9 +200,9 @@ class NetworkTest : BiDiTestFixture
     [Test]
     public async Task CanFailRequest()
     {
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
         {
-            await e.Request.Request.FailAsync();
+            await req.FailAsync();
         });
 
         var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });

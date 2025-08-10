@@ -28,7 +28,7 @@ use std::path::{Path, PathBuf};
 
 #[allow(dead_code)]
 pub fn get_selenium_manager() -> Command {
-    let mut path = PathBuf::from(env!("CARGO_BIN_EXE_selenium-manager"));
+    let path = PathBuf::from(env!("CARGO_BIN_EXE_selenium-manager"));
 
     if path.exists() {
         return Command::new(path);

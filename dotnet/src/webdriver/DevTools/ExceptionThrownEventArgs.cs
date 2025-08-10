@@ -19,32 +19,31 @@
 
 using System;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Provides data for events relating to JavaScript exception handling.
+/// </summary>
+public class ExceptionThrownEventArgs : EventArgs
 {
     /// <summary>
-    /// Provides data for events relating to JavaScript exception handling.
+    /// Initializes new instance of the <see cref="ExceptionThrownEventArgs"/> type.
     /// </summary>
-    public class ExceptionThrownEventArgs : EventArgs
+    /// <param name="timestamp">The time stamp of the exception.</param>
+    /// <param name="message">The text of the exception.</param>
+    public ExceptionThrownEventArgs(DateTime timestamp, string message)
     {
-        /// <summary>
-        /// Initializes new instance of the <see cref="ExceptionThrownEventArgs"/> type.
-        /// </summary>
-        /// <param name="timestamp">The time stamp of the exception.</param>
-        /// <param name="message">The text of the exception.</param>
-        public ExceptionThrownEventArgs(DateTime timestamp, string message)
-        {
-            Timestamp = timestamp;
-            Message = message;
-        }
-
-        /// <summary>
-        /// Gets the time stamp of the exception.
-        /// </summary>
-        public DateTime Timestamp { get; }
-
-        /// <summary>
-        /// Gets the text of the exception.
-        /// </summary>
-        public string Message { get; }
+        Timestamp = timestamp;
+        Message = message;
     }
+
+    /// <summary>
+    /// Gets the time stamp of the exception.
+    /// </summary>
+    public DateTime Timestamp { get; }
+
+    /// <summary>
+    /// Gets the text of the exception.
+    /// </summary>
+    public string Message { get; }
 }

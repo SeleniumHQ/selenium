@@ -16,8 +16,6 @@
 # under the License.
 
 from typing import Any
-from typing import List
-from typing import Tuple
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -47,7 +45,8 @@ class EventFiringWebDriver:
 
         :Args:
          - driver : A WebDriver instance
-         - event_listener : Instance of a class that subclasses AbstractEventListener and implements it fully or partially
+         - event_listener : Instance of a class that subclasses AbstractEventListener and implements it fully
+                            or partially
 
         Example:
 
@@ -56,11 +55,14 @@ class EventFiringWebDriver:
             from selenium.webdriver import Firefox
             from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
 
+
             class MyListener(AbstractEventListener):
                 def before_navigate_to(self, url, driver):
                     print("Before navigate to %s" % url)
+
                 def after_navigate_to(self, url, driver):
                     print("After navigate to %s" % url)
+
 
             driver = Firefox()
             ef_driver = EventFiringWebDriver(driver, MyListener())
@@ -89,7 +91,7 @@ class EventFiringWebDriver:
     def forward(self) -> None:
         self._dispatch("navigate_forward", (self._driver,), "forward", ())
 
-    def execute_script(self, script, *args):
+    def execute_script(self, script: str, *args):
         unwrapped_args = (script,) + self._unwrap_element_args(args)
         return self._dispatch("execute_script", (script, self._driver), "execute_script", unwrapped_args)
 
@@ -106,10 +108,10 @@ class EventFiringWebDriver:
     def find_element(self, by=By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
+    def find_elements(self, by=By.ID, value=None) -> list[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
-    def _dispatch(self, l_call: str, l_args: Tuple[Any, ...], d_call: str, d_args: Tuple[Any, ...]):
+    def _dispatch(self, l_call: str, l_args: tuple[Any, ...], d_call: str, d_args: tuple[Any, ...]):
         getattr(self._listener, f"before_{l_call}")(*l_args)
         try:
             result = getattr(self._driver, d_call)(*d_args)
@@ -188,7 +190,7 @@ class EventFiringWebElement:
     def find_element(self, by=By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
+    def find_elements(self, by=By.ID, value=None) -> list[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
     def _dispatch(self, l_call, l_args, d_call, d_args):

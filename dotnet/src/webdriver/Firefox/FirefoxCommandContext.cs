@@ -17,23 +17,22 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Firefox
+namespace OpenQA.Selenium.Firefox;
+
+/// <summary>
+/// Represents the valid values for the command context used for executing Firefox driver commands.
+/// </summary>
+public enum FirefoxCommandContext
 {
     /// <summary>
-    /// Represents the valid values for the command context used for executing Firefox driver commands.
+    /// Commands will be sent to the content context, operating on the
+    /// page loaded in the browser.
     /// </summary>
-    public enum FirefoxCommandContext
-    {
-        /// <summary>
-        /// Commands will be sent to the content context, operating on the
-        /// page loaded in the browser.
-        /// </summary>
-        Content,
+    Content,
 
-        /// <summary>
-        /// Commands will be sent to the chrome context, operating on the
-        /// browser elements hosting the page loaded in the browser.
-        /// </summary>
-        Chrome
-    }
+    /// <summary>
+    /// Commands will be sent to the chrome context, operating on the
+    /// browser elements hosting the page loaded in the browser.
+    /// </summary>
+    Chrome
 }

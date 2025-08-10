@@ -1,3 +1,55 @@
+v4.34.0
+======
+* Add CDP for Chrome 138 and remove 135
+* Removing deprecated BrowsingContext constructor.
+* [grid] Silent fail on invalid log level (#15796)
+* Removing deprecated OsProcess class.
+* Removing deprecated CommandLine class.
+* Removing deprecated ContextAware interface.
+* Fixing `getCredential` for VirtualAuthenticator
+* Caching the size/length in loops to slightly improve performance (#15852)
+* [feature] add method RemoteWebDriver.isDownloadsEnabled() (#15868)
+* [refactor] use constant `CapabilityType.ENABLE_DOWNLOADS` instead of hard-coded value `se:downloadsEnabled` (#15867)
+* [bidi] Add new fields of BrowsingContextInfo
+* [bidi]Add method to get browsing context tree with root
+* [grid] Add GreedySlotSelector as a built-in slot-selector option (#15897)
+* deprecate FtpProxy (#15907)
+* [BiDi] implement browsingContext.historyUpdated (#15901)
+* [refactor] Remove Empty Space in CommandPayload (#15934)
+* [FEAT] Add macOS-specific keys (OPTION, FN) to Keys enum for improved… (#15910)
+* [BiDi] implement web extensions (#15660)
+* Made ``JsonToWebElementConverter`` methods/fields protected (#15885)
+* [grid] Session can be deleted via Grid UI (#15808)
+* Use Environment variable to set driver location (#15653)
+
+v4.33.0
+======
+* Add CDP for Chrome 137 and remove 134
+* Removing deprecated items in Require.java (#15711)
+* Removing RemoteStatus as it was deprecated. (#15712)
+* Fix spotbugs issues
+* fix autoclose casting
+* Use immutable values for return values
+* Deprecating methods that use FirefoxBinary as well.
+* Removing deprecated NATIVE_EVENTS field
+* Removing deprecated SlowLoadableComponent constructor
+* Removing deprecated implicitlyWait timeout
+* Removing unused IME_ACTIVATE_ENGINE.
+* Removing deprecated `setScriptTimeout` and `pageLoadTimeout`. (#15764)
+* Reverting deprecation notice for `getAttribute`.
+* [grid] UI Sessions capability fields to display as additional columns (#15759)
+* [grid] UI Overview is able to see live preview per Node (#15777)
+
+v4.32.0
+======
+* Add CDP for Chrome 136 and remove 133
+* [grid] Dynamic Grid can enforce platform for node browser images
+* [grid] Ignored options when they are prefixed, safari specif as well (#15574)
+* [grid] Remove `browserName` capability from stereotype and SlotMatcher when using Relay Node to test a mobile application (#15537)
+* [bidi]: add browsingContext event `onNavigationCommitted` (#15560)
+* Set remote active protocol to BiDi for Firefox (#15224)
+* Add header while creating websocket (#15655)
+
 v4.31.0
 ======
 * Add CDP for Chrome 135 and remove 132
@@ -10,6 +62,7 @@ v4.31.0
 
 v4.30.0
 ======
+* Add CDP for Chrome 134 and remove 131
 * [grid] remove firefox devtools leftovers #15323
 * [grid] remove indirection in cache structures
 * [grid] remove not reachable code

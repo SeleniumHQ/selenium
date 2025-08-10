@@ -16,14 +16,11 @@
 # under the License.
 """Selenium type definitions."""
 
-from typing import IO
-from typing import Any
-from typing import Iterable
-from typing import Type
-from typing import Union
+from collections.abc import Iterable
+from typing import IO, Any, Union
 
 AnyKey = Union[str, int, float]
-WaitExcTypes = Iterable[Type[Exception]]
+WaitExcTypes = Iterable[type[Exception]]
 
 # Service Types
 SubprocessStdAlias = Union[int, str, IO[Any]]

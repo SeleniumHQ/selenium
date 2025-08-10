@@ -20,25 +20,24 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Allows a user to supply authentication information for network requests.
+/// </summary>
+public class NetworkAuthenticationHandler
 {
     /// <summary>
-    /// Allows a user to supply authentication information for network requests.
+    /// Gets or sets a function that takes a <see cref="Uri"/> object, and returns a
+    /// value indicating whether the supplied URI matches the specified criteria.
     /// </summary>
-    public class NetworkAuthenticationHandler
-    {
-        /// <summary>
-        /// Gets or sets a function that takes a <see cref="Uri"/> object, and returns a
-        /// value indicating whether the supplied URI matches the specified criteria.
-        /// </summary>
-        [DisallowNull]
-        public Func<Uri, bool>? UriMatcher { get; set; }
+    [DisallowNull]
+    public Func<Uri, bool>? UriMatcher { get; set; }
 
-        /// <summary>
-        /// Gets or sets the credentials to use when responding to an authentication request
-        /// that matches the specified criteria.
-        /// </summary>
-        [DisallowNull]
-        public ICredentials? Credentials { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the credentials to use when responding to an authentication request
+    /// that matches the specified criteria.
+    /// </summary>
+    [DisallowNull]
+    public ICredentials? Credentials { get; set; }
 }

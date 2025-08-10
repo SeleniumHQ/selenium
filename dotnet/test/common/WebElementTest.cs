@@ -19,152 +19,151 @@
 
 using NUnit.Framework;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+[TestFixture]
+public class WebElementTest : DriverTestFixture
 {
-    [TestFixture]
-    public class WebElementTest : DriverTestFixture
+    [Test]
+    public void ElementShouldImplementWrapsDriver()
     {
-        [Test]
-        public void ElementShouldImplementWrapsDriver()
-        {
-            driver.Url = simpleTestPage;
-            IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
-            Assert.That(parent, Is.InstanceOf<IWrapsDriver>());
-        }
+        driver.Url = simpleTestPage;
+        IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
+        Assert.That(parent, Is.InstanceOf<IWrapsDriver>());
+    }
 
-        [Test]
-        public void ElementShouldReturnOriginDriver()
-        {
-            driver.Url = simpleTestPage;
-            IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
-            Assert.That(((IWrapsDriver)parent).WrappedDriver, Is.EqualTo(driver));
-        }
+    [Test]
+    public void ElementShouldReturnOriginDriver()
+    {
+        driver.Url = simpleTestPage;
+        IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
+        Assert.That(((IWrapsDriver)parent).WrappedDriver, Is.EqualTo(driver));
+    }
 
-        //------------------------------------------------------------------
-        // Tests below here are not included in the Java test suite
-        //------------------------------------------------------------------
-        [Test]
-        public void ShouldToggleElementAndCheckIfElementIsSelected()
-        {
-            driver.Url = simpleTestPage;
-            IWebElement checkbox = driver.FindElement(By.Id("checkbox1"));
-            Assert.That(checkbox.Selected, Is.False);
-            checkbox.Click();
-            Assert.That(checkbox.Selected, Is.True);
-            checkbox.Click();
-            Assert.That(checkbox.Selected, Is.False);
-        }
+    //------------------------------------------------------------------
+    // Tests below here are not included in the Java test suite
+    //------------------------------------------------------------------
+    [Test]
+    public void ShouldToggleElementAndCheckIfElementIsSelected()
+    {
+        driver.Url = simpleTestPage;
+        IWebElement checkbox = driver.FindElement(By.Id("checkbox1"));
+        Assert.That(checkbox.Selected, Is.False);
+        checkbox.Click();
+        Assert.That(checkbox.Selected, Is.True);
+        checkbox.Click();
+        Assert.That(checkbox.Selected, Is.False);
+    }
 
-        [Test]
-        public void ShouldThrowExceptionOnNonExistingElement()
-        {
-            driver.Url = simpleTestPage;
-            Assert.That(() => driver.FindElement(By.Id("doesnotexist")), Throws.InstanceOf<NoSuchElementException>());
-        }
+    [Test]
+    public void ShouldThrowExceptionOnNonExistingElement()
+    {
+        driver.Url = simpleTestPage;
+        Assert.That(() => driver.FindElement(By.Id("doesnotexist")), Throws.InstanceOf<NoSuchElementException>());
+    }
 
-        [Test]
-        public void ShouldGetElementName()
-        {
-            driver.Url = simpleTestPage;
+    [Test]
+    public void ShouldGetElementName()
+    {
+        driver.Url = simpleTestPage;
 
-            IWebElement oneliner = driver.FindElement(By.Id("oneline"));
-            Assert.That(oneliner.TagName, Is.EqualTo("p").IgnoreCase);
+        IWebElement oneliner = driver.FindElement(By.Id("oneline"));
+        Assert.That(oneliner.TagName, Is.EqualTo("p").IgnoreCase);
 
-        }
+    }
 
-        [Test]
-        public void ShouldGetElementText()
-        {
-            driver.Url = simpleTestPage;
+    [Test]
+    public void ShouldGetElementText()
+    {
+        driver.Url = simpleTestPage;
 
-            IWebElement oneliner = driver.FindElement(By.Id("oneline"));
-            Assert.That(oneliner.Text, Is.EqualTo("A single line of text"));
+        IWebElement oneliner = driver.FindElement(By.Id("oneline"));
+        Assert.That(oneliner.Text, Is.EqualTo("A single line of text"));
 
-            IWebElement twoblocks = driver.FindElement(By.Id("twoblocks"));
-            Assert.That(twoblocks.Text, Is.EqualTo("Some text" +
-                System.Environment.NewLine +
-                "Some more text"));
+        IWebElement twoblocks = driver.FindElement(By.Id("twoblocks"));
+        Assert.That(twoblocks.Text, Is.EqualTo("Some text" +
+            System.Environment.NewLine +
+            "Some more text"));
 
-        }
+    }
 
-        [Test]
-        public void ShouldReturnWhetherElementIsDisplayed()
-        {
-            driver.Url = javascriptPage;
+    [Test]
+    public void ShouldReturnWhetherElementIsDisplayed()
+    {
+        driver.Url = javascriptPage;
 
-            IWebElement hidden = driver.FindElement(By.Id("hidden"));
-            Assert.That(hidden.Displayed, Is.False, "Element with ID 'hidden' should not be displayed");
+        IWebElement hidden = driver.FindElement(By.Id("hidden"));
+        Assert.That(hidden.Displayed, Is.False, "Element with ID 'hidden' should not be displayed");
 
-            IWebElement none = driver.FindElement(By.Id("none"));
-            Assert.That(none.Displayed, Is.False, "Element with ID 'none' should not be displayed");
+        IWebElement none = driver.FindElement(By.Id("none"));
+        Assert.That(none.Displayed, Is.False, "Element with ID 'none' should not be displayed");
 
-            IWebElement displayed = driver.FindElement(By.Id("displayed"));
-            Assert.That(displayed.Displayed, Is.True, "Element with ID 'displayed' should not be displayed");
-        }
+        IWebElement displayed = driver.FindElement(By.Id("displayed"));
+        Assert.That(displayed.Displayed, Is.True, "Element with ID 'displayed' should not be displayed");
+    }
 
-        [Test]
-        public void ShouldClearElement()
-        {
-            driver.Url = javascriptPage;
+    [Test]
+    public void ShouldClearElement()
+    {
+        driver.Url = javascriptPage;
 
-            IWebElement textbox = driver.FindElement(By.Id("keyUp"));
-            textbox.SendKeys("a@#$ç.ó");
-            textbox.Clear();
-            Assert.That(textbox.GetAttribute("value"), Is.Empty);
-        }
+        IWebElement textbox = driver.FindElement(By.Id("keyUp"));
+        textbox.SendKeys("a@#$ç.ó");
+        textbox.Clear();
+        Assert.That(textbox.GetAttribute("value"), Is.Empty);
+    }
 
-        [Test]
-        public void ShouldClearRenderedElement()
-        {
-            driver.Url = javascriptPage;
+    [Test]
+    public void ShouldClearRenderedElement()
+    {
+        driver.Url = javascriptPage;
 
-            IWebElement textbox = driver.FindElement(By.Id("keyUp"));
-            textbox.SendKeys("a@#$ç.ó");
-            textbox.Clear();
-            Assert.That(textbox.GetAttribute("value"), Is.Empty);
-        }
+        IWebElement textbox = driver.FindElement(By.Id("keyUp"));
+        textbox.SendKeys("a@#$ç.ó");
+        textbox.Clear();
+        Assert.That(textbox.GetAttribute("value"), Is.Empty);
+    }
 
-        [Test]
-        public void ShouldSendKeysToElement()
-        {
-            driver.Url = javascriptPage;
+    [Test]
+    public void ShouldSendKeysToElement()
+    {
+        driver.Url = javascriptPage;
 
-            IWebElement textbox = driver.FindElement(By.Id("keyUp"));
-            textbox.SendKeys("a@#$ç.ó");
-            Assert.That(textbox.GetAttribute("value"), Is.EqualTo("a@#$ç.ó"));
-        }
+        IWebElement textbox = driver.FindElement(By.Id("keyUp"));
+        textbox.SendKeys("a@#$ç.ó");
+        Assert.That(textbox.GetAttribute("value"), Is.EqualTo("a@#$ç.ó"));
+    }
 
-        [Test]
-        public void ShouldSubmitElement()
-        {
-            driver.Url = javascriptPage;
+    [Test]
+    public void ShouldSubmitElement()
+    {
+        driver.Url = javascriptPage;
 
-            IWebElement submit = driver.FindElement(By.Id("submittingButton"));
-            submit.Submit();
+        IWebElement submit = driver.FindElement(By.Id("submittingButton"));
+        submit.Submit();
 
-            Assert.That(driver.Url, Does.StartWith(resultPage));
-        }
+        Assert.That(driver.Url, Does.StartWith(resultPage));
+    }
 
-        [Test]
-        public void ShouldClickLinkElement()
-        {
-            driver.Url = javascriptPage;
-            IWebElement changedDiv = driver.FindElement(By.Id("dynamo"));
-            IWebElement link = driver.FindElement(By.LinkText("Update a div"));
-            link.Click();
-            Assert.That(changedDiv.Text, Is.EqualTo("Fish and chips!"));
-        }
+    [Test]
+    public void ShouldClickLinkElement()
+    {
+        driver.Url = javascriptPage;
+        IWebElement changedDiv = driver.FindElement(By.Id("dynamo"));
+        IWebElement link = driver.FindElement(By.LinkText("Update a div"));
+        link.Click();
+        Assert.That(changedDiv.Text, Is.EqualTo("Fish and chips!"));
+    }
 
-        [Test]
-        public void ShouldGetAttributesFromElement()
-        {
-            driver.Url = (javascriptPage);
+    [Test]
+    public void ShouldGetAttributesFromElement()
+    {
+        driver.Url = (javascriptPage);
 
-            IWebElement dynamo = driver.FindElement(By.Id("dynamo"));
-            IWebElement mousedown = driver.FindElement(By.Id("mousedown"));
-            Assert.That(mousedown.GetAttribute("id"), Is.EqualTo("mousedown"));
-            Assert.That(dynamo.GetAttribute("id"), Is.EqualTo("dynamo"));
+        IWebElement dynamo = driver.FindElement(By.Id("dynamo"));
+        IWebElement mousedown = driver.FindElement(By.Id("mousedown"));
+        Assert.That(mousedown.GetAttribute("id"), Is.EqualTo("mousedown"));
+        Assert.That(dynamo.GetAttribute("id"), Is.EqualTo("dynamo"));
 
-        }
     }
 }

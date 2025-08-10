@@ -1,4 +1,4 @@
-load("@contrib_rules_jvm//java:defs.bzl", "spotbugs_config")
+load("@contrib_rules_jvm//java:defs.bzl", "spotbugs_binary", "spotbugs_config")
 load(":defs.bzl", "artifact")
 
 exports_files(
@@ -34,11 +34,20 @@ java_library(
     ],
 )
 
+spotbugs_binary(
+    name = "spotbugs-cli",
+    runtime_deps = [
+        artifact("com.github.spotbugs:spotbugs"),
+        artifact("org.slf4j:slf4j-jdk14"),
+    ],
+)
+
 spotbugs_config(
     name = "spotbugs-config",
     effort = "default",
     exclude_filter = "spotbugs-excludes.xml",
     fail_on_warning = True,
+    spotbugs_binary = ":spotbugs-cli",
     visibility = [
         "//visibility:public",
     ],

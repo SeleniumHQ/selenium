@@ -18,7 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication.Json.Internal;
-using OpenQA.Selenium.BiDi.Modules.Log;
+using OpenQA.Selenium.BiDi.Log;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -26,9 +26,9 @@ using System.Text.Json.Serialization;
 namespace OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
 
 // https://github.com/dotnet/runtime/issues/72604
-internal class LogEntryConverter : JsonConverter<Modules.Log.LogEntry>
+internal class LogEntryConverter : JsonConverter<Log.LogEntry>
 {
-    public override Modules.Log.LogEntry? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override Log.LogEntry? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return reader.GetDiscriminator("type") switch
         {
@@ -38,7 +38,7 @@ internal class LogEntryConverter : JsonConverter<Modules.Log.LogEntry>
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, Modules.Log.LogEntry value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, Log.LogEntry value, JsonSerializerOptions options)
     {
         throw new NotImplementedException();
     }

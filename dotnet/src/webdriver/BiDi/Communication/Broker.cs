@@ -34,7 +34,7 @@ namespace OpenQA.Selenium.BiDi.Communication;
 
 public sealed class Broker : IAsyncDisposable
 {
-    private readonly ILogger _logger = Log.GetLogger<Broker>();
+    private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
     private readonly BiDi _bidi;
     private readonly ITransport _transport;
@@ -76,7 +76,7 @@ public sealed class Broker : IAsyncDisposable
                 new BrowserClientWindowConverter(),
                 new NavigationConverter(),
                 new InterceptConverter(_bidi),
-                new RequestConverter(_bidi),
+                new RequestConverter(),
                 new ChannelConverter(),
                 new HandleConverter(_bidi),
                 new InternalIdConverter(_bidi),
@@ -103,6 +103,7 @@ public sealed class Broker : IAsyncDisposable
                 new Json.Converters.Enumerable.GetUserContextsResultConverter(),
                 new Json.Converters.Enumerable.GetClientWindowsResultConverter(),
                 new Json.Converters.Enumerable.GetRealmsResultConverter(),
+                new Json.Converters.Enumerable.GetTreeResultConverter(),
             }
         };
 
@@ -176,12 +177,6 @@ public sealed class Broker : IAsyncDisposable
                 }
             }
         }
-    }
-
-    public async Task ExecuteCommandAsync<TCommand>(TCommand command, CommandOptions? options)
-        where TCommand : Command
-    {
-        await ExecuteCommandCoreAsync(command, options).ConfigureAwait(false);
     }
 
     public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options)
@@ -273,7 +268,7 @@ public sealed class Broker : IAsyncDisposable
         }
     }
 
-    public async Task UnsubscribeAsync(Modules.Session.Subscription subscription, EventHandler eventHandler)
+    public async Task UnsubscribeAsync(Session.Subscription subscription, EventHandler eventHandler)
     {
         var eventHandlers = _eventHandlers[eventHandler.EventName];
 
@@ -378,30 +373,49 @@ public sealed class Broker : IAsyncDisposable
             case "success":
                 if (id is null) throw new JsonException("The remote end responded with 'success' message type, but missed required 'id' property.");
 
-                var successCommand = _pendingCommands[id.Value];
-                var messageSuccess = JsonSerializer.Deserialize(ref resultReader, successCommand.ResultType, _jsonSerializerContext)!;
-                successCommand.TaskCompletionSource.SetResult((EmptyResult)messageSuccess);
-                _pendingCommands.TryRemove(id.Value, out _);
+                if (_pendingCommands.TryGetValue(id.Value, out var successCommand))
+                {
+                    var messageSuccess = JsonSerializer.Deserialize(ref resultReader, successCommand.ResultType, _jsonSerializerContext)!;
+                    successCommand.TaskCompletionSource.SetResult((EmptyResult)messageSuccess);
+                    _pendingCommands.TryRemove(id.Value, out _);
+                }
+                else
+                {
+                    throw new BiDiException($"The remote end responded with 'success' message type, but no pending command with id {id} was found.");
+                }
+
                 break;
 
             case "event":
                 if (method is null) throw new JsonException("The remote end responded with 'event' message type, but missed required 'method' property.");
 
-                var eventType = _eventTypesMap[method];
+                if (_eventTypesMap.TryGetValue(method, out var eventType))
+                {
+                    var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventType, _jsonSerializerContext)!;
 
-                var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventType, _jsonSerializerContext)!;
+                    var messageEvent = new MessageEvent(method, eventArgs);
+                    _pendingEvents.Add(messageEvent);
+                }
+                else
+                {
+                    throw new BiDiException($"The remote end responded with 'event' message type, but no event type mapping for method '{method}' was found.");
+                }
 
-                var messageEvent = new MessageEvent(method, eventArgs);
-                _pendingEvents.Add(messageEvent);
                 break;
 
             case "error":
                 if (id is null) throw new JsonException("The remote end responded with 'error' message type, but missed required 'id' property.");
 
-                var messageError = new MessageError(id.Value) { Error = error, Message = message };
-                var errorCommand = _pendingCommands[messageError.Id];
-                errorCommand.TaskCompletionSource.SetException(new BiDiException($"{messageError.Error}: {messageError.Message}"));
-                _pendingCommands.TryRemove(messageError.Id, out _);
+                if (_pendingCommands.TryGetValue(id.Value, out var errorCommand))
+                {
+                    errorCommand.TaskCompletionSource.SetException(new BiDiException($"{error}: {message}"));
+                    _pendingCommands.TryRemove(id.Value, out _);
+                }
+                else
+                {
+                    throw new BiDiException($"The remote end responded with 'error' message type, but no pending command with id {id} was found.");
+                }
+
                 break;
         }
     }

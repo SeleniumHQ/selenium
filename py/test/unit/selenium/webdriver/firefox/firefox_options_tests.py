@@ -19,8 +19,7 @@ import pytest
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.options import PageLoadStrategy
-from selenium.webdriver.common.proxy import Proxy
-from selenium.webdriver.common.proxy import ProxyType
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.options import Options
@@ -79,7 +78,7 @@ def test_set_proxy_isnt_in_moz_prefix(options):
 
     caps = options.to_capabilities()
     assert caps["proxy"]["proxyType"] == "manual"
-    assert caps.get("moz:firefoxOptions") == {"prefs": {"remote.active-protocols": 3}}
+    assert caps.get("moz:firefoxOptions") == {"prefs": {"remote.active-protocols": 1}}
 
 
 def test_raises_exception_if_proxy_is_not_proxy_object(options):

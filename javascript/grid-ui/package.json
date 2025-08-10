@@ -6,7 +6,7 @@
   "dependencies": {
     "@apollo/client": "3.12.6",
     "@emotion/react": "11.14.0",
-    "@emotion/styled": "11.14.0",
+    "@emotion/styled": "11.14.1",
     "@mui/icons-material": "5.15.18",
     "@mui/material": "5.15.18",
     "@novnc/novnc": "1.5.0",
@@ -27,7 +27,8 @@
     "source-map-explorer": "2.5.3"
   },
   "scripts": {
-    "build": "bazel build //javascript/grid-ui:bundle"
+    "build": "bazel build //javascript/grid-ui:bundle",
+    "test": "jest --config jest.config.cjs"
   },
   "homepage": "./ui",
   "browser": {
@@ -47,13 +48,15 @@
     ]
   },
   "devDependencies": {
-    "@babel/preset-react": "7.26.3",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "14.3.1",
     "@testing-library/user-event": "14.5.2",
     "esbuild": "0.24.2",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "ts-jest": "^29.3.4",
     "ts-standard": "12.0.2",
-    "typescript": "5.7.2"
+    "typescript": "5.8.3"
   },
   "jest": {
     "testMatch": [

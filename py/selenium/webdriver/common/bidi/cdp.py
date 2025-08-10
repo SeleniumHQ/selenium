@@ -35,9 +35,9 @@ from contextlib import asynccontextmanager
 from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Any
-from typing import AsyncGenerator
-from typing import AsyncIterator
-from typing import Generator
+from collections.abc import AsyncGenerator
+from collections.abc import AsyncIterator
+from collections.abc import Generator
 from typing import Type
 from typing import TypeVar
 
@@ -241,7 +241,7 @@ class CdpBase:
         return receiver
 
     @asynccontextmanager
-    async def wait_for(self, event_type: Type[T], buffer_size=10) -> AsyncGenerator[CmEventProxy, None]:
+    async def wait_for(self, event_type: type[T], buffer_size=10) -> AsyncGenerator[CmEventProxy, None]:
         """Wait for an event of the given type and return it.
 
         This is an async context manager, so you should open it inside

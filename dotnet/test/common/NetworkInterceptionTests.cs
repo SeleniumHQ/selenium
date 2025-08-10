@@ -21,92 +21,91 @@ using NUnit.Framework;
 using OpenQA.Selenium.DevTools;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+[TestFixture]
+public class NetworkInterceptionTests : DriverTestFixture
 {
-    [TestFixture]
-    public class NetworkInterceptionTests : DriverTestFixture
+    [TearDown]
+    public void RemoveHandlers()
     {
-        [TearDown]
-        public void RemoveHandlers()
+        if (driver is IDevTools)
         {
-            if (driver is IDevTools)
-            {
-                INetwork network = driver.Manage().Network;
-                network.ClearAuthenticationHandlers();
-                network.ClearRequestHandlers();
-                network.ClearResponseHandlers();
-            }
+            INetwork network = driver.Manage().Network;
+            network.ClearAuthenticationHandlers();
+            network.ClearRequestHandlers();
+            network.ClearResponseHandlers();
         }
+    }
 
-        [Test]
-        [IgnoreBrowser(Browser.Firefox, "Firefox does not implement the CDP Fetch domain required for network interception")]
-        public async Task TestCanInterceptNetworkCalls()
+    [Test]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not implement the CDP Fetch domain required for network interception")]
+    public async Task TestCanInterceptNetworkCalls()
+    {
+        if (driver is IDevTools)
         {
-            if (driver is IDevTools)
+            INetwork network = driver.Manage().Network;
+            NetworkResponseHandler handler = new NetworkResponseHandler();
+            handler.ResponseMatcher = (responseData) => responseData.Url.Contains("simpleTest.html");
+            handler.ResponseTransformer = (responseData) =>
             {
-                INetwork network = driver.Manage().Network;
-                NetworkResponseHandler handler = new NetworkResponseHandler();
-                handler.ResponseMatcher = (responseData) => responseData.Url.Contains("simpleTest.html");
-                handler.ResponseTransformer = (responseData) =>
-                {
-                    responseData.Body = "<html><body><p>I intercepted you</p></body></html>";
-                    return responseData;
-                };
-                network.AddResponseHandler(handler);
-                await network.StartMonitoring();
-                driver.Url = simpleTestPage;
-                string text = driver.FindElement(By.CssSelector("p")).Text;
-                await network.StopMonitoring();
-                Assert.That(text, Is.EqualTo("I intercepted you"));
-            }
+                responseData.Body = "<html><body><p>I intercepted you</p></body></html>";
+                return responseData;
+            };
+            network.AddResponseHandler(handler);
+            await network.StartMonitoring();
+            driver.Url = simpleTestPage;
+            string text = driver.FindElement(By.CssSelector("p")).Text;
+            await network.StopMonitoring();
+            Assert.That(text, Is.EqualTo("I intercepted you"));
         }
+    }
 
-        [Test]
-        [IgnoreBrowser(Browser.Firefox, "Firefox does not implement the CDP Fetch domain required for network interception")]
-        public async Task TestCanUseAuthorizationHandler()
+    [Test]
+    [IgnoreBrowser(Browser.Firefox, "Firefox does not implement the CDP Fetch domain required for network interception")]
+    public async Task TestCanUseAuthorizationHandler()
+    {
+        if (driver is IDevTools)
         {
-            if (driver is IDevTools)
+            INetwork network = driver.Manage().Network;
+            NetworkAuthenticationHandler handler = new NetworkAuthenticationHandler()
             {
-                INetwork network = driver.Manage().Network;
-                NetworkAuthenticationHandler handler = new NetworkAuthenticationHandler()
-                {
-                    UriMatcher = (uri) => uri.PathAndQuery.Contains("basicAuth"),
-                    Credentials = new PasswordCredentials("test", "test")
-                };
-                network.AddAuthenticationHandler(handler);
-                await network.StartMonitoring();
-                driver.Url = authenticationPage;
-                string text = driver.FindElement(By.CssSelector("h1")).Text;
-                await network.StopMonitoring();
-                Assert.That(text, Is.EqualTo("authorized"));
-            }
+                UriMatcher = (uri) => uri.PathAndQuery.Contains("basicAuth"),
+                Credentials = new PasswordCredentials("test", "test")
+            };
+            network.AddAuthenticationHandler(handler);
+            await network.StartMonitoring();
+            driver.Url = authenticationPage;
+            string text = driver.FindElement(By.CssSelector("h1")).Text;
+            await network.StopMonitoring();
+            Assert.That(text, Is.EqualTo("authorized"));
         }
+    }
 
-        [Test]
-        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-        public async Task TransformNetworkResponse()
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+    public async Task TransformNetworkResponse()
+    {
+        if (driver is IDevTools)
         {
-            if (driver is IDevTools)
+            var handler = new NetworkResponseHandler()
             {
-                var handler = new NetworkResponseHandler()
+                ResponseMatcher = _ => true,
+                ResponseTransformer = _ => new HttpResponseData
                 {
-                    ResponseMatcher = _ => true,
-                    ResponseTransformer = _ => new HttpResponseData
-                    {
-                        StatusCode = 200,
-                        Body = "Creamy, delicious cheese!"
-                    }
-                };
-                INetwork networkInterceptor = driver.Manage().Network;
-                networkInterceptor.AddResponseHandler(handler);
-                await networkInterceptor.StartMonitoring();
+                    StatusCode = 200,
+                    Body = "Creamy, delicious cheese!"
+                }
+            };
+            INetwork networkInterceptor = driver.Manage().Network;
+            networkInterceptor.AddResponseHandler(handler);
+            await networkInterceptor.StartMonitoring();
 
-                driver.Navigate().GoToUrl("https://www.selenium.dev");
-                await networkInterceptor.StopMonitoring();
+            driver.Navigate().GoToUrl("https://www.selenium.dev");
+            await networkInterceptor.StopMonitoring();
 
-                var body = driver.FindElement(By.TagName("body"));
-                Assert.AreEqual("Creamy, delicious cheese!", body.Text);
-            }
+            var body = driver.FindElement(By.TagName("body"));
+            Assert.AreEqual("Creamy, delicious cheese!", body.Text);
         }
     }
 }

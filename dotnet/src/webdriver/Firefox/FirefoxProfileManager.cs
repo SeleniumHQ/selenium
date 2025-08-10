@@ -23,84 +23,83 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
-namespace OpenQA.Selenium.Firefox
+namespace OpenQA.Selenium.Firefox;
+
+/// <summary>
+/// Allows the user to enumerate and access existing named Firefox profiles.
+/// </summary>
+public class FirefoxProfileManager
 {
+    private Dictionary<string, string> profiles = new Dictionary<string, string>();
+
     /// <summary>
-    /// Allows the user to enumerate and access existing named Firefox profiles.
+    /// Initializes a new instance of the <see cref="FirefoxProfileManager"/> class.
     /// </summary>
-    public class FirefoxProfileManager
+    public FirefoxProfileManager()
     {
-        private Dictionary<string, string> profiles = new Dictionary<string, string>();
+        string appDataDirectory = GetApplicationDataDirectory();
+        this.ReadProfiles(appDataDirectory);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxProfileManager"/> class.
-        /// </summary>
-        public FirefoxProfileManager()
+    /// <summary>
+    /// Gets a <see cref="ReadOnlyCollection{T}"/> containing <see cref="FirefoxProfile">FirefoxProfiles</see>
+    /// representing the existing named profiles for Firefox.
+    /// </summary>
+    public ReadOnlyCollection<string> ExistingProfiles => new List<string>(this.profiles.Keys).AsReadOnly();
+
+    /// <summary>
+    /// Gets a <see cref="FirefoxProfile"/> with a given name.
+    /// </summary>
+    /// <param name="profileName">The name of the profile to get.</param>
+    /// <returns>A <see cref="FirefoxProfile"/> with a given name.
+    /// Returns <see langword="null"/> if no profile with the given name exists.</returns>
+    public FirefoxProfile? GetProfile(string? profileName)
+    {
+        if (profileName is not null && this.profiles.TryGetValue(profileName, out string? profile))
         {
-            string appDataDirectory = GetApplicationDataDirectory();
-            this.ReadProfiles(appDataDirectory);
+            return new FirefoxProfile(profile);
         }
 
-        /// <summary>
-        /// Gets a <see cref="ReadOnlyCollection{T}"/> containing <see cref="FirefoxProfile">FirefoxProfiles</see>
-        /// representing the existing named profiles for Firefox.
-        /// </summary>
-        public ReadOnlyCollection<string> ExistingProfiles => new List<string>(this.profiles.Keys).AsReadOnly();
+        return null;
+    }
 
-        /// <summary>
-        /// Gets a <see cref="FirefoxProfile"/> with a given name.
-        /// </summary>
-        /// <param name="profileName">The name of the profile to get.</param>
-        /// <returns>A <see cref="FirefoxProfile"/> with a given name.
-        /// Returns <see langword="null"/> if no profile with the given name exists.</returns>
-        public FirefoxProfile? GetProfile(string? profileName)
+    private static string GetApplicationDataDirectory()
+    {
+        string appDataDirectory = Environment.OSVersion.Platform switch
         {
-            if (profileName is not null && this.profiles.TryGetValue(profileName, out string? profile))
-            {
-                return new FirefoxProfile(profile);
-            }
+            PlatformID.Unix => Path.Combine(".mozilla", "firefox"),
+            PlatformID.MacOSX => Path.Combine("Library", Path.Combine("Application Support", "Firefox")),
+            _ => Path.Combine("Mozilla", "Firefox"),
+        };
 
-            return null;
-        }
+        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appDataDirectory);
+    }
 
-        private static string GetApplicationDataDirectory()
+    private void ReadProfiles(string appDataDirectory)
+    {
+        string profilesIniFile = Path.Combine(appDataDirectory, "profiles.ini");
+        if (File.Exists(profilesIniFile))
         {
-            string appDataDirectory = Environment.OSVersion.Platform switch
+            IniFileReader reader = new IniFileReader(profilesIniFile);
+            ReadOnlyCollection<string> sectionNames = reader.SectionNames;
+            foreach (string sectionName in sectionNames)
             {
-                PlatformID.Unix => Path.Combine(".mozilla", "firefox"),
-                PlatformID.MacOSX => Path.Combine("Library", Path.Combine("Application Support", "Firefox")),
-                _ => Path.Combine("Mozilla", "Firefox"),
-            };
-
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appDataDirectory);
-        }
-
-        private void ReadProfiles(string appDataDirectory)
-        {
-            string profilesIniFile = Path.Combine(appDataDirectory, "profiles.ini");
-            if (File.Exists(profilesIniFile))
-            {
-                IniFileReader reader = new IniFileReader(profilesIniFile);
-                ReadOnlyCollection<string> sectionNames = reader.SectionNames;
-                foreach (string sectionName in sectionNames)
+                if (sectionName.StartsWith("profile", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (sectionName.StartsWith("profile", StringComparison.OrdinalIgnoreCase))
+                    string name = reader.GetValue(sectionName, "name");
+                    bool isRelative = reader.GetValue(sectionName, "isrelative") == "1";
+                    string profilePath = reader.GetValue(sectionName, "path");
+                    string fullPath;
+                    if (isRelative)
                     {
-                        string name = reader.GetValue(sectionName, "name");
-                        bool isRelative = reader.GetValue(sectionName, "isrelative") == "1";
-                        string profilePath = reader.GetValue(sectionName, "path");
-                        string fullPath;
-                        if (isRelative)
-                        {
-                            fullPath = Path.Combine(appDataDirectory, profilePath);
-                        }
-                        else
-                        {
-                            fullPath = profilePath;
-                        }
-
-                        this.profiles.Add(name, fullPath);
+                        fullPath = Path.Combine(appDataDirectory, profilePath);
                     }
+                    else
+                    {
+                        fullPath = profilePath;
+                    }
+
+                    this.profiles.Add(name, fullPath);
                 }
             }
         }

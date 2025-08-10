@@ -17,21 +17,20 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Represents possible screen orientations.
+/// </summary>
+public enum ScreenOrientation
 {
     /// <summary>
-    /// Represents possible screen orientations.
+    /// Represents a portrait mode, where the screen is vertical.
     /// </summary>
-    public enum ScreenOrientation
-    {
-        /// <summary>
-        /// Represents a portrait mode, where the screen is vertical.
-        /// </summary>
-        Portrait,
+    Portrait,
 
-        /// <summary>
-        /// Represents Landscape mode, where the screen is horizontal.
-        /// </summary>
-        Landscape
-    }
+    /// <summary>
+    /// Represents Landscape mode, where the screen is horizontal.
+    /// </summary>
+    Landscape
 }

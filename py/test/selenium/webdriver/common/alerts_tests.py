@@ -19,9 +19,11 @@ import sys
 
 import pytest
 
-from selenium.common.exceptions import InvalidElementStateException
-from selenium.common.exceptions import NoAlertPresentException
-from selenium.common.exceptions import UnexpectedAlertPresentException
+from selenium.common.exceptions import (
+    InvalidElementStateException,
+    NoAlertPresentException,
+    UnexpectedAlertPresentException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -185,9 +187,15 @@ def test_should_allow_users_to_accept_an_alert_in_anested_frame(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-def test_should_throw_an_exception_if_an_alert_has_not_been_dealt_with_and_dismiss_the_alert():
-    pass
-    # //TODO(David) Complete this test
+@pytest.mark.xfail_safari
+def test_should_throw_an_exception_if_an_alert_has_not_been_dealt_with_and_dismiss_the_alert(driver, pages):
+    pages.load("alerts.html")
+    driver.find_element(By.ID, "alert").click()
+    WebDriverWait(driver, 5).until(EC.alert_is_present())
+
+    with pytest.raises(UnexpectedAlertPresentException):
+        driver.find_element(By.ID, "select").click()
+    # Alert would be dismissed automatically
 
 
 def test_prompt_should_use_default_value_if_no_keys_sent(driver, pages):

@@ -15,12 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
-from typing import Union
+from typing import Optional, Union
 
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoSuchFrameException
-from selenium.common.exceptions import NoSuchWindowException
+from selenium.common.exceptions import NoSuchElementException, NoSuchFrameException, NoSuchWindowException
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -79,7 +76,7 @@ class SwitchTo:
         :Usage:
             ::
 
-                driver.switch_to.frame('frame_name')
+                driver.switch_to.frame("frame_name")
                 driver.switch_to.frame(1)
                 driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])
         """
@@ -103,7 +100,7 @@ class SwitchTo:
         :Usage:
             ::
 
-                driver.switch_to.new_window('tab')
+                driver.switch_to.new_window("tab")
         """
         value = self._driver.execute(Command.NEW_WINDOW, {"type": type_hint})["value"]
         self._w3c_window(value["handle"])
@@ -128,7 +125,7 @@ class SwitchTo:
         :Usage:
             ::
 
-                driver.switch_to.window('main')
+                driver.switch_to.window("main")
         """
         self._w3c_window(window_name)
 

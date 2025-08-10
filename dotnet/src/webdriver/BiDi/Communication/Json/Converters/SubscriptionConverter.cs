@@ -23,16 +23,16 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-internal class SubscriptionConverter : JsonConverter<Modules.Session.Subscription>
+internal class SubscriptionConverter : JsonConverter<Session.Subscription>
 {
-    public override Modules.Session.Subscription? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override Session.Subscription? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new Modules.Session.Subscription(id!);
+        return new Session.Subscription(id!);
     }
 
-    public override void Write(Utf8JsonWriter writer, Modules.Session.Subscription value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, Session.Subscription value, JsonSerializerOptions options)
     {
         writer.WriteStringValue(value.Id);
     }

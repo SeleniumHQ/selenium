@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Optional
+
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
@@ -30,8 +32,8 @@ class WebDriver(RemoteWebDriver):
     def __init__(
         self,
         keep_alive=True,
-        options: Options = None,
-        service: Service = None,
+        options: Optional[Options] = None,
+        service: Optional[Service] = None,
     ) -> None:
         """Creates a new Safari driver instance and launches or finds a running
         safaridriver service.
@@ -106,3 +108,9 @@ class WebDriver(RemoteWebDriver):
     def debug(self):
         self.execute("ATTACH_DEBUGGER")
         self.execute_script("debugger;")
+
+    def download_file(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def get_downloadable_files(self, *args, **kwargs):
+        raise NotImplementedError

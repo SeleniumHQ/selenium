@@ -16,21 +16,12 @@
 # under the License.
 from __future__ import annotations
 
-import sys
-from typing import TYPE_CHECKING
-from typing import Any
-from typing import Sequence
-
-if sys.version_info >= (3, 9):
-    from re import Match
-else:
-    from typing import Match
+from collections.abc import Sequence
+from re import Match
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from typing import SupportsFloat
-    from typing import SupportsIndex
-    from typing import SupportsInt
-    from typing import Union
+    from typing import SupportsFloat, SupportsIndex, SupportsInt, Union
 
     ParseableFloat = Union[SupportsFloat, SupportsIndex, str, bytes, bytearray]
     ParseableInt = Union[SupportsInt, SupportsIndex, str, bytes]
@@ -43,7 +34,10 @@ RGB_PCT_PATTERN = (
     r"^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$"
 )
 RGBA_PATTERN = r"^\s*rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0\.\d+)\s*\)\s*$"
-RGBA_PCT_PATTERN = r"^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(0|1|0\.\d+)\s*\)\s*$"
+RGBA_PCT_PATTERN = (
+    r"^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,"
+    + r"\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(0|1|0\.\d+)\s*\)\s*$"
+)
 HEX_PATTERN = r"#([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})"
 HEX3_PATTERN = r"#([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])"
 HSL_PATTERN = r"^\s*hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)\s*$"
@@ -59,9 +53,9 @@ class Color:
 
         from selenium.webdriver.support.color import Color
 
-        print(Color.from_string('#00ff33').rgba)
-        print(Color.from_string('rgb(1, 255, 3)').hex)
-        print(Color.from_string('blue').rgba)
+        print(Color.from_string("#00ff33").rgba)
+        print(Color.from_string("rgb(1, 255, 3)").hex)
+        print(Color.from_string("blue").rgba)
     """
 
     @classmethod

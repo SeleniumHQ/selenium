@@ -6,7 +6,7 @@ section() {
     echo "- $*" >&2
 }
 
-WORKSPACE_ROOT="$(bazel info workspace 2>/dev/null)"
+WORKSPACE_ROOT="$(bazel info workspace)"
 
 GOOGLE_JAVA_FORMAT="$(bazel run --run_under=echo //scripts:google-java-format)"
 
@@ -31,12 +31,10 @@ section "Rust"
 echo "   rustfmt" >&2
 bazel run @rules_rust//:rustfmt
 
-# TODO: use bazel target when rules_python supports formatting
 section "Python"
-echo "    python - isort, black, flake8, docformatter" >&2
-pip install tox
-export TOXENV=linting
-tox -c py/tox.ini
+echo "    python - ruff" >&2
+bazel run @multitool//tools/ruff:cwd -- check --fix --show-fixes
+bazel run @multitool//tools/ruff:cwd -- format
 
 section "Copyright"
 bazel run //scripts:update_copyright
