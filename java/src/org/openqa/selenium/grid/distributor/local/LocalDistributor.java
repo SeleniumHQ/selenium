@@ -17,11 +17,7 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
@@ -32,20 +28,15 @@ import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -58,7 +49,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.HealthCheckFailedException;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -66,18 +56,11 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.data.NodeAddedEvent;
-import org.openqa.selenium.grid.data.NodeDrainComplete;
-import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
-import org.openqa.selenium.grid.data.NodeRemovedEvent;
-import org.openqa.selenium.grid.data.NodeRestartedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionRequest;
@@ -87,16 +70,14 @@ import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.data.TraceSessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.GridModel;
+import org.openqa.selenium.grid.distributor.NodeRegistry;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
-import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.remote.RemoteNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
@@ -105,7 +86,6 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
@@ -125,20 +105,16 @@ public class LocalDistributor extends Distributor implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
 
-  private static final SessionId RESERVED = new SessionId("reserved");
-
   private final Tracer tracer;
   private final EventBus bus;
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
   private final SlotSelector slotSelector;
   private final Secret registrationSecret;
-  private final Map<NodeId, Runnable> allChecks = new HashMap<>();
   private final Duration healthcheckInterval;
+  private final NodeRegistry nodeRegistry;
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
-  private final GridModel model;
-  private final Map<NodeId, Node> nodes;
   private final SlotMatcher slotMatcher;
   private final Duration purgeNodesInterval;
 
@@ -198,27 +174,22 @@ public class LocalDistributor extends Distributor implements Closeable {
     this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
-    this.model = new GridModel(bus);
-    this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
     this.slotMatcher = slotMatcher;
     this.purgeNodesInterval = purgeNodesInterval;
     Require.nonNull("Session request interval", sessionRequestRetryInterval);
 
-    bus.addListener(NodeStatusEvent.listener(this::register));
-    bus.addListener(NodeStatusEvent.listener(model::refresh));
-    bus.addListener(
-        NodeRestartedEvent.listener(previousNodeStatus -> remove(previousNodeStatus.getNodeId())));
-    bus.addListener(NodeRemovedEvent.listener(nodeStatus -> remove(nodeStatus.getNodeId())));
-    bus.addListener(
-        NodeHeartBeatEvent.listener(
-            nodeStatus -> {
-              if (nodes.containsKey(nodeStatus.getNodeId())) {
-                model.touch(nodeStatus);
-              } else {
-                register(nodeStatus);
-              }
-            }));
+    this.nodeRegistry =
+        new LocalNodeRegistry(
+            tracer,
+            bus,
+            newSessionThreadPoolSize,
+            this.clientFactory,
+            this.registrationSecret,
+            this.healthcheckInterval,
+            this.nodeHealthCheckService,
+            this.purgeNodesInterval,
+            this.purgeDeadNodesService);
 
     sessionCreatorExecutor =
         Executors.newFixedThreadPool(
@@ -231,22 +202,6 @@ public class LocalDistributor extends Distributor implements Closeable {
             });
 
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
-    bus.addListener(NodeDrainComplete.listener(this::remove));
-
-    // Disable purge dead nodes service if interval is set to zero
-    if (!this.purgeNodesInterval.isZero()) {
-      purgeDeadNodesService.scheduleAtFixedRate(
-          GuardedRunnable.guard(model::purgeDeadNodes),
-          this.purgeNodesInterval.getSeconds(),
-          this.purgeNodesInterval.getSeconds(),
-          TimeUnit.SECONDS);
-    }
-
-    nodeHealthCheckService.scheduleAtFixedRate(
-        runNodeHealthChecks(),
-        this.healthcheckInterval.toMillis(),
-        this.healthcheckInterval.toMillis(),
-        TimeUnit.MILLISECONDS);
 
     // if sessionRequestRetryInterval is 0, we will schedule session creation every 10 millis
     long period =
@@ -298,226 +253,33 @@ public class LocalDistributor extends Distributor implements Closeable {
     }
   }
 
-  private void register(NodeStatus status) {
-    Require.nonNull("Node", status);
-
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      if (nodes.containsKey(status.getNodeId())) {
-        return;
-      }
-
-      if (status.getAvailability() != UP) {
-        // A Node might be draining or down (in the case of Relay nodes)
-        // but the heartbeat is still running.
-        // We do not need to add this Node for now.
-        return;
-      }
-
-      Set<Capabilities> capabilities =
-          status.getSlots().stream()
-              .map(Slot::getStereotype)
-              .map(ImmutableCapabilities::copyOf)
-              .collect(toImmutableSet());
-
-      // A new node! Add this as a remote node, since we've not called add
-      RemoteNode remoteNode =
-          new RemoteNode(
-              tracer,
-              clientFactory,
-              status.getNodeId(),
-              status.getExternalUri(),
-              registrationSecret,
-              status.getSessionTimeout(),
-              capabilities);
-
-      add(remoteNode);
-    } finally {
-      writeLock.unlock();
-    }
-  }
-
   @Override
   public LocalDistributor add(Node node) {
-    Require.nonNull("Node", node);
-
-    // An exception occurs if Node heartbeat has started but the server is not ready.
-    // Unhandled exception blocks the event-bus thread from processing any event henceforth.
-    NodeStatus initialNodeStatus;
-    Runnable healthCheck;
-    try {
-      initialNodeStatus = node.getStatus();
-      if (initialNodeStatus.getAvailability() != UP) {
-        // A Node might be draining or down (in the case of Relay nodes)
-        // but the heartbeat is still running.
-        // We do not need to add this Node for now.
-        return this;
-      }
-      // Extract the health check
-      healthCheck = asRunnableHealthCheck(node);
-      Lock writeLock = lock.writeLock();
-      writeLock.lock();
-      try {
-        nodes.put(node.getId(), node);
-        model.add(initialNodeStatus);
-        allChecks.put(node.getId(), healthCheck);
-      } finally {
-        writeLock.unlock();
-      }
-    } catch (Exception e) {
-      LOG.log(
-          Debug.getDebugLogLevel(),
-          String.format("Exception while adding Node %s", node.getUri()),
-          e);
-      return this;
-    }
-
-    updateNodeAvailability(
-        initialNodeStatus.getExternalUri(),
-        initialNodeStatus.getNodeId(),
-        initialNodeStatus.getAvailability());
-
-    LOG.info(
-        String.format(
-            "Added node %s at %s. Health check every %ss",
-            node.getId(), node.getUri(), healthcheckInterval.toMillis() / 1000));
-
-    bus.fire(new NodeAddedEvent(node.getId()));
-
+    nodeRegistry.add(node);
     return this;
-  }
-
-  private Runnable runNodeHealthChecks() {
-    return () -> {
-      ImmutableMap<NodeId, Runnable> nodeHealthChecks;
-      Lock readLock = this.lock.readLock();
-      readLock.lock();
-      try {
-        nodeHealthChecks = ImmutableMap.copyOf(allChecks);
-      } finally {
-        readLock.unlock();
-      }
-
-      for (Runnable nodeHealthCheck : nodeHealthChecks.values()) {
-        GuardedRunnable.guard(nodeHealthCheck).run();
-      }
-    };
-  }
-
-  private Runnable asRunnableHealthCheck(Node node) {
-    HealthCheck healthCheck = node.getHealthCheck();
-    NodeId id = node.getId();
-    return () -> {
-      boolean checkFailed = false;
-      Exception failedCheckException = null;
-      LOG.log(getDebugLogLevel(), "Running healthcheck for Node " + node.getUri());
-
-      HealthCheck.Result result;
-      try {
-        result = healthCheck.check();
-      } catch (Exception e) {
-        LOG.log(Level.WARNING, "Unable to process Node healthcheck " + id, e);
-        result = new HealthCheck.Result(DOWN, "Unable to run healthcheck. Assuming down");
-        checkFailed = true;
-        failedCheckException = e;
-      }
-
-      updateNodeAvailability(node.getUri(), id, result.getAvailability());
-      if (checkFailed) {
-        throw new HealthCheckFailedException("Node " + id, failedCheckException);
-      }
-    };
-  }
-
-  private void updateNodeAvailability(URI nodeUri, NodeId id, Availability availability) {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      LOG.log(
-          getDebugLogLevel(),
-          String.format("Health check result for %s was %s", nodeUri, availability));
-      model.setAvailability(id, availability);
-      model.updateHealthCheckCount(id, availability);
-    } finally {
-      writeLock.unlock();
-    }
   }
 
   @Override
   public boolean drain(NodeId nodeId) {
-    Node node = nodes.get(nodeId);
-    if (node == null) {
-      LOG.info("Asked to drain unregistered node " + nodeId);
-      return false;
-    }
-
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      node.drain();
-      model.setAvailability(nodeId, DRAINING);
-    } finally {
-      writeLock.unlock();
-    }
-
-    return node.isDraining();
+    return nodeRegistry.drain(nodeId);
   }
 
   public void remove(NodeId nodeId) {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      Node node = nodes.remove(nodeId);
-      model.remove(nodeId);
-      allChecks.remove(nodeId);
-
-      if (node instanceof RemoteNode) {
-        ((RemoteNode) node).close();
-      }
-    } finally {
-      writeLock.unlock();
-    }
+    nodeRegistry.remove(nodeId);
   }
 
   @Override
   public DistributorStatus getStatus() {
-    Lock readLock = this.lock.readLock();
-    readLock.lock();
-    try {
-      return new DistributorStatus(model.getSnapshot());
-    } finally {
-      readLock.unlock();
-    }
+    return nodeRegistry.getStatus();
   }
 
   @Beta
   public void refresh() {
-    List<Runnable> allHealthChecks = new ArrayList<>();
-
-    Lock readLock = this.lock.readLock();
-    readLock.lock();
-    try {
-      allHealthChecks.addAll(allChecks.values());
-    } finally {
-      readLock.unlock();
-    }
-
-    allHealthChecks.parallelStream().forEach(Runnable::run);
+    nodeRegistry.refresh();
   }
 
   protected Set<NodeStatus> getAvailableNodes() {
-    Lock readLock = this.lock.readLock();
-    readLock.lock();
-    try {
-      return model.getSnapshot().stream()
-          .filter(
-              node ->
-                  !DOWN.equals(node.getAvailability()) && !DRAINING.equals(node.getAvailability()))
-          .collect(toImmutableSet());
-    } finally {
-      readLock.unlock();
-    }
+    return nodeRegistry.getAvailableNodes();
   }
 
   @Override
@@ -583,7 +345,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         try {
           CreateSessionResponse response = startSession(selectedSlot, singleRequest);
           sessions.add(response.getSession());
-          model.setSession(selectedSlot, response.getSession());
+          nodeRegistry.setSession(selectedSlot, response.getSession());
 
           SessionId sessionId = response.getSession().getId();
           Capabilities sessionCaps = response.getSession().getCapabilities();
@@ -603,7 +365,7 @@ public class LocalDistributor extends Distributor implements Closeable {
 
           return Either.right(response);
         } catch (SessionNotCreatedException e) {
-          model.setSession(selectedSlot, null);
+          nodeRegistry.setSession(selectedSlot, null);
           lastFailure = e;
         }
       }
@@ -655,7 +417,7 @@ public class LocalDistributor extends Distributor implements Closeable {
 
   private CreateSessionResponse startSession(
       SlotId selectedSlot, CreateSessionRequest singleRequest) {
-    Node node = nodes.get(selectedSlot.getOwningNodeId());
+    Node node = nodeRegistry.getNode(selectedSlot.getOwningNodeId());
     if (node == null) {
       throw new SessionNotCreatedException("Unable to find owning node for slot");
     }
@@ -704,8 +466,7 @@ public class LocalDistributor extends Distributor implements Closeable {
   }
 
   private boolean isNotSupported(Capabilities caps) {
-    return getAvailableNodes().stream()
-        .noneMatch(node -> node.hasCapability(caps, slotMatcher) && node.getAvailability() == UP);
+    return getAvailableNodes().stream().noneMatch(node -> node.hasCapability(caps, slotMatcher));
   }
 
   private boolean reserve(SlotId id) {
@@ -714,13 +475,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     Lock writeLock = this.lock.writeLock();
     writeLock.lock();
     try {
-      Node node = nodes.get(id.getOwningNodeId());
-      if (node == null) {
-        LOG.log(getDebugLogLevel(), String.format("Unable to find node with id %s", id));
-        return false;
-      }
-
-      return model.reserve(id);
+      return nodeRegistry.reserve(id);
     } finally {
       writeLock.unlock();
     }
@@ -729,36 +484,25 @@ public class LocalDistributor extends Distributor implements Closeable {
   @VisibleForTesting
   @ManagedAttribute(name = "NodeUpCount")
   public long getUpNodeCount() {
-    return model.getSnapshot().stream()
-        .filter(nodeStatus -> nodeStatus.getAvailability().equals(UP))
-        .count();
+    return nodeRegistry.getUpNodeCount();
   }
 
   @VisibleForTesting
   @ManagedAttribute(name = "NodeDownCount")
   public long getDownNodeCount() {
-    return model.getSnapshot().stream()
-        .filter(nodeStatus -> !nodeStatus.getAvailability().equals(UP))
-        .count();
+    return nodeRegistry.getDownNodeCount();
   }
 
   @VisibleForTesting
   @ManagedAttribute(name = "ActiveSlots")
   public int getActiveSlots() {
-    return model.getSnapshot().stream()
-        .map(NodeStatus::getSlots)
-        .flatMap(Collection::stream)
-        .filter(slot -> slot.getSession() != null)
-        .filter(slot -> !slot.getSession().getId().equals(RESERVED))
-        .mapToInt(slot -> 1)
-        .sum();
+    return nodeRegistry.getActiveSlots();
   }
 
   @VisibleForTesting
   @ManagedAttribute(name = "IdleSlots")
   public int getIdleSlots() {
-    return (int)
-        (model.getSnapshot().stream().map(NodeStatus::getSlots).count() - getActiveSlots());
+    return nodeRegistry.getIdleSlots();
   }
 
   @Override
@@ -795,7 +539,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         // up starving a session request.
         Map<Capabilities, Long> stereotypes =
             getAvailableNodes().stream()
-                .filter(node -> node.hasCapacity() && node.getAvailability() == UP)
+                .filter(node -> node.hasCapacity())
                 .flatMap(node -> node.getSlots().stream().map(Slot::getStereotype))
                 .collect(
                     Collectors.groupingBy(ImmutableCapabilities::copyOf, Collectors.counting()));
@@ -850,8 +594,9 @@ public class LocalDistributor extends Distributor implements Closeable {
 
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
           try (Span childSpan = span.createSpan("distributor.retry")) {
-            LOG.log(
-                Debug.getDebugLogLevel(), "Retrying {0}", sessionRequest.getDesiredCapabilities());
+            if (LOG.isLoggable(getDebugLogLevel())) {
+              LOG.log(getDebugLogLevel(), "Retrying {0}", sessionRequest.getDesiredCapabilities());
+            }
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", retried);
@@ -873,7 +618,7 @@ public class LocalDistributor extends Distributor implements Closeable {
                   + " dropped, stopping it to avoid stalled browser",
               reqId.toString());
           Session session = response.right().getSession();
-          Node node = getNodeFromURI(session.getUri());
+          Node node = nodeRegistry.getNode(session.getUri());
           if (node != null) {
             boolean deleted;
             try {
@@ -902,11 +647,10 @@ public class LocalDistributor extends Distributor implements Closeable {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
+      Set<NodeStatus> nodes = nodeRegistry.getAvailableNodes();
       Optional<NodeStatus> nodeStatus =
-          model.getSnapshot().stream()
-              .filter(node -> node.getExternalUri().equals(uri))
-              .findFirst();
-      return nodeStatus.map(status -> nodes.get(status.getNodeId())).orElse(null);
+          nodes.stream().filter(node -> node.getExternalUri().equals(uri)).findFirst();
+      return nodeStatus.map(status -> nodeRegistry.getNode(status.getNodeId())).orElse(null);
     } finally {
       readLock.unlock();
     }
