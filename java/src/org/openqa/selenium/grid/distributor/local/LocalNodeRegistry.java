@@ -290,6 +290,9 @@ public class LocalNodeRegistry implements NodeRegistry {
 
   @Override
   public void updateNodeAvailability(URI nodeUri, NodeId id, Availability availability) {
+    Require.nonNull("Node URI", nodeUri);
+    Require.nonNull("Node ID", id);
+    Require.nonNull("Availability", availability);
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {

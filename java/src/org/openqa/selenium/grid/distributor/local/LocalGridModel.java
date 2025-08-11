@@ -243,7 +243,8 @@ public class LocalGridModel extends GridModel {
         Instant now = Instant.now();
         Instant lastTouched = nodePurgeTimes.getOrDefault(id, Instant.now());
         Instant lostTime =
-            lastTouched.plus(node.getHeartbeatPeriod().multipliedBy(PURGE_TIMEOUT_MULTIPLIER / 2));
+            lastTouched.plus(
+                node.getHeartbeatPeriod().multipliedBy(PURGE_TIMEOUT_MULTIPLIER).dividedBy(2));
         Instant deadTime =
             lastTouched.plus(node.getHeartbeatPeriod().multipliedBy(PURGE_TIMEOUT_MULTIPLIER));
 
