@@ -1429,7 +1429,7 @@ class WebDriver(BaseWebDriver):
         try:
             if self.caps.get("browserName") == "chrome":
                 debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
-            elif self.caps.get("browserName") == "MicrosoftEdge" or self.caps.get("browserName") == "webview2":
+            elif self.caps.get("browserName") in ("MicrosoftEdge", "webview2"):
                 debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
         except AttributeError:
             raise WebDriverException("Can't get debugger address.")
