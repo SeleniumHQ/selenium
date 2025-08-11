@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import base64
 import os
 from unittest.mock import patch
 from urllib import parse
@@ -544,3 +545,58 @@ def test_connection_manager_with_custom_args_via_client_config():
     assert isinstance(conn, PoolManager)
     assert conn.connection_pool_kw["retries"] == retries
     assert conn.connection_pool_kw["timeout"] == timeout
+
+
+def test_proxy_auth_with_special_characters_url_encoded():
+    proxy_url = "http://user:passw%23rd@proxy.example.com:8080"
+    client_config = ClientConfig(
+        remote_server_addr="http://localhost:4444",
+        keep_alive=False,
+        proxy=Proxy({"proxyType": ProxyType.MANUAL, "httpProxy": proxy_url}),
+    )
+    remote_connection = RemoteConnection(client_config=client_config)
+
+    proxy_without_auth, basic_auth = remote_connection._separate_http_proxy_auth()
+
+    assert proxy_without_auth == "http://proxy.example.com:8080"
+    assert basic_auth == "user:passw%23rd"  # Still URL-encoded
+
+    conn = remote_connection._get_connection_manager()
+    assert isinstance(conn, ProxyManager)
+
+    expected_auth = base64.b64encode("user:passw#rd".encode()).decode()  # Decoded password
+    expected_headers = make_headers(proxy_basic_auth="user:passw#rd")  # Unquoted password
+
+    assert conn.proxy_headers == expected_headers
+    assert conn.proxy_headers["proxy-authorization"] == f"Basic {expected_auth}"
+
+
+def test_proxy_auth_with_multiple_special_characters():
+    test_cases = [
+        ("passw%23rd", "passw#rd"),  # # character
+        ("passw%40rd", "passw@rd"),  # @ character
+        ("passw%26rd", "passw&rd"),  # & character
+        ("passw%3Drd", "passw=rd"),  # = character
+        ("passw%2Brd", "passw+rd"),  # + character
+        ("passw%20rd", "passw rd"),  # space character
+        ("passw%21%40%23%24", "passw!@#$"),  # Multiple special chars
+    ]
+
+    for encoded_password, decoded_password in test_cases:
+        proxy_url = f"http://testuser:{encoded_password}@proxy.example.com:8080"
+        client_config = ClientConfig(
+            remote_server_addr="http://localhost:4444",
+            keep_alive=False,
+            proxy=Proxy({"proxyType": ProxyType.MANUAL, "httpProxy": proxy_url}),
+        )
+        remote_connection = RemoteConnection(client_config=client_config)
+
+        proxy_without_auth, basic_auth = remote_connection._separate_http_proxy_auth()
+        assert basic_auth == f"testuser:{encoded_password}"
+
+        conn = remote_connection._get_connection_manager()
+        expected_auth = base64.b64encode(f"testuser:{decoded_password}".encode()).decode()
+        expected_headers = make_headers(proxy_basic_auth=f"testuser:{decoded_password}")
+
+        assert conn.proxy_headers == expected_headers
+        assert conn.proxy_headers["proxy-authorization"] == f"Basic {expected_auth}"
