@@ -24,7 +24,7 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi;
 
-public class BiDi : IAsyncDisposable
+public sealed class BiDi : IAsyncDisposable
 {
     private readonly Broker _broker;
 
@@ -171,12 +171,7 @@ public class BiDi : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await DisposeAsyncCore();
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual async ValueTask DisposeAsyncCore()
-    {
         await _broker.DisposeAsync().ConfigureAwait(false);
+        GC.SuppressFinalize(this);
     }
 }

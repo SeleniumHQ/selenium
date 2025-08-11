@@ -1,4 +1,4 @@
-// <copyright file="UserAgent.cs" company="Selenium Committers">
+// <copyright file="ChromiumDriverLogLevel.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,34 +17,45 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.DevTools;
+namespace OpenQA.Selenium.Chromium;
 
 /// <summary>
-/// Represents a user agent string.
+/// Represents the valid values of logging levels available with the Chromium based drivers.
 /// </summary>
-public class UserAgent
+public enum ChromiumDriverLogLevel
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="UserAgent"/> type.
+    /// Represents the value All, the most detailed logging level available.
     /// </summary>
-    /// <param name="userAgentString">The user agent string.</param>
-    public UserAgent(string userAgentString)
-    {
-        UserAgentString = userAgentString;
-    }
+    All,
 
     /// <summary>
-    /// Gets or sets the user agent string.
+    /// Represents the Debug value
     /// </summary>
-    public string UserAgentString { get; set; }
+    Debug,
 
     /// <summary>
-    /// Gets or sets the language to accept in headers.
+    /// Represents the Info value
     /// </summary>
-    public string? AcceptLanguage { get; set; }
+    Info,
 
     /// <summary>
-    /// Gets or sets the value of the platform.
+    /// Represents the Warning value
     /// </summary>
-    public string? Platform { get; set; }
+    Warning ,
+
+    /// <summary>
+    /// Represents the Severe value
+    /// </summary>
+    Severe,
+
+    /// <summary>
+    /// Represents the Off value, nothing gets logged
+    /// </summary>
+    Off,
+
+    /// <summary>
+    /// Represents that the logging value is unspecified, and should be the default level.
+    /// </summary>
+    Default
 }

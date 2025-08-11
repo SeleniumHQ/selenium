@@ -31,7 +31,7 @@ internal class LogContextManager
     {
         var defaulLogHandler = new TextWriterHandler(Console.Error);
 
-        GlobalContext = new LogContext(LogEventLevel.Info, null, null, [defaulLogHandler]);
+        GlobalContext = new LogContext(LogEventLevel.Warn, null, null, [defaulLogHandler]);
     }
 
     public ILogContext GlobalContext { get; }

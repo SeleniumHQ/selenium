@@ -31,13 +31,11 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.RemovalCause;
+import com.github.benmanes.caffeine.cache.Ticker;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Ticker;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalCause;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.Closeable;
@@ -57,7 +55,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -201,35 +198,35 @@ public class LocalNode extends Node implements Closeable {
     // Do not clear this cache automatically using a timer.
     // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.uploadsTempFileSystem =
-        CacheBuilder.newBuilder()
+        Caffeine.newBuilder()
             .removalListener(
-                (RemovalListener<SessionId, TemporaryFilesystem>)
-                    notification ->
-                        Optional.ofNullable(notification.getValue())
-                            .ifPresent(
-                                tempFS -> {
-                                  tempFS.deleteTemporaryFiles();
-                                  tempFS.deleteBaseDir();
-                                }))
+                (SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
+                  Optional.ofNullable(tempFS)
+                      .ifPresent(
+                          fs -> {
+                            fs.deleteTemporaryFiles();
+                            fs.deleteBaseDir();
+                          });
+                })
             .build();
 
     // Do not clear this cache automatically using a timer.
     // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.downloadsTempFileSystem =
-        CacheBuilder.newBuilder()
+        Caffeine.newBuilder()
             .removalListener(
-                (RemovalListener<SessionId, TemporaryFilesystem>)
-                    notification ->
-                        Optional.ofNullable(notification.getValue())
-                            .ifPresent(
-                                fs -> {
-                                  fs.deleteTemporaryFiles();
-                                  fs.deleteBaseDir();
-                                }))
+                (SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
+                  Optional.ofNullable(tempFS)
+                      .ifPresent(
+                          fs -> {
+                            fs.deleteTemporaryFiles();
+                            fs.deleteBaseDir();
+                          });
+                })
             .build();
 
     this.currentSessions =
-        CacheBuilder.newBuilder()
+        Caffeine.newBuilder()
             .expireAfterAccess(sessionTimeout)
             .ticker(ticker)
             .removalListener(this::stopTimedOutSession)
@@ -314,19 +311,17 @@ public class LocalNode extends Node implements Closeable {
     shutdown.run();
   }
 
-  private void stopTimedOutSession(RemovalNotification<SessionId, SessionSlot> notification) {
+  private void stopTimedOutSession(SessionId id, SessionSlot slot, RemovalCause cause) {
     try (Span span = tracer.getCurrentContext().createSpan("node.stop_session")) {
       AttributeMap attributeMap = tracer.createAttributeMap();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
-      if (notification.getKey() != null && notification.getValue() != null) {
-        SessionSlot slot = notification.getValue();
-        SessionId id = notification.getKey();
+      if (id != null && slot != null) {
         attributeMap.put("node.id", getId().toString());
         attributeMap.put("session.slotId", slot.getId().toString());
         attributeMap.put("session.id", id.toString());
         attributeMap.put("session.timeout_in_seconds", getSessionTimeout().toSeconds());
-        attributeMap.put("session.remove.cause", notification.getCause().name());
-        if (notification.wasEvicted() && notification.getCause() == RemovalCause.EXPIRED) {
+        attributeMap.put("session.remove.cause", cause.name());
+        if (cause == RemovalCause.EXPIRED) {
           // Session is timing out, stopping it by sending a DELETE
           LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
           span.setStatus(Status.CANCELLED);
@@ -335,7 +330,7 @@ public class LocalNode extends Node implements Closeable {
           LOG.log(Level.INFO, () -> String.format("Session id %s is stopping on demand...", id));
           span.addEvent(String.format("Stopping the session %s on demand", id), attributeMap);
         }
-        if (notification.wasEvicted()) {
+        if (cause == RemovalCause.EXPIRED) {
           try {
             slot.execute(new HttpRequest(DELETE, "/session/" + id));
           } catch (Exception e) {
@@ -687,15 +682,11 @@ public class LocalNode extends Node implements Closeable {
 
   @Override
   public TemporaryFilesystem getUploadsFilesystem(SessionId id) throws IOException {
-    try {
-      return uploadsTempFileSystem.get(
-          id,
-          () ->
-              TemporaryFilesystem.getTmpFsBasedOn(
-                  TemporaryFilesystem.getDefaultTmpFS().createTempDir("session", id.toString())));
-    } catch (ExecutionException e) {
-      throw new IOException(e);
-    }
+    return uploadsTempFileSystem.get(
+        id,
+        key ->
+            TemporaryFilesystem.getTmpFsBasedOn(
+                TemporaryFilesystem.getDefaultTmpFS().createTempDir("session", id.toString())));
   }
 
   @Override
@@ -863,10 +854,8 @@ public class LocalNode extends Node implements Closeable {
   }
 
   private void stopAllSessions() {
-    if (currentSessions.size() > 0) {
-      LOG.info("Trying to stop all running sessions before shutting down...");
-      currentSessions.invalidateAll();
-    }
+    LOG.info("Trying to stop all running sessions before shutting down...");
+    currentSessions.invalidateAll();
   }
 
   private Session createExternalSession(

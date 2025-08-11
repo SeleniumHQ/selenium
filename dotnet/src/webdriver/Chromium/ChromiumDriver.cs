@@ -346,19 +346,6 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     }
 
     /// <summary>
-    /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
-    /// </summary>
-    /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
-    /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-    [Obsolete("Use GetDevToolsSession(DevToolsOptions options)")]
-    [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-    [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-    public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
-    {
-        return GetDevToolsSession(new DevToolsOptions() { ProtocolVersion = devToolsProtocolVersion });
-    }
-
-    /// <summary>
     /// Closes a DevTools session.
     /// </summary>
     [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
