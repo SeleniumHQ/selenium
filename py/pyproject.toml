@@ -26,7 +26,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     ]
 dependencies = [
-    "urllib3[socks]~=2.5.0",
+    "urllib3[socks]>=2.5.0,<3.0",
     "trio~=0.30.0",
     "trio-websocket~=0.12.2",
     "certifi>=2025.6.15",

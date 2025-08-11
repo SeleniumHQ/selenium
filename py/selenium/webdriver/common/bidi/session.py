@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Dict, Optional
+from typing import Optional
 
 from selenium.webdriver.common.bidi.common import command_builder
 
@@ -77,7 +77,7 @@ class UserPromptHandler:
         self.file = file
         self.prompt = prompt
 
-    def to_dict(self) -> Dict[str, str]:
+    def to_dict(self) -> dict[str, str]:
         """Convert the UserPromptHandler to a dictionary for BiDi protocol.
 
         Returns:
