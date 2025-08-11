@@ -1211,7 +1211,10 @@ class WebDriver(BaseWebDriver):
             raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
         self._websocket_connection = WebSocketConnection(ws_url)
         targets = self._websocket_connection.execute(self._devtools.target.get_targets())
-        target_id = targets[0].target_id
+        for target in targets:
+            if target.target_id == self.current_window_handle:
+                target_id = target.target_id
+                break
         session = self._websocket_connection.execute(self._devtools.target.attach_to_target(target_id, True))
         self._websocket_connection.session_id = session
         return self._devtools, self._websocket_connection
@@ -1232,7 +1235,10 @@ class WebDriver(BaseWebDriver):
         devtools = cdp.import_devtools(version)
         async with cdp.open_cdp(ws_url) as conn:
             targets = await conn.execute(devtools.target.get_targets())
-            target_id = targets[0].target_id
+            for target in targets:
+                if target.target_id == self.current_window_handle:
+                    target_id = target.target_id
+                    break
             async with conn.open_session(target_id) as session:
                 yield BidiConnection(session, cdp, devtools)
 
@@ -1423,7 +1429,7 @@ class WebDriver(BaseWebDriver):
         try:
             if self.caps.get("browserName") == "chrome":
                 debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
-            elif self.caps.get("browserName") == "MicrosoftEdge":
+            elif self.caps.get("browserName") in ("MicrosoftEdge", "webview2"):
                 debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
         except AttributeError:
             raise WebDriverException("Can't get debugger address.")
