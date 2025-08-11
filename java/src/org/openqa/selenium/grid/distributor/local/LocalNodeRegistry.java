@@ -32,8 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -85,12 +86,15 @@ public class LocalNodeRegistry implements NodeRegistry {
   private final Map<NodeId, Runnable> allChecks = new ConcurrentHashMap<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final ScheduledExecutorService nodeHealthCheckService;
+  private final ExecutorService nodeHealthCheckExecutor;
   private final Duration purgeNodesInterval;
   private final ScheduledExecutorService purgeDeadNodesService;
+  private final int newSessionThreadPoolSize;
 
   public LocalNodeRegistry(
       Tracer tracer,
       EventBus bus,
+      int newSessionThreadPoolSize,
       HttpClient.Factory clientFactory,
       Secret registrationSecret,
       Duration healthcheckInterval,
@@ -106,6 +110,7 @@ public class LocalNodeRegistry implements NodeRegistry {
         Require.nonNull("Node health check service", nodeHealthCheckService);
     this.purgeNodesInterval = Require.nonNull("Purge nodes interval", purgeNodesInterval);
     this.purgeDeadNodesService = Require.nonNull("Purge dead nodes service", purgeDeadNodesService);
+    this.newSessionThreadPoolSize = newSessionThreadPoolSize;
 
     this.model = new LocalGridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
@@ -133,6 +138,16 @@ public class LocalNodeRegistry implements NodeRegistry {
         healthcheckInterval.toMillis(),
         healthcheckInterval.toMillis(),
         TimeUnit.MILLISECONDS);
+
+    this.nodeHealthCheckExecutor =
+        Executors.newFixedThreadPool(
+            this.newSessionThreadPoolSize,
+            r -> {
+              Thread t = new Thread(r);
+              t.setName("node-health-check-" + t.getId());
+              t.setDaemon(true);
+              return t;
+            });
 
     // Schedule node purging if interval is non-zero
     if (!this.purgeNodesInterval.isZero()) {
@@ -309,10 +324,9 @@ public class LocalNodeRegistry implements NodeRegistry {
 
     // Large deployments: process in parallel batches with controlled concurrency
     int batchSize = Math.max(10, total / 10);
-    int maxConcurrentBatches = Math.min(5, Runtime.getRuntime().availableProcessors());
 
     List<List<Runnable>> batches = partition(checks, batchSize);
-    processBatchesInParallel(batches, maxConcurrentBatches);
+    processBatchesInParallel(batches);
   }
 
   @Override
@@ -400,35 +414,28 @@ public class LocalNodeRegistry implements NodeRegistry {
     }
   }
 
-  private void processBatchesInParallel(List<List<Runnable>> batches, int maxConcurrentBatches) {
+  private void processBatchesInParallel(List<List<Runnable>> batches) {
     if (batches.isEmpty()) {
       return;
     }
-    List<CompletableFuture<Void>> inFlight = new ArrayList<>();
-    for (List<Runnable> batch : batches) {
-      CompletableFuture<Void> fut =
-          CompletableFuture.runAsync(
-              () ->
-                  batch.parallelStream()
-                      .forEach(
-                          r -> {
-                            try {
-                              r.run();
-                            } catch (Throwable t) {
-                              LOG.log(
-                                  getDebugLogLevel(), "Health check execution failed in batch", t);
-                            }
-                          }),
-              nodeHealthCheckService);
-      inFlight.add(fut);
-      if (inFlight.size() >= maxConcurrentBatches) {
-        CompletableFuture.allOf(inFlight.toArray(new CompletableFuture[0])).join();
-        inFlight.clear();
-      }
-    }
-    if (!inFlight.isEmpty()) {
-      CompletableFuture.allOf(inFlight.toArray(new CompletableFuture[0])).join();
-    }
+
+    // Process all batches with controlled parallelism
+    batches.forEach(
+        batch ->
+            nodeHealthCheckExecutor.submit(
+                () ->
+                    batch.parallelStream()
+                        .forEach(
+                            r -> {
+                              try {
+                                r.run();
+                              } catch (Throwable t) {
+                                LOG.log(
+                                    getDebugLogLevel(),
+                                    "Health check execution failed in batch",
+                                    t);
+                              }
+                            })));
   }
 
   private static List<List<Runnable>> partition(List<Runnable> list, int size) {

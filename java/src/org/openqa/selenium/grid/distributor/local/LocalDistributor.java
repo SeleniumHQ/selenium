@@ -183,6 +183,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         new LocalNodeRegistry(
             tracer,
             bus,
+            newSessionThreadPoolSize,
             this.clientFactory,
             this.registrationSecret,
             this.healthcheckInterval,
