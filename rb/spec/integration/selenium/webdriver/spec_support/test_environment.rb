@@ -58,7 +58,7 @@ module Selenium
         end
 
         def browser_version
-          driver_instance.capabilities.browser_version
+          ENV.fetch('WD_BROWSER_VERSION', 'stable')
         end
 
         def driver_instance(...)
@@ -191,18 +191,6 @@ module Selenium
           @create_driver_error = e
           @create_driver_error_count += 1
           raise e
-        end
-
-        def beta_chrome_version
-          chrome_beta_url = 'https://chromereleases.googleblog.com/search/label/Beta%20updates'
-
-          uri = URI.parse(chrome_beta_url)
-
-          response = Net::HTTP.get_response(uri)
-
-          return "Failed to fetch Chrome Beta page: #{response&.code}" unless response.is_a?(Net::HTTPSuccess)
-
-          response.body.match(/\d+\.\d+\.\d+\.\d+/).to_s
         end
 
         private
