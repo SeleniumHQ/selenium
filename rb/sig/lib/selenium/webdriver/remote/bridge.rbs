@@ -136,25 +136,7 @@ module Selenium
 
         def element_screenshot: (untyped element) -> untyped
 
-        def local_storage_item: (untyped key, ?untyped? value) -> untyped
 
-        def remove_local_storage_item: (untyped key) -> untyped
-
-        def local_storage_keys: () -> untyped
-
-        def clear_local_storage: () -> untyped
-
-        def local_storage_size: () -> untyped
-
-        def session_storage_item: (untyped key, ?untyped? value) -> untyped
-
-        def remove_session_storage_item: (untyped key) -> untyped
-
-        def session_storage_keys: () -> untyped
-
-        def clear_session_storage: () -> untyped
-
-        def session_storage_size: () -> untyped
 
         def execute_script: (untyped script, *untyped args) -> untyped
 
