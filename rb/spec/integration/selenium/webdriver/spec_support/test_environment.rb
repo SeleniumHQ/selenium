@@ -58,7 +58,7 @@ module Selenium
         end
 
         def browser_version
-          driver_instance.capabilities.browser_version
+          ENV.fetch('WD_BROWSER_VERSION', 'stable')
         end
 
         def driver_instance(...)
@@ -191,28 +191,6 @@ module Selenium
           @create_driver_error = e
           @create_driver_error_count += 1
           raise e
-        end
-
-        def beta_browser_version(browser)
-          case browser
-          when :chrome
-            uri = URI.parse('https://chromereleases.googleblog.com/search/label/Beta%20updates')
-            response = Net::HTTP.get_response(uri)
-            return "Failed to fetch Chrome Beta page: #{response.code}" unless response.is_a?(Net::HTTPSuccess)
-
-            response.body.match(/\d+\.\d+\.\d+\.\d+/).to_s
-
-          when :firefox
-            uri = URI.parse('https://product-details.mozilla.org/1.0/firefox_versions.json')
-            response = Net::HTTP.get_response(uri)
-            return "Failed to fetch Firefox version API: #{response.code}" unless response.is_a?(Net::HTTPSuccess)
-
-            versions = JSON.parse(response.body)
-            versions['LATEST_FIREFOX_RELEASED_DEVEL_VERSION']
-
-          else
-            raise ArgumentError, "Unsupported browser: #{browser}"
-          end
         end
 
         private
