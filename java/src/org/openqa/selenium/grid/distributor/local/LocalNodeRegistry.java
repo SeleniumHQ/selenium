@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -83,7 +83,6 @@ public class LocalNodeRegistry implements NodeRegistry {
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
   private final Map<NodeId, Runnable> allChecks = new ConcurrentHashMap<>();
-  private final Map<NodeId, ScheduledFuture<?>> scheduledHealthChecks = new ConcurrentHashMap<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final ScheduledExecutorService nodeHealthCheckService;
   private final Duration purgeNodesInterval;
@@ -205,14 +204,7 @@ public class LocalNodeRegistry implements NodeRegistry {
       try {
         nodes.put(node.getId(), node);
         model.add(initialNodeStatus);
-        ScheduledFuture<?> future =
-            nodeHealthCheckService.scheduleAtFixedRate(
-                GuardedRunnable.guard(healthCheck),
-                healthcheckInterval.toMillis(),
-                healthcheckInterval.toMillis(),
-                TimeUnit.MILLISECONDS);
         allChecks.put(node.getId(), healthCheck);
-        scheduledHealthChecks.put(node.getId(), future);
       } finally {
         writeLock.unlock();
       }
@@ -243,16 +235,7 @@ public class LocalNodeRegistry implements NodeRegistry {
       Node node = nodes.remove(nodeId);
       model.remove(nodeId);
 
-      // Get the health check runnable and remove it from executor service to prevent leaks
-      Runnable healthCheck = allChecks.remove(nodeId);
-      if (healthCheck != null) {
-        ScheduledFuture<?> future = scheduledHealthChecks.remove(nodeId);
-        if (future != null) {
-          future.cancel(false); // false means don't interrupt if running
-          LOG.log(
-              getDebugLogLevel(), String.format("Health check task for node %s cancelled", nodeId));
-        }
-      }
+      allChecks.remove(nodeId);
 
       if (node instanceof RemoteNode) {
         try {
@@ -317,9 +300,19 @@ public class LocalNodeRegistry implements NodeRegistry {
       readLock.unlock();
     }
 
-    for (Runnable nodeHealthCheck : nodeHealthChecks.values()) {
-      nodeHealthCheck.run();
+    if (nodeHealthChecks.isEmpty()) {
+      return;
     }
+
+    List<Runnable> checks = new ArrayList<>(nodeHealthChecks.values());
+    int total = checks.size();
+
+    // Large deployments: process in parallel batches with controlled concurrency
+    int batchSize = Math.max(10, total / 10);
+    int maxConcurrentBatches = Math.min(5, Runtime.getRuntime().availableProcessors());
+
+    List<List<Runnable>> batches = partition(checks, batchSize);
+    processBatchesInParallel(batches, maxConcurrentBatches);
   }
 
   @Override
@@ -405,6 +398,49 @@ public class LocalNodeRegistry implements NodeRegistry {
     } catch (RuntimeException e) {
       return false;
     }
+  }
+
+  private void processBatchesInParallel(List<List<Runnable>> batches, int maxConcurrentBatches) {
+    if (batches.isEmpty()) {
+      return;
+    }
+    List<CompletableFuture<Void>> inFlight = new ArrayList<>();
+    for (List<Runnable> batch : batches) {
+      CompletableFuture<Void> fut =
+          CompletableFuture.runAsync(
+              () ->
+                  batch.parallelStream()
+                      .forEach(
+                          r -> {
+                            try {
+                              r.run();
+                            } catch (Throwable t) {
+                              LOG.log(
+                                  getDebugLogLevel(), "Health check execution failed in batch", t);
+                            }
+                          }),
+              nodeHealthCheckService);
+      inFlight.add(fut);
+      if (inFlight.size() >= maxConcurrentBatches) {
+        CompletableFuture.allOf(inFlight.toArray(new CompletableFuture[0])).join();
+        inFlight.clear();
+      }
+    }
+    if (!inFlight.isEmpty()) {
+      CompletableFuture.allOf(inFlight.toArray(new CompletableFuture[0])).join();
+    }
+  }
+
+  private static List<List<Runnable>> partition(List<Runnable> list, int size) {
+    List<List<Runnable>> batches = new ArrayList<>();
+    if (list.isEmpty() || size <= 0) {
+      return batches;
+    }
+    for (int i = 0; i < list.size(); i += size) {
+      int end = Math.min(i + size, list.size());
+      batches.add(new ArrayList<>(list.subList(i, end)));
+    }
+    return batches;
   }
 
   private Runnable asRunnableHealthCheck(Node node) {
@@ -535,5 +571,25 @@ public class LocalNodeRegistry implements NodeRegistry {
   @Override
   public void close() {
     LOG.info("Shutting down LocalNodeRegistry");
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      allChecks.clear();
+      nodes
+          .values()
+          .forEach(
+              n -> {
+                if (n instanceof RemoteNode) {
+                  try {
+                    ((RemoteNode) n).close();
+                  } catch (Exception e) {
+                    LOG.log(Level.WARNING, "Unable to close node properly: " + e.getMessage());
+                  }
+                }
+              });
+      nodes.clear();
+    } finally {
+      writeLock.unlock();
+    }
   }
 }
