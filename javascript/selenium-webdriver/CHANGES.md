@@ -1,3 +1,14 @@
+## 4.35.0
+
+- Bumping versions to nightly
+- Fix typos in javascript & rb (#16019)
+- add `default` as a value for SameSite (#16129)
+- skip fedcm tests until Chrome 140 (#16137)
+- [bidi]: fix flaky bidi network test - `can request cookies` (#16141)
+    > fix flaky cookie bidi test
+- update devtools versions
+- bump versions in preparation for release
+
 ## 4.34.0
 
 - Bumping to nightly versions

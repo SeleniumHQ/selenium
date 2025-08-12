@@ -1,3 +1,94 @@
+v4.35.0
+======
+* [bidi] Get tree command returns GetTreeResult object (#15978)
+* [bidi] Initialize internal modules without Lazy (#15979)
+* Fix typos (#16032)
+* [bidi] Add UnhandledPromptBehavior option to create User Context (#16034)
+* Re-pack Selenium Manager as native dependency (#16048)
+    > To automatically exclude unnecessary Selenium Manager binaries if runtime platform is known via "RuntimeIdentifier" build property.
+    > New paths in the package:
+    > - runtimes/win/native/selenium-manager.exe
+    > - runtimes/linux/native/selenium-manager
+    > - runtimes/osx/native/selenium-manager
+* [bidi] Remove NavigateBack and NavigateForward as not a part… (#16068)
+    > [bidi] Remove NavigateBack and NavigateForward as not a part of low level
+* Support IPv6 to find free tcp port via DualMode (#16016)
+* Fix GetContext docs in Firefox driver
+* Sending GeckoDriver output to a log file. (#16081)
+    > * Sending GeckoDriver output to a log file.
+    > Related to #12273
+    > * Running format script
+    > * Adding test for log flag in Firefox
+    > Adding BUILD.bazel to run those tests in CI.
+    > * Update dotnet/src/webdriver/Firefox/FirefoxDriverService.cs
+    > * Update dotnet/src/webdriver/Firefox/FirefoxDriverService.cs
+* [bidi] Preserve BiDi global options when instantiating BiDi (#16080)
+* Fix race condition for .net framework when internal tracing enabled (#16091)
+    > This exception might be happened in .NET Framework only. On .NET Core it works smoothly.
+    > System.ArgumentException: An item with the same key has already been added.
+    >    at System.ThrowHelper.ThrowArgumentException(ExceptionResource resource)
+    >    at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value, Boolean add)
+    >    at System.Net.Http.Headers.HttpHeaders.AddHeaderToStore(String name, HeaderStoreItemInfo info)
+    >    at System.Net.Http.Headers.HttpHeaders.CreateAndAddHeaderToStore(String name)
+    >    at System.Net.Http.Headers.HttpHeaders.GetOrCreateHeaderInfo(String name, Boolean parseRawValues)
+    >    at System.Net.Http.Headers.HttpHeaders.SetParsedValue(String name, Object value)
+    >    at System.Net.Http.Headers.HttpContentHeaders.get_ContentLength()
+    >    at System.Net.Http.HttpClientHandler.PrepareAndStartContentUpload(RequestState state)
+* Minimize internal trace logging for http executor
+* [bidi] Make BiDi ctor private
+* [bidi] BiDi class is not inheritable
+* [bidi] Return EmptyResult object which might be non-empty
+* [bidi] Expose internal spec methods to be truly publicly available
+* Enabling Chrome and Edge driver services to set log level (#16098)
+    > * Enabling Chrome and Edge driver services to set log level
+    > Helps with #12273
+    > * Format script.
+    > * Update dotnet/src/webdriver/Chromium/ChromiumDriverService.cs
+    > * Following convention
+* Remove long awaited obsolete members (#16121)
+* Change default internal log level to Warn (#16126)
+* Truncate log and set profile root in Firefox (GeckoDriver) (#16131)
+    > * Setting truncated logs and profile root on GeckoDriver
+* Add readable timestamps to log in Chromium browsers (#16133)
+    > * Add readable timestamps to log in Chromium browsers
+    > * Format script
+* add `default` as a value for SameSite (#16129)
+* Removing unneeded verification. Done at compile time. (#16139)
+    > Removing unneeded verification. Done at compile time.
+* Renaming variable and converting it to nullable bool? (#16138)
+    > * Renaming variable and converting it to nullable bool?
+    > * Update dotnet/src/webdriver/Firefox/FirefoxDriverService.cs
+* Enabling drivers to set log to console. (#16097)
+    > * Enabling drivers to set log to console.
+    > This will be false by default, following what the
+    > .NET bindings have usually done.
+    > Helps with #12273
+    > * Avoid changing state of variable.
+    > LogPath takes precedence anyway.
+    > * Using existing logger functionality.
+    > Messages will be shown to the console
+    > using the Logger functionality.
+    > Adding a test that listens to the
+    > logger and checks that logs are being
+    > sent to console.
+    > Fixing an issue when sending the log
+    > to a file, as the OnDriverProcessStarted
+    > method in the base class was not being
+    > invoked.
+    > * Running format script.
+    > * WriteDriverLogToConsole
+    > Internal variable to avoid using
+    > the stream when logs are sent to a file.
+    > Not exposed to the user.
+    > * Format script.
+    > * Update dotnet/src/webdriver/DriverService.cs
+    > * Switching from async tasks to sync threads.
+    > * Format script.
+    > * Reading output through async events.
+    > * Addressing PR comments
+* Fix the issue when service wants to write into disposed stream (#16148)
+* update devtools versions
+
 v4.34.0
 ======
 * Add CDP for Chrome 138 and remove 135

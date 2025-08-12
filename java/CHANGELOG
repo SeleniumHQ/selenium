@@ -1,3 +1,85 @@
+v4.35.0
+======
+* Remove deprecated AppCacheStatus enum from the HTML5 package (#15973)
+    > * Remove deprecated AppCacheStatus enum from the HTML5 package
+    > * Remove deprecated app cache commands from DriverCommand interface
+* Removing deprecated FirefoxBinary.java and Executable.java
+* Removing deprecated `beforeSetScriptTimeout` and `afterSetScriptTimeout`
+* Removing deprecated SessionStorage commands from ChromiumDriver
+    > Related to #10397
+* Removing deprecated SessionStorage commands from FirefoxDriver
+    > Related to #10397
+* Removing deprecated SessionStorage class AddWebStorage.java
+    > Related to #10397
+* Removing deprecated WebStorage related classes.
+    > Related to #10397
+* Feat 14291/jspecify nullable annotation edge driver service (#15972)
+    > * Add Nullable annotations to Builder class fields in EdgeDriverService
+    > * Add Nullable annotations to parameters in EdgeDriverService and DriverService constructors
+    > * Refactor EdgeDriverService class documentation and structure
+    > * Add dependency on jspecify for EdgeDriver
+* Removing deprecated LocationContext related classes.
+    > Related to #10397
+* Fix Unicode value for OPTION key in Keys enum (#15966)
+    > * Fix Unicode value for OPTION key in Keys enum
+    > * Update java/src/org/openqa/selenium/Keys.java
+* Running format script
+* Removing old stream collectors required by Java 8 (#15523)
+* Use static Patterns for regex-matching (#15499)
+    > * Use static Patterns for regex-matching
+    > * Running formatter
+    > * Undoing removal of Java 8 code
+    > Will submit separate PR
+    > * Fixing formatting
+* Point made as immutable (#15511)
+    > Point made immutable
+* Feat 14291/jspecify nullable annotation chrome driver såervice (#15998)
+    > * Add JSpecify nullable annotations to ChromeDriverService parameters
+    > * applied format.sh
+* Add @Nullable annotations to Firefox and Gecko driver service  (#15999)
+    > Add @Nullable annotations to Firefox and Gecko driver service constructors and parameters
+* Add JSpecify nullable annotations to SafariDriverService parameters (#16000)
+    > Add JSpecify nullable annotations to SafariDriverService parameters
+* Add @Nullable annotations to InternetExplorerDriverService parameters (#16001)
+    > Add @Nullable annotations to InternetExplorerDriverService parameters
+* use generics for AbstractFindByBuilder to avoid excessive casting (#15526)
+* JSpecify annotations for By locators (#14372)
+    > Add JSpecify annotations for By locators
+* JSpecify annotations for capabilities (#14397)
+    > * JSpecify annotations for capabilities
+    > * Fixed NullAway errors in capabilities
+    > * Format script
+* Fix various typos in comments (#16022)
+* release underlying HttpClient resources #15710
+* CDP generate getters to ArrayType #16050
+* Fix 15634/ensure driver closed java (#16038)
+* [grid] Migrate from Guava's CacheBuilder to Caffeine (#15547)
+* [grid] Fix race condition and improve logging in LocalSessionMap (#15370)
+    > * [grid] Fix race condition in LocalSessionMap and improve logging
+    > * Add LocalSessionMapTest
+    > * Add suggestion to improve code
+* [BiDi] implement emulation (#16070)
+* add `default` as a value for SameSite (#16129)
+* Removing unused and deprecated internal class.
+* Normalising handling of Shadow Dom elements. (#16149)
+    > This applies the same logic we already apply
+    > for findElement and findElements, as `id`,
+    > `name`, and `className` are not W3C locators.
+    > Fixes #15961
+* [grid] Restructuring classes have stateful data and improve Node health checks in LocalDistributor (#16151)
+    > * [grid] Restructuring classes have stateful data in LocalDistributor
+    > * Fix review comment
+    > * Fix review comment
+    > * Improve Node health checks by batch runs
+* add `websocket-port` test and `--connect-existing` check (#15462)
+    > * add check for ``--connect-existing`
+    > * add firefox test for BiDi multiple sessions
+    > * run `format.sh`
+    > * use `WebDriverBuilder` for driver
+    > * add `connectToExisting` and `withWebSocketPort` methods
+* [grid] Reduce redundant logs of find slots and retry queue requests by the Distributor (#16155)
+* update devtools versions
+
 v4.34.0
 ======
 * Add CDP for Chrome 138 and remove 135
