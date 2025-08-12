@@ -44,6 +44,8 @@ def free_port() -> int:
             free_socket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
             free_socket.bind(("::1", 0))
         except OSError:
+            if free_socket:
+                free_socket.close()
             raise RuntimeError("Can't find free port (Unable to bind to IPv4 or IPv6)")
     try:
         port: int = free_socket.getsockname()[1]
