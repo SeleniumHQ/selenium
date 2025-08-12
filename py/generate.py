@@ -1005,18 +1005,33 @@ def main(browser_protocol_path, js_protocol_path, output_path):
 
     # Patch up CDP errors. It's easier to patch that here than it is to modify
     # the generator code.
-    # 1. DOM includes an erroneous $ref that refers to itself.
-    # 2. Page includes an event with an extraneous backtick in the description.
+    # 1. ``Debugger`` includes 3 erroneous ``$ref``s that refer to itself.
+    # 2. ``DOM`` includes 2 erroneous ``$ref``s that refer to itself.
+    # 3. ``Page`` includes an event with an extraneous backtick in the description.
     for domain in domains:
-        if domain.domain == 'DOM':
+        if domain.domain == 'Debugger':
+            for event in domain.events:
+                if event.name == 'scriptFailedToParse':
+                    # Patch 1.1
+                    event.parameters[16].ref = 'ScriptLanguage'
+                elif event.name == 'scriptParsed':
+                    # Patch 1.2
+                    event.parameters[17].ref = 'ScriptLanguage'
+                    # Patch 1.3
+                    event.parameters[18].items.ref = 'DebugSymbols'
+        elif domain.domain == 'DOM':
             for cmd in domain.commands:
                 if cmd.name == 'resolveNode':
-                    # Patch 1
+                    # Patch 2.1
                     cmd.parameters[1].ref = 'BackendNodeId'
+            for event in domain.events:
+                if event.name == 'scrollableFlagUpdated':
+                    # Patch 2.2
+                    event.parameters[0].ref = 'NodeId'
         elif domain.domain == 'Page':
             for event in domain.events:
                 if event.name == 'screencastVisibilityChanged':
-                    # Patch 2
+                    # Patch 3
                     event.description = event.description.replace('`', '')
 
     for domain in domains:
