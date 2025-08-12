@@ -31,12 +31,19 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
+import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
+import com.github.benmanes.caffeine.cache.Weigher;
 import java.io.Closeable;
 import java.io.Reader;
 import java.net.URI;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.NoSuchSessionException;
@@ -60,150 +67,254 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-public class HandleSession implements HttpHandler, Closeable {
+class HandleSession implements HttpHandler, Closeable {
 
   private static final Logger LOG = Logger.getLogger(HandleSession.class.getName());
 
-  private static class ReverseProxyHandlerCloseable extends ReverseProxyHandler
-      implements Closeable {
+  /**
+   * Cache entry that tracks HttpClient usage and timing for connection reuse. Connection reuse
+   * criteria: - inUse must be 0 (no active requests) - lastUse must be older than readTimeout
+   * duration
+   */
+  private static class CacheEntry {
+    private final HttpClient httpClient;
+    private final AtomicLong inUse;
+    private final Duration readTimeout;
+    // volatile as the cache will access this from multiple threads
+    private volatile Instant lastUse;
 
-    public ReverseProxyHandlerCloseable(Tracer tracer, HttpClient httpClient) {
+    public CacheEntry(HttpClient httpClient, Duration readTimeout, long initialUsage) {
+      this.httpClient = httpClient;
+      this.readTimeout = readTimeout;
+      this.inUse = new AtomicLong(initialUsage);
+      this.lastUse = Instant.now();
+    }
+
+    /**
+     * Checks if this connection can be reused based on usage and timeout criteria.
+     *
+     * @return true if connection is idle (inUse=0) and over readTimeout
+     */
+    public boolean canBeReused() {
+      return inUse.get() == 0 && lastUse.isBefore(Instant.now().minus(readTimeout));
+    }
+
+    /**
+     * Checks if this connection should be expired based on usage and timeout criteria.
+     *
+     * @return true if connection is idle (inUse=0) and over readTimeout
+     */
+    public boolean shouldExpire() {
+      return canBeReused(); // Same criteria for now
+    }
+
+    /**
+     * Attempts to reuse this connection if criteria are met.
+     *
+     * @return true if connection was successfully reused, false otherwise
+     */
+    public boolean tryReuse() {
+      // Double-check criteria under potential race conditions
+      if (canBeReused()) {
+        // Try to increment usage atomically - if successful, connection is reused
+        long currentUsage = inUse.get();
+        if (currentUsage == 0 && inUse.compareAndSet(0, 1)) {
+          LOG.fine("Reusing idle connection: " + httpClient);
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /** Updates the last use time - called when connection is accessed */
+    public void updateLastUse() {
+      this.lastUse = Instant.now();
+    }
+  }
+
+  /**
+   * Custom expiry policy that considers inUse count and lastUse time with readTimeout. This ensures
+   * entries are expired when they meet our reuse criteria.
+   */
+  private static class ConnectionExpiry implements Expiry<URI, CacheEntry> {
+
+    @Override
+    public long expireAfterCreate(URI key, CacheEntry value, long currentTime) {
+      // Initial expiration time based on readTimeout
+      return value.readTimeout.toNanos();
+    }
+
+    @Override
+    public long expireAfterUpdate(
+        URI key, CacheEntry value, long currentTime, long currentDuration) {
+      // Reset expiration time when entry is updated (connection reused)
+      return value.readTimeout.toNanos();
+    }
+
+    @Override
+    public long expireAfterRead(URI key, CacheEntry value, long currentTime, long currentDuration) {
+      // Check if connection should expire based on our criteria
+      if (value.shouldExpire()) {
+        return 0; // Expire immediately
+      }
+
+      // Calculate remaining time until expiration
+      Instant expireTime = value.lastUse.plus(value.readTimeout);
+      Duration remaining = Duration.between(Instant.now(), expireTime);
+
+      if (remaining.isNegative() || remaining.isZero()) {
+        return 0; // Expire immediately
+      }
+
+      return remaining.toNanos();
+    }
+  }
+
+  private static class UsageCountingReverseProxyHandler extends ReverseProxyHandler
+      implements Closeable {
+    private final CacheEntry entry;
+
+    public UsageCountingReverseProxyHandler(
+        Tracer tracer, HttpClient httpClient, CacheEntry entry) {
       super(tracer, httpClient);
+      this.entry = entry;
     }
 
     @Override
     public void close() {
-      // No operation needed - cache management is handled by Cache builder
+      // Update last use time and decrement usage count
+      entry.lastUse = Instant.now();
+      entry.inUse.decrementAndGet();
+    }
+  }
+
+  /**
+   * Custom weigher that implements "pinning" by assigning very high weight to entries with inUse >
+   * 0. This prevents Caffeine from evicting active connections during size-based eviction.
+   *
+   * <p>Weight Strategy: - inUse == 0: Weight = 1 (normal, can be evicted) - inUse > 0: Weight =
+   * Integer.MAX_VALUE (effectively pinned, won't be evicted)
+   */
+  private static class InUseWeigher implements Weigher<URI, CacheEntry> {
+    @Override
+    public int weigh(URI key, CacheEntry value) {
+      long inUse = value.inUse.get();
+      int weight = inUse == 0 ? 1 : Integer.MAX_VALUE;
+
+      LOG.finest(
+          "Weighing cache entry: "
+              + key
+              + ", inUse: "
+              + inUse
+              + ", weight: "
+              + (weight == Integer.MAX_VALUE ? "PINNED" : weight));
+
+      return weight;
+    }
+  }
+
+  /**
+   * Enhanced removal listener that provides detailed information about eviction causes and tracks
+   * when pinned entries are removed.
+   */
+  private static class DetailedRemovalListener implements RemovalListener<URI, CacheEntry> {
+    @Override
+    public void onRemoval(URI key, CacheEntry entry, RemovalCause cause) {
+      if (entry != null) {
+        boolean wasPinned = entry.inUse.get() > 0;
+
+        LOG.info(
+            "Removing HttpClient from cache: "
+                + key
+                + ", cause: "
+                + cause
+                + ", inUse: "
+                + entry.inUse.get()
+                + ", lastUse: "
+                + entry.lastUse
+                + ", wasPinned: "
+                + wasPinned
+                + (wasPinned && cause == RemovalCause.SIZE
+                    ? " [WARNING: Pinned entry evicted!]"
+                    : ""));
+
+        try {
+          entry.httpClient.close();
+        } catch (Exception ex) {
+          LOG.log(Level.WARNING, "Failed to close HttpClient during cache removal", ex);
+        }
+      }
     }
   }
 
   private final Tracer tracer;
   private final HttpClient.Factory httpClientFactory;
   private final SessionMap sessions;
-  private final Cache<URI, CacheEntry> httpClientCache;
-
-  /**
-   * Wrapper class to store HttpClient along with its configuration for dynamic cache expiration
-   * based on HttpClient's read timeout.
-   */
-  private static class CacheEntry {
-    private final HttpClient httpClient;
-    private final ClientConfig config;
-    private final long creationTime;
-
-    CacheEntry(HttpClient httpClient, ClientConfig config) {
-      this.httpClient = Require.nonNull("HttpClient", httpClient);
-      this.config = Require.nonNull("ClientConfig", config);
-      this.creationTime = System.currentTimeMillis();
-    }
-
-    HttpClient getHttpClient() {
-      return httpClient;
-    }
-
-    ClientConfig getConfig() {
-      return config;
-    }
-
-    /**
-     * Check if this cache entry has expired based on the HttpClient's read timeout. Method is used
-     * by Cache builder to determine if an entry should be evicted.
-     *
-     * @param lastAccessTime the last time this entry was accessed
-     * @return true if the entry should be evicted
-     */
-    boolean isExpired(long lastAccessTime) {
-      long readTimeoutMs = config.readTimeout().toMillis();
-      long timeSinceLastAccess = System.currentTimeMillis() - lastAccessTime;
-      boolean expired = timeSinceLastAccess > readTimeoutMs;
-      if (expired) {
-        LOG.fine(
-            String.format(
-                "Connection for %s has expired (read timeout: %d seconds)",
-                config.baseUri(), config.readTimeout().toSeconds()));
-      }
-      return expired;
-    }
-
-    /**
-     * Close the HTTP client associated with this cache entry. Method is used by Cache builder to
-     * close expired entries.
-     */
-    void close() {
-      try {
-        httpClient.close();
-        LOG.fine(String.format("Closed expired connection for %s", config.baseUri()));
-      } catch (Exception ex) {
-        LOG.warning(String.format("Failed to close expired connection for %s", config.baseUri()));
-      }
-    }
-  }
+  private final Cache<URI, CacheEntry> httpClientsCache;
+  private final ScheduledExecutorService cleanupExecutor;
 
   HandleSession(Tracer tracer, HttpClient.Factory httpClientFactory, SessionMap sessions) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
     this.sessions = Require.nonNull("Sessions", sessions);
 
-    // Create Cache with dynamic expiry based on HttpClient read timeout
-    // and a removal listener to close HTTP clients
-    this.httpClientCache =
+    // Configure Caffeine cache with custom expiry and connection reuse support
+    this.httpClientsCache =
         Caffeine.newBuilder()
-            .expireAfter(
-                new Expiry<URI, CacheEntry>() {
-                  @Override
-                  public long expireAfterCreate(URI uri, CacheEntry cacheEntry, long currentTime) {
-                    // Use the HttpClient's read timeout for initial expiration
-                    LOG.fine(
-                        String.format(
-                            "Set (read timeout: %d seconds) as initial expiration for %s in cache",
-                            cacheEntry.getConfig().readTimeout().toSeconds(), uri));
-                    return cacheEntry.getConfig().readTimeout().toNanos();
-                  }
-
-                  @Override
-                  public long expireAfterUpdate(
-                      URI uri, CacheEntry cacheEntry, long currentTime, long currentDuration) {
-                    // Use the HttpClient's read timeout for expiration after update
-                    LOG.fine(
-                        String.format(
-                            "Set (read timeout: %d seconds) as expiration after update for %s in"
-                                + " cache",
-                            cacheEntry.getConfig().readTimeout().toSeconds(), uri));
-                    return cacheEntry.getConfig().readTimeout().toNanos();
-                  }
-
-                  @Override
-                  public long expireAfterRead(
-                      URI uri, CacheEntry cacheEntry, long currentTime, long currentDuration) {
-                    // Use the HttpClient's read timeout for expiration after read
-                    LOG.fine(
-                        String.format(
-                            "Set (read timeout: %d seconds) as expiration after read for %s in"
-                                + " cache",
-                            cacheEntry.getConfig().readTimeout().toSeconds(), uri));
-                    return cacheEntry.getConfig().readTimeout().toNanos();
-                  }
-                })
-            .removalListener(
-                (RemovalListener<URI, CacheEntry>)
-                    (uri, cacheEntry, cause) -> {
-                      if (cacheEntry != null) {
-                        try {
-                          Duration readTimeout = cacheEntry.getConfig().readTimeout();
-                          LOG.fine(
-                              "Closing HTTP client for "
-                                  + uri
-                                  + " (read timeout: "
-                                  + readTimeout.toSeconds()
-                                  + " seconds), removal cause: "
-                                  + cause);
-                          cacheEntry.close();
-                        } catch (Exception ex) {
-                          LOG.log(Level.WARNING, "Failed to close HTTP client for " + uri, ex);
-                        }
-                      }
-                    })
+            .maximumWeight(1000) // Maximum weight to prevent eviction of in-use entries
+            .weigher(new InUseWeigher()) // Weigher to prevent eviction of in-use entries
+            .expireAfter(new ConnectionExpiry()) // Custom expiry based on inUse and readTimeout
+            .removalListener(new DetailedRemovalListener()) // Detailed removal listener
             .build();
+
+    // Schedule periodic cleanup to actively check for expired entries
+    this.cleanupExecutor =
+        Executors.newSingleThreadScheduledExecutor(
+            r -> {
+              Thread thread = new Thread(r);
+              thread.setDaemon(true);
+              thread.setName("HandleSession - Connection Cleanup");
+              return thread;
+            });
+
+    // Run cleanup every 30 seconds to actively expire stale connections
+    cleanupExecutor.scheduleAtFixedRate(
+        () -> {
+          try {
+            LOG.fine("Running periodic connection cleanup");
+
+            // Force cache maintenance - this will trigger expiry checks
+            httpClientsCache.cleanUp();
+
+            // Additional manual check for entries that should be expired
+            httpClientsCache
+                .asMap()
+                .entrySet()
+                .removeIf(
+                    entry -> {
+                      CacheEntry cacheEntry = entry.getValue();
+                      if (cacheEntry.shouldExpire()) {
+                        LOG.fine(
+                            "Manually expiring connection: "
+                                + entry.getKey()
+                                + ", inUse: "
+                                + cacheEntry.inUse.get()
+                                + ", lastUse: "
+                                + cacheEntry.lastUse);
+                        return true;
+                      }
+                      return false;
+                    });
+
+            LOG.fine(
+                "Connection cleanup completed. Cache size: " + httpClientsCache.estimatedSize());
+          } catch (Exception e) {
+            LOG.log(Level.WARNING, "Error during connection cleanup", e);
+          }
+        },
+        120,
+        60,
+        TimeUnit.SECONDS);
   }
 
   @Override
@@ -237,7 +348,7 @@ public class HandleSession implements HttpHandler, Closeable {
       try {
         HttpTracing.inject(tracer, span, req);
         HttpResponse res;
-        try (ReverseProxyHandlerCloseable handler = loadSessionId(tracer, span, id).call()) {
+        try (UsageCountingReverseProxyHandler handler = loadSessionId(tracer, span, id).call()) {
           res = handler.execute(req);
         }
 
@@ -274,32 +385,44 @@ public class HandleSession implements HttpHandler, Closeable {
     }
   }
 
-  private Callable<ReverseProxyHandlerCloseable> loadSessionId(
+  private Callable<UsageCountingReverseProxyHandler> loadSessionId(
       Tracer tracer, Span span, SessionId id) {
     return span.wrap(
         () -> {
           URI sessionUri = sessions.getUri(id);
 
-          // Get or create the HTTP client from cache (this also updates the "last access" time)
-          CacheEntry cacheEntry =
-              httpClientCache.get(
-                  sessionUri,
-                  uri -> {
-                    LOG.fine("Creating new HTTP client for " + uri);
-                    ClientConfig config = fetchNodeSessionTimeout(uri);
-                    HttpClient httpClient = httpClientFactory.createClient(config);
-                    LOG.fine(
-                        "Created connection for "
-                            + uri
-                            + " (read timeout: "
-                            + config.readTimeout().toSeconds()
-                            + " seconds)");
-                    return new CacheEntry(httpClient, config);
-                  });
+          // Try to get existing entry and reuse connection if possible
+          CacheEntry cacheEntry = httpClientsCache.getIfPresent(sessionUri);
+
+          if (cacheEntry != null && cacheEntry.tryReuse()) {
+            // Successfully reused existing idle connection - update last use
+            cacheEntry.updateLastUse();
+            LOG.fine("Reusing idle connection for session: " + id);
+            return new UsageCountingReverseProxyHandler(tracer, cacheEntry.httpClient, cacheEntry);
+          }
+
+          // Need to create new connection or existing one couldn't be reused
+          ClientConfig config = fetchNodeSessionTimeout(sessionUri);
+          HttpClient httpClient = httpClientFactory.createClient(config);
+
+          // Create new cache entry with usage count of 1
+          CacheEntry newEntry = new CacheEntry(httpClient, config.readTimeout(), 1);
+
+          // Put in cache (this might evict old entries)
+          httpClientsCache.put(sessionUri, newEntry);
+
+          LOG.fine(
+              "Created new HttpClient for session: "
+                  + id
+                  + ", readTimeout: "
+                  + config.readTimeout().toSeconds()
+                  + "s");
 
           try {
-            return new ReverseProxyHandlerCloseable(tracer, cacheEntry.getHttpClient());
+            return new UsageCountingReverseProxyHandler(tracer, newEntry.httpClient, newEntry);
           } catch (Throwable t) {
+            // Ensure we don't keep the http client when an unexpected throwable is raised
+            newEntry.inUse.decrementAndGet();
             throw t;
           }
         });
@@ -349,8 +472,21 @@ public class HandleSession implements HttpHandler, Closeable {
 
   @Override
   public void close() {
-    // This will trigger the removal listener for all entries, which will close all HTTP clients
-    httpClientCache.invalidateAll();
-    httpClientCache.cleanUp();
+    // Shutdown cleanup executor
+    if (cleanupExecutor != null && !cleanupExecutor.isShutdown()) {
+      cleanupExecutor.shutdown();
+      try {
+        if (!cleanupExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+          cleanupExecutor.shutdownNow();
+        }
+      } catch (InterruptedException e) {
+        cleanupExecutor.shutdownNow();
+        Thread.currentThread().interrupt();
+      }
+    }
+
+    // Clean shutdown of the cache - this will trigger removal listeners
+    httpClientsCache.invalidateAll();
+    httpClientsCache.cleanUp();
   }
 }
