@@ -494,6 +494,351 @@ class LocalDistributorTest {
     assertThat(System.currentTimeMillis() - start).isLessThan(delay * 2);
   }
 
+  @Test
+  void shouldOnlyReturnNodesWithFreeSlots() throws URISyntaxException {
+    // Create a distributor
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(1),
+            registrationSecret,
+            5);
+    LocalDistributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            new PassthroughHttpClient.Factory(localNode),
+            new LocalSessionMap(tracer, bus),
+            queue,
+            new DefaultSlotSelector(),
+            registrationSecret,
+            Duration.ofMinutes(5),
+            false,
+            Duration.ofSeconds(5),
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
+
+    // Create two nodes - both initially have free slots
+    URI nodeUri1 = new URI("http://example:1234");
+    URI nodeUri2 = new URI("http://example:5678");
+
+    // Node 1: Has free slots
+    Node node1 =
+        LocalNode.builder(tracer, bus, nodeUri1, nodeUri1, registrationSecret)
+            .add(
+                new ImmutableCapabilities("browserName", "cheese"),
+                new TestSessionFactory(
+                    (id, c) ->
+                        new Session(id, nodeUri1, new ImmutableCapabilities(), c, Instant.now())))
+            .build();
+
+    // Node 2: Will be fully occupied
+    Node node2 =
+        LocalNode.builder(tracer, bus, nodeUri2, nodeUri2, registrationSecret)
+            .add(
+                new ImmutableCapabilities("browserName", "cheese"),
+                new TestSessionFactory(
+                    (id, c) ->
+                        new Session(id, nodeUri2, new ImmutableCapabilities(), c, Instant.now())))
+            .build();
+
+    // Add both nodes to distributor
+    distributor.add(node1);
+    distributor.add(node2);
+
+    // Initially both nodes should be available
+    Set<NodeStatus> initialAvailableFreeNodes = distributor.getAvailableNodes();
+    assertThat(initialAvailableFreeNodes).hasSize(2);
+
+    // Create a session to occupy one slot
+    SessionRequest sessionRequest =
+        new SessionRequest(
+            new RequestId(UUID.randomUUID()),
+            Instant.now(),
+            Set.of(W3C),
+            Set.of(new ImmutableCapabilities("browserName", "cheese")),
+            Map.of(),
+            Map.of());
+
+    // Create session - this will occupy one slot on one of the nodes
+    distributor.newSession(sessionRequest);
+
+    // Now test getAvailableNodes - should return nodes that still have free slots
+    Set<NodeStatus> availableFreeNodes = distributor.getAvailableNodes();
+
+    // Both nodes should still be available since each has only 1 slot and we created 1 session
+    // But let's verify the logic by checking that all returned nodes have free slots
+    for (NodeStatus nodeStatus : availableFreeNodes) {
+      assertThat(nodeStatus.getAvailability()).isEqualTo(UP);
+
+      // Verify node has at least one free slot
+      boolean hasFreeSlot =
+          nodeStatus.getSlots().stream().anyMatch(slot -> slot.getSession() == null);
+      assertThat(hasFreeSlot).isTrue();
+    }
+
+    // Create another session to fully occupy both nodes
+    SessionRequest sessionRequest2 =
+        new SessionRequest(
+            new RequestId(UUID.randomUUID()),
+            Instant.now(),
+            Set.of(W3C),
+            Set.of(new ImmutableCapabilities("browserName", "cheese")),
+            Map.of(),
+            Map.of());
+
+    distributor.newSession(sessionRequest2);
+
+    // Now both nodes should be fully occupied, so getAvailableNodes should return empty
+    Set<NodeStatus> fullyOccupiedNodes = distributor.getAvailableNodes();
+    assertThat(fullyOccupiedNodes).isEmpty();
+  }
+
+  @Test
+  void shouldNotReturnDrainingNodes() throws URISyntaxException {
+    // Create a distributor
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(1),
+            registrationSecret,
+            5);
+    LocalDistributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            new PassthroughHttpClient.Factory(localNode),
+            new LocalSessionMap(tracer, bus),
+            queue,
+            new DefaultSlotSelector(),
+            registrationSecret,
+            Duration.ofMinutes(5),
+            false,
+            Duration.ofSeconds(5),
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
+
+    // Create a node
+    URI nodeUri = new URI("http://example:1234");
+    Node node =
+        LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
+            .add(
+                new ImmutableCapabilities("browserName", "cheese"),
+                new TestSessionFactory(
+                    (id, c) ->
+                        new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+            .build();
+
+    // Add node to distributor
+    distributor.add(node);
+
+    // Initially, node should be available
+    Set<NodeStatus> availableFreeNodes = distributor.getAvailableNodes();
+    assertThat(availableFreeNodes).hasSize(1);
+    assertThat(availableFreeNodes.iterator().next().getAvailability()).isEqualTo(UP);
+
+    // Drain the node
+    distributor.drain(node.getId());
+
+    // After draining, node should not be returned by getAvailableNodes
+    availableFreeNodes = distributor.getAvailableNodes();
+    assertThat(availableFreeNodes).isEmpty();
+  }
+
+  @Test
+  void shouldNotReturnDownNodes() throws URISyntaxException {
+    // Create a distributor
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(1),
+            registrationSecret,
+            5);
+    LocalDistributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            new PassthroughHttpClient.Factory(localNode),
+            new LocalSessionMap(tracer, bus),
+            queue,
+            new DefaultSlotSelector(),
+            registrationSecret,
+            Duration.ofMinutes(5),
+            false,
+            Duration.ofSeconds(5),
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
+
+    // Create a node
+    URI nodeUri = new URI("http://example:1234");
+    Node node =
+        LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
+            .add(
+                new ImmutableCapabilities("browserName", "cheese"),
+                new TestSessionFactory(
+                    (id, c) ->
+                        new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+            .build();
+
+    // Add node to distributor
+    distributor.add(node);
+
+    // Initially, node should be available
+    Set<NodeStatus> availableFreeNodes = distributor.getAvailableNodes();
+    assertThat(availableFreeNodes).hasSize(1);
+
+    // Remove the node (simulates DOWN state)
+    distributor.remove(node.getId());
+
+    // After removal, node should not be returned by getAvailableNodes
+    availableFreeNodes = distributor.getAvailableNodes();
+    assertThat(availableFreeNodes).isEmpty();
+  }
+
+  @Test
+  void shouldReduceRedundantSlotChecks() throws URISyntaxException {
+    // Create a distributor
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(1),
+            registrationSecret,
+            5);
+    LocalDistributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            new PassthroughHttpClient.Factory(localNode),
+            new LocalSessionMap(tracer, bus),
+            queue,
+            new DefaultSlotSelector(),
+            registrationSecret,
+            Duration.ofMinutes(5),
+            false,
+            Duration.ofSeconds(5),
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
+
+    // Create multiple nodes, some with free slots, some fully occupied
+    List<Node> nodes = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      URI nodeUri = new URI("http://example:" + (1234 + i));
+      Node node =
+          LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
+              .add(
+                  new ImmutableCapabilities("browserName", "cheese"),
+                  new TestSessionFactory(
+                      (id, c) ->
+                          new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+              .build();
+      nodes.add(node);
+      distributor.add(node);
+    }
+
+    // Occupy slots on first 3 nodes
+    for (int i = 0; i < 3; i++) {
+      SessionRequest sessionRequest =
+          new SessionRequest(
+              new RequestId(UUID.randomUUID()),
+              Instant.now(),
+              Set.of(W3C),
+              Set.of(new ImmutableCapabilities("browserName", "cheese")),
+              Map.of(),
+              Map.of());
+      distributor.newSession(sessionRequest);
+    }
+
+    // getAvailableNodes should only return the 2 nodes with free slots
+    Set<NodeStatus> availableFreeNodes = distributor.getAvailableNodes();
+    assertThat(availableFreeNodes).hasSize(2);
+
+    // Verify all returned nodes have free slots
+    for (NodeStatus nodeStatus : availableFreeNodes) {
+      boolean hasFreeSlot =
+          nodeStatus.getSlots().stream().anyMatch(slot -> slot.getSession() == null);
+      assertThat(hasFreeSlot).isTrue();
+      assertThat(nodeStatus.getAvailability()).isEqualTo(UP);
+    }
+  }
+
+  @Test
+  void shouldHandleAllNodesFullyOccupied() throws URISyntaxException {
+    // Create a distributor
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(1),
+            registrationSecret,
+            5);
+    LocalDistributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            new PassthroughHttpClient.Factory(localNode),
+            new LocalSessionMap(tracer, bus),
+            queue,
+            new DefaultSlotSelector(),
+            registrationSecret,
+            Duration.ofMinutes(5),
+            false,
+            Duration.ofSeconds(5),
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
+
+    // Create nodes with single slot each
+    List<Node> nodes = new ArrayList<>();
+    for (int i = 0; i < 3; i++) {
+      URI nodeUri = new URI("http://example:" + (1234 + i));
+      Node node =
+          LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
+              .add(
+                  new ImmutableCapabilities("browserName", "cheese"),
+                  new TestSessionFactory(
+                      (id, c) ->
+                          new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+              .build();
+      nodes.add(node);
+      distributor.add(node);
+    }
+
+    // Occupy all slots
+    for (int i = 0; i < 3; i++) {
+      SessionRequest sessionRequest =
+          new SessionRequest(
+              new RequestId(UUID.randomUUID()),
+              Instant.now(),
+              Set.of(W3C),
+              Set.of(new ImmutableCapabilities("browserName", "cheese")),
+              Map.of(),
+              Map.of());
+      distributor.newSession(sessionRequest);
+    }
+
+    // getAvailableNodes should return empty set when all nodes are fully occupied
+    Set<NodeStatus> availableFreeNodes = distributor.getAvailableNodes();
+    assertThat(availableFreeNodes).isEmpty();
+  }
+
   private class Handler extends Session implements HttpHandler {
 
     private Handler(Capabilities capabilities) {

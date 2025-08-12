@@ -1,5 +1,5 @@
 {
-  "checksum": "3443a528dae365d640563b82268f94dba99df686c6987390747e5c418c61b238",
+  "checksum": "ba20a76142f2e697f7d66ffe689ecff09c9198c4fded6da537f4dcc9c507b184",
   "crates": {
     "addr2line 0.21.0": {
       "name": "addr2line",
@@ -2106,15 +2106,78 @@
               "target": "jobserver"
             },
             {
-              "id": "libc 0.2.174",
-              "target": "libc"
-            },
-            {
               "id": "shlex 1.3.0",
               "target": "shlex"
             }
           ],
-          "selects": {}
+          "selects": {
+            "aarch64-apple-darwin": [
+              {
+                "id": "libc 0.2.174",
+                "target": "libc"
+              }
+            ],
+            "aarch64-unknown-linux-gnu": [
+              {
+                "id": "libc 0.2.174",
+                "target": "libc"
+              }
+            ],
+            "aarch64-unknown-nixos-gnu": [
+              {
+                "id": "libc 0.2.174",
+                "target": "libc"
+              }
+            ],
+            "arm-unknown-linux-gnueabi": [
+              {
+                "id": "libc 0.2.174",
+                "target": "libc"
+              }
+            ],
+            "i686-unknown-linux-gnu": [
+              {
+                "id": "libc 0.2.174",
+                "target": "libc"
+              }
+            ],
+            "powerpc-unknown-linux-gnu": [
+              {
+                "id": "libc 0.2.174",
+                "target": "libc"
+              }
+            ],
+            "s390x-unknown-linux-gnu": [
+              {
+                "id": "libc 0.2.174",
+                "target": "libc"
+              }
+            ],
+            "x86_64-apple-darwin": [
+              {
+                "id": "libc 0.2.174",
+                "target": "libc"
+              }
+            ],
+            "x86_64-unknown-freebsd": [
+              {
+                "id": "libc 0.2.174",
+                "target": "libc"
+              }
+            ],
+            "x86_64-unknown-linux-gnu": [
+              {
+                "id": "libc 0.2.174",
+                "target": "libc"
+              }
+            ],
+            "x86_64-unknown-nixos-gnu": [
+              {
+                "id": "libc 0.2.174",
+                "target": "libc"
+              }
+            ]
+          }
         },
         "edition": "2018",
         "version": "1.1.30"
@@ -13543,9 +13606,9 @@
       ],
       "license_file": "LICENSE"
     },
-    "selenium-manager 0.4.35-nightly": {
+    "selenium-manager 0.4.35": {
       "name": "selenium-manager",
-      "version": "0.4.35-nightly",
+      "version": "0.4.35",
       "package_url": "https://github.com/SeleniumHQ/selenium",
       "repository": null,
       "targets": [
@@ -13701,7 +13764,7 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "0.4.35-nightly"
+        "version": "0.4.35"
       },
       "license": "Apache-2.0",
       "license_ids": [
@@ -21955,7 +22018,7 @@
   },
   "binary_crates": [],
   "workspace_members": {
-    "selenium-manager 0.4.35-nightly": "rust"
+    "selenium-manager 0.4.35": "rust"
   },
   "conditions": {
     "aarch64-apple-darwin": [
