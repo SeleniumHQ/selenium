@@ -539,7 +539,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         // up starving a session request.
         Map<Capabilities, Long> stereotypes =
             getAvailableNodes().stream()
-                .filter(node -> node.hasCapacity())
+                .filter(NodeStatus::hasCapacity)
                 .flatMap(node -> node.getSlots().stream().map(Slot::getStereotype))
                 .collect(
                     Collectors.groupingBy(ImmutableCapabilities::copyOf, Collectors.counting()));

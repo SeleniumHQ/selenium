@@ -41,6 +41,7 @@ from selenium.common.exceptions import (
 from selenium.webdriver.common.bidi.browser import Browser
 from selenium.webdriver.common.bidi.browsing_context import BrowsingContext
 from selenium.webdriver.common.bidi.emulation import Emulation
+from selenium.webdriver.common.bidi.input import Input
 from selenium.webdriver.common.bidi.network import Network
 from selenium.webdriver.common.bidi.permissions import Permissions
 from selenium.webdriver.common.bidi.script import Script
@@ -272,6 +273,7 @@ class WebDriver(BaseWebDriver):
         self._webextension = None
         self._permissions = None
         self._emulation = None
+        self._input = None
         self._devtools = None
 
     def __repr__(self):
@@ -1419,6 +1421,29 @@ class WebDriver(BaseWebDriver):
             self._emulation = Emulation(self._websocket_connection)
 
         return self._emulation
+
+    @property
+    def input(self):
+        """Returns an input module object for BiDi input commands.
+
+        Returns:
+        --------
+        Input: an object containing access to BiDi input commands.
+
+        Examples:
+        ---------
+        >>> from selenium.webdriver.common.bidi.input import KeySourceActions, KeyDownAction, KeyUpAction
+        >>> key_actions = KeySourceActions(id="keyboard", actions=[KeyDownAction(value="a"), KeyUpAction(value="a")])
+        >>> driver.input.perform_actions(driver.current_window_handle, [key_actions])
+        >>> driver.input.release_actions(driver.current_window_handle)
+        """
+        if not self._websocket_connection:
+            self._start_bidi()
+
+        if self._input is None:
+            self._input = Input(self._websocket_connection)
+
+        return self._input
 
     def _get_cdp_details(self):
         import json

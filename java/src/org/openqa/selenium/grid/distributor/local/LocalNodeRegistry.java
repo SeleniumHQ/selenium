@@ -361,9 +361,8 @@ public class LocalNodeRegistry implements NodeRegistry {
     readLock.lock();
     try {
       return model.getSnapshot().stream()
-          .filter(
-              node ->
-                  !DOWN.equals(node.getAvailability()) && !DRAINING.equals(node.getAvailability()))
+          // Filter nodes are UP and have capacity (available slots)
+          .filter(node -> UP.equals(node.getAvailability()) && node.hasCapacity())
           .collect(ImmutableSet.toImmutableSet());
     } finally {
       readLock.unlock();
