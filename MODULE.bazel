@@ -234,7 +234,7 @@ maven.install(
     ],
     boms = [
         "io.opentelemetry:opentelemetry-bom:1.53.0",
-        "io.netty:netty-bom:4.2.3.Final",
+        "io.netty:netty-bom:4.1.121.Final",
         "org.junit:junit-bom:5.13.4",
     ],
     excluded_artifacts = [

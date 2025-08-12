@@ -1,15 +1,8 @@
 4.35.0 (2025-08-12)
 =========================
-* Bumping versions to nightly
+* Add CDP for Chrome 139 and remove 136
 * Fix typos in javascript & rb (#16019)
 * Allow to use `rubyzip` v3 (#16108)
-    > After quite a while, it was finally released.
-    > There are a few breaking changes to be aware of:
-    > https://github.com/rubyzip/rubyzip/wiki/Updating-to-version-3.x
-    > Almost everything is already abstracted away behind he upper module, so the needed
-    > changes are rather small.
-* update devtools versions
-* bump versions in preparation for release
 
 4.34.0 (2025-06-29)
 =========================
