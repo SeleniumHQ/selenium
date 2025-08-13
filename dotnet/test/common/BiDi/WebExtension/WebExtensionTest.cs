@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.BiDi.WebExtension;
 
 [Ignore("""
     The following test suite wants to set driver arguments via Options, but it breaks CDP/DevTools tests.
-    The desired arguments:
+    The desired arguments (for Chromium only?):
     --enable-unsafe-extension-debugging
     --remote-debugging-pipe
     Ignoring these tests for now. Hopefully https://github.com/SeleniumHQ/selenium/issues/15536 will be resolved soon.
