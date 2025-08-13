@@ -9,17 +9,19 @@ Python language bindings for Selenium WebDriver.
 
 The `selenium` package is used to automate web browser interaction from Python.
 
-+-------------------+------------------------------------------------+
-| **Home**:         | https://selenium.dev                           |
-+-------------------+------------------------------------------------+
-| **GitHub**:       | https://github.com/SeleniumHQ/Selenium         |
-+-------------------+------------------------------------------------+
-| **PyPI**:         | https://pypi.org/project/selenium              |
-+-------------------+------------------------------------------------+
-| **IRC/Slack**:    | https://www.selenium.dev/support/#ChatRoom     |
-+-------------------+------------------------------------------------+
-| **API Docs**:     | https://www.selenium.dev/selenium/docs/api/py  |
-+-------------------+------------------------------------------------+
++-------------------+--------------------------------------------------------+
+| **Home**:         | https://selenium.dev                                   |
++-------------------+--------------------------------------------------------+
+| **GitHub**:       | https://github.com/SeleniumHQ/Selenium                 |
++-------------------+--------------------------------------------------------+
+| **PyPI**:         | https://pypi.org/project/selenium                      |
++-------------------+--------------------------------------------------------+
+| **IRC/Slack**:    | https://www.selenium.dev/support/#ChatRoom             |
++-------------------+--------------------------------------------------------+
+| **Docs**:         | https://www.selenium.dev/selenium/docs/api/py          |
++-------------------+--------------------------------------------------------+
+| **API Reference**:| https://www.selenium.dev/selenium/docs/api/py/api.html |
++-------------------+--------------------------------------------------------+
 
 Updated documentation published with each commit is available at: `readthedocs.io <https://selenium-python-api-docs.readthedocs.io/en/latest>`_
 
