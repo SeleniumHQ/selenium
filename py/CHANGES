@@ -1,3 +1,18 @@
+Selenium 4.35.0
+* Add CDP for Chrome 139 and remove 136
+* [bidi]: implement bidi module - emulation (#15819)
+* Allow free_port() to bind to IPv6 if IPv4 is unavailable (#16003)
+* Fix vendor prefix for Edge browser remote connections (#16078)
+* [bidi]: support `accept_insecure_certs` and `proxy` parameters in `create_user_context` (#15983)
+* Encapsulated Geo Location co-ordinates using `getters/setters` (#16079)
+* [bidi]: add `unhandled_prompt_behavior` param for `create_user_context` (#16112)
+* add `default` as a value for SameSite (#16129)
+* Use native dict for type annotation (#16157)
+* Fix proxy basic auth handling special characters (#16105)
+* fix WebView2 and target issues related to CDP and BiDi (#16140)
+* [bidi]: add event handler support for browsing context (#16101)
+* [bidi]: Implement low-level API for Input BiDi module (#16049)
+
 Selenium 4.34.1
 * Updated urllib3 due to security issue https://github.com/urllib3/urllib3/security/advisories/GHSA-48p4-8xcf-vxj5
 
