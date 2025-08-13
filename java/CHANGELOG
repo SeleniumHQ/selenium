@@ -1,3 +1,39 @@
+v4.35.0
+======
+* Add CDP for Chrome 139 and remove 136
+* Remove deprecated AppCacheStatus enum from the HTML5 package (#15973)
+* Removing deprecated FirefoxBinary.java and Executable.java
+* Removing deprecated `beforeSetScriptTimeout` and `afterSetScriptTimeout`
+* Removing deprecated SessionStorage commands from ChromiumDriver
+* Removing deprecated SessionStorage commands from FirefoxDriver
+* Removing deprecated SessionStorage class AddWebStorage.java
+* Removing deprecated WebStorage related classes.
+* Feat 14291/jspecify nullable annotation edge driver service (#15972)
+* Removing deprecated LocationContext related classes.
+* Fix Unicode value for OPTION key in Keys enum (#15966)
+* Removing old stream collectors required by Java 8 (#15523)
+* Use static Patterns for regex-matching (#15499)
+* Point made as immutable (#15511)
+* Feat 14291/jspecify nullable annotation chrome driver såervice (#15998)
+* Add @Nullable annotations to Firefox and Gecko driver service  (#15999)
+* Add JSpecify nullable annotations to SafariDriverService parameters (#16000)
+* Add @Nullable annotations to InternetExplorerDriverService parameters (#16001)
+* use generics for AbstractFindByBuilder to avoid excessive casting (#15526)
+* JSpecify annotations for By locators (#14372)
+* JSpecify annotations for capabilities (#14397)
+* Fix various typos in comments (#16022)
+* release underlying HttpClient resources #15710
+* CDP generate getters to ArrayType #16050
+* Fix 15634/ensure driver closed java (#16038)
+* [grid] Migrate from Guava's CacheBuilder to Caffeine (#15547)
+* [grid] Fix race condition and improve logging in LocalSessionMap (#15370)
+* [BiDi] implement emulation (#16070)
+* add `default` as a value for SameSite (#16129)
+* Normalising handling of Shadow Dom elements. (#16149)
+* [grid] Restructuring classes have stateful data and improve Node health checks in LocalDistributor (#16151)
+* add `websocket-port` test and `--connect-existing` check (#15462)
+* [grid] Reduce redundant logs of find slots and retry queue requests by the Distributor (#16155)
+
 v4.34.0
 ======
 * Add CDP for Chrome 138 and remove 135
