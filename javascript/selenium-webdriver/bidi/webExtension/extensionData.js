@@ -16,7 +16,6 @@
 // under the License.
 
 class ExtensionData {
-
   #type
   #path
 
@@ -26,25 +25,25 @@ class ExtensionData {
   }
 
   static setPath(path) {
-    return new ExtensionData("path", path)
+    return new ExtensionData('path', path)
   }
 
   static setArchivePath(path) {
-    return new ExtensionData("archivePath", path)
+    return new ExtensionData('archivePath', path)
   }
 
   static setBase64Encoded(value) {
-    return new ExtensionData("base64", value)
+    return new ExtensionData('base64', value)
   }
 
   asMap() {
     let toReturn = {}
-    toReturn["type"] = this.#type
+    toReturn['type'] = this.#type
 
-    if (this.#type === "base64") {
-      toReturn["value"] = this.#path
+    if (this.#type === 'base64') {
+      toReturn['value'] = this.#path
     } else {
-      toReturn["path"] = this.#path
+      toReturn['path'] = this.#path
     }
 
     return toReturn

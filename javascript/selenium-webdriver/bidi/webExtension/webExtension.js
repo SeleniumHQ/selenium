@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const ExtensionData = require("./extensionData")
+const ExtensionData = require('./extensionData')
 
 /**
  * Represents the commands and events under Extension Module.
@@ -44,15 +44,14 @@ class WebExtension {
    * @throws {Error} If extensionData is not an ExtensionData instance.
    */
   async install(extensionData) {
-
     if (!(extensionData instanceof ExtensionData)) {
-      throw new Error("install() requires an ExtensionData instance")
+      throw new Error('install() requires an ExtensionData instance')
     }
 
     const command = {
       method: 'webExtension.install',
       params: {
-        extensionData: extensionData.asMap()
+        extensionData: extensionData.asMap(),
       },
     }
 
@@ -72,7 +71,7 @@ class WebExtension {
     const command = {
       method: 'webExtension.uninstall',
       params: {
-        extension: id
+        extension: id,
       },
     }
 
