@@ -18,9 +18,7 @@ The `selenium` package is used to automate web browser interaction from Python.
 +-------------------+------------------------------------------------+
 | **IRC/Slack**:    | https://www.selenium.dev/support/#ChatRoom     |
 +-------------------+------------------------------------------------+
-| **Docs**:         | https://www.selenium.dev/selenium/docs/api/py  |
-+-------------------+------------------------------------------------+
-| **API Docs**:     | `api.html <api.html>`_                         |
+| **API Docs**:     | https://www.selenium.dev/selenium/docs/api/py  |
 +-------------------+------------------------------------------------+
 
 Updated documentation published with each commit is available at: `readthedocs.io <https://selenium-python-api-docs.readthedocs.io/en/latest>`_
