@@ -39,7 +39,7 @@ js_library(
         "common/*.js",
         "bidi/*.js",
         "bidi/external/*.js",
-        "bidi/extension/*.js",
+        "bidi/webExtension/*.js",
     ]),
     deps = [
         ":node_modules/@bazel/runfiles",

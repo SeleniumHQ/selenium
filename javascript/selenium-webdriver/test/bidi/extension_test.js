@@ -2,8 +2,8 @@
 
 const assert = require('node:assert')
 const { suite } = require('../../lib/test')
-const Extension = require('selenium-webdriver/bidi/extension/extension')
-const ExtensionData = require('selenium-webdriver/bidi/extension/extensionData')
+const WebExtension = require('selenium-webdriver/bidi/webExtension/webExtension')
+const ExtensionData = require('selenium-webdriver/bidi/webExtension/extensionData')
 const {locate} = require("../../lib/test/resources")
 const {Browser} = require('selenium-webdriver')
 const fs = require('fs')
@@ -25,36 +25,53 @@ suite(
     const  ARCHIVE_PATH= locate('common/extensions/webextensions-selenium-example.xpi')
 
     describe('BiDi Module Extension', function () {
-      it('can install extension from a given path', async function () {
-        const extension = await Extension(driver)
-        const id = await extension.install(ExtensionData.setPath(WEBEXTENSION_CRX))
-
-        assert.strictEqual(id, "webextensions-selenium-example-v3@example.com")
-      })
-
-      it('can install extension from an archive path', async function () {
-          const extension = await Extension(driver)
-          const id = await extension.install(ExtensionData.setArchivePath(ARCHIVE_PATH))
-
-          assert.strictEqual(id, "webextensions-selenium-example-v3@example.com")
-        })
-
-      it('can install extension from a base64 encoded path', async function () {
-        const extension = await Extension(driver)
-
-        const base64Path = fs.readFileSync(ARCHIVE_PATH, { encoding: 'base64' })
-        const id = await extension.install(ExtensionData.setBase64Encoded(base64Path))
-
-        assert.strictEqual(id, "webextensions-selenium-example-v3@example.com")
-      })
-
-      it('can uninstall an extension', async function () {
-        const extension = await Extension(driver)
+      it('can install webExtension from a given path', async function () {
+        const extension = await WebExtension(driver)
         const id = await extension.install(ExtensionData.setPath(WEBEXTENSION_CRX))
 
         assert.strictEqual(id, "webextensions-selenium-example-v3@example.com")
 
         await extension.uninstall(id)
+      })
+
+      it('can install webExtension from an archive path', async function () {
+          const extension = await WebExtension(driver)
+          const id = await extension.install(ExtensionData.setArchivePath(ARCHIVE_PATH))
+
+          assert.strictEqual(id, "webextensions-selenium-example-v3@example.com")
+
+        await extension.uninstall(id)
+        })
+
+      it('can install webExtension from a base64 encoded path', async function () {
+        const extension = await WebExtension(driver)
+
+        const base64Path = fs.readFileSync(ARCHIVE_PATH, { encoding: 'base64' })
+        const id = await extension.install(ExtensionData.setBase64Encoded(base64Path))
+
+        assert.strictEqual(id, "webextensions-selenium-example-v3@example.com")
+
+        await extension.uninstall(id)
+      })
+
+      it('can uninstall an webExtension', async function () {
+        const extension = await WebExtension(driver)
+        const id = await extension.install(ExtensionData.setPath(WEBEXTENSION_CRX))
+
+        assert.strictEqual(id, "webextensions-selenium-example-v3@example.com")
+
+        await extension.uninstall(id)
+      })
+
+      it('can throw an error if webExtension does not exist', async function () {
+        const extension = await WebExtension(driver)
+
+        try {
+          await extension.uninstall("webextensions-selenium-example-v3@example.com")
+          assert.fail('Expected uninstall to throw an error')
+        } catch (e) {
+          assert.match(e.message, /no such web extension/i);
+        }
       })
     })
   },
