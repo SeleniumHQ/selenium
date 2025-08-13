@@ -17,7 +17,11 @@
 
 const ExtensionData = require("./extensionData")
 
-class Extension {
+/**
+ * Represents the commands and events under Extension Module.
+ * Described in https://w3c.github.io/webdriver-bidi/#module-webExtension
+ */
+class WebExtension {
   constructor(driver) {
     this._driver = driver
   }
@@ -30,6 +34,15 @@ class Extension {
     this.bidi = await this._driver.getBidi()
   }
 
+  /**
+   * Install a browser webExtension.
+   *
+   * @param {ExtensionData} extensionData
+   *   An instance of ExtensionData containing the webExtension’s path, archive path or base64 encoded path.
+   * @returns {Promise<string>}
+   *   The installed webExtension’s ID.
+   * @throws {Error} If extensionData is not an ExtensionData instance.
+   */
   async install(extensionData) {
 
     if (!(extensionData instanceof ExtensionData)) {
@@ -47,6 +60,14 @@ class Extension {
     return response.result.extension
   }
 
+  /**
+   * Uninstall a browser webExtension by ID.
+   *
+   * @param {string} id
+   *   The webExtension ID.
+   * @returns {Promise<void>}
+   * @throws {Error} If the uninstall command returns an error from the browser.
+   */
   async uninstall(id) {
     const command = {
       method: 'webExtension.uninstall',
@@ -55,14 +76,26 @@ class Extension {
       },
     }
 
-   await this.bidi.send(command)
+    const response = await this.bidi.send(command)
+
+    if (response.type === 'error') {
+      throw new Error(`${response.error}: ${response.message}`)
+    }
   }
 }
 
-  async function getExtensionInstance(driver) {
-    let instance = new Extension(driver)
-    await instance.init()
-    return instance
-  }
+/**
+ * Helper to create and initialize an Extension instance.
+ *
+ * @param {import('selenium-webdriver').WebDriver} driver
+ *   A Selenium WebDriver instance.
+ * @returns {Promise<WebExtension>}
+ *   An Extension instance.
+ */
+async function getWebExtensionInstance(driver) {
+  let instance = new WebExtension(driver)
+  await instance.init()
+  return instance
+}
 
-module.exports = getExtensionInstance
+module.exports = getWebExtensionInstance
