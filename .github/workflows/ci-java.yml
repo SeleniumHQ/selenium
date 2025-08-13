@@ -28,7 +28,8 @@ jobs:
             //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest `
             //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest `
             //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest `
-            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
+            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest `
+            //java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest
 
   browser-tests-macos:
     name: Browser Tests

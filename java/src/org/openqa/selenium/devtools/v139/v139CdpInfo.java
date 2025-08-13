@@ -1,4 +1,3 @@
-// <copyright file="ConsoleLogHandler.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,14 +14,16 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-using System;
+package org.openqa.selenium.devtools.v139;
 
-namespace OpenQA.Selenium.Internal.Logging;
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
 
-/// <summary>
-/// Represents a log handler that writes log events to the given text writer.
-/// </summary>
-[Obsolete("Use TextWriterHandler instead, will be removed in v4.32")]
-public class ConsoleLogHandler() : TextWriterHandler(Console.Error);
+@AutoService(CdpInfo.class)
+public class v139CdpInfo extends CdpInfo {
+
+  public v139CdpInfo() {
+    super(139, v139Domains::new);
+  }
+}

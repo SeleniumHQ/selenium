@@ -47,24 +47,32 @@ Several browsers are supported, as well as the Remote protocol:
 Installing
 ==========
 
-If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install or upgrade the Python bindings::
+Install or upgrade the Python bindings with `pip <https://pip.pypa.io/>`.
+
+Latest official release::
 
     pip install -U selenium
 
-You may want to consider using a `virtual environment <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments>`_
-to create isolated Python environments.
+Nightly development release::
+
+    pip install -U --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ selenium
+
+Note: you should consider using a
+`virtual environment <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments>`_
+to create an isolated Python environment for installation.
 
 Drivers
 =======
 
 Selenium requires a driver to interface with the chosen browser (chromedriver, edgedriver, geckodriver, etc).
 
-In older versions of Selenium, it was necessary to install and manage these drivers yourself. You had to make sure the driver
-executable was available on your system `PATH`, or specified explicitly in code. Modern versions of Selenium handle browser and
-driver installation for you with `Selenium Manager <https://www.selenium.dev/documentation/selenium_manager>`_. You generally
-don't have to worry about driver installation or configuration now that it's done for you when you instantiate a WebDriver.
-Selenium Manager works with most supported platforms and browsers. If it doesn't meet your needs, you can still install and
-specify browsers and drivers yourself.
+In older versions of Selenium, it was necessary to install and manage these drivers yourself. You had to make sure the
+driver executable was available on your system `PATH`, or specified explicitly in code. Modern versions of Selenium
+handle browser and driver installation for you with
+`Selenium Manager <https://www.selenium.dev/documentation/selenium_manager>`_. You generally don't have to worry about
+driver installation or configuration now that it's done for you when you instantiate a WebDriver. Selenium Manager works
+with most supported platforms and browsers. If it doesn't meet your needs, you can still install and specify browsers
+and drivers yourself.
 
 Links to some of the more popular browser drivers:
 
@@ -123,8 +131,8 @@ Example 1:
 Example 2:
 ==========
 
-Selenium WebDriver is often used as a basis for testing web applications. Here is a simple example using Python's standard
-`unittest <http://docs.python.org/3/library/unittest.html>`_ library:
+Selenium WebDriver is often used as a basis for testing web applications. Here is a simple example using Python's
+standard `unittest <http://docs.python.org/3/library/unittest.html>`_ library:
 
 .. code-block:: python
 
@@ -150,8 +158,8 @@ Selenium Grid (optional)
 
 For local Selenium scripts, the Java server is not needed.
 
-To use Selenium remotely, you need to also run the Selenium grid.
-For information on running Selenium Grid: https://www.selenium.dev/documentation/grid/getting_started/
+To use Selenium remotely, you need to also run a Selenium Grid. For information on running Selenium Grid:
+https://www.selenium.dev/documentation/grid/getting_started/
 
 To use Remote WebDriver see: https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python
 
@@ -167,15 +175,14 @@ View source code online:
 Contributing
 =============
 
- - Fork the selenium repo and clone it locally
+ - Fork the selenium repo
+ - Clone your fork locally
  - Create a branch for your work
-     - Run: `git checkout -b my-cool-branch-name`
+     - `git checkout -b my-cool-branch-name`
  - Create a virtual environment and install tox
-     - Run: `python -m venv venv && source venv/bin/activate && pip install tox`
+     - `python -m venv venv && source venv/bin/activate && pip install tox`
  - Make your changes
- - Run: `tox -e linting`
+ - Run the linter/formatter
+     - `tox -e linting`
  - If tox exits `0`, commit and push. Otherwise, fix the newly introduced style violations
-     - `flake8` requires manual fixes
-     - `black` will rewrite the violations automatically, however the files are unstaged and should be staged again
-     - `isort` will rewrite the violations automatically, however the files are unstaged and should be staged again
  - Submit a Pull Request

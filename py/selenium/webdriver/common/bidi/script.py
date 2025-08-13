@@ -319,7 +319,7 @@ class Script:
         )
 
         if result.type == "success":
-            return result.result
+            return result.result if result.result is not None else {}
         else:
             error_message = "Error while executing script"
             if result.exception_details:

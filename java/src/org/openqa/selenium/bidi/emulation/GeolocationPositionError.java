@@ -15,15 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v136;
+package org.openqa.selenium.bidi.emulation;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+import java.util.Map;
 
-@AutoService(CdpInfo.class)
-public class v136CdpInfo extends CdpInfo {
+public class GeolocationPositionError {
 
-  public v136CdpInfo() {
-    super(136, v136Domains::new);
+  public Map<String, Object> toMap() {
+    String type = "positionUnavailable";
+    return Map.of("type", type);
   }
 }
