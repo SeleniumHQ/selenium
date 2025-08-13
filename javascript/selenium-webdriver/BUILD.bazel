@@ -39,6 +39,7 @@ js_library(
         "common/*.js",
         "bidi/*.js",
         "bidi/external/*.js",
+        "bidi/emulation/*.js",
     ]),
     deps = [
         ":node_modules/@bazel/runfiles",
