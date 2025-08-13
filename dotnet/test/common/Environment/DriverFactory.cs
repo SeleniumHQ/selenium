@@ -86,7 +86,7 @@ public class DriverFactory
             options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);
 
             var chromeOptions = (ChromeOptions)options;
-            chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage", "--remote-debugging-pipe", "--enable-unsafe-extension-debugging");
+            chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
 
             service = CreateService<ChromeDriverService>();
             if (!string.IsNullOrEmpty(this.browserBinaryLocation))
@@ -104,7 +104,7 @@ public class DriverFactory
             options = GetDriverOptions<EdgeOptions>(driverType, driverOptions);
 
             var edgeOptions = (EdgeOptions)options;
-            edgeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage", "--remote-debugging-pipe", "--enable-unsafe-extension-debugging");
+            edgeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
 
             service = CreateService<EdgeDriverService>();
             if (!string.IsNullOrEmpty(this.browserBinaryLocation))
