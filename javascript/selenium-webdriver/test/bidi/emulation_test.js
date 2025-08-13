@@ -18,15 +18,15 @@
 'use strict'
 
 const assert = require('node:assert')
-const {Pages, suite} = require('../../lib/test')
-const {Browser} = require('selenium-webdriver')
+const { Pages, suite, ignore } = require('../../lib/test')
+const { Browser } = require('selenium-webdriver')
 const BrowserBiDi = require('selenium-webdriver/bidi/browser')
 const getScriptManager = require('selenium-webdriver/bidi/scriptManager')
-const {GeolocationPositionError, getEmulationInstance } = require('selenium-webdriver/bidi/emulation/emulation')
+const { GeolocationPositionError, getEmulationInstance } = require('selenium-webdriver/bidi/emulation/emulation')
 const GeolocationCoordinates = require('selenium-webdriver/bidi/emulation/geolocationCoordinates')
 const BrowsingContext = require('selenium-webdriver/bidi/browsingContext')
-const {getPermissionInstance, PermissionState} = require('selenium-webdriver/bidi/external/permissions')
-const {CreateContextParameters} = require('selenium-webdriver/bidi/createContextParameters')
+const { getPermissionInstance, PermissionState } = require('selenium-webdriver/bidi/external/permissions')
+const { CreateContextParameters } = require('selenium-webdriver/bidi/createContextParameters')
 
 suite(
   function (env) {
@@ -71,12 +71,12 @@ suite(
 
       it('can override geolocation for browsing context', async function () {
         const windowHandle = await driver.getWindowHandle()
-        const context = await BrowsingContext(driver, {browsingContextId: windowHandle})
+        const context = await BrowsingContext(driver, { browsingContextId: windowHandle })
         await context.navigate(Pages.blankPage, 'complete')
 
         const origin = await script.callFunctionInBrowsingContext(context.id, GET_ORIGIN, true, [])
         const originValue = origin.result.value
-        await permission.setPermission({name: 'geolocation'}, PermissionState.GRANTED, originValue)
+        await permission.setPermission({ name: 'geolocation' }, PermissionState.GRANTED, originValue)
 
         const coords = new GeolocationCoordinates(37.7749, -122.4194)
 
@@ -99,9 +99,9 @@ suite(
         const createParams1 = new CreateContextParameters().userContext(userContext1)
         const createParams2 = new CreateContextParameters().userContext(userContext2)
 
-        const context1 = await BrowsingContext(driver, {type: 'tab', createParameters: createParams1})
+        const context1 = await BrowsingContext(driver, { type: 'tab', createParameters: createParams1 })
 
-        const context2 = await BrowsingContext(driver, {type: 'tab', createParameters: createParams2})
+        const context2 = await BrowsingContext(driver, { type: 'tab', createParameters: createParams2 })
 
         const coords = new GeolocationCoordinates(45.5, -122.4194)
 
@@ -111,7 +111,7 @@ suite(
 
         await context1.navigate(Pages.blankPage, 'complete')
         const origin1 = (await script.callFunctionInBrowsingContext(context1.id, GET_ORIGIN, true, [])).result.value
-        await permission.setPermission({name: 'geolocation'}, PermissionState.GRANTED, origin1, userContext1)
+        await permission.setPermission({ name: 'geolocation' }, PermissionState.GRANTED, origin1, userContext1)
 
         const result1 = await script.evaluateFunctionInBrowsingContext(context1.id, GET_CURRENT_GEOLOCATION, true)
         const geolocation1 = result1.result.value
@@ -125,7 +125,7 @@ suite(
 
         await context2.navigate(Pages.blankPage, 'complete')
         const origin2 = (await script.callFunctionInBrowsingContext(context1.id, GET_ORIGIN, true, [])).result.value
-        await permission.setPermission({name: 'geolocation'}, PermissionState.GRANTED, origin2, userContext2)
+        await permission.setPermission({ name: 'geolocation' }, PermissionState.GRANTED, origin2, userContext2)
 
         const result2 = await script.evaluateFunctionInBrowsingContext(context2.id, GET_CURRENT_GEOLOCATION, true)
         const geolocation2 = result2.result.value
@@ -136,7 +136,7 @@ suite(
         assert.strictEqual(currentLongitude2, -122.4194)
       })
 
-      it('can override geolocation with error', async function () {
+      ignore(env.browsers(Browser.FIREFOX)).it('can override geolocation with error', async function () {
         const windowHandle = await driver.getWindowHandle()
         const context = await BrowsingContext(driver, { browsingContextId: windowHandle })
         await context.navigate(Pages.blankPage, 'complete')
@@ -144,24 +144,20 @@ suite(
         const origin = await script.callFunctionInBrowsingContext(context.id, GET_ORIGIN, true, [])
         const originValue = origin.result.value
 
-        await permission.setPermission({name: 'geolocation'}, PermissionState.GRANTED, originValue)
+        await permission.setPermission({ name: 'geolocation' }, PermissionState.GRANTED, originValue)
 
         await emulation.setGeolocationOverride(GeolocationPositionError, windowHandle)
 
-        const result = await script.evaluateFunctionInBrowsingContext(
-          context.id,
-          GET_CURRENT_GEOLOCATION,
-          true
-        )
+        const result = await script.evaluateFunctionInBrowsingContext(context.id, GET_CURRENT_GEOLOCATION, true)
 
         const geolocation = result.result.value
 
         assert.ok(
           Object.hasOwn(geolocation, 'error'),
-          `Expected geolocation to have 'error' key, but got: ${JSON.stringify(geolocation)}`
+          `Expected geolocation to have 'error' key, but got: ${JSON.stringify(geolocation)}`,
         )
       })
     })
   },
-  {browsers: [Browser.CHROME]},
+  { browsers: [Browser.FIREFOX, Browser.CHROME, Browser.EDGE] },
 )

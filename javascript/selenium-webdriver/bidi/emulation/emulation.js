@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const GeolocationCoordinates = require("./geolocationCoordinates");
+const GeolocationCoordinates = require('./geolocationCoordinates')
 
 const GeolocationPositionError = Object.freeze({
-  type: 'positionUnavailable'
+  type: 'positionUnavailable',
 })
 
 class Emulation {
@@ -34,7 +34,7 @@ class Emulation {
     this.bidi = await this._driver.getBidi()
   }
 
-  async setGeolocationOverride(value, contexts= undefined, userContexts = undefined) {
+  async setGeolocationOverride(value, contexts = undefined, userContexts = undefined) {
     const map = new Map()
 
     if (value instanceof GeolocationCoordinates) {
@@ -42,20 +42,18 @@ class Emulation {
     } else if (value === GeolocationPositionError) {
       map.set('error', value)
     } else {
-      throw new Error(
-        'First argument must be a GeoCoordinates instance or GeolocationPositionError constant'
-      )
+      throw new Error('First argument must be a GeoCoordinates instance or GeolocationPositionError constant')
     }
 
-    if (contexts !== undefined  && typeof contexts === 'string') {
+    if (contexts !== undefined && typeof contexts === 'string') {
       contexts = [contexts]
-    } else if (contexts !== undefined  && !Array.isArray(contexts)) {
+    } else if (contexts !== undefined && !Array.isArray(contexts)) {
       throw new Error('contexts must be a string or an array of strings')
     }
 
     map.set('contexts', contexts)
 
-    if (userContexts !== undefined  && typeof userContexts === 'string') {
+    if (userContexts !== undefined && typeof userContexts === 'string') {
       userContexts = [userContexts]
     } else if (userContexts !== undefined && !Array.isArray(userContexts)) {
       throw new Error('userContexts must be a string or an array of strings')
@@ -65,7 +63,7 @@ class Emulation {
 
     const command = {
       method: 'emulation.setGeolocationOverride',
-      params: Object.fromEntries(map)
+      params: Object.fromEntries(map),
     }
 
     const response = await this.bidi.send(command)
@@ -82,4 +80,4 @@ async function getEmulationInstance(driver) {
   return instance
 }
 
-module.exports = { getEmulationInstance, GeolocationPositionError}
+module.exports = { getEmulationInstance, GeolocationPositionError }
