@@ -26,7 +26,6 @@ const GeolocationPositionError = Object.freeze({
  * via the BiDi protocol.
  */
 class Emulation {
-  
   constructor(driver) {
     this._driver = driver
   }

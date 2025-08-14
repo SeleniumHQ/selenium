@@ -17,14 +17,14 @@
 
 /**
  * Represents geolocation coordinates with optional accuracy, altitude, heading, and speed.
- * 
+ *
  * Example usage:
  *   const coords = new GeolocationCoordinates(37.7749, -122.4194)
  *     .accuracy(10)
  *     .altitude(30)
  *     .heading(90)
  *     .speed(5);
- * 
+ *
  * Properties:
  *   - latitude: number (-90.0 to 90.0)
  *   - longitude: number (-180.0 to 180.0)
