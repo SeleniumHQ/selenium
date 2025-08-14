@@ -37,6 +37,9 @@ on:
         required: false
         type: string
         default: "all"
+    secrets:
+      SELENIUM_CI_TOKEN:
+        required: true
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
