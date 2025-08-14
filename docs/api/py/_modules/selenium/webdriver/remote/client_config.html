@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.remote.client_config &#8212; Selenium 4.35.0.202506301117 documentation</title>
+    <title>selenium.webdriver.remote.client_config &#8212; Selenium 4.36.0.202508121825 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=9464611f"></script>
+    <script src="../../../../_static/documentation_options.js?v=90a25026"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.35.0.202506301117 documentation"
+        <a href="../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.35.0.202506301117 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.client_config </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.35.0.202506301117 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.35.0.202506301117 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.35.0.202506301117 documentation">Selenium 4.35.0.202506301117 documentation</a>
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
   </label>
   
 
@@ -222,7 +222,7 @@
 
 
 <div class="viewcode-block" id="AuthType">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.AuthType">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.AuthType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AuthType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">BASIC</span> <span class="o">=</span> <span class="s2">"Basic"</span>
     <span class="n">BEARER</span> <span class="o">=</span> <span class="s2">"Bearer"</span>
@@ -242,7 +242,7 @@
 
 
 <div class="viewcode-block" id="ClientConfig">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ClientConfig</span><span class="p">:</span>
     <span class="n">remote_server_addr</span> <span class="o">=</span> <span class="n">_ClientConfigDescriptor</span><span class="p">(</span><span class="s2">"_remote_server_addr"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets Remote Server."""</span>
@@ -310,14 +310,14 @@
         <span class="p">)</span>
 
 <div class="viewcode-block" id="ClientConfig.reset_timeout">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.reset_timeout">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.reset_timeout">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Resets the timeout to the default value of socket."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">getdefaulttimeout</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ClientConfig.get_proxy_url">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.get_proxy_url">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.get_proxy_url">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_proxy_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Returns the proxy URL to use for the connection."""</span>
         <span class="n">proxy_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="o">.</span><span class="n">proxy_type</span>
@@ -345,7 +345,7 @@
 
 
 <div class="viewcode-block" id="ClientConfig.get_auth_header">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.get_auth_header">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.client_config.html#selenium.webdriver.remote.client_config.ClientConfig.get_auth_header">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_auth_header</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Returns the authorization to add to the request headers."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_type</span> <span class="ow">is</span> <span class="n">AuthType</span><span class="o">.</span><span class="n">BASIC</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">:</span>

@@ -9,13 +9,26 @@ selenium.webdriver.common.bidi.browsing\_context
    .. autosummary::
    
       BrowsingContext
-      BrowsingContextEvent
       BrowsingContextInfo
+      ContextCreated
+      ContextDestroyed
+      DomContentLoaded
+      DownloadWillBegin
       DownloadWillBeginParams
+      EventConfig
+      FragmentNavigated
+      HistoryUpdated
       HistoryUpdatedParams
+      Load
+      NavigationAborted
+      NavigationCommitted
+      NavigationFailed
       NavigationInfo
+      NavigationStarted
       ReadinessState
+      UserPromptClosed
       UserPromptClosedParams
+      UserPromptOpened
       UserPromptOpenedParams
       UserPromptType
    

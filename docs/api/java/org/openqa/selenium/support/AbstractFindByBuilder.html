@@ -84,10 +84,10 @@ loadScripts(document, 'script');</script>
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">org.openqa.selenium.support</a></div>
-<h1 title="Class AbstractFindByBuilder" class="title">Class AbstractFindByBuilder</h1>
+<h1 title="Class AbstractFindByBuilder" class="title">Class AbstractFindByBuilder&lt;T&gt;</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance">org.openqa.selenium.support.AbstractFindByBuilder</div>
+<div class="inheritance">org.openqa.selenium.support.AbstractFindByBuilder&lt;T&gt;</div>
 </div>
 <section class="class-description" id="class-description">
 <dl class="notes">
@@ -95,7 +95,7 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="FindAll.FindByBuilder.html" title="class in org.openqa.selenium.support">FindAll.FindByBuilder</a></code>, <code><a href="FindBy.FindByBuilder.html" title="class in org.openqa.selenium.support">FindBy.FindByBuilder</a></code>, <code><a href="FindBys.FindByBuilder.html" title="class in org.openqa.selenium.support">FindBys.FindByBuilder</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public abstract class </span><span class="element-name type-name-label">AbstractFindByBuilder</span>
+<div class="type-signature"><span class="modifiers">public abstract class </span><span class="element-name type-name-label">AbstractFindByBuilder&lt;T&gt;</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 </section>
 <section class="summary">
@@ -143,7 +143,7 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#buildByFromShortFindBy(org.openqa.selenium.support.FindBy)" class="member-name-link">buildByFromShortFindBy</a><wbr>(<a href="FindBy.html" title="annotation interface in org.openqa.selenium.support">FindBy</a>&nbsp;findBy)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract <a href="../By.html" title="class in org.openqa.selenium">By</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#buildIt(java.lang.Object,java.lang.reflect.Field)" class="member-name-link">buildIt</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;annotation,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#buildIt(T,java.lang.reflect.Field)" class="member-name-link">buildIt</a><wbr>(<a href="AbstractFindByBuilder.html" title="type parameter in AbstractFindByBuilder">T</a>&nbsp;annotation,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/Field.html" title="class or interface in java.lang.reflect" class="external-link">Field</a>&nbsp;field)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 </div>
@@ -178,9 +178,9 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="buildIt(java.lang.Object,java.lang.reflect.Field)">
-<h3>buildIt</h3>
-<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type"><a href="../By.html" title="class in org.openqa.selenium">By</a></span>&nbsp;<span class="element-name">buildIt</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;annotation,
+<section class="detail" id="buildIt(T,java.lang.reflect.Field)">
+<h3 id="buildIt(java.lang.Object,java.lang.reflect.Field)">buildIt</h3>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type"><a href="../By.html" title="class in org.openqa.selenium">By</a></span>&nbsp;<span class="element-name">buildIt</span><wbr><span class="parameters">(<a href="AbstractFindByBuilder.html" title="type parameter in AbstractFindByBuilder">T</a>&nbsp;annotation,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/Field.html" title="class or interface in java.lang.reflect" class="external-link">Field</a>&nbsp;field)</span></div>
 </section>
 </li>

@@ -1,0 +1,14 @@
+selenium.webdriver.common.bidi.emulation
+========================================
+
+.. automodule:: selenium.webdriver.common.bidi.emulation
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Emulation
+      GeolocationCoordinates
+      GeolocationPositionError
+   

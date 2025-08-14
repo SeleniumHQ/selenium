@@ -90,9 +90,16 @@ loadScripts(document, 'script');</script>
 <div class="inheritance">org.openqa.selenium.grid.distributor.GridModel</div>
 </div>
 <section class="class-description" id="class-description">
+<dl class="notes">
+<dt>Direct Known Subclasses:</dt>
+<dd><code><a href="local/LocalGridModel.html" title="class in org.openqa.selenium.grid.distributor.local">LocalGridModel</a></code></dd>
+</dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">GridModel</span>
+<div class="type-signature"><span class="modifiers">public abstract class </span><span class="element-name type-name-label">GridModel</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<div class="block">An abstract representation of the Grid's node state model. This abstraction allows for different
+ implementations that can store state either locally or in an external datastore for high
+ availability.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -104,7 +111,7 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.events.EventBus)" class="member-name-link">GridModel</a><wbr>(<a href="../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;events)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">GridModel</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -114,51 +121,71 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#add(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">add</a><wbr>(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;node)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="GridModel.html" title="class in org.openqa.selenium.grid.distributor">GridModel</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#create(org.openqa.selenium.grid.config.Config)" class="member-name-link">create</a><wbr>(<a href="../config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a>&nbsp;config)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSnapshot()" class="member-name-link">getSnapshot</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#purgeDeadNodes()" class="member-name-link">purgeDeadNodes</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#refresh(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">refresh</a><wbr>(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;status)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#release(org.openqa.selenium.remote.SessionId)" class="member-name-link">release</a><wbr>(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#remove(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">remove</a><wbr>(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#reserve(org.openqa.selenium.grid.data.SlotId)" class="member-name-link">reserve</a><wbr>(<a href="../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">setAvailability</a><wbr>(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#add(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">add</a><wbr>(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;node)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Adds a node to the grid model, typically starting with DOWN availability until health checks
+ pass.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getSnapshot()" class="member-name-link">getSnapshot</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Gets a snapshot of all node statuses currently in the grid model.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#purgeDeadNodes()" class="member-name-link">purgeDeadNodes</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Removes nodes that have been unresponsive for too long.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#refresh(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">refresh</a><wbr>(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;status)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Refreshes a node's status in the grid model.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#release(org.openqa.selenium.remote.SessionId)" class="member-name-link">release</a><wbr>(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Releases a session, making its slot available again.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#remove(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">remove</a><wbr>(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Removes a node from the grid model.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#reserve(org.openqa.selenium.grid.data.SlotId)" class="member-name-link">reserve</a><wbr>(<a href="../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Attempts to reserve a specific slot on a node.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">setAvailability</a><wbr>(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
  <a href="../data/Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)" class="member-name-link">setSession</a><wbr>(<a href="../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Sets the availability status for a node.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)" class="member-name-link">setSession</a><wbr>(<a href="../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
  <a href="../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#touch(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">touch</a><wbr>(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;nodeStatus)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateHealthCheckCount(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">updateHealthCheckCount</a><wbr>(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Updates a reserved slot to contain an actual session.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#touch(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">touch</a><wbr>(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;nodeStatus)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Updates the timestamp for a node to prevent it from being considered stale.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#updateHealthCheckCount(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">updateHealthCheckCount</a><wbr>(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
  <a href="../data/Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Updates the health check count for a node based on its availability.</div>
+</div>
 </div>
 </div>
 </div>
@@ -177,9 +204,9 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.openqa.selenium.events.EventBus)">
+<section class="detail" id="&lt;init&gt;()">
 <h3>GridModel</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">GridModel</span><wbr><span class="parameters">(<a href="../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;events)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">GridModel</span>()</div>
 </section>
 </li>
 </ul>
@@ -191,78 +218,130 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="create(org.openqa.selenium.grid.config.Config)">
-<h3>create</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="GridModel.html" title="class in org.openqa.selenium.grid.distributor">GridModel</a></span>&nbsp;<span class="element-name">create</span><wbr><span class="parameters">(<a href="../config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a>&nbsp;config)</span></div>
-</section>
-</li>
-<li>
 <section class="detail" id="add(org.openqa.selenium.grid.data.NodeStatus)">
 <h3>add</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">add</span><wbr><span class="parameters">(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;node)</span></div>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">add</span><wbr><span class="parameters">(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;node)</span></div>
+<div class="block">Adds a node to the grid model, typically starting with DOWN availability until health checks
+ pass.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>node</code> - The node status to add</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="refresh(org.openqa.selenium.grid.data.NodeStatus)">
 <h3>refresh</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">refresh</span><wbr><span class="parameters">(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;status)</span></div>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">refresh</span><wbr><span class="parameters">(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;status)</span></div>
+<div class="block">Refreshes a node's status in the grid model.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>status</code> - The updated node status</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="touch(org.openqa.selenium.grid.data.NodeStatus)">
 <h3>touch</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">touch</span><wbr><span class="parameters">(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;nodeStatus)</span></div>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">touch</span><wbr><span class="parameters">(<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;nodeStatus)</span></div>
+<div class="block">Updates the timestamp for a node to prevent it from being considered stale. May also update the
+ node's availability if reported differently.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>nodeStatus</code> - The node status to update</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="remove(org.openqa.selenium.grid.data.NodeId)">
 <h3>remove</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">remove</span><wbr><span class="parameters">(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</span></div>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">remove</span><wbr><span class="parameters">(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</span></div>
+<div class="block">Removes a node from the grid model.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>id</code> - The ID of the node to remove</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="purgeDeadNodes()">
 <h3>purgeDeadNodes</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">purgeDeadNodes</span>()</div>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">purgeDeadNodes</span>()</div>
+<div class="block">Removes nodes that have been unresponsive for too long.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)">
 <h3>setAvailability</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setAvailability</span><wbr><span class="parameters">(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setAvailability</span><wbr><span class="parameters">(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
  <a href="../data/Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</span></div>
+<div class="block">Sets the availability status for a node.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>id</code> - The ID of the node</dd>
+<dd><code>availability</code> - The new availability status</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="reserve(org.openqa.selenium.grid.data.SlotId)">
 <h3>reserve</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">reserve</span><wbr><span class="parameters">(<a href="../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId)</span></div>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">reserve</span><wbr><span class="parameters">(<a href="../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId)</span></div>
+<div class="block">Attempts to reserve a specific slot on a node.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>slotId</code> - The ID of the slot to reserve</dd>
+<dt>Returns:</dt>
+<dd>true if the reservation was successful, false otherwise</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getSnapshot()">
 <h3>getSnapshot</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</span>&nbsp;<span class="element-name">getSnapshot</span>()</div>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</span>&nbsp;<span class="element-name">getSnapshot</span>()</div>
+<div class="block">Gets a snapshot of all node statuses currently in the grid model.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>A set of node statuses</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="release(org.openqa.selenium.remote.SessionId)">
 <h3>release</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">release</span><wbr><span class="parameters">(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</span></div>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">release</span><wbr><span class="parameters">(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</span></div>
+<div class="block">Releases a session, making its slot available again.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>id</code> - The ID of the session to release</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)">
 <h3>setSession</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setSession</span><wbr><span class="parameters">(<a href="../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setSession</span><wbr><span class="parameters">(<a href="../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
  <a href="../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</span></div>
+<div class="block">Updates a reserved slot to contain an actual session.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>slotId</code> - The ID of the slot to update</dd>
+<dd><code>session</code> - The session to associate with the slot, or null to clear</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="updateHealthCheckCount(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)">
 <h3>updateHealthCheckCount</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">updateHealthCheckCount</span><wbr><span class="parameters">(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">updateHealthCheckCount</span><wbr><span class="parameters">(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
  <a href="../data/Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</span></div>
+<div class="block">Updates the health check count for a node based on its availability.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>id</code> - The ID of the node</dd>
+<dd><code>availability</code> - The current availability status</dd>
+</dl>
 </section>
 </li>
 </ul>

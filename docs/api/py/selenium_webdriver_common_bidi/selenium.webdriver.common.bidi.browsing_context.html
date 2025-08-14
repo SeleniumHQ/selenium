@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.browsing_context &#8212; Selenium 4.35.0.202506301117 documentation</title>
+    <title>selenium.webdriver.common.bidi.browsing_context &#8212; Selenium 4.36.0.202508121825 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=9464611f"></script>
+    <script src="../_static/documentation_options.js?v=90a25026"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.35.0.202506301117 documentation"
+        <a href="../index.html" title="Selenium 4.36.0.202508121825 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.35.0.202506301117 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.browsing_context </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.35.0.202506301117 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.35.0.202506301117 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.35.0.202506301117 documentation">Selenium 4.35.0.202506301117 documentation</a>
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
   </label>
   
 
@@ -239,15 +239,125 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">BrowsingContextEvent</span></code></a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.ContextCreated" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ContextCreated</span></code></a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">BrowsingContextEvent.from_json()</span></code></a>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.ContextCreated.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ContextCreated.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.ContextCreated.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ContextCreated.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.ContextDestroyed" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ContextDestroyed</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.ContextDestroyed.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ContextDestroyed.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.ContextDestroyed.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ContextDestroyed.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationStarted" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationStarted</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationStarted.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationStarted.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationStarted.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationStarted.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationCommitted" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationCommitted</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationCommitted.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationCommitted.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationCommitted.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationCommitted.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationFailed" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationFailed</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationFailed.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationFailed.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationFailed.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationFailed.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationAborted" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationAborted</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationAborted.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationAborted.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.NavigationAborted.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NavigationAborted.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.DomContentLoaded" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DomContentLoaded</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.DomContentLoaded.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DomContentLoaded.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.DomContentLoaded.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DomContentLoaded.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.Load" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Load</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.Load.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Load.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.Load.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Load.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.FragmentNavigated" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">FragmentNavigated</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.FragmentNavigated.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">FragmentNavigated.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.FragmentNavigated.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">FragmentNavigated.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DownloadWillBegin</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DownloadWillBegin.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DownloadWillBegin.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.UserPromptOpened" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">UserPromptOpened</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.UserPromptOpened.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">UserPromptOpened.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.UserPromptOpened.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">UserPromptOpened.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.UserPromptClosed" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">UserPromptClosed</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.UserPromptClosed.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">UserPromptClosed.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.UserPromptClosed.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">UserPromptClosed.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.HistoryUpdated" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">HistoryUpdated</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.HistoryUpdated.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">HistoryUpdated.event_class</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.HistoryUpdated.from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">HistoryUpdated.from_json()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.EventConfig" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">EventConfig</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.EventConfig.event_key" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">EventConfig.event_key</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.EventConfig.bidi_event" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">EventConfig.bidi_event</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.EventConfig.event_class" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">EventConfig.event_class</span></code></a>
         </li></ul>
             </nav>
         </li>
         <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">BrowsingContext</span></code></a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.EVENTS" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">BrowsingContext.EVENTS</span></code></a>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.EVENT_CONFIGS" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">BrowsingContext.EVENT_CONFIGS</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.get_event_names" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">BrowsingContext.get_event_names()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.activate" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">BrowsingContext.activate()</span></code></a>
         </li>
@@ -302,34 +412,73 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrowsingContext</span></code></a>(conn)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrowsingContext</span></code></a>(conn)</p></td>
 <td><p>BiDi implementation of the browsingContext module.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrowsingContextEvent</span></code></a>(event_class, **kwargs)</p></td>
-<td><p>Base class for browsing context events.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrowsingContextInfo</span></code></a>(context, url, children, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrowsingContextInfo</span></code></a>(context, url, children, ...)</p></td>
 <td><p>Represents the properties of a navigable.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams" title="selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DownloadWillBeginParams</span></code></a>(context, navigation, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.ContextCreated" title="selenium.webdriver.common.bidi.browsing_context.ContextCreated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextCreated</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.contextCreated event.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.ContextDestroyed" title="selenium.webdriver.common.bidi.browsing_context.ContextDestroyed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextDestroyed</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.contextDestroyed event.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.DomContentLoaded" title="selenium.webdriver.common.bidi.browsing_context.DomContentLoaded"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DomContentLoaded</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.domContentLoaded event.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin" title="selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DownloadWillBegin</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.downloadWillBegin event.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams" title="selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DownloadWillBeginParams</span></code></a>(context, navigation, ...)</p></td>
 <td><p>Parameters for the downloadWillBegin event.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams" title="selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HistoryUpdatedParams</span></code></a>(context, timestamp, url)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.EventConfig" title="selenium.webdriver.common.bidi.browsing_context.EventConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EventConfig</span></code></a>(event_key, bidi_event, event_class)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.FragmentNavigated" title="selenium.webdriver.common.bidi.browsing_context.FragmentNavigated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FragmentNavigated</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.fragmentNavigated event.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.HistoryUpdated" title="selenium.webdriver.common.bidi.browsing_context.HistoryUpdated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HistoryUpdated</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.historyUpdated event.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams" title="selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HistoryUpdatedParams</span></code></a>(context, timestamp, url)</p></td>
 <td><p>Parameters for the historyUpdated event.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationInfo" title="selenium.webdriver.common.bidi.browsing_context.NavigationInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NavigationInfo</span></code></a>(context, navigation, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.Load" title="selenium.webdriver.common.bidi.browsing_context.Load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Load</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.load event.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.NavigationAborted" title="selenium.webdriver.common.bidi.browsing_context.NavigationAborted"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NavigationAborted</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.navigationAborted event.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.NavigationCommitted" title="selenium.webdriver.common.bidi.browsing_context.NavigationCommitted"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NavigationCommitted</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.navigationCommitted event.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.NavigationFailed" title="selenium.webdriver.common.bidi.browsing_context.NavigationFailed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NavigationFailed</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.navigationFailed event.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.NavigationInfo" title="selenium.webdriver.common.bidi.browsing_context.NavigationInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NavigationInfo</span></code></a>(context, navigation, ...)</p></td>
 <td><p>Provides details of an ongoing navigation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.ReadinessState" title="selenium.webdriver.common.bidi.browsing_context.ReadinessState"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReadinessState</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.NavigationStarted" title="selenium.webdriver.common.bidi.browsing_context.NavigationStarted"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NavigationStarted</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.navigationStarted event.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.ReadinessState" title="selenium.webdriver.common.bidi.browsing_context.ReadinessState"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReadinessState</span></code></a>()</p></td>
 <td><p>Represents the stage of document loading at which a navigation command will return.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams" title="selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserPromptClosedParams</span></code></a>(context, accepted, type)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptClosed" title="selenium.webdriver.common.bidi.browsing_context.UserPromptClosed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserPromptClosed</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.userPromptClosed event.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams" title="selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserPromptClosedParams</span></code></a>(context, accepted, type)</p></td>
 <td><p>Parameters for the userPromptClosed event.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams" title="selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserPromptOpenedParams</span></code></a>(context, handler, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptOpened" title="selenium.webdriver.common.bidi.browsing_context.UserPromptOpened"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserPromptOpened</span></code></a>()</p></td>
+<td><p>Event class for browsingContext.userPromptOpened event.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams" title="selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserPromptOpenedParams</span></code></a>(context, handler, ...)</p></td>
 <td><p>Parameters for the userPromptOpened event.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptType" title="selenium.webdriver.common.bidi.browsing_context.UserPromptType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserPromptType</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptType" title="selenium.webdriver.common.bidi.browsing_context.UserPromptType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UserPromptType</span></code></a>()</p></td>
 <td><p>Represents the possible user prompt types.</p></td>
 </tr>
 </tbody>
@@ -378,7 +527,7 @@
 <dd><p>Provides details of an ongoing navigation.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationInfo.from_json">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationInfo" title="selenium.webdriver.common.bidi.browsing_context.NavigationInfo"><span class="pre">NavigationInfo</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#NavigationInfo.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationInfo.from_json" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.NavigationInfo" title="selenium.webdriver.common.bidi.browsing_context.NavigationInfo"><span class="pre">NavigationInfo</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#NavigationInfo.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationInfo.from_json" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a NavigationInfo instance from a dictionary.</p>
 <section id="parameters">
 <h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
@@ -396,11 +545,11 @@
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">BrowsingContextInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">children</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo"><span class="pre">BrowsingContextInfo</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_opener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContextInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">BrowsingContextInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">children</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo"><span class="pre">BrowsingContextInfo</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_opener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContextInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo" title="Link to this definition">¶</a></dt>
 <dd><p>Represents the properties of a navigable.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo.from_json">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo"><span class="pre">BrowsingContextInfo</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContextInfo.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo.from_json" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo"><span class="pre">BrowsingContextInfo</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContextInfo.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo.from_json" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a BrowsingContextInfo instance from a dictionary.</p>
 <section id="id1">
 <h2 id="id1">Parameters:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
@@ -422,7 +571,7 @@
 <dd><p>Parameters for the downloadWillBegin event.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams.from_json">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams" title="selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams"><span class="pre">DownloadWillBeginParams</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#DownloadWillBeginParams.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams.from_json" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams" title="selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams"><span class="pre">DownloadWillBeginParams</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#DownloadWillBeginParams.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams.from_json" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a DownloadWillBeginParams instance from a dictionary.</p>
 <section id="id3">
 <h2 id="id3">Parameters:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
@@ -444,7 +593,7 @@
 <dd><p>Parameters for the userPromptOpened event.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams.from_json">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams" title="selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams"><span class="pre">UserPromptOpenedParams</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#UserPromptOpenedParams.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams.from_json" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams" title="selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams"><span class="pre">UserPromptOpenedParams</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#UserPromptOpenedParams.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams.from_json" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a UserPromptOpenedParams instance from a dictionary.</p>
 <section id="id5">
 <h2 id="id5">Parameters:<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
@@ -466,7 +615,7 @@
 <dd><p>Parameters for the userPromptClosed event.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams.from_json">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams" title="selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams"><span class="pre">UserPromptClosedParams</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#UserPromptClosedParams.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams.from_json" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams" title="selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams"><span class="pre">UserPromptClosedParams</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#UserPromptClosedParams.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams.from_json" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a UserPromptClosedParams instance from a dictionary.</p>
 <section id="id7">
 <h2 id="id7">Parameters:<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
@@ -488,7 +637,7 @@
 <dd><p>Parameters for the historyUpdated event.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams.from_json">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams" title="selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams"><span class="pre">HistoryUpdatedParams</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#HistoryUpdatedParams.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams.from_json" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams" title="selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams"><span class="pre">HistoryUpdatedParams</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#HistoryUpdatedParams.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams.from_json" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a HistoryUpdatedParams instance from a dictionary.</p>
 <section id="id9">
 <h2 id="id9">Parameters:<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
@@ -505,41 +654,215 @@
 </dd></dl>
 </dd></dl>
 <dl class="py class">
-<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">BrowsingContextEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContextEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent" title="Link to this definition">¶</a></dt>
-<dd><p>Base class for browsing context events.</p>
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.ContextCreated">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">ContextCreated</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#ContextCreated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.ContextCreated" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.contextCreated event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.ContextCreated.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.contextCreated'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.ContextCreated.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent.from_json">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent"><span class="pre">BrowsingContextEvent</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContextEvent.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent.from_json" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a BrowsingContextEvent instance from a dictionary.</p>
-<section id="id11">
-<h2 id="id11">Parameters:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>json: A dictionary containing the event information.</p>
-</div></blockquote>
-</section>
-<section id="id12">
-<h2 id="id12">Returns:<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>BrowsingContextEvent: A new instance of BrowsingContextEvent.</p>
-</div></blockquote>
-</section>
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.ContextCreated.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#ContextCreated.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.ContextCreated.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 </dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.ContextDestroyed">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">ContextDestroyed</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#ContextDestroyed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.ContextDestroyed" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.contextDestroyed event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.ContextDestroyed.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.contextDestroyed'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.ContextDestroyed.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.ContextDestroyed.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#ContextDestroyed.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.ContextDestroyed.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationStarted">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">NavigationStarted</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#NavigationStarted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationStarted" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.navigationStarted event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationStarted.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.navigationStarted'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationStarted.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationStarted.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#NavigationStarted.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationStarted.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationCommitted">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">NavigationCommitted</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#NavigationCommitted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationCommitted" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.navigationCommitted event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationCommitted.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.navigationCommitted'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationCommitted.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationCommitted.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#NavigationCommitted.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationCommitted.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationFailed">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">NavigationFailed</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#NavigationFailed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationFailed" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.navigationFailed event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationFailed.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.navigationFailed'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationFailed.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationFailed.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#NavigationFailed.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationFailed.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationAborted">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">NavigationAborted</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#NavigationAborted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationAborted" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.navigationAborted event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationAborted.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.navigationAborted'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationAborted.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.NavigationAborted.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#NavigationAborted.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.NavigationAborted.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.DomContentLoaded">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">DomContentLoaded</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#DomContentLoaded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.DomContentLoaded" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.domContentLoaded event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.DomContentLoaded.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.domContentLoaded'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.DomContentLoaded.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.DomContentLoaded.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#DomContentLoaded.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.DomContentLoaded.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.Load">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">Load</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#Load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.Load" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.load event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.Load.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.load'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.Load.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.Load.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#Load.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.Load.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.FragmentNavigated">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">FragmentNavigated</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#FragmentNavigated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.FragmentNavigated" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.fragmentNavigated event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.FragmentNavigated.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.fragmentNavigated'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.FragmentNavigated.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.FragmentNavigated.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#FragmentNavigated.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.FragmentNavigated.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">DownloadWillBegin</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#DownloadWillBegin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.downloadWillBegin event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.downloadWillBegin'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#DownloadWillBegin.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.UserPromptOpened">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">UserPromptOpened</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#UserPromptOpened"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptOpened" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.userPromptOpened event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.UserPromptOpened.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.userPromptOpened'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptOpened.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.UserPromptOpened.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#UserPromptOpened.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptOpened.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.UserPromptClosed">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">UserPromptClosed</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#UserPromptClosed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptClosed" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.userPromptClosed event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.UserPromptClosed.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.userPromptClosed'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptClosed.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.UserPromptClosed.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#UserPromptClosed.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.UserPromptClosed.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.HistoryUpdated">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">HistoryUpdated</span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#HistoryUpdated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.HistoryUpdated" title="Link to this definition">¶</a></dt>
+<dd><p>Event class for browsingContext.historyUpdated event.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.HistoryUpdated.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'browsingContext.historyUpdated'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.HistoryUpdated.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.HistoryUpdated.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#HistoryUpdated.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.HistoryUpdated.from_json" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.EventConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">EventConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bidi_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#EventConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.EventConfig" title="Link to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.EventConfig.event_key">
+<span class="sig-name descname"><span class="pre">event_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.EventConfig.event_key" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.EventConfig.bidi_event">
+<span class="sig-name descname"><span class="pre">bidi_event</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.EventConfig.bidi_event" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.EventConfig.event_class">
+<span class="sig-name descname"><span class="pre">event_class</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">type</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.EventConfig.event_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.browsing_context.</span></span><span class="sig-name descname"><span class="pre">BrowsingContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext" title="Link to this definition">¶</a></dt>
 <dd><p>BiDi implementation of the browsingContext module.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.EVENTS">
-<span class="sig-name descname"><span class="pre">EVENTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'context_created':</span> <span class="pre">'browsingContext.contextCreated',</span> <span class="pre">'context_destroyed':</span> <span class="pre">'browsingContext.contextDestroyed',</span> <span class="pre">'dom_content_loaded':</span> <span class="pre">'browsingContext.domContentLoaded',</span> <span class="pre">'download_will_begin':</span> <span class="pre">'browsingContext.downloadWillBegin',</span> <span class="pre">'fragment_navigated':</span> <span class="pre">'browsingContext.fragmentNavigated',</span> <span class="pre">'history_updated':</span> <span class="pre">'browsingContext.historyUpdated',</span> <span class="pre">'load':</span> <span class="pre">'browsingContext.load',</span> <span class="pre">'navigation_aborted':</span> <span class="pre">'browsingContext.navigationAborted',</span> <span class="pre">'navigation_committed':</span> <span class="pre">'browsingContext.navigationCommitted',</span> <span class="pre">'navigation_failed':</span> <span class="pre">'browsingContext.navigationFailed',</span> <span class="pre">'navigation_started':</span> <span class="pre">'browsingContext.navigationStarted',</span> <span class="pre">'user_prompt_closed':</span> <span class="pre">'browsingContext.userPromptClosed',</span> <span class="pre">'user_prompt_opened':</span> <span class="pre">'browsingContext.userPromptOpened'}</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.EVENTS" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.EVENT_CONFIGS">
+<span class="sig-name descname"><span class="pre">EVENT_CONFIGS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'context_created':</span> <span class="pre">EventConfig(event_key='context_created',</span> <span class="pre">bidi_event='browsingContext.contextCreated',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.ContextCreated'&gt;),</span> <span class="pre">'context_destroyed':</span> <span class="pre">EventConfig(event_key='context_destroyed',</span> <span class="pre">bidi_event='browsingContext.contextDestroyed',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.ContextDestroyed'&gt;),</span> <span class="pre">'dom_content_loaded':</span> <span class="pre">EventConfig(event_key='dom_content_loaded',</span> <span class="pre">bidi_event='browsingContext.domContentLoaded',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.DomContentLoaded'&gt;),</span> <span class="pre">'download_will_begin':</span> <span class="pre">EventConfig(event_key='download_will_begin',</span> <span class="pre">bidi_event='browsingContext.downloadWillBegin',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin'&gt;),</span> <span class="pre">'fragment_navigated':</span> <span class="pre">EventConfig(event_key='fragment_navigated',</span> <span class="pre">bidi_event='browsingContext.fragmentNavigated',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.FragmentNavigated'&gt;),</span> <span class="pre">'history_updated':</span> <span class="pre">EventConfig(event_key='history_updated',</span> <span class="pre">bidi_event='browsingContext.historyUpdated',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.HistoryUpdated'&gt;),</span> <span class="pre">'load':</span> <span class="pre">EventConfig(event_key='load',</span> <span class="pre">bidi_event='browsingContext.load',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.Load'&gt;),</span> <span class="pre">'navigation_aborted':</span> <span class="pre">EventConfig(event_key='navigation_aborted',</span> <span class="pre">bidi_event='browsingContext.navigationAborted',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.NavigationAborted'&gt;),</span> <span class="pre">'navigation_committed':</span> <span class="pre">EventConfig(event_key='navigation_committed',</span> <span class="pre">bidi_event='browsingContext.navigationCommitted',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.NavigationCommitted'&gt;),</span> <span class="pre">'navigation_failed':</span> <span class="pre">EventConfig(event_key='navigation_failed',</span> <span class="pre">bidi_event='browsingContext.navigationFailed',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.NavigationFailed'&gt;),</span> <span class="pre">'navigation_started':</span> <span class="pre">EventConfig(event_key='navigation_started',</span> <span class="pre">bidi_event='browsingContext.navigationStarted',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.NavigationStarted'&gt;),</span> <span class="pre">'user_prompt_closed':</span> <span class="pre">EventConfig(event_key='user_prompt_closed',</span> <span class="pre">bidi_event='browsingContext.userPromptClosed',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.UserPromptClosed'&gt;),</span> <span class="pre">'user_prompt_opened':</span> <span class="pre">EventConfig(event_key='user_prompt_opened',</span> <span class="pre">bidi_event='browsingContext.userPromptOpened',</span> <span class="pre">event_class=&lt;class</span> <span class="pre">'selenium.webdriver.common.bidi.browsing_context.UserPromptOpened'&gt;)}</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.EVENT_CONFIGS" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.get_event_names">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_event_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.get_event_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.get_event_names" title="Link to this definition">¶</a></dt>
+<dd><p>Get a list of all available event names.</p>
+<section id="id11">
+<h2 id="id11">Returns:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<blockquote>
+<div><p>List[str]: A list of event names that can be used with event handlers.</p>
+</div></blockquote>
+</section>
+</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.activate">
 <span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.activate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.activate" title="Link to this definition">¶</a></dt>
 <dd><p>Activates and focuses the given top-level traversable.</p>
-<section id="id13">
-<h2 id="id13">Parameters:<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
+<section id="id12">
+<h2 id="id12">Parameters:<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>context: The browsing context ID to activate.</p>
 </div></blockquote>
@@ -555,8 +878,8 @@
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.capture_screenshot">
 <span class="sig-name descname"><span class="pre">capture_screenshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'viewport'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.capture_screenshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.capture_screenshot" title="Link to this definition">¶</a></dt>
 <dd><p>Captures an image of the given navigable, and returns it as a Base64-encoded string.</p>
-<section id="id14">
-<h2 id="id14">Parameters:<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
+<section id="id13">
+<h2 id="id13">Parameters:<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>context: The browsing context ID to capture.
 origin: The origin of the screenshot, either “viewport” or “document”.
@@ -564,8 +887,8 @@ format: The format of the screenshot.
 clip: The clip rectangle of the screenshot.</p>
 </div></blockquote>
 </section>
-<section id="id15">
-<h2 id="id15">Returns:<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<section id="id14">
+<h2 id="id14">Returns:<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>str: The Base64-encoded screenshot.</p>
 </div></blockquote>
@@ -575,15 +898,15 @@ clip: The clip rectangle of the screenshot.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_unload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.close" title="Link to this definition">¶</a></dt>
 <dd><p>Closes a top-level traversable.</p>
-<section id="id16">
-<h2 id="id16">Parameters:<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
+<section id="id15">
+<h2 id="id15">Parameters:<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>context: The browsing context ID to close.
 prompt_unload: Whether to prompt to unload.</p>
 </div></blockquote>
 </section>
-<section id="id17">
-<h2 id="id17">Raises:<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
+<section id="id16">
+<h2 id="id16">Raises:<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>Exception: If the browsing context is not a top-level traversable.</p>
 </div></blockquote>
@@ -593,8 +916,8 @@ prompt_unload: Whether to prompt to unload.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.create">
 <span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.create" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new navigable, either in a new tab or in a new window, and returns its navigable id.</p>
-<section id="id18">
-<h2 id="id18">Parameters:<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
+<section id="id17">
+<h2 id="id17">Parameters:<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>type: The type of the new navigable, either “tab” or “window”.
 reference_context: The reference browsing context ID.
@@ -602,8 +925,8 @@ background: Whether to create the new navigable in the background.
 user_context: The user context ID.</p>
 </div></blockquote>
 </section>
-<section id="id19">
-<h2 id="id19">Returns:<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h2>
+<section id="id18">
+<h2 id="id18">Returns:<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>str: The browsing context ID of the created navigable.</p>
 </div></blockquote>
@@ -611,18 +934,18 @@ user_context: The user context ID.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.get_tree">
-<span class="sig-name descname"><span class="pre">get_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo"><span class="pre">BrowsingContextInfo</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.get_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.get_tree" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo"><span class="pre">BrowsingContextInfo</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.get_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.get_tree" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a tree of all descendent navigables including the given parent itself, or all top-level contexts
 when no parent is provided.</p>
-<section id="id20">
-<h2 id="id20">Parameters:<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h2>
+<section id="id19">
+<h2 id="id19">Parameters:<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>max_depth: The maximum depth of the tree.
 root: The root browsing context ID.</p>
 </div></blockquote>
 </section>
-<section id="id21">
-<h2 id="id21">Returns:<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h2>
+<section id="id20">
+<h2 id="id20">Returns:<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>List[BrowsingContextInfo]: A list of browsing context information.</p>
 </div></blockquote>
@@ -632,8 +955,8 @@ root: The root browsing context ID.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.handle_user_prompt">
 <span class="sig-name descname"><span class="pre">handle_user_prompt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accept</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.handle_user_prompt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.handle_user_prompt" title="Link to this definition">¶</a></dt>
 <dd><p>Allows closing an open prompt.</p>
-<section id="id22">
-<h2 id="id22">Parameters:<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h2>
+<section id="id21">
+<h2 id="id21">Parameters:<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>context: The browsing context ID.
 accept: Whether to accept the prompt.
@@ -645,8 +968,8 @@ user_text: The text to enter in the prompt.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.locate_nodes">
 <span class="sig-name descname"><span class="pre">locate_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_node_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialization_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.locate_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.locate_nodes" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a list of all nodes matching the specified locator.</p>
-<section id="id23">
-<h2 id="id23">Parameters:<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h2>
+<section id="id22">
+<h2 id="id22">Parameters:<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>context: The browsing context ID.
 locator: The locator to use.
@@ -655,8 +978,8 @@ serialization_options: The serialization options.
 start_nodes: The start nodes.</p>
 </div></blockquote>
 </section>
-<section id="id24">
-<h2 id="id24">Returns:<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h2>
+<section id="id23">
+<h2 id="id23">Returns:<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>List[Dict]: A list of nodes.</p>
 </div></blockquote>
@@ -666,16 +989,16 @@ start_nodes: The start nodes.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.navigate">
 <span class="sig-name descname"><span class="pre">navigate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.navigate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.navigate" title="Link to this definition">¶</a></dt>
 <dd><p>Navigates a navigable to the given URL.</p>
-<section id="id25">
-<h2 id="id25">Parameters:<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h2>
+<section id="id24">
+<h2 id="id24">Parameters:<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>context: The browsing context ID.
 url: The URL to navigate to.
 wait: The readiness state to wait for.</p>
 </div></blockquote>
 </section>
-<section id="id26">
-<h2 id="id26">Returns:<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h2>
+<section id="id25">
+<h2 id="id25">Returns:<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>Dict: A dictionary containing the navigation result.</p>
 </div></blockquote>
@@ -686,8 +1009,8 @@ wait: The readiness state to wait for.</p>
 <span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'portrait'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_ranges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shrink_to_fit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.print"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.print" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a paginated representation of a document, and returns it as a PDF document represented as a
 Base64-encoded string.</p>
-<section id="id27">
-<h2 id="id27">Parameters:<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h2>
+<section id="id26">
+<h2 id="id26">Parameters:<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>context: The browsing context ID.
 background: Whether to include the background.
@@ -699,8 +1022,8 @@ scale: The scale.
 shrink_to_fit: Whether to shrink to fit.</p>
 </div></blockquote>
 </section>
-<section id="id28">
-<h2 id="id28">Returns:<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h2>
+<section id="id27">
+<h2 id="id27">Returns:<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>str: The Base64-encoded PDF document.</p>
 </div></blockquote>
@@ -710,16 +1033,16 @@ shrink_to_fit: Whether to shrink to fit.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.reload">
 <span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.reload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.reload" title="Link to this definition">¶</a></dt>
 <dd><p>Reloads a navigable.</p>
-<section id="id29">
-<h2 id="id29">Parameters:<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h2>
+<section id="id28">
+<h2 id="id28">Parameters:<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>context: The browsing context ID.
 ignore_cache: Whether to ignore the cache.
 wait: The readiness state to wait for.</p>
 </div></blockquote>
 </section>
-<section id="id30">
-<h2 id="id30">Returns:<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h2>
+<section id="id29">
+<h2 id="id29">Returns:<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>Dict: A dictionary containing the navigation result.</p>
 </div></blockquote>
@@ -729,8 +1052,8 @@ wait: The readiness state to wait for.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.set_viewport">
 <span class="sig-name descname"><span class="pre">set_viewport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viewport</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_pixel_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_contexts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.set_viewport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.set_viewport" title="Link to this definition">¶</a></dt>
 <dd><p>Modifies specific viewport characteristics on the given top-level traversable.</p>
-<section id="id31">
-<h2 id="id31">Parameters:<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h2>
+<section id="id30">
+<h2 id="id30">Parameters:<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>context: The browsing context ID.
 viewport: The viewport parameters.
@@ -738,8 +1061,8 @@ device_pixel_ratio: The device pixel ratio.
 user_contexts: The user context IDs.</p>
 </div></blockquote>
 </section>
-<section id="id32">
-<h2 id="id32">Raises:<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h2>
+<section id="id31">
+<h2 id="id31">Raises:<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>Exception: If the browsing context is not a top-level traversable.</p>
 </div></blockquote>
@@ -749,15 +1072,15 @@ user_contexts: The user context IDs.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.traverse_history">
 <span class="sig-name descname"><span class="pre">traverse_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.traverse_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.traverse_history" title="Link to this definition">¶</a></dt>
 <dd><p>Traverses the history of a given navigable by a delta.</p>
-<section id="id33">
-<h2 id="id33">Parameters:<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h2>
+<section id="id32">
+<h2 id="id32">Parameters:<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>context: The browsing context ID.
 delta: The delta to traverse by.</p>
 </div></blockquote>
 </section>
-<section id="id34">
-<h2 id="id34">Returns:<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h2>
+<section id="id33">
+<h2 id="id33">Returns:<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>Dict: A dictionary containing the traverse history result.</p>
 </div></blockquote>
@@ -767,16 +1090,16 @@ delta: The delta to traverse by.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.add_event_handler">
 <span class="sig-name descname"><span class="pre">add_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contexts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.add_event_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.add_event_handler" title="Link to this definition">¶</a></dt>
 <dd><p>Add an event handler to the browsing context.</p>
-<section id="id35">
-<h2 id="id35">Parameters:<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h2>
+<section id="id34">
+<h2 id="id34">Parameters:<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>event: The event to subscribe to.
 callback: The callback function to execute on event.
 contexts: The browsing context IDs to subscribe to.</p>
 </div></blockquote>
 </section>
-<section id="id36">
-<h2 id="id36">Returns:<a class="headerlink" href="#id36" title="Link to this heading">¶</a></h2>
+<section id="id35">
+<h2 id="id35">Returns:<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>int: callback id</p>
 </div></blockquote>
@@ -786,8 +1109,8 @@ contexts: The browsing context IDs to subscribe to.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browsing_context.BrowsingContext.remove_event_handler">
 <span class="sig-name descname"><span class="pre">remove_event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browsing_context.html#BrowsingContext.remove_event_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.remove_event_handler" title="Link to this definition">¶</a></dt>
 <dd><p>Remove an event handler from the browsing context.</p>
-<section id="id37">
-<h2 id="id37">Parameters:<a class="headerlink" href="#id37" title="Link to this heading">¶</a></h2>
+<section id="id36">
+<h2 id="id36">Parameters:<a class="headerlink" href="#id36" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>event: The event to unsubscribe from.
 callback_id: The callback id to remove.</p>

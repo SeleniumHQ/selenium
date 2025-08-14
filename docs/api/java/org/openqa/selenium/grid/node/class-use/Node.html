@@ -78,6 +78,22 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="org.openqa.selenium.grid.distributor">
 <h2>Uses of <a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a> in <a href="../../distributor/package-summary.html">org.openqa.selenium.grid.distributor</a></h2>
+<div class="caption"><span>Methods in <a href="../../distributor/package-summary.html">org.openqa.selenium.grid.distributor</a> that return <a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#getNode(java.net.URI)" class="member-name-link">getNode</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Get node by URI.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#getNode(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">getNode</a><wbr>(<a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Gets a node by its ID.</div>
+</div>
+</div>
 <div class="caption"><span>Methods in <a href="../../distributor/package-summary.html">org.openqa.selenium.grid.distributor</a> with parameters of type <a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -86,6 +102,11 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>abstract <a href="../../distributor/Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">Distributor.</span><code><a href="../../distributor/Distributor.html#add(org.openqa.selenium.grid.node.Node)" class="member-name-link">add</a><wbr>(<a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a>&nbsp;node)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#add(org.openqa.selenium.grid.node.Node)" class="member-name-link">add</a><wbr>(<a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a>&nbsp;node)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Add a node to this registry.</div>
+</div>
 </div>
 </section>
 </li>
@@ -97,6 +118,14 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalNodeRegistry.</span><code><a href="../../distributor/local/LocalNodeRegistry.html#getNode(java.net.URI)" class="member-name-link">getNode</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Get a node by its URI.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNodeRegistry.</span><code><a href="../../distributor/local/LocalNodeRegistry.html#getNode(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">getNode</a><wbr>(<a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>protected <a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">LocalDistributor.</span><code><a href="../../distributor/local/LocalDistributor.html#getNodeFromURI(java.net.URI)" class="member-name-link">getNodeFromURI</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
@@ -109,6 +138,9 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../../distributor/local/LocalDistributor.html" title="class in org.openqa.selenium.grid.distributor.local">LocalDistributor</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">LocalDistributor.</span><code><a href="../../distributor/local/LocalDistributor.html#add(org.openqa.selenium.grid.node.Node)" class="member-name-link">add</a><wbr>(<a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a>&nbsp;node)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNodeRegistry.</span><code><a href="../../distributor/local/LocalNodeRegistry.html#add(org.openqa.selenium.grid.node.Node)" class="member-name-link">add</a><wbr>(<a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a>&nbsp;node)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.remote.fedcm &#8212; Selenium 4.35.0.202506301117 documentation</title>
+    <title>selenium.webdriver.remote.fedcm &#8212; Selenium 4.36.0.202508121825 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=9464611f"></script>
+    <script src="../../../../_static/documentation_options.js?v=90a25026"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.35.0.202506301117 documentation"
+        <a href="../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.35.0.202506301117 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.fedcm </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.35.0.202506301117 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.35.0.202506301117 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.35.0.202506301117 documentation">Selenium 4.35.0.202506301117 documentation</a>
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
   </label>
   
 
@@ -215,7 +215,7 @@
 
 
 <div class="viewcode-block" id="FedCM">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FedCM</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="o">=</span> <span class="n">driver</span>
@@ -241,42 +241,42 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_FEDCM_ACCOUNT_LIST</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FedCM.select_account">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.select_account">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.select_account">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">select_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Selects an account from the dialog by index."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SELECT_FEDCM_ACCOUNT</span><span class="p">,</span> <span class="p">{</span><span class="s2">"accountIndex"</span><span class="p">:</span> <span class="n">index</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="FedCM.accept">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.accept">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.accept">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Clicks the continue button in the dialog."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CLICK_FEDCM_DIALOG_BUTTON</span><span class="p">,</span> <span class="p">{</span><span class="s2">"dialogButton"</span><span class="p">:</span> <span class="s2">"ConfirmIdpLoginContinue"</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="FedCM.dismiss">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.dismiss">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.dismiss">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">dismiss</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Cancels/dismisses the FedCM dialog."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CANCEL_FEDCM_DIALOG</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FedCM.enable_delay">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.enable_delay">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.enable_delay">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">enable_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Re-enables the promise rejection delay for FedCM."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_FEDCM_DELAY</span><span class="p">,</span> <span class="p">{</span><span class="s2">"enabled"</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="FedCM.disable_delay">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.disable_delay">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.disable_delay">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">disable_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Disables the promise rejection delay for FedCM."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_FEDCM_DELAY</span><span class="p">,</span> <span class="p">{</span><span class="s2">"enabled"</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="FedCM.reset_cooldown">
-<a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.reset_cooldown">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.reset_cooldown">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset_cooldown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Resets the FedCM dialog cooldown, allowing immediate retriggers."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">RESET_FEDCM_COOLDOWN</span><span class="p">)</span></div>

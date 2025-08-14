@@ -9,4 +9,6 @@ selenium.webdriver.common.bidi.session
    .. autosummary::
    
       Session
+      UserPromptHandler
+      UserPromptHandlerType
    

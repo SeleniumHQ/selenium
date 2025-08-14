@@ -200,6 +200,9 @@ Class ChromiumDriverService  <a class="header-action link-secondary" title="View
       <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_OnDriverProcessStarted_OpenQA_Selenium_DriverProcessStartedEventArgs_">DriverService.OnDriverProcessStarted(DriverProcessStartedEventArgs)</a>
     </div>
     <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_OnDriverProcessDataReceived_System_Object_System_Diagnostics_DataReceivedEventArgs_">DriverService.OnDriverProcessDataReceived(object, DataReceivedEventArgs)</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
     <div>
@@ -278,7 +281,7 @@ Class ChromiumDriverService  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_AllowedIPAddresses" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.AllowedIPAddresses">
   AllowedIPAddresses
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L96"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</p>
@@ -344,7 +347,7 @@ Class ChromiumDriverService  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_CommandLineArguments" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.CommandLineArguments">
   CommandLineArguments
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L106"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the command-line arguments for the driver service.</p>
@@ -472,6 +475,38 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
 
 
+  <a id="OpenQA_Selenium_Chromium_ChromiumDriverService_LogLevel_" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.LogLevel*"></a>
+
+  <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_LogLevel" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.LogLevel">
+  LogLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the level at which log output is displayed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChromiumDriverLogLevel LogLevel { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverLogLevel.html">ChromiumDriverLogLevel</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="OpenQA_Selenium_Chromium_ChromiumDriverService_LogPath_" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.LogPath*"></a>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_LogPath" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.LogPath">
@@ -540,6 +575,38 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
 
 
+  <a id="OpenQA_Selenium_Chromium_ChromiumDriverService_ReadableTimestamp_" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.ReadableTimestamp*"></a>
+
+  <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_ReadableTimestamp" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.ReadableTimestamp">
+  ReadableTimestamp
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds readable timestamps to log</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ReadableTimestamp { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="OpenQA_Selenium_Chromium_ChromiumDriverService_UrlPathPrefix_" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.UrlPathPrefix*"></a>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_UrlPathPrefix" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.UrlPathPrefix">
@@ -574,40 +641,6 @@ Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-referenc
 
 
 
-  <a id="OpenQA_Selenium_Chromium_ChromiumDriverService_WhitelistedIPAddresses_" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.WhitelistedIPAddresses*"></a>
-
-  <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_WhitelistedIPAddresses" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.WhitelistedIPAddresses">
-  WhitelistedIPAddresses
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L91"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"><p>Gets or sets the comma-delimited list of IP addresses that are approved to connect to this instance of the Chrome driver.</p>
-<p>A value of <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> means only the local loopback address can connect.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use AllowedIPAddresses&quot;)]
-public string? WhitelistedIPAddresses { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
   <h2 class="section" id="methods">Methods
 </h2>
 
@@ -616,7 +649,7 @@ public string? WhitelistedIPAddresses { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Chromium_ChromiumDriverService_ChromiumDriverServiceFileName_System_String_" data-uid="OpenQA.Selenium.Chromium.ChromiumDriverService.ChromiumDriverServiceFileName(System.String)">
   ChromiumDriverServiceFileName(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L166"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chromium/ChromiumDriverService.cs/#L176"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the Chromium driver filename for the currently running platform</p>

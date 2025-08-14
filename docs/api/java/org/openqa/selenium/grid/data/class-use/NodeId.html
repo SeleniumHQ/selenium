@@ -172,20 +172,48 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>abstract boolean</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">Distributor.</span><code><a href="../../distributor/Distributor.html#drain(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">drain</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>boolean</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#drain(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">drain</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Set a node to draining state.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="../../node/Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#getNode(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">getNode</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Gets a node by its ID.</div>
+</div>
 <div class="col-first odd-row-color"><code>abstract void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">Distributor.</span><code><a href="../../distributor/Distributor.html#remove(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">remove</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-first even-row-color"><code>abstract void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#remove(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">remove</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Removes a node from the grid model.</div>
+</div>
 <div class="col-first odd-row-color"><code>void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">setAvailability</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+<div class="col-second odd-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#remove(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">remove</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Removes a node from this registry.</div>
+</div>
+<div class="col-first even-row-color"><code>abstract void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">setAvailability</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
  <a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Sets the availability status for a node.</div>
+</div>
+<div class="col-first odd-row-color"><code>abstract void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#updateHealthCheckCount(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">updateHealthCheckCount</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+ <a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Updates the health check count for a node based on its availability.</div>
+</div>
 <div class="col-first even-row-color"><code>void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#updateHealthCheckCount(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">updateHealthCheckCount</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+<div class="col-second even-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#updateNodeAvailability(java.net.URI,org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">updateNodeAvailability</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
+ <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
  <a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Updates a node's availability status.</div>
+</div>
 </div>
 <div class="caption"><span>Constructors in <a href="../../distributor/package-summary.html">org.openqa.selenium.grid.distributor</a> with parameters of type <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></span></div>
 <div class="summary-table three-column-summary">
@@ -210,9 +238,34 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>boolean</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">LocalDistributor.</span><code><a href="../../distributor/local/LocalDistributor.html#drain(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">drain</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>boolean</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNodeRegistry.</span><code><a href="../../distributor/local/LocalNodeRegistry.html#drain(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">drain</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../../node/Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalNodeRegistry.</span><code><a href="../../distributor/local/LocalNodeRegistry.html#getNode(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">getNode</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">LocalDistributor.</span><code><a href="../../distributor/local/LocalDistributor.html#remove(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">remove</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalGridModel.</span><code><a href="../../distributor/local/LocalGridModel.html#remove(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">remove</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNodeRegistry.</span><code><a href="../../distributor/local/LocalNodeRegistry.html#remove(org.openqa.selenium.grid.data.NodeId)" class="member-name-link">remove</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalGridModel.</span><code><a href="../../distributor/local/LocalGridModel.html#setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">setAvailability</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+ <a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalGridModel.</span><code><a href="../../distributor/local/LocalGridModel.html#updateHealthCheckCount(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">updateHealthCheckCount</a><wbr>(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+ <a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalNodeRegistry.</span><code><a href="../../distributor/local/LocalNodeRegistry.html#updateNodeAvailability(java.net.URI,org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)" class="member-name-link">updateNodeAvailability</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;nodeUri,
+ <a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+ <a href="../Availability.html" title="enum class in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

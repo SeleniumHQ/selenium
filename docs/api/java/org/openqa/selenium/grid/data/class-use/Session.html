@@ -62,18 +62,20 @@ loadScripts(document, 'script');</script>
 <div class="block">The <a href="../../distributor/Distributor.html" title="class in org.openqa.selenium.grid.distributor"><code>Distributor</code></a> is responsible for assigning new
  calls to Create Session to a <a href="../../node/Node.html" title="class in org.openqa.selenium.grid.node"><code>Node</code></a>.</div>
 </div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node">org.openqa.selenium.grid.node</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node">org.openqa.selenium.grid.node</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node.remote">org.openqa.selenium.grid.node.remote</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionmap">org.openqa.selenium.grid.sessionmap</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node.remote">org.openqa.selenium.grid.node.remote</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionmap.local">org.openqa.selenium.grid.sessionmap.local</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionmap">org.openqa.selenium.grid.sessionmap</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionmap.remote">org.openqa.selenium.grid.sessionmap.remote</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionmap.local">org.openqa.selenium.grid.sessionmap.local</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionmap.remote">org.openqa.selenium.grid.sessionmap.remote</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -126,10 +128,37 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-first even-row-color"><code>abstract void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)" class="member-name-link">setSession</a><wbr>(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
  <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Updates a reserved slot to contain an actual session.</div>
+</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)" class="member-name-link">setSession</a><wbr>(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
+ <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Set a session for a particular slot.</div>
+</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.openqa.selenium.grid.distributor.local">
+<h2>Uses of <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a> in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a></h2>
+<div class="caption"><span>Methods in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a> with parameters of type <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalGridModel.</span><code><a href="../../distributor/local/LocalGridModel.html#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)" class="member-name-link">setSession</a><wbr>(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
+ <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNodeRegistry.</span><code><a href="../../distributor/local/LocalNodeRegistry.html#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)" class="member-name-link">setSession</a><wbr>(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
+ <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

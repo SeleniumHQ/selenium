@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.network &#8212; Selenium 4.35.0.202506301117 documentation</title>
+    <title>selenium.webdriver.common.bidi.network &#8212; Selenium 4.36.0.202508121825 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=9464611f"></script>
+    <script src="../../../../../_static/documentation_options.js?v=90a25026"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.35.0.202506301117 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.network </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.35.0.202506301117 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.35.0.202506301117 documentation">Selenium 4.35.0.202506301117 documentation</a>
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
   </label>
   
 
@@ -213,7 +213,7 @@
 
 
 <div class="viewcode-block" id="NetworkEvent">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.NetworkEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.NetworkEvent">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NetworkEvent</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Represents a network event."""</span>
 
@@ -222,7 +222,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">kwargs</span>
 
 <div class="viewcode-block" id="NetworkEvent.from_json">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.NetworkEvent.from_json">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.NetworkEvent.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">event_class</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"event_class"</span><span class="p">),</span> <span class="o">**</span><span class="n">json</span><span class="p">)</span></div>
@@ -231,7 +231,7 @@
 
 
 <div class="viewcode-block" id="Network">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Network</span><span class="p">:</span>
     <span class="n">EVENTS</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">"before_request"</span><span class="p">:</span> <span class="s2">"network.beforeRequestSent"</span><span class="p">,</span>
@@ -354,7 +354,7 @@
         <span class="k">return</span> <span class="n">callback_id</span>
 
 <div class="viewcode-block" id="Network.add_request_handler">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.add_request_handler">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.add_request_handler">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_request_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">url_patterns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contexts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Add a request handler to the network.</span>
 
@@ -395,7 +395,7 @@
 
 
 <div class="viewcode-block" id="Network.remove_request_handler">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.remove_request_handler">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.remove_request_handler">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_request_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Remove a request handler from the network.</span>
 
@@ -423,7 +423,7 @@
 
 
 <div class="viewcode-block" id="Network.clear_request_handlers">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.clear_request_handlers">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.clear_request_handlers">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear_request_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Clear all request handlers from the network."""</span>
 
@@ -440,7 +440,7 @@
 
 
 <div class="viewcode-block" id="Network.add_auth_handler">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.add_auth_handler">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.add_auth_handler">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_auth_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Add an authentication handler to the network.</span>
 
@@ -462,7 +462,7 @@
 
 
 <div class="viewcode-block" id="Network.remove_auth_handler">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.remove_auth_handler">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.remove_auth_handler">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_auth_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Remove an authentication handler from the network.</span>
 
@@ -477,7 +477,7 @@
 
 
 <div class="viewcode-block" id="Request">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Request">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Request">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Request</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Represents an intercepted network request."""</span>
 
@@ -506,7 +506,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
 
 <div class="viewcode-block" id="Request.fail_request">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Request.fail_request">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Request.fail_request">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fail_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Fail this request."""</span>
 
@@ -518,7 +518,7 @@
 
 
 <div class="viewcode-block" id="Request.continue_request">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Request.continue_request">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Request.continue_request">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">continue_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cookies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Continue after intercepting this request."""</span>
 
