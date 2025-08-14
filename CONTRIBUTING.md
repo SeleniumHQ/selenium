@@ -57,7 +57,7 @@ significant and valuable contributions over time are made _Committers_
 and given commit-access to the project.
 
 If you're looking for easy bugs, have a look at
-[issues labelled E-easy](https://github.com/SeleniumHQ/selenium/issues?q=is%3Aopen+is%3Aissue+label%3AE-easy)
+[issues labelled: `good first issue`](https://github.com/SeleniumHQ/selenium/issues?q=is%3Aopen%20is%3Aissue%20label%3A%22good%20first%20issue%22)
 on Github.
 
 This document will guide you through the contribution process.
