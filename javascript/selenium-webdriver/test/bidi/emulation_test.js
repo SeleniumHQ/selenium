@@ -31,31 +31,30 @@ const { CreateContextParameters } = require('selenium-webdriver/bidi/createConte
 suite(
   function (env) {
     describe('BiDi Emulation', function () {
-      let driver, emulation, permission, script, browser
+      let driver, emulation, permission, script, browser, windowHandle
 
       const GET_ORIGIN = '() => {return window.location.origin;}'
 
       const GET_CURRENT_GEOLOCATION = `
-  new Promise((resolve) => {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const coords = position.coords;
-        resolve({
-          latitude: coords.latitude,
-          longitude: coords.longitude,
-          accuracy: coords.accuracy,
-          altitude: coords.altitude,
-          altitudeAccuracy: coords.altitudeAccuracy,
-          heading: coords.heading,
-          speed: coords.speed,
-          timestamp: position.timestamp
-        });
-      },
-      error => resolve({ error: error.message }),
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }
-    );
-  })
-`
+      new Promise((resolve) => {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const coords = position.coords;
+              resolve({
+                latitude: coords.latitude,
+                longitude: coords.longitude,
+                accuracy: coords.accuracy,
+                altitude: coords.altitude,
+                altitudeAccuracy: coords.altitudeAccuracy,
+                heading: coords.heading,
+                speed: coords.speed,
+                timestamp: position.timestamp
+              });
+            },
+          error => resolve({ error: error.message }),
+            { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }
+            );
+          })`
 
       beforeEach(async function () {
         driver = await env.builder().build()
@@ -63,6 +62,7 @@ suite(
         permission = await getPermissionInstance(driver)
         script = await getScriptManager([], driver)
         browser = await BrowserBiDi(driver)
+        windowHandle = await driver.getWindowHandle()
       })
 
       afterEach(function () {
@@ -70,7 +70,6 @@ suite(
       })
 
       it('can override geolocation for browsing context', async function () {
-        const windowHandle = await driver.getWindowHandle()
         const context = await BrowsingContext(driver, { browsingContextId: windowHandle })
         await context.navigate(Pages.blankPage, 'complete')
 
@@ -137,7 +136,6 @@ suite(
       })
 
       ignore(env.browsers(Browser.FIREFOX)).it('can override geolocation with error', async function () {
-        const windowHandle = await driver.getWindowHandle()
         const context = await BrowsingContext(driver, { browsingContextId: windowHandle })
         await context.navigate(Pages.blankPage, 'complete')
 
