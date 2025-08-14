@@ -21,7 +21,12 @@ const GeolocationPositionError = Object.freeze({
   type: 'positionUnavailable',
 })
 
+/**
+ * Emulation class provides methods to interact with browser emulation features
+ * via the BiDi protocol.
+ */
 class Emulation {
+  
   constructor(driver) {
     this._driver = driver
   }
@@ -34,6 +39,13 @@ class Emulation {
     this.bidi = await this._driver.getBidi()
   }
 
+  /**
+   * Overrides the browser's geolocation.
+   * @param {GeolocationCoordinates|GeolocationPositionError} value - Geolocation coordinates or error constant.
+   * @param {string|string[]|undefined} contexts - Optional browsing context(s) to apply the override.
+   * @param {string|string[]|undefined} userContexts - Optional user context(s) to apply the override.
+   * @throws {Error} If arguments are invalid or the BiDi command fails.
+   */
   async setGeolocationOverride(value, contexts = undefined, userContexts = undefined) {
     const map = new Map()
 
