@@ -19,6 +19,11 @@ on:
           - dotnet
           - node
           - all
+      force:
+        description: Force generation even if version is nightly, type "force" to enable
+        required: false
+        type: string
+        default: ""
 
   workflow_call:
     inputs:
@@ -74,7 +79,7 @@ jobs:
           npm install
           npm install --prefix javascript/selenium-webdriver
       - name: Generate Documentation for selected langauges
-        run: ./go ${{ inputs.language }}:docs
+        run: ./go ${{ inputs.language }}:docs ${{ inputs.force }}
       - name: Documentation Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v6
